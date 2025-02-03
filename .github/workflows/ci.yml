@@ -22,15 +22,12 @@ jobs:
 
       - uses: dafnik/setup-node-pnpm@v3
         with:
-          cwd: web
           install-ignore-scripts: true
 
       - name: Build
-        run: |
-          cd web
-          pnpm build
+        run: pnpm web:build
 
-  web-prettier:
+  prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,13 +36,10 @@ jobs:
 
       - uses: dafnik/setup-node-pnpm@v3
         with:
-          cwd: web
           install-ignore-scripts: true
 
       - name: Style check
-        run: |
-          cd web
-          pnpm format:check
+        run: pnpm format:check
 
   commitlint:
     name: Commitlint Check
@@ -89,20 +83,3 @@ jobs:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           reviewdog -f=sarif -name=detekt -reporter=github-pr-check < build/reports/detekt/merge.sarif
-
-  email-prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: |
-          cd emails
-          npm ci
-          cd -
-
-      - name: run prettier
-        run: cd emails && npm run format:check

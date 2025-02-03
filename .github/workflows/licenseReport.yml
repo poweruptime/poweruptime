@@ -14,7 +14,6 @@ jobs:
       - name: setup node and pnpm
         uses: dafnik/setup-node-pnpm@v3
         with:
-          cwd: web
           install-ignore-scripts: true
 
       - name: generate license report
