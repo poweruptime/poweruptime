@@ -1,1 +1,13 @@
+.gradle
 /docker/poweruptime/.gitkeep
+/keys
+/src
+.dockerignore
+.gitignore
+build.gradle.kts
+compose-local.yml
+compose-local-dev.yml
+Dockerfile
+gradle.properties
+settings.gradle.kts
+setup-ntfy.sh

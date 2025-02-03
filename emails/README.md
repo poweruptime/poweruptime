@@ -4,27 +4,25 @@ A live preview right in your browser, so you don't need to keep sending real ema
 
 ## Getting Started
 
-First, install the dependencies:
+Run the development server:
+
+`emails` directory:
 
 ```sh
-./gradlew npmInstall
+pnpm start
 ```
 
-Then, run the development server:
+`root` directory:
 
 ```sh
-./gradlew npm_start
+pnpm emails:start
 ```
 
 Open [localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Export
 
-Build the emails so the backend can use them.
-
-```sh
-./gradlew exportEmails
-```
+> E-Mails are automatically exported during backend build.
 
 ## Adding a new email
 

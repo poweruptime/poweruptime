@@ -2,7 +2,8 @@
   "name": "poweruptime",
   "version": "0.0.1",
   "scripts": {
-    "web:build": "pnpm -C web build",
+    "web:build": "pnpm -C web build --configuration development",
+    "web:build:prod": "pnpm -C web build --configuration production",
     "web:start": "pnpm -C web start",
     "web:api": "pnpm -C web api",
     "emails:start": "pnpm -C emails start",

@@ -7,6 +7,8 @@ import {timer} from 'rxjs';
 import {injectWindow} from 'dfx-helper';
 import {createInjectable} from 'ngxtension/create-injectable';
 
+import {OutsideThemeSwitch} from '../components';
+
 @Component({
   selector: 'backend-offline-alert',
   standalone: true,
@@ -45,8 +47,10 @@ class BackendOfflineAlert {
         <router-outlet />
       </main>
     </div>
+
+    <pu-outside-theme-switch />
   `,
-  imports: [RouterOutlet, BackendOfflineAlert],
+  imports: [RouterOutlet, BackendOfflineAlert, OutsideThemeSwitch],
 })
 export class OutsideLayout {
   backendOfflineService = inject(BackendOfflineService);

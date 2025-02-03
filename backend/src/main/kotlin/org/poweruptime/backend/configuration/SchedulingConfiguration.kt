@@ -95,8 +95,8 @@ class SchedulingConfiguration(
                 60 * 60 * 24 * checkResultLogRetentionPeriodInDays.toLong(),
             )
             logger.info(
-                """Removing check results of team "${team.name}" (${team.id}) older than
-                    |$checkResultLogDateInThePast
+                """Removing check result logs of team "${team.name}" (${team.id}) older
+                    |than $checkResultLogDateInThePast
                 """.trimMargin(),
             )
             checkResultLogEntryService.deleteByTeamIdAndOlderThan(team.id, checkResultLogDateInThePast)

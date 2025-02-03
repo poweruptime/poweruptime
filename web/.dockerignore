@@ -1,0 +1,8 @@
+/.angular
+/node_modules
+/src
+.dockerignore
+.gitignore
+*.json
+*.md
+tailwind.config.js

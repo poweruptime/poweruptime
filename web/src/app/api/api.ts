@@ -9,6 +9,6 @@ import type {paths} from './api-types';
 export function injectAPI() {
   const httpClient = inject(HttpClient);
   return createOpenAPIHttpClient<paths>(httpClient, {
-    baseUrl: `${environment.apiUrl}/api`,
+    baseUrl: environment.apiUrl,
   });
 }

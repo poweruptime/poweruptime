@@ -7,6 +7,12 @@
 
 ### Backend
 
+Install dependencies
+
+```shell
+./gradlew backend:bootJar
+```
+
 #### Using Spring run config
 
 Use the `Server with dependencies` run configuration (or just `Server` if you started the docker dependencies manually).
@@ -32,6 +38,12 @@ Use the `Containerized` run config or run
   - Password: `poweruptime`
 
 ### Web
+
+Install dependencies
+
+```shell
+pnpm install
+```
 
 #### Using ng serve
 

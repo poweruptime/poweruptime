@@ -95,11 +95,10 @@ tasks.bootJar {
 }
 
 node {
-    npmInstallCommand = "ci"
     download = true
     version = "22.0.0"
     workDir = rootDir.resolve(".gradle/nodejs")
-    npmWorkDir = rootDir.resolve(".gradle/npm")
+    pnpmWorkDir = rootDir.resolve(".gradle/pnpm")
     nodeProjectDir = rootDir.resolve(".")
 }
 
@@ -107,6 +106,7 @@ val exportEmails = tasks.register<PnpmTask>("exportEmails") {
     inputs.dir(rootDir.resolve("emails/emails"))
     inputs.files(rootDir.resolve("package.json"), rootDir.resolve("pnpm-lock.yaml"))
     outputs.dir(projectDir.resolve("src/main/resources/templates/html"))
+    dependsOn("pnpmInstall")
     pnpmCommand.addAll("run", "emails:export")
 }
 
