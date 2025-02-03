@@ -17,8 +17,8 @@
   },
   "packageRules": [
     {
-      "matchPackagePatterns": ["^com\\.fasterxml\\.jackson"],
-      "groupName": "Jackson dependencies"
+      "groupName": "Jackson dependencies",
+      "matchPackageNames": ["/^com\\.fasterxml\\.jackson/"]
     },
     {
       "groupName": "spring boot",
@@ -29,54 +29,54 @@
       "matchPackageNames": ["org.springframework.boot:**"]
     },
     {
-      "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
-      "groupName": "Kotlin dependencies"
+      "groupName": "Kotlin dependencies",
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/"]
     },
     {
-      "matchPackagePatterns": ["^io\\.jsonwebtoken"],
-      "groupName": "JWT dependencies"
+      "groupName": "JWT dependencies",
+      "matchPackageNames": ["/^io\\.jsonwebtoken/"]
     },
     {
-      "matchPackagePatterns": ["^io\\.viascom.nanoid"],
-      "groupName": "NanoID"
+      "groupName": "NanoID",
+      "matchPackageNames": ["/^io\\.viascom.nanoid/"]
     },
     {
-      "matchPackagePatterns": ["^dnsjava"],
-      "groupName": "DNS Java"
+      "groupName": "DNS Java",
+      "matchPackageNames": ["/^dnsjava/"]
     },
     {
-      "matchPackagePatterns": ["^org\\.apache\\."],
-      "groupName": "Apache dependencies"
+      "groupName": "Apache dependencies",
+      "matchPackageNames": ["/^org\\.apache\\./"]
     },
     {
-      "matchPackagePatterns": ["^org\\.liquibase"],
-      "groupName": "Liquibase dependencies"
+      "groupName": "Liquibase dependencies",
+      "matchPackageNames": ["/^org\\.liquibase/"]
     },
     {
-      "matchPackagePatterns": ["^org\\.postgresql", "^io\\.hypersistence"],
-      "groupName": "Postgres"
+      "groupName": "Postgres",
+      "matchPackageNames": ["/^org\\.postgresql/", "/^io\\.hypersistence/"]
     },
     {
-      "matchPackagePatterns": ["^org\\.springdoc"],
-      "groupName": "Springdoc dependencies"
+      "groupName": "Springdoc dependencies",
+      "matchPackageNames": ["/^org\\.springdoc/"]
     },
     {
-      "matchPackagePatterns": ["^com\\.bucket4j"],
-      "groupName": "Bucket4j dependencies"
+      "groupName": "Bucket4j dependencies",
+      "matchPackageNames": ["/^com\\.bucket4j/"]
     },
     {
-      "matchPackagePatterns": ["^org\\.testcontainers", "^com\\.icegreen"],
-      "groupName": "Testcontainers"
+      "groupName": "Testcontainers",
+      "matchPackageNames": ["/^org\\.testcontainers/", "/^com\\.icegreen/"]
     },
     {
-      "matchPackagePatterns": [
-        "@react-email/components",
-        "react-email",
-        "react",
-        "@types/react",
-        "@types/react-dom"
-      ],
-      "groupName": "React Email"
+      "groupName": "React Email",
+      "matchPackageNames": [
+        "/@react-email/components/",
+        "/react-email/",
+        "/react/",
+        "/@types/react/",
+        "/@types/react-dom/"
+      ]
     },
     {
       "matchPackageNames": ["typescript", "tslib"],
@@ -94,9 +94,9 @@
     }
   ],
   "extends": [
-    "config:base",
+    "config:recommended",
     ":pinVersions",
-    ":unpublishSafe",
+    "npm:unpublishSafe",
     ":prNotPending",
     ":preserveSemverRanges",
     ":rebaseStalePrs"
