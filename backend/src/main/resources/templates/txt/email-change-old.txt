@@ -1,0 +1,10 @@
+Hello [(${name})],
+
+You are trying to change your email address for your poweruptime account.
+
+If you did not request this change, undo/cancel this action:
+"[(${urlHost})]/email-change/undo/[(${cancelToken})]"
+
+
+This notification was sent to [(${email})].
+If you no longer use this email address, you can safely ignore this message.

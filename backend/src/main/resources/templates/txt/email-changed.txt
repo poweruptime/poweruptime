@@ -1,0 +1,5 @@
+Hello [(${name})],
+The email address associated with your poweruptime account has been successfully updated to
+this email address.
+
+This notification was sent to [(${email})].

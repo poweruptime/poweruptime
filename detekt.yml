@@ -1,0 +1,56 @@
+complexity:
+  LongParameterList:
+    active: false
+  CyclomaticComplexMethod:
+    threshold: 30
+    ignoreSimpleWhenEntries: true
+  LongMethod:
+    excludes:
+      - '**/test/**'
+  TooManyFunctions:
+    thresholdInClasses: 20
+    thresholdInInterfaces: 20
+  ComplexCondition:
+    active: true
+    threshold: 8
+
+style:
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 6
+  WildcardImport:
+    active: false
+  ThrowsCount:
+    active: false
+  ReturnCount:
+    max: 4
+    excludeGuardClauses: true
+  MagicNumber:
+    active: false
+  SerialVersionUIDInSerializableClass:
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  SwallowedException:
+    active: false
+
+    # Formatting contains some overlapping rules with the standard rule set -> deactivate them, so we do not get duplicate errors
+formatting:
+  NoWildcardImports: # style>WildcardImport
+    active: false
+  Filename: # naming>MatchingDeclarationName
+    active: false
+    #FinalNewline: # style>NewLineAtEndOfFile
+    #active: false
+  MaximumLineLength: # style>MaxLineLength
+    active: false
+  ModifierOrdering: # style>ModifierOrder
+    active: false
+  TrailingCommaOnCallSite:
+    active: true
+
+
+performance:
+  SpreadOperator:
+    active: false

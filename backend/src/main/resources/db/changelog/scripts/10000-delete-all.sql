@@ -1,0 +1,31 @@
+SET session_replication_role = 'replica';
+
+truncate table databasechangelog cascade;
+truncate table databasechangeloglock cascade;
+truncate table dead_letter cascade;
+truncate table instance_setting cascade;
+truncate table monitor_push_entry cascade;
+truncate table system_notification cascade;
+truncate table check_result_log_entry cascade;
+truncate table historical_day_uptime cascade;
+truncate table monitor_notification_method cascade;
+truncate table notification cascade;
+truncate table check_result cascade;
+truncate table notification_method cascade;
+truncate table notification_sender_data cascade;
+truncate table status_page_group_monitor cascade;
+truncate table monitor cascade;
+truncate table monitor_checker_data cascade;
+truncate table status_page_group cascade;
+truncate table status_page cascade;
+truncate table team_setting cascade;
+truncate table email_change_token cascade;
+truncate table password_reset_token cascade;
+truncate table refresh_token cascade;
+truncate table session cascade;
+truncate table team_join_token cascade;
+truncate table team_user cascade;
+truncate table "user" cascade;
+truncate table team cascade;
+
+RESET session_replication_role;

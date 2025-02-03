@@ -1,0 +1,94 @@
+server:
+  port: 123456
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: poweruptime-backend
+  main:
+    allow-bean-definition-overriding: true
+
+  sql:
+    init:
+      mode: never
+
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/db.changelog-test.yaml
+    drop-first: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        default-requeue-rejected: 'false'
+
+  mail:
+    host: 127.0.0.1
+    port: 3025 # default protocol port + 3000 as offset
+    username: poweruptime
+    password: poweruptime
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger/docs-json
+  swagger-ui:
+    path: /swagger/docs
+    operationsSorter: alpha
+    tagsSorter: alpha
+  packagesToScan: org.poweruptime.backend
+
+logging:
+  level:
+    org.poweruptime: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.web: DEBUG
+#    org.hibernate: ERROR
+
+management:
+  health:
+    mail:
+      enabled: false
+
+poweruptime:
+  mail:
+    enabled: false
+  host: localhost:4200
+  notification-temp:
+    enabled: true
+  keys:
+    directory: keys/some
+    access-token:
+      private: keys/some/user-access-token-private.key
+      public: keys/some/user-access-token-public.key
+    refresh-token:
+      private: keys/some/user-refresh-token-private.key
+      public: keys/some/user-refresh-token-public.key
+  rate-limit:
+    enabled: false
+    duration-in-seconds: 120
+    tries: 40
+  ntfy-admin-password: 1+sbU?f@7ur;^P[.l5*VaD}[9hCBN(oYiL8/(YF#}J`Iq:X5F=TWEO?s_aXe

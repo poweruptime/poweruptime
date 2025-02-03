@@ -1,0 +1,78 @@
+server:
+  port: ${POWERUPTIME_PORT}
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: poweruptime-backend
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:${DATABASE_TYPE}://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    generate-ddl: false
+    database-platform: ${DATABASE_SPRING_DIALECT}
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: never
+  liquibase:
+    enabled: true
+    change-log: classpath:db/db.changelog-master.yaml
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    listener:
+      simple:
+        default-requeue-rejected: 'false'
+        concurrency: 4
+        max-concurrency: 8
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+poweruptime:
+  swagger: ${SWAGGER_ENABLED}
+  host: ${HOST}
+  mail:
+    enabled: ${MAIL_ENABLED}
+  notification-temp:
+    enabled: ${TEMP_NOTIFICATIONS_ENABLED}
+    printer-queue: false
+  keys:
+    directory: ${POWERUPTIME_KEYS_DIRECTORY}
+    access-token:
+      private: ${POWERUPTIME_KEYS_DIRECTORY}/access-token-private.key
+      public: ${POWERUPTIME_KEYS_DIRECTORY}/access-token-public.key
+    refresh-token:
+      private: ${POWERUPTIME_KEYS_DIRECTORY}/refresh-token-private.key
+      public: ${POWERUPTIME_KEYS_DIRECTORY}/refresh-token-public.key
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED}
+    duration-in-seconds: ${RATE_LIMIT_DURATION_IN_SECONDS}
+    tries: ${RATE_LIMIT_TRIES}
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED}
+    path: /swagger/docs-json
+  swagger-ui:
+    path: /swagger/docs
+  packagesToScan: org.poweruptime
+
+management:
+  health:
+    mail:
+      enabled: ${MAIL_ENABLED}

@@ -1,0 +1,284 @@
+package org.poweruptime.backend.auth
+
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.poweruptime.backend.configuration.toJSON
+import org.poweruptime.backend.core.AuthTestUtils
+import org.poweruptime.backend.core.BaseTestWithReusingContainers
+import org.poweruptime.backend.core.ModelFactory
+import org.poweruptime.backend.features.authentication.JwtResponse
+import org.poweruptime.backend.features.authentication.LoginDto
+import org.poweruptime.backend.features.authentication.RefreshJwtWithSessionTokenDto
+import org.poweruptime.backend.features.authentication.service.SessionService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
+
+class AuthIntegrationTest(
+    @Autowired private val authTestUtils: AuthTestUtils,
+    @Autowired private val mvc: MockMvc,
+    @Autowired private val sessionService: SessionService
+) : BaseTestWithReusingContainers() {
+
+    @DisplayName("API /v1/secure")
+    @Nested
+    inner class UnsecureApi {
+        @Test
+        fun `check if auth is in place`() {
+            mvc.get("/v1/secure")
+                .andExpect {
+                    status { isUnauthorized() }
+                }
+        }
+
+        @Test
+        fun `check if bearer token verification works`() {
+            /**
+             * When
+             * We try to access secured api
+             *
+             * Then
+             * we expect a successful response
+             */
+            val jwtResponse = authTestUtils.adminJwtResponse
+
+            mvc.get("/v1/secure") {
+                headers {
+                    setBearerAuth(jwtResponse.accessToken!!)
+                }
+            }.andExpect {
+                status { isOk() }
+            }
+        }
+
+        @Test
+        fun `test unsuccessful with wrong bearer token`() {
+            mvc.get("/v1/secure") {
+                headers {
+                    setBearerAuth("wrong token")
+                }
+            }.andExpect {
+                status { isUnauthorized() }
+            }
+        }
+    }
+
+    @DisplayName("API /v1/auth/login")
+    @Nested
+    inner class LoginApi {
+        @Test
+        fun `test successful admin login without session`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "admin@admin.org",
+                    password = "admin",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }
+        }
+
+        @Test
+        fun `test successful admin login with session`() {
+            mvc.post("/v1/auth/login") {
+                contentType = MediaType.APPLICATION_JSON
+                content = LoginDto(
+                    email = "admin@admin.org",
+                    password = "admin",
+                    sessionInformation = "Testing",
+                    stayLoggedIn = true,
+                ).toJSON()
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { exists() }
+                }
+            }
+        }
+
+        @Test
+        fun `test unsuccessful login with wrong credentials`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "some@some.com",
+                    password = "asdf",
+                    sessionInformation = "Testing",
+                    stayLoggedIn = true,
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isUnauthorized() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { doesNotExist() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }
+        }
+
+        @Test
+        fun `test sign in with wrong credentials with existing email`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "admin@admin.org",
+                    password = "wurst",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isUnauthorized() }
+            }
+        }
+
+        @Test
+        fun `test login with 2 users check jwt not equal`() {
+            val user1Result = mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "admin@admin.org",
+                    password = "admin",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }.andReturn().toDto(JwtResponse::class.java)
+
+            val user2Result = mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test1@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }.andReturn().toDto(JwtResponse::class.java)
+            assertThat(user1Result.accessToken).isNotEqualTo(user2Result.accessToken)
+        }
+    }
+
+    @DisplayName("API /v1/auth/refresh")
+    @Nested
+    inner class RefreshApi {
+        @Test
+        fun `test refresh token`() {
+            val jwtResponse = authTestUtils.newAdminJwtResponse()
+
+            val jwtRefreshApi = mvc.post("/v1/auth/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = RefreshJwtWithSessionTokenDto(
+                    jwtResponse.refreshToken!!,
+                    "refresh successful",
+                ).toJSON()
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { exists() }
+                }
+            }.andReturn().toDto(JwtResponse::class.java)
+
+            assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
+            assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
+        }
+
+        @Test
+        fun `test refresh token not valid twice`() {
+            val jwtResponse = authTestUtils.newAdminJwtResponse()
+
+            val dto = RefreshJwtWithSessionTokenDto(
+                jwtResponse.refreshToken!!,
+                "refresh successful",
+            ).toJSON()
+
+            val jwtRefreshApi = mvc.post("/v1/auth/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = dto
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { exists() }
+                }
+            }.andReturn().toDto(JwtResponse::class.java)
+
+            assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
+            assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
+
+            mvc.post("/v1/auth/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = dto
+            }.andExpect {
+                status { isUnauthorized() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+            }
+        }
+
+        @Test
+        fun `test refresh token with invalid session information`() {
+            val jwtResponse = mvc.post("/v1/auth/login") {
+                content = ModelFactory.getAdminSignInDto().toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andReturn().toDto(JwtResponse::class.java)
+
+            mvc.post("/v1/auth/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = RefreshJwtWithSessionTokenDto(
+                    jwtResponse.refreshToken!!,
+                    "short",
+                ).toJSON()
+            }.andExpect {
+                status { isBadRequest() }
+            }
+        }
+
+        @Test
+        fun `test refresh token not valid`() {
+            // Given
+            val response = mvc.post("/v1/auth/login") {
+                content = ModelFactory.getAdminSignInDto().toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andReturn().toDto(JwtResponse::class.java)
+            assertThat(response.accessToken).isNotNull
+            assertThat(response.refreshToken).isNotNull
+
+            // When
+            val userSession = sessionService.getByTokenOrThrow(response.refreshToken!!)
+            userSession.valid = false
+            sessionService.save(userSession)
+
+            // Then
+            mvc.post("/v1/auth/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = RefreshJwtWithSessionTokenDto(
+                    refreshToken = response.refreshToken!!,
+                    sessionInformation = "poweruptime integration tests",
+                ).toJSON()
+            }.andExpect {
+                status { isUnauthorized() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+            }
+        }
+    }
+}

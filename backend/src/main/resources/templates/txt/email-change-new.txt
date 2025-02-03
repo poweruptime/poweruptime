@@ -1,0 +1,8 @@
+Hello [(${name})],
+
+You are trying to change your email address for your poweruptime account.
+
+Follow this link to confirm this email address.
+"[(${urlHost})]/email-change/confirm/[(${confirmToken})]"
+
+This notification was sent to [(${email})].

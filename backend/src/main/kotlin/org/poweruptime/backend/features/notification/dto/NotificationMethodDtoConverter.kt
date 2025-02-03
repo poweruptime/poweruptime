@@ -1,0 +1,44 @@
+package org.poweruptime.backend.features.notification.dto
+
+import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.team.model.Team
+import java.security.MessageDigest
+
+private val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+
+fun String.toSHA256(): String = md.digest(toByteArray()).fold("") { str, byte -> str + "%02x".format(byte) }
+
+fun String.nullIfNoDifference(defaultTemplate: String): String? =
+    if (toSHA256() == defaultTemplate.toSHA256()) {
+        null
+    } else {
+        this
+    }
+
+fun NotificationMethod.Companion.fromDto(
+    dto: CreateNotificationMethodDto,
+    team: Team,
+    attachedSender: NotificationSenderData
+): NotificationMethod = NotificationMethod(
+    name = dto.name,
+    sender = attachedSender,
+    team = team,
+    useByDefault = dto.useByDefault,
+    titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate),
+    bodyTemplate = dto.bodyTemplate?.nullIfNoDifference(dto.sender._type.bodyTemplate),
+)
+
+fun NotificationMethod.update(
+    dto: UpdateNotificationMethodDto,
+    attachedSender: NotificationSenderData
+): NotificationMethod {
+    name = dto.name
+    sender = dto.sender
+    useByDefault = dto.useByDefault
+    titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate)
+    bodyTemplate = dto.bodyTemplate?.nullIfNoDifference(dto.sender._type.bodyTemplate)
+    sender = attachedSender
+
+    return this
+}

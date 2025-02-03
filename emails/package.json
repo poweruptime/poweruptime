@@ -1,0 +1,22 @@
+{
+  "name": "emails",
+  "version": "0.0.19",
+  "private": true,
+  "scripts": {
+    "build": "email build",
+    "dev": "email dev",
+    "export": "email export --outDir ../backend/src/main/resources/templates/html",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@react-email/components": "0.0.31",
+    "react": "19.0.0",
+    "react-email": "3.0.4"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "prettier": "^3.3.3"
+  }
+}

@@ -1,0 +1,7 @@
+Hello [(${inviteeName})],
+[(${inviterName})] ([(${inviterEmail})]) has invited you to the [(${inviterTeam})] team on poweruptime.
+
+Join the team: "[(${urlHost})]/teams/invite/[(${token})]"
+
+This invitation was intended for [(${inviteeEmail})].
+If you were not expecting this invitation, you can ignore this email.

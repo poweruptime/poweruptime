@@ -1,0 +1,19 @@
+package org.poweruptime.backend.features.mail.emails
+
+import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.mail.Email
+import org.thymeleaf.context.Context
+
+data class EmailChangeNewEmail(val user: User, val newEmail: String, val confirmToken: String) : Email {
+    override val to = newEmail
+
+    override val subject = "Email address change requested"
+
+    override val context = Context().apply {
+        setVariable("email", newEmail)
+        setVariable("name", user.name)
+        setVariable("confirmToken", confirmToken)
+    }
+
+    override val templateName = "email-change-new"
+}

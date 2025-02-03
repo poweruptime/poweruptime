@@ -1,0 +1,19 @@
+.kotlin
+.gradle
+
+target/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+currentVersion.txt
+newVersion.txt
+production/
+config.env
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+keys

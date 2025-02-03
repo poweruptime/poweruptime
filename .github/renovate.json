@@ -1,0 +1,67 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dependencyDashboard": true,
+  "semanticPrefix": "renovate",
+  "semanticCommits": "enabled",
+  "labels": ["dependencies"],
+  "baseBranches": [
+    "main"
+  ],
+  "timezone": "Europe/Vienna",
+  "extends": ["config:base"],
+  "lockFileMaintenance": { "enabled": true },
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^com\\.fasterxml\\.jackson"],
+      "groupName": "Jackson dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.springframework\\.boot"],
+      "groupName": "Spring Boot dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
+      "groupName": "Kotlin dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^io\\.jsonwebtoken"],
+      "groupName": "JWT dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.apache\\."],
+      "groupName": "Apache dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^com\\.google\\.firebase"],
+      "groupName": "Firebase dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.liquibase"],
+      "groupName": "Liquibase dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.mariadb"],
+      "groupName": "MariaDB dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.springdoc"],
+      "groupName": "Springdoc dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^com\\.stripe"],
+      "groupName": "Stripe dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^com\\.bucket4j"],
+      "groupName": "Bucket4j dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.testcontainers"],
+      "groupName": "Testcontainers"
+    },
+    {
+      "matchPackagePatterns": ["@react-email/components", "react-email", "react", "@types/react", "@types/react-dom", "prettier"],
+      "groupName": "React Email"
+    }
+  ]
+}
