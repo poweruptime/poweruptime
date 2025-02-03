@@ -26,8 +26,16 @@
       "groupName": "Jackson dependencies"
     },
     {
-      "matchPackagePatterns": ["^org\\.springframework\\.boot"],
-      "groupName": "Spring Boot dependencies"
+      "groupName": "spring boot",
+      "matchDepNames": [
+        "org.springframework.boot"
+      ]
+    },
+    {
+      "groupName": "spring boot",
+      "matchPackageNames": [
+        "org.springframework.boot:**"
+      ]
     },
     {
       "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
@@ -38,12 +46,24 @@
       "groupName": "JWT dependencies"
     },
     {
+      "matchPackagePatterns": ["^io\\.viascom.nanoid"],
+      "groupName": "NanoID"
+    },
+    {
+      "matchPackagePatterns": ["^dnsjava"],
+      "groupName": "DNS Java"
+    },
+    {
       "matchPackagePatterns": ["^org\\.apache\\."],
       "groupName": "Apache dependencies"
     },
     {
       "matchPackagePatterns": ["^org\\.liquibase"],
       "groupName": "Liquibase dependencies"
+    },
+    {
+      "matchPackagePatterns": ["^org\\.postgresql", "^io\\.hypersistence"],
+      "groupName": "Postgres"
     },
     {
       "matchPackagePatterns": ["^org\\.springdoc"],
@@ -54,11 +74,11 @@
       "groupName": "Bucket4j dependencies"
     },
     {
-      "matchPackagePatterns": ["^org\\.testcontainers"],
+      "matchPackagePatterns": ["^org\\.testcontainers", "^com\\.icegreen"],
       "groupName": "Testcontainers"
     },
     {
-      "matchPackagePatterns": ["@react-email/components", "react-email", "react", "@types/react", "@types/react-dom", "prettier"],
+      "matchPackagePatterns": ["@react-email/components", "react-email", "react", "@types/react", "@types/react-dom"],
       "groupName": "React Email"
     },
     {
@@ -66,21 +86,28 @@
       "groupName": "typescript dependencies"
     },
     {
-      "matchPackageNames": ["@schematics/angular"],
-      "matchPackagePrefixes": ["@angular/", "@angular-devkit"],
+      "extends": [
+        "monorepo:angular"
+      ],
       "groupName": "angular monorepo",
-      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "minor",
+        "major"
+      ]
     },
     {
-      "matchPackagePatterns": ["*"],
-      "excludePackageNames": ["typescript", "tslib", "@schematics/angular"],
-      "excludePackagePatterns": ["@angular/", "@angular-devkit"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "minor-updates"
-    },
-    {
-      "matchUpdateTypes": ["major"],
-      "groupName": "major-update"
+      "extends": [
+        "monorepo:angular-cli"
+      ],
+      "groupName": "angular-cli monorepo",
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "minor",
+        "major"
+      ]
     }
   ],
   "extends": [
