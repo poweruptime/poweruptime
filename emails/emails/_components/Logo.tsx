@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export default function () {
   return (
@@ -6,7 +6,7 @@ export default function () {
       alt="poweruptime Logo"
       width="124"
       height="126"
-      className="block my-0 mx-auto rounded-md"
+      className="mx-auto my-0 block rounded-md"
       src="https://avatars.githubusercontent.com/u/166804466?s=200&v=4"
     />
   );

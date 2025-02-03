@@ -1,6 +1,6 @@
-import * as React from "react";
-import Layout from "./_components/Layout";
-import PuHeading from "./_components/puHeading";
+import * as React from 'react';
+import Layout from './_components/Layout';
+import PuHeading from './_components/puHeading';
 
 export const Test = () => {
   return (

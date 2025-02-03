@@ -22,15 +22,11 @@
     },
     {
       "groupName": "spring boot",
-      "matchDepNames": [
-        "org.springframework.boot"
-      ]
+      "matchDepNames": ["org.springframework.boot"]
     },
     {
       "groupName": "spring boot",
-      "matchPackageNames": [
-        "org.springframework.boot:**"
-      ]
+      "matchPackageNames": ["org.springframework.boot:**"]
     },
     {
       "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
@@ -73,7 +69,13 @@
       "groupName": "Testcontainers"
     },
     {
-      "matchPackagePatterns": ["@react-email/components", "react-email", "react", "@types/react", "@types/react-dom"],
+      "matchPackagePatterns": [
+        "@react-email/components",
+        "react-email",
+        "react",
+        "@types/react",
+        "@types/react-dom"
+      ],
       "groupName": "React Email"
     },
     {
@@ -81,28 +83,14 @@
       "groupName": "typescript dependencies"
     },
     {
-      "extends": [
-        "monorepo:angular"
-      ],
+      "extends": ["monorepo:angular"],
       "groupName": "angular monorepo",
-      "matchUpdateTypes": [
-        "digest",
-        "patch",
-        "minor",
-        "major"
-      ]
+      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
     },
     {
-      "extends": [
-        "monorepo:angular-cli"
-      ],
+      "extends": ["monorepo:angular-cli"],
       "groupName": "angular-cli monorepo",
-      "matchUpdateTypes": [
-        "digest",
-        "patch",
-        "minor",
-        "major"
-      ]
+      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
     }
   ],
   "extends": [

@@ -3,8 +3,8 @@ name: Build, test jar and create docker image for backend service
 on:
   push:
     tags:
-      - "*.*.*-lava-*"
-      - "*.*.*"
+      - '*.*.*-lava-*'
+      - '*.*.*'
 
 jobs:
   build-jar:

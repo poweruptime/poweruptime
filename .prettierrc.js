@@ -21,4 +21,12 @@ module.exports = {
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   importOrderParserPlugins: ['typescript', 'decorators-legacy'],
+  overrides: [
+    {
+      files: ['*.tsx'],
+      options: {
+        parser: 'babel-ts',
+      },
+    },
+  ],
 };

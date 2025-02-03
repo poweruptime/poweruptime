@@ -1,18 +1,11 @@
 // @ts-nocheck
 
-import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Section,
-  Tailwind,
-} from "@react-email/components";
-import * as React from "react";
-import { Fragment, PropsWithChildren } from "react";
-import Logo from "./Logo";
+import {Body, Container, Head, Html, Section, Tailwind} from '@react-email/components';
+import * as React from 'react';
+import {Fragment, PropsWithChildren} from 'react';
+import Logo from './Logo';
 
-export default function (props: PropsWithChildren & { disableLogo?: boolean }) {
+export default function (props: PropsWithChildren & {disableLogo?: boolean}) {
   return (
     <Html lang="de">
       <Tailwind>
@@ -25,16 +18,14 @@ export default function (props: PropsWithChildren & { disableLogo?: boolean }) {
           REF: https://github.com/resend/react-email/issues/1150#issuecomment-1973529988
         */}
         <Fragment>
-          <Body className="bg-white dark:bg-black my-auto mx-auto font-sans px-2">
-            <Container className="border border-solid border-[#eaeaea] rounded-lg my-[40px] mx-auto p-[20px] max-w-[465px]">
+          <Body className="mx-auto my-auto bg-white px-2 font-sans dark:bg-black">
+            <Container className="mx-auto my-[40px] max-w-[465px] rounded-lg border border-solid border-[#eaeaea] p-[20px]">
               {!props.disableLogo && (
                 <Section className="mt-[32px]">
                   <Logo />
                 </Section>
               )}
-              {...Array.isArray(props.children)
-                ? props.children
-                : [props.children]}
+              {...Array.isArray(props.children) ? props.children : [props.children]}
             </Container>
           </Body>
         </Fragment>
@@ -44,7 +35,6 @@ export default function (props: PropsWithChildren & { disableLogo?: boolean }) {
 }
 
 export const CALL_TO_ACTION =
-  "bg-black dark:bg-white rounded text-white dark:text-black text-[12px] font-semibold no-underline text-center px-5 py-3 cursor-pointer";
-export const FOOTER_TEXT =
-  "text-[#666666] dark:text-[#BBBBBB] text-[12px] leading-[24px]";
-export const FOOTER_INTENDED_RECIPIENT = "text-black dark:text-white";
+  'bg-black dark:bg-white rounded text-white dark:text-black text-[12px] font-semibold no-underline text-center px-5 py-3 cursor-pointer';
+export const FOOTER_TEXT = 'text-[#666666] dark:text-[#BBBBBB] text-[12px] leading-[24px]';
+export const FOOTER_INTENDED_RECIPIENT = 'text-black dark:text-white';

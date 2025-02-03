@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import * as React from "react";
-import Layout from "./_components/Layout";
-import PuText from "./_components/puText";
+import * as React from 'react';
+import Layout from './_components/Layout';
+import PuText from './_components/puText';
 
 export const EmailNotification = () => {
   return (

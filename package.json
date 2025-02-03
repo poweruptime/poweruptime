@@ -8,6 +8,7 @@
     "emails:start": "pnpm -C emails start",
     "emails:export": "pnpm -C emails export",
     "format:check": "prettier --check .",
+    "detekt": "./gradlew detekt && prettier --write .",
     "format": "prettier --write ."
   },
   "private": true,

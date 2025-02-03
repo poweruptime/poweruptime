@@ -3,10 +3,10 @@
 </p>
 <h3 align="center">uptime monitoring tool</h3>
 
-
 ## Local development
 
 ### Backend
+
 #### Using Spring run config
 
 Use the `Server with dependencies` run configuration (or just `Server` if you started the docker dependencies manually).
@@ -28,10 +28,11 @@ Use the `Containerized` run config or run
 - Web interface: [http://localhost:3000/](http://localhost:3000/)
 - API: [http://localhost/api](http://localhost/api)
 - RabbitMQ Management: [http://localhost:15672/](http://localhost:15672/)
-    - Username: `poweruptime`
-    - Password: `poweruptime`
+  - Username: `poweruptime`
+  - Password: `poweruptime`
 
 ### Web
+
 #### Using ng serve
 
 Use the `Web Start` run configuration.
@@ -45,7 +46,7 @@ pnpm web:start
 ## Create Builds/Docker images
 
 It is not required to supply the `version` property. If not supplied you will be asked what to do.
-You can than either increase major, minor or patch. For lava, you can also choose to keep the version 
+You can than either increase major, minor or patch. For lava, you can also choose to keep the version
 and just create a news build.
 
 ### Lava
@@ -62,7 +63,7 @@ and just create a news build.
 
 ## Get access token
 
-```bash 
+```bash
 curl -v -XPOST -H "Content-type: application/json" -d '{
 "email": "admin@admin.org",
 "password": "admin",

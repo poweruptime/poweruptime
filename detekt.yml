@@ -50,7 +50,6 @@ formatting:
   TrailingCommaOnCallSite:
     active: true
 
-
 performance:
   SpreadOperator:
     active: false
