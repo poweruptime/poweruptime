@@ -1,0 +1,173 @@
+import {DatePipe} from '@angular/common';
+import {ChangeDetectionStrategy, Component, computed, input, viewChild} from '@angular/core';
+import {MatCard, MatCardContent} from '@angular/material/card';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {RouterLink} from '@angular/router';
+
+import {debounceTime, map, pipe, switchMap, tap} from 'rxjs';
+
+import {derivedFrom} from 'ngxtension/derived-from';
+
+import {injectAPI, injectPagination} from '@app/api';
+import {MonitorStatusBackground} from '@app/directives';
+
+@Component({
+  template: `
+    <div class="flex flex-col gap-4">
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <h2 class="text-xl">Notifications</h2>
+
+          @let _notificationsDataSource = notificationsDataSource();
+          @let _loading = pagination.loading();
+
+          <table
+            [dataSource]="_notificationsDataSource"
+            [matSortActive]="pagination.sortParams().name"
+            [matSortDirection]="pagination.sortParams().direction"
+            mat-table
+            matSort>
+            <ng-container matColumnDef="monitor">
+              <th *matHeaderCellDef mat-header-cell>Monitor</th>
+              <td *matCellDef="let element" mat-cell>
+                <a [routerLink]="element.monitor.id">
+                  {{ element.monitor.name }}
+                </a>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>Status</th>
+              <td *matCellDef="let element" mat-cell>
+                <span
+                  class="rounded-md px-2 py-1 font-bold"
+                  [monitor-status-background]="element.checkResult.status">
+                  {{ element.checkResult.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>Created at</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="method">
+              <th *matHeaderCellDef mat-header-cell>Method</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.method.name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="title">
+              <th *matHeaderCellDef mat-header-cell>Title</th>
+              <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="error">
+              <th *matHeaderCellDef mat-header-cell>Error</th>
+              <td *matCellDef="let element" mat-cell>{{ element.error }}</td>
+            </ng-container>
+
+            <tr *matHeaderRowDef="columnsToDisplay()" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: columnsToDisplay()" mat-row></tr>
+          </table>
+
+          @if (_loading) {
+            <mat-progress-bar mode="indeterminate" />
+          }
+
+          @if (!_loading && _notificationsDataSource.length < 1) {
+            <div class="mt-2 w-full text-center">No data available.</div>
+          }
+
+          <mat-paginator
+            [pageSizeOptions]="[10, 20, 50, 100, 200]"
+            [pageSize]="pagination.params().size"
+            [pageIndex]="pagination.params().page"
+            [length]="pagination.totalElements()"
+            showFirstLastButtons />
+        </mat-card-content>
+      </mat-card>
+    </div>
+  `,
+  styles: `
+    .mat-column-status {
+      @apply w-32;
+    }
+
+    .mat-column-createdAt {
+      @apply w-52;
+    }
+  `,
+  selector: 'pu-notification-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    DatePipe,
+    MatCard,
+    MatCardContent,
+    MatTableModule,
+    MatPaginator,
+    MatSortModule,
+    MatProgressBar,
+    MonitorStatusBackground,
+    RouterLink,
+  ],
+})
+export class NotificationList {
+  private readonly api = injectAPI();
+  readonly monitorId = input<string>();
+  readonly teamId = input<string>();
+
+  private readonly paginator = viewChild.required(MatPaginator);
+  private readonly sort = viewChild.required(MatSort);
+
+  readonly pagination = injectPagination({
+    paramPrefix: 'notificiation_',
+    defaultSortBy: 'createdAt',
+    paginator: this.paginator,
+    sort: this.sort,
+  });
+
+  readonly columnsToDisplay = computed(() => {
+    let it = ['status', 'createdAt', 'method', 'title', 'error'];
+
+    if (!this.monitorId()) {
+      it = ['monitor', ...it];
+    }
+
+    return it;
+  });
+
+  readonly notificationsDataSource = derivedFrom(
+    [this.monitorId, this.teamId, this.pagination.params],
+    pipe(
+      debounceTime(350),
+      tap(() => {
+        this.pagination.loading.set(true);
+      }),
+      switchMap(([monitorId, teamId, pageableParams]) =>
+        this.api.get('/v1/notification', {
+          params: {
+            query: {
+              monitorId,
+              teamId,
+              ...pageableParams,
+            },
+          },
+        }),
+      ),
+      map((it) => {
+        this.pagination.loading.set(false);
+        this.pagination.totalElements.set(it.numberOfItems);
+        return it.data;
+      }),
+    ),
+    {initialValue: []},
+  );
+}

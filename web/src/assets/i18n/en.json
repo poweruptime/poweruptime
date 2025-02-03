@@ -1,0 +1,18 @@
+{
+  "general": {
+    "name": "Name",
+    "email": "E-Mail",
+    "save": "Save"
+  },
+  "monitor": {
+    "edit": {}
+  },
+  "profile": {
+    "email": {
+      "requestChange": "Request email address change"
+    },
+    "password": {
+      "update": "Update password"
+    }
+  }
+}

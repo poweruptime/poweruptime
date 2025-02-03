@@ -1,0 +1,91 @@
+import {filter, pipe, switchMap, tap} from 'rxjs';
+
+import {tapResponse} from '@ngrx/operators';
+import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
+
+import {BackendType, injectAPI} from '@app/api';
+import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
+
+export const InstanceSettingsStore = signalStore(
+  {providedIn: 'root'},
+  withRequestStatus(),
+  withState<{
+    settings: BackendType['InstanceSettingsResponse'] | undefined;
+  }>({
+    settings: undefined,
+  }),
+  withMethods((store, api = injectAPI()) => ({
+    load: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, setPending())),
+        switchMap(() =>
+          api.get('/v1/instance-settings').pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setIsUserAllowedToCreateTeams: rxMethod<boolean | null>(
+      pipe(
+        filter((it): it is boolean => it !== null),
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api.put('/v1/instance-settings/isUserAllowedToCreateTeams', {body: {value}}).pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setTimezone: rxMethod<string | null>(
+      pipe(
+        filter((it): it is string => !!it),
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api.put('/v1/instance-settings/timezone', {body: {value}}).pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setCheckResultRetentionPeriodInDays: rxMethod<number | null>(
+      pipe(
+        filter((it): it is number => !!it),
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api.put('/v1/instance-settings/checkResultRetentionPeriodInDays', {body: {value}}).pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setCheckResultLogRetentionPeriodInDays: rxMethod<number | null>(
+      pipe(
+        filter((it): it is number => !!it),
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api
+            .put('/v1/instance-settings/checkResultLogRetentionPeriodInDays', {body: {value}})
+            .pipe(
+              tapResponse({
+                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+        ),
+      ),
+    ),
+  })),
+);

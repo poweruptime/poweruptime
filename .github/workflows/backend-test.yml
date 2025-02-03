@@ -1,4 +1,4 @@
-name: Test Gradle
+name: backend dev ci
 
 on:
   push:
