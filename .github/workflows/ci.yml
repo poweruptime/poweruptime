@@ -1,4 +1,4 @@
-name: web dev ci
+name: dev ci
 
 on:
   push:
@@ -22,10 +22,13 @@ jobs:
 
       - uses: dafnik/setup-node-pnpm@v3
         with:
+          cwd: web
           install-ignore-scripts: true
 
       - name: Build
-        run: pnpm build
+        run: |
+          cd web
+          pnpm build
 
   web-prettier:
     runs-on: ubuntu-latest
@@ -36,10 +39,13 @@ jobs:
 
       - uses: dafnik/setup-node-pnpm@v3
         with:
+          cwd: web
           install-ignore-scripts: true
 
       - name: Style check
-        run: pnpm format:check
+        run: |
+          cd web
+          pnpm format:check
 
   commitlint:
     name: Commitlint Check

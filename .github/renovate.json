@@ -1,15 +1,25 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "dependencyDashboard": true,
-  "semanticPrefix": "renovate",
+  "baseBranches": ["main"],
   "semanticCommits": "enabled",
-  "labels": ["dependencies"],
-  "baseBranches": [
-    "main"
+  "semanticCommitScope": "",
+  "semanticCommitType": "build",
+  "commitBody": "See associated pull request for more information.",
+  "schedule": [
+    "after 11:00pm on the 1 day of the month",
+    "before 4am on the 2 day of the month",
+    "after 11:00pm on the 15 day of the month",
+    "before 4am on the 16 day of the month"
   ],
   "timezone": "Europe/Vienna",
-  "extends": ["config:base"],
-  "lockFileMaintenance": { "enabled": true },
+  "labels": ["dependencies"],
+  "assignees": ["Dafnik"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "branch",
+    "commitMessageAction": "lock file maintenance",
+    "semanticCommitType": "build"
+  },
   "packageRules": [
     {
       "matchPackagePatterns": ["^com\\.fasterxml\\.jackson"],
@@ -32,24 +42,12 @@
       "groupName": "Apache dependencies"
     },
     {
-      "matchPackagePatterns": ["^com\\.google\\.firebase"],
-      "groupName": "Firebase dependencies"
-    },
-    {
       "matchPackagePatterns": ["^org\\.liquibase"],
       "groupName": "Liquibase dependencies"
     },
     {
-      "matchPackagePatterns": ["^org\\.mariadb"],
-      "groupName": "MariaDB dependencies"
-    },
-    {
       "matchPackagePatterns": ["^org\\.springdoc"],
       "groupName": "Springdoc dependencies"
-    },
-    {
-      "matchPackagePatterns": ["^com\\.stripe"],
-      "groupName": "Stripe dependencies"
     },
     {
       "matchPackagePatterns": ["^com\\.bucket4j"],
@@ -62,6 +60,35 @@
     {
       "matchPackagePatterns": ["@react-email/components", "react-email", "react", "@types/react", "@types/react-dom", "prettier"],
       "groupName": "React Email"
+    },
+    {
+      "matchPackageNames": ["typescript", "tslib"],
+      "groupName": "typescript dependencies"
+    },
+    {
+      "matchPackageNames": ["@schematics/angular"],
+      "matchPackagePrefixes": ["@angular/", "@angular-devkit"],
+      "groupName": "angular monorepo",
+      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+    },
+    {
+      "matchPackagePatterns": ["*"],
+      "excludePackageNames": ["typescript", "tslib", "@schematics/angular"],
+      "excludePackagePatterns": ["@angular/", "@angular-devkit"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "minor-updates"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "groupName": "major-update"
     }
+  ],
+  "extends": [
+    "config:base",
+    ":pinVersions",
+    ":unpublishSafe",
+    ":prNotPending",
+    ":preserveSemverRanges",
+    ":rebaseStalePrs"
   ]
 }
