@@ -1,4 +1,5 @@
 import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.pnpm.task.PnpmTask
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -99,15 +100,14 @@ node {
     version = "22.0.0"
     workDir = rootDir.resolve(".gradle/nodejs")
     npmWorkDir = rootDir.resolve(".gradle/npm")
-    nodeProjectDir = rootDir.resolve("emails")
+    nodeProjectDir = rootDir.resolve(".")
 }
 
-val exportEmails = tasks.register<NpmTask>("exportEmails") {
+val exportEmails = tasks.register<PnpmTask>("exportEmails") {
     inputs.dir(rootDir.resolve("emails/emails"))
-    inputs.files(rootDir.resolve("emails/package.json"), rootDir.resolve("emails/package-lock.json"))
+    inputs.files(rootDir.resolve("package.json"), rootDir.resolve("pnpm-lock.yaml"))
     outputs.dir(projectDir.resolve("src/main/resources/templates/html"))
-    dependsOn("npmInstall")
-    npmCommand.addAll("run", "export")
+    pnpmCommand.addAll("run", "emails:export")
 }
 
 /**

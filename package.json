@@ -1,0 +1,19 @@
+{
+  "name": "poweruptime",
+  "version": "0.0.1",
+  "scripts": {
+    "web:build": "pnpm -C web build",
+    "web:start": "pnpm -C web start",
+    "web:api": "pnpm -C web api",
+    "emails:start": "pnpm -C emails start",
+    "emails:export": "pnpm -C emails export",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "private": true,
+  "devDependencies": {
+    "prettier": "3.4.2",
+    "prettier-plugin-organize-attributes": "1.0.0",
+    "prettier-plugin-tailwindcss": "0.6.9"
+  }
+}

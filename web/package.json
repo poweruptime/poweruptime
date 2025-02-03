@@ -8,8 +8,6 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "format:check": "prettier --check .",
-    "format": "prettier --write .",
     "api": "openapi-typescript http://localhost:8080/api/swagger/docs-json -o src/app/api/api-types.ts && prettier --write src/app/api/api-types.ts"
   },
   "private": true,
@@ -60,9 +58,6 @@
     "autoprefixer": "10.4.20",
     "openapi-typescript": "7.4.4",
     "postcss": "8.4.49",
-    "prettier": "3.4.2",
-    "prettier-plugin-organize-attributes": "1.0.0",
-    "prettier-plugin-tailwindcss": "0.6.9",
     "tailwindcss": "3.4.17",
     "typescript": "5.6.3"
   }

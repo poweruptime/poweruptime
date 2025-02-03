@@ -1,17 +1,15 @@
 <p align="center">
-    <img alt="poweruptime Logo" src="documentation/wr-square-rounded.png" style="width:200px; border-radius: 15px;"/>
+    <img alt="poweruptime Logo" src="https://avatars.githubusercontent.com/u/166804466?s=200&v=4" style="width:200px; border-radius: 15px;"/>
 </p>
-<h1 align="center">poweruptime</h1>
-Next-gen Uptime monitoring tool.
+<h3 align="center">uptime monitoring tool</h3>
 
-## ToDo
-- [] 
 
-## Local dev
+## Local development
 
-### Using Spring run config
+### Backend
+#### Using Spring run config
 
-Use the `Server with dependencies` run configuration (or just `Server` if you started the dependencies manually).
+Use the `Server with dependencies` run configuration (or just `Server` if you started the docker dependencies manually).
 
 To start the dependencies manually use the `Dependency Containers` run config or run
 
@@ -19,7 +17,7 @@ To start the dependencies manually use the `Dependency Containers` run config or
 docker compose -f compose-local-dev.yml up
 ```
 
-## Containerized
+#### Containerized
 
 Use the `Containerized` run config or run
 
@@ -32,6 +30,17 @@ Use the `Containerized` run config or run
 - RabbitMQ Management: [http://localhost:15672/](http://localhost:15672/)
     - Username: `poweruptime`
     - Password: `poweruptime`
+
+### Web
+#### Using ng serve
+
+Use the `Web Start` run configuration.
+
+Or via the terminal, run
+
+```shell
+pnpm web:start
+```
 
 ## Create Builds/Docker images
 
@@ -61,10 +70,3 @@ curl -v -XPOST -H "Content-type: application/json" -d '{
 "stayLoggedIn": "true"
 }' 'http://localhost:8080/api/v1/auth/login' | jq
 ```
-
-## Adding environment variable
-
-When adding an environment variable do not forget to also add it to the infrastructure repository right away.
-Follow
-the [guide](https://github.com/poweruptime/infra?tab=readme-ov-file#add-environment-variable)
-given in the infrastructure repository.

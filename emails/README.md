@@ -34,12 +34,12 @@ Build the emails so the backend can use them.
 3. When you're done, run `./gradlew npm_run_format` to format the emails root folder and `./gradlew exportEmails` to
    export the HTML of your newly created email.
 4. Now there should be a newly created `your-email.html` file
-   in [monolith/src/main/resources/templates/html](../backend/src/main/resources/templates/html).
+   in [backend/src/main/resources/templates/html](../backend/src/main/resources/templates/html).
 5. **Create your TEXT email now in
-   ** [monolith/src/main/resources/templates/txt](../backend/src/main/resources/templates/txt) with the same name. for
+   ** [backend/src/main/resources/templates/txt](../backend/src/main/resources/templates/txt) with the same name. for
    example: `your-email.txt`
 6. Now create your Kotlin E-Mail
-   in [monolith/src/main/kotlin/org/datepollsystems/waiterrobot/backend/monolith/features/notifications/mail/emails](../backend/src/main/kotlin/org/datepollsystems/waiterrobot/backend/monolith/features/notifications/mail/emails)
+   in [backend/src/main/kotlin/org/poweruptime/backend/features/mail/emails](../backend/src/main/kotlin/org/poweruptime/backend/features/mail/emails)
    ```kotlin
    class YourEmail(email: String, password: String, firstname: String) : Email {
       override val to = listOf(email)

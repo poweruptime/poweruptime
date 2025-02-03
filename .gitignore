@@ -16,4 +16,5 @@ config.env
 *.iml
 *.ipr
 
+node_modules
 keys

@@ -1,7 +1,5 @@
-@use '../node_modules/.pnpm/@angular+material@19.1.1_4tgsfctdq4lbdibvv4mnlgjh7i/node_modules/@angular/material/index'
-  as mat;
-@use '../node_modules/.pnpm/@ng-matero+extensions@19.0.1_@angular+animations@19.1.3_@angular+core@19.1.3_rxjs@7.8.1_zone._b23xnm6hu2mkfphnxo6vphqtxi/node_modules/@ng-matero/extensions/index'
-  as mtx;
+@use '@angular/material' as mat;
+@use '@ng-matero/extensions'as mtx;
 
 @use 'sass:map';
 
