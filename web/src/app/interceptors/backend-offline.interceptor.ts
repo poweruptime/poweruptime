@@ -30,20 +30,17 @@ export function backendOfflineInterceptor(
     return next(request).pipe(
       tap(() => backendOfflineService.set(false)),
       catchError((error) => {
+        console.error('HTTP request error', error);
         if (error instanceof HttpErrorResponse) {
           switch (error.status) {
             case 0:
             case 501:
             case 502:
               backendOfflineService.set(true);
-              return throwError(() => error);
-            default:
-              return throwError(() => error);
           }
-        } else {
-          console.warn('error', error);
-          return throwError(() => error as unknown);
         }
+
+        return throwError(() => error);
       }),
     );
   }

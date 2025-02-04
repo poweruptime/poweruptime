@@ -75,12 +75,13 @@ services:
       NTFY_AUTH_FILE: /etc/ntfy/auth.db
       NTFY_AUTH_DEFAULT_ACCESS: read-only
       NTFY_CACHE_DURATION: 0
-      NTFY_BEHIND_PROXY: false
+      NTFY_BEHIND_PROXY: true
       NTFY_WEB_ROOT: disable
     labels:
       traefik.enable: true
       traefik.http.services.poweruptime-ntfy.loadbalancer.server.port: 8085
-      traefik.http.routers.poweruptime-ntfy.middlewares: security-headers@file,security-headers-api@file,compress@file
+      traefik.http.routers.poweruptime-ntfy.middlewares: security-headers@file,security-headers-api@file,compress@file,ntfy-stripprefix
+      traefik.http.middlewares.ntfy-stripprefix.stripprefix.prefixes: /ntfy
     networks:
       - poweruptime-infrastructure
       - proxy
@@ -125,8 +126,6 @@ services:
       traefik.enable: true
       traefik.http.services.poweruptime-web.loadbalancer.server.port: 4200
       traefik.http.routers.poweruptime-web.middlewares: security-headers@file,security-headers-web@file,compress@file
-    environment:
-      - NG_APP_BACKEND_URL=https://${POWERUPTIME_HOST}/api
     networks:
       - proxy
 

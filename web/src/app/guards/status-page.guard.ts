@@ -2,17 +2,17 @@ import {DOCUMENT} from '@angular/common';
 import {inject} from '@angular/core';
 import {CanActivateFn, Router} from '@angular/router';
 
-import {catchError, map, of, tap} from 'rxjs';
+import {catchError, map, of, take, tap} from 'rxjs';
 
-import {injectAPI} from '@app/api';
+import {JsonService} from '@app/services/json.service';
 
 export const statusPageGuard: CanActivateFn = () => {
   const router = inject(Router);
   const localHost = inject(DOCUMENT).location.host;
-  const api = injectAPI();
+  const json = inject(JsonService);
 
-  return api.get('/v1/public/json').pipe(
-    tap((res) => console.log('Instance information', res)),
+  return json.pipe(
+    take(1),
     map((response) => response.host !== localHost),
     tap((isStatusPageDomain) => {
       if (isStatusPageDomain) {

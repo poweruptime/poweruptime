@@ -8,6 +8,7 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.model.Notification
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -18,11 +19,14 @@ import org.springframework.web.client.RestTemplate
 @Service
 class NtfyPushSender(
     @Value(Config.NTFY_ENABLED) private val ntfyEnabled: Boolean = false,
+    @Value(Config.NTFY_HOST) private val ntfyHost: String = "",
     @Value(Config.NTFY_USER) private val ntfyUser: String = "",
     @Value(Config.NTFY_PASSWORD) private val ntfyAdmin: String = "",
     private val rest: RestTemplate,
     private val checkResultService: CheckResultService,
 ) {
+    private val logger = LoggerFactory.getLogger(NtfyPushSender::class.java)
+
     fun sendNewCheckResult(teamId: String, checkResult: CheckResult) = send(
         "pu_t_c_$teamId",
         NtfyCheckResultDto(checkResult = CheckResultResponse(checkResult)),
@@ -42,7 +46,7 @@ class NtfyPushSender(
         if (ntfyEnabled) {
             try {
                 rest.exchange(
-                    "http://localhost:8085/$topic",
+                    "$ntfyHost/$topic",
                     HttpMethod.POST,
                     HttpEntity(
                         dto,
@@ -52,6 +56,7 @@ class NtfyPushSender(
                 )
                 "Success"
             } catch (e: Throwable) {
+                logger.error("""Could not send ntfy message to server "{}" and topics "{}"""", ntfyHost, topic)
                 e.message ?: "Unknown error"
             }
         } else {

@@ -97,5 +97,6 @@ poweruptime:
     tries: ${RATE_LIMIT_TRIES:40}
   ntfy:
     enabled: ${NTFY_ENABLED:true}
+    host: ${NTFY_HOST}
     user: ${NTFY_USERNAME}
     password: ${NTFY_PASSWORD}

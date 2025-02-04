@@ -1,9 +1,10 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterOutlet} from '@angular/router';
 
 import {NgxSonnerToaster} from 'ngx-sonner';
 
-import {environment} from '../environments/environment';
+import {JsonService} from './services/json.service';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,10 @@ import {environment} from '../environments/environment';
 })
 export class AppComponent {
   constructor() {
-    console.log(`Running poweruptime-web-${environment.version}`);
+    inject(JsonService)
+      .pipe(takeUntilDestroyed())
+      .subscribe((response) => {
+        console.log(`Running poweruptime-web-${response.version}`);
+      });
   }
 }

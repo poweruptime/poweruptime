@@ -93,5 +93,6 @@ poweruptime:
     tries: 40
   ntfy:
     enabled: false
+    host: localhost:8085
     user: admin
     password: 1+sbU?f@7ur;^P[.l5*VaD}[9hCBN(oYiL8/(YF#}J`Iq:X5F=TWEO?s_aXe
