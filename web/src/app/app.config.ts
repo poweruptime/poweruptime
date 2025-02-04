@@ -15,15 +15,14 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
-import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
+import {biCacheInterceptor} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
 
-import {TranslocoHttpLoader} from '@app/services';
+import {authInterceptor, backendOfflineInterceptor} from '@app/interceptors';
+import {TranslocoHttpLoader, provideIconsLoader} from '@app/services';
 
 import {ROUTES} from './app.routes';
-import {authInterceptor} from './interceptors/auth.interceptor';
-import {backendOfflineInterceptor} from './interceptors/backend-offline.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,7 +34,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([backendOfflineInterceptor, authInterceptor, biCacheInterceptor]),
     ),
     provideAnimationsAsync(),
-    provideBi(withCDN('/assets/icons')),
+    provideIconsLoader(),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     importProvidersFrom(
       NgxEditorModule.forRoot({
