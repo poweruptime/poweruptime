@@ -1,5 +1,6 @@
+import {isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {inject} from '@angular/core';
+import {PLATFORM_ID, inject} from '@angular/core';
 
 import {createOpenAPIHttpClient} from 'dfx-openapi';
 import {createInjectable} from 'ngxtension/create-injectable';
@@ -10,8 +11,11 @@ import type {paths} from './api-types';
 export const APIService = createInjectable(() => {
   const httpClient = inject(HttpClient);
 
+  const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   return createOpenAPIHttpClient<paths>(httpClient, {
-    baseUrl: environment.apiUrl,
+    baseUrl:
+      environment.production && !isBrowser ? 'http://poweruptime-backend/api' : environment.apiUrl,
   });
 });
 

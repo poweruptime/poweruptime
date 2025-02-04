@@ -127,6 +127,7 @@ services:
       traefik.http.services.poweruptime-web.loadbalancer.server.port: 4200
       traefik.http.routers.poweruptime-web.middlewares: security-headers@file,security-headers-web@file,compress@file
     networks:
+      - poweruptime-infrastructure
       - proxy
 
 volumes:
