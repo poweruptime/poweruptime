@@ -16,7 +16,7 @@ services:
     volumes:
       - backend:/var/lib/poweruptime
     environment:
-      - HOST=localhost:4000
+      - POWERUPTIME_HOST=localhost:4000
       - SWAGGER_ENABLED=true
       - DATABASE_HOST=poweruptime-local-backend-dev-db
       - DATABASE_PORT=5432

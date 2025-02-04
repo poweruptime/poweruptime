@@ -4,6 +4,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {s_imploder} from 'dfts-helper';
 import {toast} from 'ngx-sonner';
 import {createInjectable} from 'ngxtension/create-injectable';
+import {environment} from 'src/environments/environment';
 
 import {BackendType} from '@app/api';
 
@@ -21,7 +22,7 @@ export const MonitorNtfyService = createInjectable(() => {
       map((availableTeamIds) => availableTeamIds.map((it) => `pu_t_c_${it}`)),
       switchMap((availableTeamTopicIds) =>
         connectToEventSource(
-          `http://localhost:8085/${teamIdImploder().source(availableTeamTopicIds).build()}/sse`,
+          `${environment.ntfyUrl}/${teamIdImploder().source(availableTeamTopicIds).build()}/sse`,
           {},
           ['message'],
         ),
@@ -41,7 +42,7 @@ export const MonitorNtfyService = createInjectable(() => {
       map((availableTeamIds) => availableTeamIds.map((it) => `pu_t_m_${it}`)),
       switchMap((availableTeamTopicIds) =>
         connectToEventSource(
-          `http://localhost:8085/${teamIdImploder().source(availableTeamTopicIds).build()}/sse`,
+          `${environment.ntfyUrl}/${teamIdImploder().source(availableTeamTopicIds).build()}/sse`,
           {},
           ['message'],
         ),

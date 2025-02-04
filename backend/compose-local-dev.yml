@@ -71,17 +71,17 @@ services:
       retries: 3
       start_period: 40s
 
-  web:
-    container_name: poweruptime-local-backend-dev-web
-    restart: unless-stopped
-    build:
-      context: ../web
-    ports:
-      - "4200:4200"
-    networks:
-      - poweruptime-local-backend-dev-network
-    environment:
-      - NG_APP_BACKEND_URL=http://localhost:8080/api
+#  web:
+#    container_name: poweruptime-local-backend-dev-web
+#    restart: unless-stopped
+#    build:
+#      context: ../web
+#    ports:
+#      - "4200:4200"
+#    networks:
+#      - poweruptime-local-backend-dev-network
+#    environment:
+#      - NG_APP_BACKEND_URL=http://localhost:8080/api
 
 networks:
   poweruptime-local-backend-dev-network:

@@ -1,0 +1,148 @@
+services:
+  # Exposing the dockersocket to services is not recommended, as this can have serious security issues.
+  # Therefore, a proxy that only allows access to the really needed parts is used
+  dockersocket:
+    container_name: dockersocket
+    image: ${DOCKER_SOCKET:?}
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      CONTAINERS: 1
+    networks:
+      - dockersocket
+
+  traefik:
+    container_name: traefik
+    image: ${TRAEFIK_IMAGE:?}
+    restart: unless-stopped
+    # command is not merged, always the value of the latest compose file is used
+    volumes:
+      - ./traefik-config/:/config/:ro
+    ports:
+      - '80:80' # HTTP
+    networks:
+      - dockersocket
+      - proxy
+
+  poweruptime-db:
+    container_name: poweruptime-db
+    image: ${DB_IMAGE:?}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:?}
+      POSTGRES_USER: ${DATABASE_USER:?}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
+    volumes:
+      - poweruptime-db-data:/var/lib/postgresql/data:z
+    networks:
+      - poweruptime-infrastructure
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  poweruptime-rabbitmq:
+    container_name: poweruptime-rabbitmq
+    image: ${RABBIT_IMAGE:?}
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USERNAME:?}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:?}
+    volumes:
+      - poweruptime-rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - poweruptime-infrastructure
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  poweruptime-ntfy:
+    container_name: poweruptime-ntfy
+    image: ${NTFY_IMAGE:?}
+    restart: unless-stopped
+    volumes:
+      - poweruptime-ntfy-data:/etc/ntfy
+    command:
+      - serve
+    environment:
+      TZ: UTC
+      NTFY_LISTEN_HTTP: ':8085'
+      NTFY_AUTH_FILE: /etc/ntfy/auth.db
+      NTFY_AUTH_DEFAULT_ACCESS: read-only
+      NTFY_CACHE_DURATION: 0
+      NTFY_BEHIND_PROXY: false
+      NTFY_WEB_ROOT: disable
+    labels:
+      traefik.enable: true
+      traefik.http.services.poweruptime-ntfy.loadbalancer.server.port: 8085
+      traefik.http.routers.poweruptime-ntfy.middlewares: security-headers@file,security-headers-api@file,compress@file
+    networks:
+      - poweruptime-infrastructure
+      - proxy
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "wget -q --tries=1 http://localhost:8085/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1",
+        ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  poweruptime-backend:
+    container_name: poweruptime-backend
+    image: ghcr.io/poweruptime/poweruptime-backend:${POWERUPTIME_VERSION:?}
+    restart: unless-stopped
+    depends_on:
+      poweruptime-rabbitmq:
+        condition: service_healthy
+      poweruptime-db:
+        condition: service_healthy
+      poweruptime-ntfy:
+        condition: service_healthy
+    volumes:
+      - poweruptime-backend-data:/var/lib/poweruptime
+    env_file: .env
+    labels:
+      traefik.enable: true
+      traefik.http.services.poweruptime-backend.loadbalancer.server.port: 8080
+      traefik.http.routers.poweruptime-backend.middlewares: security-headers@file,security-headers-api@file,compress@file
+    networks:
+      - poweruptime-infrastructure
+      - proxy
+
+  poweruptime-web:
+    container_name: poweruptime-web
+    image: ghcr.io/poweruptime/poweruptime-web:${POWERUPTIME_VERSION:?}
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.services.poweruptime-backend.loadbalancer.server.port: 4200
+      traefik.http.routers.poweruptime-web.middlewares: security-headers@file,security-headers-web@file,compress@file
+    environment:
+      - NG_APP_BACKEND_URL=https://${POWERUPTIME_HOST}/api
+    networks:
+      - proxy
+
+volumes:
+  poweruptime-db-data:
+  poweruptime-rabbitmq-data:
+  pweruptime-backend-data:
+  certificates:
+
+networks:
+  dockersocket:
+  poweruptime-infrastructure:
+  proxy:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 2001:0DB8::/112

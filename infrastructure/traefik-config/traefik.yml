@@ -1,0 +1,28 @@
+http:
+  middlewares:
+    compress:
+      compress: {}
+    security-headers:
+      headers:
+        stsSeconds: 31536000 # one year
+        contentTypeNosniff: true
+        customResponseHeaders:
+          Server: '' # Remove server info
+    security-headers-api:
+      headers:
+        contentSecurityPolicy: >
+          default-src 'none';
+          frame-ancestors 'none';
+          img-src 'self';
+          style-src 'self' 'unsafe-inline';
+          script-src 'self';
+          connect-src 'self';
+    security-headers-web:
+      headers:
+        contentSecurityPolicy: >
+          default-src 'self';
+          img-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval';
+          connect-src 'self';
+          object-src 'none';
+          style-src 'self' 'unsafe-inline';

@@ -78,7 +78,7 @@ management:
 
 poweruptime:
   swagger: ${SWAGGER_ENABLED:false}
-  host: ${HOST}
+  host: ${POWERUPTIME_HOST}
   mail:
     enabled: ${MAIL_ENABLED:true}
   notification-temp:

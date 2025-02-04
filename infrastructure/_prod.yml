@@ -1,0 +1,17 @@
+name: poweruptime-prod
+
+services:
+  poweruptime-ntfy:
+    labels:
+      traefik.http.routers.poweruptime-ntfy.rule: Host(`${POWERUPTIME_HOST:?}`) && PathPrefix(`/ntfy`)
+      traefik.docker.network: poweruptime-prod_proxy
+
+  poweruptime-backend:
+    labels:
+      traefik.http.routers.poweruptime-backend.rule: Host(`${POWERUPTIME_HOST:?}`) && PathPrefix(`/api`)
+      traefik.docker.network: poweruptime-prod_proxy
+
+  poweruptime-web:
+    labels:
+      traefik.http.routers.poweruptime-web.rule: Host(`${POWERUPTIME_HOST:?}`)
+      traefik.docker.network: poweruptime-prod_proxy
