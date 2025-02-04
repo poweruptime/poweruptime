@@ -97,7 +97,7 @@ services:
 
   poweruptime-backend:
     container_name: poweruptime-backend
-    image: ghcr.io/poweruptime/poweruptime-backend:${POWERUPTIME_VERSION:?}
+    image: ghcr.io/poweruptime/backend:${POWERUPTIME_VERSION:?}
     restart: unless-stopped
     depends_on:
       poweruptime-rabbitmq:
@@ -119,11 +119,11 @@ services:
 
   poweruptime-web:
     container_name: poweruptime-web
-    image: ghcr.io/poweruptime/poweruptime-web:${POWERUPTIME_VERSION:?}
+    image: ghcr.io/poweruptime/web:${POWERUPTIME_VERSION:?}
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.services.poweruptime-backend.loadbalancer.server.port: 4200
+      traefik.http.services.poweruptime-web.loadbalancer.server.port: 4200
       traefik.http.routers.poweruptime-web.middlewares: security-headers@file,security-headers-web@file,compress@file
     environment:
       - NG_APP_BACKEND_URL=https://${POWERUPTIME_HOST}/api
@@ -133,7 +133,8 @@ services:
 volumes:
   poweruptime-db-data:
   poweruptime-rabbitmq-data:
-  pweruptime-backend-data:
+  poweruptime-ntfy-data:
+  poweruptime-backend-data:
   certificates:
 
 networks:

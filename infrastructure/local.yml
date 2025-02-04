@@ -13,11 +13,11 @@ services:
       - '--api.dashboard=true'
     labels:
       traefik.enable: true
-      traefik.http.routers.traefik-dashboard.rule: PathPrefix(`/traefik`) || HeaderRegexp(`Referer`, `.*/traefik/.*`)
+      traefik.http.routers.traefik.rule: PathPrefix(`/traefik`) || HeaderRegexp(`Referer`, `.*/traefik/.*`)
       traefik.http.middlewares.traefik-stripprefix.stripprefix.prefixes: /traefik
-      traefik.http.routers.traefik-dashboard.middlewares: traefik-stripprefix@docker
-      traefik.http.routers.traefik-dashboard.service: api@internal
-      traefik.http.routers.traefik-dashboard.entrypoints: http
+      traefik.http.routers.traefik.middlewares: traefik-stripprefix@docker
+      traefik.http.routers.traefik.service: api@internal
+      traefik.http.routers.traefik.entrypoints: http
 
   poweruptime-db:
     #image: postgres:17.2-bookworm # Uncomment to use a custom version for local testing
@@ -44,18 +44,18 @@ services:
 
   poweruptime-ntfy:
     labels:
-      traefik.http.routers.poweruptime-ntfy.entrypoints: http
       traefik.http.routers.poweruptime-ntfy.rule: PathPrefix(`/ntfy`)
+      traefik.http.routers.poweruptime-ntfy.entrypoints: http
       traefik.docker.network: poweruptime-local_proxy
 
   poweruptime-backend:
     labels:
-      traefik.http.routers.poweruptime-backend.entrypoints: http
       traefik.http.routers.poweruptime-backend.rule: PathPrefix(`/api`)
+      traefik.http.routers.poweruptime-backend.entrypoints: http
       traefik.docker.network: poweruptime-local_proxy
 
   poweruptime-web:
     labels:
-      traefik.http.routers.poweruptime-web.entrypoints: http
       traefik.http.routers.poweruptime-web.rule: PathPrefix(`/`)
+      traefik.http.routers.poweruptime-web.entrypoints: http
       traefik.docker.network: poweruptime-local_proxy

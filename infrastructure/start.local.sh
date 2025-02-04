@@ -6,7 +6,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-COMPOSE_ARGS="-f _base.yml -f local.yml --env-file .env.example"
+COMPOSE_ARGS="-f _base.yml -f local.yml --env-file .env"
 
 # shellcheck disable=SC2086
 docker compose $COMPOSE_ARGS pull # get the latest images
@@ -25,5 +25,5 @@ fi
 echo "Successfully started poweruptime locally."
 echo "  - Web interface: http://localhost/"
 echo "  - API: http://localhost/api"
-echo "  - Traefik dashboard: http://localhost/traefik"
+echo "  - Traefik dashboard: http://localhost/traefik/dashboard/"
 echo "  - RabbitMQ Management: http://localhost/rabbit/"

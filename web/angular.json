@@ -10,7 +10,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@ngx-env/builder:application",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/poweruptime-web",
             "index": "src/index.html",
@@ -30,9 +30,6 @@
             ],
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "ngxEnv": {
-              "runtime": true
-            },
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
@@ -63,7 +60,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@ngx-env/builder:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "poweruptime-web:build:production"
@@ -75,7 +72,7 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@ngx-env/builder:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         }
       },
       "schematics": {
