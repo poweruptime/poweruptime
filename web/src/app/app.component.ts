@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 
 import {NgxSonnerToaster} from 'ngx-sonner';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,8 @@ import {NgxSonnerToaster} from 'ngx-sonner';
     <router-outlet />
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {
+    console.log(`Running poweruptime-web-${environment.version}`)
+  }
+}
