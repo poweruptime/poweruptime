@@ -114,9 +114,9 @@ jobs:
             version=${{ github.ref_name }}
           # tags: 3.4.0-beta-12345678, 3.4.0-beta, latest-beta
           tags: |
-            ghcr.io/poweruptime/backend:${{ github.ref_name }}
-            ghcr.io/poweruptime/backend:${{ steps.version.outputs.version }}
-            ghcr.io/poweruptime/backend:latest-beta
+            ghcr.io/poweruptime/${{ matrix.containers }}:${{ github.ref_name }}
+            ghcr.io/poweruptime/${{ matrix.containers }}:${{ steps.version.outputs.version }}
+            ghcr.io/poweruptime/${{ matrix.containers }}:latest-beta
 
       - name: Build and push prod Docker image
         if: "!contains(github.ref_name, 'beta')"
@@ -129,5 +129,5 @@ jobs:
             version=${{ github.ref_name }}
           # tags: 3.4.0, latest
           tags: |
-            ghcr.io/poweruptime/backend:${{ github.ref_name }}
-            ghcr.io/poweruptime/backend:latest
+            ghcr.io/poweruptime/${{ matrix.containers }}:${{ github.ref_name }}
+            ghcr.io/poweruptime/${{ matrix.containers }}:latest
