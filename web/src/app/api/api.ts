@@ -15,7 +15,7 @@ export const APIService = createInjectable(() => {
 
   return createOpenAPIHttpClient<paths>(httpClient, {
     baseUrl:
-      environment.production && !isBrowser ? 'http://poweruptime-backend/api' : environment.apiUrl,
+      environment.production && !isBrowser ? 'http://poweruptime-backend:8080/api' : environment.apiUrl,
   });
 });
 
