@@ -1,27 +1,35 @@
 server:
-  port: ${POWERUPTIME_PORT}
+  port: 8080
   servlet:
     context-path: /api
+
 spring:
   application:
     name: poweruptime-backend
+
   main:
     allow-bean-definition-overriding: true
+
   datasource:
-    url: jdbc:${DATABASE_TYPE}://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
   jpa:
+    show-sql: false
     generate-ddl: false
-    database-platform: ${DATABASE_SPRING_DIALECT}
+    open-in-view: false
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   sql:
     init:
       mode: never
+
   liquibase:
     enabled: true
     change-log: classpath:db/db.changelog-master.yaml
+
   rabbitmq:
     host: ${RABBIT_HOST}
     port: ${RABBIT_PORT}
@@ -30,8 +38,9 @@ spring:
     listener:
       simple:
         default-requeue-rejected: 'false'
-        concurrency: 4
-        max-concurrency: 8
+        concurrency: 8
+        max-concurrency: 16
+
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
@@ -44,35 +53,49 @@ spring:
           starttls:
             enable: true
             required: true
-poweruptime:
-  swagger: ${SWAGGER_ENABLED}
-  host: ${HOST}
-  mail:
-    enabled: ${MAIL_ENABLED}
-  notification-temp:
-    enabled: ${TEMP_NOTIFICATIONS_ENABLED}
-    printer-queue: false
-  keys:
-    directory: ${POWERUPTIME_KEYS_DIRECTORY}
-    access-token:
-      private: ${POWERUPTIME_KEYS_DIRECTORY}/access-token-private.key
-      public: ${POWERUPTIME_KEYS_DIRECTORY}/access-token-public.key
-    refresh-token:
-      private: ${POWERUPTIME_KEYS_DIRECTORY}/refresh-token-private.key
-      public: ${POWERUPTIME_KEYS_DIRECTORY}/refresh-token-public.key
-  rate-limit:
-    enabled: ${RATE_LIMIT_ENABLED}
-    duration-in-seconds: ${RATE_LIMIT_DURATION_IN_SECONDS}
-    tries: ${RATE_LIMIT_TRIES}
+
 springdoc:
   api-docs:
-    enabled: ${SWAGGER_ENABLED}
+    enabled: ${SWAGGER_ENABLED:false}
     path: /swagger/docs-json
   swagger-ui:
     path: /swagger/docs
+    operationsSorter: alpha
+    tagsSorter: alpha
   packagesToScan: org.poweruptime
+
+logging:
+  level:
+    org.poweruptime: ERROR
+    org.springframework.security: ERROR
+    org.springframework.web: ERROR
+    org.hibernate: ERROR
 
 management:
   health:
     mail:
-      enabled: ${MAIL_ENABLED}
+      enabled: ${MAIL_ENABLED:true}
+
+poweruptime:
+  swagger: ${SWAGGER_ENABLED:false}
+  host: ${HOST}
+  mail:
+    enabled: ${MAIL_ENABLED:true}
+  notification-temp:
+    enabled: ${TEMP_NOTIFICATIONS_ENABLED:false}
+  keys:
+    directory: /var/lib/poweruptime/authentication-keys
+    access-token:
+      private: access-token-private.key
+      public: access-token-public.key
+    refresh-token:
+      private: refresh-token-private.key
+      public: refresh-token-public.key
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+    duration-in-seconds: ${RATE_LIMIT_DURATION_IN_SECONDS:240}
+    tries: ${RATE_LIMIT_TRIES:40}
+  ntfy:
+    enabled: ${NTFY_ENABLED:true}
+    user: ${NTFY_USERNAME}
+    password: ${NTFY_PASSWORD}

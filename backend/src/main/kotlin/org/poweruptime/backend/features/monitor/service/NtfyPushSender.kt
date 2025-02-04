@@ -17,7 +17,9 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class NtfyPushSender(
-    @Value(Config.NTFY_ADMIN_PASSWORD) private val ntfyAdminPassword: String = "",
+    @Value(Config.NTFY_ENABLED) private val ntfyEnabled: Boolean = false,
+    @Value(Config.NTFY_USER) private val ntfyUser: String = "",
+    @Value(Config.NTFY_PASSWORD) private val ntfyAdmin: String = "",
     private val rest: RestTemplate,
     private val checkResultService: CheckResultService,
 ) {
@@ -36,20 +38,25 @@ class NtfyPushSender(
         NtfyMonitorDto(monitor = monitor.toFullResponse()),
     )
 
-    private fun send(topic: String, dto: NtfyDto): String = try {
-        rest.exchange(
-            "http://localhost:8085/$topic",
-            HttpMethod.POST,
-            HttpEntity(
-                dto,
-                HttpHeaders().createBasicAuthString("admin", ntfyAdminPassword),
-            ),
-            Any::class.java,
-        )
-        "Success"
-    } catch (e: Throwable) {
-        e.message ?: "Unknown error"
-    }
+    private fun send(topic: String, dto: NtfyDto): String =
+        if (ntfyEnabled) {
+            try {
+                rest.exchange(
+                    "http://localhost:8085/$topic",
+                    HttpMethod.POST,
+                    HttpEntity(
+                        dto,
+                        HttpHeaders().createBasicAuthString(ntfyUser, ntfyAdmin),
+                    ),
+                    Any::class.java,
+                )
+                "Success"
+            } catch (e: Throwable) {
+                e.message ?: "Unknown error"
+            }
+        } else {
+            "Success"
+        }
 
     private fun Monitor.toFullResponse() = MonitorFullResponse(
         this,

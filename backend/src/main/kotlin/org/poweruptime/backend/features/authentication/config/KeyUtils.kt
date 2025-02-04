@@ -35,6 +35,11 @@ class KeyUtils(
     @Value(Config.KEY_REFRESH_TOKEN_PRIVATE) private val refreshTokenPrivateKeyPath: String = "",
     @Value(Config.KEY_REFRESH_TOKEN_PUBLIC) private val refreshTokenPublicKeyPath: String = "",
 ) {
+    private val absoluteAccessTokenPrivateKeyPath: String = "$directoryPath/$accessTokenPrivateKeyPath"
+    private val absoluteAccessTokenPublicKeyPath: String = "$directoryPath/$accessTokenPublicKeyPath"
+    private val absoluteRefreshTokenPrivateKeyPath: String = "$directoryPath/$refreshTokenPrivateKeyPath"
+    private val absoluteRefreshTokenPublicKeyPath: String = "$directoryPath/$refreshTokenPublicKeyPath"
+
     val userAccessTokenPublicKey: RSAPublicKey
         get() = accessTokenKeyPair.public as RSAPublicKey
 
@@ -50,11 +55,11 @@ class KeyUtils(
     private val log = LoggerFactory.getLogger(KeyUtils::class.java)
 
     private val accessTokenKeyPair: KeyPair by lazy {
-        getKeyPair(accessTokenPublicKeyPath, accessTokenPrivateKeyPath)
+        getKeyPair(absoluteAccessTokenPublicKeyPath, absoluteAccessTokenPrivateKeyPath)
     }
 
     private val refreshTokenKeyPair: KeyPair by lazy {
-        getKeyPair(refreshTokenPublicKeyPath, refreshTokenPrivateKeyPath)
+        getKeyPair(absoluteRefreshTokenPublicKeyPath, absoluteRefreshTokenPrivateKeyPath)
     }
 
     private fun getKeyPair(publicKeyPath: String, privateKeyPath: String): KeyPair {

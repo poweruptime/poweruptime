@@ -19,5 +19,7 @@ object Config {
     const val KEY_REFRESH_TOKEN_PRIVATE = "\${poweruptime.keys.refresh-token.private}"
     const val KEY_REFRESH_TOKEN_PUBLIC = "\${poweruptime.keys.refresh-token.public}"
 
-    const val NTFY_ADMIN_PASSWORD = "\${poweruptime.ntfy-admin-password}"
+    const val NTFY_ENABLED = "\${poweruptime.ntfy.enabled}"
+    const val NTFY_USER = "\${poweruptime.ntfy.user}"
+    const val NTFY_PASSWORD = "\${poweruptime.ntfy.password}"
 }

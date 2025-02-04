@@ -16,25 +16,19 @@ services:
     volumes:
       - backend:/var/lib/poweruptime
     environment:
-      - POWERUPTIME_PORT=80
-      - POWERUPTIME_KEYS_DIRECTORY=/var/lib/poweruptime-team/authentication-keys
-      - HOST=localhost
+      - HOST=localhost:4000
       - SWAGGER_ENABLED=true
-      - DATABASE_TYPE=postgresql
       - DATABASE_HOST=poweruptime-local-backend-dev-db
       - DATABASE_PORT=5432
       - DATABASE_NAME=poweruptime
       - DATABASE_USER=poweruptime
       - DATABASE_PASSWORD=poweruptime
-      - DATABASE_SPRING_DIALECT=org.hibernate.dialect.PostgreSQLDialect
       - RABBIT_HOST=rabbit
       - RABBIT_PORT=5672
       - RABBIT_USERNAME=poweruptime
       - RABBIT_PASSWORD=poweruptime
       - TEMP_NOTIFICATIONS_ENABLED=true
-      - RATE_LIMIT_ENABLED=true
-      - RATE_LIMIT_DURATION_IN_SECONDS=120
-      - RATE_LIMIT_TRIES=40
+      - MAIL_ENABLED=false
     networks:
       - poweruptime-local-backend-dev-network
     # No healthcheck possible as the container is distroless and therfore has no bash nor other tools to make requests

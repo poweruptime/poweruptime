@@ -82,13 +82,16 @@ poweruptime:
   keys:
     directory: keys/some
     access-token:
-      private: keys/some/user-access-token-private.key
-      public: keys/some/user-access-token-public.key
+      private: user-access-token-private.key
+      public: user-access-token-public.key
     refresh-token:
-      private: keys/some/user-refresh-token-private.key
-      public: keys/some/user-refresh-token-public.key
+      private: user-refresh-token-private.key
+      public: user-refresh-token-public.key
   rate-limit:
     enabled: false
     duration-in-seconds: 120
     tries: 40
-  ntfy-admin-password: 1+sbU?f@7ur;^P[.l5*VaD}[9hCBN(oYiL8/(YF#}J`Iq:X5F=TWEO?s_aXe
+  ntfy:
+    enabled: false
+    user: admin
+    password: 1+sbU?f@7ur;^P[.l5*VaD}[9hCBN(oYiL8/(YF#}J`Iq:X5F=TWEO?s_aXe

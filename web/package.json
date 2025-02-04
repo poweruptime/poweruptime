@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --no-hmr",
-    "start:ssr": "node dist/poweruptime-web/server/server.mjs",
+    "start:ssr": "NG_APP_BACKEND_URL=http://localhost:8080/api node dist/poweruptime-web/server/server.mjs",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -30,6 +30,7 @@
     "@ngneat/until-destroy": "10.0.0",
     "@ngrx/operators": "19.0.0",
     "@ngrx/signals": "19.0.0",
+    "@ngx-env/builder": "^19.0.4",
     "@ngxpert/cmdk": "^3.0.0",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.4",
     "@swimlane/ngx-charts": "21.1.2",
