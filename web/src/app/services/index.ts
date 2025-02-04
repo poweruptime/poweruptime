@@ -8,5 +8,4 @@ export * from './team';
 export * from './user';
 export * from './auth.store';
 export * from './email-change.store';
-export * from './icons-loader';
 export * from './transloco-loader';

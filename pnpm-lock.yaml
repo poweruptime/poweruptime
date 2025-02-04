@@ -109,11 +109,11 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       dfx-bootstrap-icons:
-        specifier: 3.0.0
-        version: 3.0.0(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+        specifier: 3.0.1
+        version: 3.0.1(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       dfx-helper:
-        specifier: 9.0.0
-        version: 9.0.0(giuq2444djnxkpgzieklovoqo4)
+        specifier: 9.0.1
+        version: 9.0.1(giuq2444djnxkpgzieklovoqo4)
       dfx-openapi:
         specifier: 0.1.1
         version: 0.1.1(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.1)
@@ -3122,15 +3122,15 @@ packages:
   dfts-helper@1.2.0:
     resolution: {integrity: sha512-HtY0ox5CiutxzRNpweJ9ccrY0vdZj/cmNDXv1t4cAas9nqmWEr2WSCaJrzwfUAzx8gJnOt1vcaPV6tDQoQ84kg==}
 
-  dfx-bootstrap-icons@3.0.0:
-    resolution: {integrity: sha512-T2oyrB5SxUO49kBemT6cR9Vegkm1aEhwlW0MPAN2HfJoUxG60pYHJh+qmJsa2W3MkukZtAlrWbbl+eoLsnTaIQ==}
+  dfx-bootstrap-icons@3.0.1:
+    resolution: {integrity: sha512-ksqtee2TzWfuRlrSbiagCV8ZHIUJq+F1Wq7XUjTkhTKIg8yCqZ6qy8C/bj2FyYP1so/JlZ0WtlM3SA+YfCSWwA==}
     peerDependencies:
       '@angular/common': '19'
       '@angular/core': '19'
       rxjs: '7'
 
-  dfx-helper@9.0.0:
-    resolution: {integrity: sha512-l/AMmjASDrgs2QAZpk1C8iTQwS23ZPnuLUBlLt12zu3cN/zeOC9TK1bOMHgIvMhesm6Y60EqZ+wRXlGSkKAKEw==}
+  dfx-helper@9.0.1:
+    resolution: {integrity: sha512-mBQc9O1vZHA8NONKJA7qktZa7k4WlogZxzulE7LP2HwEpIW/8+iNWssCKSzECtX4NUzmMoN66eQEzUR22RP7fA==}
     peerDependencies:
       '@angular/cdk': '19'
       '@angular/common': '19'
@@ -8651,14 +8651,14 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  dfx-bootstrap-icons@3.0.0(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1):
+  dfx-bootstrap-icons@3.0.1(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1):
     dependencies:
       '@angular/common': 19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/core': 19.1.3(rxjs@7.8.1)(zone.js@0.15.0)
       rxjs: 7.8.1
       tslib: 2.8.1
 
-  dfx-helper@9.0.0(giuq2444djnxkpgzieklovoqo4):
+  dfx-helper@9.0.1(giuq2444djnxkpgzieklovoqo4):
     dependencies:
       '@angular/cdk': 19.1.1(@angular/common@19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       '@angular/common': 19.1.3(@angular/core@19.1.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)

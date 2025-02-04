@@ -1,7 +1,10 @@
+import {isPlatformBrowser} from '@angular/common';
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {
   ApplicationConfig,
+  PLATFORM_ID,
   importProvidersFrom,
+  inject,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
@@ -15,13 +18,14 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
-import {biCacheInterceptor} from 'dfx-bootstrap-icons';
+import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
 
 import {authInterceptor, backendOfflineInterceptor} from '@app/interceptors';
-import {TranslocoHttpLoader, provideIconsLoader} from '@app/services';
+import {TranslocoHttpLoader} from '@app/services';
 
+import {environment} from '../environments/environment';
 import {ROUTES} from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -34,7 +38,14 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([backendOfflineInterceptor, authInterceptor, biCacheInterceptor]),
     ),
     provideAnimationsAsync(),
-    provideIconsLoader(),
+    provideBi(
+      withCDN(() => {
+        const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+        return environment.production && !isBrowser
+          ? 'http://poweruptime-web:4200/assets/icons'
+          : '/assets/icons';
+      }),
+    ),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     importProvidersFrom(
       NgxEditorModule.forRoot({
