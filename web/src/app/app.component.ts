@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {ChangeDetectionStrategy, Component, PLATFORM_ID, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterOutlet} from '@angular/router';
 
@@ -17,10 +18,13 @@ import {JsonService} from './services/json.service';
 })
 export class AppComponent {
   constructor() {
-    inject(JsonService)
-      .pipe(takeUntilDestroyed())
-      .subscribe((response) => {
-        console.log(`Running poweruptime-web-${response.version}`);
-      });
+    const jsonService = inject(JsonService);
+    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+    // HAS TO BE ON BROWSER!?!?
+    // IF NOT -> BUILD CRASH
+    if (isBrowser) {
+      jsonService.json$.pipe(takeUntilDestroyed()).subscribe();
+    }
   }
 }

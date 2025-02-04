@@ -7,9 +7,13 @@ import {injectAPI} from '../api';
 export const JsonService = createInjectable(() => {
   const api = injectAPI();
 
-  return api.get('/v1/public/json').pipe(
+  const json$ = api.get('/v1/public/json').pipe(
     tap((response) => console.log('Instance information', response)),
     distinctUntilChanged(),
     shareReplay(1),
   );
+
+  return {
+    json$,
+  };
 });

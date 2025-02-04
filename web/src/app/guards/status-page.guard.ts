@@ -9,9 +9,9 @@ import {JsonService} from '@app/services/json.service';
 export const statusPageGuard: CanActivateFn = () => {
   const router = inject(Router);
   const localHost = inject(DOCUMENT).location.host;
-  const json = inject(JsonService);
+  const json$ = inject(JsonService).json$;
 
-  return json.pipe(
+  return json$.pipe(
     take(1),
     map((response) => response.host !== localHost),
     tap((isStatusPageDomain) => {
