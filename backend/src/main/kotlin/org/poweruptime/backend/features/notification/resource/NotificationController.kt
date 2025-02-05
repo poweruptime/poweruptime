@@ -57,15 +57,15 @@ class NotificationController(
 
         val user = authService.getByAuthOrThrow(auth)
 
-        monitorId?.let {
+        monitorId?.let { monitorId ->
             user.throwIfNotPartOf {
-                permissionRepository.isPartOfByMonitorId(user.id, it)
+                permissionRepository.isPartOfByMonitorId(user.id, monitorId)
             }
         }
 
-        teamId?.let {
+        teamId?.let { teamId ->
             user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, it)
+                permissionRepository.isPartOfByTeamId(user.id, teamId)
             }
         }
 

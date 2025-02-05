@@ -709,6 +709,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/sse/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get push
+     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
+     */
+    get: operations['get_3'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/secure': {
     parameters: {
       query?: never;
@@ -799,7 +819,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get status page */
-    get: operations['get_3'];
+    get: operations['get_4'];
     put?: never;
     post?: never;
     delete?: never;
@@ -867,7 +887,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get monitor */
-    get: operations['get_4'];
+    get: operations['get_5'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1008,7 +1028,7 @@ export interface paths {
      * Get notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_MEMBER
      */
-    get: operations['get_5'];
+    get: operations['get_6'];
     put?: never;
     post?: never;
     /**
@@ -1032,7 +1052,7 @@ export interface paths {
      * Get monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['get_6'];
+    get: operations['get_7'];
     put?: never;
     post?: never;
     /**
@@ -1173,7 +1193,7 @@ export interface paths {
      * Get check result
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['get_7'];
+    get: operations['get_8'];
     put?: never;
     post?: never;
     delete?: never;
@@ -3206,6 +3226,28 @@ export interface operations {
       };
     };
   };
+  get_3: {
+    parameters: {
+      query: {
+        teamIds: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/event-stream': string[];
+        };
+      };
+    };
+  };
   apiSecure: {
     parameters: {
       query?: never;
@@ -3308,7 +3350,7 @@ export interface operations {
       };
     };
   };
-  get_3: {
+  get_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -3407,7 +3449,7 @@ export interface operations {
       };
     };
   };
-  get_4: {
+  get_5: {
     parameters: {
       query?: never;
       header?: never;
@@ -3589,7 +3631,7 @@ export interface operations {
       };
     };
   };
-  get_5: {
+  get_6: {
     parameters: {
       query?: never;
       header?: never;
@@ -3631,7 +3673,7 @@ export interface operations {
       };
     };
   };
-  get_6: {
+  get_7: {
     parameters: {
       query?: never;
       header?: never;
@@ -3806,7 +3848,7 @@ export interface operations {
       };
     };
   };
-  get_7: {
+  get_8: {
     parameters: {
       query?: never;
       header?: never;

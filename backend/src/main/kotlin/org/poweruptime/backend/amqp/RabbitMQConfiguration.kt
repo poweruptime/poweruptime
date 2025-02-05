@@ -1,6 +1,5 @@
 package org.poweruptime.backend.amqp
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.poweruptime.backend.amqp.RabbitMQ.DEAD_LETTER_EXCHANGE
 import org.poweruptime.backend.amqp.RabbitMQ.DEAD_LETTER_QUEUE
 import org.poweruptime.backend.amqp.RabbitMQ.EMAIL_EXCHANGE
@@ -9,6 +8,8 @@ import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_EXCHANGE
 import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_QUEUE
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_EXCHANGE
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_QUEUE
+import org.poweruptime.backend.amqp.RabbitMQ.PUSH_EXCHANGE
+import org.poweruptime.backend.configuration.puObjectMapper
 import org.springframework.amqp.core.*
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitAdmin
@@ -32,7 +33,7 @@ class RabbitMQConfiguration {
     fun rabbitAdmin(connectionFactory: ConnectionFactory) = RabbitAdmin(connectionFactory)
 
     @Bean
-    fun producerJackson2MessageConverter() = Jackson2JsonMessageConverter(jacksonObjectMapper())
+    fun producerJackson2MessageConverter() = Jackson2JsonMessageConverter(puObjectMapper)
 
     // DEAD LETTER
     @Bean
@@ -76,4 +77,17 @@ class RabbitMQConfiguration {
 
     @Bean
     fun notificationBinding(): Binding = BindingBuilder.bind(notificationQueue()).to(notificationExchange())
+
+    // PUSH NOTIFICATIONS
+    fun getPushQueueName(teamId: String) = "push-$teamId-queue"
+
+    fun getPushRoutingKey(teamId: String) = "push-$teamId"
+
+    /**
+     * An exchange which assigns the messages based on a routing key
+     * The routing key is the id of the team
+     * Only active connections consume the queue
+     */
+    @Bean
+    fun pushDirectExchange() = DirectExchange(PUSH_EXCHANGE, false, false)
 }

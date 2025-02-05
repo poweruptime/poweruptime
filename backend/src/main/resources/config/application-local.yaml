@@ -100,8 +100,5 @@ poweruptime:
     enabled: true
     duration-in-seconds: 120
     tries: 20
-  ntfy:
+  push:
     enabled: true
-    host: localhost:8085
-    user: admin
-    password: GRLhqhyND4XUhC9iBMCa3RzNWXV7PxanLNDQfFdh

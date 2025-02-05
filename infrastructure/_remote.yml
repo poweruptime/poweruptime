@@ -35,11 +35,5 @@ services:
       traefik.http.routers.poweruptime-web.tls: true
       traefik.http.routers.poweruptime-web.tls.certresolver: default
 
-  poweruptime-ntfy:
-    labels:
-      traefik.http.routers.poweruptime-nfty.entrypoints: https
-      traefik.http.routers.poweruptime-ntfy.tls: true
-      traefik.http.routers.poweruptime-nfty.tls.certresolver: default
-
 volumes:
   certificates:

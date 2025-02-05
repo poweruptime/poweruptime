@@ -261,8 +261,8 @@ fun PermissionRepository.isPartOfByStatusPageGroupIds(
     statusPageGroupIds: Collection<String>
 ): Boolean = statusPageGroupIds.all { isPartOfByStatusPageGroupId(userId, it) }
 
-fun User.throwIfNotPartOf(checker: () -> Boolean) {
-    if (!isAdmin() && !checker()) {
+fun User.throwIfNotPartOf(checker: (user: User) -> Boolean) {
+    if (!isAdmin() && !checker(this)) {
         throw ForbiddenException()
     }
 }

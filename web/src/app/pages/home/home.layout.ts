@@ -20,7 +20,7 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {Nav, ThemeSwitch} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
-import {MonitorNtfyService, SelectedTeamStore} from '@app/services';
+import {PushService, SelectedTeamStore} from '@app/services';
 
 @Component({
   selector: 'home-layout',
@@ -127,7 +127,7 @@ export class HomeLayout {
   constructor() {
     this.selectedTeamStore.loadSelectedTeam(this.teamId);
 
-    const monitorNtfyService = inject(MonitorNtfyService);
+    const pushService = inject(PushService);
     const availableTeams = inject(SelectedTeamStore).entities;
     const availableTeamIds = computed(() => {
       const selectedTeamId = this.selectedTeamStore.selectedTeamId();
@@ -135,8 +135,8 @@ export class HomeLayout {
       return selectedTeamId ? [selectedTeamId] : availableTeams().map((team) => team.id);
     });
 
-    monitorNtfyService.setTeamIds(availableTeamIds);
-    monitorNtfyService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
+    pushService.setTeamIds(availableTeamIds);
+    pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
 
     inject(Router)
       .events.pipe(

@@ -24,6 +24,10 @@ export type DnsMonitorDataType =
   | 'SRV'
   | 'TXT';
 
+export type PushDto = {
+  type: 'CHECK_RESULT' | 'MONITOR' | 'NOTIFICATION';
+};
+
 export class Database {
   static readonly MIN_NAME_LENGTH: number = 2;
   static readonly MAX_NAME_LENGTH: number = 70;

@@ -27,7 +27,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
-import {MonitorNtfyService} from '@app/services';
+import {PushService} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 const pageSize = 15;
@@ -177,12 +177,12 @@ export const MonitorsStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, monitorNtfyService = inject(MonitorNtfyService)) {
-      monitorNtfyService.monitorStatusChange$
+    onInit(store, pushService = inject(PushService)) {
+      pushService.monitorStatusChange$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.updateMonitor(it));
 
-      monitorNtfyService.checkResults$
+      pushService.checkResults$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.addCheckResult(it));
     },
@@ -284,7 +284,7 @@ export const MonitorsSearchStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, router = inject(Router), monitorNtfyService = inject(MonitorNtfyService)) {
+    onInit(store, router = inject(Router), pushService = inject(PushService)) {
       effect(() => {
         const {search, statuses, syncQueryParams} = getState(store);
 
@@ -299,11 +299,11 @@ export const MonitorsSearchStore = signalStore(
         }
       });
 
-      monitorNtfyService.monitorStatusChange$
+      pushService.monitorStatusChange$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.updateMonitor(it));
 
-      monitorNtfyService.checkResults$
+      pushService.checkResults$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.addCheckResult(it));
     },

@@ -21,7 +21,7 @@ import {
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {MonitorNtfyService} from '@app/services';
+import {PushService} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 import {mapUptime} from '../util';
@@ -68,8 +68,8 @@ export const MonitorDetailStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, monitorNtfyService = inject(MonitorNtfyService)) {
-      monitorNtfyService.monitorStatusChange$
+    onInit(store, pushService = inject(PushService)) {
+      pushService.monitorStatusChange$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.updateMonitor(it));
     },

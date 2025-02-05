@@ -34,6 +34,8 @@ dependencies {
     // HttpClient library
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4.1")
 
+//    implementation("org.projectreactor:reactor-spring:1.0.1")
+
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -55,6 +57,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 

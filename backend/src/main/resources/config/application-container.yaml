@@ -95,8 +95,5 @@ poweruptime:
     enabled: ${RATE_LIMIT_ENABLED:true}
     duration-in-seconds: ${RATE_LIMIT_DURATION_IN_SECONDS:240}
     tries: ${RATE_LIMIT_TRIES:40}
-  ntfy:
-    enabled: ${NTFY_ENABLED:true}
-    host: ${NTFY_HOST}
-    user: ${NTFY_USERNAME}
-    password: ${NTFY_PASSWORD}
+  push:
+    enabled: ${PUSH_ENABLED:true}

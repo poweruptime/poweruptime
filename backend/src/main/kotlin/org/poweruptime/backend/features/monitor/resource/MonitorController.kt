@@ -75,9 +75,9 @@ class MonitorController(
     ): PaginatedResponse<MonitorResponse> {
         val user = authService.getByAuthOrThrow(authentication)
 
-        teamId?.let {
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, it)
+        teamId?.let { teamId ->
+            user.throwIfNotPartOf { user ->
+                permissionRepository.isPartOfByTeamId(user.id, teamId)
             }
         }
 
@@ -214,12 +214,12 @@ class MonitorController(
     ): MonitorDashboardResponse {
         val user = authService.getByAuthOrThrow(authentication)
 
-        teamId?.let {
+        teamId?.let { teamId ->
             user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, it)
+                permissionRepository.isPartOfByTeamId(user.id, teamId)
             }
 
-            return monitorService.getTeamDashboard(it)
+            return monitorService.getTeamDashboard(teamId)
         }
 
         return monitorService.getUserDashboard(user.id)

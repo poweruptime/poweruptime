@@ -4,16 +4,22 @@ import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_QUEUE
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
 import org.poweruptime.backend.features.monitor.core.MonitorCheckerFactory
+import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
+import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
+import org.poweruptime.backend.features.monitor.dto.PushCheckResultDto
+import org.poweruptime.backend.features.monitor.dto.PushMonitorDto
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
-import org.poweruptime.backend.features.monitor.service.NtfyPushSender
+import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.service.NotificationService
+import org.poweruptime.backend.features.push.PushService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
@@ -34,7 +40,7 @@ class MonitorListener(
     private val monitorService: MonitorService,
     private val monitorCheckerFactory: MonitorCheckerFactory,
     private val notificationService: NotificationService,
-    private val ntfyPushSender: NtfyPushSender,
+    private val pushService: PushService,
 ) {
     private val logger = LoggerFactory.getLogger(MonitorListener::class.java)
 
@@ -162,9 +168,12 @@ class MonitorListener(
      */
     private fun sendNewCheckResultPush(monitor: Monitor, updatedCheck: CheckResult) {
         logger.info(
-            """Send ntfy new check result push for team "{}", result:"{}" """,
+            """Send push new check result for team "{}"""",
             monitor.team.id,
-            ntfyPushSender.sendNewCheckResult(monitor.team.id, updatedCheck),
+        )
+        pushService.send(
+            monitor.team.id,
+            PushCheckResultDto(checkResult = CheckResultResponse(updatedCheck)),
         )
     }
 
@@ -216,13 +225,24 @@ class MonitorListener(
      */
     private fun sendStatusChangePushIfNeeded(oldStatus: MonitorStatus, updatedMonitor: Monitor) {
         if (oldStatus != updatedMonitor.status) {
-            logger.info(
-                """Send ntfy status change push for team "{}", result:"{}" """,
+            logger.debug(
+                """Send push status change for team "{}"""",
                 updatedMonitor.team.id,
-                ntfyPushSender.sendMonitorStatusChange(updatedMonitor.team.id, updatedMonitor),
+            )
+
+            pushService.send(
+                updatedMonitor.team.id,
+                PushMonitorDto(monitor = updatedMonitor.toFullResponse()),
             )
         }
     }
+
+    private fun Monitor.toFullResponse() = MonitorFullResponse(
+        this,
+        uptime = checkResultService.uptimeStatisticsDto(this),
+        lastCheckResults = checkResultService.getLastByMonitorId(this.id, 20),
+        oneDayUptime = checkResultService.calculateRecentUptime(this.id, TimeOption.ONE_DAY).myFormat(),
+    )
 
     /**
      * Decides if and sends a UP or DOWN notification. It also checks for resend logic.

@@ -9,7 +9,7 @@ import {removeAllEntities, setAllEntities, setEntities} from '@ngrx/signals/enti
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {MonitorNtfyService} from '@app/services/monitor';
+import {PushService} from '@app/services';
 import {
   PaginationDto,
   setError,
@@ -103,8 +103,8 @@ export const CheckResultsStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, monitorNtfyService = inject(MonitorNtfyService)) {
-      monitorNtfyService.checkResults$
+    onInit(store, pushService = inject(PushService)) {
+      pushService.checkResults$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.addCheckResult(it));
     },

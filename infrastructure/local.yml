@@ -42,12 +42,6 @@ services:
     networks:
       - proxy
 
-  poweruptime-ntfy:
-    labels:
-      traefik.http.routers.poweruptime-ntfy.rule: PathPrefix(`/ntfy`)
-      traefik.http.routers.poweruptime-ntfy.entrypoints: http
-      traefik.docker.network: poweruptime-local_proxy
-
   poweruptime-backend:
     labels:
       traefik.http.routers.poweruptime-backend.rule: PathPrefix(`/api`)

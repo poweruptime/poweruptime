@@ -44,33 +44,6 @@ services:
       timeout: 30s
       retries: 3
 
-  ntfy:
-    container_name: poweruptime-local-backend-dev-ntfy
-    image: binwiederhier/ntfy:v2.11.0
-    restart: unless-stopped
-    volumes:
-      - ntfy:/etc/ntfy
-    command:
-      - serve
-    environment:
-      TZ: UTC    # optional: set desired timezone
-      NTFY_LISTEN_HTTP: ":8085"
-      NTFY_AUTH_FILE: /etc/ntfy/auth.db
-      NTFY_AUTH_DEFAULT_ACCESS: read-only
-      NTFY_CACHE_DURATION: 0
-      NTFY_BEHIND_PROXY: false
-      NTFY_WEB_ROOT: /
-    ports:
-      - "8085:8085"
-    networks:
-      - poweruptime-local-backend-dev-network
-    healthcheck: # optional: remember to adapt the host:port to your environment
-      test: [ "CMD-SHELL", "wget -q --tries=1 http://localhost:8085/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1" ]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
 #  web:
 #    container_name: poweruptime-local-backend-dev-web
 #    restart: unless-stopped
@@ -89,5 +62,4 @@ networks:
 volumes:
   db:
   rabbit:
-  ntfy:
 

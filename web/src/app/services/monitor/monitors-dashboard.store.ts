@@ -8,7 +8,7 @@ import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {MonitorNtfyService} from '@app/services';
+import {PushService} from '@app/services';
 
 import {
   setError,
@@ -60,10 +60,8 @@ export const MonitorsDashboardStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, monitorNtfyService = inject(MonitorNtfyService)) {
-      monitorNtfyService.monitorStatusChange$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.update());
+    onInit(store, pushService = inject(PushService)) {
+      pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe((it) => store.update());
     },
   }),
 );

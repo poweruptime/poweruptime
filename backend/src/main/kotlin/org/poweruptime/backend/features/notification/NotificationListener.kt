@@ -1,12 +1,14 @@
 package org.poweruptime.backend.features.notification
 
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_QUEUE
+import org.poweruptime.backend.features.monitor.dto.PushNotificationDto
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
-import org.poweruptime.backend.features.monitor.service.NtfyPushSender
 import org.poweruptime.backend.features.notification.core.NotificationSenderFactory
+import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.service.NotificationService
+import org.poweruptime.backend.features.push.PushService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
@@ -20,7 +22,7 @@ class NotificationListener(
     private val notificationService: NotificationService,
     private val notificationSenderFactory: NotificationSenderFactory,
     private val checkResultLogEntryService: CheckResultLogEntryService,
-    private val ntfyPushSender: NtfyPushSender,
+    private val pushService: PushService,
 ) {
     private val logger = LoggerFactory.getLogger(NotificationListener::class.java)
 
@@ -77,7 +79,10 @@ class NotificationListener(
                 ),
             )
 
-            ntfyPushSender.sendNewNotification(it.method.team.id, it)
+            pushService.send(
+                it.method.team.id,
+                PushNotificationDto(notification = NotificationResponse(it)),
+            )
         }
     }
 

@@ -83,9 +83,3 @@ curl -v -XPOST -H "Content-type: application/json" -d '{
 "stayLoggedIn": "true"
 }' 'http://localhost:8080/api/v1/auth/login' | jq
 ```
-
-## Add ntfy admin user
-
-```shell
-./setup-ntfy.sh poweruptime-local-backend-dev-ntfy GRLhqhyND4XUhC9iBMCa3RzNWXV7PxanLNDQfFdh
-```
