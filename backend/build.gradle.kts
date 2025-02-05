@@ -29,7 +29,7 @@ dependencies {
     implementation("io.viascom.nanoid:nanoid:1.0.1")
 
     // DNS Checker lib
-    implementation("dnsjava:dnsjava:3.6.2")
+    implementation("dnsjava:dnsjava:3.6.3")
 
     // HttpClient library
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4.1")
@@ -42,7 +42,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Database stuff
-    implementation("org.liquibase:liquibase-core:4.30.0")
+    implementation("org.liquibase:liquibase-core:4.31.0")
     runtimeOnly("org.postgresql:postgresql:42.7.4")
     // Postgres Arrays
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.0")
@@ -65,7 +65,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:2.0.11")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
@@ -79,7 +79,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.20.4")
     testImplementation("org.testcontainers:rabbitmq:1.20.4")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.2")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.3")
 }
 
 tasks.withType<Test> {
