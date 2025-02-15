@@ -32,7 +32,7 @@ dependencies {
     implementation("dnsjava:dnsjava:3.6.3")
 
     // HttpClient library
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.2")
 
 //    implementation("org.projectreactor:reactor-spring:1.0.1")
 
