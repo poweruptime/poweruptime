@@ -362,7 +362,7 @@ class TeamIntegrationTests(
     inner class DeleteTeam {
         @Test
         fun `test if secured`() {
-            mockMvc.delete("/v1/team/4Lxhu5YKWPBr").andExpect {
+            mockMvc.delete("/v1/team/kLGeRaxXMM1t").andExpect {
                 status { isUnauthorized() }
             }
         }
@@ -386,7 +386,7 @@ class TeamIntegrationTests(
         @Test
         @MockUser(MockUsers.USER2)
         fun `test secured with team user`() {
-            mockMvc.delete("/v1/team/4Lxhu5YKWPBr").andExpect {
+            mockMvc.delete("/v1/team/kLGeRaxXMM1t").andExpect {
                 status { isForbidden() }
             }
         }
