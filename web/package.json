@@ -41,7 +41,7 @@
     "express": "4.21.2",
     "nanoid": "^5.0.9",
     "ngx-editor": "^18.0.0",
-    "ngx-mat-select-search": "^7.0.9",
+    "ngx-mat-select-search": "^8.0.0",
     "ngx-sonner": "3.0.0",
     "ngxtension": "4.3.2",
     "rxjs": "7.8.1",
