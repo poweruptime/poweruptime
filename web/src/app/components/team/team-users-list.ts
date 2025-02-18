@@ -57,7 +57,7 @@ import {TeamUsersStore} from '@app/services';
           </ng-container>
 
           <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Created at</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Joined</th>
             <td *matCellDef="let element" mat-cell>
               {{ element.invitedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
             </td>

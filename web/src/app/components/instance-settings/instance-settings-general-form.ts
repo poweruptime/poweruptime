@@ -8,6 +8,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 
 import {map, timer} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
@@ -18,7 +19,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     <mat-card appearance="outlined">
       <mat-card-header>
-        <mat-card-title>General</mat-card-title>
+        <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form
@@ -29,8 +30,10 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           (ngSubmit)="submit()">
           <div>
             <mat-form-field>
-              <mat-label>Instance Timezone</mat-label>
-              <mat-select #singleSelect formControlName="timezone" placeholder="Bank">
+              <mat-label>
+                {{ 'general.instance' | transloco }} {{ 'general.timezone' | transloco }}
+              </mat-label>
+              <mat-select formControlName="timezone">
                 <mat-option class="pt-1">
                   <ngx-mat-select-search [formControl]="timezoneFilterControl">
                     <bi name="x-lg" ngxMatSelectSearchClear />
@@ -45,7 +48,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             </mat-form-field>
 
             <div>
-              <span>Time:</span>
+              <span>{{ 'general.time' | transloco }}:</span>
               {{ nowInTimezone() | date: 'YYYY-MM-dd HH:mm:ss' }}
             </div>
           </div>
@@ -70,6 +73,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     BiComponent,
     SaveButton,
     DatePipe,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

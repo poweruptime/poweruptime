@@ -49,5 +49,10 @@ export const PushService = createInjectable(() => {
       }),
       share(),
     ),
+    notifications$: sse$.pipe(
+      filter((it) => it.type === 'NOTIFICATION'),
+      map((it) => (it as any).notification as BackendType['NotificationResponse']),
+      share(),
+    ),
   };
 });

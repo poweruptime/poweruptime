@@ -70,13 +70,8 @@ export const TeamEditStore = signalStore(
             tapResponse({
               next: (team) => {
                 selectedTeamStore.updateTeam(team);
-
-                void router.navigate(['../'], {
-                  relativeTo,
-                  queryParamsHandling: 'merge',
-                });
               },
-              error: (error) => {},
+              error: () => {},
             }),
           ),
         ),

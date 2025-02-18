@@ -10,24 +10,24 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
 
-import {b_fromStorage} from 'dfts-helper';
-import {injectLocalStorage} from 'ngxtension/inject-local-storage';
-import {sign} from 'node:crypto';
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {Cmdk} from '@app/components/cmdk/cmdk';
 
 @Component({
   selector: 'pu-cmdk-overlay',
-  imports: [Cmdk, CdkPortal, MatButton],
+  imports: [Cmdk, CdkPortal, MatButton, TranslocoPipe, MatTooltip],
   template: `
     @if (hasUsedShortcut() < 5) {
       <button
         class="secondary-button"
+        [matTooltip]="'cmdk.toggle' | transloco"
+        [attr.aria-label]="'cmdk.toggle' | transloco"
         (click)="open()"
-        mat-flat-button
-        aria-label="Toggle action menu">
+        mat-flat-button>
         ⌘ K
       </button>
     }

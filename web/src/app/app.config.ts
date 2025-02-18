@@ -1,10 +1,7 @@
-import {isPlatformBrowser} from '@angular/common';
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {
   ApplicationConfig,
-  PLATFORM_ID,
   importProvidersFrom,
-  inject,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
@@ -23,9 +20,9 @@ import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
 
 import {authInterceptor, backendOfflineInterceptor} from '@app/interceptors';
-import {TranslocoHttpLoader} from '@app/services';
+import {TranslocoHttpLoader, injectIsPlatformDocker} from '@app/services';
+import {DOCKER_WEB_URL} from '@app/util';
 
-import {environment} from '../environments/environment';
 import {ROUTES} from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -39,12 +36,9 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAnimationsAsync(),
     provideBi(
-      withCDN(() => {
-        const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-        return environment.production && !isBrowser
-          ? 'http://poweruptime-web:4200/assets/icons'
-          : '/assets/icons';
-      }),
+      withCDN(() =>
+        injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',
+      ),
     ),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     importProvidersFrom(

@@ -19,25 +19,24 @@ import {
 export const SessionsStore = signalStore(
   withPaginatedTable<BackendType['SessionResponse']>({
     columnsToDisplay: ['description', 'updatedAt', 'createdAt', 'actions'],
-    defaultSortBy: 'createdAt',
+    defaultSortBy: 'updatedAt',
+    defaultSortDirection: 'desc',
   }),
   withMethods((store, api = injectAPI()) => ({
     load: rxMethod<{userId: string | undefined} & PaginationDto>(
       pipe(
         tap(() => patchState(store, setPending())),
-        switchMap(({userId, page, size, sort}) =>
+        switchMap(({userId, ...query}) =>
           (userId
             ? api.get('/v1/user/session', {
                 params: {
                   query: {
                     userId,
-                    page,
-                    size,
-                    sort,
+                    ...query,
                   },
                 },
               })
-            : api.get('/v1/profile/sessions')
+            : api.get('/v1/profile/sessions', {params: {query}})
           ).pipe(
             tapResponse({
               next: (response) =>

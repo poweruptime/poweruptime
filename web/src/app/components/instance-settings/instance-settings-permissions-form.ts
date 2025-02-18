@@ -3,6 +3,8 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {BackendType} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 
@@ -10,7 +12,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     <mat-card appearance="outlined">
       <mat-card-header>
-        <mat-card-title>Permissions</mat-card-title>
+        <mat-card-title>{{ 'general.permissions' | transloco }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form
@@ -20,7 +22,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           [formGroup]="form"
           (ngSubmit)="submit()">
           <mat-slide-toggle formControlName="isUserAllowedToCreateTeams">
-            Allow users to create teams
+            {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
           </mat-slide-toggle>
 
           <pu-save-button [valid]="isValid()" />
@@ -37,6 +39,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     MatCardHeader,
     MatCardTitle,
     SaveButton,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

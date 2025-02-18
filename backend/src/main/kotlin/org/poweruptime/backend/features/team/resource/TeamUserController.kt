@@ -21,9 +21,11 @@ import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
 import org.poweruptime.backend.features.team.dto.InviteTeamUserDto
+import org.poweruptime.backend.features.team.dto.TeamJoinTokenResponse
 import org.poweruptime.backend.features.team.dto.TeamUserResponse
 import org.poweruptime.backend.features.team.dto.UpdateTeamUserDto
 import org.poweruptime.backend.features.team.model.TeamUser
+import org.poweruptime.backend.features.team.service.MAX_TEAM_JOIN_TOKENS_PER_USER_AND_TEAM_IN_3_DAYS
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.user.service.UserService
@@ -34,8 +36,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-
-const val MAX_TEAM_JOIN_TOKENS_PER_USER_AND_TEAM_IN_3_DAYS = 3
 
 @RestController
 @RequestMapping("/v1/team/{teamId}")
@@ -70,6 +70,21 @@ class TeamUserController(
         ).toDto { TeamUserResponse(it) }
 
     @Operation(
+        summary = "Get open invites from team",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
+    )
+    @PreAuthorize("hasPermission(#teamId, '$TEAM_ADMIN')")
+    @GetMapping("/invites")
+    @ResponseStatus(HttpStatus.OK)
+    fun getInvites(
+        @ParameterObject @PageableDefault pageable: Pageable,
+        @PathVariable("teamId") teamId: String,
+    ): PaginatedResponse<TeamJoinTokenResponse> = teamJoinTokenService.getByTeamIdPaginated(pageable, teamId).toDto {
+        TeamJoinTokenResponse(it)
+    }
+
+    @Operation(
         summary = "Invite user to join team",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
@@ -90,7 +105,7 @@ class TeamUserController(
             throw BadRequestException("Other users can only be added to non-personal teams.", "PERSONAL_TEAM")
         }
 
-        if (teamUserRepository.findByTeamAndUserEmail(team.id, invitee.id) != null) {
+        if (teamUserRepository.findByTeamAndUserId(team.id, invitee.id) != null) {
             throw BadRequestException("User already in team", "ALREADY_IN_TEAM")
         }
 
@@ -122,7 +137,7 @@ class TeamUserController(
         @PathVariable("teamId") teamId: String,
         @RequestBody @Valid dto: UpdateTeamUserDto,
     ): TeamUserResponse {
-        val teamUser = teamUserRepository.findByTeamAndUserEmail(teamId, dto.userId)
+        val teamUser = teamUserRepository.findByTeamAndUserId(teamId, dto.userId)
             ?: throw NotFoundException("User not in team")
 
         return TeamUserResponse(
@@ -149,7 +164,7 @@ class TeamUserController(
     ) {
         val teamId = teamService.existsByIdOrThrow(teamId)
 
-        val toBeRemovedTeamUser = teamUserRepository.findByTeamAndUserEmail(teamId, userId)
+        val toBeRemovedTeamUser = teamUserRepository.findByTeamAndUserId(teamId, userId)
             ?: throw ForbiddenException()
 
         if (toBeRemovedTeamUser.invitedBy == null) {
@@ -162,7 +177,7 @@ class TeamUserController(
             throw BadRequestException("Can't remove yourself")
         }
 
-        val actorTeamUser = teamUserRepository.findByTeamAndUserEmail(teamId, actorUser.id)
+        val actorTeamUser = teamUserRepository.findByTeamAndUserId(teamId, actorUser.id)
         // If actorTeamUser is null the actor is an admin
         if (actorTeamUser?.invitedBy?.id == userId) {
             throw BadRequestException("Can't remove the person who invited you")

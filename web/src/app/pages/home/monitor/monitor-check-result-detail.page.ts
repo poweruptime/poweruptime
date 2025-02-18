@@ -1,13 +1,16 @@
 import {KeyValuePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor} from '@angular/material/button';
+import {MatAnchor, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
 import {format} from '@std/fmt/duration';
+import {cl_copy} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
+import {toast} from 'ngx-sonner';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {Placeholder} from '@app/components';
@@ -50,7 +53,16 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
           @if (checkResult.message; as message) {
             <mat-card appearance="outlined">
               <mat-card-content>
-                {{ message }}
+                <div class="flex items-start justify-between gap-2">
+                  <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
+                  <button
+                    (click)="copyMessage(message)"
+                    mat-icon-button
+                    matTooltip="Copy"
+                    matTooltipPosition="left">
+                    <bi name="copy" />
+                  </button>
+                </div>
               </mat-card-content>
             </mat-card>
           }
@@ -187,6 +199,8 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     CheckResultLogEntry,
     KeyValuePipe,
     Placeholder,
+    MatIconButton,
+    MatTooltip,
   ],
 })
 export class MonitorCheckResultDetailPage {
@@ -214,4 +228,9 @@ export class MonitorCheckResultDetailPage {
       {ignoreZero: true},
     );
   });
+
+  copyMessage(message: string) {
+    cl_copy(message);
+    toast.success('Message copied!');
+  }
 }

@@ -19,38 +19,29 @@ import {
   withPaginatedTable,
 } from '@app/services/store-features';
 
-export const CheckResultsStore = signalStore(
+export const NotificationsStore = signalStore(
   withState<{
-    showDuplicates: boolean;
     monitorId: string | undefined;
   }>({
-    showDuplicates: true,
     monitorId: undefined,
   }),
-  withPaginatedTable<BackendType['CheckResultResponse']>({
-    paramPrefix: 'checks_',
-    columnsToDisplay: ['status', 'createdAt', 'title', 'actions'],
+  withPaginatedTable<BackendType['NotificationResponse']>({
+    paramPrefix: 'noti_',
+    columnsToDisplay: ['status', 'createdAt', 'method', 'title', 'error'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',
   }),
   withMethods((store, api = injectAPI()) => ({
-    setShowDuplicates: rxMethod<boolean | null>(
-      tap((showDuplicates) => patchState(store, () => ({showDuplicates: showDuplicates ?? false}))),
-    ),
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      if (!store.monitorId() || store.monitorId() === checkResult.monitor.id) {
+    addNotification(notification: BackendType['NotificationResponse']): void {
+      if (!store.monitorId() || store.monitorId() === notification.monitor.id) {
         if (store.page() === 0 && store.sortBy() === 'createdAt') {
-          if (store.showDuplicates() || checkResult.status !== checkResult.previousStatus) {
-            patchState(
-              store,
-              setAllEntities([
-                checkResult,
-                ...store
-                  .entities()
-                  .slice(0, Math.max(store.size() - 1, store.entities().length - 1)),
-              ]),
-            );
-          }
+          patchState(
+            store,
+            setAllEntities([
+              notification,
+              ...store.entities().slice(0, Math.max(store.size() - 1, store.entities().length - 1)),
+            ]),
+          );
         }
       }
     },
@@ -58,7 +49,6 @@ export const CheckResultsStore = signalStore(
       {
         teamId: string | undefined;
         monitorId: string | undefined;
-        onlyChanges: boolean;
       } & PaginationDto
     >(
       pipe(
@@ -72,27 +62,31 @@ export const CheckResultsStore = signalStore(
         ),
         debounceTime(400),
         switchMap((query) =>
-          api.get('/v1/check-result', {params: {query}}).pipe(
-            tapResponse({
-              next: (response) =>
-                patchState(
-                  store,
-                  setAllEntities(response.data),
-                  setTotalElements(response.numberOfItems),
-                  setFulfilled(),
-                ),
-              error: (error) => patchState(store, setError(error)),
-            }),
-          ),
+          api
+            .get('/v1/notification', {
+              params: {query},
+            })
+            .pipe(
+              tapResponse({
+                next: (response) =>
+                  patchState(
+                    store,
+                    setAllEntities(response.data),
+                    setTotalElements(response.numberOfItems),
+                    setFulfilled(),
+                  ),
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
         ),
       ),
     ),
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.checkResults$
+      pushService.notifications$
         .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
+        .subscribe((it) => store.addNotification(it));
     },
   }),
 );

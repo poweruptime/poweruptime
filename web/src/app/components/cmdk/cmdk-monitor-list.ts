@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, output} from '@angular/core';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {ItemDirective} from '@ngxpert/cmdk';
 
 import {BackendType} from '@app/api';
@@ -17,12 +18,12 @@ import {MonitorsSearchStore} from '@app/services';
     @if (monitorsSearchStore.isPending()) {
       <mat-progress-bar mode="indeterminate" />
     } @else if (monitorsSearchStore.ids().length === 0) {
-      <div class="cmdk-empty">No results found.</div>
+      <div class="cmdk-empty">{{ 'cmdk.results.empty' | transloco }}</div>
     }
   `,
   selector: 'pu-cmdk-monitor-list',
   providers: [MonitorsSearchStore],
-  imports: [ItemDirective, MatProgressBar],
+  imports: [ItemDirective, MatProgressBar, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CmdkMonitorList {

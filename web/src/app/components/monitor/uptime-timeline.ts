@@ -5,6 +5,7 @@ import {MtxTooltip} from '@ng-matero/extensions/tooltip';
 import {DfxTimeLeftPipe} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
+import {MonitorStatusBackground} from '@app/directives';
 
 @Component({
   template: `
@@ -25,12 +26,7 @@ import {BackendType} from '@app/api';
         <div class="relative flex flex-col items-center">
           <div
             class="h-{{ _height }} w-{{ _width }} min-w-{{ _width }} rounded hover:scale-125"
-            [class.bg-green-500]="checkResult.status === 'UP'"
-            [class.bg-red-500]="checkResult.status === 'DOWN'"
-            [class.bg-orange-500]="checkResult.status === 'PENDING'"
-            [class.bg-blue-500]="
-              checkResult.status === 'PAUSED' || checkResult.status === 'MAINTENANCE'
-            "
+            [monitor-status-background]="checkResult.status"
             [mtxTooltip]="checkResultsTooltip"></div>
 
           <ng-template #checkResultsTooltip>
@@ -86,7 +82,7 @@ import {BackendType} from '@app/api';
   `,
   selector: 'pu-uptime-timeline',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, DfxTimeLeftPipe, MtxTooltip],
+  imports: [DatePipe, DfxTimeLeftPipe, MtxTooltip, MonitorStatusBackground],
 })
 export class UptimeTimeline {
   currentDate = signal(new Date());

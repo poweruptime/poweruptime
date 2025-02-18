@@ -1,9 +1,10 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database} from '@app/api';
@@ -13,20 +14,51 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     <mat-card appearance="outlined">
       <mat-card-header>
-        <mat-card-title>Individual check & log retention</mat-card-title>
+        <mat-card-title>{{ 'instanceSettings.retention.title' | transloco }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
           <div class="mt-6 flex gap-4">
-            <mat-form-field class="w-40">
-              <mat-label>Check retention</mat-label>
+            <mat-form-field>
+              <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
               <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
               <span matSuffix>days</span>
+              @let checkResultRetentionPeriodInDaysErrors =
+                form.controls.checkResultRetentionPeriodInDays.errors;
+
+              @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
+                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
+                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
+                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+              }
             </mat-form-field>
-            <mat-form-field class="w-40">
-              <mat-label>Logs retention</mat-label>
+
+            <mat-form-field>
+              <mat-label>{{ 'instanceSettings.retention.logs' | transloco }}</mat-label>
               <input matInput type="number" formControlName="checkResultLogRetentionPeriodInDays" />
               <span matSuffix>days</span>
+              @let checkResultLogRetentionPeriodInDaysErrors =
+                form.controls.checkResultLogRetentionPeriodInDays.errors;
+
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
+                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
+                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
+                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -41,6 +73,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     MatFormField,
     MatLabel,
     MatInput,
+    MatError,
     MatCard,
     MatCardContent,
     MatCardHeader,
@@ -48,6 +81,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     MatSuffix,
     NgxMatSelectSearchModule,
     SaveButton,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

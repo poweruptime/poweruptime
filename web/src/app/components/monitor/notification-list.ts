@@ -1,18 +1,25 @@
 import {DatePipe} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, input, viewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {RouterLink} from '@angular/router';
 
-import {debounceTime, map, pipe, switchMap, tap} from 'rxjs';
+import {map} from 'rxjs';
 
-import {derivedFrom} from 'ngxtension/derived-from';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
-import {injectAPI, injectPagination} from '@app/api';
+import {TableLoadingBar} from '@app/components';
 import {MonitorStatusBackground} from '@app/directives';
+import {NotificationsStore} from '@app/services';
 
 @Component({
   template: `
@@ -21,19 +28,16 @@ import {MonitorStatusBackground} from '@app/directives';
         <mat-card-content>
           <h2 class="text-xl">Notifications</h2>
 
-          @let _notificationsDataSource = notificationsDataSource();
-          @let _loading = pagination.loading();
-
           <table
-            [dataSource]="_notificationsDataSource"
-            [matSortActive]="pagination.sortParams().name"
-            [matSortDirection]="pagination.sortParams().direction"
+            [dataSource]="notificationsStore.entities()"
+            [matSortActive]="notificationsStore.sortBy()"
+            [matSortDirection]="notificationsStore.sortDirection()"
             mat-table
             matSort>
             <ng-container matColumnDef="monitor">
               <th *matHeaderCellDef mat-header-cell>Monitor</th>
               <td *matCellDef="let element" mat-cell>
-                <a [routerLink]="element.monitor.id">
+                <a class="underline" [routerLink]="element.monitor.id">
                   {{ element.monitor.name }}
                 </a>
               </td>
@@ -74,23 +78,21 @@ import {MonitorStatusBackground} from '@app/directives';
               <td *matCellDef="let element" mat-cell>{{ element.error }}</td>
             </ng-container>
 
-            <tr *matHeaderRowDef="columnsToDisplay()" mat-header-row></tr>
-            <tr *matRowDef="let row; columns: columnsToDisplay()" mat-row></tr>
+            <tr *matHeaderRowDef="notificationsStore.columnsToDisplay()" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: notificationsStore.columnsToDisplay()" mat-row></tr>
           </table>
 
-          @if (_loading) {
-            <mat-progress-bar mode="indeterminate" />
-          }
+          <pu-table-loading-bar [loading]="notificationsStore.isPending()" />
 
-          @if (!_loading && _notificationsDataSource.length < 1) {
+          @if (notificationsStore.isEmpty()) {
             <div class="mt-2 w-full text-center">No data available.</div>
           }
 
           <mat-paginator
             [pageSizeOptions]="[10, 20, 50, 100, 200]"
-            [pageSize]="pagination.params().size"
-            [pageIndex]="pagination.params().page"
-            [length]="pagination.totalElements()"
+            [pageSize]="notificationsStore.size()"
+            [pageIndex]="notificationsStore.page()"
+            [length]="notificationsStore.totalElements()"
             showFirstLastButtons />
         </mat-card-content>
       </mat-card>
@@ -107,6 +109,7 @@ import {MonitorStatusBackground} from '@app/directives';
   `,
   selector: 'pu-notification-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [NotificationsStore],
   imports: [
     DatePipe,
     MatCard,
@@ -114,60 +117,44 @@ import {MonitorStatusBackground} from '@app/directives';
     MatTableModule,
     MatPaginator,
     MatSortModule,
-    MatProgressBar,
     MonitorStatusBackground,
     RouterLink,
+    TableLoadingBar,
   ],
 })
 export class NotificationList {
-  private readonly api = injectAPI();
+  readonly notificationsStore = inject(NotificationsStore);
+
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
 
   private readonly paginator = viewChild.required(MatPaginator);
   private readonly sort = viewChild.required(MatSort);
 
-  readonly pagination = injectPagination({
-    paramPrefix: 'notificiation_',
-    defaultSortBy: 'createdAt',
-    paginator: this.paginator,
-    sort: this.sort,
-  });
+  constructor() {
+    this.notificationsStore.setPaginator(this.paginator);
+    this.notificationsStore.setSort(this.sort);
 
-  readonly columnsToDisplay = computed(() => {
-    let it = ['status', 'createdAt', 'method', 'title', 'error'];
+    this.notificationsStore.load(
+      computed(() => ({
+        teamId: this.teamId(),
+        monitorId: this.monitorId(),
+        ...this.notificationsStore.pageable(),
+      })),
+    );
 
-    if (!this.monitorId()) {
-      it = ['monitor', ...it];
-    }
+    const setColumnsToDisplay = rxMethod<boolean>(
+      map((includeMonitorColumn) => {
+        let it = ['status', 'createdAt', 'method', 'title', 'error'];
 
-    return it;
-  });
+        if (includeMonitorColumn) {
+          it = ['monitor', ...it];
+        }
 
-  readonly notificationsDataSource = derivedFrom(
-    [this.monitorId, this.teamId, this.pagination.params],
-    pipe(
-      debounceTime(350),
-      tap(() => {
-        this.pagination.loading.set(true);
+        this.notificationsStore.setColumnsToDisplay(it);
       }),
-      switchMap(([monitorId, teamId, pageableParams]) =>
-        this.api.get('/v1/notification', {
-          params: {
-            query: {
-              monitorId,
-              teamId,
-              ...pageableParams,
-            },
-          },
-        }),
-      ),
-      map((it) => {
-        this.pagination.loading.set(false);
-        this.pagination.totalElements.set(it.numberOfItems);
-        return it.data;
-      }),
-    ),
-    {initialValue: []},
-  );
+    );
+
+    setColumnsToDisplay(computed(() => !this.monitorId()));
+  }
 }

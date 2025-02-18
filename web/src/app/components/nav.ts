@@ -6,16 +6,14 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import {MatButton, MatIconAnchor} from '@angular/material/button';
-import {MatDivider} from '@angular/material/divider';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
 import {NavTeamSelect} from '@app/components/nav-team-select';
 import {IsSystemAdmin} from '@app/directives';
-import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
+import {SelectedTeamStore} from '@app/services';
 
 @Component({
   template: `
@@ -23,88 +21,97 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
       <div class="flex flex-col gap-3 px-2 py-2">
         <pu-nav-team-select [teamId]="teamId()" />
         <mat-nav-list>
+          <a mat-list-item routerLink="/m" routerLinkActive="active">
+            <bi name="lightning" />
+            <span class="nav-text">Personal Dashboard</span>
+          </a>
+
           <a
-            class="mb-4"
             [routerLinkActiveOptions]="{exact: true}"
             mat-list-item
             routerLink="/t"
             routerLinkActive="active">
-            Teams
+            <bi name="people" />
+            <span class="nav-text">Teams</span>
           </a>
 
-          <mat-divider class="py-2" />
+          <div class="mb-2 mt-4 flex items-center gap-3">
+            <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
+            <span class="whitespace-nowrap break-keep">
+              @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
+                {{ selectedTeam.name }}
+              } @else {
+                Team
+              }
+            </span>
+            <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
+          </div>
 
-          @if (selectedTeamStore.selectedTeamId()) {
-            <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/m" routerLinkActive="active">
-              Dashboard
-            </a>
-          } @else {
-            <a mat-list-item routerLink="/m" routerLinkActive="active">Dashboard</a>
-          }
+          <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/m" routerLinkActive="active">
+            <bi name="speedometer2" />
+            <span class="nav-text">Dashboard</span>
+          </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/notification-methods"
             routerLinkActive="active">
-            Notification methods
+            <bi name="bell" />
+            <span class="nav-text">Notification methods</span>
           </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/status-pages"
             routerLinkActive="active">
-            Status Pages
+            <bi name="chat-left-quote" />
+            <span class="nav-text">Status Pages</span>
           </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
             routerLinkActive="active">
-            Recycle Bin
+            <bi name="trash3" />
+            <span class="nav-text">Recycle Bin</span>
           </a>
           <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
-            Settings
+            <bi name="gear-wide" />
+            <span class="nav-text">Settings</span>
           </a>
         </mat-nav-list>
       </div>
-      <div class="mt-auto flex flex-col gap-3 px-2 pt-2">
+      <div class="mt-auto px-2 pt-2">
         <hr class="border-reef-gray-200 dark:border-reef-gray-500" />
         <mat-nav-list *isSystemAdmin>
-          <a mat-list-item routerLink="/settings" routerLinkActive="active">Instance settings</a>
+          <a mat-list-item routerLink="/settings" routerLinkActive="active">
+            <bi name="building-gear" />
+            <span class="nav-text">Instance settings</span>
+          </a>
         </mat-nav-list>
-
-        <div class="flex items-center justify-between pb-4">
-          <button (click)="authStore.logout()" mat-flat-button>Logout</button>
-          <div class="inline-flex items-center gap-2">
-            <span>Hallo {{ profileStore.name() }}</span>
-            <a mat-icon-button routerLink="/profile">
-              <bi name="gear" />
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   `,
   styles: `
     .active {
       @apply bg-neutral-100 dark:bg-neutral-800;
+
+      .nav-text {
+        @apply font-semibold;
+      }
     }
   `,
   selector: 'pu-nav',
+  providers: [provideBi(withSize('20'))],
   imports: [
-    MatButton,
     MatListItem,
     RouterLink,
     RouterLinkActive,
     MatNavList,
-    MatDivider,
     NavTeamSelect,
     IsSystemAdmin,
-    MatIconAnchor,
     BiComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Nav {
-  readonly authStore = inject(AuthStore);
-  readonly profileStore = inject(ProfileStore);
   readonly selectedTeamStore = inject(SelectedTeamStore);
 
   selectedTeamId = computed(() => this.selectedTeamStore.selectedTeamId() ?? 'selectedTeamId');

@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   viewChild,
@@ -13,8 +12,13 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltip} from '@angular/material/tooltip';
 import {Router, RouterLink} from '@angular/router';
 
+import {map} from 'rxjs';
+
+import {TranslocoPipe} from '@jsverse/transloco';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
@@ -30,13 +34,13 @@ import {CheckResultsStore} from '@app/services';
       <mat-card appearance="outlined">
         <mat-card-content>
           <div class="flex justify-between">
-            <h2 class="text-xl">Checks</h2>
+            <h2 class="text-xl">{{ 'checkResult.list.title' | transloco }}</h2>
             @let _showDuplicates = showDuplicates();
             <mat-slide-toggle
               [checked]="_showDuplicates ?? false"
               (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
               labelPosition="before">
-              Show duplicates
+              {{ 'general.showDuplicates' | transloco }}
             </mat-slide-toggle>
           </div>
 
@@ -47,16 +51,18 @@ import {CheckResultsStore} from '@app/services';
             mat-table
             matSort>
             <ng-container matColumnDef="monitor">
-              <th *matHeaderCellDef mat-header-cell>Monitor</th>
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
               <td *matCellDef="let element" mat-cell>
-                <a [routerLink]="element.monitor.id" stopPropagation>
+                <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
                   {{ element.monitor.name }}
                 </a>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="status">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>Status</th>
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'general.status' | transloco }}
+              </th>
               <td *matCellDef="let element" mat-cell>
                 <span
                   class="rounded-md px-2 py-1 font-bold"
@@ -67,14 +73,16 @@ import {CheckResultsStore} from '@app/services';
             </ng-container>
 
             <ng-container matColumnDef="createdAt">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>Created at</th>
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'general.createdAt' | transloco }}
+              </th>
               <td *matCellDef="let element" mat-cell>
                 <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
               </td>
             </ng-container>
 
             <ng-container matColumnDef="title">
-              <th *matHeaderCellDef mat-header-cell>Title</th>
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
               <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
             </ng-container>
 
@@ -82,11 +90,14 @@ import {CheckResultsStore} from '@app/services';
               <th *matHeaderCellDef mat-header-cell></th>
               <td *matCellDef="let element" mat-cell>
                 <a
+                  [matTooltip]="'checkResult.list.action.view' | transloco"
+                  [attr.aria-label]="'checkResult.list.action.view' | transloco"
                   [routerLink]="
                     teamId() || (!teamId() && !monitorId())
                       ? element.monitor.id + '/c/' + element.id + '/logs'
                       : 'c/' + element.id + '/logs'
                   "
+                  matTooltipPosition="left"
                   mat-icon-button
                   stopPropagation>
                   <bi name="arrow-right" />
@@ -109,7 +120,7 @@ import {CheckResultsStore} from '@app/services';
           <pu-table-loading-bar [loading]="checkResultsStore.isPending()" />
 
           @if (checkResultsStore.isEmpty()) {
-            <div class="mt-2 w-full text-center">No data available.</div>
+            <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
           }
 
           <mat-paginator
@@ -148,11 +159,12 @@ import {CheckResultsStore} from '@app/services';
     StopPropagationDirective,
     BiComponent,
     MatIconAnchor,
+    TranslocoPipe,
+    MatTooltip,
   ],
 })
 export class CheckResultList {
   readonly checkResultsStore = inject(CheckResultsStore);
-  private readonly router = inject(Router);
 
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
@@ -178,14 +190,18 @@ export class CheckResultList {
       })),
     );
 
-    effect(() => {
-      let it = ['status', 'createdAt', 'title', 'actions'];
+    const setColumnsToDisplay = rxMethod<boolean>(
+      map((includeMonitorColumn) => {
+        let it = ['status', 'createdAt', 'title', 'actions'];
 
-      if (!this.monitorId()) {
-        it = ['monitor', ...it];
-      }
+        if (includeMonitorColumn) {
+          it = ['monitor', ...it];
+        }
 
-      this.checkResultsStore.setColumnsToDisplay(it);
-    });
+        this.checkResultsStore.setColumnsToDisplay(it);
+      }),
+    );
+
+    setColumnsToDisplay(computed(() => !this.monitorId()));
   }
 }

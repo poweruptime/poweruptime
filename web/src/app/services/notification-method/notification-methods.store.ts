@@ -34,7 +34,7 @@ export const NotificationMethodsStore = signalStore(
     useByDefault: null,
   }),
   withPaginatedTable<BackendType['NotificationMethodResponse']>({
-    columnsToDisplay: ['name', 'useByDefault', 'sender._type', 'sender', 'actions'],
+    columnsToDisplay: ['name', 'sender._type', 'sender', 'useByDefault', 'actions'],
     defaultSortBy: 'name',
   }),
   withComputed(({search, types, useByDefault}) => ({

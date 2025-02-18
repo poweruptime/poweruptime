@@ -20,16 +20,18 @@ import {loggerOf, n_from} from 'dfts-helper';
 
 import {withRequestStatus} from './request-status.feature';
 
-type TableState = {
-  columnsToDisplay: string[];
+type EntityKey<EntityType> = keyof EntityType | 'actions' | string;
+
+type TableState<EntityType> = {
+  columnsToDisplay: EntityKey<EntityType>[];
   totalElements: number;
   page: number;
   size: number;
   sortBy: string;
   sortDirection: SortDirection;
 };
-type withTableOptions = {
-  columnsToDisplay: string[];
+type withTableOptions<EntityType> = {
+  columnsToDisplay: EntityKey<EntityType>[];
   defaultSortBy: string;
   defaultSortDirection?: SortDirection;
   defaultPageSize?: number;
@@ -50,11 +52,11 @@ export function withPaginatedTable<EntityType>({
   defaultSortDirection = 'asc',
   defaultPageSize = 10,
   paramPrefix = '',
-}: withTableOptions) {
+}: withTableOptions<EntityType>) {
   return signalStoreFeature(
     withEntities<EntityType>(),
     withRequestStatus(),
-    withState<TableState>({
+    withState<TableState<EntityType>>({
       columnsToDisplay,
       totalElements: 0,
       page: 0,
@@ -63,7 +65,7 @@ export function withPaginatedTable<EntityType>({
       sortDirection: defaultSortDirection,
     }),
     withMethods((store, router = inject(Router), activatedRoute = inject(ActivatedRoute)) => ({
-      setColumnsToDisplay: rxMethod<string[]>(
+      setColumnsToDisplay: rxMethod<EntityKey<EntityType>[]>(
         tap((columnsToDisplay) => patchState(store, () => ({columnsToDisplay}))),
       ),
       setPaginator: rxMethod<MatPaginator>(
@@ -150,6 +152,6 @@ export function withPaginatedTable<EntityType>({
   );
 }
 
-export function setTotalElements(totalElements: number): Partial<TableState> {
+export function setTotalElements(totalElements: number): Partial<TableState<unknown>> {
   return {totalElements};
 }

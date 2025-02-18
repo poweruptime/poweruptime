@@ -135,6 +135,9 @@ import {calculatePingChart} from '@app/services/util';
               @case ('PING') {
                 Ping
               }
+              @case ('PUSH') {
+                Push
+              }
               @default {
                 Unknown
               }

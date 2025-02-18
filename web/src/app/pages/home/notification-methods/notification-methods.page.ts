@@ -31,11 +31,6 @@ import {
         <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="useByDefault">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Use by default</th>
-        <td *matCellDef="let element" mat-cell>{{ element.useByDefault | puBooleanEmoji }}</td>
-      </ng-container>
-
       <ng-container matColumnDef="sender._type">
         <th *matHeaderCellDef mat-header-cell mat-sort-header>Type</th>
         <td *matCellDef="let element" mat-cell>{{ element.sender._type }}</td>
@@ -81,6 +76,11 @@ import {
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="useByDefault">
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Use by default</th>
+        <td *matCellDef="let element" mat-cell>{{ element.useByDefault | puBooleanEmoji }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let element" mat-cell>
@@ -118,10 +118,13 @@ import {
   `,
   styles: `
     .mat-column-name {
-      @apply w-32 text-nowrap;
+      @apply w-52 text-nowrap;
     }
     .mat-column-sender-_type {
       @apply w-20;
+    }
+    .mat-column-useByDefault {
+      @apply w-36;
     }
     .mat-column-actions {
       @apply w-10;

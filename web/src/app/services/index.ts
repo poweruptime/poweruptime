@@ -1,5 +1,6 @@
 export * from './check-result';
 export * from './monitor';
+export * from './notification';
 export * from './notification-method';
 export * from './profile';
 export * from './instance-settings';
@@ -8,5 +9,6 @@ export * from './team';
 export * from './user';
 export * from './auth.store';
 export * from './email-change.store';
+export * from './platform.service';
 export * from './push.service';
 export * from './transloco-loader';

@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {MatAnchor} from '@angular/material/button';
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {RouterLink} from '@angular/router';
 
 import {Placeholder} from '@app/components';
 import {TeamEditForm, TeamSettings, TeamUsersList} from '@app/components/team';
+import {TeamInvitesList} from '@app/components/team/team-invites-list';
 import {
   InstanceAvailableTimezonesStore,
   SelectedTeamStore,
@@ -13,59 +15,102 @@ import {
 
 @Component({
   template: `
-    <div class="flex flex-col gap-16">
-      @let teamId = selectedTeamStore.selectedTeamId();
-      @let team = teamEditStore.team();
+    @let teamId = selectedTeamStore.selectedTeamId();
+    @let team = teamEditStore.team();
 
+    @if (teamId) {
+      @if (team; as team) {
+        <h1 class="mb-4 text-4xl">Edit {{ team.name }}</h1>
+
+        <div class="grid grid-cols-6">
+          <div class="col-span-3 flex w-full flex-col gap-4">
+            <mat-card appearance="outlined">
+              <mat-card-header>
+                <mat-card-title>General</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="pt-4">
+                  <pu-team-edit-form [team]="team" (submitUpdate)="teamEditStore.update($event)" />
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card appearance="outlined">
+              <mat-card-header>
+                <mat-card-title>Settings</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="pt-4">
+                  @let settings = teamSettingsStore.settings();
+                  <pu-team-settings
+                    [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
+                    [selectedTimezone]="settings?.timezone"
+                    (timezoneChange)="teamSettingsStore.setTimezone($event)" />
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            @defer (when !team.personal) {
+              @if (!team.personal) {
+                <mat-card appearance="outlined">
+                  <mat-card-header>
+                    <mat-card-title>Users</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="flex flex-col gap-2 pt-4">
+                      <div>
+                        <a mat-flat-button routerLink="../invite">Invite</a>
+                      </div>
+
+                      <pu-team-users-list [teamId]="teamId" />
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+
+                <mat-card appearance="outlined">
+                  <mat-card-header>
+                    <mat-card-title>Open invites</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="pt-4">
+                      <pu-team-invites-list [teamId]="teamId" />
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              }
+            }
+          </div>
+        </div>
+      } @else {
+        <pu-placeholder class="h-12 w-64" />
+
+        <pu-placeholder class="h-12 w-64" />
+      }
+    } @else {
       <div class="flex flex-col gap-4">
-        @if (teamId) {
-          @if (team; as team) {
-            <h1 class="text-4xl">Edit {{ team.name }}</h1>
-          } @else {
-            <pu-placeholder class="h-12 w-64" />
-          }
-        } @else {
-          <h1 class="text-4xl">Create new team</h1>
-        }
+        <h1 class="text-4xl">Create new team</h1>
 
         <div class="flex">
-          @if (!teamId || team) {
-            <pu-team-edit-form
-              [team]="team"
-              (submitCreate)="teamEditStore.create($event)"
-              (submitUpdate)="teamEditStore.update($event)" />
-          } @else {
-            <pu-placeholder class="h-12 w-64" />
-          }
-
-          <div></div>
+          <pu-team-edit-form [team]="undefined" (submitCreate)="teamEditStore.create($event)" />
         </div>
+        <div></div>
       </div>
-
-      @if (teamId) {
-        <div class="flex flex-col gap-4">
-          <h2 class="text-3xl">Settings</h2>
-
-          @let settings = teamSettingsStore.settings();
-          <pu-team-settings
-            [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
-            [selectedTimezone]="settings?.timezone"
-            (timezoneChange)="teamSettingsStore.setTimezone($event)" />
-        </div>
-
-        <div class="flex flex-col gap-4">
-          <div class="flex justify-between">
-            <h2 class="text-3xl">Users</h2>
-
-            <a class="secondary-button" mat-flat-button routerLink="../invite">Invite</a>
-          </div>
-          <pu-team-users-list [teamId]="teamId" />
-        </div>
-      }
-    </div>
+    }
   `,
   selector: 'pu-team-edit-page',
-  imports: [TeamEditForm, TeamSettings, TeamUsersList, RouterLink, MatAnchor, Placeholder],
+  imports: [
+    TeamEditForm,
+    TeamSettings,
+    TeamUsersList,
+    RouterLink,
+    MatAnchor,
+    Placeholder,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatCardTitle,
+    TeamInvitesList,
+  ],
   providers: [TeamEditStore, TeamSettingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

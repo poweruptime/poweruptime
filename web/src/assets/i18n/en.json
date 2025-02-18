@@ -1,11 +1,79 @@
 {
+  "checkResult": {
+    "list": {
+      "title": "Checks",
+      "action": {
+        "view": "View check"
+      }
+    }
+  },
+  "cmdk": {
+    "groups": {
+      "monitor": {
+        "input": "Search for a monitor",
+        "search": "Search monitors...",
+        "create": "Create new monitor"
+      },
+      "team": {
+        "input": "Search for a team",
+        "search": "Search Teams...",
+        "create": "Create new team"
+      },
+      "general": {
+        "input": "What do you need?",
+        "logout": "Logout"
+      }
+    },
+    "results": {
+      "empty": "No results found."
+    },
+    "toggle": "Toggle action menu"
+  },
+  "form": {
+    "validation": {
+      "integer": "Value has to be an integer",
+      "max": "Maximum value of {{max}} surpassed",
+      "min": "Minimum value of {{min}} not reached",
+      "required": "* Required"
+    }
+  },
   "general": {
-    "name": "Name",
+    "createdAt": "Created At",
+    "data": "Data",
+    "description": "Description",
     "email": "E-Mail",
-    "save": "Save"
+    "general": "General",
+    "instance": "Instance",
+    "name": "Name",
+    "noDataAvailable": "No data available.",
+    "monitor": "Monitor",
+    "permissions": "Permissions",
+    "save": "Save",
+    "status": "Status",
+    "showDuplicates": "Show duplicates",
+    "time": "Time",
+    "timezone": "Timezone",
+    "title": "Title",
+    "type": "Type"
+  },
+  "instanceSettings": {
+    "permissions": {
+      "allowUsersToCreateTeams": "Allow users to create teams"
+    },
+    "retention": {
+      "title": "Individual check & log retention",
+      "checkResult": "Check retention",
+      "logs": "Logs retention"
+    }
   },
   "monitor": {
-    "edit": {}
+    "edit": {
+      "interval": "Interval in {{unit}}",
+      "resendAfter": "Resend notifications after",
+      "retries": "Retries",
+      "selectTypeToContinue": "Please select a type to continue",
+      "upsideDown": "Upside down"
+    }
   },
   "profile": {
     "email": {

@@ -15,11 +15,12 @@ import {Router} from '@angular/router';
 
 import {map} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {CmdkModule} from '@ngxpert/cmdk';
 import {BiComponent, BiName} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 
-import {SelectedTeamStore} from '@app/services';
+import {AuthStore, SelectedTeamStore} from '@app/services';
 
 import {CmdkMonitorList} from './cmdk-monitor-list';
 import {CmdkTeamList} from './cmdk-team-list';
@@ -35,7 +36,7 @@ import {CmdkTeamList} from './cmdk-team-list';
         @let _activePage = activePage();
 
         <div></div>
-        <mat-chip-set aria-label="Fish selection" style="text-transform: capitalize">
+        <mat-chip-set aria-label="Page selection" style="text-transform: capitalize">
           @for (p of pages(); track p) {
             <mat-chip>{{ p }}</mat-chip>
           }
@@ -45,10 +46,10 @@ import {CmdkTeamList} from './cmdk-team-list';
           [value]="searchValue()"
           [placeholder]="
             _activePage === 'create monitor' || _activePage === 'teams'
-              ? 'Search for a team'
+              ? ('cmdk.groups.team.input' | transloco)
               : _activePage === 'monitors'
-                ? 'Search for a monitor'
-                : 'What do you need?'
+                ? ('cmdk.groups.monitor.input' | transloco)
+                : ('cmdk.groups.general.input' | transloco)
           "
           cmdkInput
           focus />
@@ -56,7 +57,7 @@ import {CmdkTeamList} from './cmdk-team-list';
           @let _isHome = isHome();
 
           @if (_isHome) {
-            <div *cmdkEmpty>No results found.</div>
+            <div *cmdkEmpty>{{ 'cmdk.results.empty' | transloco }}</div>
           }
 
           @if (_isHome) {
@@ -71,7 +72,7 @@ import {CmdkTeamList} from './cmdk-team-list';
                     (selected)="item.itemSelected && item.itemSelected()"
                     cmdkItem>
                     <bi [name]="item.icon" />
-                    {{ item.label }}
+                    {{ item.label | transloco }}
                     @if (item.shortcut) {
                       <div class="cmdk-vercel-shortcuts">
                         @for (key of item.shortcut.split(' '); track key) {
@@ -121,11 +122,13 @@ import {CmdkTeamList} from './cmdk-team-list';
     MatChipSet,
     CmdkTeamList,
     CmdkMonitorList,
+    TranslocoPipe,
   ],
 })
 export class Cmdk {
-  router = inject(Router);
-  selectedTeamId = inject(SelectedTeamStore).selectedTeamId;
+  readonly router = inject(Router);
+  readonly selectedTeamId = inject(SelectedTeamStore).selectedTeamId;
+  readonly authStore = inject(AuthStore);
 
   close = output();
 
@@ -150,13 +153,13 @@ export class Cmdk {
       group: 'Monitors',
       items: [
         {
-          label: 'Search Monitors...',
+          label: 'cmdk.groups.monitor.search',
           itemSelected: () => this.setPage('monitors'),
           icon: 'search',
           shortcut: 'Alt M',
         },
         {
-          label: 'Create New Monitor',
+          label: 'cmdk.groups.monitor.create',
           itemSelected: () => {
             if (this.selectedTeamId()) {
               this.close.emit();
@@ -166,7 +169,7 @@ export class Cmdk {
 
             this.setPage('create monitor');
           },
-          icon: 'cloud-check-fill',
+          icon: 'speedometer2',
           shortcut: '',
         },
       ],
@@ -175,18 +178,29 @@ export class Cmdk {
       group: 'Teams',
       items: [
         {
-          label: 'Search Teams...',
+          label: 'cmdk.groups.team.search',
           itemSelected: () => this.setPage('teams'),
           icon: 'search',
           shortcut: 'Alt T',
         },
         {
-          label: 'Create New Team',
+          label: 'cmdk.groups.team.create',
           itemSelected: () => {
             this.close.emit();
             void this.router.navigate(['/', 'teams', 'new']);
           },
           icon: 'people-fill',
+          shortcut: '',
+        },
+      ],
+    },
+    {
+      group: 'General',
+      items: [
+        {
+          label: 'cmdk.groups.general.logout',
+          itemSelected: () => this.authStore.logout(),
+          icon: 'box-arrow-right',
           shortcut: '',
         },
       ],

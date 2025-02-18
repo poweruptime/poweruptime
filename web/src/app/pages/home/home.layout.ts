@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
+import {MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 
@@ -51,6 +51,9 @@ import {PushService, SelectedTeamStore} from '@app/services';
             <div class="inline-flex items-center gap-2">
               <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
               <pu-theme-switch style="height: 40px" />
+              <a mat-icon-button routerLink="/profile">
+                <bi name="gear" />
+              </a>
             </div>
           </div>
         </header>
@@ -104,6 +107,7 @@ import {PushService, SelectedTeamStore} from '@app/services';
     Nav,
     CmdkOverlay,
     ThemeSwitch,
+    MatIconAnchor,
   ],
 })
 export class HomeLayout {

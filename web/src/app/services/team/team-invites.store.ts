@@ -1,0 +1,55 @@
+import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
+
+import {tapResponse} from '@ngrx/operators';
+import {patchState, signalStore, withMethods} from '@ngrx/signals';
+import {setAllEntities} from '@ngrx/signals/entities';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
+
+import {BackendType, injectAPI} from '@app/api';
+import {
+  PaginationDto,
+  setError,
+  setFulfilled,
+  setPending,
+  setTotalElements,
+  withPaginatedTable,
+} from '@app/services/store-features';
+
+export const TeamInvitesStore = signalStore(
+  withPaginatedTable<BackendType['TeamJoinTokenResponse']>({
+    columnsToDisplay: ['inviteeEmail', 'inviter.name', 'role', 'createdAt'],
+    defaultSortBy: 'createdAt',
+  }),
+  withMethods((store, api = injectAPI()) => ({
+    load: rxMethod<{teamId: string | undefined} & PaginationDto>(
+      pipe(
+        filter(({teamId}) => !!teamId),
+        tap(() => patchState(store, setPending())),
+        debounceTime(400),
+        switchMap(({teamId, ...query}) =>
+          api
+            .get('/v1/team/{teamId}/invites', {
+              params: {
+                path: {
+                  teamId: teamId!!,
+                },
+                query,
+              },
+            })
+            .pipe(
+              tapResponse({
+                next: (response) =>
+                  patchState(
+                    store,
+                    setAllEntities(response.data),
+                    setTotalElements(response.numberOfItems),
+                    setFulfilled(),
+                  ),
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+        ),
+      ),
+    ),
+  })),
+);

@@ -78,7 +78,7 @@ const CHECKER_DATA_TYPES = [
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Type</mat-label>
+            <mat-label>{{ 'general.type' | transloco }}</mat-label>
             <mat-select formControlName="type">
               <mat-option class="pt-1">
                 <ngx-mat-select-search [formControl]="typeFilterControl">
@@ -93,13 +93,18 @@ const CHECKER_DATA_TYPES = [
         </div>
 
         <mat-form-field>
-          <mat-label>Description</mat-label>
+          <mat-label>{{ 'general.description' | transloco }}</mat-label>
           <textarea matInput formControlName="description"></textarea>
         </mat-form-field>
 
         <div class="flex gap-2">
           <mat-form-field>
-            <mat-label>Interval in {{ form.controls.testIntervalUnit.getRawValue() }}</mat-label>
+            <mat-label>
+              {{
+                'monitor.edit.interval'
+                  | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
+              }}
+            </mat-label>
             <div class="flex">
               <input matInput type="number" step="1" formControlName="testInterval" />
               <div class="w-12 ps-1">
@@ -116,19 +121,21 @@ const CHECKER_DATA_TYPES = [
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Retries</mat-label>
+            <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
             <input matInput type="number" formControlName="retries" />
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Resend notifications after</mat-label>
+            <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
             <input matInput type="number" formControlName="resendAfter" />
           </mat-form-field>
         </div>
 
-        <mat-slide-toggle formControlName="upsideDown">Upside down</mat-slide-toggle>
+        <mat-slide-toggle formControlName="upsideDown">
+          {{ 'monitor.edit.upsideDown' | transloco }}
+        </mat-slide-toggle>
 
-        <h2 class="mb-2 mt-6 text-2xl">Data</h2>
+        <h2 class="mb-2 mt-6 text-2xl">{{ 'general.data' | transloco }}</h2>
 
         @if (form.controls.type.getRawValue() !== '') {
           @let type = form.controls.type.getRawValue();
@@ -163,7 +170,7 @@ const CHECKER_DATA_TYPES = [
             }
           }
         } @else {
-          <span>Please select a type to continue.</span>
+          <span>{{ 'monitor.edit.selectTypeToContinue' | transloco }}</span>
         }
       </form>
 
@@ -286,15 +293,12 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
 
       const testInterval = getTestInterval(it.testIntervalSeconds);
 
-      this.form.patchValue(
-        {
-          ...it,
-          type: it.checker._type,
-          testInterval: testInterval.testInterval,
-          testIntervalUnit: testInterval.testIntervalUnit,
-        },
-        {emitEvent: true},
-      );
+      this.form.patchValue({
+        ...it,
+        type: it.checker._type,
+        testInterval: testInterval.testInterval,
+        testIntervalUnit: testInterval.testIntervalUnit,
+      });
 
       return it;
     },

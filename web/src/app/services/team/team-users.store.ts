@@ -1,8 +1,11 @@
+import {inject} from '@angular/core';
+import {Router} from '@angular/router';
+
 import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
-import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
+import {removeEntity, setAllEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
@@ -21,24 +24,19 @@ export const TeamUsersStore = signalStore(
     columnsToDisplay: ['id.user.name', 'role', 'invitedBy.name', 'createdAt', 'actions'],
     defaultSortBy: 'id.user.name',
   }),
-  withMethods((store, api = injectAPI()) => ({
+  withMethods((store, api = injectAPI(), router = inject(Router)) => ({
     load: rxMethod<{teamId: string | undefined} & PaginationDto>(
       pipe(
         filter(({teamId}) => !!teamId),
         tap(() => patchState(store, setPending())),
-        debounceTime(400),
-        switchMap(({teamId, page, size, sort}) =>
+        switchMap(({teamId, ...query}) =>
           api
             .get('/v1/team/{teamId}/user', {
               params: {
                 path: {
                   teamId: teamId!!,
                 },
-                query: {
-                  page,
-                  size,
-                  sort,
-                },
+                query,
               },
             })
             .pipe(
@@ -46,8 +44,7 @@ export const TeamUsersStore = signalStore(
                 next: (response) =>
                   patchState(
                     store,
-                    removeAllEntities(),
-                    setEntities(response.data, {
+                    setAllEntities(response.data, {
                       selectId: (it) => it.user.id,
                     }),
                     setTotalElements(response.numberOfItems),
@@ -82,6 +79,8 @@ export const TeamUsersStore = signalStore(
                   patchState(store, setFulfilled());
 
                   toast.success(`Successfully invited ${body.email}.`);
+
+                  void router.navigateByUrl(`/t/${teamId}/edit`);
                 },
                 error: (error: any) => {
                   patchState(store, setError(error), setFulfilled());

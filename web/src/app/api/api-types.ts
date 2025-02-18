@@ -621,6 +621,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/team/{teamId}/invites': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get open invites from team
+     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
+     */
+    get: operations['getInvites'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/team/{id}': {
     parameters: {
       query?: never;
@@ -704,26 +724,6 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN | STATUS_PAGE_ADMIN
      */
     delete: operations['delete_2'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/sse/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Get push
-     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
-     */
-    get: operations['get_3'];
-    put?: never;
-    post?: never;
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -819,7 +819,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get status page */
-    get: operations['get_4'];
+    get: operations['get_3'];
     put?: never;
     post?: never;
     delete?: never;
@@ -854,6 +854,23 @@ export interface paths {
     };
     /** Get slug by domain */
     get: operations['getByDomain'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/sse/{teamIds}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get push */
+    get: operations['get_4'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1768,6 +1785,22 @@ export interface components {
       /** Format: int32 */
       numberOfPages: number;
       data: components['schemas']['TeamUserResponse'][];
+    };
+    PaginatedResponseTeamJoinTokenResponse: {
+      /** Format: int64 */
+      numberOfItems: number;
+      /** Format: int32 */
+      numberOfPages: number;
+      data: components['schemas']['TeamJoinTokenResponse'][];
+    };
+    TeamJoinTokenResponse: {
+      id: string;
+      inviteeEmail: string;
+      inviter: components['schemas']['UserMinResponse'];
+      /** @enum {string} */
+      role: 'ADMIN' | 'MEMBER';
+      /** Format: date-time */
+      createdAt: string;
     };
     PaginatedResponseStatusPageResponse: {
       /** Format: int64 */
@@ -3100,6 +3133,35 @@ export interface operations {
       };
     };
   };
+  getInvites: {
+    parameters: {
+      query?: {
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path: {
+        teamId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PaginatedResponseTeamJoinTokenResponse'];
+        };
+      };
+    };
+  };
   get_1: {
     parameters: {
       query?: never;
@@ -3226,28 +3288,6 @@ export interface operations {
       };
     };
   };
-  get_3: {
-    parameters: {
-      query: {
-        teamIds: string[];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'text/event-stream': string[];
-        };
-      };
-    };
-  };
   apiSecure: {
     parameters: {
       query?: never;
@@ -3350,7 +3390,7 @@ export interface operations {
       };
     };
   };
-  get_4: {
+  get_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -3420,6 +3460,28 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PublicStatusPageResponse'];
+        };
+      };
+    };
+  };
+  get_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        teamIds: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/event-stream': string[];
         };
       };
     };

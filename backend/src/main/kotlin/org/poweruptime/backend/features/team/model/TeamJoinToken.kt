@@ -44,7 +44,6 @@ class TeamJoinToken(
     var role: TeamRole = TeamRole.MEMBER,
 
 ) : AEntity() {
-
     @Id
     @DefaultNanoId
     @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)

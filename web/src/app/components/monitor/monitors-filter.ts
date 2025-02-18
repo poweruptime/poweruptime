@@ -6,6 +6,7 @@ import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
 import {BiComponent} from 'dfx-bootstrap-icons';
+import {DfxAutofocus} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
 
@@ -20,13 +21,14 @@ import {BackendType} from '@app/api';
     MatOption,
     MatIconButton,
     MatInput,
+    DfxAutofocus,
   ],
   template: `
     <div class="flex flex-col rounded-lg border border-solid border-black p-4 dark:border-gray-300">
       @let _searchControl = searchControl();
       <mat-form-field>
         <mat-label>Search</mat-label>
-        <input [formControl]="_searchControl" matInput />
+        <input [formControl]="_searchControl" matInput focus />
         @if ((_searchControl.getRawValue()?.length ?? 0) > 0) {
           <button
             class="flex items-center"

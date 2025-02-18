@@ -13,7 +13,7 @@ interface TeamUserRepository : JpaRepository<TeamUser, String>, JpaSpecification
         where ou.id.team.id=:oId and ou.id.user.id = :uId
         """,
     )
-    fun findByTeamAndUserEmail(
+    fun findByTeamAndUserId(
         @Param("oId") teamId: String,
         @Param("uId") userId: String
     ): TeamUser?

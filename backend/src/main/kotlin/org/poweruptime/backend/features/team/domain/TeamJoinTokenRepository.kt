@@ -2,11 +2,12 @@ package org.poweruptime.backend.features.team.domain
 
 import org.poweruptime.backend.features.team.model.TeamJoinToken
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.Instant
 
-interface TeamJoinTokenRepository : JpaRepository<TeamJoinToken, String> {
+interface TeamJoinTokenRepository : JpaRepository<TeamJoinToken, String>, JpaSpecificationExecutor<TeamJoinToken> {
 
     @Query(
         """
@@ -31,9 +32,21 @@ interface TeamJoinTokenRepository : JpaRepository<TeamJoinToken, String> {
             urt.version = 0
         """,
     )
-    fun findValidByInviteeIdTokenAndCreatedAfter(
+    fun findValidByInviteeIdAndTokenAndCreatedAfter(
         @Param("inviteeId") inviteeId: String,
         @Param("token") token: String,
         @Param("createdAfter") createdAfter: Instant
     ): TeamJoinToken?
+
+    @Query(
+        """
+        select urt from TeamJoinToken urt
+        where
+            urt.invitee.id = :inviteeId and
+            urt.version = 0
+        """,
+    )
+    fun findValidByInviteeId(
+        @Param("inviteeId") inviteeId: String,
+    ): List<TeamJoinToken>
 }

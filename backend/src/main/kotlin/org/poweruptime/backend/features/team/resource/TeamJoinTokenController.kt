@@ -42,7 +42,7 @@ class TeamJoinTokenController(
             token = token,
         ) ?: throw UnauthorizedException()
 
-        if (teamUserRepository.findByTeamAndUserEmail(joinToken.team.id, invitee.id) != null) {
+        if (teamUserRepository.findByTeamAndUserId(joinToken.team.id, invitee.id) != null) {
             throw UnauthorizedException()
         }
 
