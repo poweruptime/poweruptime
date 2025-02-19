@@ -1,0 +1,23 @@
+name: Validate Translation Files
+
+on:
+  pull_request:
+    paths:
+      # Trigger when any i18n JSON file is modified
+      - 'web/src/assets/i18n/**.json'
+
+jobs:
+  validate-translations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dafnik/setup-node-pnpm@v3
+        with:
+          install-ignore-scripts: true
+
+      - name: Run Transloco Validator on Changed i18n Files
+        run: |
+          # Find the changed i18n files and run the validator on them
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'src/assets/i18n/.*\.json' | xargs npx transloco-validator

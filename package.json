@@ -3,15 +3,15 @@
   "version": "0.0.1",
   "scripts": {
     "web:build": "pnpm -C web build --configuration development",
-    "web:build:prod": "pnpm -C web build --configuration production",
+    "web:build:prod": "pnpm -C web build:prod",
     "web:start": "pnpm -C web start",
     "web:start:ssr": "pnpm -C web start:ssr",
     "web:api": "pnpm -C web api",
     "emails:start": "pnpm -C emails start",
     "emails:export": "pnpm -C emails export",
+    "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "detekt": "./gradlew detekt && prettier --write .",
-    "format": "prettier --write ."
+    "detekt": "./gradlew detekt && prettier --write ."
   },
   "private": true,
   "devDependencies": {
