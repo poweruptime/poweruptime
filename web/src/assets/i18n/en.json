@@ -1,27 +1,27 @@
 {
   "checkResult": {
     "list": {
-      "title": "Checks",
       "action": {
         "view": "View check"
-      }
+      },
+      "title": "Checks"
     }
   },
   "cmdk": {
     "groups": {
+      "general": {
+        "input": "What do you need?",
+        "logout": "Logout"
+      },
       "monitor": {
-        "search": "Search monitors...",
         "create": "Create new monitor",
-        "input": "Search for a monitor"
+        "input": "Search for a monitor",
+        "search": "Search monitors..."
       },
       "team": {
-        "search": "Search Teams...",
         "create": "Create new team",
-        "input": "Search for a team"
-      },
-      "general": {
-        "logout": "Logout",
-        "input": "What do you need?"
+        "input": "Search for a team",
+        "search": "Search Teams..."
       }
     },
     "results": {
@@ -31,56 +31,91 @@
   },
   "form": {
     "validation": {
-      "required": "* Required",
-      "min": "Minimum value of {{min}} not reached",
-      "max": "Maximum value of {{max}} surpassed",
-      "integer": "Value has to be an integer"
+      "domain": "Enter a valid domain",
+      "file": "Invalid file format.",
+      "integer": "Only whole numbers are allowed",
+      "ipv4": "Enter a valid IPV4 Address",
+      "max": "Enter a value of no more than {{max}}",
+      "maxlength": "Enter no more than {{requiredLength}} characters",
+      "min": "Enter a value of at least {{min}}",
+      "minlength": "Enter at least {{requiredLength}} characters",
+      "required": "This field is required",
+      "url": "Enter a valid URL"
     }
   },
   "general": {
-    "save": "Save",
-    "name": "Name",
-    "email": "E-Mail",
-    "type": "Type",
-    "description": "Description",
-    "data": "Data",
-    "showDuplicates": "Show duplicates",
-    "monitor": "Monitor",
-    "status": "Status",
+    "body": "Body",
+    "contentType": "Content-Type",
+    "copy": "Copy",
     "createdAt": "Created At",
-    "title": "Title",
-    "noDataAvailable": "No data available.",
-    "permissions": "Permissions",
+    "data": "Data",
+    "description": "Description",
+    "email": "E-Mail",
     "general": "General",
+    "host": "Host",
     "instance": "Instance",
+    "ipAddress": "IP-Address",
+    "method": "Method",
+    "monitor": "Monitor",
+    "name": "Name",
+    "noDataAvailable": "No data available.",
+    "password": "Password",
+    "permissions": "Permissions",
+    "port": "Port",
+    "save": "Save",
+    "server": "Server",
+    "showDuplicates": "Show duplicates",
+    "status": "Status",
+    "time": "Time",
     "timezone": "Timezone",
-    "time": "Time"
+    "title": "Title",
+    "type": "Type",
+    "url": "URL",
+    "username": "Username"
   },
   "instanceSettings": {
-    "retention": {
-      "title": "Individual check & log retention",
-      "checkResult": "Check retention",
-      "logs": "Logs retention"
-    },
     "permissions": {
       "allowUsersToCreateTeams": "Allow users to create teams"
-    }
+    },
+    "retention": {
+      "checkResult": "Check retention",
+      "logs": "Logs retention",
+      "title": "Individual check & log retention"
+    },
+    "timezone": "{{general.instance}} {{general.timezone}}"
   },
   "monitor": {
     "edit": {
+      "dns": {
+        "matches": {
+          "label": "Matches",
+          "new": "New match",
+          "remove": "remove {{match}}"
+        },
+        "server": "DNS-{{general.server}}"
+      },
+      "http": {
+        "authType": "Auth-Type",
+        "ignoreTLS": "Ignore TLS",
+        "searchTerm": "Search term"
+      },
       "interval": "Interval in {{unit}}",
-      "retries": "Retries",
+      "pushUrl": "Push {{general.url}}",
       "resendAfter": "Resend notifications after",
-      "upsideDown": "Upside down",
-      "selectTypeToContinue": "Please select a type to continue"
+      "retries": "Retries",
+      "selectTypeToContinue": "Please select a type to continue",
+      "ssl": {
+        "validDaysLeft": "Minimum valid days"
+      },
+      "upsideDown": "Upside down"
     }
   },
   "profile": {
-    "password": {
-      "update": "Update password"
-    },
     "email": {
       "requestChange": "Request email address change"
+    },
+    "password": {
+      "update": "Update password"
     }
   }
 }

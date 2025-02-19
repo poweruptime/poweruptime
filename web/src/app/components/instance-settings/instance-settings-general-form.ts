@@ -30,9 +30,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           (ngSubmit)="submit()">
           <div>
             <mat-form-field>
-              <mat-label>
-                {{ 'general.instance' | transloco }} {{ 'general.timezone' | transloco }}
-              </mat-label>
+              <mat-label>{{ 'instanceSettings.timezone' | transloco }}</mat-label>
               <mat-select formControlName="timezone">
                 <mat-option class="pt-1">
                   <ngx-mat-select-search [formControl]="timezoneFilterControl">

@@ -1,4 +1,6 @@
 export * from './mat-mentions';
+export * from './copy-icon-button';
+export * from './file-upload';
 export * from './footer';
 export * from './heatmap';
 export * from './nav';

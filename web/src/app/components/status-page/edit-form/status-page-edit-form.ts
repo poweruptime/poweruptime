@@ -26,6 +26,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database} from '@app/api';
+import {FileUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {MonitorsSearchStore} from '@app/services';
@@ -48,6 +49,8 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
               <input matInput formControlName="slug" />
             </mat-form-field>
           </div>
+
+          <pu-file-upload type="STATUS_PAGE" label="Drop a image" />
 
           <pu-editor
             id="description"
@@ -176,6 +179,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     StatusPageEditFormGroupMonitors,
     CdkDragPlaceholder,
     MatTooltip,
+    FileUpload,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

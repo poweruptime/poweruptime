@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
+
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
@@ -13,12 +15,26 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     <div class="flex flex-col gap-4" [formGroup]="httpDataFormGroup">
       <div class="flex gap-2">
         <mat-form-field>
-          <mat-label>URL</mat-label>
+          <mat-label>{{ 'general.url' | transloco }}</mat-label>
           <input matInput formControlName="url" />
+
+          @let urlErrors = httpDataFormGroup.controls.url.errors;
+          @if (urlErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (urlErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (urlErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (urlErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.url' | transloco }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Method</mat-label>
+          <mat-label>{{ 'general.method' | transloco }}</mat-label>
           <mat-select formControlName="method">
             <mat-option value="GET">GET</mat-option>
             <mat-option value="POST">POST</mat-option>
@@ -31,7 +47,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Content type</mat-label>
+          <mat-label>{{ 'general.contentType' | transloco }}</mat-label>
           <mat-select formControlName="contentType">
             <mat-option value="JSON">JSON</mat-option>
             <mat-option value="XML">XML</mat-option>
@@ -41,7 +57,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
       <div class="flex gap-2">
         <mat-form-field>
-          <mat-label>Auth type</mat-label>
+          <mat-label>{{ 'monitor.edit.http.authType' | transloco }}</mat-label>
           <mat-select formControlName="authType">
             <mat-option [value]="undefined">None</mat-option>
             <mat-option value="BASIC_AUTH">Basic auth</mat-option>
@@ -51,13 +67,29 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         @if (httpDataFormGroup.controls.authType.getRawValue() === 'BASIC_AUTH') {
           <div class="flex gap-2">
             <mat-form-field>
-              <mat-label>Username</mat-label>
+              <mat-label>{{ 'general.username' | transloco }}</mat-label>
               <input matInput formControlName="basicAuthDataUsername" />
+              @let basicAuthUsernameErrors =
+                httpDataFormGroup.controls.basicAuthDataUsername.errors;
+              @if (basicAuthUsernameErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (basicAuthUsernameErrors?.['maxlength']; as maxlength) {
+                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field>
-              <mat-label>Password</mat-label>
+              <mat-label>{{ 'general.password' | transloco }}</mat-label>
               <input matInput type="password" formControlName="basicAuthDataPassword" />
+              @let basicAuthPasswordErrors =
+                httpDataFormGroup.controls.basicAuthDataPassword.errors;
+              @if (basicAuthPasswordErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (basicAuthPasswordErrors?.['maxlength']; as maxlength) {
+                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              }
             </mat-form-field>
           </div>
         }
@@ -65,17 +97,19 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
       <div class="flex gap-2">
         <mat-form-field>
-          <mat-label>Search term</mat-label>
+          <mat-label>{{ 'monitor.edit.http.searchTerm' | transloco }}</mat-label>
           <textarea matInput formControlName="searchTerm"></textarea>
         </mat-form-field>
       </div>
 
       <mat-form-field>
-        <mat-label>Body</mat-label>
+        <mat-label>{{ 'general.body' | transloco }}</mat-label>
         <textarea matInput formControlName="body"></textarea>
       </mat-form-field>
 
-      <mat-slide-toggle formControlName="ignoreTLS">Ignore TLS</mat-slide-toggle>
+      <mat-slide-toggle formControlName="ignoreTLS">
+        {{ 'monitor.edit.http.ignoreTLS' | transloco }}
+      </mat-slide-toggle>
     </div>
   `,
   imports: [
@@ -83,9 +117,11 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatFormField,
     MatInput,
     MatLabel,
+    MatError,
     MatSelect,
     MatOption,
     MatSlideToggle,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

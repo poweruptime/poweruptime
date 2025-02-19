@@ -1,19 +1,18 @@
 import {KeyValuePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor, MatIconButton} from '@angular/material/button';
+import {MatAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';
-import {cl_copy} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {toast} from 'ngx-sonner';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
+import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
-import {Placeholder} from '@app/components';
+import {CopyIconButton, Placeholder} from '@app/components';
 import {CheckResultLogEntry} from '@app/components/monitor';
 import {MonitorStatusBackground} from '@app/directives';
 import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services';
@@ -26,11 +25,9 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
           <pu-placeholder class="h-10 w-32" />
           <pu-placeholder class="h-12 w-96" />
           <pu-placeholder class="h-24 w-full" />
-          <pu-placeholder class="h-10 w-full" />
-          <pu-placeholder class="h-10 w-full" />
-          <pu-placeholder class="h-10 w-full" />
-          <pu-placeholder class="h-10 w-full" />
-          <pu-placeholder class="h-10 w-full" />
+          @for (i of 5 | repeat; track i) {
+            <pu-placeholder class="h-10 w-full" />
+          }
         </div>
       } @else {
         @if (checkResultDetailStore.checkResult(); as checkResult) {
@@ -55,13 +52,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
               <mat-card-content>
                 <div class="flex items-start justify-between gap-2">
                   <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
-                  <button
-                    (click)="copyMessage(message)"
-                    mat-icon-button
-                    matTooltip="Copy"
-                    matTooltipPosition="left">
-                    <bi name="copy" />
-                  </button>
+                  <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
                 </div>
               </mat-card-content>
             </mat-card>
@@ -71,7 +62,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             <mat-card-content>
               <div class="flex gap-10 px-2">
                 <div class="flex flex-col gap-2">
-                  <h3 class="text-gray-400">Status</h3>
+                  <h3 class="text-gray-400">{{ 'general.status' | transloco }}</h3>
                   <span class="text-lg font-bold">{{ checkResult.status }}</span>
                 </div>
 
@@ -199,8 +190,9 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     CheckResultLogEntry,
     KeyValuePipe,
     Placeholder,
-    MatIconButton,
-    MatTooltip,
+    CopyIconButton,
+    RepeatPipe,
+    TranslocoPipe,
   ],
 })
 export class MonitorCheckResultDetailPage {
@@ -228,9 +220,4 @@ export class MonitorCheckResultDetailPage {
       {ignoreZero: true},
     );
   });
-
-  copyMessage(message: string) {
-    cl_copy(message);
-    toast.success('Message copied!');
-  }
 }

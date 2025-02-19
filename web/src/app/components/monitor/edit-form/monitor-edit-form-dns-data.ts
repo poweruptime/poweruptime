@@ -7,10 +7,11 @@ import {
   MatChipRemove,
   MatChipRow,
 } from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {cl_copy} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {toast} from 'ngx-sonner';
@@ -22,12 +23,26 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     <div class="flex flex-col gap-4" [formGroup]="dnsDataFormGroup">
       <div class="flex gap-2">
         <mat-form-field>
-          <mat-label>Host</mat-label>
+          <mat-label>{{ 'general.host' | transloco }}</mat-label>
           <input matInput formControlName="host" />
+          @let hostErrors = dnsDataFormGroup.controls.host.errors;
+
+          @if (hostErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (hostErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (hostErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (hostErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Type</mat-label>
+          <mat-label>{{ 'general.type' | transloco }}</mat-label>
           <mat-select formControlName="type">
             <mat-option value="A">A</mat-option>
             <mat-option value="AAAA">AAAA</mat-option>
@@ -40,28 +55,62 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
             <mat-option value="SRV">SRV</mat-option>
             <mat-option value="TXT">TXT</mat-option>
           </mat-select>
+
+          @let typeErrors = dnsDataFormGroup.controls.type.errors;
+
+          @if (typeErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
       <div class="flex gap-2">
         <mat-form-field>
-          <mat-label>Server</mat-label>
+          <mat-label>{{ 'monitor.edit.dns.server' | transloco }}</mat-label>
           <input matInput formControlName="server" />
+          @let serverErrors = dnsDataFormGroup.controls.server.errors;
+          @if (serverErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (serverErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (serverErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (serverErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.ipv4' | transloco }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Port</mat-label>
+          <mat-label>{{ 'general.port' | transloco }}</mat-label>
           <input matInput type="number" formControlName="port" />
+          @let portErrors = dnsDataFormGroup.controls.port.errors;
+          @if (portErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (portErrors?.['min']; as min) {
+            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+          }
+          @if (portErrors?.['max']; as max) {
+            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+          }
+          @if (portErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
       <mat-form-field>
-        <mat-label>Matches</mat-label>
-        <mat-chip-grid #chipGrid aria-label="Enter matches">
+        <mat-label>{{ 'monitor.edit.dns.matches.label' | transloco }}</mat-label>
+        <mat-chip-grid #chipGrid [attr.aria-label]="'monitor.edit.dns.matches.label' | transloco">
           @for (match of dnsDataFormGroup.controls.matches.getRawValue(); track match) {
             <mat-chip-row (removed)="removeDNSMatch(match)" (click)="copyToClipboard(match)">
               {{ match }}
-              <button matChipRemove aria-label="'remove ' + keyword">
+              <button
+                [attr.aria-label]="'monitor.edit.dns.matches.remove' | transloco: {match}"
+                matChipRemove>
                 <bi name="x" />
               </button>
             </mat-chip-row>
@@ -69,8 +118,8 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         </mat-chip-grid>
         <input
           [matChipInputFor]="chipGrid"
-          (matChipInputTokenEnd)="addDNSMatch($event)"
-          placeholder="New match" />
+          [placeholder]="'monitor.edit.dns.matches.new' | transloco"
+          (matChipInputTokenEnd)="addDNSMatch($event)" />
       </mat-form-field>
     </div>
   `,
@@ -80,6 +129,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatFormField,
     MatInput,
     MatLabel,
+    MatError,
     MatSelect,
     MatOption,
     MatChipGrid,
@@ -87,6 +137,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatChipRemove,
     MatChipRow,
     BiComponent,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

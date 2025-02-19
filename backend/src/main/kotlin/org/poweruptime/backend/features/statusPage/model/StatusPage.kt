@@ -30,6 +30,9 @@ class StatusPage(
     @Column(nullable = true, columnDefinition = "text")
     var footer: String? = null,
 
+    @Column(name = "image_id", nullable = true, length = NANO_ID_SMALL_LENGTH)
+    var imageId: String? = null,
+
     @Suppress("JpaAttributeTypeInspection") @Column(
         name = "domain_names",
         nullable = true,

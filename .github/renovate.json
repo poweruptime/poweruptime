@@ -11,10 +11,10 @@
   ],
   "labels": ["dependencies"],
   "lockFileMaintenance": {
-    "enabled": true,
     "automerge": true,
     "automergeType": "branch",
     "commitMessageAction": "lock file maintenance",
+    "enabled": true,
     "semanticCommitType": "build"
   },
   "packageRules": [
@@ -81,8 +81,8 @@
       ]
     },
     {
-      "matchPackageNames": ["typescript", "tslib"],
-      "groupName": "typescript dependencies"
+      "groupName": "typescript dependencies",
+      "matchPackageNames": ["typescript", "tslib"]
     },
     {
       "extends": ["monorepo:angular"],

@@ -267,7 +267,8 @@ create table status_page
     footer       text,
     slug         varchar(255)                           not null
         unique,
-    domain_names text[]
+    domain_names text[],
+    image_id        varchar(12)                            unique
 );
 
 create table status_page_group

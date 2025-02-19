@@ -34,6 +34,8 @@
     "@ngneat/until-destroy": "10.0.0",
     "@ngrx/operators": "19.0.1",
     "@ngrx/signals": "19.0.1",
+    "@ngx-dropzone/cdk": "^19.1.0",
+    "@ngx-dropzone/material": "^19.1.0",
     "@ngxpert/cmdk": "^3.0.0",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.5",
     "@swimlane/ngx-charts": "21.1.3",

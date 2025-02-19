@@ -455,6 +455,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/file/{type}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Upload file */
+    post: operations['handleFileUpload'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/auth/resetPassword': {
     parameters: {
       query?: never;
@@ -862,14 +879,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/sse/{teamIds}': {
+  '/v1/public/sse': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get push */
+    /** Get push notifications */
     get: operations['get_4'];
     put?: never;
     post?: never;
@@ -1151,6 +1168,22 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
     get: operations['adminInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/file/{type}/{fileId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['serveFile'];
     put?: never;
     post?: never;
     delete?: never;
@@ -2903,6 +2936,35 @@ export interface operations {
       };
     };
   };
+  handleFileUpload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type: 'STATUS_PAGE';
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': string;
+        };
+      };
+    };
+  };
   requestPasswordReset: {
     parameters: {
       query?: never;
@@ -3468,9 +3530,7 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        teamIds: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody?: never;
@@ -3855,6 +3915,29 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['AdminInfoResponse'];
+        };
+      };
+    };
+  };
+  serveFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type: 'STATUS_PAGE';
+        fileId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': string;
         };
       };
     };

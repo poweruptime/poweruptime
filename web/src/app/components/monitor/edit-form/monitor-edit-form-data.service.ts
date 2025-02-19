@@ -20,9 +20,33 @@ export const MonitorEditFormDataService = createInjectable(() => {
 
   const dnsDataFormGroup = fb.group({
     ...baseCheckerProperties,
-    host: ['', [Validators.required]],
-    server: ['', [Validators.required]],
-    port: [53, [Validators.required, Validators.min(1)]],
+    host: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(Database.MIN_DOMAIN_LENGTH),
+        Validators.maxLength(Database.MAX_DOMAIN_LENGTH),
+        Validators.pattern(Database.DOMAIN_REGEX),
+      ],
+    ],
+    server: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(Database.MIN_IPV4_LENGTH),
+        Validators.maxLength(Database.MAX_IPV4_LENGTH),
+        Validators.pattern(Database.IPV4_REGEX),
+      ],
+    ],
+    port: [
+      53,
+      [
+        Validators.required,
+        Validators.min(Database.MIN_PORT),
+        Validators.max(Database.MAX_PORT),
+        Validators.pattern(Database.INTEGER_REGEX),
+      ],
+    ],
     type: ['CNAME' as DnsMonitorDataType, [Validators.required]],
     matches: new FormControl<string[] | undefined>(undefined),
   });
@@ -33,9 +57,9 @@ export const MonitorEditFormDataService = createInjectable(() => {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)',
-        ),
+        Validators.minLength(Database.MIN_URL_LENGTH),
+        Validators.maxLength(Database.MAX_URL_LENGTH),
+        Validators.pattern(Database.URL_REGEX),
       ],
     ],
     method: ['GET' as HttpMonitorDataMethod, [Validators.required]],
@@ -60,12 +84,20 @@ export const MonitorEditFormDataService = createInjectable(() => {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
-        ),
+        Validators.minLength(Database.MIN_IPV4_LENGTH),
+        Validators.maxLength(Database.MAX_IPV4_LENGTH),
+        Validators.pattern(Database.IPV4_REGEX),
       ],
     ],
-    port: [undefined as number | undefined, [Validators.required, Validators.min(1)]],
+    port: [
+      undefined as number | undefined,
+      [
+        Validators.required,
+        Validators.min(Database.MIN_PORT),
+        Validators.max(Database.MAX_PORT),
+        Validators.pattern(Database.INTEGER_REGEX),
+      ],
+    ],
   });
 
   const pushDataFormGroup = fb.group({
@@ -79,12 +111,19 @@ export const MonitorEditFormDataService = createInjectable(() => {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)',
-        ),
+        Validators.minLength(Database.MIN_URL_LENGTH),
+        Validators.maxLength(Database.MAX_URL_LENGTH),
+        Validators.pattern(Database.URL_REGEX),
       ],
     ],
-    validDaysLeft: [undefined as number | undefined, [Validators.min(1)]],
+    validDaysLeft: [
+      undefined as number | undefined,
+      [
+        Validators.min(Database.MIN_VALID_DAYS_LEFT),
+        Validators.max(Database.MAX_VALID_DAYS_LEFT),
+        Validators.pattern(Database.INTEGER_REGEX),
+      ],
+    ],
   });
 
   return {

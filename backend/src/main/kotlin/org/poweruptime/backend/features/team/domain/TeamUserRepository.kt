@@ -10,11 +10,19 @@ interface TeamUserRepository : JpaRepository<TeamUser, String>, JpaSpecification
     @Query(
         """
         select ou from TeamUser ou join ou.id.team o
-        where ou.id.team.id=:oId and ou.id.user.id = :uId
+        where ou.id.team.id=:tId and ou.id.user.id = :uId
         """,
     )
     fun findByTeamAndUserId(
-        @Param("oId") teamId: String,
+        @Param("tId") teamId: String,
         @Param("uId") userId: String
     ): TeamUser?
+
+    @Query(
+        """
+        select ou.id.team.id from TeamUser ou join ou.id.team o
+        where ou.id.user.id = :uId
+        """,
+    )
+    fun findTeamIdsByUserId(@Param("uId") userId: String): List<String>
 }

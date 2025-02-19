@@ -47,6 +47,8 @@ export class Database {
   static readonly MIN_SLUG_LENGTH: number = 1;
   static readonly MAX_SLUG_LENGTH: number = 255;
 
+  static readonly SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
   static readonly MIN_URL_LENGTH: number = 1;
   static readonly MAX_URL_LENGTH: number = 2048;
 
@@ -61,16 +63,20 @@ export class Database {
   static readonly MIN_DISCORD_DISPLAY_NAME_LENGTH: number = 1;
   static readonly MAX_DISCORD_DISPLAY_NAME_LENGTH: number = 32;
 
+  static readonly URL_REGEX =
+    /^(https?|ftp|file):\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]/;
+
+  static readonly DOMAIN_REGEX =
+    /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/;
   static readonly MIN_DOMAIN_LENGTH: number = 1;
   static readonly MAX_DOMAIN_LENGTH: number = 253;
 
   static readonly MIN_IPV4_LENGTH: number = 1;
   static readonly MAX_IPV4_LENGTH: number = 15;
+  static readonly IPV4_REGEX = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 
   static readonly MIN_PORT: number = 1;
   static readonly MAX_PORT: number = 65535;
-
-  static readonly SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
   static readonly INTEGER_REGEX = /^[0-9]*$/;
 }

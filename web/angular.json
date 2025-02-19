@@ -3,18 +3,32 @@
   "newProjectRoot": "projects",
   "projects": {
     "poweruptime-web": {
-      "projectType": "application",
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
+          "configurations": {
+            "development": {
+              "extractLicenses": false,
+              "optimization": false,
+              "sourceMap": true
+            },
+            "production": {
+              "extractLicenses": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false
+            }
+          },
+          "defaultConfiguration": "production",
           "options": {
-            "outputPath": "dist/poweruptime-web",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": ["rfdc"],
             "assets": [
               {
                 "glob": "**/*",
@@ -27,84 +41,70 @@
                 "output": "/assets/icons"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "browser": "src/main.ts",
+            "index": "src/index.html",
+            "outputMode": "server",
+            "outputPath": "dist/poweruptime-web",
             "scripts": [],
             "server": "src/main.server.ts",
-            "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
             },
-            "allowedCommonJsDependencies": ["rfdc"]
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
-            }
-          },
-          "defaultConfiguration": "production"
+            "styles": ["src/styles.scss"],
+            "tsConfig": "tsconfig.app.json"
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": {
-              "buildTarget": "poweruptime-web:build:production"
-            },
             "development": {
               "buildTarget": "poweruptime-web:build:development"
+            },
+            "production": {
+              "buildTarget": "poweruptime-web:build:production"
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
         }
       },
+      "prefix": "app",
+      "projectType": "application",
+      "root": "",
       "schematics": {
         "@schematics/angular:component": {
-          "prefix": "pu",
+          "changeDetection": "OnPush",
+          "flat": true,
           "inlineStyle": true,
           "inlineTemplate": true,
+          "prefix": "pu",
           "skipTests": true,
-          "flat": true,
-          "changeDetection": "OnPush",
           "type": ""
         },
         "@schematics/angular:directive": {
-          "skipTests": true,
-          "flat": true
+          "flat": true,
+          "skipTests": true
         },
         "@schematics/angular:guard": {
-          "skipTests": true,
-          "flat": true
+          "flat": true,
+          "skipTests": true
         },
         "@schematics/angular:interceptor": {
-          "skipTests": true,
-          "flat": true
+          "flat": true,
+          "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true,
-          "flat": true
+          "flat": true,
+          "skipTests": true
         },
         "@schematics/angular:service": {
-          "skipTests": true,
-          "flat": true
+          "flat": true,
+          "skipTests": true
         }
-      }
+      },
+      "sourceRoot": "src"
     }
   },
   "version": 1

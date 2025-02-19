@@ -1,13 +1,12 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
-import {cl_copy} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
-import {toast} from 'ngx-sonner';
+import {TranslocoPipe} from '@jsverse/transloco';
+
+import {CopyIconButton} from '@app/components';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
@@ -16,11 +15,9 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
       <mat-form-field>
-        <mat-label>Push URL</mat-label>
+        <mat-label>{{ 'monitor.edit.pushUrl' | transloco }}</mat-label>
         <input [value]="pushUrl()" readonly matInput />
-        <button (click)="copy()" type="button" matSuffix mat-icon-button aria-label="Copy">
-          <bi name="copy" />
-        </button>
+        <pu-copy-icon-button [content]="pushUrl()" matSuffix />
       </mat-form-field>
     </div>
   `,
@@ -29,9 +26,9 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatFormField,
     MatInput,
     MatLabel,
-    MatIconButton,
     MatSuffix,
-    BiComponent,
+    TranslocoPipe,
+    CopyIconButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,9 +43,4 @@ export class MonitorEditFormPushData {
     () =>
       `https://${window.location.host}/api/v1/public/push/${this.pushId()}?status=UP&title=OK&message=&pingMs=`,
   );
-
-  copy(): void {
-    cl_copy(this.pushUrl());
-    toast('Copied!');
-  }
 }

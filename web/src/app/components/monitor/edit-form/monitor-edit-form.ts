@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
@@ -75,6 +75,17 @@ const CHECKER_DATA_TYPES = [
           <mat-form-field>
             <mat-label>{{ 'general.name' | transloco }}</mat-label>
             <input matInput formControlName="name" />
+
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
@@ -89,6 +100,10 @@ const CHECKER_DATA_TYPES = [
                 <mat-option [value]="type.value">{{ type.label }}</mat-option>
               }
             </mat-select>
+            @let typeErrors = form.controls.type.errors;
+            @if (typeErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
           </mat-form-field>
         </div>
 
@@ -118,16 +133,47 @@ const CHECKER_DATA_TYPES = [
                 </mat-select>
               </div>
             </div>
+            @let testIntervalErrors = form.controls.testInterval.errors;
+            @if (testIntervalErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (testIntervalErrors?.['min']; as min) {
+              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+            }
+            @if (testIntervalErrors?.['max']; as max) {
+              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+            }
+            @if (testIntervalErrors?.['pattern']) {
+              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
             <input matInput type="number" formControlName="retries" />
+
+            @let retriesErrors = form.controls.retries.errors;
+            @if (retriesErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (retriesErrors?.['min']; as min) {
+              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+            }
+            @if (retriesErrors?.['pattern']) {
+              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
             <input matInput type="number" formControlName="resendAfter" />
+            @let resendAfterErrors = form.controls.resendAfter.errors;
+            @if (resendAfterErrors?.['min']; as min) {
+              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+            }
+            @if (resendAfterErrors?.['pattern']) {
+              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+            }
           </mat-form-field>
         </div>
 
@@ -197,6 +243,7 @@ const CHECKER_DATA_TYPES = [
     MatFormField,
     MatInput,
     MatLabel,
+    MatError,
     MatSelect,
     MatSelectTrigger,
     MatOption,
@@ -223,7 +270,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
 > {
   private readonly monitorEditFormDataService = inject(MonitorEditFormDataService);
 
-  times = [
+  readonly times = [
     {
       value: 'seconds',
       viewValue: 's',
@@ -266,9 +313,22 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     description: [undefined as string | undefined],
     type: ['' as BackendType['MonitorCheckerData']['_type'] | '', [Validators.required]],
     testIntervalUnit: ['minutes' as TestIntervalUnits, [Validators.required]],
-    testInterval: [1, [Validators.required, Validators.pattern(Database.INTEGER_REGEX)]],
-    retries: [0, [Validators.min(0)]],
-    resendAfter: [undefined as number | undefined, [Validators.min(1)]],
+    testInterval: [
+      1,
+      [
+        Validators.required,
+        Validators.pattern(Database.INTEGER_REGEX),
+        ...testIntervalMinutesValidators,
+      ],
+    ],
+    retries: [
+      0,
+      [Validators.required, Validators.pattern(Database.INTEGER_REGEX), Validators.min(0)],
+    ],
+    resendAfter: [
+      undefined as number | undefined,
+      [Validators.pattern(Database.INTEGER_REGEX), Validators.min(1)],
+    ],
     upsideDown: [false],
   });
 
@@ -362,50 +422,9 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
         }
       });
 
-    const testIntervalSecondsValidators = [
-      Validators.min(Database.MIN_TEST_INTERVAL_SECONDS),
-      Validators.max(Database.MAX_TEST_INTERVAL_SECONDS),
-    ];
-    const testIntervalMinutesValidators = [
-      Validators.min(1),
-      Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_MINUTE),
-    ];
-    const testIntervalHoursValidators = [
-      Validators.min(1),
-      Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_HOUR),
-    ];
-    const testIntervalDaysValidators = [
-      Validators.min(1),
-      Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_DAY),
-    ];
-
     this.form.controls.testIntervalUnit.valueChanges
       .pipe(takeUntilDestroyed(), distinctUntilChanged())
-      .subscribe((it) => {
-        this.form.controls.testInterval.removeValidators(testIntervalSecondsValidators);
-        this.form.controls.testInterval.removeValidators(testIntervalMinutesValidators);
-        this.form.controls.testInterval.removeValidators(testIntervalHoursValidators);
-        this.form.controls.testInterval.removeValidators(testIntervalDaysValidators);
-
-        switch (it) {
-          case 'days':
-            this.form.controls.testInterval.addValidators(testIntervalDaysValidators);
-            break;
-          case 'hours':
-            this.form.controls.testInterval.addValidators(testIntervalHoursValidators);
-            break;
-          case 'minutes':
-            this.form.controls.testInterval.addValidators(testIntervalMinutesValidators);
-            break;
-          case 'seconds':
-          default:
-            this.form.controls.testInterval.addValidators(testIntervalSecondsValidators);
-            break;
-        }
-
-        this.form.controls.testInterval.updateValueAndValidity();
-        this.form.updateValueAndValidity();
-      });
+      .subscribe((it) => this.setTestIntervalValidators(it));
 
     this.notificationMethodsStore.load(
       computed(() => ({
@@ -436,6 +455,32 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     this.form.controls['checker'].patchValue({
       _type: type,
     });
+  }
+
+  private setTestIntervalValidators(it: TestIntervalUnits) {
+    this.form.controls.testInterval.removeValidators(testIntervalSecondsValidators);
+    this.form.controls.testInterval.removeValidators(testIntervalMinutesValidators);
+    this.form.controls.testInterval.removeValidators(testIntervalHoursValidators);
+    this.form.controls.testInterval.removeValidators(testIntervalDaysValidators);
+
+    switch (it) {
+      case 'days':
+        this.form.controls.testInterval.addValidators(testIntervalDaysValidators);
+        break;
+      case 'hours':
+        this.form.controls.testInterval.addValidators(testIntervalHoursValidators);
+        break;
+      case 'minutes':
+        this.form.controls.testInterval.addValidators(testIntervalMinutesValidators);
+        break;
+      case 'seconds':
+      default:
+        this.form.controls.testInterval.addValidators(testIntervalSecondsValidators);
+        break;
+    }
+
+    this.form.controls.testInterval.updateValueAndValidity();
+    this.form.updateValueAndValidity();
   }
 }
 
@@ -486,3 +531,20 @@ function getTestInterval(testIntervalInSeconds: number): {
     };
   }
 }
+
+const testIntervalSecondsValidators = [
+  Validators.min(Database.MIN_TEST_INTERVAL_SECONDS),
+  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS),
+];
+const testIntervalMinutesValidators = [
+  Validators.min(1),
+  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_MINUTE),
+];
+const testIntervalHoursValidators = [
+  Validators.min(1),
+  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_HOUR),
+];
+const testIntervalDaysValidators = [
+  Validators.min(1),
+  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_DAY),
+];

@@ -4,6 +4,7 @@ import org.poweruptime.backend.amqp.RabbitMQConfiguration
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.features.monitor.dto.*
+import org.poweruptime.backend.features.team.domain.TeamUserRepository
 import org.springframework.amqp.core.AcknowledgeMode
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicLong
 @Service
 class PushService(
     @Value(Config.PUSH_ENABLED) private val pushEnabled: Boolean = false,
+    private val teamUserRepository: TeamUserRepository,
     private val connectionFactory: ConnectionFactory,
     private val rabbitMQService: RabbitMQService,
     private val rabbitMQConfiguration: RabbitMQConfiguration,
@@ -79,12 +81,12 @@ class PushService(
         return holder.flux
     }
 
-    fun newSubscription(teamIds: List<String>): Flux<String> {
+    fun newSubscription(userId: String): Flux<String> {
         if (!pushEnabled) {
             return Flux.empty()
         }
 
-        return Flux.merge(teamIds.map { getTeamFlux(it) })
+        return Flux.merge(teamUserRepository.findTeamIdsByUserId(userId).map { getTeamFlux(it) })
     }
 
     fun send(teamId: String, dto: PushDto) {
