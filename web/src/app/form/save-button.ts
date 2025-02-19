@@ -15,6 +15,7 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
         type="submit"
         form="form">
         <bi name="save" />
+        <!-- t(general.save) -->
         <span class="ms-2 text-lg">{{ text() ?? 'general.save' | transloco }}</span>
       </button>
     </div>

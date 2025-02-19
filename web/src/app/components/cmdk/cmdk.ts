@@ -139,6 +139,9 @@ export class Cmdk {
     initialValue: '',
   });
 
+  /**
+   * t(cmdk.groups.monitor.search, cmdk.groups.monitor.create, cmdk.groups.team.search, cmdk.groups.team.create, cmdk.groups.general.logout)
+   */
   readonly groups: {
     group: string;
     items: {

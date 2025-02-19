@@ -38,6 +38,8 @@ import {
         }
       </ng-container>
 
+      <!-- @jsverse/transloco -->
+      <!-- t(profile.password.update) -->
       <pu-save-button [valid]="valid" text="profile.password.update" />
     </form>
   `,

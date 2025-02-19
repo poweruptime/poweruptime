@@ -1,4 +1,40 @@
 {
+  "general": {
+    "save": "Save",
+    "name": "Name",
+    "email": "E-Mail",
+    "type": "Type",
+    "description": "Description",
+    "data": "Data",
+    "showDuplicates": "Show duplicates",
+    "monitor": "Monitor",
+    "status": "Status",
+    "createdAt": "Created At",
+    "title": "Title",
+    "noDataAvailable": "No data available.",
+    "permissions": "Permissions",
+    "general": "General",
+    "instance": "Instance",
+    "timezone": "Timezone",
+    "time": "Time"
+  },
+  "profile": {
+    "password": {
+      "update": "Update password"
+    },
+    "email": {
+      "requestChange": "Request email address change"
+    }
+  },
+  "monitor": {
+    "edit": {
+      "interval": "Interval in {{unit}}",
+      "retries": "Retries",
+      "resendAfter": "Resend notifications after",
+      "upsideDown": "Upside down",
+      "selectTypeToContinue": "Please select a type to continue"
+    }
+  },
   "checkResult": {
     "list": {
       "title": "Checks",
@@ -7,80 +43,44 @@
       }
     }
   },
+  "instanceSettings": {
+    "retention": {
+      "title": "Individual check & log retention",
+      "checkResult": "Check retention",
+      "logs": "Logs retention"
+    },
+    "permissions": {
+      "allowUsersToCreateTeams": "Allow users to create teams"
+    }
+  },
+  "form": {
+    "validation": {
+      "required": "* Required",
+      "min": "Minimum value of {{min}} not reached",
+      "max": "Maximum value of {{max}} surpassed",
+      "integer": "Value has to be an integer"
+    }
+  },
   "cmdk": {
     "groups": {
       "monitor": {
-        "input": "Search for a monitor",
         "search": "Search monitors...",
-        "create": "Create new monitor"
+        "create": "Create new monitor",
+        "input": "Search for a monitor"
       },
       "team": {
-        "input": "Search for a team",
         "search": "Search Teams...",
-        "create": "Create new team"
+        "create": "Create new team",
+        "input": "Search for a team"
       },
       "general": {
-        "input": "What do you need?",
-        "logout": "Logout"
+        "logout": "Logout",
+        "input": "What do you need?"
       }
     },
     "results": {
       "empty": "No results found."
     },
     "toggle": "Toggle action menu"
-  },
-  "form": {
-    "validation": {
-      "integer": "Value has to be an integer",
-      "max": "Maximum value of {{max}} surpassed",
-      "min": "Minimum value of {{min}} not reached",
-      "required": "* Required"
-    }
-  },
-  "general": {
-    "createdAt": "Created At",
-    "data": "Data",
-    "description": "Description",
-    "email": "E-Mail",
-    "general": "General",
-    "instance": "Instance",
-    "name": "Name",
-    "noDataAvailable": "No data available.",
-    "monitor": "Monitor",
-    "permissions": "Permissions",
-    "save": "Save",
-    "status": "Status",
-    "showDuplicates": "Show duplicates",
-    "time": "Time",
-    "timezone": "Timezone",
-    "title": "Title",
-    "type": "Type"
-  },
-  "instanceSettings": {
-    "permissions": {
-      "allowUsersToCreateTeams": "Allow users to create teams"
-    },
-    "retention": {
-      "title": "Individual check & log retention",
-      "checkResult": "Check retention",
-      "logs": "Logs retention"
-    }
-  },
-  "monitor": {
-    "edit": {
-      "interval": "Interval in {{unit}}",
-      "resendAfter": "Resend notifications after",
-      "retries": "Retries",
-      "selectTypeToContinue": "Please select a type to continue",
-      "upsideDown": "Upside down"
-    }
-  },
-  "profile": {
-    "email": {
-      "requestChange": "Request email address change"
-    },
-    "password": {
-      "update": "Update password"
-    }
   }
 }

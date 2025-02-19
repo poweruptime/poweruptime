@@ -8,7 +8,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "api": "openapi-typescript http://localhost:8080/api/swagger/docs-json -o src/app/api/api-types.ts && prettier --write src/app/api/api-types.ts"
+    "api": "openapi-typescript http://localhost:8080/api/swagger/docs-json -o src/app/api/api-types.ts && prettier --write src/app/api/api-types.ts",
+    "i18n:extract": "transloco-keys-manager extract",
+    "i18n:find": "transloco-keys-manager find"
   },
   "private": true,
   "dependencies": {
@@ -51,10 +53,12 @@
     "@angular-devkit/build-angular": "19.1.6",
     "@angular/cli": "19.1.6",
     "@angular/compiler-cli": "19.1.5",
+    "@jsverse/transloco-keys-manager": "^6.1.0",
     "@types/d3-shape": "3.1.7",
     "@types/express": "5.0.0",
     "@types/node": "22.13.4",
     "autoprefixer": "10.4.20",
+    "ngx-build-plus": "^19.0.0",
     "openapi-typescript": "7.6.1",
     "postcss": "8.5.2",
     "tailwindcss": "3.4.17",

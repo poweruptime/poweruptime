@@ -23,6 +23,8 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
         <input matInput formControlName="password" type="password" />
       </mat-form-field>
 
+      <!-- @jsverse/transloco -->
+      <!-- t(profile.email.requestChange) -->
       <pu-save-button [valid]="valid" text="profile.email.requestChange" />
     </form>
   `,
