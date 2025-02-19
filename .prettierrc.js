@@ -3,6 +3,7 @@ module.exports = {
     '@trivago/prettier-plugin-sort-imports',
     'prettier-plugin-organize-attributes',
     'prettier-plugin-tailwindcss',
+    'prettier-plugin-sort-json',
   ],
   printWidth: 100,
   singleQuote: true,

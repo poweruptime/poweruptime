@@ -1,13 +1,15 @@
 {
-  "baseBranches": ["main"],
-  "semanticCommits": "enabled",
-  "semanticCommitScope": "",
-  "semanticCommitType": "build",
-  "commitBody": "See associated pull request for more information.",
-  "schedule": ["* * 1,15 * *"],
-  "timezone": "Europe/Vienna",
-  "labels": ["dependencies"],
   "assignees": ["Dafnik"],
+  "baseBranches": ["main"],
+  "commitBody": "See associated pull request for more information.",
+  "extends": [
+    "config:recommended",
+    ":pinVersions",
+    "npm:unpublishSafe",
+    ":preserveSemverRanges",
+    ":rebaseStalePrs"
+  ],
+  "labels": ["dependencies"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
@@ -93,11 +95,9 @@
       "matchUpdateTypes": ["digest", "patch", "minor", "major"]
     }
   ],
-  "extends": [
-    "config:recommended",
-    ":pinVersions",
-    "npm:unpublishSafe",
-    ":preserveSemverRanges",
-    ":rebaseStalePrs"
-  ]
+  "schedule": ["* * 1,15 * *"],
+  "semanticCommitScope": "",
+  "semanticCommitType": "build",
+  "semanticCommits": "enabled",
+  "timezone": "Europe/Vienna"
 }
