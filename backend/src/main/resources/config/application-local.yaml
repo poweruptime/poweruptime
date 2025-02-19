@@ -27,6 +27,12 @@ spring:
             non_contextual_creation: true
         format_sql: true
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   sql:
     init:
       mode: never
@@ -88,6 +94,8 @@ poweruptime:
     enabled: false
   notification-temp:
     enabled: true
+  storage:
+    directory: storage
   keys:
     directory: keys/some
     access-token:

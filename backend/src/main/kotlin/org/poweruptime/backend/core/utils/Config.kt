@@ -13,6 +13,8 @@ object Config {
     const val MAIL_USERNAME = "\${spring.mail.username}"
     const val MAIL_PASSWORD = "\${spring.mail.password}"
 
+    const val STORAGE_DIRECTORY = "\${poweruptime.storage.directory}"
+
     const val KEY_DIRECTORY = "\${poweruptime.keys.directory}"
     const val KEY_ACCESS_TOKEN_PRIVATE = "\${poweruptime.keys.access-token.private}"
     const val KEY_ACCESS_TOKEN_PUBLIC = "\${poweruptime.keys.access-token.public}"

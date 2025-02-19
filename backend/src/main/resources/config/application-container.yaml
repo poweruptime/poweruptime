@@ -83,6 +83,8 @@ poweruptime:
     enabled: ${MAIL_ENABLED:true}
   notification-temp:
     enabled: ${TEMP_NOTIFICATIONS_ENABLED:false}
+  storage:
+    directory: /var/lib/poweruptime/storage
   keys:
     directory: /var/lib/poweruptime/authentication-keys
     access-token:

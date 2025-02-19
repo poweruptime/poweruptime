@@ -1,4 +1,5 @@
 export * from './mat-mentions';
+export * from './backend-image';
 export * from './copy-icon-button';
 export * from './file-upload';
 export * from './footer';

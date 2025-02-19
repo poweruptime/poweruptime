@@ -2,6 +2,7 @@ package org.poweruptime.backend
 
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.features.authentication.model.SystemRole
+import org.poweruptime.backend.features.fileUpload.StorageService
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerData
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerDataType
@@ -41,6 +42,7 @@ class StartupApplicationListener(
     private val notificationMethodService: NotificationMethodService,
     private val notificationSenderDataService: NotificationSenderDataService,
     private val infoService: InfoService,
+    private val storageService: StorageService,
     @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
 ) : ApplicationListener<ContextRefreshedEvent> {
 
@@ -60,6 +62,7 @@ class StartupApplicationListener(
     @Suppress("MaxLineLength", "LongMethod")
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
         addFirstAdminUserIfNotExists()
+        initStorages()
         setupTempNotification()
 
         startMonitoring()
@@ -275,6 +278,10 @@ class StartupApplicationListener(
     }
 
     private fun startMonitoring() = monitorService.startAll()
+
+    private fun initStorages() = storageService.storageServices.forEach {
+        it.value.init()
+    }
 
     /**
      * Adds admin user if there is none

@@ -10,5 +10,4 @@ src/main/resources/templates/html/
 src/main/resources/db/db.changelog-test.yaml
 src/test/resources/db/
 
-keys
 tmp/

@@ -134,7 +134,6 @@ export function authInterceptor(
 const addToken = (req: HttpRequest<unknown>, token?: string): HttpRequest<unknown> =>
   req.clone({
     setHeaders: {
-      'content-type': 'application/json',
       Authorization: `Bearer ${token ?? ''}`,
     },
   });

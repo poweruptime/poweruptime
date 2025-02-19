@@ -879,14 +879,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/sse': {
+  '/v1/public/sse/{teamIds}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get push notifications */
+    /** Get push */
     get: operations['get_4'];
     put?: never;
     post?: never;
@@ -955,6 +955,22 @@ export interface paths {
       cookie?: never;
     };
     get: operations['json'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/file/{type}/{fileId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['serveFile'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1168,22 +1184,6 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
     get: operations['adminInfo'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/file/{type}/{fileId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['serveFile'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1539,6 +1539,7 @@ export interface components {
       groups: components['schemas']['StatusPageGroupDto'][];
       description?: string;
       footer?: string;
+      imageId?: string;
       domainNames?: string[];
     };
     MonitorMinResponse: {
@@ -1567,6 +1568,7 @@ export interface components {
       slug: string;
       description?: string;
       footer?: string;
+      imageId?: string;
       domainNames?: string[];
       /** Format: date-time */
       deleted?: string;
@@ -1718,6 +1720,7 @@ export interface components {
       groups: components['schemas']['StatusPageGroupDto'][];
       description?: string;
       footer?: string;
+      imageId?: string;
       domainNames?: string[];
     };
     CreateNotificationMethodDto: {
@@ -1740,6 +1743,9 @@ export interface components {
       resendAfter?: number;
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
+    };
+    FileUploadResponse: {
+      fileId: string;
     };
     PasswordForgotRequestDto: {
       email: string;
@@ -1873,6 +1879,7 @@ export interface components {
       name: string;
       description?: string;
       footer?: string;
+      imageId?: string;
       groups: components['schemas']['PublicStatusPageGroupResponse'][];
     };
     PaginatedResponsePublicMonitorMinResponse: {
@@ -2960,7 +2967,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': string;
+          '*/*': components['schemas']['FileUploadResponse'];
         };
       };
     };
@@ -3530,7 +3537,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        teamIds: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -3631,6 +3640,29 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['JsonInfoResponse'];
+        };
+      };
+    };
+  };
+  serveFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type: 'STATUS_PAGE';
+        fileId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': string;
         };
       };
     };
@@ -3915,29 +3947,6 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['AdminInfoResponse'];
-        };
-      };
-    };
-  };
-  serveFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        type: 'STATUS_PAGE';
-        fileId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': string;
         };
       };
     };

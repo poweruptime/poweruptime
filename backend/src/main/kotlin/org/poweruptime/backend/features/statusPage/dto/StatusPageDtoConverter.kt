@@ -9,6 +9,7 @@ fun StatusPage.Companion.fromDto(it: CreateStatusPageDto, team: Team): StatusPag
     team = team,
     description = it.description,
     footer = it.footer,
+    imageId = it.imageId,
     domainNames = it.domainNames,
 )
 
@@ -17,6 +18,7 @@ fun StatusPage.update(it: UpdateStatusPageDto): StatusPage {
     slug = it.slug
     description = it.description
     footer = it.footer
+    imageId = it.imageId
     domainNames = it.domainNames
 
     return this

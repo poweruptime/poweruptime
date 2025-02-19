@@ -15,6 +15,7 @@ data class PublicStatusPageResponse(
     val name: String,
     val description: String?,
     val footer: String?,
+    val imageId: String?,
     val groups: List<PublicStatusPageGroupResponse>
 ) {
     constructor(it: StatusPage) : this(
@@ -23,6 +24,7 @@ data class PublicStatusPageResponse(
         it.name,
         it.description,
         it.footer,
+        it.imageId,
         it.groups.map { group -> PublicStatusPageGroupResponse(group) },
     )
 }
@@ -33,6 +35,7 @@ data class StatusPageResponse(
     val slug: String,
     val description: String?,
     val footer: String?,
+    val imageId: String?,
     val domainNames: Set<String>?,
     val deleted: Instant?,
     val groups: List<StatusPageGroupResponse>
@@ -43,6 +46,7 @@ data class StatusPageResponse(
         slug = statusPage.slug,
         description = statusPage.description,
         footer = statusPage.footer,
+        imageId = statusPage.imageId,
         domainNames = statusPage.domainNames,
         deleted = statusPage.deleted,
         groups = statusPage.groups.map { group ->
@@ -64,6 +68,7 @@ data class CreateStatusPageDto(
     @get:NotNull val groups: List<StatusPageGroupDto>,
     val description: String?,
     val footer: String?,
+    val imageId: String?,
     val domainNames: Set<String>?,
 )
 
@@ -77,5 +82,6 @@ data class UpdateStatusPageDto(
     @get:NotNull val groups: List<StatusPageGroupDto>,
     val description: String?,
     val footer: String?,
+    val imageId: String?,
     val domainNames: Set<String>?,
 )

@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, inject, input, output} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
@@ -76,8 +76,15 @@ export class FileUpload {
   readonly fileId = output<string>();
 
   upload(): void {
+    const file = this.file();
+
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('file', this.file()!);
+    formData.append('file', file);
 
     this.httpClient.post(`${environment.apiUrl}/v1/file/${this.type()}`, formData).subscribe({
       next: (fileId) => console.log(fileId),

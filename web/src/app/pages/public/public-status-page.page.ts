@@ -6,7 +6,7 @@ import {Meta, Title} from '@angular/platform-browser';
 import {s_cut} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {Placeholder, RefreshInComponent} from '@app/components';
+import {BackendImage, Placeholder, RefreshInComponent} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {SanitizeHtmlPipe} from '@app/pipes';
 import {PublicStatusPageStore} from '@app/services';
@@ -17,7 +17,12 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     <div class="flex flex-col gap-6">
       @if (publicStatusPageStore.isFulfilled()) {
         @if (publicStatusPageStore.statusPage(); as statusPage) {
-          <h1 class="text-4xl">{{ statusPage.name }}</h1>
+          <div class="flex items-center gap-4">
+            @if (statusPage.imageId; as imageId) {
+              <pu-backend-image [src]="'/STATUS_PAGE/' + imageId" />
+            }
+            <h1 class="text-4xl">{{ statusPage.name }}</h1>
+          </div>
 
           @if (publicStatusPageMonitorsStore.isFulfilled()) {
             <mat-card appearance="outlined">
@@ -87,6 +92,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     StatusPageMonitorList,
     BiComponent,
     Placeholder,
+    BackendImage,
   ],
 })
 export class PublicStatusPagePage {

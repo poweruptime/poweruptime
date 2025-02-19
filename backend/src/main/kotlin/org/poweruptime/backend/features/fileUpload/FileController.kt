@@ -16,16 +16,18 @@ import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.multipart.MultipartFile
 
-@Controller()
+@Controller
 @Tag(name = "File API")
-class FileController {
-    @GetMapping("/v1/file/{type}/{fileId:.+}")
+class FileController(
+    private val storageService: StorageService,
+) {
+    @GetMapping("/v1/public/file/{type}/{fileId:.+}")
     @ResponseBody
     fun serveFile(
         @PathVariable("type") type: FileType,
         @PathVariable("fileId") fileId: String
     ): ResponseEntity<Resource> {
-        val file = storageServices[type]?.loadAsResource(fileId) ?: throw NotFoundException()
+        val file = storageService.storageServices[type]?.loadAsResource(fileId) ?: throw NotFoundException()
 
         return ResponseEntity.ok().header(
             HttpHeaders.CONTENT_DISPOSITION,
@@ -38,8 +40,11 @@ class FileController {
         security = [SecurityRequirement(name = BEARER_AUTH)],
     )
     @PostMapping("/v1/file/{type}")
+    @ResponseBody
     fun handleFileUpload(
         @PathVariable("type") type: FileType,
         @RequestPart("file") file: MultipartFile,
-    ): String = storageServices[type]?.store(file) ?: throw NotFoundException()
+    ): FileUploadResponse = FileUploadResponse(
+        storageService.storageServices[type]?.store(file) ?: throw NotFoundException(),
+    )
 }
