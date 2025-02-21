@@ -62,7 +62,7 @@
     "@jsverse/transloco-validator": "^7.0.1",
     "@types/d3-shape": "3.1.7",
     "@types/express": "5.0.0",
-    "@types/node": "22.13.4",
+    "@types/node": "22.13.5",
     "autoprefixer": "10.4.20",
     "ngx-build-plus": "^19.0.0",
     "openapi-typescript": "7.6.1",
