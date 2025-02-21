@@ -29,7 +29,7 @@
     "@angular/router": "19.1.6",
     "@angular/ssr": "19.1.7",
     "@jsverse/transloco": "7.5.1",
-    "@ng-matero/extensions": "19.1.0",
+    "@ng-matero/extensions": "19.2.0",
     "@ngneat/overview": "6.1.1",
     "@ngneat/until-destroy": "10.0.0",
     "@ngrx/operators": "19.0.1",
