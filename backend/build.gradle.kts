@@ -42,7 +42,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // Database stuff
-    implementation("org.liquibase:liquibase-core:4.31.0")
+    implementation("org.liquibase:liquibase-core:4.31.1")
     runtimeOnly("org.postgresql:postgresql:42.7.5")
     // Postgres Arrays
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.2")
