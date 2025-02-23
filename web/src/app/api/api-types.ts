@@ -455,7 +455,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/file/{type}': {
+  '/v1/file': {
     parameters: {
       query?: never;
       header?: never;
@@ -746,6 +746,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/status-page/free/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Check if slug is free */
+    get: operations['freeSlug'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/secure': {
     parameters: {
       query?: never;
@@ -963,13 +980,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/file/{type}/{fileId}': {
+  '/v1/public/file/{fileId}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
+    /** Download file */
     get: operations['serveFile'];
     put?: never;
     post?: never;
@@ -1542,6 +1560,10 @@ export interface components {
       imageId?: string;
       domainNames?: string[];
     };
+    FileResponse: {
+      name: string;
+      fileId: string;
+    };
     MonitorMinResponse: {
       name: string;
       id: string;
@@ -1568,7 +1590,7 @@ export interface components {
       slug: string;
       description?: string;
       footer?: string;
-      imageId?: string;
+      image?: components['schemas']['FileResponse'];
       domainNames?: string[];
       /** Format: date-time */
       deleted?: string;
@@ -1744,9 +1766,6 @@ export interface components {
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
     };
-    FileUploadResponse: {
-      fileId: string;
-    };
     PasswordForgotRequestDto: {
       email: string;
     };
@@ -1848,6 +1867,9 @@ export interface components {
       numberOfPages: number;
       data: components['schemas']['StatusPageResponse'][];
     };
+    BooleanResponse: {
+      it: boolean;
+    };
     JsonInfoResponse: {
       info: string;
       version: string;
@@ -1879,7 +1901,7 @@ export interface components {
       name: string;
       description?: string;
       footer?: string;
-      imageId?: string;
+      image?: components['schemas']['FileResponse'];
       groups: components['schemas']['PublicStatusPageGroupResponse'][];
     };
     PaginatedResponsePublicMonitorMinResponse: {
@@ -2947,9 +2969,7 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        type: 'STATUS_PAGE';
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody?: {
@@ -2967,7 +2987,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['FileUploadResponse'];
+          '*/*': components['schemas']['FileResponse'];
         };
       };
     };
@@ -3357,6 +3377,28 @@ export interface operations {
       };
     };
   };
+  freeSlug: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
+        };
+      };
+    };
+  };
   apiSecure: {
     parameters: {
       query?: never;
@@ -3649,7 +3691,6 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        type: 'STATUS_PAGE';
         fileId: string;
       };
       cookie?: never;

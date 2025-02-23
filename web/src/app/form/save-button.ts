@@ -10,10 +10,10 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
       <button
         class="flex items-center"
         [disabled]="!valid()"
+        [attr.form]="form()"
         mat-fab
         extended
-        type="submit"
-        form="form">
+        type="submit">
         <bi name="save" />
         <!-- t(general.save) -->
         <span class="ms-2 text-lg">{{ text() ?? 'general.save' | transloco }}</span>
@@ -29,4 +29,5 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 export class SaveButton {
   valid = input(false);
   text = input<string>();
+  form = input('form');
 }

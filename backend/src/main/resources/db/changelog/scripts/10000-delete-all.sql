@@ -27,5 +27,6 @@ truncate table team_join_token cascade;
 truncate table team_user cascade;
 truncate table "user" cascade;
 truncate table team cascade;
+truncate table file cascade;
 
 RESET session_replication_role;

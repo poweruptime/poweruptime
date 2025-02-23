@@ -1,52 +1,57 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, inject, input, output} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {HttpClient} from '@angular/common/http';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  linkedSignal,
+  output,
+} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {MatButton} from '@angular/material/button';
 import {MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MAT_ERROR, MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+
+import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {FileInputDirective, FileInputValidators} from '@ngx-dropzone/cdk';
 import {MatDropzone} from '@ngx-dropzone/material';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {injectAPI} from '@app/api';
+import {BackendType} from '@app/api';
+import {BackendImage} from '@app/components/backend-image';
 
 import {environment} from '../../environments/environment';
 
 @Component({
   template: `
-    <div class="flex items-center gap-2">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>{{ label() }}</mat-label>
-        <ngx-mat-dropzone>
-          <input [formControl]="fileCtrl" type="file" fileInput />
+    <mat-form-field class="w-full" subscriptSizing="dynamic">
+      <mat-label>{{ label() }}</mat-label>
+      <ngx-mat-dropzone>
+        <input [formControl]="fileCtrl" type="file" fileInput />
 
-          @if (file(); as file) {
-            <mat-chip-row (removed)="fileCtrl.setValue(null)">
-              {{ file.name }}
-              <button matChipRemove>
-                <bi name="x-circle" />
-              </button>
-            </mat-chip-row>
-          }
-        </ngx-mat-dropzone>
-        <bi matSuffix name="cloud-arrow-up-fill" />
-
-        @if (fileCtrl.errors?.['accept']) {
-          <mat-error>{{ 'form.validation.file' | transloco }}</mat-error>
+        @if (fileToShow(); as fileToShow) {
+          <mat-chip-row>
+            {{ fileToShow.name }}
+            <button matChipRemove>
+              <bi name="x-circle" />
+            </button>
+          </mat-chip-row>
         }
-      </mat-form-field>
-      <button
-        class="secondary-button"
-        [disabled]="fileCtrl.errors?.['accept']"
-        (click)="upload()"
-        mat-flat-button
-        type="button">
-        Upload
-      </button>
-    </div>
+      </ngx-mat-dropzone>
+      <bi matSuffix name="cloud-arrow-up-fill" />
+
+      @if (fileCtrl.errors?.['accept']) {
+        <mat-error>{{ 'form.validation.file' | transloco }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (fileToShow(); as fileToShow) {
+      @if ($any(fileToShow).fileId; as fileId) {
+        <pu-backend-image class="mt-4" [fileId]="fileId" [title]="'Logo'" size="140" />
+      }
+    }
   `,
   selector: 'pu-file-upload',
   imports: [
@@ -59,36 +64,49 @@ import {environment} from '../../environments/environment';
     BiComponent,
     MatDropzone,
     FileInputDirective,
-    MatButton,
     TranslocoPipe,
+    BackendImage,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileUpload {
   private readonly httpClient = inject(HttpClient);
 
-  type = input.required();
   label = input.required();
+  file = input<BackendType['FileResponse']>();
 
   readonly fileCtrl = new FormControl<File | null>(null, [FileInputValidators.accept('image/*')]);
-  readonly file = toSignal(this.fileCtrl.valueChanges);
+  readonly fileToShow = linkedSignal<BackendType['FileResponse'] | File | undefined>(this.file);
 
-  readonly fileId = output<string>();
+  readonly fileId = output<string | null>();
 
-  upload(): void {
-    const file = this.file();
+  constructor() {
+    this.fileCtrl.valueChanges
+      .pipe(
+        takeUntilDestroyed(),
+        filter((file) => !!file),
+        filter(() => this.fileCtrl.errors === null),
+      )
+      .subscribe((file) => {
+        this.fileToShow.set(file);
+        const formData = new FormData();
+        formData.append('file', file);
 
-    if (!file) {
-      console.error('No file selected');
-      return;
-    }
+        this.httpClient
+          .post<BackendType['FileResponse']>(`${environment.apiUrl}/v1/file`, formData)
+          .subscribe({
+            next: (file) => {
+              console.log(file);
+              this.fileId.emit(file.fileId);
+            },
+            error: (e) => console.error(e),
+          });
+      });
+  }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    this.httpClient.post(`${environment.apiUrl}/v1/file/${this.type()}`, formData).subscribe({
-      next: (fileId) => console.log(fileId),
-      error: (e) => console.error(e),
-    });
+  remove() {
+    this.fileCtrl.setValue(null);
+    this.fileToShow.set(undefined);
+    this.fileId.emit(null);
   }
 }

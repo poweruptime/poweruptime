@@ -1,4 +1,4 @@
-import {DOCUMENT} from '@angular/common';
+import {DOCUMENT, NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {Meta, Title} from '@angular/platform-browser';
@@ -8,6 +8,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendImage, Placeholder, RefreshInComponent} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
+import {MonitorStatusColor} from '@app/directives';
 import {SanitizeHtmlPipe} from '@app/pipes';
 import {PublicStatusPageStore} from '@app/services';
 import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
@@ -18,8 +19,12 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
       @if (publicStatusPageStore.isFulfilled()) {
         @if (publicStatusPageStore.statusPage(); as statusPage) {
           <div class="flex items-center gap-4">
-            @if (statusPage.imageId; as imageId) {
-              <pu-backend-image [src]="'/STATUS_PAGE/' + imageId" />
+            @if (statusPage.image; as image) {
+              <pu-backend-image
+                class="rounded-xl"
+                [fileId]="image.fileId"
+                [title]="statusPage.name + ' Logo'"
+                size="75" />
             }
             <h1 class="text-4xl">{{ statusPage.name }}</h1>
           </div>
@@ -29,10 +34,10 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
               <mat-card-content>
                 <div class="inline-flex items-center gap-2">
                   @if (publicStatusPageMonitorsStore.status() === 'UP') {
-                    <bi class="text-green-500" size="24" name="check-circle-fill" />
+                    <bi [monitor-status-color]="'UP'" size="24" name="check-circle-fill" />
                     <span class="text-xl">All services operational.</span>
                   } @else {
-                    <bi class="text-orange-500" size="24" name="exclamation-circle-fill" />
+                    <bi [monitor-status-color]="'DOWN'" size="24" name="exclamation-circle-fill" />
                     <span class="text-xl">Some services experience issues.</span>
                   }
                 </div>
@@ -93,6 +98,8 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     BiComponent,
     Placeholder,
     BackendImage,
+    MonitorStatusColor,
+    NgOptimizedImage,
   ],
 })
 export class PublicStatusPagePage {

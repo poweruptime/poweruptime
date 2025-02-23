@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 
@@ -18,7 +18,7 @@ import {filter, map, skip, withLatestFrom} from 'rxjs';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
-import {Nav, ThemeSwitch} from '@app/components';
+import {Nav} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
 import {PushService, SelectedTeamStore} from '@app/services';
 
@@ -50,10 +50,6 @@ import {PushService, SelectedTeamStore} from '@app/services';
             </div>
             <div class="inline-flex items-center gap-2">
               <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
-              <pu-theme-switch style="height: 40px" />
-              <a mat-icon-button routerLink="/profile">
-                <bi name="gear" />
-              </a>
             </div>
           </div>
         </header>
@@ -83,7 +79,7 @@ import {PushService, SelectedTeamStore} from '@app/services';
     }
 
     .main {
-      @apply overflow-y-auto px-4 pt-4;
+      @apply overflow-y-auto px-2 pt-2;
       max-width: 1920px;
       height: 100%;
       grid-row: 2;
@@ -106,8 +102,6 @@ import {PushService, SelectedTeamStore} from '@app/services';
     MatIconButton,
     Nav,
     CmdkOverlay,
-    ThemeSwitch,
-    MatIconAnchor,
   ],
 })
 export class HomeLayout {

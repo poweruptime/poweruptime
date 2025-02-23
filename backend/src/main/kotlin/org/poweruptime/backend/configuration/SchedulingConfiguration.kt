@@ -2,6 +2,7 @@ package org.poweruptime.backend.configuration
 
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.profile.service.EmailChangeTokenService
@@ -28,13 +29,14 @@ class SchedulingConfiguration(
     private val emailChangeTokenService: EmailChangeTokenService,
     private val teamService: TeamService,
     private val teamSettingService: TeamSettingService,
+    private val fileService: FileService
 ) {
     val logger: Logger = LoggerFactory.getLogger(SchedulingConfiguration::class.java)
 
     // Runs 30 minutes after instance start every 24 hours
     @Scheduled(fixedDelay = 86_400_000L, initialDelay = 1_800_000L)
     @Suppress("LongMethod")
-    fun removeOldSessions() {
+    fun cleanup() {
         val dateNineMonthAgo = Instant.now().minusSeconds(60 * 60 * 24 * 30 * 9) // 9 months
         logger.info("Removing sessions older than $dateNineMonthAgo")
 
@@ -77,6 +79,16 @@ class SchedulingConfiguration(
                 teamJoinToken.invitee.id,
                 teamJoinToken.team.id,
                 teamJoinToken.createdAt,
+            )
+        }
+
+        logger.info("Removing tangling files older than $date3DayAgo")
+        for (file in fileService.deleteOlderThan(date3DayAgo)) {
+            logger.info(
+                "Removed file '{}', fileId: '{}', createdAt: '{}'",
+                file.id,
+                file.fileId,
+                file.createdAt,
             )
         }
 

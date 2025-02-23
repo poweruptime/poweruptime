@@ -24,7 +24,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
       <mat-card-content>
         <form
           class="mt-6 flex flex-col gap-4"
-          id="form"
+          id="general-form"
           #formRef
           [formGroup]="form"
           (ngSubmit)="submit()">

@@ -160,6 +160,11 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   vertical-align: -0.19em;
 }
 
+.mat-mdc-menu-item-text > bi {
+  vertical-align: -0.4em;
+  margin-right: 0.4em;
+}
+
 .mdc-list-item__primary-text > bi {
   vertical-align: -0.26rem;
   margin-right: 0.7em;

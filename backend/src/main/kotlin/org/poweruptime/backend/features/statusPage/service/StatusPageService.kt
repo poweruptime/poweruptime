@@ -12,6 +12,7 @@ import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.toDeletedFilter
 import org.poweruptime.backend.core.toPredicate
+import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.statusPage.domain.StatusPageGroupMonitorRepository
 import org.poweruptime.backend.features.statusPage.domain.StatusPageRepository
@@ -35,6 +36,7 @@ class StatusPageService(
     private val statusPageGroupService: StatusPageGroupService,
     private val monitorService: MonitorService,
     private val teamService: TeamService,
+    private val fileService: FileService,
 ) : ASoftDeleteEntityService<StatusPage>(statusPageRepository) {
     @Transactional
     fun create(dto: CreateStatusPageDto): StatusPage {
@@ -44,13 +46,26 @@ class StatusPageService(
         if (allMonitorIds.toSet().size != allMonitorIds.size) {
             throw BadRequestException("All monitor ids should be unique")
         }
+
+        if (getBySlug(dto.slug) != null) {
+            throw BadRequestException("Slug ${dto.slug} already used", "slug_in_use")
+        }
+
         val monitors = monitorService.getByIdOrThrow(allMonitorIds).associateBy { it.id }
 
         if (!monitorService.ensureAllMonitorsInTeam(monitors.values, dto.teamId)) {
             throw BadRequestException("All monitors should be in the same team as of status page")
         }
 
-        val statusPage = save(StatusPage.fromDto(dto, teamService.getByIdOrThrow(dto.teamId)))
+        val statusPage = save(
+            StatusPage.fromDto(
+                dto,
+                teamService.getByIdOrThrow(dto.teamId),
+                dto.imageId?.let {
+                    fileService.getByFileId(it) ?: throw NotFoundException("Image not found")
+                },
+            ),
+        )
 
         val groups = statusPageGroupService.saveAll(
             dto.groups.mapIndexed { index, groupDto ->
@@ -86,15 +101,29 @@ class StatusPageService(
         if (allMonitorIds.toSet().size != allMonitorIds.size) {
             throw BadRequestException("All monitor ids should be unique")
         }
-        val monitors = monitorService.getByIdOrThrow(allMonitorIds).associateBy { it.id }
 
         val oldStatusPage = getByIdOrThrow(dto.id)
+
+        if (oldStatusPage.slug != dto.slug) {
+            if (getBySlug(dto.slug) != null) {
+                throw BadRequestException("Slug ${dto.slug} already used", "slug_in_use")
+            }
+        }
+
+        val monitors = monitorService.getByIdOrThrow(allMonitorIds).associateBy { it.id }
 
         if (!monitorService.ensureAllMonitorsInTeam(monitors.values, oldStatusPage.team.id)) {
             throw BadRequestException("All monitors should be in the same team as the status page")
         }
 
-        val statusPage = save(oldStatusPage.update(dto))
+        val statusPage = save(
+            oldStatusPage.update(
+                dto,
+                dto.imageId?.let {
+                    fileService.getByFileId(it) ?: throw NotFoundException("Image not found")
+                },
+            ),
+        )
 
         statusPageGroupMonitorRepository.deleteAll(statusPage.groupMonitors)
         statusPageGroupService.deleteAll(statusPage.groups)

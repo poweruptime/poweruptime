@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.fileUpload.FileResponse
 import org.poweruptime.backend.features.statusPage.model.StatusPage
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import java.time.Instant
@@ -15,7 +16,7 @@ data class PublicStatusPageResponse(
     val name: String,
     val description: String?,
     val footer: String?,
-    val imageId: String?,
+    val image: FileResponse?,
     val groups: List<PublicStatusPageGroupResponse>
 ) {
     constructor(it: StatusPage) : this(
@@ -24,7 +25,7 @@ data class PublicStatusPageResponse(
         it.name,
         it.description,
         it.footer,
-        it.imageId,
+        it.image?.let { FileResponse(it) },
         it.groups.map { group -> PublicStatusPageGroupResponse(group) },
     )
 }
@@ -35,7 +36,7 @@ data class StatusPageResponse(
     val slug: String,
     val description: String?,
     val footer: String?,
-    val imageId: String?,
+    val image: FileResponse?,
     val domainNames: Set<String>?,
     val deleted: Instant?,
     val groups: List<StatusPageGroupResponse>
@@ -46,7 +47,7 @@ data class StatusPageResponse(
         slug = statusPage.slug,
         description = statusPage.description,
         footer = statusPage.footer,
-        imageId = statusPage.imageId,
+        image = statusPage.image?.let { FileResponse(it) },
         domainNames = statusPage.domainNames,
         deleted = statusPage.deleted,
         groups = statusPage.groups.map { group ->

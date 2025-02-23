@@ -27,10 +27,10 @@ import {calculatePingChart} from '@app/services/util';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
       @if (monitorDetailStore.monitor(); as monitor) {
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-6">
             <h1 class="text-4xl">{{ monitor.name }}</h1>
             <a href="/public/m/{{ monitor.id }}" target="_blank">
               <bi size="28" name="box-arrow-up-right" />
@@ -43,19 +43,17 @@ import {calculatePingChart} from '@app/services/util';
         @if (monitor.description; as description) {
           @let _cutDescription = cutDescription();
 
-          <span (click)="cutDescription.set(!_cutDescription)">
-            @if (cutDescription()) {
-              {{ description | s_cut: 600 : '....' }}
-            } @else {
-              {{ description }}
-            }
-          </span>
+          <pre
+            class="whitespace-pre-wrap"
+            (click)="
+              cutDescription.set(!_cutDescription)
+            ">@if (cutDescription()) {{{ description | s_cut: 300 : '....' }} } @else {{{ description }}}</pre>
         }
 
         @switch (monitor.checker._type) {
           @case ('HTTP') {
             <a
-              class="flex gap-2 font-extrabold text-green-500"
+              class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
               [href]="$any(monitor.checker)['url']"
               target="_blank"
               rel="noopener noreferrer">
@@ -64,7 +62,7 @@ import {calculatePingChart} from '@app/services/util';
           }
           @case ('SSL_CERTIFICATE') {
             <a
-              class="flex gap-2 font-extrabold text-green-500"
+              class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
               [href]="$any(monitor.checker)['url']"
               target="_blank"
               rel="noopener noreferrer">
@@ -72,13 +70,13 @@ import {calculatePingChart} from '@app/services/util';
             </a>
           }
           @case ('DNS') {
-            <span class="flex gap-2 font-extrabold text-green-500">
+            <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
               [{{ $any(monitor.checker)['type'] }}]
               {{ $any(monitor.checker)['host'] }}
             </span>
           }
           @case ('PING') {
-            <span class="flex gap-2 font-extrabold text-green-500">
+            <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
               {{ $any(monitor.checker)['ip'] }}:{{ $any(monitor.checker)['port'] }}
             </span>
           }
@@ -169,7 +167,7 @@ import {calculatePingChart} from '@app/services/util';
         <pu-monitor-header-placeholder />
       }
 
-      <hr class="my-6" />
+      <hr class="my-2" />
 
       <mat-card appearance="outlined">
         <mat-card-content>

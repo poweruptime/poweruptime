@@ -114,7 +114,7 @@ type DragEventType = {
             <div>NEVER EVER ERROR</div>
           }
         } @empty {
-          <span class="text-center">No monitors added yet.</span>
+          <span class="my-4 text-center">No monitors added yet.</span>
         }
       </div>
     </div>
@@ -129,7 +129,7 @@ type DragEventType = {
     }
 
     .monitor-drag-placeholder {
-      @apply animate-pulse rounded-md bg-gray-800;
+      @apply animate-pulse rounded-2xl bg-slate-400 dark:bg-gray-700;
       min-height: 4.5rem;
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }

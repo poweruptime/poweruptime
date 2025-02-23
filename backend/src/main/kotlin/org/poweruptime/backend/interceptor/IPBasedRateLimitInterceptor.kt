@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.HandlerInterceptor
 import java.util.concurrent.TimeUnit
 
-class RateLimitInterceptor(private val rateLimitService: RateLimitService) : HandlerInterceptor {
-    private val log = LoggerFactory.getLogger(RateLimitInterceptor::class.java)
+class IPBasedRateLimitInterceptor(private val ipBasedRateLimitService: IPBasedRateLimitService) : HandlerInterceptor {
+    private val log = LoggerFactory.getLogger(IPBasedRateLimitInterceptor::class.java)
 
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val ipAddress = request.remoteAddr
 
-        val probe = rateLimitService.resolveBucket(ipAddress).tryConsumeAndReturnRemaining(1)
+        val probe = ipBasedRateLimitService.resolveBucket(ipAddress).tryConsumeAndReturnRemaining(1)
         return if (probe.isConsumed) {
             val remainingTokens = probe.remainingTokens.toString()
             response.addHeader(CustomHttpHeader.RATE_LIMIT_REMAINING, remainingTokens)

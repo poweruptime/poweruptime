@@ -8,7 +8,7 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import {MatIconButton, MatMiniFabButton} from '@angular/material/button';
+import {MatMiniFabButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {BiComponent, BiName} from 'dfx-bootstrap-icons';
@@ -18,7 +18,7 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 type Themes = 'dark' | 'light' | 'system';
 
-const themeOptions = [
+export const themeOptions = [
   {
     value: 'system',
     viewValue: 'System/Default',
@@ -35,35 +35,6 @@ const themeOptions = [
     icon: 'moon-stars-fill',
   },
 ] satisfies {value: Themes; viewValue: string; icon: BiName}[];
-
-@Component({
-  template: `
-    <button [matMenuTriggerFor]="menu" mat-icon-button>
-      <bi name="paint-bucket" size="20" />
-    </button>
-    <mat-menu #menu="matMenu">
-      @for (theme of themeOptions; track theme.value) {
-        @let selectedTheme = themeService.selectedTheme();
-
-        <button (click)="themeService.selectedTheme.set(theme.value)" mat-menu-item>
-          <div class="inline-flex items-center gap-2">
-            <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" size="16" />
-            <span>{{ theme.viewValue }}</span>
-
-            <bi [name]="theme.icon" />
-          </div>
-        </button>
-      }
-    </mat-menu>
-  `,
-  selector: 'pu-theme-switch',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIconButton, MatMenuTrigger, MatMenu, BiComponent, MatMenuItem],
-})
-export class ThemeSwitch {
-  readonly themeOptions = themeOptions;
-  readonly themeService = inject(ThemeService);
-}
 
 @Component({
   template: `

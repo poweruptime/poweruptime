@@ -8,6 +8,7 @@ import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.models.EntityWithName
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.team.model.Team
 
 @Entity
@@ -30,15 +31,16 @@ class StatusPage(
     @Column(nullable = true, columnDefinition = "text")
     var footer: String? = null,
 
-    @Column(name = "image_id", nullable = true, length = NANO_ID_SMALL_LENGTH)
-    var imageId: String? = null,
-
     @Suppress("JpaAttributeTypeInspection") @Column(
         name = "domain_names",
         nullable = true,
         columnDefinition = "text[]",
     )
     var domainNames: Set<String>? = null,
+
+    @JoinColumn(name = "image_id", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    var image: File? = null,
 
     @OneToMany(mappedBy = "statusPage", fetch = FetchType.LAZY)
     var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),

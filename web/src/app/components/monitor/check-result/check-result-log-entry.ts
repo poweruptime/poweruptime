@@ -5,6 +5,7 @@ import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
+import {MonitorStatusColor} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 
 @Component({
@@ -15,9 +16,9 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
       @if (_logEntry.level === 'ACTION') {
         @let result = _logEntry.properties?.['result'] ?? 'true';
         @if (result === 'true') {
-          <bi class="text-green-500" name="check-circle"></bi>
+          <bi [monitor-status-color]="'UP'" name="check-circle"></bi>
         } @else {
-          <bi class="text-red-500" name="x-circle"></bi>
+          <bi [monitor-status-color]="'DOWN'" name="x-circle"></bi>
         }
       } @else {
         <bi name="info-circle"></bi>
@@ -43,7 +44,7 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
   `,
   selector: 'pu-check-result-log-entry',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RelativeTimeWithTooltip, BiComponent, DatePipe],
+  imports: [RelativeTimeWithTooltip, BiComponent, DatePipe, MonitorStatusColor],
 })
 export class CheckResultLogEntry {
   readonly logEntry = input.required<BackendType['CheckResultLogEntryResponse']>();

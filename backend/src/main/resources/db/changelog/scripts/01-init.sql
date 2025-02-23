@@ -12,6 +12,18 @@ create table dead_letter
     queue      varchar(255)                           not null
 );
 
+create table file
+(
+    created_at timestamp with time zone default now() not null,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    file_id    varchar(25)                            not null
+        unique,
+    id         varchar(25)                            not null
+        primary key,
+    name       varchar(256)                           not null
+);
+
 create table instance_setting
 (
     setting_key varchar(2)                             not null,
@@ -262,13 +274,16 @@ create table status_page
         constraint fkbybj5wsge96tvl33e0tuuu2ra
             references team
             on delete cascade,
+    image_id     varchar(25)
+        unique
+        constraint fklr0bs4g2f9nmmjqg1wm0sbajj
+            references file,
     name         varchar(70)              collate numeric       not null,
     description  text,
     footer       text,
     slug         varchar(255)                           not null
         unique,
-    domain_names text[],
-    image_id        varchar(12)                            unique
+    domain_names text[]
 );
 
 create table status_page_group
@@ -440,9 +455,10 @@ create table team_user
         constraint fkiuwi96twuthgvhnarqj34mnjv
             references team
             on delete cascade,
-    user_id varchar(12)                           not null
-        constraint fkc1f7oca74blh9v53wuju6d9x9
-            references "user" (id)
+    user_id    varchar(12)                            not null
+        constraint fk4ngjbnpkmrmuabmythg8le9wv
+            references "user"
             on delete cascade,
     primary key (team_id, user_id)
 );
+

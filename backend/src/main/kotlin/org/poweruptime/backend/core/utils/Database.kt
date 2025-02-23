@@ -6,6 +6,9 @@ object Database {
     const val MIN_MAIL_LENGTH = 5
     const val MAX_MAIL_LENGTH = 255
 
+    const val MIN_FILE_NAME_LENGTH = 1
+    const val MAX_FILE_NAME_LENGTH = 256
+
     const val MIN_TEST_INTERVAL_SECONDS = 30L // 30 seconds
     const val MAX_TEST_INTERVAL_SECONDS = 94608000L // 3 years
 

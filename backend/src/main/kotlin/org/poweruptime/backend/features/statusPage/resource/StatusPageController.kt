@@ -65,6 +65,18 @@ class StatusPageController(
         ).toDto { it.toResponse() }
     }
 
+    data class BooleanResponse(val it: Boolean)
+
+    @Operation(
+        summary = "Check if slug is free",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+    )
+    @GetMapping("/free/{slug}")
+    @ResponseStatus(HttpStatus.OK)
+    fun freeSlug(@PathVariable slug: String): BooleanResponse = BooleanResponse(
+        statusPageService.getBySlug(slug) == null,
+    )
+
     @Operation(
         summary = "Add status page",
         security = [SecurityRequirement(name = BEARER_AUTH)],

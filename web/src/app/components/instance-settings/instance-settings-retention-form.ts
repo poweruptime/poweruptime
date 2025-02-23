@@ -17,7 +17,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
         <mat-card-title>{{ 'instanceSettings.retention.title' | transloco }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <form id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+        <form id="retention-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
           <div class="mt-6 flex gap-4">
             <mat-form-field>
               <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>

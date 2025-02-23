@@ -16,6 +16,7 @@ spring:
   jpa:
     show-sql: false
     generate-ddl: true
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     properties:
@@ -24,6 +25,12 @@ spring:
           lob:
             non_contextual_creation: true
         format_sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   liquibase:
     enabled: true
@@ -79,6 +86,8 @@ poweruptime:
   host: localhost:4200
   notification-temp:
     enabled: true
+  storage:
+    directory: storage
   keys:
     directory: keys/some
     access-token:

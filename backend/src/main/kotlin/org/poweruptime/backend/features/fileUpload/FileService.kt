@@ -1,9 +1,7 @@
 package org.poweruptime.backend.features.fileUpload
 
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.utils.Config
-import org.poweruptime.backend.core.utils.RandomGenerator
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
@@ -16,42 +14,25 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.time.Instant
 
 @Service
-class StorageService(
-    @Value(Config.STORAGE_DIRECTORY) private val directoryPath: String = "dummy",
-) {
-    val storageServices = mapOf(
-        FileType.STATUS_PAGE to FileService(Path.of("$directoryPath/status-page")),
-    )
-}
-
 class FileService(
-    private val rootLocation: Path,
+    private val fileRepository: FileRepository,
+    @Value(Config.STORAGE_DIRECTORY) private val directoryPath: String,
 ) {
+    private val rootLocation = Path.of(directoryPath)
     private val logger = LoggerFactory.getLogger(FileService::class.java)
 
-    private fun isAllowedToUpload(file: MultipartFile) {
-        if (file.isEmpty) {
-            throw BadRequestException("Failed to store empty file.")
-        }
+    fun store(uploadFile: MultipartFile): File {
+        isAllowedToUpload(uploadFile)
 
-        when (file.contentType) {
-            "image/jpeg", "image/png", "image/webp", "image/avif" -> {}
-            else -> {
-                logger.debug("""File type "${file.contentType}" is not allowed.""")
-                throw BadRequestException("""File type "${file.contentType}" is not allowed.""")
-            }
-        }
-    }
-
-    fun store(file: MultipartFile): String {
-        isAllowedToUpload(file)
-
-        val fileId = RandomGenerator.nanoId()
+        val dbFile = File(
+            name = uploadFile.resource.filename!!, // gets checked by isAllowedToUpload
+        )
 
         val destinationFile: Path = rootLocation
-            .resolve(Paths.get(fileId))
+            .resolve(Paths.get(dbFile.fileId))
             .normalize()
             .toAbsolutePath()
 
@@ -61,7 +42,7 @@ class FileService(
         }
 
         try {
-            file.inputStream.use { inputStream ->
+            uploadFile.inputStream.use { inputStream ->
                 Files.copy(
                     inputStream,
                     destinationFile,
@@ -73,33 +54,71 @@ class FileService(
             throw BadRequestException()
         }
 
-        return fileId
+        return fileRepository.save(dbFile)
     }
 
-    fun exists(fileId: String): Boolean = try {
-        loadAsResource(fileId)
-        true
-    } catch (_: Exception) {
-        false
-    }
-
-    fun loadAsResource(fileId: String): Resource = try {
-        val file = load(fileId)
+    fun loadAsResource(fileId: String): Resource? = try {
+        val file = loadFile(fileId)
         val resource = UrlResource(file.toUri())
         if (resource.exists() && resource.isReadable) {
             resource
         } else {
-            throw NotFoundException("File not found: $fileId")
+            null
         }
-    } catch (e: MalformedURLException) {
-        throw NotFoundException("File not found: $fileId")
+    } catch (_: MalformedURLException) {
+        null
+    }
+
+    fun getByFileId(fileId: String): File? {
+        return fileRepository.findByFileId(fileId)
     }
 
     fun init() {
         Files.createDirectories(rootLocation)
     }
 
-    private fun load(fileId: String): Path {
+    fun deleteOlderThan(past: Instant): List<File> {
+        val filesToDelete = fileRepository.findUnusedCreatedAfterThan(past)
+
+        filesToDelete.forEach { file ->
+            try {
+                val filePath = rootLocation.resolve(file.fileId).normalize().toAbsolutePath()
+
+                if (!filePath.parent.equals(rootLocation.toAbsolutePath())) {
+                    // This is a security check
+                    throw IOException("Path error")
+                }
+
+                Files.deleteIfExists(filePath)
+            } catch (e: IOException) {
+                logger.warn("Failed to delete file from disk: ${file.fileId}", e)
+            }
+        }
+
+        fileRepository.deleteAll(filesToDelete)
+
+        return filesToDelete
+    }
+
+    private fun loadFile(fileId: String): Path {
         return rootLocation.resolve(fileId)
+    }
+
+    private fun isAllowedToUpload(file: MultipartFile) {
+        if (file.isEmpty) {
+            throw BadRequestException("Failed to store empty file.")
+        }
+
+        if (file.resource.filename.isNullOrEmpty()) {
+            throw BadRequestException("File name must be provided")
+        }
+
+        when (file.contentType) {
+            "image/jpeg", "image/png", "image/webp", "image/avif" -> {}
+            else -> {
+                logger.debug("""File type "${file.contentType}" is not allowed.""")
+                throw BadRequestException("""File type "${file.contentType}" is not allowed.""")
+            }
+        }
     }
 }

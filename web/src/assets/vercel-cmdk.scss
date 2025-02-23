@@ -15,10 +15,6 @@
     border: 1px solid var(--gray6);
     box-shadow: var(--cmdk-shadow);
     transition: transform 100ms ease;
-
-    .dark & {
-      background: rgba(22, 22, 22, 0.7);
-    }
   }
 
   .cmdk-input {
@@ -96,7 +92,7 @@
   }
 
   .cmdk-list {
-    height: min(330px, calc(var(--cmdk-list-height)));
+    min-height: min(330px, calc(var(--cmdk-list-height)));
     max-height: 400px;
     overflow: auto;
     overscroll-behavior: contain;

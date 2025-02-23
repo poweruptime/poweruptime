@@ -5,9 +5,14 @@ object Routes {
 
     const val USER_AUTH = "/v1/auth/**"
 
-    val rateLimited = buildList {
+    val ipRateLimited = buildList {
         add(USER_AUTH)
         add("/v1/profile/email")
+    }
+
+    val userIdRateLimited = buildList {
+        add("/v1/profile/email")
+        add("/v1/file")
     }
 
     private val SWAGGER = buildList {

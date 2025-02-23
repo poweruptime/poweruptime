@@ -15,17 +15,26 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import {ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormControl,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatTooltip} from '@angular/material/tooltip';
 
+import {map, of} from 'rxjs';
+
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendType, Database} from '@app/api';
+import {BackendType, Database, injectAPI} from '@app/api';
 import {FileUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -50,7 +59,10 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             </mat-form-field>
           </div>
 
-          <pu-file-upload type="STATUS_PAGE" label="Drop a image" />
+          <pu-file-upload
+            [file]="statusPage()?.image"
+            (fileId)="form.controls.imageId.setValue($event)"
+            label="Drop a image" />
 
           <pu-editor
             id="description"
@@ -153,7 +165,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     }
 
     .group-drag-placeholder {
-      @apply min-h-48 animate-pulse rounded-md bg-gray-800;
+      @apply min-h-48 animate-pulse rounded-2xl bg-slate-400 dark:bg-gray-700;
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
   `,
@@ -197,17 +209,19 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
         Validators.maxLength(Database.MAX_NAME_LENGTH),
       ],
     ],
-    slug: [
-      '',
-      [
+    slug: new FormControl('', {
+      validators: [
         Validators.required,
         Validators.pattern(Database.SLUG_REGEX),
         Validators.minLength(Database.MIN_SLUG_LENGTH),
         Validators.maxLength(Database.MAX_SLUG_LENGTH),
       ],
-    ],
+      asyncValidators: [this.asyncSlugInUseValidator()],
+      updateOn: 'blur',
+    }),
     description: [undefined as string | undefined],
     footer: [undefined as string | undefined],
+    imageId: [null as string | null],
     groups: this.fb.nonNullable.array(
       [].map(() =>
         this.fb.group({
@@ -219,6 +233,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
     ),
   });
 
+  private readonly api = injectAPI();
   readonly monitorsSearchStore = inject(MonitorsSearchStore);
   readonly isValid = injectIsValid(this.form);
 
@@ -233,7 +248,10 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
         this.formDisabled = true;
       }
 
-      this.form.patchValue(statusPage);
+      this.form.patchValue({
+        ...statusPage,
+        imageId: statusPage.image?.fileId,
+      });
 
       this.form.controls.groups.clear();
       statusPage.groups.forEach((group) => {
@@ -309,5 +327,15 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   onGroupDrop(event: CdkDragDrop<BackendType['StatusPageGroupResponse'][]>) {
     let items = this.form.controls.groups.controls;
     moveItemInArray(items, event.previousIndex, event.currentIndex);
+  }
+
+  private asyncSlugInUseValidator(): AsyncValidatorFn {
+    return (control: AbstractControl) =>
+      control.value === this.statusPage()?.slug
+        ? of(null)
+        : this.api.get('/v1/status-page/free/{slug}', {params: {path: {slug: control.value}}}).pipe(
+            map((free) => free.it),
+            map((free) => (free ? null : ({slugInUse: 'slug already in use'} as ValidationErrors))),
+          );
   }
 }

@@ -1,3 +1,4 @@
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {LowerCasePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -109,7 +110,12 @@ const CHECKER_DATA_TYPES = [
 
         <mat-form-field>
           <mat-label>{{ 'general.description' | transloco }}</mat-label>
-          <textarea matInput formControlName="description"></textarea>
+          <textarea
+            matInput
+            formControlName="description"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="12"></textarea>
         </mat-form-field>
 
         <div class="flex gap-2">
@@ -259,6 +265,7 @@ const CHECKER_DATA_TYPES = [
     BiComponent,
     MatProgressBar,
     LowerCasePipe,
+    CdkTextareaAutosize,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

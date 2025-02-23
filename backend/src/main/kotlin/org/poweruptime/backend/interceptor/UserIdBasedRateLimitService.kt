@@ -12,13 +12,13 @@ import kotlin.math.ceil
 import kotlin.math.roundToLong
 
 @Service
-class RateLimitService(
+class UserIdBasedRateLimitService(
     @Value(Config.RATE_LIMIT_TRIES) val rateLimitTries: Long,
     @Value(Config.RATE_LIMIT_DURATION_IN_SECONDS) val rateLimitDurationInSeconds: Long,
 ) {
     private val cache: MutableMap<String, Bucket> = ConcurrentHashMap()
 
-    fun resolveBucket(ipAddress: String) = cache.computeIfAbsent(ipAddress) {
+    fun resolveBucket(userId: String) = cache.computeIfAbsent(userId) {
         newBucket()
     }
 

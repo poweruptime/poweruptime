@@ -12,13 +12,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 open class InterceptorConfiguration(
     @Value(Config.RATE_LIMIT_ENABLED) val rateLimitEnabled: Boolean,
     @Value(Config.HOST) val host: String,
-    private val rateLimitService: RateLimitService,
+    private val ipBasedRateLimitService: IPBasedRateLimitService,
+    private val userIdBasedRateLimitService: UserIdBasedRateLimitService,
 ) : WebMvcConfigurer {
 
     @Suppress("SpreadOperator")
     override fun addInterceptors(registry: InterceptorRegistry) {
         if (rateLimitEnabled) {
-            registry.addInterceptor(RateLimitInterceptor(rateLimitService)).addPathPatterns(Routes.rateLimited)
+            registry.addInterceptor(
+                IPBasedRateLimitInterceptor(ipBasedRateLimitService),
+            ).addPathPatterns(Routes.ipRateLimited)
+            registry.addInterceptor(
+                UserIdBasedRateLimitInterceptor(userIdBasedRateLimitService),
+            ).addPathPatterns(Routes.userIdRateLimited)
         }
     }
 

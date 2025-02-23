@@ -8,14 +8,24 @@ import {environment} from '../../environments/environment';
 
 @Component({
   template: `
-    <img class="rounded-xl" [ngSrc]="baseUrl + '/v1/public/file' + src()" width="75" height="75" />
+    @let _size = size();
+    <img
+      [class]="class()"
+      [ngSrc]="baseUrl + '/v1/public/file/' + fileId()"
+      [width]="width() ?? _size"
+      [height]="height() ?? _size" />
   `,
   selector: 'pu-backend-image',
   imports: [NgOptimizedImage],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackendImage {
-  src = input.required<string>();
+  fileId = input.required<string>();
+  title = input.required<string>();
+  class = input<string>();
+  width = input<string>();
+  height = input<string>();
+  size = input<string>();
 
   isDocker = injectIsPlatformDocker();
   baseUrl = this.isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl;

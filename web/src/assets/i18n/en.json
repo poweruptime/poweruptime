@@ -10,18 +10,31 @@
   "cmdk": {
     "groups": {
       "general": {
-        "input": "What do you need?",
-        "logout": "Logout"
+        "input": "What do you need?"
       },
       "monitor": {
         "create": "Create new monitor",
         "input": "Search for a monitor",
         "search": "Search monitors..."
       },
+      "notificationMethod": {
+        "create": "Create new notification method",
+        "input": "Search for a notification method",
+        "search": "Search Notification methods..."
+      },
+      "statusPage": {
+        "create": "Create new status page",
+        "input": "Search for a status page",
+        "search": "Search Status pages..."
+      },
       "team": {
         "create": "Create new team",
         "input": "Search for a team",
         "search": "Search Teams..."
+      },
+      "theme": {
+        "input": "Select a theme",
+        "switch": "Switch {{general.theme}}"
       }
     },
     "results": {
@@ -55,17 +68,22 @@
     "host": "Host",
     "instance": "Instance",
     "ipAddress": "IP-Address",
+    "logout": "Logout",
     "method": "Method",
     "monitor": "Monitor",
     "name": "Name",
     "noDataAvailable": "No data available.",
+    "open": "Open",
     "password": "Password",
     "permissions": "Permissions",
     "port": "Port",
+    "profile": "Profile",
     "save": "Save",
     "server": "Server",
+    "settings": "Settings",
     "showDuplicates": "Show duplicates",
     "status": "Status",
+    "theme": "Theme",
     "time": "Time",
     "timezone": "Timezone",
     "title": "Title",
@@ -116,6 +134,7 @@
     },
     "password": {
       "update": "Update password"
-    }
+    },
+    "settings": "{{general.profile}} {{general.settings}}"
   }
 }
