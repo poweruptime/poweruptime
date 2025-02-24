@@ -373,6 +373,36 @@ create table email_change_token
     old_email  varchar(255)                           not null
 );
 
+create table mfa
+(
+    active     boolean                  default false not null,
+    created_at timestamp with time zone default now() not null,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    secret     varchar(10)                            not null,
+    id         varchar(12)                            not null
+        primary key,
+    user_id    varchar(12)                            not null
+        unique
+        constraint fk76jkwbib8vip0b30bahk0fae2
+            references "user"
+);
+
+create table mfa_backup_code
+(
+    valid      boolean                  default true  not null,
+    created_at timestamp with time zone default now() not null,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    mfa_id     varchar(12)                            not null
+        constraint fki960t04n7pkv6r44nhe0527vp
+            references mfa,
+    code       varchar(25)                            not null,
+    id         varchar(25)                            not null
+        primary key,
+    unique (mfa_id, code)
+);
+
 create table password_reset_token
 (
     created_at timestamp with time zone default now() not null,

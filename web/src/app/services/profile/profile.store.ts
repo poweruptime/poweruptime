@@ -2,9 +2,10 @@ import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
+import {setAllEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
-import {injectAPI} from '@app/api';
+import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 export const ProfileStore = signalStore(
@@ -14,11 +15,13 @@ export const ProfileStore = signalStore(
     email: string | undefined;
     name: string | undefined;
     role: 'ADMIN' | 'USER' | undefined;
+    mfa: 'DISABLED' | 'ENABLED' | undefined;
   }>({
     id: undefined,
     email: undefined,
     name: undefined,
     role: undefined,
+    mfa: undefined,
   }),
   withRequestStatus(),
   withMethods((store, api = injectAPI()) => ({

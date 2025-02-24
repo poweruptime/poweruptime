@@ -6,6 +6,9 @@ import org.poweruptime.backend.core.exceptions.UnauthorizedException
 
 class AccountNotActivatedException : ForbiddenException("Account not activated", "account_not_activated")
 
+class MFACodeRequiredException : ForbiddenException("MFA code required", "mfa_code_required")
+class MFACodeIncorrectException : ForbiddenException("MFA code incorrect", "mfa_code_incorrect")
+
 class SessionTokenIncorrectException : UnauthorizedException("Session token incorrect", "session_token_incorrect")
 
 class SessionInformationMissingException : BadRequestException(

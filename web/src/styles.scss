@@ -95,6 +95,21 @@ html {
   }
 }
 
+@theme {
+  --animate-caret-blink: caret-blink 1.2s ease-out infinite;
+  @keyframes caret-blink {
+    0%,
+    70%,
+    100% {
+      opacity: 1;
+    }
+    20%,
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
 .secondary-button {
   @include mat.button-color($dark-theme, $color-variant: secondary);
 }

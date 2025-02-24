@@ -9,14 +9,14 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.features.authentication.SessionResponse
 import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.SessionService
 import org.poweruptime.backend.features.profile.dto.ProfileResponse
-import org.poweruptime.backend.features.profile.dto.UpdateEmailDto
 import org.poweruptime.backend.features.profile.dto.UpdatePasswordDto
-import org.poweruptime.backend.features.profile.service.EmailChangeTokenService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -41,10 +42,9 @@ import org.springframework.web.bind.annotation.RestController
 class ProfileController(
     private val authService: AuthService,
     private val sessionService: SessionService,
-    private val emailChangeTokenService: EmailChangeTokenService,
+    private val mfaService: MFAService,
     @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider
 ) {
-
     @Operation(
         summary = "Get profile of authenticated user",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -52,7 +52,8 @@ class ProfileController(
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getProfile(authentication: Authentication): ProfileResponse {
-        return ProfileResponse(authService.getByAuthOrThrow(authentication))
+        val user = authService.getByAuthOrThrow(authentication)
+        return ProfileResponse(user, mfaService.getByUserId(user.id))
     }
 
     @Operation(
@@ -61,7 +62,11 @@ class ProfileController(
     )
     @PutMapping("password")
     @ResponseStatus(HttpStatus.OK)
-    fun updatePassword(authentication: Authentication, @RequestBody @Valid dto: UpdatePasswordDto) {
+    fun updatePassword(
+        authentication: Authentication,
+        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
+        @RequestBody @Valid dto: UpdatePasswordDto
+    ) {
         // Check old password, as authentication can not be trusted (already includes authenticated password)
         try {
             authenticationProvider.authenticate(
@@ -75,29 +80,10 @@ class ProfileController(
         }
 
         val user = authService.getByAuthOrThrow(authentication)
+
+        mfaService.validate(user.id, mfaCode)
+
         authService.updateCredentials(user, dto.newPassword)
-    }
-
-    @Operation(
-        summary = "Request email update of authenticated user",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-    )
-    @PutMapping("email")
-    @ResponseStatus(HttpStatus.OK)
-    fun requestEmailChangeToken(authentication: Authentication, @RequestBody @Valid dto: UpdateEmailDto) {
-        // Reauthenticate user
-        try {
-            authenticationProvider.authenticate(
-                UsernamePasswordAuthenticationToken(
-                    authentication.name,
-                    dto.password,
-                ),
-            )
-        } catch (_: AuthenticationException) {
-            throw ForbiddenException()
-        }
-
-        emailChangeTokenService.create(authService.getByAuthOrThrow(authentication), dto.email)
     }
 
     @Operation(

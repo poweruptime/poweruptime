@@ -56,13 +56,10 @@ export class OutsideLayout {
   backendOfflineService = inject(BackendOfflineService);
 }
 
-export const BackendOfflineService = createInjectable(
-  () => {
-    const isOffline = signal(false);
-    return {
-      isOffline: isOffline,
-      set: (it: boolean): void => isOffline.set(it),
-    };
-  },
-  {providedIn: 'root'},
-);
+export const BackendOfflineService = createInjectable(() => {
+  const isOffline = signal(false);
+  return {
+    isOffline: isOffline,
+    set: (it: boolean): void => isOffline.set(it),
+  };
+});

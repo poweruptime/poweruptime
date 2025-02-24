@@ -10,7 +10,6 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "extendedDiagnostics": false,
     "importHelpers": true,
     "isolatedModules": true,
     "module": "ES2022",

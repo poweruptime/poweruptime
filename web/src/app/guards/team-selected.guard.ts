@@ -3,7 +3,7 @@ import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from
 
 import {loggerOf, s_fromStorage, st_remove, st_set} from 'dfts-helper';
 
-const teamSelectedRedirectUriKey = 'pu_team_select_redirect_url';
+const teamSelectedRedirectUrlKey = 'pu_team_select_redirect_url';
 const logger = loggerOf('teamSelectGuard');
 
 export const teamSelectedGuard: CanActivateFn = (
@@ -14,7 +14,7 @@ export const teamSelectedGuard: CanActivateFn = (
 
   const paramSelectedId = route.paramMap.get('teamId');
   if (paramSelectedId && paramSelectedId !== 'selectedTeamId') {
-    const redirectUrl = s_fromStorage(teamSelectedRedirectUriKey)?.replace(
+    const redirectUrl = s_fromStorage(teamSelectedRedirectUrlKey)?.replace(
       'selectedTeamId',
       paramSelectedId,
     );
@@ -22,7 +22,7 @@ export const teamSelectedGuard: CanActivateFn = (
     if (redirectUrl) {
       logger.info('', 'Found team redirect uri.', redirectUrl);
 
-      st_remove(teamSelectedRedirectUriKey);
+      st_remove(teamSelectedRedirectUrlKey);
 
       return router.parseUrl(redirectUrl);
     } else {
@@ -33,7 +33,7 @@ export const teamSelectedGuard: CanActivateFn = (
   }
 
   logger.warning('', 'No team selected; Routing to select view');
-  st_set(teamSelectedRedirectUriKey, state.url);
+  st_set(teamSelectedRedirectUrlKey, state.url);
 
   return router.parseUrl('/t');
 };

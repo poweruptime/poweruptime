@@ -108,6 +108,9 @@ importers:
       '@ngxpert/cmdk':
         specifier: ^3.0.0
         version: 3.0.0(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@ngxpert/input-otp':
+        specifier: ^1.0.3
+        version: 1.0.3(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.7(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))
       '@std/fmt':
         specifier: npm:@jsr/std__fmt@1.0.5
         version: '@jsr/std__fmt@1.0.5'
@@ -129,6 +132,9 @@ importers:
       dfx-openapi:
         specifier: 0.1.1
         version: 0.1.1(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.1)
+      dfx-qrcode:
+        specifier: ^4.0.0
+        version: 4.0.0(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))
       express:
         specifier: 4.21.2
         version: 4.21.2
@@ -1878,6 +1884,13 @@ packages:
       '@angular/common': '>=18.0.0'
       '@angular/core': '>=18.0.0'
 
+  '@ngxpert/input-otp@1.0.3':
+    resolution: {integrity: sha512-cGIUghgH+fljibTTcoIdRTBW+p63YGEjnseNg8HrG6Y5mjAaNyuOcJrrj7fKD7phu6+DlK5FBFRSKEwueDPnew==}
+    peerDependencies:
+      '@angular/common': '>=19.0.0'
+      '@angular/core': '>=19.0.0'
+      '@angular/forms': '>=19.0.0'
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -3276,8 +3289,16 @@ packages:
   detect-node@2.1.0:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
 
+  dfts-helper@1.1.1:
+    resolution: {integrity: sha512-PTf5t/XOGxA8X33QBwDxg1PWFFKhRKhxMEClceioru5flfEvWlma5W5iijleI5P6rCg72AvQmNQLK/wNqCxoBA==}
+    peerDependencies:
+      tslib: 1.14.1
+
   dfts-helper@1.2.0:
     resolution: {integrity: sha512-HtY0ox5CiutxzRNpweJ9ccrY0vdZj/cmNDXv1t4cAas9nqmWEr2WSCaJrzwfUAzx8gJnOt1vcaPV6tDQoQ84kg==}
+
+  dfts-qrcode@1.1.0:
+    resolution: {integrity: sha512-c7xF090SLAgzTfD+gXsyCdx+RK7VNUW5/+ZohO0PfY/VmKs9Osq73ETBC04slw9NfU/Ww4VzpvILwno2hWQjtw==}
 
   dfx-bootstrap-icons@3.0.1:
     resolution: {integrity: sha512-ksqtee2TzWfuRlrSbiagCV8ZHIUJq+F1Wq7XUjTkhTKIg8yCqZ6qy8C/bj2FyYP1so/JlZ0WtlM3SA+YfCSWwA==}
@@ -3303,6 +3324,13 @@ packages:
       '@angular/common': '19'
       openapi-typescript-helpers: '>=0.0.15'
       rxjs: '7'
+
+  dfx-qrcode@4.0.0:
+    resolution: {integrity: sha512-9o1MGNWznI3oS576eh82Oad5iToKbGygT3mp3F9Dsb0gS9AcB5cFQ3Rr33zGAJxU8mNnMOSiwx+LdnXNlRPWhQ==}
+    peerDependencies:
+      '@angular/common': '19'
+      '@angular/core': '19'
+      '@angular/platform-browser': '19'
 
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
@@ -5641,6 +5669,9 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
+  tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -7712,6 +7743,13 @@ snapshots:
     transitivePeerDependencies:
       - rxjs
 
+  '@ngxpert/input-otp@1.0.3(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/forms@19.1.7(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1))':
+    dependencies:
+      '@angular/common': 19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/core': 19.1.7(rxjs@7.8.1)(zone.js@0.15.0)
+      '@angular/forms': 19.1.7(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
+      tslib: 2.8.1
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -9139,9 +9177,18 @@ snapshots:
 
   detect-node@2.1.0: {}
 
+  dfts-helper@1.1.1(tslib@2.6.2):
+    dependencies:
+      tslib: 2.6.2
+
   dfts-helper@1.2.0:
     dependencies:
       tslib: 2.8.1
+
+  dfts-qrcode@1.1.0:
+    dependencies:
+      dfts-helper: 1.1.1(tslib@2.6.2)
+      tslib: 2.6.2
 
   dfx-bootstrap-icons@3.0.1(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1):
     dependencies:
@@ -9166,6 +9213,14 @@ snapshots:
       '@angular/common': 19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
       openapi-typescript-helpers: 0.0.15
       rxjs: 7.8.1
+      tslib: 2.8.1
+
+  dfx-qrcode@4.0.0(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))):
+    dependencies:
+      '@angular/common': 19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
+      '@angular/core': 19.1.7(rxjs@7.8.1)(zone.js@0.15.0)
+      '@angular/platform-browser': 19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))
+      dfts-qrcode: 1.1.0
       tslib: 2.8.1
 
   didyoumean@1.2.2: {}
@@ -11723,6 +11778,8 @@ snapshots:
       json5: 2.2.3
       minimist: 1.2.8
       strip-bom: 3.0.0
+
+  tslib@2.6.2: {}
 
   tslib@2.8.1: {}
 

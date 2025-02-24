@@ -1,33 +1,55 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
 import {MatIconButton} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {TableLoadingBar} from '@app/components';
-import {ProfilePasswordEditForm} from '@app/components/profile/profile-password-edit-form';
+import {ProfileMFAForm, ProfilePasswordEditForm} from '@app/components/profile';
 import {ProfileEditStore, SessionsStore} from '@app/services';
 
 @Component({
   template: `
     <div class="flex flex-col gap-10">
-      <div class="grid grid-cols-3">
+      <div class="grid grid-cols-3 gap-4">
         <div>
           <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>{{ 'profile.password.update' | transloco }}</mat-card-title>
+            </mat-card-header>
             <mat-card-content>
-              <pu-profile-password-form (submitCreate)="profileEditStore.updatePassword($event)" />
+              <div class="mt-4">
+                <pu-profile-password-form
+                  (submitCreate)="profileEditStore.updatePassword($event)" />
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div></div>
+        <div>
+          <mat-card appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>{{ 'profile.mfa.title' | transloco }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="mt-4">
+                <pu-profile-mfa-form />
+              </div>
             </mat-card-content>
           </mat-card>
         </div>
       </div>
 
+      <hr />
+
       <div>
-        <h2 class="text-xl">Sessions</h2>
+        <h2 class="text-xl">{{ 'general.sessions' | transloco }}</h2>
 
         <table
           [dataSource]="sessionsStore.entities()"
@@ -103,6 +125,10 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
     MatCard,
     MatCardContent,
     ProfilePasswordEditForm,
+    MatCardHeader,
+    MatCardTitle,
+    TranslocoPipe,
+    ProfileMFAForm,
   ],
 })
 export class ProfileSecurityPage {

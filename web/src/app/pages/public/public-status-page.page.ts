@@ -99,7 +99,6 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     Placeholder,
     BackendImage,
     MonitorStatusColor,
-    NgOptimizedImage,
   ],
 })
 export class PublicStatusPagePage {

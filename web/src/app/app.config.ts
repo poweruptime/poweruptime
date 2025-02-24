@@ -19,7 +19,7 @@ import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
 
-import {authInterceptor, backendOfflineInterceptor} from '@app/interceptors';
+import {authInterceptor, backendOfflineInterceptor, mfaInterceptor} from '@app/interceptors';
 import {TranslocoHttpLoader, injectIsPlatformDocker} from '@app/services';
 import {DOCKER_WEB_URL} from '@app/util';
 
@@ -32,7 +32,12 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([backendOfflineInterceptor, authInterceptor, biCacheInterceptor]),
+      withInterceptors([
+        biCacheInterceptor,
+        backendOfflineInterceptor,
+        authInterceptor,
+        mfaInterceptor,
+      ]),
     ),
     provideAnimationsAsync(),
     provideBi(

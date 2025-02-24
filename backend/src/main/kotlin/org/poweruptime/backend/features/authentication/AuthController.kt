@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.core.exceptions.*
+import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AccessTokenGenerationService
 import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -22,12 +24,13 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/v1/auth")
 @Tag(name = "Authentication API")
 class AuthController(
-    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) val authenticationProvider: DaoAuthenticationProvider,
-    @Qualifier(AuthUtils.REFRESH_TOKEN_AUTH_PROVIDER) val refreshTokenAuthProvider: JwtAuthenticationProvider,
-    val accessTokenService: AccessTokenGenerationService,
-    val sessionService: SessionService,
-    val authService: AuthService,
-    val passwordResetTokenService: PasswordResetTokenService
+    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider,
+    @Qualifier(AuthUtils.REFRESH_TOKEN_AUTH_PROVIDER) private val refreshTokenAuthProvider: JwtAuthenticationProvider,
+    private val accessTokenService: AccessTokenGenerationService,
+    private val sessionService: SessionService,
+    private val authService: AuthService,
+    private val passwordResetTokenService: PasswordResetTokenService,
+    private val mfaService: MFAService,
 ) {
 
     @Operation(
@@ -35,7 +38,10 @@ class AuthController(
     )
     @Suppress("DuplicatedCode")
     @PostMapping("/login")
-    fun login(@Valid @RequestBody request: LoginDto): JwtResponse {
+    fun login(
+        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
+        @Valid @RequestBody request: LoginDto
+    ): JwtResponse {
         val authentication = authenticationProvider.authenticate(
             UsernamePasswordAuthenticationToken(
                 authService.getByEmailOrThrow(request.email).id,
@@ -48,6 +54,8 @@ class AuthController(
         if (!user.activated) {
             throw AccountNotActivatedException()
         }
+
+        mfaService.validate(user.id, mfaCode)
 
         val sessionToken = sessionService.createSessionIfNeeded(
             stayLoggedIn = request.stayLoggedIn,
@@ -104,7 +112,10 @@ class AuthController(
     @Suppress("DuplicatedCode")
     @PostMapping("/passwordChange")
     @ResponseStatus(HttpStatus.OK)
-    fun passwordChange(@Valid @RequestBody request: LoginWithPasswordChangeDto): JwtResponse {
+    fun passwordChange(
+        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
+        @Valid @RequestBody request: LoginWithPasswordChangeDto
+    ): JwtResponse {
         var user = authService.getByEmailOrThrow(request.email)
 
         if (request.oldPassword == request.newPassword) throw PasswordChangeIdenticalException()
@@ -122,6 +133,8 @@ class AuthController(
 
             throw NoPasswordChangeRequiredException()
         } catch (_: CredentialsExpiredException) {}
+
+        mfaService.validate(user.id, mfaCode)
 
         user.forcePasswordChange = false
         user = authService.updateCredentials(user, request.newPassword)
@@ -166,12 +179,17 @@ class AuthController(
     )
     @PostMapping("/resetPassword/update")
     @ResponseStatus(HttpStatus.OK)
-    fun updatePasswordWithResetToken(@Valid @RequestBody request: PasswordForgotResetDto) {
+    fun updatePasswordWithResetToken(
+        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
+        @Valid @RequestBody request: PasswordForgotResetDto
+    ) {
         val user = authService.getByEmailOrThrow(request.email)
 
         if (user.isAdmin()) {
             throw UnauthorizedException()
         }
+
+        mfaService.validate(user.id, mfaCode)
 
         passwordResetTokenService.validateToken(user.id, request.resetToken) ?: throw UnauthorizedException()
 

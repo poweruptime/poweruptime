@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.authentication.model
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -53,6 +54,9 @@ class User(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personal_team_id", nullable = false)
     val personalTeam: Team,
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var mfa: MFA? = null,
 
     @OneToMany(mappedBy = "invitee", fetch = FetchType.LAZY)
     var invitedTo: List<TeamJoinToken> = ArrayList(),

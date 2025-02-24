@@ -455,6 +455,25 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/profile/mfa': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Setup MFA */
+    get: operations['setup'];
+    put?: never;
+    /** Confirm MFA */
+    post: operations['confirm'];
+    /** Delete MFA */
+    delete: operations['delete'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/file': {
     parameters: {
       query?: never;
@@ -592,7 +611,7 @@ export interface paths {
      * Delete a user by id
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    delete: operations['delete'];
+    delete: operations['delete_1'];
     options?: never;
     head?: never;
     patch?: never;
@@ -676,7 +695,7 @@ export interface paths {
      * Delete team
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    delete: operations['delete_1'];
+    delete: operations['delete_2'];
     options?: never;
     head?: never;
     patch?: never;
@@ -740,7 +759,7 @@ export interface paths {
      * Delete status page
      * @description <b>Required auth:</b> ROLE_ADMIN | STATUS_PAGE_ADMIN
      */
-    delete: operations['delete_2'];
+    delete: operations['delete_3'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1022,7 +1041,7 @@ export interface paths {
       cookie?: never;
     };
     /** Confirm email change token */
-    get: operations['confirm'];
+    get: operations['confirm_1'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1103,7 +1122,7 @@ export interface paths {
      * Delete notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_ADMIN
      */
-    delete: operations['delete_3'];
+    delete: operations['delete_4'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1127,7 +1146,7 @@ export interface paths {
      * Delete monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
      */
-    delete: operations['delete_4'];
+    delete: operations['delete_5'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1344,7 +1363,7 @@ export interface paths {
      * Delete system notification by id
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    delete: operations['delete_5'];
+    delete: operations['delete_6'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1441,7 +1460,7 @@ export interface paths {
      * Delete dead letter
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    delete: operations['delete_6'];
+    delete: operations['delete_7'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1745,6 +1764,12 @@ export interface components {
       imageId?: string;
       domainNames?: string[];
     };
+    ConfirmMFADto: {
+      code: string;
+    };
+    ConfirmMFAResponse: {
+      backupCodes: string[];
+    };
     CreateNotificationMethodDto: {
       teamId: string;
       name: string;
@@ -1945,6 +1970,11 @@ export interface components {
       name: string;
       /** @enum {string} */
       role: 'ADMIN' | 'USER';
+      /** @enum {string} */
+      mfa: 'DISABLED' | 'ENABLED';
+    };
+    SetupMFAResponse: {
+      base32Secret: string;
     };
     NotificationMethodMinResponse: {
       id: string;
@@ -2553,7 +2583,9 @@ export interface operations {
   updatePassword: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -2575,7 +2607,9 @@ export interface operations {
   requestEmailChangeToken: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -2965,6 +2999,70 @@ export interface operations {
       };
     };
   };
+  setup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SetupMFAResponse'];
+        };
+      };
+    };
+  };
+  confirm: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfirmMFADto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ConfirmMFAResponse'];
+        };
+      };
+    };
+  };
+  delete: {
+    parameters: {
+      query?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   handleFileUpload: {
     parameters: {
       query?: never;
@@ -3017,7 +3115,9 @@ export interface operations {
   updatePasswordWithResetToken: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -3063,7 +3163,9 @@ export interface operations {
   passwordChange: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -3109,7 +3211,9 @@ export interface operations {
   login: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -3152,7 +3256,7 @@ export interface operations {
       };
     };
   };
-  delete: {
+  delete_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3273,7 +3377,7 @@ export interface operations {
       };
     };
   };
-  delete_1: {
+  delete_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -3357,7 +3461,7 @@ export interface operations {
       };
     };
   };
-  delete_2: {
+  delete_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -3728,7 +3832,7 @@ export interface operations {
       };
     };
   };
-  confirm: {
+  confirm_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3848,7 +3952,7 @@ export interface operations {
       };
     };
   };
-  delete_3: {
+  delete_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -3890,7 +3994,7 @@ export interface operations {
       };
     };
   };
-  delete_4: {
+  delete_5: {
     parameters: {
       query?: never;
       header?: never;
@@ -4135,7 +4239,7 @@ export interface operations {
       };
     };
   };
-  delete_5: {
+  delete_6: {
     parameters: {
       query?: never;
       header?: never;
@@ -4241,7 +4345,7 @@ export interface operations {
       };
     };
   };
-  delete_6: {
+  delete_7: {
     parameters: {
       query?: never;
       header?: never;

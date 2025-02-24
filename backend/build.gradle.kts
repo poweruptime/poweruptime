@@ -34,7 +34,8 @@ dependencies {
     // HttpClient library
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4.2")
 
-//    implementation("org.projectreactor:reactor-spring:1.0.1")
+    implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
+    implementation("commons-codec:commons-codec:1.18.0")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")

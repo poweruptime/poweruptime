@@ -80,6 +80,7 @@
     "profile": "Profile",
     "save": "Save",
     "server": "Server",
+    "sessions": "Sessions",
     "settings": "Settings",
     "showDuplicates": "Show duplicates",
     "status": "Status",
@@ -131,6 +132,9 @@
   "profile": {
     "email": {
       "requestChange": "Request email address change"
+    },
+    "mfa": {
+      "title": "Multi-factor authentication"
     },
     "password": {
       "update": "Update password"

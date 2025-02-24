@@ -48,7 +48,7 @@ import {AuthStore} from '../../services/auth.store';
               <mat-label>New Password</mat-label>
               <input type="password" matInput formControlName="newPassword" focus />
 
-              @if (form.controls.oldPassword.invalid) {
+              @if (form.controls.newPassword.invalid) {
                 <mat-error>Password needs to have at least 6 characters.</mat-error>
               }
             </mat-form-field>

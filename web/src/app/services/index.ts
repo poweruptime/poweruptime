@@ -8,6 +8,7 @@ export * from './status-page';
 export * from './team';
 export * from './user';
 export * from './auth.store';
+export * from './mfa.service';
 export * from './email-change.store';
 export * from './platform.service';
 export * from './push.service';
