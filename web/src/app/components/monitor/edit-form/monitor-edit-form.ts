@@ -17,7 +17,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
-import {distinctUntilChanged, filter, map} from 'rxjs';
+import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

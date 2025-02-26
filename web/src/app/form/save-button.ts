@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
-import {MatButton, MatFabButton} from '@angular/material/button';
+import {MatFabButton} from '@angular/material/button';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';

@@ -1,6 +1,6 @@
 import {computed} from '@angular/core';
 
-import {debounceTime, distinctUntilChanged, filter, map, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods} from '@ngrx/signals';

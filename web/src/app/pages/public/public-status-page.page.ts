@@ -1,4 +1,4 @@
-import {DOCUMENT, NgOptimizedImage} from '@angular/common';
+import {DOCUMENT} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {Meta, Title} from '@angular/platform-browser';

@@ -6,7 +6,7 @@ import {
 import {ChangeDetectionStrategy, Component, input, viewChild} from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 
-import {Subject, debounceTime, throttleTime} from 'rxjs';
+import {Subject, throttleTime} from 'rxjs';
 
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 

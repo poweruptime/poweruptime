@@ -13,7 +13,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 

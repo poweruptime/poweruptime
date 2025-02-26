@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  ViewEncapsulation,
-  input,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, input} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 
 import {Editor as NgxEditor, NgxEditorModule, Toolbar} from 'ngx-editor';

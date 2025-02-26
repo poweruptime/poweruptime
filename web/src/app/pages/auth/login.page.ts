@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, effect, inject} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';

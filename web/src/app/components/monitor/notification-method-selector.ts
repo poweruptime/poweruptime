@@ -1,13 +1,5 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  model,
-  signal,
-  viewChild,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, model, viewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {
   MatAutocomplete,
@@ -17,7 +9,6 @@ import {
 } from '@angular/material/autocomplete';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatIcon} from '@angular/material/icon';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
 

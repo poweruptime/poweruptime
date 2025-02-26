@@ -1,4 +1,3 @@
-import {Location} from '@angular/common';
 import {inject} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 

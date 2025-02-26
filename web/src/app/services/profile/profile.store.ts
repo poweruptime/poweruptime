@@ -2,10 +2,9 @@ import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
-import {setAllEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
-import {BackendType, injectAPI} from '@app/api';
+import {injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 export const ProfileStore = signalStore(

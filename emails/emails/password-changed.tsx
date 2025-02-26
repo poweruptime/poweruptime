@@ -2,7 +2,7 @@
 
 import {Text} from '@react-email/components';
 import * as React from 'react';
-import Layout, {CALL_TO_ACTION, FOOTER_INTENDED_RECIPIENT, FOOTER_TEXT} from './_components/Layout';
+import Layout, {FOOTER_INTENDED_RECIPIENT, FOOTER_TEXT} from './_components/Layout';
 import PuHeading from './_components/puHeading';
 import PuText from './_components/puText';
 import PuHr from './_components/puHr';
