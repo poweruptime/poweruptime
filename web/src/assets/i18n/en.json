@@ -1,4 +1,7 @@
 {
+  "auth": {
+    "dsa": ""
+  },
   "checkResult": {
     "list": {
       "action": {
@@ -45,6 +48,7 @@
   "form": {
     "validation": {
       "domain": "Enter a valid domain",
+      "email": "Enter a valid {{general.email}} address",
       "file": "Invalid file format.",
       "integer": "Only whole numbers are allowed",
       "ipv4": "Enter a valid IPV4 Address",
@@ -52,6 +56,7 @@
       "maxlength": "Enter no more than {{requiredLength}} characters",
       "min": "Enter a value of at least {{min}}",
       "minlength": "Enter at least {{requiredLength}} characters",
+      "passwordMismatch": "{{general.password}} mismatch",
       "required": "This field is required",
       "url": "Enter a valid URL"
     }

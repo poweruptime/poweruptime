@@ -31,7 +31,6 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
             </mat-card-content>
           </mat-card>
         </div>
-        <div></div>
         <div>
           <mat-card appearance="outlined">
             <mat-card-header>

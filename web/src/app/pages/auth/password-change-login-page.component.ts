@@ -1,15 +1,19 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, afterNextRender, afterRender, effect, inject, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
+
+import {Database} from '@app/api';
+import {injectIsValid, passwordMatchValidator} from '@app/form';
 
 import {AuthStore} from '../../services/auth.store';
 
@@ -23,15 +27,17 @@ import {AuthStore} from '../../services/auth.store';
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        @if (formChange()) {}
         <form class="mt-6 flex flex-col gap-10" [formGroup]="form" (ngSubmit)="submit()">
           <div class="flex flex-col gap-4">
             <mat-form-field>
-              <mat-label>Email</mat-label>
+              <mat-label>{{ 'general.email' | transloco }}</mat-label>
               <input type="email" matInput formControlName="email" />
 
-              @if (form.controls.email.invalid) {
-                <mat-error>E-Mail address invalid</mat-error>
+              @if (form.controls.email.errors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (form.controls.email.errors?.['email']) {
+                <mat-error>{{ 'form.validation.email' | transloco }}</mat-error>
               }
             </mat-form-field>
 
@@ -39,19 +45,81 @@ import {AuthStore} from '../../services/auth.store';
               <mat-label>Old Password</mat-label>
               <input type="password" matInput formControlName="oldPassword" />
 
-              @if (form.controls.oldPassword.invalid) {
-                <mat-error>Password needs to have at least 6 characters.</mat-error>
+              @if (form.controls.oldPassword.errors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (form.controls.oldPassword.errors?.['minlength']; as minlength) {
+                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
               }
             </mat-form-field>
 
-            <mat-form-field>
-              <mat-label>New Password</mat-label>
-              <input type="password" matInput formControlName="newPassword" focus />
+            <ng-container formGroupName="newPassword">
+              @let _showPassword = showPassword();
 
-              @if (form.controls.newPassword.invalid) {
-                <mat-error>Password needs to have at least 6 characters.</mat-error>
+              <mat-form-field>
+                <mat-label>New password</mat-label>
+                <input
+                  [type]="_showPassword ? 'text' : 'password'"
+                  matInput
+                  formControlName="newPassword"
+                  focus />
+
+                <button
+                  (click)="showPassword.set(!_showPassword)"
+                  matSuffix
+                  type="button"
+                  mat-icon-button>
+                  @if (_showPassword) {
+                    <bi name="eye-fill" />
+                  } @else {
+                    <bi name="eye-slash-fill" />
+                  }
+                </button>
+
+                @if (form.controls.newPassword.controls.newPassword.errors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (
+                  form.controls.newPassword.controls.newPassword.errors?.['minlength'];
+                  as minlength
+                ) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>New password confirm</mat-label>
+                <input
+                  [type]="_showPassword ? 'text' : 'password'"
+                  matInput
+                  formControlName="confirmPassword" />
+                <button
+                  (click)="showPassword.set(!_showPassword)"
+                  matSuffix
+                  type="button"
+                  mat-icon-button>
+                  @if (_showPassword) {
+                    <bi name="eye-fill" />
+                  } @else {
+                    <bi name="eye-slash-fill" />
+                  }
+                </button>
+
+                @if (form.controls.newPassword.controls.confirmPassword.errors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (
+                  form.controls.newPassword.controls.confirmPassword.errors?.['minlength'];
+                  as minlength
+                ) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
+              </mat-form-field>
+
+              @if (form.controls.newPassword.errors?.['mismatch']) {
+                <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
               }
-            </mat-form-field>
+            </ng-container>
 
             @if (authStore.error() === 'INVALID_CREDENTIALS') {
               <mat-error>Invalid credentials.</mat-error>
@@ -64,7 +132,7 @@ import {AuthStore} from '../../services/auth.store';
           <div class="flex flex-col gap-3">
             <mat-slide-toggle formControlName="stayLoggedIn">Stay logged in</mat-slide-toggle>
 
-            <button [disabled]="form.invalid" mat-flat-button type="submit">
+            <button [disabled]="!formValid()" mat-flat-button type="submit">
               <bi class="mr-2" name="envelope" />
               Login
             </button>
@@ -88,20 +156,37 @@ import {AuthStore} from '../../services/auth.store';
     MatButton,
     MatSlideToggle,
     DfxAutofocus,
+    TranslocoPipe,
+    MatIconButton,
+    MatSuffix,
   ],
 })
 export class PasswordChangeLoginPage {
-  private queryParams = injectQueryParams();
+  private readonly queryParams = injectQueryParams();
+  readonly authStore = inject(AuthStore);
+  readonly fb = inject(NonNullableFormBuilder);
 
-  authStore = inject(AuthStore);
-
-  form = inject(NonNullableFormBuilder).group({
+  readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    oldPassword: ['', [Validators.required, Validators.minLength(6)]],
-    newPassword: ['', [Validators.required, Validators.minLength(6)]],
+    oldPassword: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
+    newPassword: this.fb.group(
+      {
+        newPassword: [
+          '',
+          [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)],
+        ],
+        confirmPassword: [
+          '',
+          [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)],
+        ],
+      },
+      {validators: passwordMatchValidator},
+    ),
     stayLoggedIn: [false],
   });
-  formChange = toSignal(this.form.valueChanges);
+  readonly formValid = injectIsValid(this.form);
+
+  readonly showPassword = signal(false);
 
   constructor() {
     effect(() => {
@@ -116,6 +201,10 @@ export class PasswordChangeLoginPage {
   }
 
   submit(): void {
-    this.authStore.loginWithPasswordChange(this.form.getRawValue());
+    const rawValue = this.form.getRawValue();
+    this.authStore.loginWithPasswordChange({
+      ...rawValue,
+      newPassword: rawValue.newPassword.newPassword,
+    });
   }
 }
