@@ -12,7 +12,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="sslCertificateDataFormGroup">
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>{{ 'general.url' | transloco }}</mat-label>
           <input matInput formControlName="url" />
 
@@ -31,7 +31,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-64">
           <mat-label>{{ 'monitor.edit.ssl.validDaysLeft' | transloco }}</mat-label>
           <input matInput type="number" step="1" formControlName="validDaysLeft" />
 

@@ -22,7 +22,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="dnsDataFormGroup">
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>{{ 'general.host' | transloco }}</mat-label>
           <input matInput formControlName="host" />
           @let hostErrors = dnsDataFormGroup.controls.host.errors;
@@ -41,7 +41,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-48">
           <mat-label>{{ 'general.type' | transloco }}</mat-label>
           <mat-select formControlName="type">
             <mat-option value="A">A</mat-option>
@@ -65,7 +65,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </div>
 
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>{{ 'monitor.edit.dns.server' | transloco }}</mat-label>
           <input matInput formControlName="server" />
           @let serverErrors = dnsDataFormGroup.controls.server.errors;
@@ -83,7 +83,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-48">
           <mat-label>{{ 'general.port' | transloco }}</mat-label>
           <input matInput type="number" formControlName="port" />
           @let portErrors = dnsDataFormGroup.controls.port.errors;

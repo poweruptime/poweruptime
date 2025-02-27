@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
@@ -73,7 +73,7 @@ const CHECKER_DATA_TYPES = [
     <div class="mb-6 flex gap-8">
       <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
         <div class="flex gap-2">
-          <mat-form-field>
+          <mat-form-field class="w-full">
             <mat-label>{{ 'general.name' | transloco }}</mat-label>
             <input matInput formControlName="name" />
 
@@ -89,7 +89,7 @@ const CHECKER_DATA_TYPES = [
             }
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field class="w-56">
             <mat-label>{{ 'general.type' | transloco }}</mat-label>
             <mat-select formControlName="type">
               <mat-option class="pt-1">
@@ -114,7 +114,7 @@ const CHECKER_DATA_TYPES = [
             matInput
             formControlName="description"
             cdkTextareaAutosize
-            cdkAutosizeMinRows="1"
+            cdkAutosizeMinRows="3"
             cdkAutosizeMaxRows="12"></textarea>
         </mat-form-field>
 
@@ -154,7 +154,7 @@ const CHECKER_DATA_TYPES = [
             }
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field class="w-28">
             <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
             <input matInput type="number" formControlName="retries" />
 
@@ -170,9 +170,10 @@ const CHECKER_DATA_TYPES = [
             }
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field class="w-96">
             <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
             <input matInput type="number" formControlName="resendAfter" />
+            <span class="ms-2 break-keep" matTextSuffix>failed checks</span>
             @let resendAfterErrors = form.controls.resendAfter.errors;
             @if (resendAfterErrors?.['min']; as min) {
               <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
@@ -245,7 +246,7 @@ const CHECKER_DATA_TYPES = [
   selector: 'pu-monitor-edit-form',
   imports: [
     ReactiveFormsModule,
-    TranslocoPipe,
+    LowerCasePipe,
     MatFormField,
     MatInput,
     MatLabel,
@@ -253,19 +254,20 @@ const CHECKER_DATA_TYPES = [
     MatSelect,
     MatSelectTrigger,
     MatOption,
+    MatSuffix,
     MatSlideToggle,
+    MatProgressBar,
+    CdkTextareaAutosize,
+    TranslocoPipe,
+    NgxMatSelectSearchModule,
+    BiComponent,
+    NotificationMethodSelector,
     SaveButton,
     MonitorEditFormDnsData,
     MonitorEditFormHttpData,
     MonitorEditFormSSLCertificateData,
     MonitorEditFormPingData,
-    NotificationMethodSelector,
     MonitorEditFormPushData,
-    NgxMatSelectSearchModule,
-    BiComponent,
-    MatProgressBar,
-    LowerCasePipe,
-    CdkTextareaAutosize,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

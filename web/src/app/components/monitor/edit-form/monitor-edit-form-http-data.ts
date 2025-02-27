@@ -1,3 +1,4 @@
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
@@ -7,6 +8,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
+import {MentionAutocompleteTrigger} from '@app/components';
+
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({
@@ -14,7 +17,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="httpDataFormGroup">
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>{{ 'general.url' | transloco }}</mat-label>
           <input matInput formControlName="url" />
 
@@ -33,7 +36,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-48">
           <mat-label>{{ 'general.method' | transloco }}</mat-label>
           <mat-select formControlName="method">
             <mat-option value="GET">GET</mat-option>
@@ -46,7 +49,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-64">
           <mat-label>{{ 'general.contentType' | transloco }}</mat-label>
           <mat-select formControlName="contentType">
             <mat-option value="JSON">JSON</mat-option>
@@ -56,7 +59,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </div>
 
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-52">
           <mat-label>{{ 'monitor.edit.http.authType' | transloco }}</mat-label>
           <mat-select formControlName="authType">
             <mat-option [value]="undefined">None</mat-option>
@@ -65,8 +68,8 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         </mat-form-field>
 
         @if (httpDataFormGroup.controls.authType.getRawValue() === 'BASIC_AUTH') {
-          <div class="flex gap-2">
-            <mat-form-field>
+          <div class="flex w-full gap-2">
+            <mat-form-field class="w-full">
               <mat-label>{{ 'general.username' | transloco }}</mat-label>
               <input matInput formControlName="basicAuthDataUsername" />
               @let basicAuthUsernameErrors =
@@ -79,7 +82,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
               }
             </mat-form-field>
 
-            <mat-form-field>
+            <mat-form-field class="w-full">
               <mat-label>{{ 'general.password' | transloco }}</mat-label>
               <input matInput type="password" formControlName="basicAuthDataPassword" />
               @let basicAuthPasswordErrors =
@@ -95,16 +98,24 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         }
       </div>
 
-      <div class="flex gap-2">
-        <mat-form-field>
-          <mat-label>{{ 'monitor.edit.http.searchTerm' | transloco }}</mat-label>
-          <textarea matInput formControlName="searchTerm"></textarea>
-        </mat-form-field>
-      </div>
+      <mat-form-field>
+        <mat-label>{{ 'monitor.edit.http.searchTerm' | transloco }}</mat-label>
+        <textarea
+          matInput
+          formControlName="searchTerm"
+          rows="3"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="3"></textarea>
+      </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{ 'general.body' | transloco }}</mat-label>
-        <textarea matInput formControlName="body"></textarea>
+        <textarea
+          matInput
+          formControlName="body"
+          rows="3"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="3"></textarea>
       </mat-form-field>
 
       <mat-slide-toggle formControlName="ignoreTLS">
@@ -122,6 +133,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatOption,
     MatSlideToggle,
     TranslocoPipe,
+    CdkTextareaAutosize,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

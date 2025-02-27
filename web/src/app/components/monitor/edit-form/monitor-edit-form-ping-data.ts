@@ -12,7 +12,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="pingDataFormGroup">
       <div class="flex gap-2">
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>{{ 'general.ipAddress' | transloco }}</mat-label>
           <input matInput formControlName="ip" />
           @let ipErrors = pingDataFormGroup.controls.ip.errors;
@@ -30,7 +30,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           }
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="w-48">
           <mat-label>{{ 'general.port' | transloco }}</mat-label>
           <input matInput type="number" formControlName="port" />
 
