@@ -1,6 +1,7 @@
 export * from './mat-mentions';
 export * from './backend-image';
 export * from './copy-icon-button';
+export * from './delete-confirm-dialog';
 export * from './file-upload';
 export * from './footer';
 export * from './heatmap';

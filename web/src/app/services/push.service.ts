@@ -1,26 +1,35 @@
-import {Subject, filter, map, share, switchMap, tap} from 'rxjs';
+import {inject} from '@angular/core';
+import {toObservable} from '@angular/core/rxjs-interop';
 
-import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {s_imploder} from 'dfts-helper';
+import {filter, map, share, switchMap, tap} from 'rxjs';
+
 import {toast} from 'ngx-sonner';
 import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BackendType, PushDto} from '@app/api';
+import {AuthStore} from '@app/services/auth.store';
 
 import {environment} from '../../environments/environment';
 import {connectToEventSource} from './event-source.service';
 
-const teamIdImploder = () => s_imploder().separator(',');
-
 export const PushService = createInjectable(() => {
-  const teamIds = new Subject<string[]>();
+  const authStore = inject(AuthStore);
 
-  const sse$ = teamIds.pipe(
-    filter((availableTeamIds) => availableTeamIds.length > 0),
-    switchMap((availableTeamTopicIds) =>
+  const sse$ = toObservable(authStore.accessToken).pipe(
+    filter((it): it is string => !!it),
+    switchMap((accessToken) =>
       connectToEventSource(
-        `${environment.apiUrl}/v1/public/sse/${teamIdImploder().source(availableTeamTopicIds).build()}`,
-        {},
+        `${environment.apiUrl}/v1/sse`,
+        {
+          fetch: (input, init) =>
+            fetch(input, {
+              ...init,
+              headers: {
+                ...init?.headers,
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }),
+        },
         ['message'],
       ),
     ),
@@ -30,7 +39,6 @@ export const PushService = createInjectable(() => {
   );
 
   return {
-    setTeamIds: rxMethod<string[]>(tap((it) => teamIds.next(it))),
     checkResults$: sse$.pipe(
       filter((it) => it.type === 'CHECK_RESULT'),
       map((it) => (it as any).checkResult as BackendType['CheckResultResponse']),

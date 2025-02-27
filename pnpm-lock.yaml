@@ -135,6 +135,9 @@ importers:
       dfx-qrcode:
         specifier: ^4.0.0
         version: 4.0.0(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.1.7(@angular/animations@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.1.7(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.1.7(rxjs@7.8.1)(zone.js@0.15.0)))
+      eventsource:
+        specifier: ^3.0.5
+        version: 3.0.5
       express:
         specifier: 4.21.2
         version: 4.21.2
@@ -3544,6 +3547,14 @@ packages:
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
+
+  eventsource-parser@3.0.0:
+    resolution: {integrity: sha512-T1C0XCUimhxVQzW4zFipdx0SficT651NnkR0ZSH3yQwh+mFMdLfgjABVi4YtMTtaL4s168593DaoaRLMqryavA==}
+    engines: {node: '>=18.0.0'}
+
+  eventsource@3.0.5:
+    resolution: {integrity: sha512-LT/5J605bx5SNyE+ITBDiM3FxffBiq9un7Vx0EwMDM3vg8sWKx/tO2zC+LMqZ+smAM0F2hblaDZUVZF0te2pSw==}
+    engines: {node: '>=18.0.0'}
 
   exponential-backoff@3.1.2:
     resolution: {integrity: sha512-8QxYTVXUkuy7fIIoitQkPwGonB8F3Zj8eEO8Sqg9Zv/bkI7RJAzowee4gr81Hak/dUTpA2Z7VfQgoijjPNlUZA==}
@@ -9449,6 +9460,12 @@ snapshots:
   eventemitter3@5.0.1: {}
 
   events@3.3.0: {}
+
+  eventsource-parser@3.0.0: {}
+
+  eventsource@3.0.5:
+    dependencies:
+      eventsource-parser: 3.0.0
 
   exponential-backoff@3.1.2: {}
 

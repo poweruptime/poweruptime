@@ -134,6 +134,10 @@ import {CheckResultsStore} from '@app/services';
     </div>
   `,
   styles: `
+    .mat-column-monitor {
+      @apply w-52;
+    }
+
     .mat-column-status {
       @apply w-32;
     }

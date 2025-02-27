@@ -1,6 +1,8 @@
 {
   "auth": {
-    "dsa": ""
+    "newPassword": "New {{general.password}}",
+    "newPasswordConfirm": "New {{general.password}} to confirm",
+    "oldPassword": "Old {{general.password}}"
   },
   "checkResult": {
     "list": {
@@ -46,6 +48,10 @@
     "toggle": "Toggle action menu"
   },
   "form": {
+    "passwordShow": {
+      "hide": "Hide password text",
+      "show": "Show password text"
+    },
     "validation": {
       "domain": "Enter a valid domain",
       "email": "Enter a valid {{general.email}} address",
@@ -63,6 +69,7 @@
   },
   "general": {
     "body": "Body",
+    "confirmDelete": "Confirm deletion?",
     "contentType": "Content-Type",
     "copy": "Copy",
     "createdAt": "Created At",

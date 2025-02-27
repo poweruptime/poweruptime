@@ -782,6 +782,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/sse': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get push */
+    get: operations['get_3'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/secure': {
     parameters: {
       query?: never;
@@ -872,7 +889,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get status page */
-    get: operations['get_3'];
+    get: operations['get_4'];
     put?: never;
     post?: never;
     delete?: never;
@@ -907,23 +924,6 @@ export interface paths {
     };
     /** Get slug by domain */
     get: operations['getByDomain'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/public/sse/{teamIds}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get push */
-    get: operations['get_4'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1349,6 +1349,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/team/{id}/undo': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * Undelete team
+     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
+     */
+    delete: operations['undelete'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/system-notification/{id}': {
     parameters: {
       query?: never;
@@ -1383,7 +1403,7 @@ export interface paths {
      * Undelete status page
      * @description <b>Required auth:</b> ROLE_ADMIN | STATUS_PAGE_ADMIN
      */
-    delete: operations['undelete'];
+    delete: operations['undelete_1'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1420,7 +1440,7 @@ export interface paths {
      * Undelete notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_ADMIN
      */
-    delete: operations['undelete_1'];
+    delete: operations['undelete_2'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1440,7 +1460,7 @@ export interface paths {
      * Undelete monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
      */
-    delete: operations['undelete_2'];
+    delete: operations['undelete_3'];
     options?: never;
     head?: never;
     patch?: never;
@@ -3503,6 +3523,26 @@ export interface operations {
       };
     };
   };
+  get_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/event-stream': string[];
+        };
+      };
+    };
+  };
   apiSecure: {
     parameters: {
       query?: never;
@@ -3605,7 +3645,7 @@ export interface operations {
       };
     };
   };
-  get_3: {
+  get_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -3675,28 +3715,6 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PublicStatusPageResponse'];
-        };
-      };
-    };
-  };
-  get_4: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        teamIds: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'text/event-stream': string[];
         };
       };
     };
@@ -4239,6 +4257,28 @@ export interface operations {
       };
     };
   };
+  undelete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['TeamResponse'];
+        };
+      };
+    };
+  };
   delete_6: {
     parameters: {
       query?: never;
@@ -4259,7 +4299,7 @@ export interface operations {
       };
     };
   };
-  undelete: {
+  undelete_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4301,7 +4341,7 @@ export interface operations {
       };
     };
   };
-  undelete_1: {
+  undelete_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -4323,7 +4363,7 @@ export interface operations {
       };
     };
   };
-  undelete_2: {
+  undelete_3: {
     parameters: {
       query?: never;
       header?: never;

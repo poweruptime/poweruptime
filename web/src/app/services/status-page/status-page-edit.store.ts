@@ -74,45 +74,6 @@ export const StatusPageEditStore = signalStore(
           ),
         ),
       ),
-      delete: rxMethod<string>(
-        pipe(
-          tap(() => patchState(store, setPending())),
-          switchMap((id) =>
-            api.delete('/v1/status-page/{id}', {params: {path: {id}}}).pipe(
-              tapResponse({
-                next: () => {
-                  patchState(store, setFulfilled());
-
-                  statusPagesStore.removeStatusPage(id);
-
-                  toast.success('Successfully deleted status page.', {
-                    action: {
-                      label: 'Undo',
-                      onClick: () =>
-                        api
-                          .delete('/v1/status-page/{id}/undo', {params: {path: {id}}})
-                          .pipe(
-                            tapResponse({
-                              next: (statusPage) => {
-                                patchState(store, setFulfilled());
-
-                                statusPagesStore.addStatusPage(statusPage);
-
-                                toast.success(`Successfully restored ${statusPage.name}.`);
-                              },
-                              error: (error) => patchState(store, setError(error)),
-                            }),
-                          )
-                          .subscribe(),
-                    },
-                  });
-                },
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
-          ),
-        ),
-      ),
     }),
   ),
 );

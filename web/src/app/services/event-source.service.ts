@@ -1,12 +1,6 @@
 import {Observable, Subscriber} from 'rxjs';
 
-/**
- * Method for creation of the EventSource instance
- * @param url - SSE server api path
- * @param options - configuration object for SSE
- */
-const getEventSource = (url: string, options: EventSourceInit): EventSource =>
-  new EventSource(url, options);
+import {EventSource, EventSourceInit} from 'eventsource';
 
 /**
  * Method for establishing connection and subscribing to events from SSE
@@ -19,7 +13,7 @@ export function connectToEventSource(
   options: EventSourceInit,
   eventNames: string[] = [],
 ): Observable<MessageEvent> {
-  const eventSource = getEventSource(url, options);
+  const eventSource = new EventSource(url, options);
 
   return new Observable((subscriber: Subscriber<MessageEvent>) => {
     eventSource.onerror = (error) => subscriber.error(error);

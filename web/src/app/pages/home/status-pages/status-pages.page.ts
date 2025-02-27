@@ -8,7 +8,7 @@ import {RouterLink} from '@angular/router';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar} from '@app/components';
+import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
 import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/services';
 
 @Component({
@@ -42,15 +42,15 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
             aria-label="Preview status page">
             <bi name="eye" />
           </a>
-          <button
+          <a
             [routerLink]="element.id"
             mat-icon-button
             stopPropagation
             aria-label="Edit the status page">
             <bi name="pencil-square" />
-          </button>
+          </a>
           <button
-            (click)="statusPageEditStore.delete(element.id)"
+            (click)="deleteConfirm.confirm(element.id)"
             mat-icon-button
             stopPropagation
             aria-label="Delete the notification method">
@@ -81,7 +81,6 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
       showFirstLastButtons />
   `,
   selector: 'pu-status-pages-page',
-  providers: [StatusPageEditStore],
   imports: [
     MatAnchor,
     RouterLink,
@@ -98,7 +97,7 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
 })
 export class StatusPagesPage {
   readonly statusPagesStore = inject(StatusPagesStore);
-  readonly statusPageEditStore = inject(StatusPageEditStore);
+  readonly deleteConfirm = injectDeleteConfirmDialog((id) => this.statusPagesStore.delete(id));
 
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);

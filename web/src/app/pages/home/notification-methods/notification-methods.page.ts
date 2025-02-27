@@ -8,7 +8,7 @@ import {RouterLink} from '@angular/router';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar} from '@app/components';
+import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
 import {PuBooleanEmojiPipe} from '@app/pipes';
 import {
   NotificationMethodEditStore,
@@ -86,7 +86,7 @@ import {
         <td *matCellDef="let element" mat-cell>
           <button
             class="mt-1"
-            (click)="notificationMethodEditStore.delete(element.id)"
+            (click)="deleteConfirm.confirm(element.id)"
             mat-icon-button
             stopPropagation
             aria-label="Delete the notification method">
@@ -131,7 +131,6 @@ import {
     }
   `,
   selector: 'pu-notification-methods-page',
-  providers: [NotificationMethodEditStore],
   imports: [
     MatTableModule,
     MatSortModule,
@@ -148,7 +147,10 @@ import {
 })
 export class NotificationMethodsPage {
   readonly notificationMethodsStore = inject(NotificationMethodsStore);
-  readonly notificationMethodEditStore = inject(NotificationMethodEditStore);
+
+  readonly deleteConfirm = injectDeleteConfirmDialog((id) =>
+    this.notificationMethodsStore.delete(id),
+  );
 
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);

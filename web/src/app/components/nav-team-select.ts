@@ -138,9 +138,8 @@ export class NavTeamSelect {
 
     this.selectedTeamStore.loadAvailableTeams(
       computed(() => ({
-        page: this.selectedTeamStore.page(),
+        page: 0,
         size: 10,
-
         search: this.selectedTeamStore.search(),
       })),
     );

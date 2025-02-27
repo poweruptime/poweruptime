@@ -7,11 +7,15 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import {MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltip} from '@angular/material/tooltip';
+
+import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {TableLoadingBar} from '@app/components';
 import {TeamInvitesStore} from '@app/services';
@@ -41,7 +45,7 @@ import {TeamInvitesStore} from '@app/services';
           </ng-container>
 
           <ng-container matColumnDef="inviter.name">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>By</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Invited By</th>
             <td *matCellDef="let element" mat-cell>
               {{ element.inviter.name }}
             </td>
@@ -52,6 +56,11 @@ import {TeamInvitesStore} from '@app/services';
             <td *matCellDef="let element" mat-cell>
               {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
             </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef mat-header-cell></th>
+            <td *matCellDef="let element" mat-cell></td>
           </ng-container>
 
           <tr *matHeaderRowDef="teamInvitesStore.columnsToDisplay()" mat-header-row></tr>
@@ -78,8 +87,20 @@ import {TeamInvitesStore} from '@app/services';
       @apply w-32;
     }
 
+    .mat-column-inviteeEmail {
+      @apply w-64;
+    }
+
+    .mat-column-inviter-name {
+      @apply w-64;
+    }
+
     .mat-column-createdAt {
-      @apply w-44;
+      @apply w-48;
+    }
+
+    .mat-column-actions {
+      @apply w-16;
     }
   `,
   selector: 'pu-team-invites-list',

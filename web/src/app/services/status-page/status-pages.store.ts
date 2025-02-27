@@ -4,14 +4,9 @@ import {debounceTime, filter, map, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
-import {
-  removeAllEntities,
-  removeEntity,
-  setEntities,
-  setEntity,
-  updateEntity,
-} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {
@@ -25,8 +20,10 @@ import {
 
 export const StatusPagesStore = signalStore(
   withState<{
+    teamId: string | undefined;
     search: string;
   }>({
+    teamId: undefined,
     search: '',
   }),
   withPaginatedTable<BackendType['StatusPageResponse']>({
@@ -36,31 +33,16 @@ export const StatusPagesStore = signalStore(
   withComputed(({search}) => ({
     isSearching: computed(() => search().length > 0),
   })),
-  withMethods((store, api = injectAPI()) => ({
-    setSearch: rxMethod<string | null>(
-      pipe(
-        map((it) => it ?? ''),
-        tap((search) => patchState(store, () => ({search}))),
-      ),
-    ),
-    addStatusPage(it: BackendType['StatusPageResponse']): void {
-      patchState(store, setEntity(it));
-    },
-    updateStatusPage(it: Partial<BackendType['StatusPageResponse']>): void {
-      patchState(store, updateEntity({id: it.id!!, changes: it}));
-    },
-    removeStatusPage(id: string): void {
-      patchState(store, removeEntity(id));
-    },
-    load: rxMethod<
+  withMethods((store, api = injectAPI()) => {
+    const load = rxMethod<
       {
         teamId: string | undefined;
         search: string;
       } & PaginationDto
     >(
       pipe(
-        filter((it) => !!it.teamId),
-        tap(() => patchState(store, setPending())),
+        filter(({teamId}) => !!teamId),
+        tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
         debounceTime(400),
         switchMap(({teamId, search, ...query}) =>
           api
@@ -88,6 +70,55 @@ export const StatusPagesStore = signalStore(
             ),
         ),
       ),
-    ),
-  })),
+    );
+
+    return {
+      setSearch: rxMethod<string | null>(
+        pipe(
+          map((it) => it ?? ''),
+          tap((search) => patchState(store, () => ({search}))),
+        ),
+      ),
+      load,
+      delete: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, setPending())),
+          switchMap((id) =>
+            api.delete('/v1/status-page/{id}', {params: {path: {id}}}).pipe(
+              tapResponse({
+                next: () => {
+                  patchState(store, setFulfilled(), removeEntity(id));
+
+                  toast.success('Successfully deleted status page.', {
+                    action: {
+                      label: 'Undo',
+                      onClick: () =>
+                        api
+                          .delete('/v1/status-page/{id}/undo', {params: {path: {id}}})
+                          .pipe(
+                            tapResponse({
+                              next: (statusPage) => {
+                                load({
+                                  ...store.pageable(),
+                                  search: store.search(),
+                                  teamId: store.teamId(),
+                                });
+
+                                toast.success(`Successfully restored ${statusPage.name}.`);
+                              },
+                              error: (error) => patchState(store, setError(error)),
+                            }),
+                          )
+                          .subscribe(),
+                    },
+                  });
+                },
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+          ),
+        ),
+      ),
+    };
+  }),
 );

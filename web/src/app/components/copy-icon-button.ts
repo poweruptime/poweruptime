@@ -19,7 +19,7 @@ import {toast} from 'ngx-sonner';
       type="button"
       mat-icon-button>
       @if (state() === 'BUTTON') {
-        <bi name="copy" />
+        <bi name="clipboard" />
       } @else {
         <bi class="text-blue-700 dark:text-blue-500" name="clipboard-check-fill" />
       }

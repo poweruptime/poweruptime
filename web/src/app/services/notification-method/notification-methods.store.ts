@@ -4,14 +4,9 @@ import {debounceTime, filter, map, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
-import {
-  removeAllEntities,
-  removeEntity,
-  setEntities,
-  setEntity,
-  updateEntity,
-} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntity, setEntities, setEntity} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {
@@ -25,10 +20,12 @@ import {
 
 export const NotificationMethodsStore = signalStore(
   withState<{
+    teamId: string | undefined;
     search: string;
     types: BackendType['NotificationMethodResponse']['sender']['_type'][];
     useByDefault: boolean | null;
   }>({
+    teamId: undefined,
     search: '',
     types: [],
     useByDefault: null,
@@ -40,32 +37,8 @@ export const NotificationMethodsStore = signalStore(
   withComputed(({search, types, useByDefault}) => ({
     isSearching: computed(() => search().length > 0 || types().length > 0 || useByDefault !== null),
   })),
-  withMethods((store, api = injectAPI()) => ({
-    setSearch: rxMethod<string | null>(
-      pipe(
-        map((it) => it ?? ''),
-        tap((search) => patchState(store, () => ({search}))),
-      ),
-    ),
-    setTypes: rxMethod<BackendType['NotificationMethodResponse']['sender']['_type'][] | null>(
-      pipe(
-        map((it) => it ?? []),
-        tap((types) => patchState(store, () => ({types}))),
-      ),
-    ),
-    setUseByDefault: rxMethod<BackendType['NotificationMethodResponse']['useByDefault'] | null>(
-      tap((useByDefault) => patchState(store, () => ({useByDefault}))),
-    ),
-    addNotificationMethod(it: BackendType['NotificationMethodResponse']): void {
-      patchState(store, setEntity(it));
-    },
-    updateNotificationMethod(it: Partial<BackendType['NotificationMethodResponse']>): void {
-      patchState(store, updateEntity({id: it.id!!, changes: it}));
-    },
-    removeNotificationMethod(id: string): void {
-      patchState(store, removeEntity(id));
-    },
-    load: rxMethod<
+  withMethods((store, api = injectAPI()) => {
+    const load = rxMethod<
       {
         teamId: string | undefined;
         search: string;
@@ -74,8 +47,8 @@ export const NotificationMethodsStore = signalStore(
       } & PaginationDto
     >(
       pipe(
-        filter((it) => !!it.teamId),
-        tap(() => patchState(store, setPending())),
+        filter(({teamId}) => !!teamId),
+        tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
         debounceTime(400),
         switchMap(({teamId, search, types, useByDefault, page, size, sort}) =>
           api
@@ -107,6 +80,66 @@ export const NotificationMethodsStore = signalStore(
             ),
         ),
       ),
-    ),
-  })),
+    );
+
+    return {
+      setSearch: rxMethod<string | null>(
+        pipe(
+          map((it) => it ?? ''),
+          tap((search) => patchState(store, () => ({search}))),
+        ),
+      ),
+      setTypes: rxMethod<BackendType['NotificationMethodResponse']['sender']['_type'][] | null>(
+        pipe(
+          map((it) => it ?? []),
+          tap((types) => patchState(store, () => ({types}))),
+        ),
+      ),
+      setUseByDefault: rxMethod<BackendType['NotificationMethodResponse']['useByDefault'] | null>(
+        tap((useByDefault) => patchState(store, () => ({useByDefault}))),
+      ),
+      load,
+      delete: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, setPending())),
+          switchMap((id) =>
+            api.delete('/v1/notification-method/{id}', {params: {path: {id}}}).pipe(
+              tapResponse({
+                next: () => {
+                  patchState(store, setFulfilled(), removeEntity(id));
+
+                  toast.success('Successfully deleted notification method.', {
+                    action: {
+                      label: 'Undo',
+                      onClick: () =>
+                        api
+                          .delete('/v1/notification-method/{id}/undo', {params: {path: {id}}})
+                          .pipe(
+                            tapResponse({
+                              next: (notificationMethod) => {
+                                load({
+                                  ...store.pageable(),
+                                  teamId: store.teamId(),
+                                  search: store.search(),
+                                  types: store.types(),
+                                  useByDefault: store.useByDefault(),
+                                });
+
+                                toast.success(`Successfully restored ${notificationMethod.name}.`);
+                              },
+                              error: (error) => patchState(store, setError(error)),
+                            }),
+                          )
+                          .subscribe(),
+                    },
+                  });
+                },
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+          ),
+        ),
+      ),
+    };
+  }),
 );

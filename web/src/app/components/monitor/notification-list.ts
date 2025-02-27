@@ -73,11 +73,6 @@ import {NotificationsStore} from '@app/services';
               <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
             </ng-container>
 
-            <ng-container matColumnDef="error">
-              <th *matHeaderCellDef mat-header-cell>Error</th>
-              <td *matCellDef="let element" mat-cell>{{ element.error }}</td>
-            </ng-container>
-
             <tr *matHeaderRowDef="notificationsStore.columnsToDisplay()" mat-header-row></tr>
             <tr *matRowDef="let row; columns: notificationsStore.columnsToDisplay()" mat-row></tr>
           </table>
@@ -99,8 +94,14 @@ import {NotificationsStore} from '@app/services';
     </div>
   `,
   styles: `
+    .mat-column-monitor {
+      @apply w-52;
+    }
     .mat-column-status {
       @apply w-32;
+    }
+    .mat-column-method {
+      @apply w-52;
     }
 
     .mat-column-createdAt {
@@ -145,7 +146,7 @@ export class NotificationList {
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeMonitorColumn) => {
-        let it = ['status', 'createdAt', 'method', 'title', 'error'];
+        let it = ['status', 'createdAt', 'method', 'title'];
 
         if (includeMonitorColumn) {
           it = ['monitor', ...it];

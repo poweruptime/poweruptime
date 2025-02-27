@@ -9,7 +9,7 @@ import {RouterLink} from '@angular/router';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar} from '@app/components';
+import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
 import {TeamsStore} from '@app/services';
 
 @Component({
@@ -54,7 +54,12 @@ import {TeamsStore} from '@app/services';
             <bi name="gear" />
           </a>
           @if (!element.personal) {
-            <button mat-icon-button type="button" matTooltip="Delete" stopPropagation>
+            <button
+              (click)="deleteConfirm.confirm(element.id)"
+              mat-icon-button
+              type="button"
+              matTooltip="Delete"
+              stopPropagation>
               <bi name="trash" />
             </button>
           }
@@ -108,6 +113,8 @@ import {TeamsStore} from '@app/services';
 })
 export class InstanceSettingsTeamsPage {
   readonly teamsStore = inject(TeamsStore);
+
+  readonly deleteConfirm = injectDeleteConfirmDialog((id) => this.teamsStore.delete(id));
 
   private readonly paginator = viewChild.required(MatPaginator);
   private readonly sort = viewChild.required(MatSort);

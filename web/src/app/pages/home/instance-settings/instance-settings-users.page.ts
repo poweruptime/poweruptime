@@ -54,16 +54,9 @@ import {UsersStore} from '@app/services';
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let element" mat-cell>
-          <a
-            [routerLink]="element.id + '/edit'"
-            mat-icon-button
-            matTooltip="Delete"
-            stopPropagation>
+          <a [routerLink]="element.id + '/edit'" mat-icon-button matTooltip="Edit" stopPropagation>
             <bi name="gear" />
           </a>
-          <button mat-icon-button type="button" matTooltip="Delete" stopPropagation>
-            <bi name="trash" />
-          </button>
         </td>
       </ng-container>
 

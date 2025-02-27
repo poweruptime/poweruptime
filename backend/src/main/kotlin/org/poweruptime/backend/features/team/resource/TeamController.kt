@@ -115,6 +115,17 @@ class TeamController(
     @ResponseStatus(HttpStatus.OK)
     fun delete(@PathVariable("id") id: String): Unit = teamService.deleteByIdOrThrow(id)
 
+    @Operation(
+        summary = "Undelete team",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
+    )
+    @PreAuthorize("hasPermission(#id, '$TEAM_ADMIN')")
+    @DeleteMapping("/{id}/undo")
+    @ResponseStatus(HttpStatus.OK)
+    fun undelete(authentication: Authentication, @PathVariable("id") id: String): TeamResponse =
+        teamService.undeleteById(id).toResponse(authService.getByAuthOrThrow(authentication))
+
     private fun Team.toResponse(user: User): TeamResponse = TeamResponse(
         this,
         this.personalUser?.id == user.id,

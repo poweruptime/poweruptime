@@ -128,19 +128,13 @@ export const SelectedTeamStore = signalStore(
     ),
     sortedEntitiesWithoutPersonal: computed(() =>
       entities()
-        .sort((a, b) => {
-          if (a.personal && !b.personal) {
-            return -1;
-          } else if (!a.personal && b.personal) {
-            return 1;
-          } else {
-            return a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
-              numeric: true,
-              sensitivity: 'base',
-            });
-          }
-        })
-        .filter((it) => !it.personal),
+        .filter((it) => !it.personal)
+        .sort((a, b) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
+            numeric: true,
+            sensitivity: 'base',
+          }),
+        ),
     ),
   })),
 );

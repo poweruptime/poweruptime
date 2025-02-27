@@ -2,6 +2,8 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatDivider} from '@angular/material/divider';
+import {MatSuffix} from '@angular/material/form-field';
+import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
 import {DfxImplodePipe} from 'dfx-helper';
@@ -32,27 +34,32 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
       }
       @case ('CONFIRM') {
         <div class="flex flex-col items-center gap-4">
+          @let secret = mfaEditStore.base32Secret() ?? '';
+
           <div class="rounded-md bg-white p-4">
             <qrcode
-              [data]="
-                'otpauth://totp/' +
-                email() +
-                '?issuer=poweruptime&secret=' +
-                (mfaEditStore.base32Secret() ?? '')
-              "
+              [data]="'otpauth://totp/' + email() + '?issuer=poweruptime&secret=' + secret"
               margin="0" />
           </div>
 
+          <mat-form-field class="w-full max-w-72" subscriptSizing="dynamic">
+            <mat-label>Secret</mat-label>
+            <input [value]="secret" matInput readonly />
+
+            <pu-copy-icon-button [content]="secret" matSuffix />
+          </mat-form-field>
+
           <form
-            class="flex flex-col items-center gap-4"
+            class="flex w-full max-w-72 flex-col items-center gap-4"
             [formGroup]="confirmFormGroup"
             (ngSubmit)="mfaEditStore.confirm(confirmFormGroup.getRawValue())">
             <input-otp
+              class="w-full"
               #setupOtp="inputOtp"
               [maxLength]="6"
               [pattern]="ONLY_DIGITS"
               formControlName="code"
-              containerClass="group flex items-center has-[:disabled]:opacity-30">
+              containerClass="group w-full flex items-center justify-between has-[:disabled]:opacity-30">
               <div class="flex">
                 @for (
                   slot of setupOtp.slots().slice(0, 3);
@@ -88,7 +95,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
               </div>
             </input-otp>
 
-            <button class="w-full" [disabled]="!confirmFormGroupValid()" mat-flat-button>
+            <button class="w-full max-w-72" [disabled]="!confirmFormGroupValid()" mat-flat-button>
               Confirm
             </button>
           </form>
@@ -98,7 +105,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
         <div class="flex flex-col gap-4">
           <!-- ['123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456'] -->
           @if (mfaEditStore.backupCodes(); as backupCodes) {
-            <div class="flex justify-between gap-4">
+            <div class="flex items-center justify-between gap-4">
               <h3 class="text-xl">Backup Codes</h3>
               <pu-copy-icon-button [content]="backupCodes | s_implode: ', '" />
             </div>
@@ -138,6 +145,10 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
     MatDivider,
     CopyIconButton,
     DfxImplodePipe,
+    MatInput,
+    MatLabel,
+    MatFormField,
+    MatSuffix,
   ],
 })
 export class ProfileMFAForm {

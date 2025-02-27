@@ -57,7 +57,7 @@ import {TeamUsersStore} from '@app/services';
           </ng-container>
 
           <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Joined</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Joined at</th>
             <td *matCellDef="let element" mat-cell>
               {{ element.invitedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
             </td>
@@ -103,15 +103,15 @@ import {TeamUsersStore} from '@app/services';
     }
 
     .mat-column-id-user-name {
-      @apply w-80;
+      @apply w-64;
     }
 
     .mat-column-invitedBy-name {
-      @apply w-80;
+      @apply w-64;
     }
 
     .mat-column-createdAt {
-      @apply w-24;
+      @apply w-48;
     }
 
     .mat-column-actions {

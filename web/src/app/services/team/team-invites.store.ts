@@ -17,7 +17,7 @@ import {
 
 export const TeamInvitesStore = signalStore(
   withPaginatedTable<BackendType['TeamJoinTokenResponse']>({
-    columnsToDisplay: ['inviteeEmail', 'inviter.name', 'role', 'createdAt'],
+    columnsToDisplay: ['inviteeEmail', 'role', 'inviter.name', 'createdAt', 'actions'],
     defaultSortBy: 'createdAt',
   }),
   withMethods((store, api = injectAPI()) => ({

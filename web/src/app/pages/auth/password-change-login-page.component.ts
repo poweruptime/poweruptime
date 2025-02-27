@@ -42,7 +42,7 @@ import {AuthStore} from '../../services/auth.store';
             </mat-form-field>
 
             <mat-form-field>
-              <mat-label>Old Password</mat-label>
+              <mat-label>{{ 'auth.oldPassword' | transloco }}</mat-label>
               <input type="password" matInput formControlName="oldPassword" />
 
               @if (form.controls.oldPassword.errors?.['required']) {
@@ -57,7 +57,7 @@ import {AuthStore} from '../../services/auth.store';
               @let _showPassword = showPassword();
 
               <mat-form-field>
-                <mat-label>New password</mat-label>
+                <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
                 <input
                   [type]="_showPassword ? 'text' : 'password'"
                   matInput
@@ -88,7 +88,7 @@ import {AuthStore} from '../../services/auth.store';
               </mat-form-field>
 
               <mat-form-field>
-                <mat-label>New password confirm</mat-label>
+                <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
                 <input
                   [type]="_showPassword ? 'text' : 'password'"
                   matInput

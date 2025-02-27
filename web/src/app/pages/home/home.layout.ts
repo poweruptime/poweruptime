@@ -1,12 +1,5 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  viewChild,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconButton} from '@angular/material/button';
@@ -34,7 +27,7 @@ import {PushService, SelectedTeamStore} from '@app/services';
         #drawer
         [mode]="_isMobile ? 'over' : 'side'"
         [opened]="!_isMobile">
-        <pu-nav [teamId]="teamId()" />
+        <pu-nav [teamId]="storageTeamId()" />
       </mat-drawer>
 
       <mat-drawer-content class="grid-container">
@@ -107,7 +100,15 @@ import {PushService, SelectedTeamStore} from '@app/services';
 export class HomeLayout {
   selectedTeamStore = inject(SelectedTeamStore);
 
-  teamId = input<string>();
+  teamId = input(undefined, {
+    transform: (it: string | undefined) => {
+      if (it) {
+        this.storageTeamId.set(it);
+      }
+      return it;
+    },
+  });
+  storageTeamId = injectLocalStorage<string>('pu_selected_team_id');
 
   drawer = viewChild.required(MatDrawer);
 
@@ -123,17 +124,10 @@ export class HomeLayout {
   });
 
   constructor() {
-    this.selectedTeamStore.loadSelectedTeam(this.teamId);
+    this.selectedTeamStore.loadSelectedTeam(this.storageTeamId);
 
     const pushService = inject(PushService);
-    const availableTeams = inject(SelectedTeamStore).entities;
-    const availableTeamIds = computed(() => {
-      const selectedTeamId = this.selectedTeamStore.selectedTeamId();
 
-      return selectedTeamId ? [selectedTeamId] : availableTeams().map((team) => team.id);
-    });
-
-    pushService.setTeamIds(availableTeamIds);
     pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
 
     inject(Router)
