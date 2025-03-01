@@ -16,7 +16,7 @@ repositories {
 plugins {
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
 
-    id("org.springframework.boot") version "3.4.2" apply false
+    id("org.springframework.boot") version "3.4.3" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
