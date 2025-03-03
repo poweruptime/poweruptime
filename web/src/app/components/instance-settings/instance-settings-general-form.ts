@@ -51,7 +51,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             </div>
           </div>
 
-          <pu-save-button [valid]="isValid()" />
+          <pu-save-button [valid]="isValid()" form="general-form" />
         </form>
       </mat-card-content>
     </mat-card>
