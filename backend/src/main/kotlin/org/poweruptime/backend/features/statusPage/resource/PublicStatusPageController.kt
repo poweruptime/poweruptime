@@ -63,7 +63,10 @@ class PublicStatusPageController(
         ).toDto {
             PublicMonitorMinResponse(
                 monitor = it,
-                oneDayUptime = checkResultService.calculateRecentUptime(it.id, TimeOption.ONE_DAY).myFormat(),
+                oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
+                    it.id,
+                    TimeOption.ONE_DAY,
+                ).myFormat(),
                 lastCheckResults = checkResultService.getLastByMonitorId(it.id, 35),
             )
         }

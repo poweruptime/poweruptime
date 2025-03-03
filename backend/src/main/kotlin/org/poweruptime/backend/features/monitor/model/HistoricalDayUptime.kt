@@ -3,7 +3,8 @@ package org.poweruptime.backend.features.monitor.model
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.core.MaxNanoId
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -23,8 +24,9 @@ class HistoricalDayUptime(
 
     @Column(name = "uptime", nullable = false, columnDefinition = "numeric")
     var uptime: BigDecimal,
-
+) {
     @Id
-    @Column(name = "id", unique = true, length = 25)
-    val id: String = RandomGenerator.nanoId(25),
-)
+    @MaxNanoId
+    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
+    lateinit var id: String
+}

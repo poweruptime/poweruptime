@@ -45,14 +45,11 @@ INSERT INTO system_notification (id, title, description, active, type, starts, e
 -- Monitors
 
 -- SSL Certificate
-INSERT INTO monitor_checker_data (created_at, updated_at, version, id, _type, ssl_certificate_url,
-                                  ssl_certificate_valid_days_left)
-VALUES ('2025-01-04 13:56:03.960166 +00:00', '2025-01-04 13:56:03.960169 +00:00', 0, 'BbTCKAKofbF1', 'SSL_CERTIFICATE',
-        'https://dafnik.me', 30);
-INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
-                     version, id, monitor_checker_id, team_id, name, description)
-VALUES ('U', false, '2025-01-04 13:56:03.962357 +00:00', null, null, 0, 120, '2025-01-04 14:39:41.755419 +00:00', 25,
-        'k6A6bEK7C9pC', 'BbTCKAKofbF1', '4Lxhu5YKWPBr', 'Test SSL Certificate', 'Test');
+INSERT INTO monitor_checker_data (id, _type, ssl_certificate_url, ssl_certificate_valid_days_left)
+VALUES ('BbTCKAKofbF1', 'SSL_CERTIFICATE', 'https://dafnik.me', 30);
+INSERT INTO monitor (id, monitor_checker_id, team_id, name, test_interval_seconds, status, upside_down, retries,
+                     description)
+VALUES ('k6A6bEK7C9pC', 'BbTCKAKofbF1', '4Lxhu5YKWPBr', 'Test SSL Certificate', 120, 'U', false, 0, 'Test');
 
 -- HTTP
 INSERT INTO monitor_checker_data (created_at, updated_at, version, id, _type, http_url, http_content_type,
@@ -83,5 +80,3 @@ INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, ret
                      version, id, monitor_checker_id, team_id, name, description)
 VALUES ('U', false, '2025-01-04 13:56:03.979055 +00:00', null, null, 2, 60, '2025-01-04 14:40:08.846185 +00:00', 25,
         'pbP9gekfhG44', '5PkEZTcxCt9f', 'wERfKhghD98U', 'Test playground A DNS null matches', 'Test');
-
-

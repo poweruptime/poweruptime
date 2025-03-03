@@ -241,7 +241,7 @@ class MonitorListener(
         this,
         uptime = checkResultService.uptimeStatisticsDto(this),
         lastCheckResults = checkResultService.getLastByMonitorId(this.id, 20),
-        oneDayUptime = checkResultService.calculateRecentUptime(this.id, TimeOption.ONE_DAY).myFormat(),
+        oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
     )
 
     /**

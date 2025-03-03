@@ -119,7 +119,10 @@ class MonitorController(
             MonitorResponse(
                 it,
                 lastCheckResults = checkResultService.getLastByMonitorId(it.id, 20),
-                oneDayUptime = checkResultService.calculateRecentUptime(it.id, TimeOption.ONE_DAY).myFormat(),
+                oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
+                    it.id,
+                    TimeOption.ONE_DAY,
+                ).myFormat(),
             )
         }
     }
@@ -234,6 +237,6 @@ class MonitorController(
         this,
         uptime = checkResultService.uptimeStatisticsDto(this),
         lastCheckResults = checkResultService.getLastByMonitorId(this.id, 20),
-        oneDayUptime = checkResultService.calculateRecentUptime(this.id, TimeOption.ONE_DAY).myFormat(),
+        oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
     )
 }
