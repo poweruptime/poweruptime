@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
-import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatAnchor, MatIconAnchor} from '@angular/material/button';
 import {MatChip} from '@angular/material/chips';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -89,7 +89,6 @@ import {UsersStore} from '@app/services';
     MatSortModule,
     MatPaginator,
     TableLoadingBar,
-    MatIconButton,
     MatTooltip,
     MatChip,
     RouterLink,

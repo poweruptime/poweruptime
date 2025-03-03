@@ -514,7 +514,7 @@ export class MentionAutocompleteTrigger
   private _subscribeToClosingActions(): Subscription {
     // Fire once after the initial render of the panel.
     const initialRender = new Observable((subscriber) => {
-      afterNextRender(() => subscriber.next(), {injector: this._environmentInjector});
+      afterNextRender(() => subscriber.next(null), {injector: this._environmentInjector});
     });
 
     // Watch for changes to the options (new options after async load, etc.).
