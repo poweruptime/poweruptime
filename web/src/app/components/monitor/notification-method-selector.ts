@@ -83,7 +83,7 @@ export class NotificationMethodSelector {
   readonly isPending = input.required<boolean>();
 
   readonly selectedNotificationMethods = model<BackendType['NotificationMethodMinResponse'][]>([]);
-  readonly searchNotificationMethod = model('');
+  searchNotificationMethod = model('');
 
   readonly autoComplete = viewChild.required(MatAutocomplete);
 

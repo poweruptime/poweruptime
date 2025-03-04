@@ -20,7 +20,7 @@ import {MentionAutocompleteTrigger} from '@app/components';
 
 @Component({
   template: `
-    <div class="flex flex-col" style="width: 36rem">
+    <div class="flex flex-col">
       <mat-form-field>
         <mat-label>{{ label() }}</mat-label>
         <textarea

@@ -6,7 +6,7 @@ import {MatTableModule} from '@angular/material/table';
 import {RouterLink} from '@angular/router';
 
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {StopPropagationDirective} from 'dfx-helper';
+import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
 import {PuBooleanEmojiPipe} from '@app/pipes';
@@ -49,7 +49,7 @@ import {
                   stopPropagation
                   target="_blank"
                   rel="noopener noreferrer">
-                  {{ $any(element.sender)['to'] }}
+                  {{ $any(element.sender)['to'] | s_implode: ', ' : 40 : '...' }}
                 </a>
                 <span>&nbsp;via&nbsp;</span>
                 <a
@@ -142,6 +142,7 @@ import {
     BiComponent,
     PuBooleanEmojiPipe,
     TableLoadingBar,
+    DfxImplodePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

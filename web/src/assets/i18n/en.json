@@ -54,7 +54,7 @@
     },
     "validation": {
       "domain": "Enter a valid domain",
-      "email": "Enter a valid {{general.email}} address",
+      "email": "Enter a valid {{general.emailAddress}}",
       "file": "Invalid file format.",
       "integer": "Only whole numbers are allowed",
       "ipv4": "Enter a valid IPV4 Address",
@@ -77,6 +77,7 @@
     "data": "Data",
     "description": "Description",
     "email": "E-Mail",
+    "emailAddress": "E-Mail address",
     "general": "General",
     "host": "Host",
     "instance": "Instance",
@@ -95,6 +96,7 @@
     "port": "Port",
     "profile": "Profile",
     "save": "Save",
+    "security": "Security",
     "server": "Server",
     "sessions": "Sessions",
     "settings": "Settings",
@@ -104,6 +106,7 @@
     "time": "Time",
     "timezone": "Timezone",
     "title": "Title",
+    "to": "To",
     "type": "Type",
     "url": "URL",
     "username": "Username"
@@ -157,6 +160,25 @@
         "url": "Discord Webhook {{general.url}}",
         "urlHelp": "You can get this by going to Server Settings -> Integrations -> View Webhooks -> New Webhook"
       },
+      "email": {
+        "bcc": {
+          "enter": "Enter BCC {{general.emailAddress}}",
+          "new": "New BCC {{general.emailAddress}}",
+          "remove": "Remove BCC {{emailAddress}}"
+        },
+        "cc": {
+          "enter": "Enter CC {{general.emailAddress}}",
+          "new": "New CC {{general.emailAddress}}",
+          "remove": "Remove CC {{emailAddress}}"
+        },
+        "ignoreTLSErrors": "Ignore TLS errors",
+        "to": {
+          "enter": "Enter {{general.emailAddress}}",
+          "new": "New {{general.emailAddress}}",
+          "remove": "Remove {{emailAddress}}"
+        }
+      },
+      "selectTypeToContinue": "Please select a type to continue",
       "title": "Title template",
       "useByDefault": "Use by default"
     },
@@ -168,7 +190,7 @@
   },
   "profile": {
     "email": {
-      "requestChange": "Request email address change"
+      "requestChange": "Request {{general.emailAddress}} change"
     },
     "mfa": {
       "title": "Multi-factor authentication"

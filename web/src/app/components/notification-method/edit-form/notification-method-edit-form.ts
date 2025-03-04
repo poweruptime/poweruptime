@@ -20,11 +20,9 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
 @Component({
   template: `
-    @let valid = isValid();
-
     <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <div class="flex gap-16">
-        <div class="flex flex-col gap-4">
+        <div class="flex grow flex-col gap-4">
           <div class="flex flex-col gap-2">
             <div class="flex gap-2">
               <mat-form-field>
@@ -84,12 +82,14 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                 <pu-notification-method-edit-form-discord-data />
               }
             }
+          } @else {
+            <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
           }
         </div>
 
         <div style="border-left:1px solid #FFF;height:700px"></div>
 
-        <div class="flex min-w-96 flex-col gap-10">
+        <div class="flex grow flex-col gap-10">
           <pu-notification-method-edit-template
             [label]="'notificationMethod.edit.title' | transloco"
             formControlName="titleTemplate" />
@@ -102,10 +102,11 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         </div>
       </div>
 
-      <pu-save-button [valid]="valid" />
+      <pu-save-button [valid]="isValid()" />
     </form>
   `,
   selector: 'pu-notification-method-edit-form',
+  providers: [NotificationMethodEditFormDataService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
@@ -155,6 +156,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
   notificationMethod = input(undefined, {
     transform: (it: BackendType['NotificationMethodResponse'] | undefined) => {
       this.isCreating.set(!it);
+      this.form.reset();
       if (!it) {
         return undefined;
       }

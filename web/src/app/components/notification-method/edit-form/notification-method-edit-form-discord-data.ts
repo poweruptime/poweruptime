@@ -48,15 +48,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </mat-form-field>
     </div>
   `,
-  imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatError,
-    TranslocoPipe,
-    MatHint,
-  ],
+  imports: [ReactiveFormsModule, MatFormField, MatInput, MatLabel, MatError, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodEditFormDiscordData {

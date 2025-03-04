@@ -244,6 +244,7 @@ const CHECKER_DATA_TYPES = [
     <pu-save-button [valid]="isValid()" />
   `,
   selector: 'pu-monitor-edit-form',
+  providers: [NotificationMethodsStore, MonitorEditFormDataService],
   imports: [
     ReactiveFormsModule,
     LowerCasePipe,
@@ -271,7 +272,6 @@ const CHECKER_DATA_TYPES = [
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [NotificationMethodsStore],
 })
 export class MonitorEditForm extends AbstractModelEditFormComponent<
   BackendType['CreateMonitorDto'] & BackendType['SetMonitorNotificationMethodsDto'],
