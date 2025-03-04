@@ -12,6 +12,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -21,8 +22,8 @@ import {BackendType} from '@app/api';
   template: `
     <form>
       <mat-form-field class="w-full">
-        <mat-label>Notification methods</mat-label>
-        <mat-chip-grid #chipGrid aria-label="Fruit selection">
+        <mat-label>{{ 'general.notificationMethods' | transloco }}</mat-label>
+        <mat-chip-grid #chipGrid [attr.aria-label]="'notificationMethod.selector.list' | transloco">
           @for (notificationMethod of selectedNotificationMethods(); track notificationMethod.id) {
             <a
               [routerLink]="'../../../notification-methods/' + notificationMethod.id"
@@ -30,10 +31,12 @@ import {BackendType} from '@app/api';
               mat-chip-row>
               {{ notificationMethod.name }}
               <button
-                [attr.aria-label]="'remove ' + notificationMethod.name"
+                [attr.aria-label]="
+                  'notificationMethod.selector.remove' | transloco: notificationMethod
+                "
                 matChipRemove
                 stopPropagation>
-                <bi name="x-circle" />
+                <bi name="x-circle" aria-hidden="true" />
               </button>
             </a>
           }
@@ -42,8 +45,8 @@ import {BackendType} from '@app/api';
           [(ngModel)]="searchNotificationMethod"
           [matChipInputFor]="chipGrid"
           [matAutocomplete]="auto"
-          name="searchNotificationMethod"
-          placeholder="Add notification methods..." />
+          [placeholder]="'notificationMethod.selector.add' | transloco"
+          name="searchNotificationMethod" />
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
           @if (isPending()) {
             <mat-progress-bar mode="indeterminate" />
@@ -71,6 +74,7 @@ import {BackendType} from '@app/api';
     BiComponent,
     RouterLink,
     StopPropagationDirective,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

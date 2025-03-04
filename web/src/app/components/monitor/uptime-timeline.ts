@@ -1,6 +1,7 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, input, signal} from '@angular/core';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {MtxTooltip} from '@ng-matero/extensions/tooltip';
 import {DfxTimeLeftPipe} from 'dfx-helper';
 
@@ -43,13 +44,18 @@ import {MonitorStatusBackground} from '@app/directives';
               {{ checkResult.createdAt | date: 'HH:mm' }}
               @if (_checkResultsSize > 20) {
                 <span class="text-xs">
-                  ({{ checkResult.createdAt | d_timeLeft: currentDate() }} ago)
+                  ({{
+                    'monitor.pingChart.ago'
+                      | transloco: {time: checkResult.createdAt | d_timeLeft: currentDate()}
+                  }})
                 </span>
               }
             </span>
           }
           @if (first) {
-            <span class="absolute -bottom-2 right-0 whitespace-nowrap">Latest</span>
+            <span class="absolute -bottom-2 right-0 whitespace-nowrap">
+              {{ 'general.latest' | transloco }}
+            </span>
           }
           @if (
             _checkResultsSize > 20 &&
@@ -82,7 +88,7 @@ import {MonitorStatusBackground} from '@app/directives';
   `,
   selector: 'pu-uptime-timeline',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, DfxTimeLeftPipe, MtxTooltip, MonitorStatusBackground],
+  imports: [DatePipe, DfxTimeLeftPipe, MtxTooltip, MonitorStatusBackground, TranslocoPipe],
 })
 export class UptimeTimeline {
   currentDate = signal(new Date());

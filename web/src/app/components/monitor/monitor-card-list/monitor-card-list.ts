@@ -8,6 +8,7 @@ import {outputFromObservable} from '@angular/core/rxjs-interop';
 
 import {Subject, throttleTime} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import type {BackendType} from '@app/api';
@@ -40,7 +41,7 @@ import {MonitorCard} from './monitor-card';
           </div>
         }
       } @else if (entities().length === 0) {
-        <span>No monitors found.</span>
+        <span>{{ 'monitor.emtpy' | transloco }}</span>
       }
     </cdk-virtual-scroll-viewport>
   `,
@@ -71,6 +72,7 @@ import {MonitorCard} from './monitor-card';
     CdkFixedSizeVirtualScroll,
     CdkVirtualForOf,
     Placeholder,
+    TranslocoPipe,
   ],
 })
 export class MonitorCardList {

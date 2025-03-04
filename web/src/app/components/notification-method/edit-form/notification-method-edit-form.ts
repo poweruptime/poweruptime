@@ -2,12 +2,13 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatDivider} from '@angular/material/divider';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -29,21 +30,46 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
               <mat-form-field>
                 <mat-label>{{ 'general.name' | transloco }}</mat-label>
                 <input matInput formControlName="name" />
+
+                @let nameErrors = form.controls.name.errors;
+                @if (nameErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (nameErrors?.['minlength']; as minlength) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
+                @if (nameErrors?.['maxlength']; as maxlength) {
+                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+                }
               </mat-form-field>
 
               <mat-form-field>
-                <mat-label>Type</mat-label>
+                <mat-label>{{ 'general.type' | transloco }}</mat-label>
                 <mat-select formControlName="type">
                   <mat-option value="EMAIL">Email</mat-option>
                   <mat-option value="DISCORD">Discord</mat-option>
                 </mat-select>
+
+                @let typeErrors = form.controls.type.errors;
+                @if (typeErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
               </mat-form-field>
             </div>
 
-            <mat-slide-toggle formControlName="useByDefault">Use by default</mat-slide-toggle>
+            <mat-slide-toggle formControlName="useByDefault">
+              {{ 'notificationMethod.edit.useByDefault' | transloco }}
+            </mat-slide-toggle>
           </div>
 
-          <h2 class="mb-2 mt-6 text-2xl">Data</h2>
+          @let typeValue = form.controls.type.getRawValue();
+
+          <h2 class="mb-2 mt-6 text-2xl">
+            @if (typeValue !== '') {
+              {{ typeValue | s_lowerCaseAllExceptFirstLetter }} -
+            }
+            {{ 'general.data' | transloco }}
+          </h2>
 
           @if (form.controls.type.getRawValue() !== '') {
             @let type = form.controls.type.getRawValue();
@@ -65,14 +91,14 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
         <div class="flex min-w-96 flex-col gap-10">
           <pu-notification-method-edit-template
-            formControlName="titleTemplate"
-            label="Title template" />
+            [label]="'notificationMethod.edit.title' | transloco"
+            formControlName="titleTemplate" />
 
           <mat-divider />
 
           <pu-notification-method-edit-template
-            formControlName="bodyTemplate"
-            label="Body template" />
+            [label]="'notificationMethod.edit.body' | transloco"
+            formControlName="bodyTemplate" />
         </div>
       </div>
 
@@ -95,6 +121,8 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     NotificationMethodEditFormDiscordData,
     NotificationMethodEditTemplate,
     MatDivider,
+    MatError,
+    DfxLowerCaseExceptFirstLettersPipe,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<

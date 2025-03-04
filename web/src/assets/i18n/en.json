@@ -69,6 +69,7 @@
   },
   "general": {
     "body": "Body",
+    "clear": "Clear",
     "confirmDelete": "Confirm deletion?",
     "contentType": "Content-Type",
     "copy": "Copy",
@@ -80,11 +81,14 @@
     "host": "Host",
     "instance": "Instance",
     "ipAddress": "IP-Address",
+    "latest": "Latest",
     "logout": "Logout",
     "method": "Method",
     "monitor": "Monitor",
     "name": "Name",
     "noDataAvailable": "No data available.",
+    "notificationMethods": "Notification methods",
+    "now": "Now",
     "open": "Open",
     "password": "Password",
     "permissions": "Permissions",
@@ -139,6 +143,27 @@
         "validDaysLeft": "Minimum valid days"
       },
       "upsideDown": "Upside down"
+    },
+    "empty": "Create your first monitor",
+    "pingChart": {
+      "ago": "{{time}} ago"
+    }
+  },
+  "notificationMethod": {
+    "edit": {
+      "body": "Body template",
+      "discord": {
+        "displayName": "Display name",
+        "url": "Discord Webhook {{general.url}}",
+        "urlHelp": "You can get this by going to Server Settings -> Integrations -> View Webhooks -> New Webhook"
+      },
+      "title": "Title template",
+      "useByDefault": "Use by default"
+    },
+    "selector": {
+      "add": "Add {{general.notificationMethods}}",
+      "list": "{{general.notificationMethods}} list",
+      "remove": "remove {{name}}"
     }
   },
   "profile": {

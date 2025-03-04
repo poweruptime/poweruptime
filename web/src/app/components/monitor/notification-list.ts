@@ -15,10 +15,12 @@ import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {TableLoadingBar} from '@app/components';
 import {MonitorStatusBackground} from '@app/directives';
+import {RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationsStore} from '@app/services';
 
 @Component({
@@ -35,7 +37,7 @@ import {NotificationsStore} from '@app/services';
             mat-table
             matSort>
             <ng-container matColumnDef="monitor">
-              <th *matHeaderCellDef mat-header-cell>Monitor</th>
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
               <td *matCellDef="let element" mat-cell>
                 <a class="underline" [routerLink]="element.monitor.id">
                   {{ element.monitor.name }}
@@ -44,7 +46,9 @@ import {NotificationsStore} from '@app/services';
             </ng-container>
 
             <ng-container matColumnDef="status">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>Status</th>
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'general.status' | transloco }}
+              </th>
               <td *matCellDef="let element" mat-cell>
                 <span
                   class="rounded-md px-2 py-1 font-bold"
@@ -55,21 +59,23 @@ import {NotificationsStore} from '@app/services';
             </ng-container>
 
             <ng-container matColumnDef="createdAt">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>Created at</th>
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'general.createdAt' | transloco }}
+              </th>
               <td *matCellDef="let element" mat-cell>
-                {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+                <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
               </td>
             </ng-container>
 
             <ng-container matColumnDef="method">
-              <th *matHeaderCellDef mat-header-cell>Method</th>
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.method' | transloco }}</th>
               <td *matCellDef="let element" mat-cell>
                 {{ element.method.name }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="title">
-              <th *matHeaderCellDef mat-header-cell>Title</th>
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
               <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
             </ng-container>
 
@@ -121,6 +127,8 @@ import {NotificationsStore} from '@app/services';
     MonitorStatusBackground,
     RouterLink,
     TableLoadingBar,
+    TranslocoPipe,
+    RelativeTimeWithTooltip,
   ],
 })
 export class NotificationList {

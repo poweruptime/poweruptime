@@ -5,6 +5,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 
@@ -22,6 +23,7 @@ import {BackendType} from '@app/api';
     MatIconButton,
     MatInput,
     DfxAutofocus,
+    TranslocoPipe,
   ],
   template: `
     <div class="flex flex-col rounded-lg border border-solid border-black p-4 dark:border-gray-300">
@@ -32,11 +34,11 @@ import {BackendType} from '@app/api';
         @if ((_searchControl.getRawValue()?.length ?? 0) > 0) {
           <button
             class="flex items-center"
+            [attr.aria-label]="'general.clear' | transloco"
             (click)="_searchControl.setValue('')"
             matSuffix
-            mat-icon-button
-            aria-label="Clear">
-            <bi name="x-lg" />
+            mat-icon-button>
+            <bi name="x-lg" aria-hidden="true" />
           </button>
         }
       </mat-form-field>

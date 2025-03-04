@@ -28,9 +28,7 @@ export const NotificationMethodEditFormDataService = createInjectable(() => {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          '(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]',
-        ),
+        Validators.pattern(Database.DOMAIN_REGEX),
         Validators.minLength(Database.MIN_DOMAIN_LENGTH),
         Validators.maxLength(Database.MAX_DOMAIN_LENGTH),
       ],
@@ -55,11 +53,9 @@ export const NotificationMethodEditFormDataService = createInjectable(() => {
       '',
       [
         Validators.required,
-        Validators.pattern(
-          'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)',
-        ),
-        Validators.minLength(Database.MIN_DOMAIN_LENGTH),
-        Validators.maxLength(Database.MAX_DOMAIN_LENGTH),
+        Validators.pattern(Database.URL_REGEX),
+        Validators.minLength(Database.MIN_URL_LENGTH),
+        Validators.maxLength(Database.MAX_URL_LENGTH),
       ],
     ],
     displayName: [
