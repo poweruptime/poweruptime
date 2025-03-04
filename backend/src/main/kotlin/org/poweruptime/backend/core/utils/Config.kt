@@ -12,6 +12,8 @@ object Config {
     const val MAIL_PORT = "\${spring.mail.port}"
     const val MAIL_USERNAME = "\${spring.mail.username}"
     const val MAIL_PASSWORD = "\${spring.mail.password}"
+    const val MAIL_SECURITY = "\${poweruptime.mail.security}"
+    const val MAIL_IGNORE_TLS_ERRORS = "\${poweruptime.mail.ignore-tls-errors}"
 
     const val STORAGE_DIRECTORY = "\${poweruptime.storage.directory}"
 

@@ -7,11 +7,12 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.notification.core.NOTIFICATION_SENDER_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.core.NotificationSenderData
 import org.poweruptime.backend.features.notification.core.NotificationSenderType
 import org.poweruptime.backend.features.notification.core.NotificationSenderTypes
 
-@Entity
+@Entity(name = "${NOTIFICATION_SENDER_DATA_TABLE_NAME}_${NotificationSenderTypes.DISCORD}")
 @DiscriminatorValue(NotificationSenderTypes.DISCORD)
 class DiscordNotificationSenderData(
     @Column(name = "discord_url", length = Database.MAX_URL_LENGTH)

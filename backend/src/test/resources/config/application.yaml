@@ -51,12 +51,6 @@ spring:
     port: 3025 # default protocol port + 3000 as offset
     username: poweruptime
     password: poweruptime
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
 springdoc:
   api-docs:
@@ -83,6 +77,8 @@ management:
 poweruptime:
   mail:
     enabled: false
+    security: NONE_STARTTLS
+    ignore-tls-errors: true
   host: localhost:4200
   notification-temp:
     enabled: true

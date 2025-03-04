@@ -57,13 +57,6 @@ spring:
     port: 587
     username: test@test.at
     password: test
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
 
 springdoc:
   api-docs:
@@ -92,6 +85,8 @@ poweruptime:
   host: localhost:4200
   mail:
     enabled: false
+    security: NONE_STARTTLS
+    ignore-tls-errors: false # greenmail does not support STARTTLS
   notification-temp:
     enabled: true
   storage:

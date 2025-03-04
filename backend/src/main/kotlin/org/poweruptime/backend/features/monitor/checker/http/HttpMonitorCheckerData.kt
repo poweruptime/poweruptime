@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.core.*
 
-@Entity
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.HTTP}")
 @DiscriminatorValue(MonitorCheckerTypes.HTTP)
 class HttpMonitorCheckerData(
     @Column(name = "http_url", length = Database.MAX_URL_LENGTH)

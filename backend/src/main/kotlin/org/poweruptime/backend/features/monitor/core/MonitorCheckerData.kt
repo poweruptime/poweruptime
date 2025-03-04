@@ -14,8 +14,8 @@ import java.time.Instant
 /**
  * Base entity for a MonitorCheckerData.
  */
-@Entity(name = "monitor_checker_data")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Entity(name = MONITOR_CHECKER_DATA_TABLE_NAME)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "_type", discriminatorType = DiscriminatorType.STRING)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
 @JsonTypeIdResolver(MonitorCheckerDataTypeResolver::class)
@@ -58,3 +58,5 @@ class MonitoringResultHandler {
 }
 
 data class CheckResultDto(val pingMs: Long, val isUp: Boolean, val title: String, val message: String? = null)
+
+const val MONITOR_CHECKER_DATA_TABLE_NAME = "monitor_checker_data"

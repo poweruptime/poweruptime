@@ -82,7 +82,7 @@ class SendMailIntegrationTests(
                 content {
                     contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$") { isArray() }
-                    jsonPath("$[0].to") { value(testEmail.to) }
+                    jsonPath("$[0].to") { value(testEmail.to.joinToString()) }
                     jsonPath("$[0].subject") { value(testEmail.subject) }
                     jsonPath("$[0].body") { value(plain) }
                     jsonPath("$[0].bodyHTML") { value(html) }
@@ -96,7 +96,7 @@ class SendMailIntegrationTests(
                 val receivedMessage: MimeMessage = receivedMessages[0]
                 assertEquals(testEmail.subject, receivedMessage.subject)
                 assertEquals(1, receivedMessage.allRecipients.size)
-                assertEquals(testEmail.to, receivedMessage.allRecipients[0].toString())
+                assertEquals(testEmail.to.first(), receivedMessage.allRecipients[0].toString())
             }
         }
     }

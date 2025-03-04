@@ -5,8 +5,15 @@ import org.poweruptime.backend.features.mail.Email
 import org.poweruptime.backend.features.team.model.Team
 import org.thymeleaf.context.Context
 
-data class JoinTeamEmail(val inviterTeam: Team, val inviter: User, val invitee: User, val token: String) : Email {
-    override val to = invitee.email
+data class JoinTeamEmail(
+    val inviterTeam: Team,
+    val inviter: User,
+    val invitee: User,
+    val token: String,
+    override val cc: Set<String>? = null,
+    override val bcc: Set<String>? = null
+) : Email {
+    override val to = setOf(invitee.email)
 
     override val subject = "Join the ${inviterTeam.name} team on poweruptime"
 

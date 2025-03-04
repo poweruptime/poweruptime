@@ -20,20 +20,18 @@ class EmailNotificationSender(
         notificationTemplate: NotificationTemplate
     ): String? = try {
         val emailNotificationMethodData = notificationMethod.sender as EmailNotificationSenderData
-        val template = emailTemplateService.getRenderedMail(
-            EmailNotificationEmail(
-                to = emailNotificationMethodData.to,
-                title = notificationTemplate.title,
-                body = notificationTemplate.body,
-            ),
+        val email = EmailNotificationEmail(
+            to = emailNotificationMethodData.to,
+            title = notificationTemplate.title,
+            body = notificationTemplate.body,
+            cc = emailNotificationMethodData.cc,
+            bcc = emailNotificationMethodData.bcc,
         )
         emailSender.send(
             emailNotificationMethodData,
             EmailDto(
-                to = emailNotificationMethodData.to,
-                subject = notificationTemplate.title,
-                plain = template.plain,
-                html = template.html,
+                email = email,
+                template = emailTemplateService.getRenderedMail(email),
             ),
         )
         null

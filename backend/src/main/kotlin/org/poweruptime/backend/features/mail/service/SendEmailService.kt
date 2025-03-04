@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.mail.service
 import jakarta.mail.internet.MimeMessage
 import org.poweruptime.backend.features.mail.EmailDto
 import org.poweruptime.backend.features.mail.EmailListener
+import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
 import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
@@ -19,12 +20,28 @@ class SendEmailService {
         password = emailSenderDto.password
 
         val props = javaMailProperties
-        props["mail.transport.protocol"] = "smtp"
+
         props["mail.smtp.auth"] = "true"
-        props["mail.smtp.starttls.enable"] = "true"
         props["mail.smtp.timeout"] = 5000
         props["mail.smtp.connectiontimeout"] = 5000
         props["mail.smtp.writetimeout"] = 5000
+
+        when (emailSenderDto.security) {
+            EmailSecurity.NONE_STARTTLS -> {
+                props["mail.transport.protocol"] = "smtp"
+                props["mail.smtp.starttls.enable"] = "true"
+                if (!emailSenderDto.ignoreTLSErrors) {
+                    props["mail.smtp.starttls.required"] = "true"
+                }
+            }
+            EmailSecurity.TLS -> {
+                props["mail.transport.protocol"] = "smtps"
+                if (emailSenderDto.ignoreTLSErrors) {
+                    props["mail.smtp.ssl.trust"] = "*"
+                }
+            }
+        }
+
         javaMailProperties = props
     }
 
@@ -35,14 +52,24 @@ class SendEmailService {
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
 
         try {
-            helper.setTo(emailDto.to)
+            helper.setTo(emailDto.to.toTypedArray())
             helper.setSubject(emailDto.subject)
+            helper.setFrom("poweruptime <${emailSenderDto.username}>")
+
             if (emailDto.html !== null) {
                 helper.setText(emailDto.plain, emailDto.html)
             } else {
                 helper.setText(emailDto.plain)
             }
-            helper.setFrom("poweruptime <${emailSenderDto.username}>")
+
+            emailDto.cc?.let {
+                helper.setCc(it.toTypedArray())
+            }
+
+            emailDto.bcc?.let {
+                helper.setBcc(it.toTypedArray())
+            }
+
             mailSender.send(mimeMessage)
 
             logger.info(

@@ -45,37 +45,39 @@ INSERT INTO system_notification (id, title, description, active, type, starts, e
 -- Monitors
 
 -- SSL Certificate
-INSERT INTO monitor_checker_data (id, _type, ssl_certificate_url, ssl_certificate_valid_days_left)
-VALUES ('BbTCKAKofbF1', 'SSL_CERTIFICATE', 'https://dafnik.me', 30);
+INSERT INTO monitor_checker_data (id, _type) VALUES ('BbTCKAKofbF1', 'SSL_CERTIFICATE');
+INSERT INTO monitor_checker_data_ssl_certificate (id, ssl_certificate_url, ssl_certificate_valid_days_left)
+VALUES ('BbTCKAKofbF1', 'https://dafnik.me', 30);
+
 INSERT INTO monitor (id, monitor_checker_id, team_id, name, test_interval_seconds, status, upside_down, retries,
                      description)
 VALUES ('k6A6bEK7C9pC', 'BbTCKAKofbF1', '4Lxhu5YKWPBr', 'Test SSL Certificate', 120, 'U', false, 0, 'Test');
 
 -- HTTP
-INSERT INTO monitor_checker_data (created_at, updated_at, version, id, _type, http_url, http_content_type,
-                                  http_ignore_tls, http_method)
-VALUES ('2025-01-04 14:02:31.947064 +00:00', '2025-01-04 14:02:31.947075 +00:00', 0, 'sPDD36R7KTgs', 'HTTP',
-        'https://expired.badssl.com/', 'JSON', true, 'GET');
+INSERT INTO monitor_checker_data (id, _type) VALUES ('sPDD36R7KTgs', 'HTTP');
+INSERT INTO monitor_checker_data_http (id, http_url, http_content_type, http_ignore_tls, http_method)
+VALUES ('sPDD36R7KTgs', 'https://expired.badssl.com/', 'JSON', true, 'GET');
+
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
                      version, id, monitor_checker_id, team_id, name, description)
 VALUES ('U', false, '2025-01-04 13:56:03.955130 +00:00', null, null, 0, 120, '2025-01-04 14:40:03.312240 +00:00', 37,
         '6XSKoPbRhSsb', 'sPDD36R7KTgs', '4Lxhu5YKWPBr', 'Test HTTP', 'Test');
 
 -- DNS CNAME Matches
-INSERT INTO monitor_checker_data (created_at, updated_at, version, id, dns_server, _type, dns_host, dns_matches,
-                                  dns_port, dns_type)
-VALUES ('2025-01-04 13:56:03.966225 +00:00', '2025-01-04 13:56:03.966228 +00:00', 0, 'wPz3rDrwsFSk', '9.9.9.9', 'DNS',
-        'playground.dafnik.me', '{dafnik.github.io.}', 53, 'CNAME');
+INSERT INTO monitor_checker_data (id, _type) VALUES ('wPz3rDrwsFSk', 'DNS');
+INSERT INTO monitor_checker_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
+VALUES ('wPz3rDrwsFSk', '9.9.9.9', 'playground.dafnik.me', '{dafnik.github.io.}', 53, 'CNAME');
+
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
                      version, id, monitor_checker_id, team_id, name, description)
 VALUES ('U', false, '2025-01-04 13:56:03.975070 +00:00', null, null, 2, 60, '2025-01-04 14:40:06.418497 +00:00', 23,
         'rKALbBX37kWr', 'wPz3rDrwsFSk', '4Lxhu5YKWPBr', 'Test playground CNAME DNS', 'Test');
 
 -- DNS Exists Team 2
-INSERT INTO monitor_checker_data (created_at, updated_at, version, id, dns_server, _type, dns_host, dns_matches,
-                                  dns_port, dns_type)
-VALUES ('2025-01-04 13:56:03.977158 +00:00', '2025-01-04 13:56:03.977160 +00:00', 0, '5PkEZTcxCt9f', '9.9.9.9', 'DNS',
-        'playground.dafnik.me', null, 53, 'A');
+INSERT INTO monitor_checker_data (id, _type) VALUES ('5PkEZTcxCt9f', 'DNS');
+INSERT INTO monitor_checker_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
+VALUES ('5PkEZTcxCt9f', '9.9.9.9', 'playground.dafnik.me', null, 53, 'A');
+
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
                      version, id, monitor_checker_id, team_id, name, description)
 VALUES ('U', false, '2025-01-04 13:56:03.979055 +00:00', null, null, 2, 60, '2025-01-04 14:40:08.846185 +00:00', 25,

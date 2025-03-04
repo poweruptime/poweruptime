@@ -13,7 +13,7 @@ import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
  * Base entity for a NotificationSenderData.
  */
 @Entity(name = "notification_sender_data")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "_type", discriminatorType = DiscriminatorType.STRING)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
 @JsonTypeIdResolver(NotificationSenderDataTypeResolver::class)
@@ -34,3 +34,5 @@ abstract class NotificationSenderData(
     @JsonIgnore
     override lateinit var id: String
 }
+
+const val NOTIFICATION_SENDER_DATA_TABLE_NAME = "notification_sender_data"

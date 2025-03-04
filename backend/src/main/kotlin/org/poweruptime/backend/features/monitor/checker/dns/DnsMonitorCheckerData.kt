@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.core.*
 
-@Entity
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.DNS}")
 @DiscriminatorValue(MonitorCheckerTypes.DNS)
 class DnsMonitorCheckerData(
     // Domain max length is 253

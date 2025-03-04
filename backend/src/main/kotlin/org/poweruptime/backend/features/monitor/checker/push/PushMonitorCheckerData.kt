@@ -6,7 +6,7 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.monitor.core.*
 
-@Entity
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.PUSH}")
 @DiscriminatorValue(MonitorCheckerTypes.PUSH)
 class PushMonitorCheckerData(
     @Column(name = "push_id", length = NANO_ID_SMALL_LENGTH)

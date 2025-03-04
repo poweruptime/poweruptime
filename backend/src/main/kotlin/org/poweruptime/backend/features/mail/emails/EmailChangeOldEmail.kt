@@ -4,8 +4,13 @@ import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
-data class EmailChangeOldEmail(val user: User, val cancelToken: String) : Email {
-    override val to = user.email
+data class EmailChangeOldEmail(
+    val user: User,
+    val cancelToken: String,
+    override val cc: Set<String>? = null,
+    override val bcc: Set<String>? = null
+) : Email {
+    override val to = setOf(user.email)
 
     override val subject = "Email address change requested"
 

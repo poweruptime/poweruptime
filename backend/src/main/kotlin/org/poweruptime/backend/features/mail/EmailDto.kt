@@ -5,6 +5,8 @@ interface EmailSender {
     val port: Int
     val username: String
     val password: String
+    val security: EmailSecurity
+    val ignoreTLSErrors: Boolean
 }
 
 data class EmailSenderDto(
@@ -12,19 +14,25 @@ data class EmailSenderDto(
     override val port: Int,
     override val username: String,
     override val password: String,
+    override val security: EmailSecurity,
+    override val ignoreTLSErrors: Boolean,
 ) : EmailSender
 
 data class EmailDto(
-    val to: String,
+    val to: Set<String>,
     val subject: String,
     val plain: String,
     val html: String? = null,
+    val cc: Set<String>? = null,
+    val bcc: Set<String>? = null,
 ) {
     constructor(email: Email, template: EmailTemplateResponse) : this(
         to = email.to,
         subject = email.subject,
-        template.plain,
-        template.html,
+        plain = template.plain,
+        html = template.html,
+        cc = email.cc,
+        bcc = email.bcc,
     )
 }
 

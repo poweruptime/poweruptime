@@ -4,6 +4,7 @@ import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.info.InfoService
+import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerData
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerDataType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerData
@@ -134,11 +135,13 @@ class StartupApplicationListener(
                 name = "Test EMAIL",
                 sender = notificationSenderDataService.save(
                     EmailNotificationSenderData(
-                        to = "test@test.at",
+                        to = setOf("test@test.at"),
                         host = "test.at",
                         port = 1234,
                         username = "test",
                         password = "test",
+                        security = EmailSecurity.NONE_STARTTLS,
+                        ignoreTLSErrors = true,
                     ),
                 ),
                 team = team,
@@ -151,11 +154,13 @@ class StartupApplicationListener(
                     name = "Z Autogeneriert $it",
                     sender = notificationSenderDataService.save(
                         EmailNotificationSenderData(
-                            to = "test@test.at",
+                            to = setOf("test@test.at"),
                             host = "test.at",
                             port = 1234,
                             username = "test",
                             password = "test",
+                            security = EmailSecurity.NONE_STARTTLS,
+                            ignoreTLSErrors = true,
                         ),
                     ),
                     team = team,

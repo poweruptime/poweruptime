@@ -4,8 +4,12 @@ import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
-data class PasswordChangedEmail(val user: User) : Email {
-    override val to = user.email
+data class PasswordChangedEmail(
+    val user: User,
+    override val cc: Set<String>? = null,
+    override val bcc: Set<String>? = null
+) : Email {
+    override val to = setOf(user.email)
 
     override val subject = "Your password has been successfully changed"
 

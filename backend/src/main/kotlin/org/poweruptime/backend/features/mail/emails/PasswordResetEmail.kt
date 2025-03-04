@@ -3,8 +3,14 @@ package org.poweruptime.backend.features.mail.emails
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
-data class PasswordResetEmail(val email: String, val resetToken: String, val name: String) : Email {
-    override val to = email
+data class PasswordResetEmail(
+    val email: String,
+    val resetToken: String,
+    val name: String,
+    override val cc: Set<String>? = null,
+    override val bcc: Set<String>? = null
+) : Email {
+    override val to = setOf(email)
 
     override val subject = "Password reset requested"
 

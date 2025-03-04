@@ -5,6 +5,7 @@ import org.poweruptime.backend.core.utils.*
 import org.poweruptime.backend.features.mail.Email
 import org.poweruptime.backend.features.mail.EmailDto
 import org.poweruptime.backend.features.mail.EmailListener
+import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSenderDto
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
@@ -20,6 +21,8 @@ class SystemEmailService(
     @Value(Config.MAIL_PORT) private val mailPort: Int,
     @Value(Config.MAIL_USERNAME) private val mailUsername: String,
     @Value(Config.MAIL_PASSWORD) private val mailPassword: String,
+    @Value(Config.MAIL_SECURITY) private val mailSecurity: String,
+    @Value(Config.MAIL_IGNORE_TLS_ERRORS) private val mailIgnoreTLSErrors: Boolean,
     private val tempNotificationService: TempNotificationService,
     private val emailTemplateService: EmailTemplateService,
     private val rabbitMQService: RabbitMQService
@@ -32,6 +35,8 @@ class SystemEmailService(
         port = mailPort,
         username = mailUsername,
         password = mailPassword,
+        security = EmailSecurity.valueOf(mailSecurity),
+        ignoreTLSErrors = mailIgnoreTLSErrors,
     )
 
     fun sendEmail(dto: EmailDto) {
@@ -40,7 +45,7 @@ class SystemEmailService(
         if (tempNotificationsEnabled) {
             tempNotificationService.addNotification(
                 TempNotification(
-                    to = dto.to,
+                    to = dto.to.joinToString(),
                     subject = dto.subject,
                     body = dto.plain,
                     bodyHTML = dto.html,

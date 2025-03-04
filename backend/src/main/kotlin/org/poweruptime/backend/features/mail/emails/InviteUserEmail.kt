@@ -4,8 +4,14 @@ import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
-data class InviteUserEmail(val inviter: User, val invitee: User, val onetimePassword: String) : Email {
-    override val to = invitee.email
+data class InviteUserEmail(
+    val inviter: User,
+    val invitee: User,
+    val onetimePassword: String,
+    override val cc: Set<String>? = null,
+    override val bcc: Set<String>? = null
+) : Email {
+    override val to = setOf(invitee.email)
 
     override val subject = "Sign up to poweruptime"
 

@@ -37,38 +37,78 @@ create table instance_setting
 
 create table monitor_checker_data
 (
-    dns_port                        integer
-        constraint monitor_checker_data_dns_port_check
-            check ((dns_port <= 65535) AND (dns_port >= 1)),
-    http_content_type               varchar(4),
-    http_ignore_tls                 boolean,
-    ping_port                       integer
-        constraint monitor_checker_data_ping_port_check
-            check ((ping_port <= 65535) AND (ping_port >= 1)),
-    dns_type                        varchar(5),
-    http_auth_type                  varchar(5),
-    http_method                     varchar(7),
-    created_at                      timestamp with time zone default now() not null,
-    deleted                         timestamp with time zone,
-    ssl_certificate_valid_days_left bigint
-        constraint monitor_checker_data_ssl_certificate_valid_days_left_check
-            check ((ssl_certificate_valid_days_left <= 3650) AND (ssl_certificate_valid_days_left >= 1)),
-    updated_at                      timestamp with time zone default now() not null,
-    version                         bigint                   default 0     not null,
-    id                              varchar(12)                            not null
+    created_at timestamp with time zone default now() not null,
+    deleted    timestamp with time zone,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    id         varchar(12)                            not null
         primary key,
-    push_id                         varchar(12),
-    dns_server                      varchar(15),
-    ping_ip                         varchar(15),
-    _type                           varchar(31)                            not null,
-    dns_host                        varchar(253),
-    http_basic_auth_password        varchar(512),
-    http_basic_auth_username        varchar(512),
-    http_url                        varchar(2048),
-    ssl_certificate_url             varchar(2048),
-    http_body                       text,
-    http_search_term                text,
-    dns_matches                     text[]
+    _type      varchar(31)                            not null
+);
+
+create table monitor_checker_data_dns
+(
+    dns_port    integer      not null
+        constraint monitor_checker_data_dns_dns_port_check
+            check ((dns_port <= 65535) AND (dns_port >= 1)),
+    dns_type    varchar(5)   not null,
+    id          varchar(12)  not null
+        primary key
+        constraint fkp2cn82uphyttx7itapj5k0uvc
+            references monitor_checker_data,
+    dns_server  varchar(15)  not null,
+    dns_host    varchar(253) not null,
+    dns_matches text[]
+);
+
+create table monitor_checker_data_http
+(
+    http_content_type        varchar(4)    not null,
+    http_ignore_tls          boolean       not null,
+    http_auth_type           varchar(5),
+    http_method              varchar(7)    not null,
+    id                       varchar(12)   not null
+        primary key
+        constraint fk3jcho78xid46flf824cn981l7
+            references monitor_checker_data,
+    http_basic_auth_password varchar(512),
+    http_basic_auth_username varchar(512),
+    http_url                 varchar(2048) not null,
+    http_body                text,
+    http_search_term         text
+);
+
+create table monitor_checker_data_ping
+(
+    ping_port integer     not null
+        constraint monitor_checker_data_ping_ping_port_check
+            check ((ping_port <= 65535) AND (ping_port >= 1)),
+    id        varchar(12) not null
+        primary key
+        constraint fkc0sya6po9ek4pb58c71t9d7ir
+            references monitor_checker_data,
+    ping_ip   varchar(15) not null
+);
+
+create table monitor_checker_data_push
+(
+    id      varchar(12) not null
+        primary key
+        constraint fkds3hqsb24pohqknqxr9hsuv6o
+            references monitor_checker_data,
+    push_id varchar(12) not null
+);
+
+create table monitor_checker_data_ssl_certificate
+(
+    ssl_certificate_valid_days_left bigint
+        constraint monitor_checker_data_ssl_cer_ssl_certificate_valid_days_l_check
+            check ((ssl_certificate_valid_days_left <= 3650) AND (ssl_certificate_valid_days_left >= 1)),
+    id                              varchar(12)   not null
+        primary key
+        constraint fk80p26rbrcku8li0r8b2bbeaav
+            references monitor_checker_data,
+    ssl_certificate_url             varchar(2048) not null
 );
 
 create table monitor_push_entry
@@ -87,22 +127,42 @@ create table monitor_push_entry
 
 create table notification_sender_data
 (
-    mail_port            integer
-        constraint notification_sender_data_mail_port_check
-            check ((mail_port <= 65535) AND (mail_port >= 1)),
-    created_at           timestamp with time zone default now() not null,
-    deleted              timestamp with time zone,
-    updated_at           timestamp with time zone default now() not null,
-    version              bigint                   default 0     not null,
-    id                   varchar(12)                            not null
+    created_at timestamp with time zone default now() not null,
+    deleted    timestamp with time zone,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    id         varchar(12)                            not null
         primary key,
-    _type                varchar(31)                            not null,
+    _type      varchar(31)                            not null
+);
+
+create table notification_sender_data_discord
+(
+    id                   varchar(12)   not null
+        primary key
+        constraint fk3um3aiqcc3wjtdcwtam2ayttg
+            references notification_sender_data,
     discord_display_name varchar(32),
-    mail_host            varchar(253),
-    mail_password        varchar(512),
-    mail_username        varchar(512),
-    discord_url          varchar(2048),
-    mail_to              varchar(255)
+    discord_url          varchar(2048) not null
+);
+
+create table notification_sender_data_email
+(
+    mail_ignore_tls_errors boolean      not null,
+    mail_port              integer      not null
+        constraint notification_sender_data_email_mail_port_check
+            check ((mail_port <= 65535) AND (mail_port >= 1)),
+    mail_security          varchar(1)   not null,
+    id                     varchar(12)  not null
+        primary key
+        constraint fkq7lm3g53kgx2kdm51k9bpvktg
+            references notification_sender_data,
+    mail_host              varchar(253) not null,
+    mail_password          varchar(512) not null,
+    mail_username          varchar(512) not null,
+    mail_bcc               text[],
+    mail_cc                text[],
+    mail_to                text[]       not null
 );
 
 create table system_notification
