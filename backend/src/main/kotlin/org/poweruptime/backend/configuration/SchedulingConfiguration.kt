@@ -5,6 +5,7 @@ import org.poweruptime.backend.features.authentication.service.SessionService
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.profile.service.EmailChangeTokenService
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
@@ -29,7 +30,8 @@ class SchedulingConfiguration(
     private val emailChangeTokenService: EmailChangeTokenService,
     private val teamService: TeamService,
     private val teamSettingService: TeamSettingService,
-    private val fileService: FileService
+    private val fileService: FileService,
+    private val monitorService: MonitorService,
 ) {
     val logger: Logger = LoggerFactory.getLogger(SchedulingConfiguration::class.java)
 
@@ -37,6 +39,10 @@ class SchedulingConfiguration(
     @Scheduled(fixedDelay = 86_400_000L, initialDelay = 1_800_000L)
     @Suppress("LongMethod")
     fun cleanup() {
+        monitorService.getAll().forEach {
+            checkResultService.syncCheckResultsToHistoricalDayUptime(it)
+        }
+
         val dateNineMonthAgo = Instant.now().minusSeconds(60 * 60 * 24 * 30 * 9) // 9 months
         logger.info("Removing sessions older than $dateNineMonthAgo")
 

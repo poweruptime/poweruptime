@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.monitor.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
+import jakarta.transaction.Transactional
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
@@ -109,30 +110,11 @@ class CheckResultService(
 
     fun calculateYearlyUptime(monitor: Monitor): List<DayUptimeStatistics> {
         val currentDate = LocalDate.now()
-        val now = Instant.now()
-        val startOfDayNow = currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant()
 
-        // Get current day uptime on the fly
-        val currentDayUptime = HistoricalDayUptime(
-            monitor = monitor,
-            date = currentDate,
-            uptime = calculateUptimeByMonitorId(
-                monitor.id,
-                startOfDayNow,
-                now,
-            ),
-        )
-
-        val historicalDayUptimes = historicalDayUptimeRepository.findByMonitorIdBetweenDates(
-            monitor.id,
-            currentDate.minusMonths(12),
-            currentDate,
-        ).toMutableList()
-
-        historicalDayUptimes.add(currentDayUptime)
+        val lastYearHistoricalDayUptimes = getLastYearHistoricalDayUptime(monitor)
 
         // Group existing records by their start-of-week
-        val groupedByWeek = historicalDayUptimes.groupBy { it.date.startOfWeek() }
+        val groupedByWeek = lastYearHistoricalDayUptimes.groupBy { it.date.startOfWeek() }
 
         // Collect all dates for the past 365 days into a map
         val pastYearGrouped = (0..365).map { currentDate.minusDays(it.toLong()) }.groupBy { it.startOfWeek() }
@@ -223,64 +205,66 @@ class CheckResultService(
             ?: BigDecimal(100)
     }
 
-    private fun getLastYearHistoricalDayUptime(monitor: Monitor): List<HistoricalDayUptime> {
+    @Transactional
+    fun syncCheckResultsToHistoricalDayUptime(monitor: Monitor) {
         val currentDate = LocalDate.now()
-        val startOfYearAgo = currentDate.minusDays(TimeOption.ONE_YEAR.hours / 24)
+        val startOfYearAgo = currentDate.minusYears(1)
         val existing = historicalDayUptimeRepository.findByMonitorIdBetweenDates(
             monitor.id,
             startOfYearAgo,
             currentDate,
-        ).associateBy { it.date }
+        ).map { it.date }.toSet()
 
         val totalDays = (TimeOption.ONE_YEAR.hours / 24).toInt()
-        val now = Instant.now()
         val zoneId = ZoneId.systemDefault()
 
-        // Create list with the correct initial capacity
-        val days = ArrayList<HistoricalDayUptime>(totalDays)
-        val newEntries = mutableListOf<HistoricalDayUptime>()
-
-        // Start with current day (most recent)
-        val todayUptime = calculateUptimeByMonitorId(
-            monitor.id,
-            currentDate.atStartOfDay(zoneId).toInstant(),
-            now,
-        )
-        days.add(
-            HistoricalDayUptime(
-                monitor = monitor,
-                date = currentDate,
-                uptime = todayUptime,
-            ),
-        )
-
-        // Then process previous days in descending order (newest to oldest)
-        for (i in 1 until totalDays) {
-            val dateToProcess = currentDate.minusDays(i.toLong())
-            val existingDay = existing[dateToProcess]
-
-            if (existingDay != null) {
-                days.add(existingDay)
-            } else {
+        // Use a sequence to generate dates and filter out existing ones
+        val newEntries = (1 until totalDays)
+            .asSequence()
+            .map { currentDate.minusDays(it.toLong()) }
+            .filterNot { existing.contains(it) }
+            .map { dateToProcess ->
                 val startOfDay = dateToProcess.atStartOfDay(zoneId).toInstant()
                 val endOfDay = dateToProcess.plusDays(1).atStartOfDay(zoneId).toInstant()
                 val uptime = calculateUptimeByMonitorId(monitor.id, startOfDay, endOfDay)
-                val newEntry = HistoricalDayUptime(
+                HistoricalDayUptime(
                     monitor = monitor,
                     date = dateToProcess,
                     uptime = uptime,
                 )
-                newEntries.add(newEntry)
-                days.add(newEntry)
             }
-        }
+            .toList() // Convert the sequence to a list for saveAll
 
         // Save all newly computed days at once
         if (newEntries.isNotEmpty()) {
             historicalDayUptimeRepository.saveAll(newEntries)
         }
+    }
 
-        return days
+    private fun getLastYearHistoricalDayUptime(monitor: Monitor): List<HistoricalDayUptime> {
+        val currentDate = LocalDate.now()
+
+        return buildList {
+            // Start with current day (most recent)
+            add(
+                HistoricalDayUptime(
+                    monitor = monitor,
+                    date = currentDate,
+                    uptime = calculateUptimeByMonitorId(
+                        monitor.id,
+                        currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                        Instant.now(),
+                    ),
+                ),
+            )
+            addAll(
+                historicalDayUptimeRepository.findByMonitorIdBetweenDates(
+                    monitor.id,
+                    currentDate.minusYears(1),
+                    currentDate,
+                ),
+            )
+        }
     }
 
     private fun calculateUptimeByMonitorId(monitorId: String, start: Instant, end: Instant): BigDecimal {
@@ -310,7 +294,6 @@ fun calculateUptimeFromCheckResults(
 ): BigDecimal? {
     if (checkResults.isEmpty()) return null
 
-    // Sort by pickedUpAt to make the loop efficient
     val totalDurationMs = Duration.between(start, end).toMillis().toBigDecimal()
     if (totalDurationMs <= BigDecimal.ZERO) return null
 

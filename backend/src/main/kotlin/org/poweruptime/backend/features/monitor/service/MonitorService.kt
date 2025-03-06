@@ -144,7 +144,7 @@ class MonitorService(
                         )
                     }
                     statuses?.let { add(Filter("status", it, FilterCompare.IN)) }
-                    types?.let { add(Filter("type", it, FilterCompare.IN)) }
+                    types?.let { add(Filter("checker._type", it, FilterCompare.IN)) }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
                 }.toPredicate(root, criteriaBuilder).toTypedArray(),
             )

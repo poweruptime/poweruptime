@@ -12,6 +12,7 @@ interface HistoricalDayUptimeRepository : JpaRepository<HistoricalDayUptime, Str
     SELECT hdu FROM HistoricalDayUptime hdu
     WHERE hdu.monitor.id = :monitorId
       AND hdu.date >= :start and hdu.date < :end
+      order by hdu.date desc
 """,
     )
     fun findByMonitorIdBetweenDates(

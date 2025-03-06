@@ -30,6 +30,10 @@ class MFAService(
     @Throws(MFACodeIncorrectException::class, MFACodeRequiredException::class)
     fun validate(userId: String, code: String?) {
         mfaRepository.findByUserId(userId)?.let {
+            if (!it.active) {
+                return
+            }
+
             if (code == null) {
                 throw MFACodeRequiredException()
             }

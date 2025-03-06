@@ -86,7 +86,9 @@ class FileService(
 
                 if (!filePath.parent.equals(rootLocation.toAbsolutePath())) {
                     // This is a security check
-                    throw IOException("Path error")
+                    throw IOException(
+                        "Path error, '${filePath.parent.toAbsolutePath()}', '${rootLocation.toAbsolutePath()}'",
+                    )
                 }
 
                 Files.deleteIfExists(filePath)
@@ -97,7 +99,36 @@ class FileService(
 
         fileRepository.deleteAll(filesToDelete)
 
+        // Find files on disk without a database entry
+        val filesOnDisk = getAllFilesOnDisk()
+        val fileIdsInDatabase = fileRepository.findAll().map { it.fileId }.toSet()
+
+        val filesToDeleteFromDisk = filesOnDisk.filter { file ->
+            !fileIdsInDatabase.contains(file.fileName.toString())
+        }
+
+        // Delete files that are only on disk
+        filesToDeleteFromDisk.forEach { filePath ->
+            try {
+                if (!filePath.parent.equals(rootLocation.toAbsolutePath())) {
+                    throw IOException(
+                        "Path error, '${filePath.parent.toAbsolutePath()}', '${rootLocation.toAbsolutePath()}'",
+                    )
+                }
+
+                Files.deleteIfExists(filePath)
+            } catch (e: IOException) {
+                logger.warn("Failed to delete file from disk (no DB entry): $filePath", e)
+            }
+        }
+
         return filesToDelete
+    }
+
+    private fun getAllFilesOnDisk(): List<Path> {
+        return Files.walk(rootLocation)
+            .filter { Files.isRegularFile(it) }
+            .toList()
     }
 
     private fun loadFile(fileId: String): Path {
