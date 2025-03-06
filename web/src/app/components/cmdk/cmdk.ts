@@ -184,7 +184,11 @@ export class Cmdk {
   });
 
   /**
-   * t(cmdk.groups.monitor.search, cmdk.groups.monitor.create, cmdk.groups.team.search, cmdk.groups.team.create, general.logout, cmdk.groups.theme.switch, profile.settings)
+   * t(cmdk.groups.monitor.search, cmdk.groups.monitor.create)
+   * t(cmdk.groups.team.search, cmdk.groups.team.create)
+   * t(cmdk.groups.notificationMethod.search, cmdk.groups.notificationMethod.create)
+   * t(cmdk.groups.statusPage.search, cmdk.groups.statusPage.create)
+   * t(general.logout, cmdk.groups.theme.switch, profile.settings)
    */
   readonly groups: Signal<
     {

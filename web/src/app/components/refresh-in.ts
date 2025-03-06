@@ -5,18 +5,22 @@ import {Meta} from '@angular/platform-browser';
 
 import {map, of, timer} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 const refreshInSeconds = 120;
 
 @Component({
   template: `
     <div class="flex flex-col items-center py-4">
-      <span>Last update: {{ now | date: 'YYYY.MM.dd HH:mm:ss' }}</span>
-      <span>Refresh in {{ countdown() }} seconds.</span>
+      <span>
+        {{ 'refreshIn.lastUpdate' | transloco: {value: now | date: 'YYYY.MM.dd HH:mm:ss'} }}
+      </span>
+      <span>{{ 'refreshIn.refreshIn' | transloco: {value: countdown()} }}</span>
     </div>
   `,
   selector: 'refresh-in',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe],
+  imports: [DatePipe, TranslocoPipe],
 })
 export class RefreshInComponent {
   private readonly meta = inject(Meta);

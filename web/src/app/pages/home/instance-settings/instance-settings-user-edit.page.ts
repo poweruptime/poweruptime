@@ -1,5 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {Placeholder} from '@app/components';
 import {UserEditForm} from '@app/components/user';
 import {UserEditStore} from '@app/services';
@@ -12,12 +14,12 @@ import {UserEditStore} from '@app/services';
 
       @if (_userId) {
         @if (user; as user) {
-          <h1 class="text-4xl">Edit {{ user.name }}</h1>
+          <h1 class="text-4xl">{{ 'instanceSettings.editUser' | transloco: user }}</h1>
         } @else {
           <pu-placeholder class="h-12 w-64" />
         }
       } @else {
-        <h1 class="text-4xl">Invite user</h1>
+        <h1 class="text-4xl">{{ 'instanceSettings.inviteUser' | transloco }}</h1>
       }
 
       @if (_userId) {
@@ -49,7 +51,7 @@ import {UserEditStore} from '@app/services';
   selector: 'pu-instance-settings-user-edit-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [UserEditStore],
-  imports: [UserEditForm, Placeholder],
+  imports: [UserEditForm, Placeholder, TranslocoPipe],
 })
 export class InstanceSettingsUserEditPage {
   readonly userEditStore = inject(UserEditStore);

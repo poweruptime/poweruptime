@@ -4,6 +4,7 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip, MatChipSet} from '@angular/material/chips';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxCutPipe} from 'dfx-helper';
@@ -33,7 +34,7 @@ import {calculatePingChart} from '@app/services/util';
           <div class="flex items-center gap-6">
             <h1 class="text-4xl">{{ monitor.name }}</h1>
             <a href="/public/m/{{ monitor.id }}" target="_blank">
-              <bi size="28" name="box-arrow-up-right" />
+              <bi size="28" name="box-arrow-up-right" aria-hidden="true" />
             </a>
           </div>
 
@@ -88,33 +89,33 @@ import {calculatePingChart} from '@app/services/util';
               class="secondary-button"
               (click)="monitorActionStore.start(monitor.id)"
               mat-flat-button>
-              Start
+              {{ 'general.start' | transloco }}
             </button>
           } @else {
             <button
               class="secondary-button"
               (click)="monitorActionStore.pause(monitor.id)"
               mat-flat-button>
-              Pause
+              {{ 'general.pause' | transloco }}
             </button>
             <button
               class="secondary-button"
               (click)="monitorActionStore.maintenance(monitor.id)"
               mat-flat-button>
-              Maintenance
+              {{ 'general.maintenance' | transloco }}
             </button>
           }
           <a
             [routerLink]="'/t/' + monitor.team.id + '/m/' + monitor.id + '/edit'"
             queryParamsHandling="merge"
             mat-flat-button>
-            Edit
+            {{ 'general.edit' | transloco }}
           </a>
           <button
             class="error-button"
             (click)="monitorActionStore.delete(monitor.id)"
             mat-flat-button>
-            Delete
+            {{ 'general.delete' | transloco }}
           </button>
         </div>
 
@@ -140,26 +141,26 @@ import {calculatePingChart} from '@app/services/util';
                 Unknown
               }
             }
-            Monitor
+            {{ 'general.monitor' | transloco }}
           </mat-chip>
 
           @if (monitor.retries !== 0) {
             <mat-chip class="flex items-center">
               <bi class="mr-1" name="arrow-repeat" />
-              <span>{{ monitor.retries }}x retries</span>
+              <span>{{ 'monitor.details.retries' | transloco: monitor }}</span>
             </mat-chip>
           }
 
           @if (monitor.resendAfter; as resendAfter) {
             <mat-chip class="flex items-center">
-              Resend notification after {{ resendAfter }}x down checks
+              {{ 'monitor.details.resendAfter' | transloco: {resendAfter} }}
             </mat-chip>
           }
 
           @if (monitor.upsideDown) {
             <mat-chip class="flex items-center">
               <bi class="mr-1" name="emoji-smile-upside-down" />
-              Upside down
+              {{ 'monitor.edit.upsideDown' | transloco }}
             </mat-chip>
           }
         </mat-chip-set>
@@ -179,7 +180,12 @@ import {calculatePingChart} from '@app/services/util';
             }
 
             @if (monitorDetailStore.monitor(); as monitor) {
-              <span>Check every {{ testIntervalDuration() }}</span>
+              <span>
+                {{
+                  'monitor.details.check'
+                    | transloco: {testIntervalDuration: testIntervalDuration()}
+                }}
+              </span>
             } @else {
               <pu-placeholder class="h-6 w-40" />
             }
@@ -262,6 +268,7 @@ import {calculatePingChart} from '@app/services/util';
     MatAnchor,
     DfxCutPipe,
     Placeholder,
+    TranslocoPipe,
   ],
 })
 export class MonitorDetailPage {

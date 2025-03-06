@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
@@ -20,37 +20,75 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           <mat-form-field>
             <mat-label>{{ 'general.name' | transloco }}</mat-label>
             <input matInput formControlName="name" />
+
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>{{ 'general.email' | transloco }}</mat-label>
+            <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
             <input matInput formControlName="email" />
+
+            @let emailErrors = form.controls.email.errors;
+            @if (emailErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (emailErrors?.['email']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (emailErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (emailErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
           </mat-form-field>
 
           @let _isCreating = isCreating();
 
           <div class="flex flex-col pb-4">
             <mat-form-field>
-              <mat-label>{{ 'Password' | transloco }}</mat-label>
+              <mat-label>{{ 'general.password' | transloco }}</mat-label>
               <input matInput formControlName="password" placeholder="********" />
+
+              @let passwordErrors = form.controls.password.errors;
+              @if (passwordErrors?.['minlength']; as minlength) {
+                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+              }
             </mat-form-field>
 
             @if (!_isCreating) {
-              <mat-slide-toggle formControlName="updatePassword">Update password</mat-slide-toggle>
+              <mat-slide-toggle formControlName="updatePassword">
+                {{ 'user.edit.updatePassword' | transloco }}
+              </mat-slide-toggle>
             }
           </div>
 
-          <mat-slide-toggle formControlName="sendInvitation">Send invite mail</mat-slide-toggle>
+          <mat-slide-toggle formControlName="sendInvitation">
+            {{ 'user.edit.sendInviteEmail' | transloco }}
+          </mat-slide-toggle>
 
           <div class="flex gap-8">
-            <mat-slide-toggle formControlName="isAdmin">System-Admin</mat-slide-toggle>
+            <mat-slide-toggle formControlName="isAdmin">
+              {{ 'general.systemAdmin' | transloco }}
+            </mat-slide-toggle>
 
             @if (!_isCreating) {
-              <mat-slide-toggle formControlName="activated">Activated</mat-slide-toggle>
+              <mat-slide-toggle formControlName="activated">
+                {{ 'general.activated' | transloco }}
+              </mat-slide-toggle>
             }
 
             <mat-slide-toggle formControlName="forcePasswordChange">
-              Force password change on next login
+              {{ 'user.edit.forcePasswordChange' | transloco }}
             </mat-slide-toggle>
           </div>
         </div>
@@ -69,6 +107,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     MatSlideToggle,
     TranslocoPipe,
     SaveButton,
+    MatError,
   ],
 })
 export class UserEditForm extends AbstractModelEditFormComponent<
@@ -95,7 +134,10 @@ export class UserEditForm extends AbstractModelEditFormComponent<
       ],
     ],
     updatePassword: [false],
-    password: [undefined as string | undefined],
+    password: [
+      undefined as string | undefined,
+      [Validators.minLength(Database.MIN_PASSWORD_LENGTH)],
+    ],
     activated: [true, [Validators.required]],
     sendInvitation: [false, [Validators.required]],
     forcePasswordChange: [false, [Validators.required]],

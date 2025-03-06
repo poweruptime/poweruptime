@@ -20,7 +20,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
         <mat-nav-list>
           <a mat-list-item routerLink="/m" routerLinkActive="active">
             <bi name="lightning" />
-            <span class="nav-text">Personal Dashboard</span>
+            <span class="nav-text">{{ 'nav.personalDashboard' | transloco }}</span>
           </a>
 
           <a
@@ -29,7 +29,9 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
             routerLink="/t"
             routerLinkActive="active">
             <bi name="people" />
-            <span class="nav-text">Teams</span>
+            <span class="nav-text">
+              {{ 'general.teams' | transloco }}
+            </span>
           </a>
 
           <div class="mb-2 mt-4 flex items-center gap-3">
@@ -38,7 +40,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
               @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
                 {{ selectedTeam.name }}
               } @else {
-                Team
+                {{ 'general.team' | transloco }}
               }
             </span>
             <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
@@ -46,21 +48,21 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 
           <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/m" routerLinkActive="active">
             <bi name="speedometer2" />
-            <span class="nav-text">Dashboard</span>
+            <span class="nav-text">{{ 'nav.dashboard' | transloco }}</span>
           </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/notification-methods"
             routerLinkActive="active">
             <bi name="bell" />
-            <span class="nav-text">Notification methods</span>
+            <span class="nav-text">{{ 'general.notificationMethods' | transloco }}</span>
           </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/status-pages"
             routerLinkActive="active">
             <bi name="chat-left-quote" />
-            <span class="nav-text">Status Pages</span>
+            <span class="nav-text">{{ 'general.statusPages' | transloco }}</span>
           </a>
           <a
             mat-list-item
@@ -71,7 +73,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
           </a>
           <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
             <bi name="gear-wide" />
-            <span class="nav-text">Settings</span>
+            <span class="nav-text">{{ 'general.settings' | transloco }}</span>
           </a>
         </mat-nav-list>
       </div>
@@ -81,7 +83,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
           <mat-nav-list>
             <a *isSystemAdmin mat-list-item routerLink="/settings" routerLinkActive="active">
               <bi name="building-gear" />
-              <span class="nav-text">Instance settings</span>
+              <span class="nav-text">{{ 'nav.instanceSettings' | transloco }}</span>
             </a>
           </mat-nav-list>
           <div

@@ -3,7 +3,7 @@ import {inject} from '@angular/core';
 
 import {Observable, catchError, tap, throwError} from 'rxjs';
 
-import {BackendOfflineService} from '../pages/outside.layout';
+import {BackendOfflineService} from '@app/services';
 
 /**
  * Check only this requests

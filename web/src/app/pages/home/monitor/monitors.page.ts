@@ -1,23 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  booleanAttribute,
-  computed,
-  effect,
-  inject,
-} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {MatAnchor} from '@angular/material/button';
 import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {effectOnceIf} from 'ngxtension/effect-once-if';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
+import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import type {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {
+  MonitorSearchParams,
   MonitorsDashboardStore,
   MonitorsSearchStore,
   MonitorsStore,
@@ -33,7 +25,7 @@ import {
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
           @if (selectedTeamStore.selectedTeamId()) {
-            <a mat-flat-button routerLink="new">New monitor</a>
+            <a mat-flat-button routerLink="new">{{ 'cmdk.groups.monitor.create' | transloco }}</a>
           } @else {
             <div></div>
           }
@@ -44,7 +36,7 @@ import {
               monitor(s)
             </mat-chip>
 
-            <mat-chip-listbox (change)="setShowFilter(!_showFilter)">
+            <mat-chip-listbox (change)="showFilter.set(!_showFilter)">
               <mat-chip-option [selected]="_showFilter">
                 <bi name="filter" />
               </mat-chip-option>
@@ -52,11 +44,13 @@ import {
           </div>
         </div>
 
-        @if (_showFilter) {
-          <pu-monitors-filter
-            [searchControl]="searchControl"
-            [statusFilterControl]="statusFilterControl"
-            [dashboard]="dashboard" />
+        @defer (when _showFilter) {
+          @if (_showFilter) {
+            <pu-monitors-filter
+              [filter]="filter()"
+              [dashboard]="dashboard"
+              (filterChange)="filter.set($event)" />
+          }
         }
 
         @if (monitorsSearchStore.isSearching() && _showFilter) {
@@ -102,63 +96,30 @@ import {
     MatChipOption,
     MatAnchor,
     MonitorsFilter,
+    TranslocoPipe,
   ],
   providers: [MonitorsSearchStore, MonitorsDashboardStore],
   selector: 'landing-page',
 })
 export class MonitorsPage {
-  private readonly router = inject(Router);
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
   readonly monitorsStore = inject(MonitorsStore);
   readonly monitorsSearchStore = inject(MonitorsSearchStore);
 
-  readonly showFilter = injectQueryParams('showFilter', {
-    transform: booleanAttribute,
+  readonly showFilter = linkedQueryParam('showFilter', {
+    parse: paramToBoolean({defaultValue: false}),
+    stringify: (value) => (!value ? null : value),
+    queryParamsHandling: '',
   });
-  setShowFilter(showFilter: boolean) {
-    void this.router.navigate([], {
-      queryParamsHandling: 'merge',
-      queryParams: {
-        showFilter: showFilter ? true : null,
-        status: showFilter ? undefined : null,
-        search: showFilter ? undefined : null,
-      },
-    });
-    if (!showFilter) {
-      this.searchControl.setValue('');
-      this.statusFilterControl.setValue([]);
-    }
-  }
 
-  readonly searchParam = injectQueryParams('search');
-  readonly searchControl = new FormControl<string>('');
-  readonly statusesParam = injectQueryParams.array('status', {
-    transform: (it) => {
-      if (it === 'UP' || it === 'DOWN' || it === 'MAINTENANCE' || it === 'PAUSED') {
-        return it;
-      }
-      return '';
-    },
+  readonly filter = linkedQueryParam<MonitorSearchParams>('filter', {
+    parse: (value) => JSON.parse(value ?? '{}'),
+    stringify: (value) => JSON.stringify(value),
   });
-  readonly statusFilterControl = new FormControl<BackendType['MonitorResponse']['status'][]>([]);
 
   constructor() {
     this.monitorsDashboardStore.loadByTeamId(this.selectedTeamStore.selectedTeamId);
-
-    effect(() => {
-      const statuses = this.statusesParam();
-      if (statuses) {
-        this.statusFilterControl.setValue(
-          statuses.filter((it): it is BackendType['MonitorResponse']['status'] => it !== ''),
-        );
-      }
-    });
-
-    effectOnceIf(
-      () => this.searchParam(),
-      (search) => this.searchControl.setValue(search),
-    );
 
     this.monitorsStore.loadMonitorsByTeamId(
       computed(() => ({
@@ -168,8 +129,9 @@ export class MonitorsPage {
       })),
     );
 
-    this.monitorsSearchStore.setSearch(this.searchControl.valueChanges);
-    this.monitorsSearchStore.setStatuses(this.statusFilterControl.valueChanges);
+    this.monitorsSearchStore.setSearch(computed(() => this.filter()?.search));
+    this.monitorsSearchStore.setStatuses(computed(() => this.filter()?.statuses));
+    this.monitorsSearchStore.setTypes(computed(() => this.filter()?.types));
 
     this.monitorsSearchStore.searchMonitorsByTeamId(
       computed(() => ({
@@ -177,6 +139,7 @@ export class MonitorsPage {
         page: this.monitorsSearchStore.page(),
         search: this.monitorsSearchStore.search(),
         statuses: this.monitorsSearchStore.statuses(),
+        types: this.monitorsSearchStore.types(),
       })),
     );
   }

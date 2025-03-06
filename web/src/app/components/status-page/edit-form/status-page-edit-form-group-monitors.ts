@@ -31,6 +31,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
@@ -47,9 +48,9 @@ type DragEventType = {
 
     <div class="mt-3 flex flex-col gap-2">
       <div class="flex items-center justify-between">
-        <span class="text-xl">Monitors</span>
+        <span class="text-xl">{{ 'general.monitors' | transloco }}</span>
         <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Add monitor...</mat-label>
+          <mat-label>{{ 'statusPage.edit.monitors.add' | transloco }}</mat-label>
           <mat-select [formControl]="selectedMonitor" (selectionChange)="onAdd($event)">
             <mat-option class="pt-1">
               <ngx-mat-select-search [(ngModel)]="monitorSearch" noEntriesFoundLabel="">
@@ -64,9 +65,9 @@ type DragEventType = {
               } @empty {
                 <mat-option disabled>
                   @if (monitorSearch() === '') {
-                    No monitors left.
+                    {{ 'statusPage.edit.monitors.search.noLeft' | transloco }}
                   } @else {
-                    No monitors found.
+                    {{ 'statusPage.edit.monitors.search.noFound' | transloco }}
                   }
                 </mat-option>
               }
@@ -114,7 +115,7 @@ type DragEventType = {
             <div>NEVER EVER ERROR</div>
           }
         } @empty {
-          <span class="my-4 text-center">No monitors added yet.</span>
+          <span class="my-4 text-center">{{ 'statusPage.edit.monitors.empty' | transloco }}</span>
         }
       </div>
     </div>
@@ -160,6 +161,7 @@ type DragEventType = {
     BiComponent,
     MatProgressBar,
     CdkDragPlaceholder,
+    TranslocoPipe,
   ],
 })
 export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {

@@ -1,5 +1,7 @@
 import {Component, computed, inject, input, signal} from '@angular/core';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {Placeholder} from '@app/components';
 import {MonitorEditForm, MonitorEditFormPlaceholder} from '@app/components/monitor';
 import {MonitorEditStore, NotificationMethodsStore, SelectedTeamStore} from '@app/services';
@@ -11,12 +13,14 @@ import {MonitorNotificationMethodsStore} from '@app/services/monitor/monitor-not
       @let _monitorId = monitorId();
       @if (_monitorId) {
         @if (monitorEditStore.isFulfilled()) {
-          <h1 class="text-4xl">Edit {{ monitorEditStore.monitor()?.name }}</h1>
+          <h1 class="text-4xl">
+            {{ 'monitor.edit.edit' | transloco: {name: monitorEditStore.monitor()?.name} }}
+          </h1>
         } @else {
           <pu-placeholder class="h-12 w-64" />
         }
       } @else {
-        <h1 class="text-4xl">Create new monitor</h1>
+        <h1 class="text-4xl">{{ 'cmdk.groups.monitor.create' | transloco }}</h1>
       }
 
       @if (!_monitorId || monitorEditStore.isFulfilled()) {
@@ -37,7 +41,7 @@ import {MonitorNotificationMethodsStore} from '@app/services/monitor/monitor-not
   selector: 'pu-monitor-edit-page',
   standalone: true,
   providers: [MonitorEditStore, MonitorNotificationMethodsStore, NotificationMethodsStore],
-  imports: [MonitorEditForm, MonitorEditFormPlaceholder, Placeholder],
+  imports: [MonitorEditForm, MonitorEditFormPlaceholder, Placeholder, TranslocoPipe],
 })
 export class MonitorEditPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);

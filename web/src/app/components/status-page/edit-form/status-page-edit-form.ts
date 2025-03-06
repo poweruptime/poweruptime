@@ -25,7 +25,7 @@ import {
 } from '@angular/forms';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatTooltip} from '@angular/material/tooltip';
 
@@ -35,7 +35,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database, injectAPI} from '@app/api';
-import {FileUpload} from '@app/components';
+import {AlertDirective, FileUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {MonitorsSearchStore} from '@app/services';
@@ -44,115 +44,161 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 
 @Component({
   template: `
-    <form class="pb-4" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div class="flex justify-between gap-12">
-        <div class="flex flex-col gap-3">
-          <div class="flex gap-2">
-            <mat-form-field class="w-full">
-              <mat-label>{{ 'general.name' | transloco }}</mat-label>
-              <input matInput formControlName="name" />
-            </mat-form-field>
+    <form
+      class="grid grid-cols-3 gap-12"
+      id="form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+      <div class="flex flex-col gap-6">
+        <div class="flex gap-2">
+          <mat-form-field class="w-full">
+            <mat-label>{{ 'general.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
 
-            <mat-form-field class="w-full">
-              <mat-label>{{ 'Slug' | transloco }}</mat-label>
-              <input matInput formControlName="slug" />
-            </mat-form-field>
-          </div>
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+          </mat-form-field>
 
-          <pu-file-upload
-            [file]="statusPage()?.image"
-            (fileId)="form.controls.imageId.setValue($event)"
-            label="Drop a image" />
+          <mat-form-field class="w-full">
+            <mat-label>{{ 'general.slug' | transloco }}</mat-label>
+            <input matInput formControlName="slug" />
 
-          <pu-editor
-            id="description"
-            [control]="form.controls.description"
-            [placeholder]="'Description...' | transloco" />
-
-          <pu-editor
-            id="footer"
-            [control]="form.controls.footer"
-            [placeholder]="'Footer...' | transloco" />
+            @let slugErrors = form.controls.slug.errors;
+            @if (slugErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (slugErrors?.['pattern']) {
+              <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
+            }
+            @if (slugErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (slugErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+          </mat-form-field>
         </div>
 
-        <div class="flex flex-col gap-2" style="min-width: 37rem">
-          @let isCollapsed = collapsed();
+        <pu-file-upload
+          [file]="statusPage()?.image"
+          [label]="'statusPage.edit.image' | transloco"
+          (fileId)="form.controls.imageId.setValue($event)" />
 
-          <div class="flex justify-between">
-            <div>
-              <button (click)="onGroupAdd()" type="button" mat-flat-button>Add group</button>
-            </div>
+        <pu-editor
+          id="description"
+          [control]="form.controls.description"
+          [placeholder]="('general.description' | transloco) + '...'" />
 
-            <button
-              [matTooltip]="isCollapsed ? 'Show monitors in groups' : 'Hide monitors in groups'"
-              (click)="collapsed.set(!isCollapsed)"
-              type="button"
-              mat-icon-button>
-              @if (isCollapsed) {
-                <bi name="arrows-expand" />
-              } @else {
-                <bi name="arrows-collapse" />
-              }
+        <pu-editor
+          id="footer"
+          [control]="form.controls.footer"
+          [placeholder]="('general.footer' | transloco) + '...'" />
+
+        <pu-save-button [valid]="isValid()" />
+      </div>
+
+      <div class="flex flex-col gap-4" style="min-width: 37rem">
+        @let isCollapsed = collapsed();
+
+        <div class="flex justify-between">
+          <div>
+            <button (click)="onGroupAdd()" type="button" mat-flat-button>
+              {{ 'statusPage.edit.group.add' | transloco }}
             </button>
           </div>
 
-          <div
-            class="drag-list flex flex-col gap-2"
-            (cdkDropListDropped)="onGroupDrop($event)"
-            cdkDropList
-            formArrayName="groups">
-            @for (
-              statusPageGroupControl of form.controls.groups.controls;
-              track index;
-              let index = $index
-            ) {
-              <mat-card [formGroup]="statusPageGroupControl" cdkDrag appearance="outlined">
-                <div class="group-drag-placeholder" *cdkDragPlaceholder></div>
-                <mat-card-content>
-                  <div class="flex flex-col gap-4">
-                    <div class="flex items-center justify-between text-xl">
-                      <div class="inline-flex items-center gap-2">
-                        <div class="min-w-6 hover:cursor-move" cdkDragHandle>
-                          <bi name="grip-vertical" size="20" />
-                        </div>
+          <button
+            [matTooltip]="
+              isCollapsed
+                ? ('statusPage.edit.monitors.show' | transloco)
+                : ('statusPage.edit.monitors.hide' | transloco)
+            "
+            (click)="collapsed.set(!isCollapsed)"
+            type="button"
+            mat-icon-button>
+            @if (isCollapsed) {
+              <bi name="arrows-expand" />
+            } @else {
+              <bi name="arrows-collapse" />
+            }
+          </button>
+        </div>
 
-                        <mat-form-field subscriptSizing="dynamic">
-                          <mat-label>{{ 'general.name' | transloco }}</mat-label>
-                          <input matInput formControlName="name" />
-                        </mat-form-field>
+        @let groupsErrors = form.controls.groups.errors;
+        @if (groupsErrors?.['required']) {
+          <div puAlert type="INFO">{{ 'statusPage.edit.group.minOne' | transloco }}</div>
+        }
+
+        <div
+          class="drag-list flex flex-col gap-2"
+          (cdkDropListDropped)="onGroupDrop($event)"
+          cdkDropList
+          formArrayName="groups">
+          @for (
+            statusPageGroupControl of form.controls.groups.controls;
+            track index;
+            let index = $index
+          ) {
+            <mat-card [formGroup]="statusPageGroupControl" cdkDrag appearance="outlined">
+              <div class="group-drag-placeholder" *cdkDragPlaceholder></div>
+              <mat-card-content>
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-center justify-between text-xl">
+                    <div class="inline-flex items-center gap-2">
+                      <div class="min-w-6 hover:cursor-move" cdkDragHandle>
+                        <bi name="grip-vertical" size="20" />
                       </div>
 
-                      <button
-                        (click)="form.controls.groups.removeAt(index)"
-                        type="button"
-                        mat-icon-button>
-                        <bi name="trash-fill" />
-                      </button>
+                      <mat-form-field subscriptSizing="dynamic">
+                        <mat-label>{{ 'general.name' | transloco }}</mat-label>
+                        <input matInput formControlName="name" />
+
+                        @let groupNameErrors = statusPageGroupControl.controls.name.errors;
+                        @if (groupNameErrors?.['maxlength']; as maxlength) {
+                          <mat-error>
+                            {{ 'form.validation.maxlength' | transloco: maxlength }}
+                          </mat-error>
+                        }
+                      </mat-form-field>
                     </div>
 
-                    <pu-editor
-                      id="description"
-                      [control]="statusPageGroupControl.controls.description"
-                      [placeholder]="'Description...' | transloco" />
-
-                    <pu-status-page-edit-form-group-monitors
-                      [(allSelectedMonitors)]="allSelectedMonitors"
-                      [(monitorSearch)]="monitorSearch"
-                      [monitorSearchPending]="monitorsSearchStore.isPending()"
-                      [searchableMonitors]="monitorsSearchStore.entities()"
-                      [index]="index"
-                      [length]="form.controls.groups.controls.length"
-                      [style.display]="isCollapsed ? 'none' : 'block'"
-                      formControlName="monitorIds" />
+                    <button
+                      (click)="form.controls.groups.removeAt(index)"
+                      type="button"
+                      mat-icon-button>
+                      <bi name="trash-fill" />
+                    </button>
                   </div>
-                </mat-card-content>
-              </mat-card>
-            }
-          </div>
+
+                  <pu-editor
+                    id="description"
+                    [control]="statusPageGroupControl.controls.description"
+                    [placeholder]="('general.description' | transloco) + '...'" />
+
+                  <pu-status-page-edit-form-group-monitors
+                    [(allSelectedMonitors)]="allSelectedMonitors"
+                    [(monitorSearch)]="monitorSearch"
+                    [monitorSearchPending]="monitorsSearchStore.isPending()"
+                    [searchableMonitors]="monitorsSearchStore.entities()"
+                    [index]="index"
+                    [length]="form.controls.groups.controls.length"
+                    [style.display]="isCollapsed ? 'none' : 'block'"
+                    formControlName="monitorIds" />
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
         </div>
       </div>
-
-      <pu-save-button [valid]="isValid()" />
     </form>
   `,
   styles: `
@@ -178,6 +224,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     MatFormField,
     MatInput,
     MatLabel,
+    MatError,
     MatButton,
     MatIconButton,
     MatCard,
@@ -192,6 +239,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     CdkDragPlaceholder,
     MatTooltip,
     FileUpload,
+    AlertDirective,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<
@@ -212,9 +260,9 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
     slug: new FormControl('', {
       validators: [
         Validators.required,
-        Validators.pattern(Database.SLUG_REGEX),
         Validators.minLength(Database.MIN_SLUG_LENGTH),
         Validators.maxLength(Database.MAX_SLUG_LENGTH),
+        Validators.pattern(Database.SLUG_REGEX),
       ],
       asyncValidators: [this.asyncSlugInUseValidator()],
       updateOn: 'blur',
@@ -230,6 +278,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
           monitorIds: [[] as string[]],
         }),
       ),
+      [Validators.required],
     ),
   });
 
@@ -296,7 +345,6 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   constructor() {
     super();
 
-    this.monitorsSearchStore.disableSyncQueryParams();
     this.monitorsSearchStore.setSearch(this.monitorSearch);
     this.monitorsSearchStore.searchMonitorsByTeamId(
       computed(() => ({
@@ -310,6 +358,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
           'PENDING' as const,
         ],
         search: this.monitorsSearchStore.search(),
+        types: this.monitorsSearchStore.types(),
       })),
     );
   }

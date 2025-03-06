@@ -1,4 +1,3 @@
-import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,17 +6,16 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import {MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
-import {MatTooltip} from '@angular/material/tooltip';
 
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {TableLoadingBar} from '@app/components';
+import {RelativeTimeWithTooltip} from '@app/pipes';
 import {TeamInvitesStore} from '@app/services';
 
 @Component({
@@ -31,30 +29,38 @@ import {TeamInvitesStore} from '@app/services';
           mat-table
           matSort>
           <ng-container matColumnDef="inviteeEmail">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>E-Mail</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'general.emailAddress' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               {{ element.inviteeEmail }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="role">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Role</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'general.role' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               <mat-chip>{{ element.role }}</mat-chip>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="inviter.name">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Invited By</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'team.settings.invitedBy' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               {{ element.inviter.name }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>At</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'team.settings.invitedAt' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
-              {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+              <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
             </td>
           </ng-container>
 
@@ -70,7 +76,7 @@ import {TeamInvitesStore} from '@app/services';
         <pu-table-loading-bar [loading]="teamInvitesStore.isPending()" />
 
         @if (teamInvitesStore.isEmpty()) {
-          <div class="mt-2 w-full text-center">No data available.</div>
+          <div class="mt-2 w-full text-center">{{ 'team.settings.noInvites' | transloco }}</div>
         }
 
         <mat-paginator
@@ -107,7 +113,6 @@ import {TeamInvitesStore} from '@app/services';
   providers: [TeamInvitesStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    DatePipe,
     MatCard,
     MatCardContent,
     MatTableModule,
@@ -115,6 +120,8 @@ import {TeamInvitesStore} from '@app/services';
     MatSortModule,
     TableLoadingBar,
     MatChip,
+    TranslocoPipe,
+    RelativeTimeWithTooltip,
   ],
 })
 export class TeamInvitesList {

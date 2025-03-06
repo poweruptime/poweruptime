@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} from '@app/form';
@@ -11,25 +13,53 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
     @let valid = isValid();
 
     <form class="flex flex-col" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <span class="mb-4">Current email address: {{ email() }}</span>
+      <span class="mb-4">{{ 'profile.email.current' | transloco }}: {{ email() }}</span>
 
       <mat-form-field>
-        <mat-label>New email address</mat-label>
+        <mat-label>{{ 'profile.email.new' | transloco }}</mat-label>
         <input type="email" matInput formControlName="email" />
+
+        @let emailErrors = form.controls.email.errors;
+        @if (emailErrors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (emailErrors?.['email']) {
+          <mat-error>{{ 'form.validation.email' | transloco }}</mat-error>
+        }
+        @if (emailErrors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
+        @if (emailErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Password</mat-label>
+        <mat-label>{{ 'general.password' | transloco }}</mat-label>
         <input matInput formControlName="password" type="password" />
+
+        @let passwordErrors = form.controls.password.errors;
+        @if (passwordErrors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (passwordErrors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
       </mat-form-field>
 
-      <!-- @jsverse/transloco -->
-      <!-- t(profile.email.requestChange) -->
-      <pu-save-button [valid]="valid" text="profile.email.requestChange" />
+      <pu-save-button [valid]="valid" [text]="'profile.email.requestChange' | transloco" />
     </form>
   `,
   selector: 'pu-profile-email-form',
-  imports: [ReactiveFormsModule, MatFormField, MatInput, MatLabel, SaveButton],
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatError,
+    SaveButton,
+    TranslocoPipe,
+  ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

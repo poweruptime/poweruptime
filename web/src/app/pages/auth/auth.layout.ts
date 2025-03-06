@@ -1,30 +1,29 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
+
+import {BackendOfflineAlert, OutsideThemeSwitch} from '@app/components';
+import {BackendOfflineService} from '@app/services';
 
 @Component({
   selector: 'auth-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: `
-    /* Apply flex styling to the parent container */
-    :host {
-      display: flex;
-      flex-direction: column;
-      min-height: 95vh;
-    }
-
-    /* Make the router-outlet take up available space */
-    .layout {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  `,
   template: `
-    <div class="layout">
-      <router-outlet />
+    <div class="flex h-screen flex-col items-center justify-center px-4 pt-4">
+      <main class="w-96">
+        @defer (when backendOfflineService.isOffline()) {
+          @if (backendOfflineService.isOffline()) {
+            <backend-offline-alert />
+          }
+        }
+
+        <router-outlet />
+      </main>
     </div>
+
+    <pu-outside-theme-switch />
   `,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, BackendOfflineAlert, OutsideThemeSwitch],
 })
-export class AuthLayout {}
+export class AuthLayout {
+  readonly backendOfflineService = inject(BackendOfflineService);
+}

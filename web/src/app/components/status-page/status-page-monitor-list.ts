@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {UptimeTimeline} from '@app/components/monitor';
@@ -16,7 +17,11 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
           <div class="inline-flex items-center gap-4">
             <strong
               class="max-w-24 truncate rounded-lg px-2 py-1"
-              [matTooltip]="monitor.status === 'UP' ? 'One-day uptime' : 'Status'"
+              [matTooltip]="
+                monitor.status === 'UP'
+                  ? ('monitor.oneDayUptime' | transloco)
+                  : ('general.status' | transloco)
+              "
               [monitor-status-background]="monitor.status">
               @if (monitor.status === 'UP') {
                 {{ monitor.oneDayUptime }}
@@ -39,7 +44,14 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   selector: 'pu-status-page-monitor-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PublicStatusPageMonitorsStore],
-  imports: [UptimeTimeline, BiComponent, RouterLink, MonitorStatusBackground, MatTooltip],
+  imports: [
+    UptimeTimeline,
+    BiComponent,
+    RouterLink,
+    MonitorStatusBackground,
+    MatTooltip,
+    TranslocoPipe,
+  ],
 })
 export class StatusPageMonitorList {
   readonly slug = input.required<string>();

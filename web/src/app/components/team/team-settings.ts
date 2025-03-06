@@ -6,14 +6,15 @@ import {MatOption, MatSelect} from '@angular/material/select';
 
 import {map} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 @Component({
   template: `
     <mat-form-field>
-      <mat-label>Timezone</mat-label>
-      <mat-select #singleSelect [formControl]="timezoneControl" placeholder="Bank">
+      <mat-label>{{ 'general.timezone' | transloco }}</mat-label>
+      <mat-select [formControl]="timezoneControl" placeholder="Bank">
         <mat-option class="pt-1">
           <ngx-mat-select-search [formControl]="timezoneFilterControl">
             <bi name="x-lg" ngxMatSelectSearchClear />
@@ -36,6 +37,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
     ReactiveFormsModule,
     BiComponent,
     MatLabel,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

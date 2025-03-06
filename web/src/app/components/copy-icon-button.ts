@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
 import {MatIconButton} from '@angular/material/button';
 import {MatTooltip, TooltipPosition} from '@angular/material/tooltip';
 
-import {TranslocoPipe} from '@jsverse/transloco';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {cl_copy} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {toast} from 'ngx-sonner';
@@ -33,13 +33,15 @@ export class CopyIconButton {
 
   matTooltipPosition = input<TooltipPosition>('above');
 
-  state = signal<'BUTTON' | 'CHECK'>('BUTTON');
+  readonly state = signal<'BUTTON' | 'CHECK'>('BUTTON');
+
+  private readonly translocoService = inject(TranslocoService);
 
   copy(): void {
     const content = this.content();
     if (content) {
       cl_copy(content);
-      toast('Copied!');
+      toast(this.translocoService.translate('general.copied'));
       this.state.set('CHECK');
 
       setTimeout(() => this.state.set('BUTTON'), 2000);

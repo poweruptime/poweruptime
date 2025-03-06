@@ -189,35 +189,39 @@ export const MonitorsStore = signalStore(
   }),
 );
 
+export type MonitorSearchParams = {
+  search: string;
+  statuses: BackendType['MonitorResponse']['status'][];
+  types: BackendType['MonitorCheckerData']['_type'][];
+};
+
 export const MonitorsSearchStore = signalStore(
-  withState<{
-    page: number;
-    search: string;
-    statuses: BackendType['MonitorResponse']['status'][];
-    syncQueryParams: boolean;
-  }>({page: 0, search: '', statuses: [], syncQueryParams: true}),
+  withState<{page: number} & MonitorSearchParams>({page: 0, search: '', statuses: [], types: []}),
   withRequestStatus(),
   withEntities<BackendType['MonitorResponse']>(),
-  withComputed(({search, statuses}) => ({
-    isSearching: computed(() => search().length > 0 || statuses().length > 0),
+  withComputed(({search, statuses, types}) => ({
+    isSearching: computed(() => search().length > 0 || statuses().length > 0 || types().length > 0),
   })),
   withMethods((store, api = injectAPI()) => ({
-    disableSyncQueryParams(): void {
-      patchState(store, () => ({syncQueryParams: false}));
-    },
     nextPage(): void {
       patchState(store, (state) => ({page: state.page + 1}));
     },
-    setSearch: rxMethod<string | null>(
+    setSearch: rxMethod<string | null | undefined>(
       pipe(
         map((it) => it ?? ''),
         tap((search) => patchState(store, () => ({search}))),
       ),
     ),
-    setStatuses: rxMethod<BackendType['MonitorResponse']['status'][] | null>(
+    setStatuses: rxMethod<MonitorSearchParams['statuses'] | null | undefined>(
       pipe(
         map((it) => it ?? []),
         tap((statuses) => patchState(store, () => ({statuses}))),
+      ),
+    ),
+    setTypes: rxMethod<MonitorSearchParams['types'] | null | undefined>(
+      pipe(
+        map((it) => it ?? []),
+        tap((types) => patchState(store, () => ({types}))),
       ),
     ),
     updateMonitor(it: Partial<BackendType['MonitorMinResponse']>): void {
@@ -241,16 +245,20 @@ export const MonitorsSearchStore = signalStore(
     removeMonitor(id: string): void {
       patchState(store, removeEntity(id));
     },
-    searchMonitorsByTeamId: rxMethod<{
-      teamId: string | undefined;
-      page: number;
-      search: string;
-      statuses: BackendType['MonitorResponse']['status'][];
-    }>(
+    searchMonitorsByTeamId: rxMethod<
+      {
+        teamId: string | undefined;
+        page: number;
+      } & MonitorSearchParams
+    >(
       pipe(
-        filter((it) => it.search.length > 0 || it.statuses.length > 0),
+        filter((it) => it.search.length > 0 || it.statuses.length > 0 || it.types.length > 0),
         distinctUntilChanged((prev, cur) => {
-          if (prev.search !== cur.search || prev.statuses !== cur.statuses) {
+          if (
+            prev.search !== cur.search ||
+            prev.statuses !== cur.statuses ||
+            prev.types !== cur.types
+          ) {
             patchState(store, removeAllEntities(), () => ({page: 0}));
             return false;
           }
@@ -259,7 +267,7 @@ export const MonitorsSearchStore = signalStore(
         }),
         tap(() => patchState(store, setPending())),
         debounceTime(400),
-        mergeMap(({page, teamId, search, statuses}) =>
+        mergeMap(({page, teamId, search, statuses, types}) =>
           api
             .get('/v1/monitor', {
               params: {
@@ -270,6 +278,7 @@ export const MonitorsSearchStore = signalStore(
                   sort: ['name,asc,ignorecase'],
                   name: search.length > 0 ? search : undefined,
                   statuses,
+                  types,
                 },
               },
             })
@@ -284,21 +293,7 @@ export const MonitorsSearchStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, router = inject(Router), pushService = inject(PushService)) {
-      effect(() => {
-        const {search, statuses, syncQueryParams} = getState(store);
-
-        if (syncQueryParams) {
-          void router.navigate([], {
-            queryParamsHandling: 'merge',
-            queryParams: {
-              search: search.length > 0 ? search : null,
-              status: statuses.length > 0 ? statuses : null,
-            },
-          });
-        }
-      });
-
+    onInit(store, pushService = inject(PushService)) {
       pushService.monitorStatusChange$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.updateMonitor(it));

@@ -7,6 +7,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -15,7 +16,7 @@ import {UsersStore} from '@app/services';
 
 @Component({
   template: `
-    <a mat-flat-button routerLink="new">Invite</a>
+    <a mat-flat-button routerLink="new">{{ 'instanceSettings.inviteUser' | transloco }}</a>
 
     <table
       [dataSource]="usersStore.entities()"
@@ -24,28 +25,30 @@ import {UsersStore} from '@app/services';
       mat-table
       matSort>
       <ng-container matColumnDef="email">
-        <th *matHeaderCellDef mat-header-cell>Email</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'general.emailAddress' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.email }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="activated">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Activated</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ 'general.activated' | transloco }}
+        </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.activated ? '✅' : '❌' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="role">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Role</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.role' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>
           <mat-chip>{{ element.role }}</mat-chip>
         </td>
@@ -95,6 +98,7 @@ import {UsersStore} from '@app/services';
     StopPropagationDirective,
     MatIconAnchor,
     MatAnchor,
+    TranslocoPipe,
   ],
 })
 export class InstanceSettingsUsersPage {

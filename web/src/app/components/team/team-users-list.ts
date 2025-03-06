@@ -1,4 +1,3 @@
-import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,9 +14,11 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {TableLoadingBar} from '@app/components';
+import {RelativeTimeWithTooltip} from '@app/pipes';
 import {TeamUsersStore} from '@app/services';
 
 @Component({
@@ -32,21 +33,27 @@ import {TeamUsersStore} from '@app/services';
           mat-table
           matSort>
           <ng-container matColumnDef="id.user.name">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'general.name' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               {{ element.user.name }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="role">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Role</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'general.role' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               <mat-chip>{{ element.role }}</mat-chip>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="invitedBy.name">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Invited By</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'team.settings.invitedBy' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               @if (element.invitedBy; as invitedBy) {
                 {{ invitedBy.name }}
@@ -57,9 +64,11 @@ import {TeamUsersStore} from '@app/services';
           </ng-container>
 
           <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Joined at</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'team.settings.joinedAt' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
-              {{ element.invitedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+              <pu-relative-time [value]="element.invitedAt" format="YYYY.MM.dd HH:mm:ss" />
             </td>
           </ng-container>
 
@@ -85,7 +94,7 @@ import {TeamUsersStore} from '@app/services';
         <pu-table-loading-bar [loading]="teamUsersStore.isPending()" />
 
         @if (teamUsersStore.isEmpty()) {
-          <div class="mt-2 w-full text-center">No data available.</div>
+          <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
         }
 
         <mat-paginator
@@ -122,7 +131,6 @@ import {TeamUsersStore} from '@app/services';
   providers: [TeamUsersStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    DatePipe,
     MatCard,
     MatCardContent,
     MatTableModule,
@@ -133,6 +141,8 @@ import {TeamUsersStore} from '@app/services';
     MatIconButton,
     BiComponent,
     MatTooltip,
+    TranslocoPipe,
+    RelativeTimeWithTooltip,
   ],
 })
 export class TeamUsersList {

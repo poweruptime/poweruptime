@@ -11,6 +11,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
 
 import {FakeDash, Slot} from '@app/components/otp/slot';
@@ -18,7 +19,7 @@ import {injectIsValid} from '@app/form';
 
 @Component({
   template: `
-    <h2 mat-dialog-title>Multi-factor code</h2>
+    <h2 mat-dialog-title>{{ 'mfa.dialog.title' | transloco }}</h2>
     <mat-dialog-content>
       <div class="flex h-32 flex-col items-end gap-4 pt-3">
         <form
@@ -27,7 +28,7 @@ import {injectIsValid} from '@app/form';
           (ngSubmit)="dialogRef.close(confirmFormGroup.getRawValue().code)">
           @if (useBackupCode()) {
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Backup code</mat-label>
+              <mat-label>{{ 'mfa.dialog.backupCode' | transloco }}</mat-label>
               <input matInput formControlName="code" />
             </mat-form-field>
           } @else {
@@ -74,13 +75,15 @@ import {injectIsValid} from '@app/form';
           }
         </form>
 
-        <mat-slide-toggle [(ngModel)]="useBackupCode">Use backup code</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="useBackupCode">
+          {{ 'mfa.dialog.useBackupCode' | transloco }}
+        </mat-slide-toggle>
       </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-      <button (click)="dialogRef.close()" mat-button>Cancel</button>
+      <button (click)="dialogRef.close()" mat-button>{{ 'general.cancel' | transloco }}</button>
       <button [disabled]="!confirmFormGroupValid()" mat-button type="submit" form="mfa-form">
-        Confirm
+        {{ 'general.confirm' | transloco }}
       </button>
     </mat-dialog-actions>
   `,
@@ -100,6 +103,7 @@ import {injectIsValid} from '@app/form';
     FakeDash,
     Slot,
     MatInput,
+    TranslocoPipe,
   ],
 })
 export class MFACheckDialog {

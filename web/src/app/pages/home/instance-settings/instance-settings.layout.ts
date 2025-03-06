@@ -2,6 +2,8 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 @Component({
   template: `
     <nav [tabPanel]="tabPanel" mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start">
@@ -12,7 +14,7 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
           [routerLink]="route.path"
           routerLinkActive
           mat-tab-link>
-          {{ route.text }}
+          {{ route.text | transloco }}
         </a>
       }
     </nav>
@@ -24,12 +26,23 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
   `,
   selector: 'instance-settings-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, RouterOutlet, MatTabNavPanel],
+  imports: [
+    MatTabNav,
+    MatTabLink,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    MatTabNavPanel,
+    TranslocoPipe,
+  ],
 })
 export class InstanceSettingsLayout {
+  /**
+   * t(general.teams, general.users, general.overview)
+   */
   readonly routes = [
-    {path: 'overview', text: 'Overview'},
-    {path: 'users', text: 'Users'},
-    {path: 'teams', text: 'Teams'},
+    {path: 'overview', text: 'general.overview'},
+    {path: 'users', text: 'general.users'},
+    {path: 'teams', text: 'general.teams'},
   ];
 }

@@ -6,55 +6,68 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {injectIsValid} from '@app/form';
-
-import {AuthStore} from '../../services/auth.store';
+import {AuthStore} from '@app/services';
 
 @Component({
   template: `
     @defer (on timer(50)) {
-      <mat-card class="min-w-96">
+      <mat-card class="w-full">
         <mat-card-header>
           <mat-card-title>
             <strong>poweruptime</strong>
-            | Sign in
+            | {{ 'auth.login' | transloco }}
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <form class="mt-6 flex flex-col gap-10" [formGroup]="form" (ngSubmit)="submit()">
             <div class="flex flex-col gap-4">
               <mat-form-field>
-                <mat-label>Email</mat-label>
+                <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
                 <input type="email" matInput formControlName="email" />
 
-                @if (form.controls.email.invalid) {
-                  <mat-error>E-Mail address invalid</mat-error>
+                @let emailErrors = form.controls.email.errors;
+                @if (emailErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (emailErrors?.['email']) {
+                  <mat-error>{{ 'form.validation.email' | transloco }}</mat-error>
+                }
+                @if (emailErrors?.['maxlength']; as maxlength) {
+                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
                 }
               </mat-form-field>
               <mat-form-field>
                 <mat-label>Password</mat-label>
                 <input type="password" matInput formControlName="password" />
 
-                @if (form.controls.password.invalid) {
-                  <mat-error>Password needs to have at least 6 characters.</mat-error>
+                @let passwordErrors = form.controls.password.errors;
+                @if (passwordErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (passwordErrors?.['minlength']; as minlength) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
                 }
               </mat-form-field>
 
               @if (authStore.error() === 'INVALID_CREDENTIALS') {
-                <mat-error>Invalid credentials.</mat-error>
+                <mat-error>{{ 'auth.invalidCredentials' | transloco }}</mat-error>
               }
             </div>
 
             <div class="flex flex-col gap-3">
-              <mat-slide-toggle formControlName="stayLoggedIn">Stay logged in</mat-slide-toggle>
+              <mat-slide-toggle formControlName="stayLoggedIn">
+                {{ 'auth.stayLoggedIn' | transloco }}
+              </mat-slide-toggle>
 
               <button [disabled]="!isValid()" mat-flat-button type="submit">
-                <bi class="mr-2" name="envelope" />
-                Login
+                <bi class="mr-2" name="box-arrow-in-right" />
+                {{ 'auth.login' | transloco }}
               </button>
             </div>
           </form>
@@ -77,6 +90,7 @@ import {AuthStore} from '../../services/auth.store';
     MatCardContent,
     MatCardTitle,
     MatSlideToggle,
+    TranslocoPipe,
   ],
 })
 export class LoginPage {
@@ -85,7 +99,15 @@ export class LoginPage {
   authStore = inject(AuthStore);
 
   form = inject(NonNullableFormBuilder).group({
-    email: ['', [Validators.required, Validators.email]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(Database.MIN_MAIL_LENGTH),
+        Validators.maxLength(Database.MAX_MAIL_LENGTH),
+      ],
+    ],
     password: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
     stayLoggedIn: [false],
   });

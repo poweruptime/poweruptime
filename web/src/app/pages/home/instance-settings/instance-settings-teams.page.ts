@@ -6,6 +6,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -14,7 +15,7 @@ import {TeamsStore} from '@app/services';
 
 @Component({
   template: `
-    <a mat-flat-button routerLink="/t/new">New team</a>
+    <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
 
     <table
       [dataSource]="teamsStore.entities()"
@@ -23,21 +24,23 @@ import {TeamsStore} from '@app/services';
       mat-table
       matSort>
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="personalUser.id">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Personal</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ 'general.personal' | transloco }}
+        </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.personal ? '✅' : '❌' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="monitorCount">
-        <th *matHeaderCellDef mat-header-cell>Monitors</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'general.monitors' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.dashboard.monitorCount }}
         </td>
@@ -76,7 +79,7 @@ import {TeamsStore} from '@app/services';
     <pu-table-loading-bar [loading]="teamsStore.isPending()" />
 
     @if (teamsStore.isEmpty()) {
-      <div class="mt-2 w-full text-center">No data available.</div>
+      <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
     }
 
     <mat-paginator
@@ -109,6 +112,7 @@ import {TeamsStore} from '@app/services';
     RouterLink,
     StopPropagationDirective,
     MatIconAnchor,
+    TranslocoPipe,
   ],
 })
 export class InstanceSettingsTeamsPage {

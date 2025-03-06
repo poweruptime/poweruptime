@@ -18,6 +18,7 @@ import {Router} from '@angular/router';
 
 import {distinctUntilChanged, filter} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {MtxPopover, MtxPopoverTrigger} from '@ng-matero/extensions/popover';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
@@ -37,10 +38,10 @@ import {SelectedTeamStore} from '@app/services';
             @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
               {{ selectedTeam.name }}
             } @else {
-              Loading...
+              {{ 'general.loading' | transloco }}
             }
           } @else {
-            Select a team
+            {{ 'nav.teamSelect.select' | transloco }}
           }
         </span>
         <bi name="chevron-expand" />
@@ -54,7 +55,7 @@ import {SelectedTeamStore} from '@app/services';
         [hideArrow]="true">
         <div class="flex max-w-80 flex-col">
           <mat-form-field>
-            <mat-label>Search teams</mat-label>
+            <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
             <input [formControl]="searchControl" matInput />
           </mat-form-field>
 
@@ -65,7 +66,7 @@ import {SelectedTeamStore} from '@app/services';
             [formControl]="selectedTeamControl"
             aria-labelledby="example-radio-group-label">
             @if (selectedTeamStore.personalTeam(); as personalTeam) {
-              <h2 class="font-bold">Personal account</h2>
+              <h2 class="font-bold">{{ 'nav.teamSelect.personal' | transloco }}</h2>
               <mat-radio-button [value]="personalTeam.id" (click)="close()">
                 {{ personalTeam.name }}
               </mat-radio-button>
@@ -73,7 +74,7 @@ import {SelectedTeamStore} from '@app/services';
 
             @let entities = selectedTeamStore.sortedEntitiesWithoutPersonal();
             @if (entities.length > 0) {
-              <h2 class="font-bold">Teams</h2>
+              <h2 class="font-bold">{{ 'general.teams' | transloco }}</h2>
               @for (team of entities; track team.id) {
                 <mat-radio-button [value]="team.id" (click)="close()">
                   {{ team.name }}
@@ -83,7 +84,7 @@ import {SelectedTeamStore} from '@app/services';
           </mat-radio-group>
 
           @if (selectedTeamStore.isFulfilled() && selectedTeamStore.entities().length === 0) {
-            <span>Nothing found :(</span>
+            <span>{{ 'general.nothingFound' | transloco }}</span>
           }
 
           @if (selectedTeamStore.isPending()) {
@@ -112,6 +113,7 @@ import {SelectedTeamStore} from '@app/services';
     MatInput,
     MatDivider,
     MatProgressBar,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

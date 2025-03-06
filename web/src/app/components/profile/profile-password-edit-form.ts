@@ -1,7 +1,9 @@
-import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {BackendType, Database} from '@app/api';
 import {
@@ -14,43 +16,57 @@ import {
 
 @Component({
   template: `
-    @let valid = isValid();
-
     <form class="flex flex-col" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field>
-        <mat-label>Current Password</mat-label>
+        <mat-label>{{ 'profile.password.currentPassword' | transloco }}</mat-label>
         <input matInput formControlName="oldPassword" type="password" />
+
+        @if (form.controls.oldPassword.errors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (form.controls.oldPassword.errors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
       </mat-form-field>
 
       <ng-container formGroupName="password">
         <mat-form-field>
-          <mat-label>New password</mat-label>
-          <input
-            [type]="showButton.show() ? 'text' : 'password'"
-            matInput
-            formControlName="newPassword" />
+          <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
+          <input [type]="showButton.type()" matInput formControlName="newPassword" />
 
           <pu-password-show-button #showButton matSuffix />
+
+          @if (form.controls.password.controls.newPassword.errors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (form.controls.password.controls.newPassword.errors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>New password confirm</mat-label>
-          <input
-            [type]="confirmShowButton.show() ? 'text' : 'password'"
-            matInput
-            formControlName="confirmPassword" />
+          <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
+          <input [type]="confirmShowButton.type()" matInput formControlName="confirmPassword" />
 
           <pu-password-show-button #confirmShowButton matSuffix />
+
+          @if (form.controls.password.controls.confirmPassword.errors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (
+            form.controls.password.controls.confirmPassword.errors?.['minlength'];
+            as minlength
+          ) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
         </mat-form-field>
 
         @if (form.controls.password.errors?.['mismatch']) {
-          <mat-error class="mb-4">Password mismatch!</mat-error>
+          <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
         }
       </ng-container>
 
-      <!-- @jsverse/transloco -->
-      <!-- t(profile.password.update) -->
-      <pu-save-button [valid]="valid" text="profile.password.update" />
+      <pu-save-button [valid]="isValid()" [text]="'profile.password.update' | transloco" />
     </form>
   `,
   selector: 'pu-profile-password-form',
@@ -63,6 +79,7 @@ import {
     MatError,
     MatSuffix,
     PasswordShowButton,
+    TranslocoPipe,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

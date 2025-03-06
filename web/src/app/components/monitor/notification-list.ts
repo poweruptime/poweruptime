@@ -1,4 +1,3 @@
-import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -118,7 +117,6 @@ import {NotificationsStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NotificationsStore],
   imports: [
-    DatePipe,
     MatCard,
     MatCardContent,
     MatTableModule,

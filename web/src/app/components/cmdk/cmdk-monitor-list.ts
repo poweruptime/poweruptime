@@ -33,7 +33,6 @@ export class CmdkMonitorList {
   selected = output<BackendType['MonitorResponse']>();
 
   constructor() {
-    this.monitorsSearchStore.disableSyncQueryParams();
     this.monitorsSearchStore.setSearch(this.searchValue);
 
     this.monitorsSearchStore.searchMonitorsByTeamId(
@@ -48,6 +47,7 @@ export class CmdkMonitorList {
           'PENDING' as const,
         ],
         search: this.monitorsSearchStore.search(),
+        types: this.monitorsSearchStore.types(),
       })),
     );
   }

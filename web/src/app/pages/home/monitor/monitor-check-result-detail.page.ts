@@ -67,14 +67,14 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                 </div>
 
                 <div class="flex flex-col gap-2">
-                  <h3 class="text-gray-400">Ping</h3>
+                  <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>
                   <span class="text-lg font-bold">{{ checkResult.pingMs }}ms</span>
                 </div>
 
                 @let logEntries = checkResultLogEntriesStore.entities();
                 @if (logEntries.length > 1) {
                   <div class="flex flex-col gap-2">
-                    <h3 class="text-gray-400">Total Duration</h3>
+                    <h3 class="text-gray-400">{{ 'general.totalDuration' | transloco }}</h3>
                     <span class="text-lg font-bold">
                       {{ totalDuration() }}
                     </span>
@@ -90,20 +90,22 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             <mat-card-content>
               <div class="flex flex-col items-center gap-2">
                 <bi size="24" name="calendar-x" />
-                <code>The logs for this check have expired and are no longer available.</code>
+                <code>{{ 'checkResult.details.expired' | transloco }}</code>
               </div>
             </mat-card-content>
           </mat-card>
         } @else {
           <div class="mt-4 flex flex-col gap-4 space-y-1">
             <div class="flex items-center justify-between">
-              <h2 class="ps-2 text-xl">Logs</h2>
-              <mat-slide-toggle [(ngModel)]="showTimestamps">Show timestamps</mat-slide-toggle>
+              <h2 class="ps-2 text-xl">{{ 'general.logs' | transloco }}</h2>
+              <mat-slide-toggle [(ngModel)]="showTimestamps">
+                {{ 'checkResult.details.showTimestamps' | transloco }}
+              </mat-slide-toggle>
             </div>
 
             <mat-card appearance="outlined">
               <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">Setup</h3>
+                <h3 class="mb-2 ps-2 text-lg">{{ 'general.setup' | transloco }}</h3>
                 @for (logEntry of checkResultLogEntriesStore.setup(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
@@ -114,7 +116,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 
             <mat-card appearance="outlined">
               <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">Check</h3>
+                <h3 class="mb-2 ps-2 text-lg">{{ 'checkResult.details.check' | transloco }}</h3>
                 @for (logEntry of checkResultLogEntriesStore.check(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
@@ -125,7 +127,9 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 
             <mat-card appearance="outlined">
               <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">Status update</h3>
+                <h3 class="mb-2 ps-2 text-lg">
+                  {{ 'checkResult.details.statusUpdate' | transloco }}
+                </h3>
                 @for (logEntry of checkResultLogEntriesStore.statusUpdate(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
@@ -136,7 +140,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 
             <mat-card appearance="outlined">
               <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">Notifications</h3>
+                <h3 class="mb-2 ps-2 text-lg">{{ 'general.notifications' | transloco }}</h3>
                 @for (logEntry of checkResultLogEntriesStore.notifications(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"

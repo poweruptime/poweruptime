@@ -5,6 +5,7 @@ import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {a_hashFrom} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
@@ -57,18 +58,18 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
               <span class="text-2xl">{{ _team.name }}</span>
               @if (_team.personal) {
                 <mat-chip-set>
-                  <mat-chip>Personal</mat-chip>
+                  <mat-chip>{{ 'general.personal' | transloco }}</mat-chip>
                 </mat-chip-set>
               }
             </div>
 
             <a
               [routerLink]="_team.id + '/edit'"
+              [attr.aria-label]="'team.settings.settings' | transloco"
+              [matTooltip]="'team.settings.settings' | transloco"
               stopPropagation
-              mat-icon-button
-              aria-label="Team settings"
-              matTooltip="Team settings">
-              <bi name="gear" size="24" />
+              mat-icon-button>
+              <bi name="gear" size="24" aria-hidden="true" />
             </a>
           </div>
 
@@ -91,6 +92,7 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
     StopPropagationDirective,
     MatTooltip,
     TeamCardMonitorCount,
+    TranslocoPipe,
   ],
 })
 export class TeamCard {

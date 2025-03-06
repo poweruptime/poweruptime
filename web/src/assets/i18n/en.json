@@ -1,10 +1,20 @@
 {
   "auth": {
+    "changePassword": "Change password",
+    "invalidCredentials": "Invalid credentials.",
+    "login": "Login",
     "newPassword": "New {{general.password}}",
     "newPasswordConfirm": "New {{general.password}} to confirm",
-    "oldPassword": "Old {{general.password}}"
+    "oldPassword": "Old {{general.password}}",
+    "stayLoggedIn": "Stay logged in"
   },
   "checkResult": {
+    "details": {
+      "check": "Check",
+      "expired": "The logs for this check have expired and are no longer available.",
+      "showTimestamps": "Show Timestamp",
+      "statusUpdate": "Status update"
+    },
     "list": {
       "action": {
         "view": "View check"
@@ -18,24 +28,24 @@
         "input": "What do you need?"
       },
       "monitor": {
-        "create": "Create new monitor",
-        "input": "Search for a monitor",
-        "search": "Search monitors..."
+        "create": "Create new {{general.monitor}}",
+        "input": "{{general.search}} for a {{general.monitor}}",
+        "search": "{{general.search}} {{general.monitors}}..."
       },
       "notificationMethod": {
-        "create": "Create new notification method",
-        "input": "Search for a notification method",
-        "search": "Search Notification methods..."
+        "create": "Create new {{general.notificationMethod}}",
+        "input": "{{general.search}} for a {{general.notificationMethod}}",
+        "search": "{{general.search}} {{general.notificationMethods}}..."
       },
       "statusPage": {
-        "create": "Create new status page",
-        "input": "Search for a status page",
-        "search": "Search Status pages..."
+        "create": "Create new {{general.statusPage}}",
+        "input": "{{general.search}} for a {{general.statusPage}}",
+        "search": "{{general.search}} {{general.statusPages}}..."
       },
       "team": {
-        "create": "Create new team",
-        "input": "Search for a team",
-        "search": "Search Teams..."
+        "create": "Create new {{general.team}}",
+        "input": "{{general.search}} for a {{general.team}}",
+        "search": "{{general.search}} {{general.teams}}..."
       },
       "theme": {
         "input": "Select a theme",
@@ -49,8 +59,8 @@
   },
   "form": {
     "passwordShow": {
-      "hide": "Hide password text",
-      "show": "Show password text"
+      "hide": "Hide {{general.password}} text",
+      "show": "Show {{general.password}} text"
     },
     "validation": {
       "domain": "Enter a valid domain",
@@ -64,54 +74,95 @@
       "minlength": "Enter at least {{requiredLength}} characters",
       "passwordMismatch": "{{general.password}} mismatch",
       "required": "This field is required",
+      "slug": "Enter a valid slug. (a-z,0-9,-)",
       "url": "Enter a valid URL"
     }
   },
   "general": {
+    "activated": "Activated",
+    "admin": "Admin",
+    "at": "At",
     "body": "Body",
+    "cancel": "Cancel",
     "clear": "Clear",
+    "confirm": "Confirm",
     "confirmDelete": "Confirm deletion?",
     "contentType": "Content-Type",
+    "copied": "Copied!",
     "copy": "Copy",
     "createdAt": "Created At",
     "data": "Data",
+    "delete": "Delete",
     "description": "Description",
+    "disable": "Disable",
+    "edit": "Edit",
     "email": "E-Mail",
     "emailAddress": "E-Mail address",
+    "footer": "Footer",
     "general": "General",
+    "group": "Group",
     "host": "Host",
     "instance": "Instance",
+    "invite": "Invite",
     "ipAddress": "IP-Address",
     "latest": "Latest",
+    "loading": "Loading...",
     "logout": "Logout",
+    "logs": "Logs",
+    "maintenance": "Maintenance",
+    "member": "Member",
     "method": "Method",
     "monitor": "Monitor",
+    "monitors": "Monitors",
     "name": "Name",
     "noDataAvailable": "No data available.",
+    "nothingFound": "Nothing found :(",
+    "notificationMethod": "Notification method",
     "notificationMethods": "Notification methods",
+    "notifications": "Notifications",
     "now": "Now",
     "open": "Open",
+    "overview": "Overview",
     "password": "Password",
+    "pause": "Pause",
     "permissions": "Permissions",
+    "personal": "Personal",
+    "ping": "Ping",
     "port": "Port",
     "profile": "Profile",
+    "role": "Role",
     "save": "Save",
+    "search": "Search",
+    "secret": "Secret",
     "security": "Security",
     "server": "Server",
     "sessions": "Sessions",
     "settings": "Settings",
+    "setup": "Setup",
     "showDuplicates": "Show duplicates",
+    "slug": "Slug",
+    "start": "Start",
     "status": "Status",
+    "statusPage": "Status Page",
+    "statusPages": "Status Pages",
+    "systemAdmin": "System {{general.admin}}",
+    "team": "Team",
+    "teams": "Teams",
     "theme": "Theme",
     "time": "Time",
     "timezone": "Timezone",
     "title": "Title",
     "to": "To",
+    "totalDuration": "Total Duration",
     "type": "Type",
     "url": "URL",
-    "username": "Username"
+    "user ": "User",
+    "username": "Username",
+    "users": "Users"
   },
   "instanceSettings": {
+    "editUser": "Edit {{name}}",
+    "inviteUser": "{{general.invite}} {{general.user}}",
     "permissions": {
       "allowUsersToCreateTeams": "Allow users to create teams"
     },
@@ -122,7 +173,24 @@
     },
     "timezone": "{{general.instance}} {{general.timezone}}"
   },
+  "mfa": {
+    "alreadyShown": "{{mfa.backupCodes}} already shown.",
+    "backupCodes": "Backup codes",
+    "dialog": {
+      "backupCode": "Backup code",
+      "title": "Multi-factor code",
+      "useBackupCode": "Use {{mfa.dialog.backupCode}}"
+    },
+    "disabled": "{{mfa.mfa}} disabled.",
+    "enabled": "{{mfa.mfa}} enabled.",
+    "mfa": "Multi-factor authentication"
+  },
   "monitor": {
+    "details": {
+      "check": "Check every {{testIntervalDuration}}",
+      "resendAfter": "Resend notification after {{resendAfter}}x down checks",
+      "retries": "{{retries}}x retries"
+    },
     "edit": {
       "dns": {
         "matches": {
@@ -132,10 +200,11 @@
         },
         "server": "DNS-{{general.server}}"
       },
+      "edit": "Edit {{name}}",
       "http": {
         "authType": "Auth-Type",
         "ignoreTLS": "Ignore TLS",
-        "searchTerm": "Search term"
+        "searchTerm": "{{general.search}} term"
       },
       "interval": "Interval in {{unit}}",
       "pushUrl": "Push {{general.url}}",
@@ -148,8 +217,18 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
+    "oneDayUptime": "One-day uptime",
     "pingChart": {
       "ago": "{{time}} ago"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "instanceSettings": "Instance {{general.settings}}",
+    "personalDashboard": "Personal {{nav.dashboard}}",
+    "teamSelect": {
+      "personal": "Personal Account",
+      "select": "Select a {{general.team}}"
     }
   },
   "notificationMethod": {
@@ -190,14 +269,63 @@
   },
   "profile": {
     "email": {
+      "current": "Current {{general.emailAddress}}",
+      "new": "New {{general.emailAddress}}",
       "requestChange": "Request {{general.emailAddress}} change"
     },
     "mfa": {
       "title": "Multi-factor authentication"
     },
     "password": {
-      "update": "Update password"
+      "currentPassword": "Current {{general.password}}",
+      "update": "Update {{general.password}}"
     },
     "settings": "{{general.profile}} {{general.settings}}"
+  },
+  "refreshIn": {
+    "lastUpdate": "Last update: {{value}}",
+    "refreshIn": "Refresh in {{value}} seconds."
+  },
+  "statusPage": {
+    "edit": {
+      "group": {
+        "add": "Add {{general.group}}",
+        "minOne": "Add at least one {{general.group}}."
+      },
+      "image": "Drop a image",
+      "monitors": {
+        "add": "Add {{general.monitor}}...",
+        "empty": "No {{general.monitors}} added yet.",
+        "hide": "Hide monitors in groups",
+        "search": {
+          "noFound": "No {{general.monitors}} found.",
+          "noLeft": "No {{general.monitors}} left."
+        },
+        "show": "Show {{general.monitors}} in groups"
+      }
+    }
+  },
+  "team": {
+    "counts": {
+      "down": "Down {{general.monitors}}",
+      "maintenance": "{{general.monitors}} in maintenance",
+      "paused": "Paused {{general.monitors}}",
+      "up": "Up {{general.monitors}}"
+    },
+    "monitors": "{{monitorCount}} Monitor(s)",
+    "settings": {
+      "invitedAt": "Invited at",
+      "invitedBy": "Invited by",
+      "joinedAt": "Joined at",
+      "noInvites": "No open invites.",
+      "settings": "{{general.team}} settings"
+    }
+  },
+  "user": {
+    "edit": {
+      "forcePasswordChange": "Force password change on next login.",
+      "sendInviteEmail": "Send invite {{general.email}}",
+      "updatePassword": "Update password"
+    }
   }
 }

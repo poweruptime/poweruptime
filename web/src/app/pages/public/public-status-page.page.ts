@@ -6,10 +6,9 @@ import {Meta, Title} from '@angular/platform-browser';
 import {s_cut} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendImage, Placeholder, RefreshInComponent} from '@app/components';
+import {BackendImage, Placeholder, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusColor} from '@app/directives';
-import {SanitizeHtmlPipe} from '@app/pipes';
 import {PublicStatusPageStore} from '@app/services';
 import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
 
@@ -48,7 +47,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
           }
 
           @if (statusPage.description; as it) {
-            <div [innerHTML]="it | sanitizeHtml"></div>
+            <pu-shadow-render [html]="it" />
           }
 
           <div class="flex flex-col gap-10">
@@ -57,7 +56,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
                 <h2 class="text-xl">{{ group.name }}</h2>
 
                 @if (group.description; as description) {
-                  <div [innerHTML]="description | sanitizeHtml"></div>
+                  <pu-shadow-render [html]="description" />
                 }
 
                 <mat-card appearance="outlined">
@@ -72,7 +71,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
           </div>
 
           @if (statusPage.footer; as it) {
-            <div class="mt-20" [innerHTML]="it | sanitizeHtml"></div>
+            <pu-shadow-render class="mt-20" [html]="it" />
           }
         }
 
@@ -93,12 +92,12 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     RefreshInComponent,
     MatCard,
     MatCardContent,
-    SanitizeHtmlPipe,
     StatusPageMonitorList,
     BiComponent,
     Placeholder,
     BackendImage,
     MonitorStatusColor,
+    ShadowRender,
   ],
 })
 export class PublicStatusPagePage {

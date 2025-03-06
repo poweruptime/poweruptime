@@ -5,6 +5,7 @@ import {MatDivider} from '@angular/material/divider';
 import {MatSuffix} from '@angular/material/form-field';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
 import {DfxImplodePipe} from 'dfx-helper';
 import {QRCodeComponent} from 'dfx-qrcode';
@@ -25,11 +26,11 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
           <div
             class="mb-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-gray-800 dark:text-blue-400"
             role="alert">
-            Multi-factor authentication
-            <span class="font-bold">disabled</span>
-            .
+            {{ 'mfa.disabled' | transloco }}
           </div>
-          <button (click)="mfaEditStore.setup()" type="button" mat-flat-button>Setup</button>
+          <button (click)="mfaEditStore.setup()" type="button" mat-flat-button>
+            {{ 'general.setup' | transloco }}
+          </button>
         </div>
       }
       @case ('CONFIRM') {
@@ -43,7 +44,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
           </div>
 
           <mat-form-field class="w-full max-w-72" subscriptSizing="dynamic">
-            <mat-label>Secret</mat-label>
+            <mat-label>{{ 'general.secret' | transloco }}</mat-label>
             <input [value]="secret" matInput readonly />
 
             <pu-copy-icon-button [content]="secret" matSuffix />
@@ -96,7 +97,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
             </input-otp>
 
             <button class="w-full max-w-72" [disabled]="!confirmFormGroupValid()" mat-flat-button>
-              Confirm
+              {{ 'general.confirm' | transloco }}
             </button>
           </form>
         </div>
@@ -106,7 +107,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
           <!-- ['123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456'] -->
           @if (mfaEditStore.backupCodes(); as backupCodes) {
             <div class="flex items-center justify-between gap-4">
-              <h3 class="text-xl">Backup Codes</h3>
+              <h3 class="text-xl">{{ 'mfa.backupCodes' | transloco }}</h3>
               <pu-copy-icon-button [content]="backupCodes | s_implode: ', '" />
             </div>
             <div class="flex flex-col gap-2">
@@ -119,15 +120,15 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
             <div
               class="mb-4 rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-gray-800 dark:text-blue-400"
               role="alert">
-              Multi-factor authentication
-              <span class="font-bold">enabled</span>
-              .
+              {{ 'mfa.enabled' | transloco }}
               <br />
               <br />
-              Backup codes already shown.
+              {{ 'mfa.alreadyShown' | transloco }}
             </div>
           }
-          <button class="w-full" (click)="mfaEditStore.delete()" mat-flat-button>Disable</button>
+          <button class="w-full" (click)="mfaEditStore.delete()" mat-flat-button>
+            {{ 'general.disable' | transloco }}
+          </button>
         </div>
       }
     }
@@ -149,6 +150,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
     MatLabel,
     MatFormField,
     MatSuffix,
+    TranslocoPipe,
   ],
 })
 export class ProfileMFAForm {

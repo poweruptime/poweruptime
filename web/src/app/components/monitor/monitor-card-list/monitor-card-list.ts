@@ -41,7 +41,7 @@ import {MonitorCard} from './monitor-card';
           </div>
         }
       } @else if (entities().length === 0) {
-        <span>{{ 'monitor.emtpy' | transloco }}</span>
+        <span>{{ 'monitor.empty' | transloco }}</span>
       }
     </cdk-virtual-scroll-viewport>
   `,

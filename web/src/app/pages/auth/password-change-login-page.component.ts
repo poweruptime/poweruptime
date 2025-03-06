@@ -1,7 +1,6 @@
-import {Component, afterNextRender, afterRender, effect, inject, signal} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {Component, effect, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -13,9 +12,8 @@ import {DfxAutofocus} from 'dfx-helper';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
-import {injectIsValid, passwordMatchValidator} from '@app/form';
-
-import {AuthStore} from '../../services/auth.store';
+import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
+import {AuthStore} from '@app/services';
 
 @Component({
   template: `
@@ -23,7 +21,7 @@ import {AuthStore} from '../../services/auth.store';
       <mat-card-header>
         <mat-card-title>
           <strong>poweruptime</strong>
-          | Change password
+          | {{ 'auth.changePassword' | transloco }}
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -54,27 +52,11 @@ import {AuthStore} from '../../services/auth.store';
             </mat-form-field>
 
             <ng-container formGroupName="newPassword">
-              @let _showPassword = showPassword();
-
               <mat-form-field>
                 <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
-                <input
-                  [type]="_showPassword ? 'text' : 'password'"
-                  matInput
-                  formControlName="newPassword"
-                  focus />
+                <input [type]="showButton.type()" matInput formControlName="newPassword" focus />
 
-                <button
-                  (click)="showPassword.set(!_showPassword)"
-                  matSuffix
-                  type="button"
-                  mat-icon-button>
-                  @if (_showPassword) {
-                    <bi name="eye-fill" />
-                  } @else {
-                    <bi name="eye-slash-fill" />
-                  }
-                </button>
+                <pu-password-show-button #showButton matSuffix />
 
                 @if (form.controls.newPassword.controls.newPassword.errors?.['required']) {
                   <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
@@ -90,20 +72,11 @@ import {AuthStore} from '../../services/auth.store';
               <mat-form-field>
                 <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
                 <input
-                  [type]="_showPassword ? 'text' : 'password'"
+                  [type]="showConfirmButton.type()"
                   matInput
                   formControlName="confirmPassword" />
-                <button
-                  (click)="showPassword.set(!_showPassword)"
-                  matSuffix
-                  type="button"
-                  mat-icon-button>
-                  @if (_showPassword) {
-                    <bi name="eye-fill" />
-                  } @else {
-                    <bi name="eye-slash-fill" />
-                  }
-                </button>
+
+                <pu-password-show-button #showConfirmButton matSuffix />
 
                 @if (form.controls.newPassword.controls.confirmPassword.errors?.['required']) {
                   <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
@@ -157,8 +130,8 @@ import {AuthStore} from '../../services/auth.store';
     MatSlideToggle,
     DfxAutofocus,
     TranslocoPipe,
-    MatIconButton,
     MatSuffix,
+    PasswordShowButton,
   ],
 })
 export class PasswordChangeLoginPage {
@@ -185,8 +158,6 @@ export class PasswordChangeLoginPage {
     stayLoggedIn: [false],
   });
   readonly formValid = injectIsValid(this.form);
-
-  readonly showPassword = signal(false);
 
   constructor() {
     effect(() => {
