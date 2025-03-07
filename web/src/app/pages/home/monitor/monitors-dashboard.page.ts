@@ -1,5 +1,7 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
+
+import {TranslocoPipe} from '@jsverse/transloco';
 
 import {CheckResultList, NotificationList} from '@app/components/monitor';
 import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
@@ -7,8 +9,10 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
 @Component({
   template: `
     <div class="flex flex-col gap-4">
-      @let selectedTeam = selectedTeamStore.selectedTeam();
-      <h1 class="text-3xl">{{ selectedTeam?.name ?? 'Personal' }} Dashboard</h1>
+      @let selectedTeam = teamId() ? selectedTeamStore.selectedTeam() : undefined;
+      <h1 class="text-3xl">
+        {{ selectedTeam?.name ?? ('general.personal' | transloco) }} Dashboard
+      </h1>
 
       @let dashboard = monitorsDashboardStore.dashboard();
       @if (dashboard; as dashboard) {
@@ -53,9 +57,9 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
         </div>
       }
 
-      <pu-notification-list [teamId]="selectedTeam?.id" />
+      <pu-notification-list [teamId]="teamId()" />
 
-      <pu-check-result-list [teamId]="selectedTeam?.id" />
+      <pu-check-result-list [teamId]="teamId()" />
     </div>
   `,
   selector: 'pu-monitors-dashboard',
@@ -64,9 +68,11 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
       @apply flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 hover:dark:bg-gray-700;
     }
   `,
-  imports: [CheckResultList, NotificationList, RouterLink],
+  imports: [CheckResultList, NotificationList, RouterLink, TranslocoPipe],
 })
 export class MonitorsDashboardPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
+
+  readonly teamId = input<string | undefined>(undefined);
 }

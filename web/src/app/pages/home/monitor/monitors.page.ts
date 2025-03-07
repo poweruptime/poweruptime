@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {MatAnchor} from '@angular/material/button';
 import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {RouterLink, RouterOutlet} from '@angular/router';
@@ -15,6 +15,7 @@ import {
   MonitorsStore,
   SelectedTeamStore,
 } from '@app/services';
+import {linkedQueryParamObject} from '@app/services/linked-query-param-object';
 
 @Component({
   template: `
@@ -24,7 +25,7 @@ import {
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
-          @if (selectedTeamStore.selectedTeamId()) {
+          @if (teamId()) {
             <a mat-flat-button routerLink="new">{{ 'cmdk.groups.monitor.create' | transloco }}</a>
           } @else {
             <div></div>
@@ -62,7 +63,7 @@ import {
           <pu-monitor-card-list
             [entities]="monitorsStore.sortedEntities()"
             [isPending]="monitorsStore.isPending()"
-            (nextPage)="monitorsStore.nextPage(this.selectedTeamStore.selectedTeamId())" />
+            (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
       <div class="scroll-container col-span-12 pb-4 lg:col-span-7 xl:col-span-8 2xl:col-span-9">
@@ -102,10 +103,11 @@ import {
   selector: 'landing-page',
 })
 export class MonitorsPage {
-  readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
   readonly monitorsStore = inject(MonitorsStore);
   readonly monitorsSearchStore = inject(MonitorsSearchStore);
+
+  readonly teamId = input<string | undefined>(undefined);
 
   readonly showFilter = linkedQueryParam('showFilter', {
     parse: paramToBoolean({defaultValue: false}),
@@ -113,17 +115,20 @@ export class MonitorsPage {
     queryParamsHandling: '',
   });
 
-  readonly filter = linkedQueryParam<MonitorSearchParams>('filter', {
-    parse: (value) => JSON.parse(value ?? '{}'),
-    stringify: (value) => JSON.stringify(value),
+  readonly filter = linkedQueryParamObject<MonitorSearchParams>('filter', {
+    defaultValue: {
+      search: '',
+      statuses: [],
+      types: [],
+    },
   });
 
   constructor() {
-    this.monitorsDashboardStore.loadByTeamId(this.selectedTeamStore.selectedTeamId);
+    this.monitorsDashboardStore.loadByTeamId(this.teamId);
 
     this.monitorsStore.loadMonitorsByTeamId(
       computed(() => ({
-        teamId: this.selectedTeamStore.selectedTeamId(),
+        teamId: this.teamId(),
         loadedAll: this.monitorsStore.loadedAll(),
         page: this.monitorsStore.page(),
       })),
@@ -135,7 +140,7 @@ export class MonitorsPage {
 
     this.monitorsSearchStore.searchMonitorsByTeamId(
       computed(() => ({
-        teamId: this.selectedTeamStore.selectedTeamId(),
+        teamId: this.teamId(),
         page: this.monitorsSearchStore.page(),
         search: this.monitorsSearchStore.search(),
         statuses: this.monitorsSearchStore.statuses(),

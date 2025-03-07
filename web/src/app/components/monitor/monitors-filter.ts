@@ -36,7 +36,7 @@ import {MonitorSearchParams} from '@app/services';
       <mat-form-field>
         <mat-label>{{ 'general.search' | transloco }}</mat-label>
         <input formControlName="search" matInput focus />
-        @if ((form.controls.search.getRawValue()?.length ?? 0) > 0) {
+        @if (form.controls.search.getRawValue().length > 0) {
           <button
             class="flex items-center"
             [attr.aria-label]="'general.clear' | transloco"

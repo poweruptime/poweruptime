@@ -33,12 +33,14 @@ import {PushService, SelectedTeamStore} from '@app/services';
       <mat-drawer-content class="grid-container">
         <header class="header">
           <div class="flex justify-between gap-4 p-2">
-            <div class="flex flex-row items-center gap-4">
-              <button (click)="drawer.toggle()" mat-icon-button aria-label="Toggle side nav">
-                <bi name="list" size="24" />
-              </button>
-              <a routerLink="/">
-                <h1>poweruptime</h1>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center" [class.hidden]="!_isMobile">
+                <button (click)="drawer.toggle()" mat-icon-button aria-label="Toggle side nav">
+                  <bi name="list" size="24" />
+                </button>
+              </div>
+              <a class="pb-1" routerLink="/">
+                <h1 class="text-2xl">poweruptime</h1>
               </a>
             </div>
             <div class="inline-flex items-center gap-2">

@@ -16,14 +16,18 @@ import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
 @Component({
   template: `
     @if (instanceSettingsStore.settings()?.isUserAllowedToCreateTeams) {
-      <a class="mb-4" mat-flat-button routerLink="new">New team</a>
+      <div class="px-4 pb-2">
+        <a mat-flat-button routerLink="new">New team</a>
+      </div>
     }
     <cdk-virtual-scroll-viewport
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
       maxBufferPx="1500"
       itemSize="230">
-      <div class="grid h-[250px] grid-cols-5 gap-4" *cdkVirtualFor="let chunk of chunkedItems()">
+      <div
+        class="grid h-[250px] grid-cols-5 gap-4 px-4 pt-4"
+        *cdkVirtualFor="let chunk of chunkedItems()">
         @for (team of chunk; track team.id) {
           <pu-team-card class="block h-[230px]" [team]="team" />
         }

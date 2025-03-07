@@ -25,7 +25,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
           </mat-slide-toggle>
 
-          <pu-save-button [valid]="isValid()" />
+          <pu-save-button [valid]="isValid()" form="permissions-form" />
         </form>
       </mat-card-content>
     </mat-card>

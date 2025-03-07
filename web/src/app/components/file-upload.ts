@@ -10,9 +10,9 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 
-import {filter} from 'rxjs';
+import {filter, switchMap} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {FileInputDirective, FileInputValidators} from '@ngx-dropzone/cdk';
@@ -34,13 +34,13 @@ import {environment} from '../../environments/environment';
         @if (fileToShow(); as fileToShow) {
           <mat-chip-row>
             {{ fileToShow.name }}
-            <button matChipRemove>
+            <button (click)="remove()" matChipRemove>
               <bi name="x-circle" />
             </button>
           </mat-chip-row>
         }
       </ngx-mat-dropzone>
-      <bi matSuffix name="cloud-arrow-up-fill" />
+      <bi matSuffix size="24" name="cloud-arrow-up-fill" />
 
       @if (fileCtrl.errors?.['accept']) {
         <mat-error>{{ 'form.validation.file' | transloco }}</mat-error>
@@ -59,6 +59,7 @@ import {environment} from '../../environments/environment';
     MatFormField,
     MatLabel,
     MatError,
+    MatSuffix,
     MatChipRemove,
     MatChipRow,
     BiComponent,
@@ -86,21 +87,23 @@ export class FileUpload {
         takeUntilDestroyed(),
         filter((file) => !!file),
         filter(() => this.fileCtrl.errors === null),
-      )
-      .subscribe((file) => {
-        this.fileToShow.set(file);
-        const formData = new FormData();
-        formData.append('file', file);
+        switchMap((file) => {
+          this.fileToShow.set(file);
+          const formData = new FormData();
+          formData.append('file', file);
 
-        this.httpClient
-          .post<BackendType['FileResponse']>(`${environment.apiUrl}/v1/file`, formData)
-          .subscribe({
-            next: (file) => {
-              console.log(file);
-              this.fileId.emit(file.fileId);
-            },
-            error: (e) => console.error(e),
-          });
+          return this.httpClient.post<BackendType['FileResponse']>(
+            `${environment.apiUrl}/v1/file`,
+            formData,
+          );
+        }),
+      )
+      .subscribe({
+        next: (file) => {
+          console.log(file);
+          this.fileId.emit(file.fileId);
+        },
+        error: (e) => console.error(e),
       });
   }
 

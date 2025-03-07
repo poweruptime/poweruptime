@@ -1,6 +1,5 @@
 import {Component, computed, input} from '@angular/core';
 import {MatIconAnchor} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
@@ -47,12 +46,12 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
   template: `
     @let _team = team();
     <a [routerLink]="_team.id">
-      <mat-card class="h-[230px]" appearance="outlined">
+      <div class="flex h-[230px] flex-col rounded-xl transition duration-200 hover:scale-105">
         <div
           class="h-40 w-full rounded-t-xl"
           [style.background-image]="backgroundPattern()"
           [style.background-color]="'#dfdbe5'"></div>
-        <mat-card-content>
+        <div class="rounded-b-xl border-b border-l border-r px-4 pb-4">
           <div class="mt-3 flex items-center justify-between">
             <div class="inline-flex items-center gap-2">
               <span class="text-2xl">{{ _team.name }}</span>
@@ -73,17 +72,13 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
             </a>
           </div>
 
-          @defer (hydrate on idle) {
-            <pu-team-card-monitor-count [team]="_team" />
-          }
-        </mat-card-content>
-      </mat-card>
+          <pu-team-card-monitor-count [team]="_team" />
+        </div>
+      </div>
     </a>
   `,
   selector: 'pu-team-card',
   imports: [
-    MatCard,
-    MatCardContent,
     MatChipSet,
     MatChip,
     RouterLink,

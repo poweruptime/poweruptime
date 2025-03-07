@@ -12,7 +12,7 @@ import {
   withIncrementalHydration,
 } from '@angular/platform-browser';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
-import {provideRouter, withComponentInputBinding} from '@angular/router';
+import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
@@ -28,7 +28,11 @@ import {ROUTES} from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
-    provideRouter(ROUTES, withComponentInputBinding()),
+    provideRouter(
+      ROUTES,
+      withComponentInputBinding(),
+      withRouterConfig({paramsInheritanceStrategy: 'always'}),
+    ),
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideHttpClient(
       withFetch(),
