@@ -13,7 +13,7 @@ import {UptimeTimeline} from '../uptime-timeline';
     <a [routerLink]="_monitor.id" [queryParamsHandling]="'merge'" style="height: 140px">
       <mat-card routerLinkActive="active-card" appearance="outlined" style="height: 140px">
         <mat-card-content>
-          <div class="flex flex-col items-start rounded-lg">
+          <div class="flex flex-col items-start justify-between rounded-lg" style="height: 120px">
             <div class="flex items-center gap-2">
               <strong
                 class="max-w-24 truncate rounded-lg px-2 py-1"

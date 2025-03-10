@@ -20,6 +20,7 @@ import {
 } from '@app/components/monitor';
 import {
   CheckResultsStore,
+  InfiniteCheckResultsStore,
   MonitorActionStore,
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
@@ -173,11 +174,10 @@ import {calculatePingChart} from '@app/services/util';
       <mat-card appearance="outlined">
         <mat-card-content>
           <div class="flex flex-col gap-2">
-            @if (checkResultsStore.isPending()) {
-              <pu-placeholder class="h-20 w-full" />
-            } @else {
-              <pu-uptime-timeline [checkResults]="checkResultsStore.entities()" />
-            }
+            <pu-uptime-timeline
+              [isPending]="infiniteCheckResultsStore.isPending()"
+              [checkResults]="infiniteCheckResultsStore.entities()"
+              (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())" />
 
             @if (monitorDetailStore.monitor(); as monitor) {
               <span>
@@ -249,7 +249,7 @@ import {calculatePingChart} from '@app/services/util';
   `,
   selector: 'monitor-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MonitorActionStore, CheckResultsStore],
+  providers: [MonitorActionStore, CheckResultsStore, InfiniteCheckResultsStore],
   imports: [
     MatCard,
     MatCardContent,
@@ -276,8 +276,9 @@ export class MonitorDetailPage {
   readonly monitorDetailYearlyUptimeStore = inject(MonitorDetailsYearlyUptimeStore);
   readonly monitorActionStore = inject(MonitorActionStore);
   readonly checkResultsStore = inject(CheckResultsStore);
+  readonly infiniteCheckResultsStore = inject(InfiniteCheckResultsStore);
 
-  readonly monitorId = input<string>();
+  readonly monitorId = input.required<string>();
 
   readonly cutDescription = signal(true);
 
@@ -297,14 +298,10 @@ export class MonitorDetailPage {
     this.monitorDetailStore.loadMonitorById(this.monitorId);
     this.monitorDetailYearlyUptimeStore.loadByMonitorId(this.monitorId);
 
-    this.checkResultsStore.load(
+    this.infiniteCheckResultsStore.load(
       computed(() => ({
-        teamId: undefined,
-        onlyChanges: false,
-        page: 0,
-        size: 100,
-        sort: ['createdAt,desc'],
         monitorId: this.monitorId(),
+        page: this.infiniteCheckResultsStore.page(),
       })),
     );
   }

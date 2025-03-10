@@ -6,7 +6,7 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
-import {distinctUntilChanged, map} from 'rxjs';
+import {distinctUntilChanged, map, tap} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -88,7 +88,10 @@ export class MonitorsFilter {
         return undefined;
       }
 
-      this.form.patchValue(filter);
+      this.form.patchValue({
+        ...filter,
+        search: filter.search ?? '',
+      });
 
       return filter;
     },

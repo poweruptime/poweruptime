@@ -138,33 +138,28 @@ export const MonitorsStore = signalStore(
               },
             })
             .pipe(
+              tap(() =>
+                patchState(store, (state) => ({
+                  requestCount: state.requestCount - 1,
+                })),
+              ),
               filter(() => {
                 if (store.teamId() === teamId) {
                   return true;
                 }
-
                 console.warn('Team id changed after fetching its monitors', store.teamId(), teamId);
-
-                patchState(store, (state) => ({
-                  requestCount: state.requestCount - 1,
-                }));
                 return false;
               }),
               tapResponse({
                 next: (response) => {
-                  patchState(
-                    store,
-                    setEntities(response.data),
-                    (state) => ({requestCount: state.requestCount - 1}),
-                    (state) => {
-                      if (response.numberOfPages === page && state.requestCount === 0) {
-                        console.warn(`Team ${teamId} has loaded all items`);
-                        state.loadedAll.add(teamId);
-                        return {loadedAll: state.loadedAll};
-                      }
-                      return {};
-                    },
-                  );
+                  patchState(store, setEntities(response.data), (state) => {
+                    if (response.numberOfPages === page && state.requestCount === 0) {
+                      console.warn(`Team ${teamId} has loaded all items`);
+                      state.loadedAll.add(teamId);
+                      return {loadedAll: state.loadedAll};
+                    }
+                    return {};
+                  });
                 },
                 error: (error) => {
                   console.error(error);

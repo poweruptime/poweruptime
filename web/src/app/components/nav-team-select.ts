@@ -9,7 +9,6 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
-import {MatDivider} from '@angular/material/divider';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
@@ -109,7 +108,6 @@ import {SelectedTeamStore} from '@app/services';
     MtxPopoverTrigger,
     BiComponent,
     MatInput,
-    MatDivider,
     MatProgressBar,
     TranslocoPipe,
   ],

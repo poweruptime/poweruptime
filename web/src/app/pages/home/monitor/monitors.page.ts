@@ -7,15 +7,10 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
+import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
-import {
-  MonitorSearchParams,
-  MonitorsDashboardStore,
-  MonitorsSearchStore,
-  MonitorsStore,
-  SelectedTeamStore,
-} from '@app/services';
-import {linkedQueryParamObject} from '@app/services/linked-query-param-object';
+import {MonitorsDashboardStore, MonitorsSearchStore, MonitorsStore} from '@app/services';
+import {paramToArray} from '@app/util';
 
 @Component({
   template: `
@@ -48,9 +43,17 @@ import {linkedQueryParamObject} from '@app/services/linked-query-param-object';
         @defer (when _showFilter) {
           @if (_showFilter) {
             <pu-monitors-filter
-              [filter]="filter()"
+              [filter]="{
+                search: $any(searchFilter()),
+                types: typesFilter(),
+                statuses: statusesFilter(),
+              }"
               [dashboard]="dashboard"
-              (filterChange)="filter.set($event)" />
+              (filterChange)="
+                searchFilter.set($event.search);
+                typesFilter.set($event.types);
+                statusesFilter.set($event.statuses)
+              " />
           }
         }
 
@@ -115,13 +118,21 @@ export class MonitorsPage {
     queryParamsHandling: '',
   });
 
-  readonly filter = linkedQueryParamObject<MonitorSearchParams>('filter', {
-    defaultValue: {
-      search: '',
-      statuses: [],
-      types: [],
+  readonly searchFilter = linkedQueryParam('filter.search');
+  readonly statusesFilter = linkedQueryParam<BackendType['MonitorResponse']['status'][]>(
+    'filter.status',
+    {
+      parse: paramToArray<BackendType['MonitorResponse']['status']>(),
+      stringify: (value) => value.join(','),
     },
-  });
+  );
+  readonly typesFilter = linkedQueryParam<BackendType['MonitorCheckerData']['_type'][]>(
+    'filter.type',
+    {
+      parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
+      stringify: (value) => value.join(','),
+    },
+  );
 
   constructor() {
     this.monitorsDashboardStore.loadByTeamId(this.teamId);
@@ -134,9 +145,9 @@ export class MonitorsPage {
       })),
     );
 
-    this.monitorsSearchStore.setSearch(computed(() => this.filter()?.search));
-    this.monitorsSearchStore.setStatuses(computed(() => this.filter()?.statuses));
-    this.monitorsSearchStore.setTypes(computed(() => this.filter()?.types));
+    this.monitorsSearchStore.setSearch(this.searchFilter);
+    this.monitorsSearchStore.setStatuses(this.statusesFilter);
+    this.monitorsSearchStore.setTypes(this.typesFilter);
 
     this.monitorsSearchStore.searchMonitorsByTeamId(
       computed(() => ({
