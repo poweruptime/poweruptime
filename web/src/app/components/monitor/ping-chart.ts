@@ -20,8 +20,8 @@ import {DfxTimeLeftPipe} from 'dfx-helper';
         [yAxis]="true"
         [yAxisLabel]="'Ping (ms)'"
         [showYAxisLabel]="true"
-        [yScaleMax]="_chart.biggest"
-        [yScaleMin]="_chart.smallest"
+        [yScaleMax]="_chart.highestValue"
+        [yScaleMin]="_chart.smallestValue"
         [results]="_chart.data">
         <ng-template #tooltipTemplate let-model="model">
           <div class="flex flex-col p-2 pt-3">
@@ -55,12 +55,12 @@ import {DfxTimeLeftPipe} from 'dfx-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PingChart {
-  readonly curve = shape.curveStepAfter;
+  readonly curve = shape.curveLinear;
   readonly currentDate = signal(new Date());
 
   chart = input.required<{
     data: {name: string; series: {name: string; value: number}[]}[];
-    smallest: number;
-    biggest: number;
+    smallestValue: number;
+    highestValue: number;
   }>();
 }

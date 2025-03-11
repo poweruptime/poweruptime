@@ -10,3 +10,5 @@ object DateTimeUtils {
 
     val simpleDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(SIMPLE_FORMAT)
 }
+
+const val DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

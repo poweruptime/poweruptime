@@ -16,16 +16,17 @@ import {
   MonitorStatus,
   NotificationList,
   PingChart,
+  PingChartFilter,
   UptimeTimeline,
 } from '@app/components/monitor';
 import {
-  CheckResultsStore,
+  CheckResultsPingStore,
   InfiniteCheckResultsStore,
   MonitorActionStore,
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
 } from '@app/services';
-import {calculatePingChart} from '@app/services/util';
+import {toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -227,14 +228,16 @@ import {calculatePingChart} from '@app/services/util';
       }
 
       @defer (on idle) {
-        @if (checkResultsStore.isPending()) {
-          <pu-placeholder class="w-full" style="height: 28rem" />
-        } @else {
+        @if (checkResultsPingStore.data(); as data) {
           <mat-card appearance="outlined">
             <mat-card-content class="dark">
-              <pu-ping-chart [chart]="pingChart()" />
+              <pu-ping-chart [chart]="data" />
+
+              <pu-ping-chart-filter />
             </mat-card-content>
           </mat-card>
+        } @else {
+          <pu-placeholder class="w-full" style="height: 28rem" />
         }
       } @placeholder {
         <pu-placeholder class="w-full" style="height: 28rem" />
@@ -249,7 +252,7 @@ import {calculatePingChart} from '@app/services/util';
   `,
   selector: 'monitor-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MonitorActionStore, CheckResultsStore, InfiniteCheckResultsStore],
+  providers: [MonitorActionStore, InfiniteCheckResultsStore, CheckResultsPingStore],
   imports: [
     MatCard,
     MatCardContent,
@@ -269,20 +272,19 @@ import {calculatePingChart} from '@app/services/util';
     DfxCutPipe,
     Placeholder,
     TranslocoPipe,
+    PingChartFilter,
   ],
 })
 export class MonitorDetailPage {
   readonly monitorDetailStore = inject(MonitorDetailStore);
   readonly monitorDetailYearlyUptimeStore = inject(MonitorDetailsYearlyUptimeStore);
   readonly monitorActionStore = inject(MonitorActionStore);
-  readonly checkResultsStore = inject(CheckResultsStore);
+  readonly checkResultsPingStore = inject(CheckResultsPingStore);
   readonly infiniteCheckResultsStore = inject(InfiniteCheckResultsStore);
 
   readonly monitorId = input.required<string>();
 
   readonly cutDescription = signal(true);
-
-  readonly pingChart = computed(() => calculatePingChart(this.checkResultsStore.entities()));
 
   readonly testIntervalDuration = computed(() => {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
@@ -302,6 +304,18 @@ export class MonitorDetailPage {
       computed(() => ({
         monitorId: this.monitorId(),
         page: this.infiniteCheckResultsStore.page(),
+      })),
+    );
+
+    const test = new Date();
+    test.setHours(test.getHours() - 4);
+
+    this.checkResultsPingStore.load(
+      computed(() => ({
+        monitorId: this.monitorId(),
+        start: toBackendDate(test),
+        end: toBackendDate(new Date()),
+        precision: 2,
       })),
     );
   }

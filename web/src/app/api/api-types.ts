@@ -1309,6 +1309,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/check-result/ping': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get ping timeline
+     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
+     */
+    get: operations['getPingTimeline'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/user/session/{id}': {
     parameters: {
       query?: never;
@@ -2129,6 +2149,23 @@ export interface components {
       /** Format: int32 */
       numberOfPages: number;
       data: components['schemas']['CheckResultLogEntryResponse'][];
+    };
+    PingTimelineDataEntryResponse: {
+      /** Format: date-time */
+      name: string;
+      /** Format: int64 */
+      value: number;
+    };
+    PingTimelineDataResponse: {
+      name: string;
+      series: components['schemas']['PingTimelineDataEntryResponse'][];
+    };
+    PingTimelineResponse: {
+      /** Format: int64 */
+      smallestValue: number;
+      /** Format: int64 */
+      highestValue: number;
+      data: components['schemas']['PingTimelineDataResponse'][];
     };
   };
   responses: never;
@@ -4212,6 +4249,31 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PaginatedResponseCheckResultLogEntryResponse'];
+        };
+      };
+    };
+  };
+  getPingTimeline: {
+    parameters: {
+      query: {
+        monitorId: string;
+        start: string;
+        end: string;
+        precision: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PingTimelineResponse'];
         };
       };
     };

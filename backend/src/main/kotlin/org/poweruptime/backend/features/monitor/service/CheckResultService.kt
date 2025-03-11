@@ -11,6 +11,9 @@ import org.poweruptime.backend.features.monitor.domain.CheckResultRepository
 import org.poweruptime.backend.features.monitor.domain.HistoricalDayUptimeRepository
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
+import org.poweruptime.backend.features.monitor.dto.PingTimelineDataEntryResponse
+import org.poweruptime.backend.features.monitor.dto.PingTimelineDataResponse
+import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorUptimeStatistics
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
@@ -326,4 +329,85 @@ fun calculateUptimeFromCheckResults(
 
     return totalUpDurationMs.divide(totalDurationMs, 4, RoundingMode.HALF_UP)
         .multiply(BigDecimal(100))
+}
+
+fun generatePingTimelineEntries(
+    startInstant: Instant,
+    endInstant: Instant,
+    precisionMillis: Long
+): List<PingTimelineDataEntryResponse> {
+    val entries = mutableListOf<PingTimelineDataEntryResponse>()
+    var currentMillis = startInstant.toEpochMilli()
+    val endMillis = endInstant.toEpochMilli()
+
+    while (currentMillis <= endMillis) {
+        entries.add(PingTimelineDataEntryResponse(Instant.ofEpochMilli(currentMillis)))
+        currentMillis += precisionMillis
+    }
+
+    return entries
+}
+
+@Suppress("NestedBlockDepth")
+fun buildPingTimelineResponse(
+    entries: List<PingTimelineDataEntryResponse>,
+    checkResults: List<CheckResult>,
+    halfPrecisionSeconds: Long
+): PingTimelineResponse {
+    var highestValue = 0L
+    var smallestValue = Long.MAX_VALUE // Initialize to max value so first comparison works
+
+    // Create a map for faster lookups
+    val entryMap = entries.associateBy { it.name }
+
+    // Track count of pings per bucket to calculate average
+    val pingCountMap = mutableMapOf<Instant, Int>()
+
+    // Group check results by their corresponding time bucket
+    checkResults.forEach { checkResult ->
+        // Find the closest time bucket
+        val bucketInstant = findClosestBucket(checkResult.pickedUpAt!!, entryMap.keys, halfPrecisionSeconds)
+        bucketInstant?.let { instant ->
+            entryMap[instant]?.let { entry ->
+                checkResult.pingMs?.let { pingMs ->
+                    entry.value += pingMs
+                    pingCountMap[instant] = pingCountMap.getOrDefault(instant, 0) + 1
+                }
+            }
+        }
+    }
+
+    // Calculate averages for each bucket
+    entryMap.forEach { (instant, entry) ->
+        val count = pingCountMap.getOrDefault(instant, 0)
+        if (count > 0) {
+            // Calculate average
+            entry.value = entry.value / count
+
+            // Update highest and smallest values
+            if (entry.value > 0) { // Only consider buckets with data
+                highestValue = maxOf(entry.value, highestValue)
+                smallestValue = minOf(entry.value, smallestValue)
+            }
+        }
+    }
+
+    // If no data was found, reset smallestValue
+    if (smallestValue == Long.MAX_VALUE) {
+        smallestValue = 0L
+    }
+
+    return PingTimelineResponse(
+        highestValue = highestValue + 50,
+        smallestValue = if (smallestValue - 50 >= 0) smallestValue - 50 else 0,
+        data = listOf(PingTimelineDataResponse(name = "Ping", series = entries)),
+    )
+}
+
+private fun findClosestBucket(
+    timestamp: Instant,
+    buckets: Set<Instant>,
+    halfPrecisionSeconds: Long
+): Instant? = buckets.firstOrNull { bucket ->
+    timestamp in bucket.minusSeconds(halfPrecisionSeconds)..bucket.plusSeconds(halfPrecisionSeconds)
 }

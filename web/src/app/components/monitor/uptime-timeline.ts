@@ -45,7 +45,7 @@ import {MonitorStatusBackground} from '@app/directives';
           let last = last
         ">
         <div
-          class="relative inline-flex flex-col items-center gap-1"
+          class="relative inline-flex flex-col items-center gap-1 h-{{ _height }}"
           [style.width]="_size === 3 ? '20px' : '16px'">
           <div
             class="h-{{ _height }} w-{{ _width }} min-w-{{ _width }} rounded hover:scale-125"

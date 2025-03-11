@@ -1,10 +1,15 @@
+import {registerLocaleData} from '@angular/common';
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import localeDe from '@angular/common/locales/de';
+import localeDeExtra from '@angular/common/locales/extra/de';
 import {
   ApplicationConfig,
+  LOCALE_ID,
   importProvidersFrom,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {
   provideClientHydration,
@@ -15,6 +20,7 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
+import {provideNativeDatetimeAdapter} from '@ng-matero/extensions/core';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -44,6 +50,8 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideAnimationsAsync(),
+    provideNativeDateAdapter(),
+    provideNativeDatetimeAdapter(),
     provideBi(
       withCDN(() =>
         injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',
@@ -102,5 +110,8 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline',
       },
     },
+    {provide: LOCALE_ID, useValue: 'de-DE'},
   ],
 };
+
+registerLocaleData(localeDe, 'de-DE', localeDeExtra);

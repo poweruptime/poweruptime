@@ -8,4 +8,5 @@ export * from './monitors-filter';
 export * from './notification-list';
 export * from './notification-method-selector';
 export * from './ping-chart';
+export * from './ping-chart-filter';
 export * from './uptime-timeline';
