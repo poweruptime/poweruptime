@@ -76,6 +76,14 @@ export function toBackendDate(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+export function toBackendDateTime(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
@@ -86,4 +94,21 @@ export function toBackendDate(date: Date): string {
   const timezoneOffsetSign = timezoneOffset > 0 ? '-' : '+';
 
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneOffsetSign}${timezoneOffsetHours}:${timezoneOffsetMinutes}`;
+}
+
+export function dateToDateTime(
+  dateString: string,
+  hours: number,
+  minutes: number,
+  seconds: number,
+  milliseconds: number,
+): string {
+  const date = new Date(dateString);
+
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(seconds);
+  date.setMilliseconds(milliseconds);
+
+  return toBackendDateTime(date);
 }

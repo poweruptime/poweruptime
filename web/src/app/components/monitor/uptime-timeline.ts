@@ -22,8 +22,6 @@ import {MonitorStatusBackground} from '@app/directives';
 
 @Component({
   template: `
-    @let _width = width();
-    @let _height = height();
     @let _size = size();
     <cdk-virtual-scroll-viewport
       class="uptime-timeline-viewport"
@@ -45,10 +43,16 @@ import {MonitorStatusBackground} from '@app/directives';
           let last = last
         ">
         <div
-          class="relative inline-flex flex-col items-center gap-1 h-{{ _height }}"
+          class="relative inline-flex flex-col items-center gap-1"
+          [class.h-9]="_size === 3"
+          [class.h-6]="_size === 2"
           [style.width]="_size === 3 ? '20px' : '16px'">
           <div
-            class="h-{{ _height }} w-{{ _width }} min-w-{{ _width }} rounded hover:scale-125"
+            class="rounded hover:scale-125"
+            [class.h-9]="_size === 3"
+            [class.h-6]="_size === 2"
+            [class.w-3]="_size === 3"
+            [class.w-2]="_size === 2"
             [monitor-status-background]="checkResult.status"
             [mtxTooltip]="checkResultsTooltip"></div>
 
@@ -87,9 +91,11 @@ import {MonitorStatusBackground} from '@app/directives';
             class="relative inline-flex flex-col items-center gap-1"
             [style.width]="_size === 3 ? '20px' : '16px'">
             <pu-placeholder
-              class="h-{{ _height }} w-{{ _width }} min-w-{{
-                _width
-              }} rounded hover:scale-125"></pu-placeholder>
+              class="rounded hover:scale-125"
+              [class.h-9]="_size === 3"
+              [class.h-6]="_size === 2"
+              [class.w-3]="_size === 3"
+              [class.w-2]="_size === 2"></pu-placeholder>
           </div>
         }
       }
@@ -132,8 +138,6 @@ export class UptimeTimeline {
   isPending = input<boolean>(false);
 
   size = input<2 | 3>(3);
-  width = computed(() => this.size().toString());
-  height = computed(() => (this.size() * 3).toString());
 
   private nextPage$ = new Subject<void>();
   protected nextPage = outputFromObservable(this.nextPage$.pipe(throttleTime(200)));

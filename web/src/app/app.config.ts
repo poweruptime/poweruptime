@@ -9,7 +9,8 @@ import {
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import {MAT_DATE_FORMATS, provideNativeDateAdapter} from '@angular/material/core';
+import {MatDateFormats} from '@angular/material/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {
   provideClientHydration,
@@ -30,6 +31,18 @@ import {TranslocoHttpLoader, injectIsPlatformDocker} from '@app/services';
 import {DOCKER_WEB_URL} from '@app/util';
 
 import {ROUTES} from './app.routes';
+
+export const MY_DATE_FNS_FORMATS: MatDateFormats = {
+  parse: {
+    dateInput: 'YYYY-MM-DD',
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',
+    monthYearLabel: 'yyyy',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -111,6 +124,10 @@ export const appConfig: ApplicationConfig = {
       },
     },
     {provide: LOCALE_ID, useValue: 'de-DE'},
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: MY_DATE_FNS_FORMATS,
+    },
   ],
 };
 

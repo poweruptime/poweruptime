@@ -40,7 +40,8 @@ import {DfxTimeLeftPipe} from 'dfx-helper';
 
           <span class="text-xs">
             ({{
-              'monitor.pingChart.ago' | transloco: {time: entry.name | d_timeLeft: currentDate()}
+              'monitor.details.pingChart.ago'
+                | transloco: {time: entry.name | d_timeLeft: currentDate()}
             }})
           </span>
         } @else {

@@ -1,4 +1,6 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {JsonPipe} from '@angular/common';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   MatDateRangeInput,
@@ -7,29 +9,55 @@ import {
   MatEndDate,
   MatStartDate,
 } from '@angular/material/datepicker';
-import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
+import {MatOption, MatSelect} from '@angular/material/select';
+
+import {distinctUntilChanged, filter, map} from 'rxjs';
+
+import {TranslocoPipe} from '@jsverse/transloco';
+
+import {dateRangeValidator, injectIsValid} from '@app/form';
+import {toBackendDate, toBackendDateTime} from '@app/services/util';
 
 @Component({
   template: `
-    <form [formGroup]="form">
-      <mat-form-field>
-        <mat-label>Start - End</mat-label>
-        <mat-date-range-input [rangePicker]="picker" formGroupName="range">
-          <input matStartDate formControlName="start" placeholder="Start date" />
-          <input matEndDate formControlName="end" placeholder="End date" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+    <form class="flex gap-2" [formGroup]="form">
+      <div>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.precision' | transloco }}</mat-label>
+          <mat-select formControlName="precision">
+            <mat-option [value]="2">{{ 'general.xMinutes' | transloco: {value: 2} }}</mat-option>
+            <mat-option [value]="5">{{ 'general.xMinutes' | transloco: {value: 5} }}</mat-option>
+            <mat-option [value]="15">{{ 'general.xMinutes' | transloco: {value: 15} }}</mat-option>
+            <mat-option [value]="30">{{ 'general.xMinutes' | transloco: {value: 30} }}</mat-option>
+            <mat-option [value]="60">{{ 'general.xMinutes' | transloco: {value: 60} }}</mat-option>
+            <mat-option [value]="180">{{ 'general.xHours' | transloco: {value: 3} }}</mat-option>
+            <mat-option [value]="360">{{ 'general.xHours' | transloco: {value: 6} }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-        <!--        @if (range.controls.start.hasError('matStartDateInvalid')) {-->
-        <!--          <mat-error>Invalid start date</mat-error>-->
-        <!--        }-->
-        <!--        @if (range.controls.end.hasError('matEndDateInvalid')) {-->
-        <!--          <mat-error>Invalid end date</mat-error>-->
-        <!--        }-->
-      </mat-form-field>
+      <div>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.startEnd' | transloco }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [max]="max" formGroupName="range">
+            <input
+              [placeholder]="'monitor.details.pingChart.startDate' | transloco"
+              matStartDate
+              formControlName="start" />
+            <input
+              [placeholder]="'monitor.details.pingChart.endDate' | transloco"
+              matEndDate
+              formControlName="end" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        @if (form.controls['range'].errors?.['invalidRange']) {
+          <mat-error>{{ 'monitor.details.pingChart.exceedsMaxWindow' | transloco }}</mat-error>
+        }
+      </div>
     </form>
-    {{ form.controls.range.controls.start.getRawValue() }}
   `,
   selector: 'pu-ping-chart-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,15 +71,40 @@ import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
     MatStartDate,
     MatEndDate,
     MatSuffix,
+    MatSelect,
+    MatError,
+    MatOption,
+    TranslocoPipe,
   ],
 })
 export class PingChartFilter {
   private readonly fb = inject(NonNullableFormBuilder);
 
-  readonly form = this.fb.group({
-    range: this.fb.group({
-      start: [null as string | null, [Validators.required]],
-      end: [null as string | null, [Validators.required]],
-    }),
+  protected readonly form = this.fb.group({
+    precision: [5 as number | null, [Validators.required]],
+    range: this.fb.group(
+      {
+        start: [null as string | null, [Validators.required]],
+        end: [null as string | null, [Validators.required]],
+      },
+      {validators: dateRangeValidator(31)},
+    ),
   });
+
+  protected readonly max = new Date();
+
+  filter = input.required({
+    transform: (it: {range: {start: string; end: string}}) => {
+      this.form.patchValue(it);
+      return it;
+    },
+  });
+
+  filterChange = outputFromObservable(
+    this.form.valueChanges.pipe(
+      filter(() => this.form.valid),
+      map(() => this.form.getRawValue()),
+      distinctUntilChanged((_, cur) => JSON.stringify(cur) === JSON.stringify(this.filter())),
+    ),
+  );
 }

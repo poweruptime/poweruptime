@@ -92,16 +92,19 @@
     "copy": "Copy",
     "createdAt": "Created At",
     "data": "Data",
+    "date": "Date",
     "delete": "Delete",
     "description": "Description",
     "disable": "Disable",
     "edit": "Edit",
     "email": "E-Mail",
     "emailAddress": "E-Mail address",
+    "end": "End",
     "footer": "Footer",
     "general": "General",
     "group": "Group",
     "host": "Host",
+    "hours": "Hours",
     "instance": "Instance",
     "invite": "Invite",
     "ipAddress": "IP-Address",
@@ -112,6 +115,7 @@
     "maintenance": "Maintenance",
     "member": "Member",
     "method": "Method",
+    "minutes": "Minutes",
     "monitor": "Monitor",
     "monitors": "Monitors",
     "name": "Name",
@@ -129,6 +133,7 @@
     "personal": "Personal",
     "ping": "Ping",
     "port": "Port",
+    "precision": "Precision",
     "profile": "Profile",
     "role": "Role",
     "save": "Save",
@@ -142,6 +147,7 @@
     "showDuplicates": "Show duplicates",
     "slug": "Slug",
     "start": "Start",
+    "startEnd": "{{general.start}} - {{general.end}}",
     "status": "Status",
     "statusPage": "Status Page",
     "statusPages": "Status Pages",
@@ -158,7 +164,9 @@
     "url": "URL",
     "user ": "User",
     "username": "Username",
-    "users": "Users"
+    "users": "Users",
+    "xHours": "{{value}} {{general.hours}}",
+    "xMinutes": "{{value}} {{general.minutes}}"
   },
   "instanceSettings": {
     "editUser": "Edit {{name}}",
@@ -188,6 +196,12 @@
   "monitor": {
     "details": {
       "check": "Check every {{testIntervalDuration}}",
+      "pingChart": {
+        "ago": "{{time}} ago",
+        "endDate": "{{general.end}} {{general.date}}",
+        "exceedsMaxWindow": "Selected window may not exceed 1 month",
+        "startDate": "{{general.start}} {{general.date}}"
+      },
       "resendAfter": "Resend notification after {{resendAfter}}x down checks",
       "retries": "{{retries}}x retries"
     },
@@ -217,10 +231,7 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
-    "oneDayUptime": "One-day uptime",
-    "pingChart": {
-      "ago": "{{time}} ago"
-    }
+    "oneDayUptime": "One-day uptime"
   },
   "nav": {
     "dashboard": "Dashboard",

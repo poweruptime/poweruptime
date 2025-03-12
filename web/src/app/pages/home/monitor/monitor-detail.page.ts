@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  WritableSignal,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip, MatChipSet} from '@angular/material/chips';
@@ -26,7 +34,7 @@ import {
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
 } from '@app/services';
-import {toBackendDate} from '@app/services/util';
+import {dateToDateTime, toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -230,10 +238,12 @@ import {toBackendDate} from '@app/services/util';
       @defer (on idle) {
         @if (checkResultsPingStore.data(); as data) {
           <mat-card appearance="outlined">
-            <mat-card-content class="dark">
-              <pu-ping-chart [chart]="data" />
+            <mat-card-content>
+              <div class="flex justify-end">
+                <pu-ping-chart-filter [(filter)]="pingChartFilter" />
+              </div>
 
-              <pu-ping-chart-filter />
+              <pu-ping-chart [chart]="data" />
             </mat-card-content>
           </mat-card>
         } @else {
@@ -286,6 +296,11 @@ export class MonitorDetailPage {
 
   readonly cutDescription = signal(true);
 
+  readonly pingChartFilter = signal({
+    range: {start: toBackendDate(new Date()), end: toBackendDate(new Date())},
+    precision: 15,
+  });
+
   readonly testIntervalDuration = computed(() => {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
 
@@ -307,16 +322,23 @@ export class MonitorDetailPage {
       })),
     );
 
-    const test = new Date();
-    test.setHours(test.getHours() - 4);
-
     this.checkResultsPingStore.load(
-      computed(() => ({
-        monitorId: this.monitorId(),
-        start: toBackendDate(test),
-        end: toBackendDate(new Date()),
-        precision: 2,
-      })),
+      computed(() => {
+        const filter = this.pingChartFilter();
+        const now = new Date();
+        return {
+          monitorId: this.monitorId(),
+          precision: filter.precision,
+          start: dateToDateTime(filter.range.start, 0, 0, 0, 0),
+          end: dateToDateTime(
+            filter.range.end,
+            now.getHours(),
+            now.getMinutes(),
+            now.getSeconds(),
+            0,
+          ),
+        };
+      }),
     );
   }
 }
