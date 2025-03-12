@@ -4,9 +4,13 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
-import org.poweruptime.backend.core.*
+import org.poweruptime.backend.core.Filter
+import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
+import org.poweruptime.backend.core.toPredicate
+import org.poweruptime.backend.core.utils.DAYS_PER_YEAR
+import org.poweruptime.backend.core.utils.HOURS_PER_DAY
 import org.poweruptime.backend.features.monitor.domain.CheckResultRepository
 import org.poweruptime.backend.features.monitor.domain.HistoricalDayUptimeRepository
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
@@ -34,6 +38,9 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
+
+const val PRECISION_SCALE = 4
+const val FULL_PERCENT = 100
 
 private fun LocalDate.startOfWeek(): LocalDate =
     this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
@@ -120,7 +127,7 @@ class CheckResultService(
         val groupedByWeek = lastYearHistoricalDayUptimes.groupBy { it.date.startOfWeek() }
 
         // Collect all dates for the past 365 days into a map
-        val pastYearGrouped = (0..365).map { currentDate.minusDays(it.toLong()) }.groupBy { it.startOfWeek() }
+        val pastYearGrouped = (0..DAYS_PER_YEAR).map { currentDate.minusDays(it.toLong()) }.groupBy { it.startOfWeek() }
 
         // Construct stats. For missing days, assume 100% uptime
         return pastYearGrouped.map { (startOfWeek, daysInWeek) ->
@@ -129,7 +136,7 @@ class CheckResultService(
                 name = startOfWeek,
                 series = daysInWeek.map { date ->
                     val day = weekData[date]
-                    val uptime = day?.uptime ?: BigDecimal(100)
+                    val uptime = day?.uptime ?: BigDecimal(FULL_PERCENT)
                     DayUptimeStatistic(
                         date = date,
                         name = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()),
@@ -154,7 +161,7 @@ class CheckResultService(
             checkResults,
             now.minus(timeOption.hours, ChronoUnit.HOURS),
             now,
-        ) ?: BigDecimal(100)
+        ) ?: BigDecimal(FULL_PERCENT)
 
         val lastYearHistoricalDayUptimes = getLastYearHistoricalDayUptime(monitor)
 
@@ -205,7 +212,7 @@ class CheckResultService(
             now,
         )
         return calculateUptimeFromCheckResults(checkResults, now.minus(timeOption.hours, ChronoUnit.HOURS), now)
-            ?: BigDecimal(100)
+            ?: BigDecimal(FULL_PERCENT)
     }
 
     @Transactional
@@ -218,7 +225,7 @@ class CheckResultService(
             currentDate,
         ).map { it.date }.toSet()
 
-        val totalDays = (TimeOption.ONE_YEAR.hours / 24).toInt()
+        val totalDays = (TimeOption.ONE_YEAR.hours / HOURS_PER_DAY).toInt()
         val zoneId = ZoneId.systemDefault()
 
         // Use a sequence to generate dates and filter out existing ones
@@ -272,7 +279,7 @@ class CheckResultService(
 
     private fun calculateUptimeByMonitorId(monitorId: String, start: Instant, end: Instant): BigDecimal {
         val results = checkResultRepository.findByMonitorIdAndPickedUpBetween(monitorId, start, end)
-        return calculateUptimeFromCheckResults(results, start, end) ?: BigDecimal(100)
+        return calculateUptimeFromCheckResults(results, start, end) ?: BigDecimal(FULL_PERCENT)
     }
 }
 
@@ -280,14 +287,14 @@ fun calculateHistoricalUptime(
     historicalDayUptimes: List<HistoricalDayUptime>,
     timeOption: TimeOption
 ): BigDecimal {
-    val daysCount = (timeOption.hours / 24).toInt()
+    val daysCount = (timeOption.hours / HOURS_PER_DAY).toInt()
     // Ensure the list is large enough
     if (daysCount > historicalDayUptimes.size) {
         return BigDecimal("100.0000")
     }
     val days = historicalDayUptimes.take(daysCount)
     val totalUptime = days.fold(BigDecimal.ZERO) { acc, day -> acc + day.uptime }
-    return totalUptime.divide(BigDecimal(days.size), 4, RoundingMode.HALF_UP)
+    return totalUptime.divide(BigDecimal(days.size), PRECISION_SCALE, RoundingMode.HALF_UP)
 }
 
 fun calculateUptimeFromCheckResults(
@@ -327,8 +334,8 @@ fun calculateUptimeFromCheckResults(
         return BigDecimal.ZERO
     }
 
-    return totalUpDurationMs.divide(totalDurationMs, 4, RoundingMode.HALF_UP)
-        .multiply(BigDecimal(100))
+    return totalUpDurationMs.divide(totalDurationMs, PRECISION_SCALE, RoundingMode.HALF_UP)
+        .multiply(BigDecimal(FULL_PERCENT))
 }
 
 fun generatePingTimelineEntries(
@@ -366,7 +373,7 @@ fun buildPingTimelineResponse(
     // Group check results by their corresponding time bucket
     checkResults.forEach { checkResult ->
         // Find the closest time bucket
-        val bucketInstant = findClosestBucket(checkResult.pickedUpAt!!, entryMap.keys, halfPrecisionSeconds)
+        val bucketInstant = entryMap.keys.findClosestBucket(checkResult.pickedUpAt!!, halfPrecisionSeconds)
         bucketInstant?.let { instant ->
             entryMap[instant]?.let { entry ->
                 checkResult.pingMs?.let { pingMs ->
@@ -382,7 +389,7 @@ fun buildPingTimelineResponse(
         val count = pingCountMap.getOrDefault(instant, 0)
         if (count > 0) {
             // Calculate average
-            entry.value = entry.value / count
+            entry.value /= count
 
             // Update highest and smallest values
             if (entry.value > 0) { // Only consider buckets with data
@@ -404,10 +411,9 @@ fun buildPingTimelineResponse(
     )
 }
 
-private fun findClosestBucket(
+private fun Set<Instant>.findClosestBucket(
     timestamp: Instant,
-    buckets: Set<Instant>,
     halfPrecisionSeconds: Long
-): Instant? = buckets.firstOrNull { bucket ->
+): Instant? = firstOrNull { bucket ->
     timestamp in bucket.minusSeconds(halfPrecisionSeconds)..bucket.plusSeconds(halfPrecisionSeconds)
 }

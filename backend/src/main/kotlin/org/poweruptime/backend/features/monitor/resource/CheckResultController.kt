@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
@@ -12,6 +13,10 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.DATETIME_FORMAT
+import org.poweruptime.backend.core.utils.DAYS_PER_MONTH
+import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_MINUTE
+import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_SECONDS
+import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
 import org.poweruptime.backend.features.authentication.domain.PermissionRepository
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
@@ -34,6 +39,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
+
+const val TWO_DAYS_IN_MINUTES = 2880L
 
 @RestController
 @RequestMapping("/v1/check-result")
@@ -109,24 +116,23 @@ class CheckResultController(
     @ResponseStatus(HttpStatus.OK)
     fun getPingTimeline(
         @RequestParam("monitorId") monitorId: String,
-        @RequestParam("start") @DateTimeFormat(pattern = DATETIME_FORMAT) start: ZonedDateTime,
-        @RequestParam("end") @DateTimeFormat(pattern = DATETIME_FORMAT) end: ZonedDateTime,
+        @RequestParam("start") @NotNull @DateTimeFormat(pattern = DATETIME_FORMAT) start: ZonedDateTime,
+        @RequestParam("end") @NotNull @DateTimeFormat(pattern = DATETIME_FORMAT) end: ZonedDateTime,
         // Min 2 minutes, max 2 days
-        @RequestParam("precision") @Min(2) @Max(2880) precisionInMinutes: Long,
+        @RequestParam("precision") @NotNull @Min(2) @Max(TWO_DAYS_IN_MINUTES) precisionInMinutes: Long,
     ): PingTimelineResponse {
         val startInstant = start.toInstant()
         val endInstant = end.toInstant()
 
         // Validate time window
         val durationMillis = endInstant.toEpochMilli() - startInstant.toEpochMilli()
-        val precisionMillis = precisionInMinutes * 60_000
+        val precisionMillis = precisionInMinutes * MILLI_SECONDS_PER_MINUTE
 
         if (durationMillis < precisionMillis) {
             throw BadRequestException("Timeline precision smaller than selected window")
         }
 
-        // 31 days in milliseconds
-        if (durationMillis > 31 * 24 * 60 * 60 * 1000L) {
+        if (durationMillis > DAYS_PER_MONTH * SECONDS_PER_DAY * MILLI_SECONDS_PER_SECONDS) {
             throw BadRequestException("Selected window may not exceed 1 month")
         }
 
