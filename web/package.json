@@ -35,7 +35,7 @@
     "@ngrx/operators": "19.0.1",
     "@ngrx/signals": "19.0.1",
     "@ngx-dropzone/cdk": "19.2.1",
-    "@ngx-dropzone/material": "19.1.0",
+    "@ngx-dropzone/material": "19.2.1",
     "@ngxpert/cmdk": "^3.0.0",
     "@ngxpert/input-otp": "^1.0.3",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.6",
