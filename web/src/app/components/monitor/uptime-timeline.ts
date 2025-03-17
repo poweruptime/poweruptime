@@ -1,29 +1,27 @@
-import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, booleanAttribute, computed, input, viewChild } from '@angular/core';
-import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
+import {DatePipe} from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+  booleanAttribute,
+  computed,
+  input,
+  viewChild,
+} from '@angular/core';
+import {outputFromObservable} from '@angular/core/rxjs-interop';
+import {RouterLink} from '@angular/router';
 
+import {Subject, throttleTime} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+import {MtxTooltip} from '@ng-matero/extensions/tooltip';
+import {StopPropagationDirective} from 'dfx-helper';
+import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
-import { Subject, throttleTime } from 'rxjs';
-
-
-
-import { TranslocoPipe } from '@jsverse/transloco';
-import { MtxTooltip } from '@ng-matero/extensions/tooltip';
-import { StopPropagationDirective } from 'dfx-helper';
-import { RepeatPipe } from 'ngxtension/repeat-pipe';
-
-
-
-import { BackendType } from '@app/api';
-import { Placeholder } from '@app/components';
-import { MonitorStatusBackground } from '@app/directives';
-
-
-
-
+import {BackendType} from '@app/api';
+import {Placeholder} from '@app/components';
+import {MonitorStatusBackground} from '@app/directives';
 
 @Component({
   template: `

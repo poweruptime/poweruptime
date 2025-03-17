@@ -3,6 +3,7 @@ import {toObservable} from '@angular/core/rxjs-interop';
 
 import {filter, map, share, switchMap, tap} from 'rxjs';
 
+import {loggerOf} from 'dfts-helper';
 import {toast} from 'ngx-sonner';
 import {createInjectable} from 'ngxtension/create-injectable';
 
@@ -11,7 +12,6 @@ import {AuthStore} from '@app/services/auth.store';
 
 import {environment} from '../../environments/environment';
 import {connectToEventSource} from './event-source.service';
-import {loggerOf} from 'dfts-helper';
 
 export const PushService = createInjectable(() => {
   const logger = loggerOf('PushService');

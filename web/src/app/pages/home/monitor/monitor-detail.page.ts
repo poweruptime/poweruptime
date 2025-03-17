@@ -185,10 +185,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         <mat-card-content>
           <div class="flex flex-col gap-2">
             <pu-uptime-timeline
-              link
               [isPending]="infiniteCheckResultsStore.isPending()"
               [checkResults]="infiniteCheckResultsStore.entities()"
-              (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())" />
+              (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
+              link />
 
             @if (monitorDetailStore.monitor(); as monitor) {
               <span>
