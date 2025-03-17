@@ -11,8 +11,10 @@ import {AuthStore} from '@app/services/auth.store';
 
 import {environment} from '../../environments/environment';
 import {connectToEventSource} from './event-source.service';
+import {loggerOf} from 'dfts-helper';
 
 export const PushService = createInjectable(() => {
+  const logger = loggerOf('PushService');
   const authStore = inject(AuthStore);
 
   const sse$ = toObservable(authStore.accessToken).pipe(
@@ -34,7 +36,7 @@ export const PushService = createInjectable(() => {
       ),
     ),
     map((it) => JSON.parse(it.data) as PushDto),
-    tap((pushDto) => console.log('[push] New sse event', pushDto)),
+    tap((pushDto) => logger.info('tap', 'New sse event', pushDto)),
     share(),
   );
 

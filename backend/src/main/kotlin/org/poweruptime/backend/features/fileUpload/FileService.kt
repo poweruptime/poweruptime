@@ -84,7 +84,7 @@ class FileService(
             try {
                 val filePath = rootLocation.resolve(file.fileId).normalize().toAbsolutePath()
 
-                if (!filePath.parent.equals(rootLocation.toAbsolutePath())) {
+                if (!filePath.parent.toAbsolutePath().equals(rootLocation.toAbsolutePath())) {
                     // This is a security check
                     throw IOException(
                         "Path error, '${filePath.parent.toAbsolutePath()}', '${rootLocation.toAbsolutePath()}'",
@@ -110,12 +110,16 @@ class FileService(
         // Delete files that are only on disk
         filesToDeleteFromDisk.forEach { filePath ->
             try {
-                if (!filePath.parent.equals(rootLocation.toAbsolutePath())) {
+                if (!filePath.parent.toAbsolutePath().equals(rootLocation.toAbsolutePath())) {
                     throw IOException(
                         "Path error, '${filePath.parent.toAbsolutePath()}', '${rootLocation.toAbsolutePath()}'",
                     )
                 }
 
+                logger.info(
+                    "Removed file '{}'",
+                    filePath,
+                )
                 Files.deleteIfExists(filePath)
             } catch (e: IOException) {
                 logger.warn("Failed to delete file from disk (no DB entry): $filePath", e)

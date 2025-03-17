@@ -1,28 +1,34 @@
-import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
-import {DatePipe} from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-  computed,
-  input,
-  viewChild,
-} from '@angular/core';
-import {outputFromObservable} from '@angular/core/rxjs-interop';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, booleanAttribute, computed, input, viewChild } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
-import {Subject, throttleTime} from 'rxjs';
 
-import {TranslocoPipe} from '@jsverse/transloco';
-import {MtxTooltip} from '@ng-matero/extensions/tooltip';
-import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
-import {BackendType} from '@app/api';
-import {Placeholder} from '@app/components';
-import {MonitorStatusBackground} from '@app/directives';
+import { Subject, throttleTime } from 'rxjs';
+
+
+
+import { TranslocoPipe } from '@jsverse/transloco';
+import { MtxTooltip } from '@ng-matero/extensions/tooltip';
+import { StopPropagationDirective } from 'dfx-helper';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+
+
+import { BackendType } from '@app/api';
+import { Placeholder } from '@app/components';
+import { MonitorStatusBackground } from '@app/directives';
+
+
+
+
 
 @Component({
   template: `
     @let _size = size();
+    @let _link = link();
     <cdk-virtual-scroll-viewport
       class="uptime-timeline-viewport"
       [class.h-24]="_size === 3"
@@ -47,14 +53,27 @@ import {MonitorStatusBackground} from '@app/directives';
           [class.h-9]="_size === 3"
           [class.h-6]="_size === 2"
           [style.width]="_size === 3 ? '20px' : '16px'">
-          <div
-            class="rounded hover:scale-125"
-            [class.h-9]="_size === 3"
-            [class.h-6]="_size === 2"
-            [class.w-3]="_size === 3"
-            [class.w-2]="_size === 2"
-            [monitor-status-background]="checkResult.status"
-            [mtxTooltip]="checkResultsTooltip"></div>
+          @if (_link) {
+            <a
+              class="rounded hover:scale-125"
+              [routerLink]="'c/' + checkResult.id + '/logs'"
+              [class.h-9]="_size === 3"
+              [class.h-6]="_size === 2"
+              [class.w-3]="_size === 3"
+              [class.w-2]="_size === 2"
+              [monitor-status-background]="checkResult.status"
+              [mtxTooltip]="checkResultsTooltip"></a>
+          } @else {
+            <div
+              class="rounded hover:scale-125"
+              [class.h-9]="_size === 3"
+              [class.h-6]="_size === 2"
+              [class.w-3]="_size === 3"
+              [class.w-2]="_size === 2"
+              [monitor-status-background]="checkResult.status"
+              [mtxTooltip]="checkResultsTooltip"
+              stopPropagation></div>
+          }
 
           <ng-template #checkResultsTooltip>
             <div class="flex flex-col">
@@ -130,6 +149,8 @@ import {MonitorStatusBackground} from '@app/directives';
     TranslocoPipe,
     Placeholder,
     RepeatPipe,
+    RouterLink,
+    StopPropagationDirective,
   ],
 })
 export class UptimeTimeline {
@@ -138,6 +159,8 @@ export class UptimeTimeline {
   isPending = input<boolean>(false);
 
   size = input<2 | 3>(3);
+
+  link = input(false, {transform: booleanAttribute});
 
   private nextPage$ = new Subject<void>();
   protected nextPage = outputFromObservable(this.nextPage$.pipe(throttleTime(200)));
