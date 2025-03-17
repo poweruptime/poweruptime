@@ -176,7 +176,7 @@ export class CheckResultList {
   private readonly paginator = viewChild.required(MatPaginator);
   private readonly sort = viewChild.required(MatSort);
 
-  readonly showDuplicates = linkedQueryParam('showDuplicates', {
+  readonly showDuplicates = linkedQueryParam('checks.showDuplicates', {
     parse: paramToBoolean(),
   });
 

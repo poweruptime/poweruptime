@@ -112,22 +112,22 @@ export class MonitorsPage {
 
   readonly teamId = input<string | undefined>(undefined);
 
-  readonly showFilter = linkedQueryParam('showFilter', {
+  readonly showFilter = linkedQueryParam('search.show', {
     parse: paramToBoolean({defaultValue: false}),
     stringify: (value) => (!value ? null : value),
     queryParamsHandling: '',
   });
 
-  readonly searchFilter = linkedQueryParam('filter.search');
+  readonly searchFilter = linkedQueryParam('search.name');
   readonly statusesFilter = linkedQueryParam<BackendType['MonitorResponse']['status'][]>(
-    'filter.status',
+    'search.status',
     {
       parse: paramToArray<BackendType['MonitorResponse']['status']>(),
       stringify: (value) => value.join(','),
     },
   );
   readonly typesFilter = linkedQueryParam<BackendType['MonitorCheckerData']['_type'][]>(
-    'filter.type',
+    'search.type',
     {
       parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
       stringify: (value) => value.join(','),

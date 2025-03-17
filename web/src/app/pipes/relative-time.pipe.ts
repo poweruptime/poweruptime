@@ -25,106 +25,92 @@ export class RelativeTimePipe implements PipeTransform {
 
     const date = new Date(value);
 
+    // Check if dates are on the same day
+    const isSameDay = (date1: Date, date2: Date) => {
+      return (
+        date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear()
+      );
+    };
+
+    // Create yesterday and tomorrow dates for comparison
+    const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
+
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(currentDate.getDate() + 1);
+
+    // Check if the date is yesterday or tomorrow
+    if (isSameDay(date, yesterday)) {
+      return 'yesterday';
+    }
+
+    if (isSameDay(date, tomorrow)) {
+      return 'tomorrow';
+    }
+
     const isPastDate = currentDate.getTime() >= date.getTime();
-
-    if (isPastDate) {
-      const differenceInSec = Math.abs(currentDate.getTime() - date.getTime()) / 1000;
-
-      if (differenceInSec < 0) {
-        throw 'Difference negative, can not be!!';
-      }
-
-      if (differenceInSec < 60) {
-        return 'just now';
-      }
-
-      const differenceInMinutes = differenceInSec / 60;
-
-      // Smaller than an hour
-      if (differenceInMinutes < 60) {
-        if (differenceInMinutes >= 1 && differenceInMinutes < 2) {
-          return 'one minute ago';
-        }
-        return `${Math.trunc(differenceInMinutes)} minutes ago`;
-      }
-
-      const differenceInHours = differenceInMinutes / 60;
-
-      // Smaller than a day
-      if (differenceInHours < 24) {
-        if (differenceInHours >= 1 && differenceInHours < 2) {
-          return 'one hour ago';
-        }
-        return `${Math.trunc(differenceInHours)} hours ago`;
-      }
-
-      const differenceInDays = differenceInHours / 24;
-
-      if (differenceInDays <= 2) {
-        return 'yesterday';
-      }
-
-      if (differenceInDays <= 29) {
-        return `${Math.trunc(differenceInDays)} days ago`;
-      }
-
-      const differenceInYears = differenceInDays / 29;
-
-      return this.handleDateDifferenceBiggerThanAMonth(differenceInYears, date, timezone, locale);
-    }
-
-    const differenceInSec = Math.abs(date.getTime() - currentDate.getTime()) / 1000;
-
-    if (differenceInSec < 0) {
-      throw 'Difference negative, can not be!!';
-    }
+    const differenceInMs = Math.abs(currentDate.getTime() - date.getTime());
+    const differenceInSec = differenceInMs / 1000;
 
     if (differenceInSec < 60) {
       return 'just now';
     }
 
     const differenceInMinutes = differenceInSec / 60;
-
-    // Smaller than an hour
-    if (differenceInMinutes < 60) {
-      if (differenceInMinutes >= 1 && differenceInMinutes < 2) {
-        return 'in one minute';
-      }
-      return `in ${Math.trunc(differenceInMinutes)} minutes`;
-    }
-
     const differenceInHours = differenceInMinutes / 60;
-
-    // Smaller than a day
-    if (differenceInHours < 24) {
-      if (differenceInHours >= 1 && differenceInHours < 2) {
-        return 'in one hour';
-      }
-      return `in ${Math.trunc(differenceInHours)} hours`;
-    }
-
     const differenceInDays = differenceInHours / 24;
 
-    if (differenceInDays <= 2) {
-      return 'tomorrow';
+    // Format based on whether it's past or future
+    if (isPastDate) {
+      // Less than an hour
+      if (differenceInMinutes < 60) {
+        if (differenceInMinutes < 2) {
+          return 'one minute ago';
+        }
+        return `${Math.trunc(differenceInMinutes)} minutes ago`;
+      }
+
+      // Less than a day
+      if (differenceInHours < 24) {
+        if (differenceInHours < 2) {
+          return 'one hour ago';
+        }
+        return `${Math.trunc(differenceInHours)} hours ago`;
+      }
+
+      // Less than a month
+      if (differenceInDays <= 30) {
+        return `${Math.trunc(differenceInDays)} days ago`;
+      }
+    } else {
+      // Less than an hour
+      if (differenceInMinutes < 60) {
+        if (differenceInMinutes < 2) {
+          return 'in one minute';
+        }
+        return `in ${Math.trunc(differenceInMinutes)} minutes`;
+      }
+
+      // Less than a day
+      if (differenceInHours < 24) {
+        if (differenceInHours < 2) {
+          return 'in one hour';
+        }
+        return `in ${Math.trunc(differenceInHours)} hours`;
+      }
+
+      // Less than a month
+      if (differenceInDays <= 30) {
+        return `in ${Math.trunc(differenceInDays)} days`;
+      }
     }
 
-    if (differenceInDays <= 29) {
-      return `in ${Math.trunc(differenceInDays)} days`;
-    }
+    // More than a month
+    const differenceInMonths = differenceInDays / 30;
 
-    const differenceInYears = differenceInDays / 29;
-
-    return this.handleDateDifferenceBiggerThanAMonth(differenceInYears, date, timezone, locale);
-  }
-
-  private handleDateDifferenceBiggerThanAMonth(
-    differenceInYears: number,
-    date: Date,
-    timezone?: string,
-    locale?: string,
-  ) {
-    if (differenceInYears <= 12) {
+    if (differenceInMonths <= 12) {
       return `at ${formatDate(date, 'd MMM', locale ?? this.locale, timezone ?? this.defaultOptions?.timezone)}`;
     }
 

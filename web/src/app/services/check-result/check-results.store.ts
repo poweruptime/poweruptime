@@ -28,7 +28,7 @@ export const CheckResultsStore = signalStore(
     monitorId: undefined,
   }),
   withPaginatedTable<BackendType['CheckResultResponse']>({
-    paramPrefix: 'checks_',
+    paramPrefix: 'checks.',
     columnsToDisplay: ['status', 'createdAt', 'title', 'actions'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',

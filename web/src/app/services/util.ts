@@ -1,3 +1,5 @@
+import {NativeDateAdapter} from '@angular/material/core';
+
 import {BackendType} from '@app/api';
 
 export const mapUptime = (uptime: BackendType['MonitorMaxResponse']['uptime']) => [
@@ -72,7 +74,8 @@ export const calculatePingChart = (checkResults: BackendType['CheckResultMinResp
   };
 };
 
-export function toBackendDate(date: Date): string {
+export function toBackendDate(dateString: Date | string): string {
+  const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -80,7 +83,8 @@ export function toBackendDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export function toBackendDateTime(date: Date): string {
+export function toBackendDateTime(dateString: Date | string): string {
+  const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -97,7 +101,7 @@ export function toBackendDateTime(date: Date): string {
 }
 
 export function dateToDateTime(
-  dateString: string,
+  dateString: string | Date,
   hours: number,
   minutes: number,
   seconds: number,

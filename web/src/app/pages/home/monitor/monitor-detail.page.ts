@@ -16,6 +16,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxCutPipe} from 'dfx-helper';
+import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {Heatmap, Placeholder} from '@app/components';
 import {
@@ -240,7 +241,13 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           <mat-card appearance="outlined">
             <mat-card-content>
               <div class="flex justify-end">
-                <pu-ping-chart-filter [(filter)]="pingChartFilter" />
+                <pu-ping-chart-filter
+                  [filter]="pingChartFilter()"
+                  (filterChange)="
+                    rangeStartPingChartFilter.set($event.range.start);
+                    rangeEndPingChartFilter.set($event.range.end);
+                    precisionPingChartFilter.set($event.precision)
+                  " />
               </div>
 
               <pu-ping-chart [chart]="data" />
@@ -296,10 +303,25 @@ export class MonitorDetailPage {
 
   readonly cutDescription = signal(true);
 
-  readonly pingChartFilter = signal({
-    range: {start: toBackendDate(new Date()), end: toBackendDate(new Date())},
-    precision: 15,
+  readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
+    defaultValue: toBackendDate(new Date()),
   });
+  readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
+    defaultValue: toBackendDate(new Date()),
+  });
+  readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
+    parse: paramToNumber({
+      defaultValue: 15,
+    }),
+  });
+
+  readonly pingChartFilter = computed(() => ({
+    range: {
+      start: this.rangeStartPingChartFilter(),
+      end: this.rangeEndPingChartFilter(),
+    },
+    precision: this.precisionPingChartFilter(),
+  }));
 
   readonly testIntervalDuration = computed(() => {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
@@ -326,15 +348,16 @@ export class MonitorDetailPage {
       computed(() => {
         const filter = this.pingChartFilter();
         const now = new Date();
+        const hasSelectedToday = filter.range.end === toBackendDate(now);
         return {
           monitorId: this.monitorId(),
-          precision: filter.precision,
+          precision: this.precisionPingChartFilter(),
           start: dateToDateTime(filter.range.start, 0, 0, 0, 0),
           end: dateToDateTime(
             filter.range.end,
-            now.getHours(),
-            now.getMinutes(),
-            now.getSeconds(),
+            hasSelectedToday ? now.getHours() : 0,
+            hasSelectedToday ? now.getMinutes() : 0,
+            hasSelectedToday ? now.getSeconds() : 0,
             0,
           ),
         };

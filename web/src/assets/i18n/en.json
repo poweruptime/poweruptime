@@ -197,7 +197,6 @@
     "details": {
       "check": "Check every {{testIntervalDuration}}",
       "pingChart": {
-        "ago": "{{time}} ago",
         "endDate": "{{general.end}} {{general.date}}",
         "exceedsMaxWindow": "Selected window may not exceed 1 month",
         "startDate": "{{general.start}} {{general.date}}"

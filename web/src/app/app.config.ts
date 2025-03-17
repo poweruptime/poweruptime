@@ -9,8 +9,8 @@ import {
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
-import {MAT_DATE_FORMATS, provideNativeDateAdapter} from '@angular/material/core';
-import {MatDateFormats} from '@angular/material/core';
+import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
+import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {
   provideClientHydration,
@@ -21,7 +21,7 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
-import {provideNativeDatetimeAdapter} from '@ng-matero/extensions/core';
+import {deAT} from 'date-fns/locale/de-AT';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -34,13 +34,13 @@ import {ROUTES} from './app.routes';
 
 export const MY_DATE_FNS_FORMATS: MatDateFormats = {
   parse: {
-    dateInput: 'YYYY-MM-DD',
+    dateInput: 'yyyy-MM-dd',
   },
   display: {
-    dateInput: 'YYYY-MM-DD',
+    dateInput: 'yyyy-MM-dd',
     monthYearLabel: 'yyyy',
     dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'YYYY',
+    monthYearA11yLabel: 'yyyy',
   },
 };
 
@@ -63,8 +63,9 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideAnimationsAsync(),
-    provideNativeDateAdapter(),
-    provideNativeDatetimeAdapter(),
+    {provide: LOCALE_ID, useValue: 'de-DE'},
+    provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
+    {provide: MAT_DATE_LOCALE, useValue: deAT},
     provideBi(
       withCDN(() =>
         injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',
@@ -122,11 +123,6 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         appearance: 'outline',
       },
-    },
-    {provide: LOCALE_ID, useValue: 'de-DE'},
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: MY_DATE_FNS_FORMATS,
     },
   ],
 };

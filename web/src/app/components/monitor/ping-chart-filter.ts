@@ -1,4 +1,3 @@
-import {JsonPipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -12,12 +11,12 @@ import {
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
 
-import {distinctUntilChanged, filter, map} from 'rxjs';
+import {distinctUntilChanged, filter, map, tap} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {dateRangeValidator, injectIsValid} from '@app/form';
-import {toBackendDate, toBackendDateTime} from '@app/services/util';
+import {dateRangeValidator} from '@app/form';
+import {toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -84,8 +83,8 @@ export class PingChartFilter {
     precision: [5 as number | null, [Validators.required]],
     range: this.fb.group(
       {
-        start: [null as string | null, [Validators.required]],
-        end: [null as string | null, [Validators.required]],
+        start: ['', [Validators.required]],
+        end: ['', [Validators.required]],
       },
       {validators: dateRangeValidator(31)},
     ),
@@ -104,6 +103,10 @@ export class PingChartFilter {
     this.form.valueChanges.pipe(
       filter(() => this.form.valid),
       map(() => this.form.getRawValue()),
+      map(({range, ...it}) => ({
+        ...it,
+        range: {start: toBackendDate(range.start), end: toBackendDate(range.end)},
+      })),
       distinctUntilChanged((_, cur) => JSON.stringify(cur) === JSON.stringify(this.filter())),
     ),
   );

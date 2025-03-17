@@ -87,19 +87,23 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
           }
         </div>
 
-        <div style="border-left:1px solid #FFF;height:700px"></div>
+        @if (!isCreating()) {
+          <div style="border-left:1px solid #FFF;height:700px"></div>
 
-        <div class="flex grow flex-col gap-10">
-          <pu-notification-method-edit-template
-            [label]="'notificationMethod.edit.title' | transloco"
-            formControlName="titleTemplate" />
+          <div class="flex grow flex-col gap-10">
+            <pu-notification-method-edit-template
+              [label]="'notificationMethod.edit.title' | transloco"
+              formControlName="titleTemplate" />
 
-          <mat-divider />
+            <mat-divider />
 
-          <pu-notification-method-edit-template
-            [label]="'notificationMethod.edit.body' | transloco"
-            formControlName="bodyTemplate" />
-        </div>
+            <pu-notification-method-edit-template
+              [label]="'notificationMethod.edit.body' | transloco"
+              formControlName="bodyTemplate" />
+          </div>
+        } @else {
+          <div class="flex grow"></div>
+        }
       </div>
 
       <pu-save-button [valid]="isValid()" />
