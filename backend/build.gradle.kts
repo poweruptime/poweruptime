@@ -119,7 +119,7 @@ val exportEmails = tasks.register<PnpmTask>("exportEmails") {
 configurations.detekt {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.0.10") // Add the version of Kotlin that detekt needs
+            useVersion("2.0.21") // Add the version of Kotlin that detekt needs
         }
     }
 }
