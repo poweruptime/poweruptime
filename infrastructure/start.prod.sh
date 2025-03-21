@@ -6,7 +6,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-COMPOSE_ARGS="-f _base.yml -f local.yml --env-file versions.env --env-file .env"
+COMPOSE_ARGS="-f _base.yml -f _remote.yml -f prod.yml --env-file versions.env --env-file .env"
 
 # shellcheck disable=SC2086
 docker compose $COMPOSE_ARGS pull # get the latest images
@@ -22,8 +22,6 @@ if [ $? -ne 0 ]; then
   exit 3
 fi
 
-echo "Successfully started poweruptime locally."
-echo "  - Web interface: http://localhost/"
-echo "  - API: http://localhost/api"
-echo "  - Traefik dashboard: http://localhost/traefik/dashboard/"
-echo "  - RabbitMQ Management: http://localhost/rabbit/"
+docker image prune -a -f # delete outdated images
+
+echo "Successfully deployed the new version/config"

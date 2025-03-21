@@ -23,7 +23,7 @@ services:
       - DATABASE_NAME=poweruptime
       - DATABASE_USER=poweruptime
       - DATABASE_PASSWORD=poweruptime
-      - RABBIT_HOST=rabbit
+      - RABBIT_HOST=poweruptime-local-backend-dev-rabbit
       - RABBIT_PORT=5672
       - RABBIT_USERNAME=poweruptime
       - RABBIT_PASSWORD=poweruptime

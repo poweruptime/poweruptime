@@ -3,7 +3,7 @@ services:
   # Therefore, a proxy that only allows access to the really needed parts is used
   dockersocket:
     container_name: dockersocket
-    image: ${DOCKER_SOCKET:?}
+    image: ${DOCKER_SOCKET_IMAGE:?}
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -30,8 +30,8 @@ services:
     image: ${DB_IMAGE:?}
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DATABASE_NAME:?}
-      POSTGRES_USER: ${DATABASE_USER:?}
+      POSTGRES_DB: ${DATABASE_NAME:poweruptime-db}
+      POSTGRES_USER: ${DATABASE_USER:poweruptime}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
     volumes:
       - poweruptime-db-data:/var/lib/postgresql/data:z

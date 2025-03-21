@@ -11,8 +11,8 @@ spring:
     allow-bean-definition-overriding: true
 
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-    username: ${DATABASE_USER}
+    url: jdbc:postgresql://${DATABASE_HOST:poweruptime-db}:${DATABASE_PORT:5432}/${DATABASE_NAME:poweruptime}
+    username: ${DATABASE_USER:poweruptime}
     password: ${DATABASE_PASSWORD}
   jpa:
     show-sql: false
