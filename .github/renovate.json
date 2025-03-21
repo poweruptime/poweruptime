@@ -24,11 +24,7 @@
     },
     {
       "groupName": "spring boot",
-      "matchDepNames": ["org.springframework.boot"]
-    },
-    {
-      "groupName": "spring boot",
-      "matchPackageNames": ["org.springframework.boot:**"]
+      "matchDepNames": ["org.springframework.boot", "org.springframework.boot:**"]
     },
     {
       "groupName": "Kotlin dependencies",
@@ -56,7 +52,7 @@
     },
     {
       "groupName": "Postgres",
-      "matchPackageNames": ["/^org\\.postgresql/", "/^io\\.hypersistence/"]
+      "matchPackageNames": ["/^org\\.postgresql/", "/io.hypersistence*/"]
     },
     {
       "groupName": "Springdoc dependencies",
@@ -69,6 +65,10 @@
     {
       "groupName": "Testcontainers",
       "matchPackageNames": ["/^org\\.testcontainers/", "/^com\\.icegreen/"]
+    },
+    {
+      "groupName": "ngx-dropzone",
+      "matchPackageNames": ["/@ngx-dropzone/"]
     },
     {
       "groupName": "React Email",
@@ -91,7 +91,7 @@
     },
     {
       "extends": ["monorepo:angular-cli"],
-      "groupName": "angular-cli monorepo",
+      "groupName": "angular monorepo",
       "matchUpdateTypes": ["digest", "patch", "minor", "major"]
     }
   ],
