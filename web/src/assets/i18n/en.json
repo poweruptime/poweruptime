@@ -96,6 +96,8 @@
     "delete": "Delete",
     "description": "Description",
     "disable": "Disable",
+    "domainName": "Domain Name",
+    "domainNames": "Domain Names",
     "edit": "Edit",
     "email": "E-Mail",
     "emailAddress": "E-Mail address",
@@ -298,6 +300,12 @@
   },
   "statusPage": {
     "edit": {
+      "domainNames": {
+        "enter": "Enter {{general.domainName}}",
+        "inUse": "Following domain names are already taken: \"{{domainNames}}\"",
+        "new": "New {{general.domainName}}",
+        "remove": "Remove {{domainName}}"
+      },
       "group": {
         "add": "Add {{general.group}}",
         "minOne": "Add at least one {{general.group}}."
@@ -312,7 +320,8 @@
           "noLeft": "No {{general.monitors}} left."
         },
         "show": "Show {{general.monitors}} in groups"
-      }
+      },
+      "slugInUse": "Slug already taken"
     }
   },
   "team": {

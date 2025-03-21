@@ -13,12 +13,9 @@ interface StatusPageRepository : ISoftDeleteRepository<StatusPage>, JpaSpecifica
     fun findBySlug(@Param("slug") slug: String): StatusPage?
 
     @Query(
-        value = """
-        SELECT *
-        FROM status_page sp
-        WHERE :dN = ANY(sp.domain_names)
+        """
+            select sp from StatusPage sp join sp.domainNames dn where dn.name = :dN
     """,
-        nativeQuery = true,
     )
     fun findByDomainName(@Param("dN") domainName: String): StatusPage?
 }

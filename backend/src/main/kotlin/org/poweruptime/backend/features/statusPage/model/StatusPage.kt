@@ -31,16 +31,12 @@ class StatusPage(
     @Column(nullable = true, columnDefinition = "text")
     var footer: String? = null,
 
-    @Suppress("JpaAttributeTypeInspection") @Column(
-        name = "domain_names",
-        nullable = true,
-        columnDefinition = "text[]",
-    )
-    var domainNames: Set<String>? = null,
-
     @JoinColumn(name = "image_id", nullable = true)
     @OneToOne(fetch = FetchType.LAZY)
     var image: File? = null,
+
+    @OneToMany(mappedBy = "statusPage", fetch = FetchType.EAGER)
+    var domainNames: List<StatusPageDomainName> = ArrayList(),
 
     @OneToMany(mappedBy = "statusPage", fetch = FetchType.LAZY)
     var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),

@@ -42,7 +42,7 @@ class MaxNanoIdGenerator : IdentifierGenerator {
     }
 }
 
-@IdGeneratorType(DefaultNanoIdGenerator::class)
+@IdGeneratorType(MaxNanoIdGenerator::class)
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class MaxNanoId

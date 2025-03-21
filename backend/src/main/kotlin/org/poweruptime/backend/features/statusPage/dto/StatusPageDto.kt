@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.statusPage.dto
 
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
@@ -37,7 +38,7 @@ data class StatusPageResponse(
     val description: String?,
     val footer: String?,
     val image: FileResponse?,
-    val domainNames: Set<String>?,
+    val domainNames: List<String>,
     val deleted: Instant?,
     val groups: List<StatusPageGroupResponse>
 ) {
@@ -48,7 +49,7 @@ data class StatusPageResponse(
         description = statusPage.description,
         footer = statusPage.footer,
         image = statusPage.image?.let { FileResponse(it) },
-        domainNames = statusPage.domainNames,
+        domainNames = statusPage.domainNames.map { it.name },
         deleted = statusPage.deleted,
         groups = statusPage.groups.map { group ->
             StatusPageGroupResponse(
@@ -66,11 +67,18 @@ data class CreateStatusPageDto(
     @get:Size(min = Database.MIN_SLUG_LENGTH, max = Database.MAX_SLUG_LENGTH)
     @get:Pattern(regexp = Database.SLUG_REGEX)
     val slug: String,
-    @get:NotNull val groups: List<StatusPageGroupDto>,
+    @get:NotNull @get:Valid val groups: List<StatusPageGroupDto>,
     val description: String?,
     val footer: String?,
     val imageId: String?,
-    val domainNames: Set<String>?,
+    @get:Valid val domainNames: Set<
+        @Size(
+            min = Database.MIN_DOMAIN_LENGTH,
+            max = Database.MAX_DOMAIN_LENGTH,
+        )
+        @Pattern(regexp = Database.DOMAIN_REGEX)
+        String,
+        >,
 )
 
 data class UpdateStatusPageDto(
@@ -80,9 +88,16 @@ data class UpdateStatusPageDto(
     @get:Size(min = Database.MIN_SLUG_LENGTH, max = Database.MAX_SLUG_LENGTH)
     @get:Pattern(regexp = Database.SLUG_REGEX)
     val slug: String,
-    @get:NotNull val groups: List<StatusPageGroupDto>,
+    @get:NotNull @get:Valid val groups: List<StatusPageGroupDto>,
     val description: String?,
     val footer: String?,
     val imageId: String?,
-    val domainNames: Set<String>?,
+    @get:Valid val domainNames: Set<
+        @Size(
+            min = Database.MIN_DOMAIN_LENGTH,
+            max = Database.MAX_DOMAIN_LENGTH,
+        )
+        @Pattern(regexp = Database.DOMAIN_REGEX)
+        String,
+        >,
 )

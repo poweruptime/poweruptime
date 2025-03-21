@@ -3,12 +3,12 @@ package org.poweruptime.backend.features.statusPage.model
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.SmallNanoId
+import org.poweruptime.backend.core.DefaultNanoId
 import org.poweruptime.backend.core.models.AEntity
 import org.poweruptime.backend.core.models.EntityWithName
 import org.poweruptime.backend.core.models.HasPosition
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
 
 @Entity
 @Table(name = "status_page_group")
@@ -31,8 +31,8 @@ class StatusPageGroup(
     override var position: Int? = null,
 ) : AEntity(), EntityWithName, HasPosition {
     @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
+    @DefaultNanoId
+    @Column(name = "id", length = NANO_ID_DEFAULT_LENGTH)
     override lateinit var id: String
 
     companion object

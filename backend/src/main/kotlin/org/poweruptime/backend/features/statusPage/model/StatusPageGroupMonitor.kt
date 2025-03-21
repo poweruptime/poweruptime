@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import org.poweruptime.backend.core.models.HasPosition
-import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.monitor.model.Monitor
 import java.io.Serializable
@@ -39,6 +39,6 @@ class StatusPageGroupMonitor(
     @Column(name = "position", nullable = true)
     override var position: Int? = null,
 ) : HasPosition {
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override var id = RandomGenerator.nanoId(NANO_ID_DEFAULT_LENGTH)
+    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
+    override var id: String = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
 }

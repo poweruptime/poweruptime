@@ -14,6 +14,7 @@ import org.poweruptime.backend.core.toDeletedFilter
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.MonitorService
+import org.poweruptime.backend.features.statusPage.domain.StatusPageDomainNameRepository
 import org.poweruptime.backend.features.statusPage.domain.StatusPageGroupMonitorRepository
 import org.poweruptime.backend.features.statusPage.domain.StatusPageRepository
 import org.poweruptime.backend.features.statusPage.dto.CreateStatusPageDto
@@ -21,6 +22,7 @@ import org.poweruptime.backend.features.statusPage.dto.UpdateStatusPageDto
 import org.poweruptime.backend.features.statusPage.dto.fromDto
 import org.poweruptime.backend.features.statusPage.dto.update
 import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorId
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Service
 class StatusPageService(
     private val statusPageRepository: StatusPageRepository,
     private val statusPageGroupMonitorRepository: StatusPageGroupMonitorRepository,
+    private val statusPageDomainNameRepository: StatusPageDomainNameRepository,
     private val statusPageGroupService: StatusPageGroupService,
     private val monitorService: MonitorService,
     private val teamService: TeamService,
@@ -67,6 +70,10 @@ class StatusPageService(
             ),
         )
 
+        val domainNames = statusPageDomainNameRepository.saveAll(
+            dto.domainNames.map { StatusPageDomainName(it, statusPage) },
+        )
+
         val groups = statusPageGroupService.saveAll(
             dto.groups.mapIndexed { index, groupDto ->
                 StatusPageGroup.fromDto(groupDto, index, statusPage)
@@ -90,6 +97,7 @@ class StatusPageService(
 
         return statusPage.apply {
             this.groups = groups
+            this.domainNames = domainNames
         }
     }
 
@@ -125,11 +133,17 @@ class StatusPageService(
             ),
         )
 
+        statusPageDomainNameRepository.deleteAll(statusPage.domainNames)
         statusPageGroupMonitorRepository.deleteAll(statusPage.groupMonitors)
         statusPageGroupService.deleteAll(statusPage.groups)
 
+        statusPageDomainNameRepository.flush()
         statusPageGroupMonitorRepository.flush()
         statusPageGroupService.flush()
+
+        val domainNames = statusPageDomainNameRepository.saveAll(
+            dto.domainNames.map { StatusPageDomainName(it, statusPage) },
+        )
 
         val groups = statusPageGroupService.saveAll(
             dto.groups.mapIndexed { index, groupDto ->
@@ -154,6 +168,7 @@ class StatusPageService(
 
         return statusPage.apply {
             this.groups = groups
+            this.domainNames = domainNames
         }
     }
 

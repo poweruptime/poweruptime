@@ -6,10 +6,8 @@ import {distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
-import {StatusPagesStore} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 export const StatusPageEditStore = signalStore(
@@ -18,13 +16,7 @@ export const StatusPageEditStore = signalStore(
     statusPage: undefined,
   }),
   withMethods(
-    (
-      store,
-      router = inject(Router),
-      relativeTo = inject(ActivatedRoute),
-      api = injectAPI(),
-      statusPagesStore = inject(StatusPagesStore),
-    ) => ({
+    (store, router = inject(Router), relativeTo = inject(ActivatedRoute), api = injectAPI()) => ({
       loadById: rxMethod<string | undefined>(
         pipe(
           filter((it): it is string => !!it),
@@ -53,13 +45,11 @@ export const StatusPageEditStore = signalStore(
           api.post('/v1/status-page', {body}).pipe(
             tapResponse({
               next: (statusPage) => {
-                // notificationMethodsStore.updateNotificationMethod(notificationMethod);
-
                 void router.navigate(['../', statusPage.id], {
                   relativeTo,
                 });
               },
-              error: () => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),
@@ -69,7 +59,7 @@ export const StatusPageEditStore = signalStore(
           api.put('/v1/status-page', {body}).pipe(
             tapResponse({
               next: (statusPage) => patchState(store, () => ({statusPage})),
-              error: () => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),

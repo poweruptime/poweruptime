@@ -324,26 +324,40 @@ create table notification
 
 create table status_page
 (
-    created_at   timestamp with time zone default now() not null,
-    deleted      timestamp with time zone,
-    updated_at   timestamp with time zone default now() not null,
-    version      bigint                   default 0     not null,
-    id           varchar(12)                            not null
+    created_at  timestamp with time zone default now() not null,
+    deleted     timestamp with time zone,
+    updated_at  timestamp with time zone default now() not null,
+    version     bigint                   default 0     not null,
+    id          varchar(12)                            not null
         primary key,
-    team_id      varchar(12)                            not null
+    team_id     varchar(12)                            not null
         constraint fkbybj5wsge96tvl33e0tuuu2ra
             references team
             on delete cascade,
-    image_id     varchar(25)
+    image_id    varchar(25)
         unique
         constraint fklr0bs4g2f9nmmjqg1wm0sbajj
             references file,
     name         varchar(70)              collate numeric       not null,
-    description  text,
-    footer       text,
-    slug         varchar(255)                           not null
-        unique,
-    domain_names text[]
+    description text,
+    footer      text,
+    slug        varchar(255)                           not null
+        unique
+);
+
+create table status_page_domain_name
+(
+    created_at     timestamp with time zone default now() not null,
+    updated_at     timestamp with time zone default now() not null,
+    version        bigint                   default 0     not null,
+    id             varchar(12)                            not null
+        primary key,
+    status_page_id varchar(12)                            not null
+        constraint fk8pnxcnqairx7dlqf2tpwbbjhm
+            references status_page
+            on delete cascade,
+    name           varchar(253)     collate numeric       not null
+        unique
 );
 
 create table status_page_group
@@ -352,7 +366,7 @@ create table status_page_group
     created_at     timestamp with time zone default now() not null,
     updated_at     timestamp with time zone default now() not null,
     version        bigint                   default 0     not null,
-    id             varchar(12)                            not null
+    id             varchar(21)                            not null
         primary key,
     status_page_id varchar(12)                            not null
         constraint fkkwrqh3s6ku7p9cj8vykjg0rah
@@ -369,15 +383,15 @@ create table status_page_group_monitor
         constraint fkn8qipcnebu0iyv5t4prt8bwwv
             references monitor
             on delete cascade,
-    status_page_group_id varchar(12) not null
-        constraint fk4dnurrcf1rpnr7hqip9exm60j
-            references status_page_group
-            on delete cascade,
     status_page_id       varchar(12) not null
         constraint fk67j5f0kqy669k7dijun7vgn74
             references status_page
             on delete cascade,
-    id                   varchar(21)
+    status_page_group_id varchar(21) not null
+        constraint fk4dnurrcf1rpnr7hqip9exm60j
+            references status_page_group
+            on delete cascade,
+    id                   varchar(25)
         unique,
     primary key (monitor_id, status_page_group_id),
     unique (status_page_id, monitor_id)

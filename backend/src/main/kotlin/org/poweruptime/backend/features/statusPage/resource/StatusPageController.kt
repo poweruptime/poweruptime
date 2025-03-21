@@ -71,11 +71,23 @@ class StatusPageController(
         summary = "Check if slug is free",
         security = [SecurityRequirement(name = BEARER_AUTH)],
     )
-    @GetMapping("/free/{slug}")
+    @GetMapping("/free/slug/{slug}")
     @ResponseStatus(HttpStatus.OK)
     fun freeSlug(@PathVariable slug: String): BooleanResponse = BooleanResponse(
         statusPageService.getBySlug(slug) == null,
     )
+
+    @Operation(
+        summary = "Check if domain names are free",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+    )
+    @GetMapping("/free/domain/{domainNames}")
+    @ResponseStatus(HttpStatus.OK)
+    fun freeDomainNames(
+        @PathVariable domainNames: String
+    ): List<BooleanResponse> = domainNames.split(
+        ",",
+    ).map { BooleanResponse(statusPageService.getByDomainName(it) == null) }
 
     @Operation(
         summary = "Add status page",

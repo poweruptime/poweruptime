@@ -25,6 +25,13 @@ import {
 } from '@angular/forms';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
+import {
+  MatChipGrid,
+  MatChipInput,
+  MatChipInputEvent,
+  MatChipRemove,
+  MatChipRow,
+} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -37,7 +44,14 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {BackendType, Database, injectAPI} from '@app/api';
 import {AlertDirective, FileUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
-import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {
+  AbstractModelEditFormComponent,
+  SaveButton,
+  arrayItemMaxLength,
+  arrayItemMinLength,
+  arrayItemPattern,
+  injectIsValid,
+} from '@app/form';
 import {MonitorsSearchStore} from '@app/services';
 
 import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-monitors';
@@ -85,6 +99,11 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             @if (slugErrors?.['maxlength']; as maxlength) {
               <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
             }
+            @if (slugErrors?.['slugInUse']) {
+              <mat-error>
+                {{ 'statusPage.edit.slugInUse' | transloco }}
+              </mat-error>
+            }
           </mat-form-field>
         </div>
 
@@ -92,6 +111,45 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
           [file]="statusPage()?.image"
           [label]="'statusPage.edit.image' | transloco"
           (fileId)="form.controls.imageId.setValue($event)" />
+
+        <mat-form-field>
+          <mat-label>{{ 'general.domainNames' | transloco }}</mat-label>
+          <mat-chip-grid
+            #domainNamesGrid
+            [attr.aria-label]="'statusPage.edit.domainNames.enter' | transloco"
+            formControlName="domainNames">
+            @for (domainName of form.controls.domainNames.getRawValue(); track domainName) {
+              <mat-chip-row (removed)="removeDomainName(form.controls.domainNames, domainName)">
+                {{ domainName }}
+                <button
+                  [attr.aria-label]="'statusPage.edit.domainNames.remove' | transloco: {domainName}"
+                  matChipRemove>
+                  <bi name="x-circle" aria-hidden="true" />
+                </button>
+              </mat-chip-row>
+            }
+          </mat-chip-grid>
+          <input
+            [matChipInputFor]="domainNamesGrid"
+            [placeholder]="'statusPage.edit.domainNames.new' | transloco"
+            (matChipInputTokenEnd)="addDomainName(form.controls.domainNames, $event)" />
+
+          @let domainNameErrors = form.controls.domainNames.errors;
+          @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (domainNameErrors?.['patternArrayItem']) {
+            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+          }
+          @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
+            <mat-error>
+              {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
+            </mat-error>
+          }
+        </mat-form-field>
 
         <pu-editor
           id="description"
@@ -240,12 +298,54 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     MatTooltip,
     FileUpload,
     AlertDirective,
+    MatChipGrid,
+    MatChipRow,
+    MatChipInput,
+    MatChipRemove,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<
   BackendType['CreateStatusPageDto'],
   BackendType['UpdateStatusPageDto']
 > {
+  private readonly api = injectAPI();
+  readonly monitorsSearchStore = inject(MonitorsSearchStore);
+
+  readonly oldDomainNames = signal<string[]>([]);
+
+  statusPage = input(undefined, {
+    transform: (statusPage: BackendType['StatusPageResponse'] | undefined) => {
+      this.isCreating.set(!statusPage);
+      if (!statusPage) {
+        return undefined;
+      }
+
+      if (statusPage.deleted) {
+        this.formDisabled = true;
+      }
+
+      this.oldDomainNames.set(statusPage.domainNames.slice());
+
+      this.form.patchValue({
+        ...statusPage,
+        imageId: statusPage.image?.fileId,
+      });
+
+      this.form.controls.groups.clear();
+      statusPage.groups.forEach((group) => {
+        this.form.controls.groups.push(
+          this.fb.group({
+            name: [group.name, [Validators.maxLength(Database.MAX_NAME_LENGTH)]],
+            description: [group.description],
+            monitorIds: [group.monitors.map((it) => it.monitor.id)],
+          }),
+        );
+      });
+
+      return statusPage;
+    },
+  });
+
   override form = this.fb.nonNullable.group({
     id: [undefined as string | undefined],
     teamId: [undefined as string | undefined, [Validators.required]],
@@ -280,42 +380,17 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
       ),
       [Validators.required],
     ),
+    domainNames: new FormControl<string[]>([], {
+      validators: [
+        arrayItemMinLength(Database.MIN_DOMAIN_LENGTH),
+        arrayItemMaxLength(Database.MAX_DOMAIN_LENGTH),
+        arrayItemPattern(Database.DOMAIN_REGEX),
+      ],
+      asyncValidators: [this.asyncDomainNameUseValidator()],
+      updateOn: 'blur',
+    }),
   });
-
-  private readonly api = injectAPI();
-  readonly monitorsSearchStore = inject(MonitorsSearchStore);
   readonly isValid = injectIsValid(this.form);
-
-  statusPage = input(undefined, {
-    transform: (statusPage: BackendType['StatusPageResponse'] | undefined) => {
-      this.isCreating.set(!statusPage);
-      if (!statusPage) {
-        return undefined;
-      }
-
-      if (statusPage.deleted) {
-        this.formDisabled = true;
-      }
-
-      this.form.patchValue({
-        ...statusPage,
-        imageId: statusPage.image?.fileId,
-      });
-
-      this.form.controls.groups.clear();
-      statusPage.groups.forEach((group) => {
-        this.form.controls.groups.push(
-          this.fb.group({
-            name: [group.name, [Validators.maxLength(Database.MAX_NAME_LENGTH)]],
-            description: [group.description],
-            monitorIds: [group.monitors.map((it) => it.monitor.id)],
-          }),
-        );
-      });
-
-      return statusPage;
-    },
-  });
 
   selectedTeamId = input.required({
     transform: (it?: string) => {
@@ -378,13 +453,88 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
     moveItemInArray(items, event.previousIndex, event.currentIndex);
   }
 
+  removeDomainName(control: FormControl<string[] | null>, keyword: string) {
+    const values = control.value;
+
+    if (!values) {
+      return;
+    }
+
+    const index = values.indexOf(keyword);
+    if (index < 0) {
+      return;
+    }
+
+    values.splice(index, 1);
+    control.setValue([...values]);
+  }
+
+  addDomainName(control: FormControl<string[] | null>, event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our keyword
+    if (value) {
+      control.setValue([...(control.value ?? []), value]);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
   private asyncSlugInUseValidator(): AsyncValidatorFn {
     return (control: AbstractControl) =>
       control.value === this.statusPage()?.slug
         ? of(null)
-        : this.api.get('/v1/status-page/free/{slug}', {params: {path: {slug: control.value}}}).pipe(
-            map((free) => free.it),
-            map((free) => (free ? null : ({slugInUse: 'slug already in use'} as ValidationErrors))),
-          );
+        : this.api
+            .get('/v1/status-page/free/slug/{slug}', {params: {path: {slug: control.value}}})
+            .pipe(
+              map((free) => free.it),
+              map((free) =>
+                free ? null : ({slugInUse: 'slug already in use'} as ValidationErrors),
+              ),
+            );
+  }
+
+  private asyncDomainNameUseValidator(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      const usedDomainNames = this.oldDomainNames();
+      const value: string[] | null = control.value;
+      console.log('asyncDomainNameUseValidator', usedDomainNames, value);
+
+      if (!value || value.length === 0) {
+        return of(null);
+      }
+
+      const domainNamesList = value.filter((it) => !usedDomainNames.includes(it));
+      const domainNames = domainNamesList.join(',');
+
+      if (domainNames.length === 0) {
+        return of(null);
+      }
+
+      console.log('domainNames to check', domainNames);
+
+      return this.api
+        .get('/v1/status-page/free/domain/{domainNames}', {
+          params: {path: {domainNames}},
+        })
+        .pipe(
+          map((response) => {
+            const alreadyUsedDomainNames = response
+              .map(({it}, index) => ({name: domainNamesList[index], free: it}))
+              .filter((it) => !it.free);
+
+            if (alreadyUsedDomainNames.length === 0) {
+              return null;
+            }
+
+            return {
+              domainNameInUse: {
+                domainNames: alreadyUsedDomainNames.map((it) => it.name).join(', '),
+              },
+            } as ValidationErrors;
+          }),
+        );
+    };
   }
 }

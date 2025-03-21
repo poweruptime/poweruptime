@@ -765,7 +765,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/status-page/free/{slug}': {
+  '/v1/status-page/free/slug/{slug}': {
     parameters: {
       query?: never;
       header?: never;
@@ -774,6 +774,23 @@ export interface paths {
     };
     /** Check if slug is free */
     get: operations['freeSlug'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/status-page/free/domain/{domainNames}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Check if domain names are free */
+    get: operations['freeDomainNames'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1617,7 +1634,7 @@ export interface components {
       description?: string;
       footer?: string;
       imageId?: string;
-      domainNames?: string[];
+      domainNames: string[];
     };
     FileResponse: {
       name: string;
@@ -1650,7 +1667,7 @@ export interface components {
       description?: string;
       footer?: string;
       image?: components['schemas']['FileResponse'];
-      domainNames?: string[];
+      domainNames: string[];
       /** Format: date-time */
       deleted?: string;
       groups: components['schemas']['StatusPageGroupResponse'][];
@@ -1802,7 +1819,7 @@ export interface components {
       description?: string;
       footer?: string;
       imageId?: string;
-      domainNames?: string[];
+      domainNames: string[];
     };
     ConfirmMFADto: {
       code: string;
@@ -3556,6 +3573,28 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['BooleanResponse'];
+        };
+      };
+    };
+  };
+  freeDomainNames: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        domainNames: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'][];
         };
       };
     };
