@@ -14,12 +14,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/poweruptime
     username: poweruptime
     password: poweruptime
+
+  sql:
+    init:
+      mode: never
+
   jpa:
     show-sql: false
     generate-ddl: false
     open-in-view: false
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         jdbc:
@@ -32,10 +38,6 @@ spring:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
-
-  sql:
-    init:
-      mode: never
 
   liquibase:
     enabled: true

@@ -30,8 +30,8 @@ services:
     image: ${DB_IMAGE:?}
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DATABASE_NAME:poweruptime-db}
-      POSTGRES_USER: ${DATABASE_USER:poweruptime}
+      POSTGRES_DB: ${DATABASE_NAME:-poweruptime}
+      POSTGRES_USER: ${DATABASE_USER:-poweruptime}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
     volumes:
       - poweruptime-db-data:/var/lib/postgresql/data:z
@@ -42,14 +42,14 @@ services:
       interval: 30s
       timeout: 60s
       retries: 5
-      start_period: 80s
+      start_period: 60s
 
   poweruptime-rabbitmq:
     container_name: poweruptime-rabbitmq
     image: ${RABBIT_IMAGE:?}
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBIT_USERNAME:?}
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USERNAME:-poweruptime}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:?}
     volumes:
       - poweruptime-rabbitmq-data:/var/lib/rabbitmq
@@ -57,9 +57,10 @@ services:
       - poweruptime-infrastructure
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 60s
 
   poweruptime-backend:
     container_name: poweruptime-backend

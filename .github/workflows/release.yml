@@ -1,4 +1,4 @@
-name: Build, test jar and create docker image
+name: Build and release docker images
 
 on:
   push:
@@ -107,7 +107,7 @@ jobs:
           VERSION=${{ github.ref_name }}
           echo "version=${VERSION%-*}" >> "$GITHUB_OUTPUT"
 
-      - name: Build and push lava Docker image
+      - name: Build and push beta Docker image
         if: contains(github.ref_name, 'beta')
         uses: docker/build-push-action@v6
         with:

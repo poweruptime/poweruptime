@@ -61,7 +61,7 @@ It is not required to supply the `version` property. If not supplied you will be
 You can than either increase major, minor or patch. For beta, you can also choose to keep the version
 and just create a news build.
 
-### Lava
+### Beta
 
 ```
 ./gradlew releaseBeta -Pversion=0.0.1

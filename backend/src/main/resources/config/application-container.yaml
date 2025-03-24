@@ -14,6 +14,11 @@ spring:
     url: jdbc:postgresql://${DATABASE_HOST:poweruptime-db}:${DATABASE_PORT:5432}/${DATABASE_NAME:poweruptime}
     username: ${DATABASE_USER:poweruptime}
     password: ${DATABASE_PASSWORD}
+
+  sql:
+    init:
+      mode: never
+
   jpa:
     show-sql: false
     generate-ddl: false
@@ -22,9 +27,11 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  sql:
-    init:
-      mode: never
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   liquibase:
     enabled: true
@@ -46,13 +53,6 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
 
 springdoc:
   api-docs:
@@ -81,6 +81,8 @@ poweruptime:
   host: ${POWERUPTIME_HOST}
   mail:
     enabled: ${MAIL_ENABLED:true}
+    security: ${MAIL_SECURITY:NONE_STARTTLS}
+    ignore-tls-errors: ${MAIL_IGNORE_TLS_ERRORS:false}
   notification-temp:
     enabled: ${TEMP_NOTIFICATIONS_ENABLED:false}
   storage:

@@ -165,14 +165,14 @@ fun getNewBetaVersion(version: String?): VersionNumber {
         return VersionNumber.fromString(version)
     }
 
-    val lastLavaTagVersion = getLastTag(false)
+    val lastBetaTagVersion = getLastTag(false)
     val lastProdTagVersion = getLastTag(true)
-    println("The latest beta tag is: $lastLavaTagVersion")
+    println("The latest beta tag is: $lastBetaTagVersion")
     println("The latest production tag is: $lastProdTagVersion")
 
     println(
         """
-            Version: $lastLavaTagVersion
+            Version: $lastBetaTagVersion
             What do you want to increase?
             1: Major
             2: Minor
@@ -183,7 +183,7 @@ fun getNewBetaVersion(version: String?): VersionNumber {
 
     val increaseInput: String? = System.`in`.bufferedReader().readLine()
 
-    val newVersion: VersionNumber = lastLavaTagVersion
+    val newVersion: VersionNumber = lastBetaTagVersion
     when (increaseInput) {
         "1" -> newVersion.increaseMajor()
         "2" -> newVersion.increaseMinor()
@@ -198,9 +198,9 @@ fun getNewProdVersion(version: String?): VersionNumber {
         return VersionNumber.fromString(version)
     }
 
-    val lastLavaTagVersion = getLastTag(false)
+    val lastBetaTagVersion = getLastTag(false)
     val lastProdTagVersion = getLastTag(true)
-    println("The latest beta tag is: $lastLavaTagVersion")
+    println("The latest beta tag is: $lastBetaTagVersion")
     println("The latest production tag is: $lastProdTagVersion")
     println()
     println(
