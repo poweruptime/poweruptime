@@ -6,32 +6,22 @@ on:
       - main
 
 jobs:
-  mirror-subdirectory:
+  build:
     runs-on: ubuntu-latest
+    container: pandoc/latex
     steps:
-      - name: Checkout repository with full history
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Git configuration
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Split subdirectory into a branch
-        run: |
-          # This creates a branch 'mirror-branch' that contains only the history of
-          # the 'path/to/directory' subdirectory.
-          git subtree split --prefix=infrastructure -b mirror-branch
-
-      - name: Add destination repository remote
+      - uses: actions/checkout@v3
+      - name: Pushes to another repository
+        id: push_directory
+        uses: XenonMolecule/github-action-push-to-another-repository@0.1.0
         env:
-          DEST_REPO: 'https://x-access-token:${{ secrets.INFRA_MIRROR_REPO_TOKEN }}@github.com/poweruptime/docker-compose.git'
-        run: |
-          git remote add repo-B "$DEST_REPO"
-
-      - name: Push subdirectory branch to destination repository
-        run: |
-          # Force pushing the mirror branch to the 'main' branch of repo-B.
-          git push repo-B mirror-branch:main --force
+          API_TOKEN_GITHUB: ${{ secrets.INFRA_MIRROR_REPO_TOKEN }}
+        with:
+          source-directory: ./infrastructure
+          destination-github-username: 'poweruptime'
+          destination-repository-name: 'docker-compose'
+          user-email: github-actions[bot]@users.noreply.github.com
+          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+          target-branch: main
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY
