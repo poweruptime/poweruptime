@@ -28,23 +28,19 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
             <h1 class="text-4xl">{{ statusPage.name }}</h1>
           </div>
 
-          @if (publicStatusPageMonitorsStore.isFulfilled()) {
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <div class="inline-flex items-center gap-2">
-                  @if (publicStatusPageMonitorsStore.status() === 'UP') {
-                    <bi [monitor-status-color]="'UP'" size="24" name="check-circle-fill" />
-                    <span class="text-xl">All services operational.</span>
-                  } @else {
-                    <bi [monitor-status-color]="'DOWN'" size="24" name="exclamation-circle-fill" />
-                    <span class="text-xl">Some services experience issues.</span>
-                  }
-                </div>
-              </mat-card-content>
-            </mat-card>
-          } @else {
-            <pu-placeholder class="h-14 w-full" />
-          }
+          <mat-card appearance="outlined">
+            <mat-card-content>
+              <div class="inline-flex items-center gap-2">
+                @if (publicStatusPageMonitorsStore.status() === 'UP') {
+                  <bi [monitor-status-color]="'UP'" size="24" name="check-circle-fill" />
+                  <span class="text-xl">All services operational.</span>
+                } @else {
+                  <bi [monitor-status-color]="'DOWN'" size="24" name="exclamation-circle-fill" />
+                  <span class="text-xl">Some services experience issues.</span>
+                }
+              </div>
+            </mat-card-content>
+          </mat-card>
 
           @if (statusPage.description; as it) {
             <pu-shadow-render [html]="it" />
