@@ -13,21 +13,7 @@ export const ROUTES: Routes = [
         children: [
           {
             path: ':monitorId',
-            children: [
-              {
-                path: '',
-                loadComponent: () =>
-                  import('./monitor/monitor-detail.page').then((c) => c.MonitorDetailPage),
-                pathMatch: 'full',
-              },
-              {
-                path: 'c/:checkResultId/logs',
-                loadComponent: () =>
-                  import('./monitor/monitor-check-result-detail.page').then(
-                    (c) => c.MonitorCheckResultDetailPage,
-                  ),
-              },
-            ],
+            loadChildren: () => import('./monitor/monitor-detail.routes').then((r) => r.ROUTES),
           },
           {
             path: '',
@@ -46,6 +32,11 @@ export const ROUTES: Routes = [
       {
         path: 'profile',
         loadChildren: () => import('./profile/profile.routes').then((r) => r.ROUTES),
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'm',
       },
     ],
   },
