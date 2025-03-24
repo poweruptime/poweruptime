@@ -33,5 +33,5 @@ jobs:
 
       - name: Push subdirectory branch to destination repository
         run: |
-          # Force pushing the mirror branch to the 'master' branch of repo-B.
+          # Force pushing the mirror branch to the 'main' branch of repo-B.
           git push repo-B mirror-branch:main --force
