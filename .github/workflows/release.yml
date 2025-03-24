@@ -18,6 +18,18 @@ jobs:
         with:
           install-ignore-scripts: true
 
+      - name: Set package version using tag name
+        run: |
+          TAG="${{ github.ref_name }}"
+          echo "Setting package version to ${TAG}"
+
+          # Update the version property in web/package.json using jq.
+          jq --arg newVersion "${TAG}" '.version = $newVersion' web/package.json > web/package.json.tmp && \
+            mv web/package.json.tmp web/package.json
+
+          # Optional: Show the updated version for confirmation.
+          grep '"version"' web/package.json
+
       - name: Build
         run: pnpm web:build:prod
 

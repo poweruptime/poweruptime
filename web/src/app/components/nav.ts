@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -7,6 +8,7 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
+import {AboutDialog} from '@app/components/about-dialog';
 import {NavTeamSelect} from '@app/components/nav-team-select';
 import {ThemeService, themeOptions} from '@app/components/theme-switch';
 import {IsSystemAdmin} from '@app/directives';
@@ -109,6 +111,10 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
               <bi name="paint-bucket" />
               {{ 'general.theme' | transloco }}
             </button>
+            <button (click)="openAbout()" mat-menu-item>
+              <bi name="info-circle" />
+              {{ 'general.about' | transloco }}
+            </button>
             <button mat-menu-item routerLink="/profile/overview">
               <bi name="gear" />
               {{ 'profile.settings' | transloco }}
@@ -167,6 +173,7 @@ export class Nav {
   readonly profileStore = inject(ProfileStore);
   readonly authStore = inject(AuthStore);
   readonly themeService = inject(ThemeService);
+  readonly dialog = inject(MatDialog);
 
   readonly themeOptions = themeOptions;
 
@@ -174,6 +181,10 @@ export class Nav {
   profileInitials = computed(() => getInitials(this.profileStore.name()));
 
   teamId = input<string>();
+
+  openAbout() {
+    this.dialog.open(AboutDialog);
+  }
 }
 
 function getInitials(text?: string): string | undefined {

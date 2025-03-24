@@ -58,19 +58,19 @@ pnpm web:start
 ## Create Builds/Docker images
 
 It is not required to supply the `version` property. If not supplied you will be asked what to do.
-You can than either increase major, minor or patch. For lava, you can also choose to keep the version
+You can than either increase major, minor or patch. For beta, you can also choose to keep the version
 and just create a news build.
 
 ### Lava
 
 ```
-./gradlew releaseLava -Pversion=3.1.1
+./gradlew releaseBeta -Pversion=0.0.1
 ```
 
 ### Prod
 
 ```
-./gradlew releaseProd -Pversion=3.1.1
+./gradlew releaseProd -Pversion=0.0.1
 ```
 
 ## Get access token
@@ -79,7 +79,7 @@ and just create a news build.
 curl -v -XPOST -H "Content-type: application/json" -d '{
 "email": "admin@admin.org",
 "password": "admin",
-"sessionInformation": "Postman DEV",
+"sessionInformation": "CURL DEV",
 "stayLoggedIn": "true"
 }' 'http://localhost:8080/api/v1/auth/login' | jq
 ```

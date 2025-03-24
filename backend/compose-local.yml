@@ -17,16 +17,11 @@ services:
       - backend:/var/lib/poweruptime
     environment:
       - POWERUPTIME_HOST=localhost:4000
-      - SWAGGER_ENABLED=true
       - DATABASE_HOST=poweruptime-local-backend-dev-db
-      - DATABASE_PORT=5432
-      - DATABASE_NAME=poweruptime
-      - DATABASE_USER=poweruptime
       - DATABASE_PASSWORD=poweruptime
       - RABBIT_HOST=poweruptime-local-backend-dev-rabbit
-      - RABBIT_PORT=5672
-      - RABBIT_USERNAME=poweruptime
       - RABBIT_PASSWORD=poweruptime
+      - SWAGGER_ENABLED=true
       - TEMP_NOTIFICATIONS_ENABLED=true
       - MAIL_ENABLED=false
     networks:

@@ -31,9 +31,9 @@ spring:
     change-log: classpath:db/db.changelog-master.yaml
 
   rabbitmq:
-    host: ${RABBIT_HOST}
-    port: ${RABBIT_PORT}
-    username: ${RABBIT_USERNAME}
+    host: ${RABBIT_HOST:poweruptime-rabbitmq}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USERNAME:poweruptime}
     password: ${RABBIT_PASSWORD}
     listener:
       simple:

@@ -1,6 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 
 group = "org.poweruptime.backend"
 
@@ -115,5 +116,188 @@ abstract class TotalCoverageTask : DefaultTask() {
         println("Total-Test-Coverage-${coverage.take(2).toInt()}.${coverage.takeLast(2).toInt()}")
     } catch (e: Throwable) {
         println("Calculation of test-coverage failed: ${e.stackTraceToString()}")
+    }
+}
+
+tasks.register("releaseBeta") {
+    val versionParam = nullOrParameter(project.properties["version"].toString())
+
+    doLast {
+        val version = getNewBetaVersion(versionParam)
+
+        val timestamp = System.currentTimeMillis()
+        val tagName = "$version-beta-$timestamp"
+
+        println()
+        println("Creating git tag $tagName")
+        exec {
+            commandLine("git", "tag", tagName)
+        }
+
+        println("Push git tag $tagName to origin")
+        exec {
+            commandLine("git", "push", "origin", tagName)
+        }
+    }
+}
+
+tasks.register("releaseProd") {
+    val versionParam = nullOrParameter(project.properties["version"].toString())
+
+    doLast {
+        val version = getNewProdVersion(versionParam)
+
+        println()
+        println("Creating git tag $version")
+        exec {
+            commandLine("git", "tag", version)
+        }
+
+        println("Push git tag $version to origin")
+        exec {
+            commandLine("git", "push", "origin", version)
+        }
+    }
+}
+
+fun getNewBetaVersion(version: String?): VersionNumber {
+    if (version != null) {
+        return VersionNumber.fromString(version)
+    }
+
+    val lastLavaTagVersion = getLastTag(false)
+    val lastProdTagVersion = getLastTag(true)
+    println("The latest beta tag is: $lastLavaTagVersion")
+    println("The latest production tag is: $lastProdTagVersion")
+
+    println(
+        """
+            Version: $lastLavaTagVersion
+            What do you want to increase?
+            1: Major
+            2: Minor
+            3: Patch
+            4: Reuse from current beta tag (default)
+        """.trimIndent()
+    )
+
+    val increaseInput: String? = System.`in`.bufferedReader().readLine()
+
+    val newVersion: VersionNumber = lastLavaTagVersion
+    when (increaseInput) {
+        "1" -> newVersion.increaseMajor()
+        "2" -> newVersion.increaseMinor()
+        "3" -> newVersion.increasePatch()
+    }
+
+    return newVersion
+}
+
+fun getNewProdVersion(version: String?): VersionNumber {
+    if (version != null) {
+        return VersionNumber.fromString(version)
+    }
+
+    val lastLavaTagVersion = getLastTag(false)
+    val lastProdTagVersion = getLastTag(true)
+    println("The latest beta tag is: $lastLavaTagVersion")
+    println("The latest production tag is: $lastProdTagVersion")
+    println()
+    println(
+        """
+        Version: $lastProdTagVersion
+        What do you want to increase?
+        1: Major
+        2: Minor
+        3: Patch (default)
+        """.trimIndent()
+    )
+
+    val increaseInput: String? = System.`in`.bufferedReader().readLine()
+
+    val newVersion: VersionNumber = lastProdTagVersion
+    when (increaseInput) {
+        "1" -> newVersion.increaseMajor()
+        "2" -> newVersion.increaseMinor()
+        else -> newVersion.increasePatch()
+    }
+
+    return newVersion
+}
+
+fun getLastTag(prod: Boolean): VersionNumber {
+    // Fetch all the remote tags
+    exec {
+        commandLine("git", "fetch", "--tags")
+    }
+
+    // Capture the names of all tags
+    val osAllTags = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "tag", "-l")
+        standardOutput = osAllTags
+    }
+    val allExistingVersions: List<VersionNumber> = osAllTags.toString("UTF-8")
+        .trim()
+        .lines()
+        .filter { if (prod) !it.contains("beta") else it.contains("beta") }
+        .map { it.substringBefore('-') }
+        .filter { it.matches(VersionNumber.versionRegex) }
+        .map(VersionNumber::fromString)
+
+    return allExistingVersions.max()
+}
+
+data class VersionNumber(
+    var major: Int,
+    var minor: Int,
+    var patch: Int
+) : Comparable<VersionNumber> {
+    override fun toString(): String = "$major.$minor.$patch"
+
+    fun increaseMajor() {
+        major += 1
+        minor = 0
+        patch = 0
+    }
+
+    fun increaseMinor() {
+        minor += 1
+        patch = 0
+    }
+
+    fun increasePatch() {
+        patch += 1
+    }
+
+    override operator fun compareTo(other: VersionNumber): Int = when {
+        this.major != other.major -> this.major.compareTo(other.major)
+        this.minor != other.minor -> this.minor.compareTo(other.minor)
+        this.patch != other.patch -> this.patch.compareTo(other.patch)
+        else -> 0
+    }
+
+    companion object {
+        val versionRegex = Regex("""\d+\.\d+\.\d+""")
+        fun fromString(version: String): VersionNumber {
+            val split = version.split('.')
+            require(version.matches(versionRegex)) {
+                "The provided Version '$version' is not a valid version. It must follow the pattern $versionRegex"
+            }
+
+            return VersionNumber(
+                major = split[0].toInt(),
+                minor = split[1].toInt(),
+                patch = split[2].toInt()
+            )
+        }
+    }
+}
+
+fun nullOrParameter(parameter: String): String? {
+    return if (parameter == "unspecified") {
+        null
+    } else {
+        parameter
     }
 }

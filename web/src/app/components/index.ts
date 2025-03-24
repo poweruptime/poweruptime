@@ -1,4 +1,5 @@
 export * from './mat-mentions';
+export * from './about-dialog';
 export * from './alert.directive';
 export * from './backend-image';
 export * from './backend-offline-alert';

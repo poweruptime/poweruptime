@@ -79,12 +79,14 @@
     }
   },
   "general": {
+    "about": "About",
     "activated": "Activated",
     "admin": "Admin",
     "at": "At",
     "body": "Body",
     "cancel": "Cancel",
     "clear": "Clear",
+    "close": "Close",
     "confirm": "Confirm",
     "confirmDelete": "Confirm deletion?",
     "contentType": "Content-Type",
