@@ -3,10 +3,12 @@ name: poweruptime-prod
 services:
   poweruptime-backend:
     labels:
-      traefik.http.routers.poweruptime-backend.rule: Host(`${POWERUPTIME_HOST:?}`) && PathPrefix(`/api`)
+      traefik.http.routers.poweruptime-backend.rule: >
+        Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`) && PathPrefix(`/api`)
       traefik.docker.network: poweruptime-prod_proxy
 
   poweruptime-web:
     labels:
-      traefik.http.routers.poweruptime-web.rule: Host(`${POWERUPTIME_HOST:?}`)
+      traefik.http.routers.poweruptime-web.rule: >
+        Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`)
       traefik.docker.network: poweruptime-prod_proxy
