@@ -15,7 +15,7 @@ jobs:
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.INFRA_MIRROR_REPO_TOKEN }}
+          SSH_DEPLOY_KEY: ${{ secrets.INFRA_MIRROR_REPO_TOKEN }}
         with:
           source-directory: ./infrastructure
           destination-github-username: 'poweruptime'
