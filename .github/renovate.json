@@ -2,6 +2,14 @@
   "assignees": ["Dafnik"],
   "baseBranches": ["main"],
   "commitBody": "See associated pull request for more information.",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "docker",
+      "fileMatch": ["^versions.env$"],
+      "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
+    }
+  ],
   "extends": [
     "config:recommended",
     ":pinVersions",
