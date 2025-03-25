@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Close Pull
-        run: gh pr close --comment "Auto-closing pull request. We do not accept PRs in this repository. Please commit to https://github.com/poweruptime/poweruptime"
+        run: gh pr close ${{ github.event.number }} --comment "Auto-closing pull request. We do not accept PRs in this repository. Please commit to https://github.com/poweruptime/poweruptime"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
