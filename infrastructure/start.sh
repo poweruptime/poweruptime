@@ -6,7 +6,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-COMPOSE_ARGS="-f _base.yml -f _remote.yml -f prod.yml --env-file versions.env --env-file .env"
+COMPOSE_ARGS="-f _base.yml -f prod.yml --env-file versions.env --env-file .env"
 
 # shellcheck disable=SC2086
 docker compose $COMPOSE_ARGS pull # get the latest images

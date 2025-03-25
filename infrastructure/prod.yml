@@ -1,14 +1,47 @@
 name: poweruptime-prod
 
 services:
+  traefik:
+    command:
+      - '--providers.file.filename=/config/traefik.yml'
+      - '--providers.file.watch=true'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedByDefault=false'
+      - '--providers.docker.endPoint=tcp://dockersocket:2375'
+      - '--providers.docker.network=proxy'
+      - '--entryPoints.http.address=:80' # redirect everything to the https entrypoint
+      - '--entrypoints.http.http.redirections.entryPoint.to=https'
+      - '--entrypoints.http.http.redirections.entryPoint.scheme=https'
+      - '--entrypoints.http.http.redirections.entryPoint.permanent=true'
+      - '--certificatesresolvers.default.acme.httpchallenge.entrypoint=http'
+      - '--certificatesresolvers.default.acme.email=letsencrypt.acme@${POWERUPTIME_HOST}'
+      - '--certificatesresolvers.default.acme.storage=/certificates/acme.json'
+      - '--entryPoints.https.address=:443'
+      # - "--api.dashboard=true" # enable for debugging
+      # - "--api.insecure=true"  # enable for debugging
+    ports:
+      - '443:443' # HTTPS
+      # - "8080:8080" # API  # enable for debugging
+    volumes:
+      - certificates:/certificates
+      -
   poweruptime-backend:
     labels:
+      traefik.http.routers.poweruptime-backend.entrypoints: https
+      traefik.http.routers.poweruptime-backend.tls: true
+      traefik.http.routers.poweruptime-backend.tls.certresolver: default
       traefik.http.routers.poweruptime-backend.rule: >
         Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`) && PathPrefix(`/api`)
       traefik.docker.network: poweruptime-prod_proxy
 
   poweruptime-web:
     labels:
+      traefik.http.routers.poweruptime-web.entrypoints: https
+      traefik.http.routers.poweruptime-web.tls: true
+      traefik.http.routers.poweruptime-web.tls.certresolver: default
       traefik.http.routers.poweruptime-web.rule: >
         Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`)
       traefik.docker.network: poweruptime-prod_proxy
+
+volumes:
+  certificates:
