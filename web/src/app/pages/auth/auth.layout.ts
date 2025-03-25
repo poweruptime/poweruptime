@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 
-import {BackendOfflineAlert, OutsideThemeSwitch} from '@app/components';
+import {BackendOfflineAlert, OutsideLanguageSwitch, OutsideThemeSwitch} from '@app/components';
 import {BackendOfflineService} from '@app/services';
 
 @Component({
@@ -20,9 +20,10 @@ import {BackendOfflineService} from '@app/services';
       </main>
     </div>
 
+    <pu-outside-language-switch />
     <pu-outside-theme-switch />
   `,
-  imports: [RouterOutlet, BackendOfflineAlert, OutsideThemeSwitch],
+  imports: [RouterOutlet, BackendOfflineAlert, OutsideThemeSwitch, OutsideLanguageSwitch],
 })
 export class AuthLayout {
   readonly backendOfflineService = inject(BackendOfflineService);

@@ -5,14 +5,14 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
-import {TranslocoPipe} from '@jsverse/transloco';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
 import {AboutDialog} from '@app/components/about-dialog';
 import {NavTeamSelect} from '@app/components/nav-team-select';
-import {ThemeService, themeOptions} from '@app/components/theme-switch';
 import {IsSystemAdmin} from '@app/directives';
 import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
+import {ThemeService, themeOptions} from '@app/services/theme.service';
 
 @Component({
   template: `
@@ -97,6 +97,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
               <div
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-300 p-4 text-sm tracking-widest text-black dark:bg-slate-800 dark:text-white">
                 {{ initials }}
+                $
               </div>
             } @else {
               <bi name="gear" />
@@ -107,13 +108,17 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
               <bi name="box-arrow-left" />
               {{ 'general.logout' | transloco }}
             </button>
+            <button (click)="openAbout()" mat-menu-item>
+              <bi name="info-circle" />
+              {{ 'general.about' | transloco }}
+            </button>
             <button [matMenuTriggerFor]="themeMenu" mat-menu-item>
               <bi name="paint-bucket" />
               {{ 'general.theme' | transloco }}
             </button>
-            <button (click)="openAbout()" mat-menu-item>
-              <bi name="info-circle" />
-              {{ 'general.about' | transloco }}
+            <button [matMenuTriggerFor]="languageMenu" mat-menu-item>
+              <bi name="translate" />
+              {{ 'general.language' | transloco }}
             </button>
             <button mat-menu-item routerLink="/profile/overview">
               <bi name="gear" />
@@ -121,10 +126,9 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
             </button>
           </mat-menu>
 
+          @let selectedTheme = themeService.selectedTheme();
           <mat-menu #themeMenu="matMenu" yPosition="above">
             @for (theme of themeOptions; track theme.value) {
-              @let selectedTheme = themeService.selectedTheme();
-
               <button (click)="themeService.selectedTheme.set(theme.value)" mat-menu-item>
                 <div class="inline-flex items-center gap-2">
                   <bi
@@ -133,6 +137,21 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
                   <span>{{ theme.viewValue }}</span>
 
                   <bi [name]="theme.icon" />
+                </div>
+              </button>
+            }
+          </mat-menu>
+
+          @let selectedLang = translocoService.getActiveLang();
+          <mat-menu #languageMenu="matMenu" yPosition="above">
+            @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
+              @let lang = $any(language);
+              <button (click)="translocoService.setActiveLang(lang.id)" mat-menu-item>
+                <div class="inline-flex items-center gap-2">
+                  <bi
+                    [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'"
+                    size="16" />
+                  <span>{{ lang.label }}</span>
                 </div>
               </button>
             }
@@ -174,6 +193,7 @@ export class Nav {
   readonly authStore = inject(AuthStore);
   readonly themeService = inject(ThemeService);
   readonly dialog = inject(MatDialog);
+  readonly translocoService = inject(TranslocoService);
 
   readonly themeOptions = themeOptions;
 

@@ -21,6 +21,7 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
+import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -64,11 +65,21 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideTransloco({
       config: {
-        availableLangs: ['en'],
+        availableLangs: [
+          {id: 'en', label: 'English'},
+          {id: 'de', label: 'Deutsch'},
+        ],
         defaultLang: 'en',
         prodMode: !isDevMode(),
+        reRenderOnLangChange: true,
       },
       loader: TranslocoHttpLoader,
+    }),
+    provideTranslocoPersistLang({
+      storageKey: 'pu_language',
+      storage: {
+        useValue: cookiesStorage(),
+      },
     }),
     provideBi(
       withCDN(() =>

@@ -21,8 +21,8 @@ import {CmdkModule} from '@ngxpert/cmdk';
 import {BiComponent, BiName} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 
-import {ThemeService, themeOptions} from '@app/components';
 import {AuthStore, InstanceSettingsStore, ProfileStore, SelectedTeamStore} from '@app/services';
+import {ThemeService, themeOptions} from '@app/services/theme.service';
 
 import {CmdkMonitorList} from './cmdk-monitor-list';
 import {CmdkTeamList} from './cmdk-team-list';

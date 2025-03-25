@@ -21,8 +21,8 @@ interface AuthState {
   enteredPassword: string | undefined;
 }
 
-const localStorageRefreshTokenKey = 'refreshToken';
-const localStorageAccessTokenKey = 'accessToken';
+const localStorageRefreshTokenKey = 'pu_auth_refreshToken';
+const localStorageAccessTokenKey = 'pu_auth_accessToken';
 
 export function getSessionInformation(): string {
   const browser = i_complete();

@@ -7,6 +7,7 @@ export * from './copy-icon-button';
 export * from './delete-confirm-dialog';
 export * from './file-upload';
 export * from './heatmap';
+export * from './language-switch';
 export * from './nav';
 export * from './placeholder';
 export * from './refresh-in';

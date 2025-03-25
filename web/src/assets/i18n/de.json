@@ -1,0 +1,401 @@
+{
+  "auth": {
+    "changePassword": "Passwort ändern",
+    "invalidCredentials": "Ungültige Anmeldedaten.",
+    "login": "Anmelden",
+    "newPassword": "Neues {{general.password}}",
+    "newPasswordConfirm": "Neues {{general.password}} bestätigen",
+    "oldPassword": "Altes {{general.password}}",
+    "stayLoggedIn": "Angemeldet bleiben"
+  },
+  "backendOffline": {
+    "description": "Es scheint, dass das Backend offline ist. Versuche es in ein paar Minuten erneut.",
+    "title": "{{general.error}}!"
+  },
+  "checkResult": {
+    "details": {
+      "check": "Überprüfung",
+      "expired": "Die Protokolle für diese Überprüfung sind abgelaufen und nicht mehr verfügbar.",
+      "showTimestamps": "Zeitanzeige",
+      "statusUpdate": "Statusaktualisierung"
+    },
+    "list": {
+      "action": {
+        "view": "Überprüfung anzeigen"
+      },
+      "title": "Überprüfungen"
+    }
+  },
+  "cmdk": {
+    "groups": {
+      "general": {
+        "input": "Was brauchst du?"
+      },
+      "monitor": {
+        "create": "Neuen {{general.monitor}} erstellen",
+        "input": "{{general.search}} nach einem {{general.monitor}}",
+        "search": "{{general.search}} {{general.monitors}}..."
+      },
+      "notificationMethod": {
+        "create": "Neue {{general.notificationMethod}} erstellen",
+        "input": "{{general.search}} nach einer {{general.notificationMethod}}",
+        "search": "{{general.search}} {{general.notificationMethods}}..."
+      },
+      "statusPage": {
+        "create": "Neue {{general.statusPage}} erstellen",
+        "input": "{{general.search}} nach einer {{general.statusPage}}",
+        "search": "{{general.search}} {{general.statusPages}}..."
+      },
+      "team": {
+        "create": "Neues {{general.team}} erstellen",
+        "input": "{{general.search}} nach einem {{general.team}}",
+        "search": "{{general.search}} {{general.teams}}..."
+      },
+      "theme": {
+        "input": "Wähle ein Theme",
+        "switch": "{{general.theme}} wechseln"
+      }
+    },
+    "results": {
+      "empty": "Keine Ergebnisse gefunden."
+    },
+    "toggle": "Aktionsmenü umschalten"
+  },
+  "form": {
+    "passwordShow": {
+      "hide": "{{general.password}} Text ausblenden",
+      "show": "{{general.password}} Text anzeigen"
+    },
+    "validation": {
+      "domain": "Gib eine gültige Domain ein",
+      "email": "Gib eine gültige {{general.emailAddress}} ein",
+      "file": "Ungültiges Dateiformat.",
+      "integer": "Nur ganze Zahlen sind erlaubt",
+      "ipv4": "Gib eine gültige IPV4-Adresse ein",
+      "max": "Gib einen Wert von maximal {{max}} ein",
+      "maxlength": "Gib maximal {{requiredLength}} Zeichen ein",
+      "min": "Gib einen Wert von mindestens {{min}} ein",
+      "minlength": "Gib mindestens {{requiredLength}} Zeichen ein",
+      "passwordMismatch": "{{general.password}} stimmt nicht überein",
+      "required": "Dieses Feld ist erforderlich",
+      "slug": "Gib einen gültigen Slug ein. (a-z,0-9,-)",
+      "url": "Gib eine gültige URL ein"
+    }
+  },
+  "general": {
+    "about": "Über",
+    "activated": "Aktiviert",
+    "admin": "Admin",
+    "at": "Um",
+    "body": "Nachricht",
+    "cancel": "Abbrechen",
+    "clear": "Leeren",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "confirmDelete": "Löschung bestätigen?",
+    "contentType": "Content-Type",
+    "copied": "Kopiert!",
+    "copy": "Kopieren",
+    "createdAt": "Erstellt am",
+    "data": "Daten",
+    "date": "Datum",
+    "delete": "Löschen",
+    "description": "Beschreibung",
+    "disable": "Deaktivieren",
+    "domainName": "Domainname",
+    "domainNames": "Domainnamen",
+    "edit": "Bearbeiten",
+    "email": "E-Mail",
+    "emailAddress": "E-Mail-Adresse",
+    "end": "Ende",
+    "error": "Fehler",
+    "footer": "Fußzeile",
+    "general": "Allgemein",
+    "group": "Gruppe",
+    "host": "Host",
+    "hours": "Stunden",
+    "instance": "Instanz",
+    "invite": "Einladen",
+    "invites": "Einladungen",
+    "ipAddress": "IP-Adresse",
+    "language": "Sprache",
+    "latest": "Neueste",
+    "loading": "Laden...",
+    "logout": "Abmelden",
+    "logs": "Protokolle",
+    "maintenance": "Wartung",
+    "member": "Mitglied",
+    "method": "Methode",
+    "minutes": "Minuten",
+    "monitor": "Monitor",
+    "monitors": "Monitore",
+    "name": "Name",
+    "noDataAvailable": "Keine Daten verfügbar.",
+    "nothingFound": "Nichts gefunden :(",
+    "notificationMethod": "Benachrichtigungsmethode",
+    "notificationMethods": "Benachrichtigungsmethoden",
+    "notifications": "Benachrichtigungen",
+    "now": "Jetzt",
+    "open": "Öffnen",
+    "overview": "Übersicht",
+    "password": "Passwort",
+    "pause": "Pause",
+    "permissions": "Berechtigungen",
+    "personal": "Persönlich",
+    "ping": "Ping",
+    "port": "Port",
+    "precision": "Genauigkeit",
+    "profile": "Profil",
+    "redirecting": "Weiterleiten...",
+    "role": "Rolle",
+    "save": "Speichern",
+    "search": "Suchen",
+    "secret": "Geheim",
+    "security": "Sicherheit",
+    "server": "Server",
+    "sessions": "Sitzungen",
+    "settings": "Einstellungen",
+    "setup": "Einrichtung",
+    "showDuplicates": "Duplikate anzeigen",
+    "slug": "Slug",
+    "start": "Start",
+    "startEnd": "{{general.start}} - {{general.end}}",
+    "status": "Status",
+    "statusPage": "Statusseite",
+    "statusPages": "Statusseiten",
+    "systemAdmin": "System-{{general.admin}}",
+    "team": "Team",
+    "teams": "Teams",
+    "theme": "Theme",
+    "time": "Zeit",
+    "timezone": "Zeitzone",
+    "title": "Titel",
+    "to": "An",
+    "totalDuration": "Gesamtdauer",
+    "type": "Typ",
+    "url": "URL",
+    "user ": "Benutzer",
+    "username": "Benutzername",
+    "users": "Benutzer",
+    "xHours": "{{value}} {{general.hours}}",
+    "xMinutes": "{{value}} {{general.minutes}}"
+  },
+  "instanceSettings": {
+    "editUser": "{{name}} bearbeiten",
+    "inviteUser": "{{general.invite}} {{general.user}}",
+    "permissions": {
+      "allowUsersToCreateTeams": "Benutzern erlauben, Teams zu erstellen"
+    },
+    "retention": {
+      "checkResult": "Aufbewahrung von Überprüfungsergebnissen",
+      "logs": "Aufbewahrung von Protokollen",
+      "title": "Individuelle Aufbewahrung von Überprüfungen & Protokollen"
+    },
+    "timezone": "{{general.instance}} {{general.timezone}}"
+  },
+  "mfa": {
+    "alreadyShown": "{{mfa.backupCodes}} bereits angezeigt.",
+    "backupCodes": "Backup-Codes",
+    "dialog": {
+      "backupCode": "Backup-Code",
+      "title": "Multi-Faktor-Code",
+      "useBackupCode": "{{mfa.dialog.backupCode}} verwenden"
+    },
+    "disabled": "{{mfa.mfa}} deaktiviert.",
+    "enabled": "{{mfa.mfa}} aktiviert.",
+    "mfa": "Multi-Faktor-Authentifizierung"
+  },
+  "monitor": {
+    "details": {
+      "check": "Überprüfe alle {{testIntervalDuration}}",
+      "pingChart": {
+        "endDate": "{{general.end}} {{general.date}}",
+        "exceedsMaxWindow": "Das ausgewählte Fenster darf 1 Monat nicht überschreiten",
+        "startDate": "{{general.start}} {{general.date}}"
+      },
+      "resendAfter": "Benachrichtigung nach {{resendAfter}}x Down-Checks erneut senden",
+      "retries": "{{retries}}x Wiederholungen"
+    },
+    "edit": {
+      "dns": {
+        "matches": {
+          "label": "Übereinstimmungen",
+          "new": "Neue Übereinstimmung",
+          "remove": "{{match}} entfernen"
+        },
+        "server": "DNS-{{general.server}}"
+      },
+      "edit": "{{name}} bearbeiten",
+      "http": {
+        "authType": "Auth-Typ",
+        "ignoreTLS": "TLS ignorieren",
+        "searchTerm": "{{general.search}}-Begriff"
+      },
+      "interval": "Intervall in {{unit}}",
+      "pushUrl": "Push-{{general.url}}",
+      "resendAfter": "Benachrichtigungen erneut senden nach",
+      "retries": "Wiederholungen",
+      "selectTypeToContinue": "Bitte wähle einen Typ aus, um fortzufahren",
+      "ssl": {
+        "validDaysLeft": "Minimale Gültigkeitstage"
+      },
+      "upsideDown": "Auf den Kopf gestellt"
+    },
+    "empty": "Erstelle deinen ersten Monitor",
+    "oneDayUptime": "Eintägige Betriebszeit",
+    "status": {
+      "down": "Down",
+      "paused": "Pausiert",
+      "up": "Up"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "instanceSettings": "Instanz-{{general.settings}}",
+    "personalDashboard": "Persönliches {{nav.dashboard}}",
+    "teamSelect": {
+      "personal": "Persönliches Konto",
+      "select": "Wähle ein {{general.team}}"
+    },
+    "toggle": "Seiten-Navigation umschalten"
+  },
+  "notFound": {
+    "back": "Zurück",
+    "description": "Entschuldigung, wir konnten die gesuchte Seite nicht finden. Sie wurde möglicherweise verschoben, gelöscht oder existierte nie.",
+    "home": "Zurück zur Startseite",
+    "title": "Seite nicht gefunden"
+  },
+  "notificationMethod": {
+    "edit": {
+      "body": "Nachrichten-Vorlage",
+      "discord": {
+        "displayName": "Anzeigename",
+        "url": "Discord Webhook {{general.url}}",
+        "urlHelp": "Du erhältst diese, indem du zu Servereinstellungen -> Integrationen -> Webhooks anzeigen -> Neuer Webhook gehst"
+      },
+      "edit": "{{name}} bearbeiten",
+      "email": {
+        "bcc": {
+          "enter": "Gib eine BCC-{{general.emailAddress}} ein",
+          "new": "Neue BCC-{{general.emailAddress}}",
+          "remove": "BCC {{emailAddress}} entfernen"
+        },
+        "cc": {
+          "enter": "Gib eine CC-{{general.emailAddress}} ein",
+          "new": "Neue CC-{{general.emailAddress}}",
+          "remove": "CC {{emailAddress}} entfernen"
+        },
+        "ignoreTLSErrors": "TLS-Fehler ignorieren",
+        "to": {
+          "enter": "Gib eine {{general.emailAddress}} ein",
+          "new": "Neue {{general.emailAddress}}",
+          "remove": "{{emailAddress}} entfernen"
+        }
+      },
+      "selectTypeToContinue": "Bitte wähle einen Typ aus, um fortzufahren",
+      "titleTemplate": "Titelvorlage",
+      "useByDefault": "Standardmäßig verwenden"
+    },
+    "list": {
+      "delete": "Die {{general.notificationMethod}} löschen",
+      "edit": "Die {{general.notificationMethod}} bearbeiten",
+      "email": {
+        "recipient": "Empfänger: ",
+        "via": " via "
+      }
+    },
+    "selector": {
+      "add": "{{general.notificationMethods}} hinzufügen",
+      "list": "{{general.notificationMethods}}-Liste",
+      "remove": "{{name}} entfernen"
+    }
+  },
+  "profile": {
+    "devThings": "Entwickler-Dinge",
+    "email": {
+      "current": "Aktuelle {{general.emailAddress}}",
+      "new": "Neue {{general.emailAddress}}",
+      "requestChange": "{{general.emailAddress}}-Änderung anfordern"
+    },
+    "mfa": {
+      "title": "Multi-Faktor-Authentifizierung"
+    },
+    "password": {
+      "currentPassword": "Aktuelles {{general.password}}",
+      "update": "{{general.password}} aktualisieren"
+    },
+    "sessions": {
+      "lastUsed": "Zuletzt verwendet"
+    },
+    "settings": "{{general.profile}} {{general.settings}}"
+  },
+  "refreshIn": {
+    "lastUpdate": "Letzte Aktualisierung: {{value}}",
+    "refreshIn": "Aktualisierung in {{value}} Sekunden."
+  },
+  "statusPage": {
+    "edit": {
+      "domainNames": {
+        "enter": "Gib einen {{general.domainName}} ein",
+        "inUse": "Folgende Domainnamen sind bereits vergeben: \"{{domainNames}}\"",
+        "new": "Neuer {{general.domainName}}",
+        "remove": "{{domainName}} entfernen"
+      },
+      "edit": "{{name}} bearbeiten",
+      "group": {
+        "add": "{{general.group}} hinzufügen",
+        "minOne": "Füge mindestens eine {{general.group}} hinzu."
+      },
+      "image": "Ziehe ein Bild hierher",
+      "monitors": {
+        "add": "{{general.monitor}} hinzufügen...",
+        "empty": "Noch keine {{general.monitors}} hinzugefügt.",
+        "hide": "Monitore in Gruppen ausblenden",
+        "search": {
+          "noFound": "Keine {{general.monitors}} gefunden.",
+          "noLeft": "Keine {{general.monitors}} übrig."
+        },
+        "show": "{{general.monitors}} in Gruppen anzeigen"
+      },
+      "slugInUse": "Slug bereits vergeben"
+    },
+    "list": {
+      "delete": "Die {{general.statusPage}} löschen",
+      "edit": "Die {{general.statusPage}} bearbeiten",
+      "preview": "Die {{general.statusPage}} in der Vorschau anzeigen"
+    },
+    "public": {
+      "issues": "Bei einigen Diensten treten Probleme auf.",
+      "notFound": "404 - Statusseite nicht gefunden",
+      "operational": "Alle Dienste betriebsbereit."
+    }
+  },
+  "team": {
+    "counts": {
+      "down": "Down-{{general.monitors}}",
+      "maintenance": "{{general.monitors}} in Wartung",
+      "paused": "Pausierte {{general.monitors}}",
+      "up": "Up-{{general.monitors}}"
+    },
+    "edit": {
+      "edit": "{{name}} bearbeiten",
+      "openInvites": "{{general.open}} {{general.invites}}"
+    },
+    "invite": "Lade ein neues Mitglied ein",
+    "monitors": "{{monitorCount}} Monitor(e)",
+    "settings": {
+      "invitedAt": "Eingeladen am",
+      "invitedBy": "Eingeladen von",
+      "joinedAt": "Beigetreten am",
+      "noInvites": "Keine offenen Einladungen.",
+      "settings": "{{general.team}}-Einstellungen"
+    }
+  },
+  "user": {
+    "edit": {
+      "forcePasswordChange": "Passwortänderung beim nächsten Login erzwingen.",
+      "sendInviteEmail": "Einladungs-{{general.email}} senden",
+      "updatePassword": "Passwort aktualisieren"
+    }
+  }
+}

@@ -6,7 +6,7 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {OutsideThemeSwitch} from '@app/components';
+import {OutsideLanguageSwitch, OutsideThemeSwitch} from '@app/components';
 
 @Component({
   template: `
@@ -33,11 +33,20 @@ import {OutsideThemeSwitch} from '@app/components';
       </div>
     </div>
 
+    <pu-outside-language-switch />
     <pu-outside-theme-switch />
   `,
   selector: 'not-found-page',
   standalone: true,
-  imports: [RouterLink, OutsideThemeSwitch, BiComponent, MatButton, MatAnchor, TranslocoPipe],
+  imports: [
+    RouterLink,
+    OutsideThemeSwitch,
+    BiComponent,
+    MatButton,
+    MatAnchor,
+    TranslocoPipe,
+    OutsideLanguageSwitch,
+  ],
 })
 export class NotFoundPage {
   private readonly location = inject(Location);
