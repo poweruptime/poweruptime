@@ -6,7 +6,7 @@
     {
       "customType": "regex",
       "datasourceTemplate": "docker",
-      "fileMatch": ["^versions.env$"],
+      "fileMatch": ["^infrastructure/versions\\.env$"],
       "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
     }
   ],
@@ -75,10 +75,6 @@
       "matchPackageNames": ["/^org\\.testcontainers/", "/^com\\.icegreen/"]
     },
     {
-      "groupName": "ngx-dropzone",
-      "matchPackageNames": ["/@ngx-dropzone/"]
-    },
-    {
       "groupName": "React Email",
       "matchPackageNames": [
         "/@react-email/components/",
@@ -87,6 +83,22 @@
         "/@types/react/",
         "/@types/react-dom/"
       ]
+    },
+    {
+      "groupName": "ngx-dropzone",
+      "matchPackageNames": ["/^@ngx-dropzone/"]
+    },
+    {
+      "groupName": "ngrx",
+      "matchPackageNames": ["/^@ngrx/"]
+    },
+    {
+      "groupName": "transloco",
+      "matchPackageNames": ["/^@jsverse/"]
+    },
+    {
+      "groupName": "typescript types",
+      "matchPackageNames": ["/^@types/"]
     },
     {
       "groupName": "typescript dependencies",
