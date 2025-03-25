@@ -21,7 +21,6 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideTransloco} from '@jsverse/transloco';
-import {deAT} from 'date-fns/locale/de-AT';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -32,7 +31,7 @@ import {DOCKER_WEB_URL} from '@app/util';
 
 import {ROUTES} from './app.routes';
 
-export const MY_DATE_FNS_FORMATS: MatDateFormats = {
+const MY_DATE_FNS_FORMATS: MatDateFormats = {
   parse: {
     dateInput: 'yyyy-MM-dd',
   },
@@ -63,15 +62,29 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideAnimationsAsync(),
-    {provide: LOCALE_ID, useValue: 'de-DE'},
-    provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
-    {provide: MAT_DATE_LOCALE, useValue: deAT},
+    provideTransloco({
+      config: {
+        availableLangs: ['en'],
+        defaultLang: 'en',
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
     provideBi(
       withCDN(() =>
         injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',
       ),
     ),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline',
+      },
+    },
+    {provide: LOCALE_ID, useValue: 'de-DE'},
+    {provide: MAT_DATE_LOCALE, useValue: localeDe},
+    provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
     importProvidersFrom(
       NgxEditorModule.forRoot({
         locals: {
@@ -110,20 +123,6 @@ export const appConfig: ApplicationConfig = {
         },
       }),
     ),
-    provideTransloco({
-      config: {
-        availableLangs: ['en'],
-        defaultLang: 'en',
-        prodMode: !isDevMode(),
-      },
-      loader: TranslocoHttpLoader,
-    }),
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {
-        appearance: 'outline',
-      },
-    },
   ],
 };
 
