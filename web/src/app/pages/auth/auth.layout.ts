@@ -12,7 +12,7 @@ import {BackendOfflineService} from '@app/services';
       <main class="w-96">
         @defer (when backendOfflineService.isOffline()) {
           @if (backendOfflineService.isOffline()) {
-            <backend-offline-alert />
+            <pu-backend-offline-alert />
           }
         }
 

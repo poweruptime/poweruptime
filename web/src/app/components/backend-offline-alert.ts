@@ -9,13 +9,13 @@ import {injectWindow} from 'dfx-helper';
 import {AlertDirective} from './alert.directive';
 
 @Component({
-  selector: 'backend-offline-alert',
+  selector: 'pu-backend-offline-alert',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div puAlert type="WARN">
-      <span class="font-bold">{{ 'backendOffline.title' | transloco }}!</span>
-      {{ 'backendOffline.description' | transloco }}!
+      <span class="font-bold">{{ 'backendOffline.title' | transloco }}</span>
+      {{ 'backendOffline.description' | transloco }}
     </div>
   `,
   imports: [AlertDirective, TranslocoPipe],

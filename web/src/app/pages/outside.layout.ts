@@ -11,7 +11,7 @@ import {BackendOfflineService} from '@app/services';
     <div class="px-4 pt-4 md:container md:mx-auto">
       @defer (when backendOfflineService.isOffline()) {
         @if (backendOfflineService.isOffline()) {
-          <backend-offline-alert />
+          <pu-backend-offline-alert />
         }
       }
       <main>

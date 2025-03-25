@@ -13,9 +13,9 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
-import {Nav} from '@app/components';
+import {BackendOfflineAlert, Nav} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
-import {PushService, SelectedTeamStore} from '@app/services';
+import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
 
 @Component({
   selector: 'home-layout',
@@ -56,6 +56,12 @@ import {PushService, SelectedTeamStore} from '@app/services';
         </header>
 
         <main class="main">
+          @defer (when backendOfflineService.isOffline()) {
+            @if (backendOfflineService.isOffline()) {
+              <pu-backend-offline-alert />
+            }
+          }
+
           <router-outlet />
         </main>
       </mat-drawer-content>
@@ -105,10 +111,12 @@ import {PushService, SelectedTeamStore} from '@app/services';
     CmdkOverlay,
     MatTooltip,
     TranslocoPipe,
+    BackendOfflineAlert,
   ],
 })
 export class HomeLayout {
-  selectedTeamStore = inject(SelectedTeamStore);
+  readonly backendOfflineService = inject(BackendOfflineService);
+  readonly selectedTeamStore = inject(SelectedTeamStore);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {
@@ -118,17 +126,18 @@ export class HomeLayout {
       return it;
     },
   });
-  storageTeamId = injectLocalStorage<string>('pu_selected_team_id');
 
-  drawer = viewChild.required(MatDrawer);
+  readonly storageTeamId = injectLocalStorage<string>('pu_selected_team_id');
 
-  isMobile$ = inject(BreakpointObserver)
+  readonly drawer = viewChild.required(MatDrawer);
+
+  readonly isMobile$ = inject(BreakpointObserver)
     .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
     .pipe(map((result) => result.matches));
 
-  isMobile = toSignal(this.isMobile$, {requireSync: true});
+  readonly isMobile = toSignal(this.isMobile$, {requireSync: true});
 
-  hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
+  readonly hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
     defaultValue: 0,
     storageSync: true,
   });
