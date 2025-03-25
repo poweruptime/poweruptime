@@ -24,14 +24,14 @@ services:
       # - "8080:8080" # API  # enable for debugging
     volumes:
       - certificates:/certificates
-      -
+
   poweruptime-backend:
     labels:
       traefik.http.routers.poweruptime-backend.entrypoints: https
       traefik.http.routers.poweruptime-backend.tls: true
       traefik.http.routers.poweruptime-backend.tls.certresolver: default
       traefik.http.routers.poweruptime-backend.rule: >
-        Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`) && PathPrefix(`/api`)
+        (Host(`${POWERUPTIME_HOST:?}`)${DOMAIN_NAMES:+ || ${DOMAIN_NAMES}}) && PathPrefix(`/api`)
       traefik.docker.network: poweruptime-prod_proxy
 
   poweruptime-web:
@@ -40,7 +40,7 @@ services:
       traefik.http.routers.poweruptime-web.tls: true
       traefik.http.routers.poweruptime-web.tls.certresolver: default
       traefik.http.routers.poweruptime-web.rule: >
-        Host(`${POWERUPTIME_HOST:?}${DOMAIN_NAMES:+,${DOMAIN_NAMES}}`)
+        Host(`${POWERUPTIME_HOST:?}`)${DOMAIN_NAMES:+ || ${DOMAIN_NAMES}}
       traefik.docker.network: poweruptime-prod_proxy
 
 volumes:
