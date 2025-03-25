@@ -4,10 +4,12 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
+import {MatTooltip} from '@angular/material/tooltip';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {filter, map, skip, withLatestFrom} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
@@ -35,7 +37,11 @@ import {PushService, SelectedTeamStore} from '@app/services';
           <div class="flex justify-between gap-4 p-2">
             <div class="flex items-center gap-4">
               <div class="flex items-center" [class.hidden]="!_isMobile">
-                <button (click)="drawer.toggle()" mat-icon-button aria-label="Toggle side nav">
+                <button
+                  [matTooltip]="'nav.toggle' | transloco"
+                  [attr.aria-label]="'nav.toggle' | transloco"
+                  (click)="drawer.toggle()"
+                  mat-icon-button>
                   <bi name="list" size="24" />
                 </button>
               </div>
@@ -97,6 +103,8 @@ import {PushService, SelectedTeamStore} from '@app/services';
     MatIconButton,
     Nav,
     CmdkOverlay,
+    MatTooltip,
+    TranslocoPipe,
   ],
 })
 export class HomeLayout {

@@ -57,21 +57,25 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
           mat-table
           matSort>
           <ng-container matColumnDef="description">
-            <th *matHeaderCellDef mat-header-cell>Description</th>
+            <th *matHeaderCellDef mat-header-cell>{{ 'general.description' | transloco }}</th>
             <td *matCellDef="let element" mat-cell>
               {{ element.description }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="updatedAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Last used</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'profile.sessions.lastUsed' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               {{ element.updatedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>Created at</th>
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+              {{ 'general.createdAt' | transloco }}
+            </th>
             <td *matCellDef="let element" mat-cell>
               {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
             </td>
@@ -97,7 +101,7 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
         <pu-table-loading-bar [loading]="sessionsStore.isPending()" />
 
         @if (sessionsStore.isEmpty()) {
-          <div class="mt-2 w-full text-center">No data available.</div>
+          <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
         }
 
         <mat-paginator

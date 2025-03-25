@@ -8,6 +8,7 @@ import {MatAnchor} from '@angular/material/button';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {a_chunk} from 'dfts-helper';
 
 import {TeamCard} from '@app/components/team';
@@ -17,7 +18,7 @@ import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
   template: `
     @if (instanceSettingsStore.settings()?.isUserAllowedToCreateTeams) {
       <div class="px-4 pb-2">
-        <a mat-flat-button routerLink="new">New team</a>
+        <a mat-flat-button routerLink="new">{{ 'cmdk.groups.team.create' | transloco }}</a>
       </div>
     }
     <cdk-virtual-scroll-viewport
@@ -61,6 +62,7 @@ import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
     CdkVirtualForOf,
     MatProgressBar,
     MatAnchor,
+    TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,5 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {Placeholder} from '@app/components';
 import {NotificationMethodEditForm} from '@app/components/notification-method';
 import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
@@ -11,13 +13,16 @@ import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
       @if (_notificationMethodId) {
         @if (notificationMethodEditStore.isFulfilled()) {
           <h1 class="text-4xl">
-            Edit {{ notificationMethodEditStore.notificationMethod()?.name }}
+            {{
+              'notificationMethod.edit.edit'
+                | transloco: notificationMethodEditStore.notificationMethod()
+            }}
           </h1>
         } @else {
           <pu-placeholder class="h-12 w-64" />
         }
       } @else {
-        <h1 class="text-4xl">Create new notification method</h1>
+        <h1 class="text-4xl">{{ 'cmdk.groups.notificationMethod.create' | transloco }}</h1>
       }
 
       @if (_notificationMethodId) {
@@ -41,7 +46,7 @@ import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
   `,
   selector: 'pu-notification-method-edit-page',
   providers: [NotificationMethodEditStore],
-  imports: [NotificationMethodEditForm, Placeholder],
+  imports: [NotificationMethodEditForm, Placeholder, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodEditPage {

@@ -3,10 +3,11 @@ import {ChangeDetectionStrategy, Component, computed, effect, inject, input} fro
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {Meta, Title} from '@angular/platform-browser';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {s_cut} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendImage, Placeholder, RefreshInComponent, ShadowRender} from '@app/components';
+import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusColor} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
@@ -33,10 +34,10 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
               <div class="inline-flex items-center gap-2">
                 @if (publicStatusPageMonitorsStore.status() === 'UP') {
                   <bi [monitor-status-color]="'UP'" size="24" name="check-circle-fill" />
-                  <span class="text-xl">All services operational.</span>
+                  <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
                 } @else {
                   <bi [monitor-status-color]="'DOWN'" size="24" name="exclamation-circle-fill" />
-                  <span class="text-xl">Some services experience issues.</span>
+                  <span class="text-xl">{{ 'statusPage.public.issues' | transloco }}</span>
                 }
               </div>
             </mat-card-content>
@@ -77,7 +78,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
 
         <refresh-in />
       } @else if (publicStatusPageStore.error()?.httpCode === 404) {
-        <h1 class="mt-24 text-center text-4xl">404 - Status page not found</h1>
+        <h1 class="mt-24 text-center text-4xl">{{ 'statusPage.public.notFound' | transloco }}</h1>
       }
     </div>
   `,
@@ -90,10 +91,10 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
     MatCardContent,
     StatusPageMonitorList,
     BiComponent,
-    Placeholder,
     BackendImage,
     MonitorStatusColor,
     ShadowRender,
+    TranslocoPipe,
   ],
 })
 export class PublicStatusPagePage {

@@ -1,10 +1,12 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
-import {MatAnchor, MatIconButton} from '@angular/material/button';
+import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
@@ -18,7 +20,9 @@ import {
 
 @Component({
   template: `
-    <a mat-flat-button routerLink="new">New notification method</a>
+    <a mat-flat-button routerLink="new">
+      {{ 'cmdk.groups.notificationMethod.create' | transloco }}
+    </a>
 
     <table
       [dataSource]="notificationMethodsStore.entities()"
@@ -27,12 +31,12 @@ import {
       mat-table
       matSort>
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="sender._type">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Type</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.type' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>{{ element.sender._type }}</td>
       </ng-container>
 
@@ -42,7 +46,7 @@ import {
           @switch (element.sender._type) {
             @case ('EMAIL') {
               <div class="inline-flex">
-                <span>Recipient:&nbsp;</span>
+                <span>{{ 'notificationMethod.list.email.recipient' | transloco }}</span>
                 <a
                   class="font-extrabold text-green-500"
                   [href]="'mailto:' + $any(element.sender)['to']"
@@ -51,7 +55,7 @@ import {
                   rel="noopener noreferrer">
                   {{ $any(element.sender)['to'] | s_implode: ', ' : 40 : '...' }}
                 </a>
-                <span>&nbsp;via&nbsp;</span>
+                <span>{{ 'notificationMethod.list.email.via' | transloco }}</span>
                 <a
                   class="font-extrabold text-green-500"
                   [href]="$any(element.sender)['host']"
@@ -77,19 +81,30 @@ import {
       </ng-container>
 
       <ng-container matColumnDef="useByDefault">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Use by default</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ 'notificationMethod.edit.useByDefault' | transloco }}
+        </th>
         <td *matCellDef="let element" mat-cell>{{ element.useByDefault | puBooleanEmoji }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let element" mat-cell>
+          <a
+            [routerLink]="element.id"
+            [matTooltip]="'notificationMethod.list.edit' | transloco"
+            [attr.aria-label]="'notificationMethod.list.edit' | transloco"
+            mat-icon-button
+            stopPropagation>
+            <bi name="pencil-square" />
+          </a>
           <button
             class="mt-1"
+            [matTooltip]="'notificationMethod.list.delete' | transloco"
+            [attr.aria-label]="'notificationMethod.list.delete' | transloco"
             (click)="deleteConfirm.confirm(element.id)"
             mat-icon-button
-            stopPropagation
-            aria-label="Delete the notification method">
+            stopPropagation>
             <bi name="trash-fill" />
           </button>
         </td>
@@ -106,7 +121,7 @@ import {
     <pu-table-loading-bar [loading]="notificationMethodsStore.isPending()" />
 
     @if (notificationMethodsStore.isEmpty()) {
-      <div class="mt-2 w-full text-center">No data available.</div>
+      <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
     }
 
     <mat-paginator
@@ -143,6 +158,9 @@ import {
     PuBooleanEmojiPipe,
     TableLoadingBar,
     DfxImplodePipe,
+    TranslocoPipe,
+    MatTooltip,
+    MatIconAnchor,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

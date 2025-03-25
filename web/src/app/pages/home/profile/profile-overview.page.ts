@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {ProfileEmailEditForm} from '@app/components/profile';
-import {AuthStore, ProfileEditStore, ProfileStore} from '@app/services';
+import {ProfileEditStore, ProfileStore} from '@app/services';
 
 @Component({
   template: `
@@ -21,19 +20,14 @@ import {AuthStore, ProfileEditStore, ProfileStore} from '@app/services';
           </mat-card>
         </div>
       </div>
-
-      <div>
-        <button (click)="authStore.logout()" mat-flat-button>Logout</button>
-      </div>
     </div>
   `,
   selector: 'pu-profile-overview-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProfileEditStore],
-  imports: [MatCard, MatCardContent, ProfileEmailEditForm, MatButton],
+  imports: [MatCard, MatCardContent, ProfileEmailEditForm],
 })
 export class ProfileOverviewPage {
-  readonly authStore = inject(AuthStore);
   readonly profileStore = inject(ProfileStore);
   readonly profileEditStore = inject(ProfileEditStore);
 

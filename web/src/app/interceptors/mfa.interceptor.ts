@@ -27,7 +27,7 @@ export function mfaInterceptor(
         const dialogRef = dialog.open(MFACheckDialog);
 
         return dialogRef.afterClosed().pipe(
-          tap((code) => console.log('tap code', code)),
+          tap((code) => console.log('MFACheckDialog return value ', code)),
           filter((code): code is string => !!code),
           switchMap((code) => {
             lumber.info('handleMFACodeRequired', 'Code supplied', code);

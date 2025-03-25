@@ -1,5 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {Placeholder} from '@app/components';
 import {StatusPageEditForm} from '@app/components/status-page';
 import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
@@ -11,12 +13,12 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
       @let statusPage = statusPageEditStore.statusPage();
       @if (_statusPageId) {
         @if (statusPageEditStore.isFulfilled()) {
-          <h1 class="text-4xl">Edit {{ statusPage?.name }}</h1>
+          <h1 class="text-4xl">{{ 'statusPage.edit.edit' | transloco: statusPage }}</h1>
         } @else {
           <pu-placeholder class="h-12 w-64" />
         }
       } @else {
-        <h1 class="text-4xl">Create new status page</h1>
+        <h1 class="text-4xl">{{ 'cmdk.groups.statusPage.create' | transloco }}</h1>
       }
 
       @if (_statusPageId) {
@@ -58,7 +60,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
   `,
   selector: 'pu-status-page-edit-page',
   providers: [StatusPageEditStore],
-  imports: [StatusPageEditForm, Placeholder],
+  imports: [StatusPageEditForm, Placeholder, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusPageEditPage {

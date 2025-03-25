@@ -92,7 +92,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
           <div class="flex grow flex-col gap-10">
             <pu-notification-method-edit-template
-              [label]="'notificationMethod.edit.title' | transloco"
+              [label]="'notificationMethod.edit.titleTemplate' | transloco"
               formControlName="titleTemplate" />
 
             <mat-divider />

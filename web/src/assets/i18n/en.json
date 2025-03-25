@@ -8,6 +8,10 @@
     "oldPassword": "Old {{general.password}}",
     "stayLoggedIn": "Stay logged in"
   },
+  "backendOffline": {
+    "description": "It seems like the backend is offline. Try in a few minutes again.",
+    "title": "{{general.error}}!"
+  },
   "checkResult": {
     "details": {
       "check": "Check",
@@ -104,6 +108,7 @@
     "email": "E-Mail",
     "emailAddress": "E-Mail address",
     "end": "End",
+    "error": "Error",
     "footer": "Footer",
     "general": "General",
     "group": "Group",
@@ -111,6 +116,7 @@
     "hours": "Hours",
     "instance": "Instance",
     "invite": "Invite",
+    "invites": "Invites",
     "ipAddress": "IP-Address",
     "latest": "Latest",
     "loading": "Loading...",
@@ -139,6 +145,7 @@
     "port": "Port",
     "precision": "Precision",
     "profile": "Profile",
+    "redirecting": "Redirecting...",
     "role": "Role",
     "save": "Save",
     "search": "Search",
@@ -234,7 +241,12 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
-    "oneDayUptime": "One-day uptime"
+    "oneDayUptime": "One-day uptime",
+    "status": {
+      "down": "Down",
+      "paused": "Paused",
+      "up": "Up"
+    }
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -243,7 +255,14 @@
     "teamSelect": {
       "personal": "Personal Account",
       "select": "Select a {{general.team}}"
-    }
+    },
+    "toggle": "Toggle side nav"
+  },
+  "notFound": {
+    "back": "Go back",
+    "description": "Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or never existed.",
+    "home": "Back to home",
+    "title": "Page not found"
   },
   "notificationMethod": {
     "edit": {
@@ -253,6 +272,7 @@
         "url": "Discord Webhook {{general.url}}",
         "urlHelp": "You can get this by going to Server Settings -> Integrations -> View Webhooks -> New Webhook"
       },
+      "edit": "Edit {{name}}",
       "email": {
         "bcc": {
           "enter": "Enter BCC {{general.emailAddress}}",
@@ -272,8 +292,16 @@
         }
       },
       "selectTypeToContinue": "Please select a type to continue",
-      "title": "Title template",
+      "titleTemplate": "Title template",
       "useByDefault": "Use by default"
+    },
+    "list": {
+      "delete": "Delete the {{general.notificationMethod}}",
+      "edit": "Edit the {{general.notificationMethod}}",
+      "email": {
+        "recipient": "Recipient: ",
+        "via": " via "
+      }
     },
     "selector": {
       "add": "Add {{general.notificationMethods}}",
@@ -282,6 +310,7 @@
     }
   },
   "profile": {
+    "devThings": "Dev things",
     "email": {
       "current": "Current {{general.emailAddress}}",
       "new": "New {{general.emailAddress}}",
@@ -293,6 +322,9 @@
     "password": {
       "currentPassword": "Current {{general.password}}",
       "update": "Update {{general.password}}"
+    },
+    "sessions": {
+      "lastUsed": "Last used"
     },
     "settings": "{{general.profile}} {{general.settings}}"
   },
@@ -308,6 +340,7 @@
         "new": "New {{general.domainName}}",
         "remove": "Remove {{domainName}}"
       },
+      "edit": "Edit {{name}}",
       "group": {
         "add": "Add {{general.group}}",
         "minOne": "Add at least one {{general.group}}."
@@ -324,6 +357,16 @@
         "show": "Show {{general.monitors}} in groups"
       },
       "slugInUse": "Slug already taken"
+    },
+    "list": {
+      "delete": "Delete the {{general.statusPage}}",
+      "edit": "Edit the {{general.statusPage}}",
+      "preview": "Preview the {{general.statusPage}}"
+    },
+    "public": {
+      "issues": "Some services experience issues.",
+      "notFound": "404 - Status page not found",
+      "operational": "All services operational."
     }
   },
   "team": {
@@ -333,6 +376,11 @@
       "paused": "Paused {{general.monitors}}",
       "up": "Up {{general.monitors}}"
     },
+    "edit": {
+      "edit": "Edit {{name}}",
+      "openInvites": "{{general.open}} {{general.invites}}"
+    },
+    "invite": "{{general.invite}} a new member",
     "monitors": "{{monitorCount}} Monitor(s)",
     "settings": {
       "invitedAt": "Invited at",

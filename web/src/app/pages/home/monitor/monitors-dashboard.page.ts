@@ -28,7 +28,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.upCount }}</span>
-            <span class="text-lg">Up</span>
+            <span class="text-lg">{{ 'monitor.status.up' | transloco }}</span>
           </a>
           <a
             class="card"
@@ -36,7 +36,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.downCount }}</span>
-            <span class="text-lg">Down</span>
+            <span class="text-lg">{{ 'monitor.status.down' | transloco }}</span>
           </a>
           <a
             class="card"
@@ -44,7 +44,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.maintenanceCount }}</span>
-            <span class="text-lg">Maintenance</span>
+            <span class="text-lg">{{ 'general.maintenance' | transloco }}</span>
           </a>
           <a
             class="card"
@@ -52,7 +52,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.pausedCount }}</span>
-            <span class="text-lg">Paused</span>
+            <span class="text-lg">{{ 'monitor.status.paused' | transloco }}</span>
           </a>
         </div>
       }

@@ -3,8 +3,10 @@ import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button'
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -13,7 +15,7 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
 
 @Component({
   template: `
-    <a mat-flat-button routerLink="new">New status page</a>
+    <a mat-flat-button routerLink="new">{{ 'cmdk.groups.statusPage.create' | transloco }}</a>
 
     <table
       [dataSource]="statusPagesStore.entities()"
@@ -22,12 +24,12 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
       mat-table
       matSort>
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="slug">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Slug</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.slug' | transloco }}</th>
         <td *matCellDef="let element" mat-cell>{{ element.slug }}</td>
       </ng-container>
 
@@ -36,24 +38,27 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
         <td *matCellDef="let element" mat-cell>
           <a
             [href]="'/public/s/' + element.slug"
+            [matTooltip]="'statusPage.list.preview' | transloco"
+            [attr.aria-label]="'statusPage.list.preview' | transloco"
             target="_blank"
             mat-icon-button
-            stopPropagation
-            aria-label="Preview status page">
+            stopPropagation>
             <bi name="eye" />
           </a>
           <a
             [routerLink]="element.id"
+            [matTooltip]="'statusPage.list.edit' | transloco"
+            [attr.aria-label]="'statusPage.list.edit' | transloco"
             mat-icon-button
-            stopPropagation
-            aria-label="Edit the status page">
+            stopPropagation>
             <bi name="pencil-square" />
           </a>
           <button
+            [matTooltip]="'statusPage.list.delete' | transloco"
+            [attr.aria-label]="'statusPage.list.delete' | transloco"
             (click)="deleteConfirm.confirm(element.id)"
             mat-icon-button
-            stopPropagation
-            aria-label="Delete the notification method">
+            stopPropagation>
             <bi name="trash-fill" />
           </button>
         </td>
@@ -70,7 +75,7 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
     <pu-table-loading-bar [loading]="statusPagesStore.isPending()" />
 
     @if (statusPagesStore.isEmpty()) {
-      <div class="mt-2 w-full text-center">No data available.</div>
+      <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
     }
 
     <mat-paginator
@@ -92,6 +97,8 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
     MatIconButton,
     BiComponent,
     MatIconAnchor,
+    TranslocoPipe,
+    MatTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

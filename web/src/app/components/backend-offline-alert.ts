@@ -3,6 +3,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {timer} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {injectWindow} from 'dfx-helper';
 
 import {AlertDirective} from './alert.directive';
@@ -13,11 +14,11 @@ import {AlertDirective} from './alert.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div puAlert type="WARN">
-      <span class="font-bold">Error!</span>
-      It seems like the backend is offline. Try in a few minutes again.
+      <span class="font-bold">{{ 'backendOffline.title' | transloco }}!</span>
+      {{ 'backendOffline.description' | transloco }}!
     </div>
   `,
-  imports: [AlertDirective],
+  imports: [AlertDirective, TranslocoPipe],
 })
 export class BackendOfflineAlert {
   private window = injectWindow();

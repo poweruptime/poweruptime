@@ -3,6 +3,8 @@ import {MatAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {RouterLink} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {Placeholder} from '@app/components';
 import {TeamEditForm, TeamSettings, TeamUsersList} from '@app/components/team';
 import {TeamInvitesList} from '@app/components/team/team-invites-list';
@@ -20,13 +22,13 @@ import {
 
     @if (teamId) {
       @if (team; as team) {
-        <h1 class="mb-4 text-4xl">Edit {{ team.name }}</h1>
+        <h1 class="mb-4 text-4xl">{{ 'team.edit.edit' | transloco: team }}</h1>
 
         <div class="grid grid-cols-6">
           <div class="col-span-3 flex w-full flex-col gap-4">
             <mat-card appearance="outlined">
               <mat-card-header>
-                <mat-card-title>General</mat-card-title>
+                <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <div class="pt-4">
@@ -37,7 +39,7 @@ import {
 
             <mat-card appearance="outlined">
               <mat-card-header>
-                <mat-card-title>Settings</mat-card-title>
+                <mat-card-title>{{ 'general.settings' | transloco }}</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <div class="pt-4">
@@ -54,12 +56,14 @@ import {
               @if (!team.personal) {
                 <mat-card appearance="outlined">
                   <mat-card-header>
-                    <mat-card-title>Users</mat-card-title>
+                    <mat-card-title>{{ 'general.users' | transloco }}</mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
                     <div class="flex flex-col gap-2 pt-4">
                       <div>
-                        <a mat-flat-button routerLink="../invite">Invite</a>
+                        <a mat-flat-button routerLink="../invite">
+                          {{ 'general.invite' | transloco }}
+                        </a>
                       </div>
 
                       <pu-team-users-list [teamId]="teamId" />
@@ -69,7 +73,7 @@ import {
 
                 <mat-card appearance="outlined">
                   <mat-card-header>
-                    <mat-card-title>Open invites</mat-card-title>
+                    <mat-card-title>{{ 'team.edit.openInvites' | transloco }}</mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
                     <div class="pt-4">
@@ -88,7 +92,7 @@ import {
       }
     } @else {
       <div class="flex flex-col gap-4">
-        <h1 class="text-4xl">Create new team</h1>
+        <h1 class="text-4xl">{{ 'cmdk.groups.team.create' | transloco }}</h1>
 
         <div class="flex">
           <pu-team-edit-form [team]="undefined" (submitCreate)="teamEditStore.create($event)" />
@@ -110,6 +114,7 @@ import {
     MatCardHeader,
     MatCardTitle,
     TeamInvitesList,
+    TranslocoPipe,
   ],
   providers: [TeamEditStore, TeamSettingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,

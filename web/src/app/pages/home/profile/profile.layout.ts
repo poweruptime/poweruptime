@@ -2,6 +2,8 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {environment} from '../../../../environments/environment';
 
 @Component({
@@ -15,7 +17,7 @@ import {environment} from '../../../../environments/environment';
           [routerLink]="route.path"
           routerLinkActive
           mat-tab-link>
-          {{ route.text }}
+          {{ route.text | transloco }}
         </a>
       }
     </nav>
@@ -27,12 +29,20 @@ import {environment} from '../../../../environments/environment';
   `,
   selector: 'instance-settings-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, RouterOutlet, MatTabNavPanel],
+  imports: [
+    MatTabNav,
+    MatTabLink,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    MatTabNavPanel,
+    TranslocoPipe,
+  ],
 })
 export class ProfileLayout {
   readonly routes = [
-    {path: 'overview', text: 'Overview'},
-    {path: 'security', text: 'Security'},
-    ...(environment.production ? [] : [{path: 'dev', text: 'Dev things'}]),
+    {path: 'overview', text: 'general.overview'},
+    {path: 'security', text: 'general.security'},
+    ...(environment.production ? [] : [{path: 'dev', text: 'profile.devThings'}]),
   ];
 }
