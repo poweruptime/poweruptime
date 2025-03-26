@@ -21,8 +21,8 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 @Component({
   selector: 'pu-notification-method-edit-form-email-data',
   template: `
-    <div class="flex flex-col gap-4" [formGroup]="emailDataFormGroup">
-      <mat-form-field>
+    <div class="grid grid-cols-2 gap-4" [formGroup]="emailDataFormGroup">
+      <mat-form-field class="col-span-2">
         <mat-label>{{ 'general.to' | transloco }}</mat-label>
         <mat-chip-grid
           #toGrid
@@ -56,81 +56,83 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         }
       </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>{{ 'general.host' | transloco }}</mat-label>
-        <input matInput formControlName="host" />
+      <div class="col-span-2 grid grid-cols-12 gap-4">
+        <mat-form-field class="col-span-9">
+          <mat-label>{{ 'general.host' | transloco }}</mat-label>
+          <input matInput formControlName="host" />
 
-        @let hostErrors = emailDataFormGroup.controls.host.errors;
-        @if (hostErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-        }
-        @if (hostErrors?.['minlength']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-        }
-        @if (hostErrors?.['maxlength']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-        }
-        @if (hostErrors?.['pattern']) {
-          <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{ 'general.port' | transloco }}</mat-label>
-        <input matInput type="number" formControlName="port" step="1" />
-
-        @let portErrors = emailDataFormGroup.controls.port.errors;
-        @if (portErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-        }
-        @if (portErrors?.['min']; as min) {
-          <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-        }
-        @if (portErrors?.['max']; as max) {
-          <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-        }
-        @if (portErrors?.['pattern']) {
-          <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-        }
-      </mat-form-field>
-
-      <div class="flex flex-col gap-2 pb-4">
-        <mat-form-field class="grow" subscriptSizing="dynamic">
-          <mat-label>{{ 'general.security' | transloco }}</mat-label>
-          <mat-select formControlName="security">
-            <mat-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</mat-option>
-            <mat-option value="TLS">TLS (465)</mat-option>
-          </mat-select>
+          @let hostErrors = emailDataFormGroup.controls.host.errors;
+          @if (hostErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (hostErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (hostErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (hostErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+          }
         </mat-form-field>
 
-        <div>
-          <mat-slide-toggle formControlName="ignoreTLSErrors">
-            {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
-          </mat-slide-toggle>
+        <mat-form-field class="col-span-3">
+          <mat-label>{{ 'general.port' | transloco }}</mat-label>
+          <input matInput type="number" formControlName="port" step="1" />
+
+          @let portErrors = emailDataFormGroup.controls.port.errors;
+          @if (portErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (portErrors?.['min']; as min) {
+            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+          }
+          @if (portErrors?.['max']; as max) {
+            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+          }
+          @if (portErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="col-span-2 grid grid-cols-1 sm:grid-cols-2">
+        <div class="col-span-1 grid gap-2">
+          <mat-form-field class="grow" subscriptSizing="dynamic">
+            <mat-label>{{ 'general.security' | transloco }}</mat-label>
+            <mat-select formControlName="security">
+              <mat-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</mat-option>
+              <mat-option value="TLS">TLS (465)</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div>
+            <mat-slide-toggle formControlName="ignoreTLSErrors">
+              {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
 
-      <div class="flex gap-2">
-        <mat-form-field>
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-          @let usernameErrors = emailDataFormGroup.controls.username.errors;
-          @if (usernameErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-        </mat-form-field>
+      <mat-form-field class="col-span-1">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+        @let usernameErrors = emailDataFormGroup.controls.username.errors;
+        @if (usernameErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
+      </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" />
-          @let passwordErrors = emailDataFormGroup.controls.password.errors;
-          @if (passwordErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-        </mat-form-field>
-      </div>
+      <mat-form-field class="col-span-1">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+        @let passwordErrors = emailDataFormGroup.controls.password.errors;
+        @if (passwordErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
+      </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field class="col-span-2">
         <mat-label>CC</mat-label>
         <mat-chip-grid
           #ccGrid
@@ -161,7 +163,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field class="col-span-2">
         <mat-label>BCC</mat-label>
         <mat-chip-grid
           #bccGrid

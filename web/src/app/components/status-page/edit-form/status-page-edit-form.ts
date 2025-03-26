@@ -59,60 +59,59 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 @Component({
   template: `
     <form
-      class="grid grid-cols-3 gap-12"
+      class="grid grid-cols-1 gap-12 md:grid-cols-2"
       id="form"
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      <div class="flex flex-col gap-6">
-        <div class="flex gap-2">
-          <mat-form-field class="w-full">
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
+      <div class="grid grid-cols-2 gap-6">
+        <mat-form-field class="col-span-1">
+          <mat-label>{{ 'general.name' | transloco }}</mat-label>
+          <input matInput formControlName="name" />
 
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
+          @let nameErrors = form.controls.name.errors;
+          @if (nameErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (nameErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (nameErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+        </mat-form-field>
 
-          <mat-form-field class="w-full">
-            <mat-label>{{ 'general.slug' | transloco }}</mat-label>
-            <input matInput formControlName="slug" />
+        <mat-form-field class="col-span-1">
+          <mat-label>{{ 'general.slug' | transloco }}</mat-label>
+          <input matInput formControlName="slug" />
 
-            @let slugErrors = form.controls.slug.errors;
-            @if (slugErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (slugErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
-            }
-            @if (slugErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (slugErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-            @if (slugErrors?.['slugInUse']) {
-              <mat-error>
-                {{ 'statusPage.edit.slugInUse' | transloco }}
-              </mat-error>
-            }
-          </mat-form-field>
-        </div>
+          @let slugErrors = form.controls.slug.errors;
+          @if (slugErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (slugErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
+          }
+          @if (slugErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (slugErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+          @if (slugErrors?.['slugInUse']) {
+            <mat-error>
+              {{ 'statusPage.edit.slugInUse' | transloco }}
+            </mat-error>
+          }
+        </mat-form-field>
 
         <pu-file-upload
+          class="col-span-2"
           [file]="statusPage()?.image"
           [label]="'statusPage.edit.image' | transloco"
           (fileId)="form.controls.imageId.setValue($event)" />
 
-        <mat-form-field>
+        <mat-form-field class="col-span-2">
           <mat-label>{{ 'general.domainNames' | transloco }}</mat-label>
           <mat-chip-grid
             #domainNamesGrid
@@ -152,11 +151,13 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
         </mat-form-field>
 
         <pu-editor
+          class="col-span-2"
           id="description"
           [control]="form.controls.description"
           [placeholder]="('general.description' | transloco) + '...'" />
 
         <pu-editor
+          class="col-span-2"
           id="footer"
           [control]="form.controls.footer"
           [placeholder]="('general.footer' | transloco) + '...'" />
@@ -164,7 +165,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
         <pu-save-button [valid]="isValid()" />
       </div>
 
-      <div class="flex flex-col gap-4" style="min-width: 37rem">
+      <div class="flex flex-col gap-4">
         @let isCollapsed = collapsed();
 
         <div class="flex justify-between">

@@ -17,64 +17,68 @@ import {TeamsStore} from '@app/services';
   template: `
     <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
 
-    <table
-      [dataSource]="teamsStore.entities()"
-      [matSortActive]="teamsStore.sortBy()"
-      [matSortDirection]="teamsStore.sortDirection()"
-      mat-table
-      matSort>
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.name }}
-        </td>
-      </ng-container>
+    <div class="table-responsive">
+      <table
+        [dataSource]="teamsStore.entities()"
+        [matSortActive]="teamsStore.sortBy()"
+        [matSortDirection]="teamsStore.sortDirection()"
+        mat-table
+        matSort>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.name' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.name }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="personalUser.id">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>
-          {{ 'general.personal' | transloco }}
-        </th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.personal ? '✅' : '❌' }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="personalUser.id">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.personal' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.personal ? '✅' : '❌' }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="monitorCount">
-        <th *matHeaderCellDef mat-header-cell>{{ 'general.monitors' | transloco }}</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.dashboard.monitorCount }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="monitorCount">
+          <th *matHeaderCellDef mat-header-cell>{{ 'general.monitors' | transloco }}</th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.dashboard.monitorCount }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <th *matHeaderCellDef mat-header-cell></th>
-        <td *matCellDef="let element" mat-cell>
-          <a
-            [routerLink]="'/t/' + element.id + '/edit'"
-            mat-icon-button
-            matTooltip="Edit"
-            stopPropagation>
-            <bi name="gear" />
-          </a>
-          @if (!element.personal) {
-            <button
-              (click)="deleteConfirm.confirm(element.id)"
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell></th>
+          <td *matCellDef="let element" mat-cell>
+            <a
+              [routerLink]="'/t/' + element.id + '/edit'"
               mat-icon-button
-              type="button"
-              matTooltip="Delete"
+              matTooltip="Edit"
               stopPropagation>
-              <bi name="trash" />
-            </button>
-          }
-        </td>
-      </ng-container>
+              <bi name="gear" />
+            </a>
+            @if (!element.personal) {
+              <button
+                (click)="deleteConfirm.confirm(element.id)"
+                mat-icon-button
+                type="button"
+                matTooltip="Delete"
+                stopPropagation>
+                <bi name="trash" />
+              </button>
+            }
+          </td>
+        </ng-container>
 
-      <tr *matHeaderRowDef="teamsStore.columnsToDisplay()" mat-header-row></tr>
-      <tr
-        *matRowDef="let row; columns: teamsStore.columnsToDisplay()"
-        [routerLink]="'/t/' + row.id + '/edit'"
-        mat-row></tr>
-    </table>
+        <tr *matHeaderRowDef="teamsStore.columnsToDisplay()" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: teamsStore.columnsToDisplay()"
+          [routerLink]="'/t/' + row.id + '/edit'"
+          mat-row></tr>
+      </table>
+    </div>
 
     <pu-table-loading-bar [loading]="teamsStore.isPending()" />
 

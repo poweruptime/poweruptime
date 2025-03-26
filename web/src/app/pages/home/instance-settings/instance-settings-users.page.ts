@@ -18,57 +18,67 @@ import {UsersStore} from '@app/services';
   template: `
     <a mat-flat-button routerLink="new">{{ 'instanceSettings.inviteUser' | transloco }}</a>
 
-    <table
-      [dataSource]="usersStore.entities()"
-      [matSortActive]="usersStore.sortBy()"
-      [matSortDirection]="usersStore.sortDirection()"
-      mat-table
-      matSort>
-      <ng-container matColumnDef="email">
-        <th *matHeaderCellDef mat-header-cell>{{ 'general.emailAddress' | transloco }}</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.email }}
-        </td>
-      </ng-container>
+    <div class="table-responsive">
+      <table
+        [dataSource]="usersStore.entities()"
+        [matSortActive]="usersStore.sortBy()"
+        [matSortDirection]="usersStore.sortDirection()"
+        mat-table
+        matSort>
+        <ng-container matColumnDef="email">
+          <th *matHeaderCellDef mat-header-cell>{{ 'general.emailAddress' | transloco }}</th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.email }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.name }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.name' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.name }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="activated">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>
-          {{ 'general.activated' | transloco }}
-        </th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.activated ? '✅' : '❌' }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="activated">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.activated' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.activated ? '✅' : '❌' }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="role">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.role' | transloco }}</th>
-        <td *matCellDef="let element" mat-cell>
-          <mat-chip>{{ element.role }}</mat-chip>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="role">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.role' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            <mat-chip>{{ element.role }}</mat-chip>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <th *matHeaderCellDef mat-header-cell></th>
-        <td *matCellDef="let element" mat-cell>
-          <a [routerLink]="element.id + '/edit'" mat-icon-button matTooltip="Edit" stopPropagation>
-            <bi name="gear" />
-          </a>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell></th>
+          <td *matCellDef="let element" mat-cell>
+            <a
+              [routerLink]="element.id + '/edit'"
+              mat-icon-button
+              matTooltip="Edit"
+              stopPropagation>
+              <bi name="gear" />
+            </a>
+          </td>
+        </ng-container>
 
-      <tr *matHeaderRowDef="usersStore.columnsToDisplay()" mat-header-row></tr>
-      <tr
-        *matRowDef="let row; columns: usersStore.columnsToDisplay()"
-        [routerLink]="row.id + '/edit'"
-        mat-row></tr>
-    </table>
+        <tr *matHeaderRowDef="usersStore.columnsToDisplay()" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: usersStore.columnsToDisplay()"
+          [routerLink]="row.id + '/edit'"
+          mat-row></tr>
+      </table>
+    </div>
 
     <pu-table-loading-bar [loading]="usersStore.isPending()" />
 

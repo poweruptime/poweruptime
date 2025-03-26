@@ -24,8 +24,8 @@ import {
       @if (team; as team) {
         <h1 class="mb-4 text-4xl">{{ 'team.edit.edit' | transloco: team }}</h1>
 
-        <div class="grid grid-cols-6">
-          <div class="col-span-3 flex w-full flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-6">
+          <div class="col-span-3 flex w-full flex-col gap-4 xl:col-span-2">
             <mat-card appearance="outlined">
               <mat-card-header>
                 <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>

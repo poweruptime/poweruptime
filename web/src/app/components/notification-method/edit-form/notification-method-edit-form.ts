@@ -21,11 +21,11 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 @Component({
   template: `
     <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div class="flex gap-16">
-        <div class="flex grow flex-col gap-4">
+      <div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
+        <div class="col-span-1 flex flex-col gap-4">
           <div class="flex flex-col gap-2">
-            <div class="flex gap-2">
-              <mat-form-field>
+            <div class="grid grid-cols-6 gap-4">
+              <mat-form-field class="col-span-4">
                 <mat-label>{{ 'general.name' | transloco }}</mat-label>
                 <input matInput formControlName="name" />
 
@@ -41,7 +41,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                 }
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-span-2">
                 <mat-label>{{ 'general.type' | transloco }}</mat-label>
                 <mat-select formControlName="type">
                   <mat-option value="EMAIL">Email</mat-option>
@@ -88,9 +88,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         </div>
 
         @if (!isCreating()) {
-          <div style="border-left:1px solid #FFF;height:700px"></div>
-
-          <div class="flex grow flex-col gap-10">
+          <div class="col-span-1 flex flex-col gap-10">
             <pu-notification-method-edit-template
               [label]="'notificationMethod.edit.titleTemplate' | transloco"
               formControlName="titleTemplate" />

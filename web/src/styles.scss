@@ -157,6 +157,11 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   @apply bg-neutral-000 dark:bg-bg-dark;
 }
 
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
 /* Fix vertical text alignment in buttons with icons */
 
 .mdc-icon-button > bi {
