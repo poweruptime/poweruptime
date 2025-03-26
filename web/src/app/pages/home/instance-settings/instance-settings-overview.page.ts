@@ -15,7 +15,7 @@ import {
 @Component({
   template: `
     @if (instanceSettingsStore.settings(); as settings) {
-      <div class="grid grid-cols-1 md:grid-cols-6">
+      <div class="grid md:grid-cols-6">
         <div class="col-span-3 flex w-full flex-col gap-4 xl:col-span-2">
           <pu-instance-settings-general-form
             [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"

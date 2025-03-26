@@ -1,7 +1,11 @@
+import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {MatAnchor} from '@angular/material/button';
 import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {RouterLink, RouterOutlet} from '@angular/router';
+
+import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -10,13 +14,13 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {MonitorsDashboardStore, MonitorsSearchStore, MonitorsStore} from '@app/services';
+import {TailwindBreakpoints} from '@app/services/util';
 import {paramToArray} from '@app/util';
 
 @Component({
   template: `
-    <div class="grid h-full grid-cols-12 gap-4">
-      <div
-        class="col-span-12 flex flex-col gap-4 overflow-y-hidden pe-1 lg:col-span-5 xl:col-span-4 2xl:col-span-3">
+    <div class="grid h-full grid-cols-1 gap-4 lg:grid-cols-12">
+      <div class="flex flex-col gap-4 overflow-y-hidden pe-1 lg:col-span-5 xl:col-span-4">
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
@@ -69,7 +73,7 @@ import {paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="scroll-container col-span-12 pb-4 lg:col-span-7 xl:col-span-8 2xl:col-span-9">
+      <div class="scroll-container pb-4 lg:col-span-7 xl:col-span-8">
         <router-outlet />
       </div>
     </div>
@@ -133,6 +137,12 @@ export class MonitorsPage {
       stringify: (value) => value.join(','),
     },
   );
+
+  readonly collapseNav$ = inject(BreakpointObserver)
+    .observe([TailwindBreakpoints.xs, TailwindBreakpoints.sm, TailwindBreakpoints.md])
+    .pipe(map((result) => result.matches));
+
+  readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
 
   constructor() {
     this.monitorsDashboardStore.loadByTeamId(this.teamId);

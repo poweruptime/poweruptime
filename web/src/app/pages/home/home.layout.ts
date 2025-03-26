@@ -16,19 +16,20 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
 import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
+import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   selector: 'home-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @let _isMobile = isMobile();
+    @let _collapseNav = collapseNav();
 
     <mat-drawer-container class="dashboard-container" autosize>
       <mat-drawer
         class="sidenav"
         #drawer
-        [mode]="_isMobile ? 'over' : 'side'"
-        [opened]="!_isMobile">
+        [mode]="_collapseNav ? 'over' : 'side'"
+        [opened]="!_collapseNav">
         <pu-nav [teamId]="storageTeamId()" />
       </mat-drawer>
 
@@ -36,7 +37,7 @@ import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/servic
         <header class="header">
           <div class="flex justify-between gap-4 p-2">
             <div class="flex items-center gap-4">
-              <div class="flex items-center" [class.hidden]="!_isMobile">
+              <div class="flex items-center" [class.hidden]="!_collapseNav">
                 <button
                   [matTooltip]="'nav.toggle' | transloco"
                   [attr.aria-label]="'nav.toggle' | transloco"
@@ -49,7 +50,7 @@ import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/servic
                 <h1 class="text-2xl">poweruptime</h1>
               </a>
             </div>
-            <div class="inline-flex items-center gap-2">
+            <div class="hidden items-center gap-2 lg:inline-flex">
               <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
             </div>
           </div>
@@ -131,11 +132,17 @@ export class HomeLayout {
 
   readonly drawer = viewChild.required(MatDrawer);
 
-  readonly isMobile$ = inject(BreakpointObserver)
-    .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
+  readonly collapseNav$ = inject(BreakpointObserver)
+    .observe([
+      TailwindBreakpoints.xs,
+      TailwindBreakpoints.sm,
+      TailwindBreakpoints.md,
+      TailwindBreakpoints.lg,
+      TailwindBreakpoints.xl,
+    ])
     .pipe(map((result) => result.matches));
 
-  readonly isMobile = toSignal(this.isMobile$, {requireSync: true});
+  readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
 
   readonly hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
     defaultValue: 0,
@@ -152,12 +159,12 @@ export class HomeLayout {
     inject(Router)
       .events.pipe(
         takeUntilDestroyed(),
-        withLatestFrom(this.isMobile$),
+        withLatestFrom(this.collapseNav$),
         filter(([a, b]) => b && a instanceof NavigationEnd),
       )
       .subscribe(() => this.drawer().close());
 
-    this.isMobile$.pipe(skip(1), takeUntilDestroyed()).subscribe((isMobile) => {
+    this.collapseNav$.pipe(skip(1), takeUntilDestroyed()).subscribe((isMobile) => {
       if (isMobile) {
         void this.drawer().close();
       } else {

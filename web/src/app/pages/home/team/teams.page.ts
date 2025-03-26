@@ -1,3 +1,4 @@
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {
   CdkFixedSizeVirtualScroll,
   CdkVirtualForOf,
@@ -8,11 +9,14 @@ import {MatAnchor} from '@angular/material/button';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
 
+import {map} from 'rxjs';
+
 import {TranslocoPipe} from '@jsverse/transloco';
 import {a_chunk} from 'dfts-helper';
 
 import {TeamCard} from '@app/components/team';
 import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
+import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
@@ -27,7 +31,7 @@ import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
       maxBufferPx="1500"
       itemSize="230">
       <div
-        class="grid h-[250px] grid-cols-5 gap-4 px-4 pt-4"
+        class="grid h-[250px] gap-4 px-4 pt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         *cdkVirtualFor="let chunk of chunkedItems()">
         @for (team of chunk; track team.id) {
           <pu-team-card class="block h-[230px]" [team]="team" />
@@ -69,6 +73,7 @@ import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
 export class TeamsPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly instanceSettingsStore = inject(InstanceSettingsStore);
+  private readonly breakpointObserver = inject(BreakpointObserver);
 
   readonly viewport = viewChild.required(CdkVirtualScrollViewport);
 
@@ -83,7 +88,21 @@ export class TeamsPage {
     );
   }
 
-  readonly chunkedItems = computed(() => a_chunk(this.selectedTeamStore.sortedEntities(), 5));
+  readonly chunkSize = computed(() => {
+    if (this.breakpointObserver.isMatched(TailwindBreakpoints.xs)) {
+      return BreakpointValues.xs;
+    } else if (this.breakpointObserver.isMatched(TailwindBreakpoints.sm)) {
+      return BreakpointValues.small;
+    } else if (this.breakpointObserver.isMatched(TailwindBreakpoints.md)) {
+      return BreakpointValues.medium;
+    } else {
+      return BreakpointValues.large;
+    }
+  });
+
+  readonly chunkedItems = computed(() =>
+    a_chunk(this.selectedTeamStore.sortedEntities(), this.chunkSize()),
+  );
 
   protected triggerNextPage() {
     if (
@@ -96,3 +115,10 @@ export class TeamsPage {
     }
   }
 }
+
+export const BreakpointValues = {
+  xs: 1,
+  small: 2,
+  medium: 3,
+  large: 4,
+};

@@ -17,7 +17,7 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
 @Component({
   template: `
     <div class="flex flex-col gap-10">
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid gap-4 md:grid-cols-3">
         <div>
           <mat-card appearance="outlined">
             <mat-card-header>
@@ -50,53 +50,55 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
       <div>
         <h2 class="text-xl">{{ 'general.sessions' | transloco }}</h2>
 
-        <table
-          [dataSource]="sessionsStore.entities()"
-          [matSortActive]="sessionsStore.sortBy()"
-          [matSortDirection]="sessionsStore.sortDirection()"
-          mat-table
-          matSort>
-          <ng-container matColumnDef="description">
-            <th *matHeaderCellDef mat-header-cell>{{ 'general.description' | transloco }}</th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.description }}
-            </td>
-          </ng-container>
+        <div class="table-responsive">
+          <table
+            [dataSource]="sessionsStore.entities()"
+            [matSortActive]="sessionsStore.sortBy()"
+            [matSortDirection]="sessionsStore.sortDirection()"
+            mat-table
+            matSort>
+            <ng-container matColumnDef="description">
+              <th *matHeaderCellDef mat-header-cell>{{ 'general.description' | transloco }}</th>
+              <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                {{ element.description }}
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="updatedAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>
-              {{ 'profile.sessions.lastUsed' | transloco }}
-            </th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.updatedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="updatedAt">
+              <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'profile.sessions.lastUsed' | transloco }}
+              </th>
+              <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                {{ element.updatedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>
-              {{ 'general.createdAt' | transloco }}
-            </th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="createdAt">
+              <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ 'general.createdAt' | transloco }}
+              </th>
+              <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th *matHeaderCellDef mat-header-cell></th>
-            <td *matCellDef="let element" mat-cell>
-              <button
-                (click)="sessionsStore.delete(element.id)"
-                mat-icon-button
-                type="button"
-                matTooltip="Delete">
-                <bi name="trash" />
-              </button>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th *matHeaderCellDef mat-header-cell></th>
+              <td *matCellDef="let element" mat-cell>
+                <button
+                  (click)="sessionsStore.delete(element.id)"
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Delete">
+                  <bi name="trash" />
+                </button>
+              </td>
+            </ng-container>
 
-          <tr *matHeaderRowDef="sessionsStore.columnsToDisplay()" mat-header-row></tr>
-          <tr *matRowDef="let row; columns: sessionsStore.columnsToDisplay()" mat-row></tr>
-        </table>
+            <tr *matHeaderRowDef="sessionsStore.columnsToDisplay()" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: sessionsStore.columnsToDisplay()" mat-row></tr>
+          </table>
+        </div>
 
         <pu-table-loading-bar [loading]="sessionsStore.isPending()" />
 

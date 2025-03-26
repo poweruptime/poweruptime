@@ -21,7 +21,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 @Component({
   template: `
     <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
+      <div class="grid gap-16 lg:grid-cols-2">
         <div class="col-span-1 flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <div class="grid grid-cols-6 gap-4">

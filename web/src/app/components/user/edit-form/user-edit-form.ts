@@ -14,84 +14,80 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     @let valid = isValid();
 
-    <form class="flex flex-col gap-8" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div class="flex">
-        <div class="flex flex-col gap-5">
-          <mat-form-field>
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
+    <form class="grid gap-6" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field>
+        <mat-label>{{ 'general.name' | transloco }}</mat-label>
+        <input matInput formControlName="name" />
 
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
+        @let nameErrors = form.controls.name.errors;
+        @if (nameErrors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (nameErrors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
+        @if (nameErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
+      </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
-            <input matInput formControlName="email" />
+      <mat-form-field>
+        <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
+        <input matInput formControlName="email" />
 
-            @let emailErrors = form.controls.email.errors;
-            @if (emailErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (emailErrors?.['email']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (emailErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (emailErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
+        @let emailErrors = form.controls.email.errors;
+        @if (emailErrors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (emailErrors?.['email']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (emailErrors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
+        @if (emailErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
+      </mat-form-field>
 
-          @let _isCreating = isCreating();
+      @let _isCreating = isCreating();
 
-          <div class="flex flex-col pb-4">
-            <mat-form-field>
-              <mat-label>{{ 'general.password' | transloco }}</mat-label>
-              <input matInput formControlName="password" placeholder="********" />
+      <div class="grid pb-4">
+        <mat-form-field>
+          <mat-label>{{ 'general.password' | transloco }}</mat-label>
+          <input matInput formControlName="password" placeholder="********" />
 
-              @let passwordErrors = form.controls.password.errors;
-              @if (passwordErrors?.['minlength']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-              }
-            </mat-form-field>
+          @let passwordErrors = form.controls.password.errors;
+          @if (passwordErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+        </mat-form-field>
 
-            @if (!_isCreating) {
-              <mat-slide-toggle formControlName="updatePassword">
-                {{ 'user.edit.updatePassword' | transloco }}
-              </mat-slide-toggle>
-            }
-          </div>
-
-          <mat-slide-toggle formControlName="sendInvitation">
-            {{ 'user.edit.sendInviteEmail' | transloco }}
+        @if (!_isCreating) {
+          <mat-slide-toggle formControlName="updatePassword">
+            {{ 'user.edit.updatePassword' | transloco }}
           </mat-slide-toggle>
+        }
+      </div>
 
-          <div class="flex gap-8">
-            <mat-slide-toggle formControlName="isAdmin">
-              {{ 'general.systemAdmin' | transloco }}
-            </mat-slide-toggle>
+      <mat-slide-toggle formControlName="sendInvitation">
+        {{ 'user.edit.sendInviteEmail' | transloco }}
+      </mat-slide-toggle>
 
-            @if (!_isCreating) {
-              <mat-slide-toggle formControlName="activated">
-                {{ 'general.activated' | transloco }}
-              </mat-slide-toggle>
-            }
+      <div class="flex flex-wrap gap-x-8 gap-y-6">
+        <mat-slide-toggle formControlName="isAdmin">
+          {{ 'general.systemAdmin' | transloco }}
+        </mat-slide-toggle>
 
-            <mat-slide-toggle formControlName="forcePasswordChange">
-              {{ 'user.edit.forcePasswordChange' | transloco }}
-            </mat-slide-toggle>
-          </div>
-        </div>
+        @if (!_isCreating) {
+          <mat-slide-toggle formControlName="activated">
+            {{ 'general.activated' | transloco }}
+          </mat-slide-toggle>
+        }
+
+        <mat-slide-toggle formControlName="forcePasswordChange">
+          {{ 'user.edit.forcePasswordChange' | transloco }}
+        </mat-slide-toggle>
       </div>
 
       <pu-save-button [valid]="valid" />

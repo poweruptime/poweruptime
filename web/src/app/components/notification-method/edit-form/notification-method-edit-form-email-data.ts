@@ -96,7 +96,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </mat-form-field>
       </div>
 
-      <div class="col-span-2 grid grid-cols-1 sm:grid-cols-2">
+      <div class="col-span-2 grid sm:grid-cols-2">
         <div class="col-span-1 grid gap-2">
           <mat-form-field class="grow" subscriptSizing="dynamic">
             <mat-label>{{ 'general.security' | transloco }}</mat-label>

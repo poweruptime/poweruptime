@@ -212,18 +212,18 @@ class StartupApplicationListener(
             ),
         )
 
-//        repeat(200) {
+//        repeat(100) {
 //            monitorService.save(
 //                Monitor(
 //                    team = team,
 //                    name = "Test playground DNS",
 //                    description = "Test",
-//                    checker = monitorCheckerService.save(
-//                        DnsMonitorChecker(
+//                    checker = monitorCheckerDataService.save(
+//                        DnsMonitorCheckerData(
 //                            host = "playground.dafnik.me",
 //                            server = "9.9.9.9",
 //                            port = 53,
-//                            type = DnsMonitorCheckerType.A,
+//                            type = DnsMonitorCheckerDataType.A,
 //                            matches = listOf(
 //                                "185.199.109.153",
 //                                "185.199.110.153",

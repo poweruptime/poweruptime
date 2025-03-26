@@ -79,7 +79,7 @@ export function toBackendDate(dateString: Date | string): string {
 }
 
 export function toBackendDateTime(dateString: Date | string): string {
-  return format(dateString, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+  return format(dateString, "yyyy-MM-dd'T'HH:mm:ss.SSSXX");
 }
 
 export function dateToDateTime(
@@ -98,3 +98,12 @@ export function dateToDateTime(
 
   return toBackendDateTime(date);
 }
+
+export const TailwindBreakpoints = {
+  xs: '(max-width: 639.98px)', // Small
+  sm: '(min-width: 640px) and (max-width: 767.98px)', // Small
+  md: '(min-width: 768px) and (max-width: 1023.98px)', // Medium
+  lg: '(min-width: 1024px) and (max-width: 1279.98px)', // Large
+  xl: '(min-width: 1280px) and (max-width: 1535.98px)', // Extra large
+  '2xl': 'min-width: 1536px',
+};

@@ -26,7 +26,9 @@ import {UsersStore} from '@app/services';
         mat-table
         matSort>
         <ng-container matColumnDef="email">
-          <th *matHeaderCellDef mat-header-cell>{{ 'general.emailAddress' | transloco }}</th>
+          <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell>
+            {{ 'general.emailAddress' | transloco }}
+          </th>
           <td *matCellDef="let element" mat-cell>
             {{ element.email }}
           </td>

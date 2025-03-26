@@ -59,7 +59,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 @Component({
   template: `
     <form
-      class="grid grid-cols-1 gap-12 md:grid-cols-2"
+      class="grid gap-12 md:grid-cols-2"
       id="form"
       #formRef
       [formGroup]="form"

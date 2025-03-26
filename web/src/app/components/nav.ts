@@ -97,7 +97,6 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
               <div
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-300 p-4 text-sm tracking-widest text-black dark:bg-slate-800 dark:text-white">
                 {{ initials }}
-                $
               </div>
             } @else {
               <bi name="gear" />

@@ -41,7 +41,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
   template: `
     <div class="flex flex-col gap-2">
       @if (monitorDetailStore.monitor(); as monitor) {
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-4">
           <div class="flex items-center gap-6">
             <h1 class="text-4xl">{{ monitor.name }}</h1>
             <a href="/public/m/{{ monitor.id }}" target="_blank">
@@ -212,8 +212,8 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
                 <div
                   class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 hover:dark:bg-gray-700">
-                  <span class="text-2xl">{{ uptimeResult.value }}</span>
-                  <span class="text-lg">{{ uptimeResult.name }}</span>
+                  <span class="text-center text-2xl">{{ uptimeResult.value }}</span>
+                  <span class="text-center text-lg">{{ uptimeResult.name }}</span>
                 </div>
               }
             </div>

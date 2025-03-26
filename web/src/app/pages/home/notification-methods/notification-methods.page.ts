@@ -50,7 +50,7 @@ import {
           <td *matCellDef="let element" mat-cell>
             @switch (element.sender._type) {
               @case ('EMAIL') {
-                <div class="inline-flex">
+                <div class="inline-flex items-center gap-1">
                   <span>{{ 'notificationMethod.list.email.recipient' | transloco }}</span>
                   <a
                     class="font-extrabold text-green-500"

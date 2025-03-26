@@ -22,6 +22,7 @@ import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angul
 
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
+import {de as dateFnsLocaleDe} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -94,7 +95,7 @@ export const appConfig: ApplicationConfig = {
       },
     },
     {provide: LOCALE_ID, useValue: 'de-DE'},
-    {provide: MAT_DATE_LOCALE, useValue: localeDe},
+    {provide: MAT_DATE_LOCALE, useValue: dateFnsLocaleDe},
     provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
     importProvidersFrom(
       NgxEditorModule.forRoot({
