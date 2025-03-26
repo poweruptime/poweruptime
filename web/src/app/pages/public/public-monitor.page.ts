@@ -4,6 +4,7 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {Meta, Title} from '@angular/platform-browser';
 
 import {AreaChartModule} from '@swimlane/ngx-charts';
+import {s_cut} from 'dfts-helper';
 
 import {Heatmap, Placeholder, RefreshInComponent} from '@app/components';
 import {MonitorStatus, PingChart, UptimeTimeline} from '@app/components/monitor';
@@ -133,14 +134,19 @@ export class PublicMonitorPage {
           property: 'og:url',
           content: `${this.document.location.href}`,
         },
-      ]);
-
-      if (monitor.description) {
-        this.meta.addTag({
+        {
+          property: 'og:image',
+          content: `${this.document.location.origin}/assets/og-image/${monitor.status}.png`,
+        },
+        {
           property: 'og:description',
-          content: monitor.description,
-        });
-      }
+          content: s_cut(
+            `${monitor.status === 'UP' ? 'Service operational.' : 'Service experiences issues'}. ${monitor.description ?? ''}`,
+            200,
+            '...',
+          ),
+        },
+      ]);
     });
   }
 }

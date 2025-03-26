@@ -10,6 +10,7 @@ import {environment} from '../../environments/environment';
   template: `
     @let _size = size();
     <img
+      [alt]="alt()"
       [class]="class()"
       [ngSrc]="baseUrl + '/v1/public/file/' + fileId()"
       [width]="width() ?? _size"
@@ -20,13 +21,13 @@ import {environment} from '../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackendImage {
+  private readonly isDocker = injectIsPlatformDocker();
+  protected readonly baseUrl = this.isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl;
+
   fileId = input.required<string>();
-  title = input.required<string>();
   class = input<string>();
   width = input<string>();
   height = input<string>();
   size = input<string>();
-
-  isDocker = injectIsPlatformDocker();
-  baseUrl = this.isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl;
+  alt = input<string>('');
 }

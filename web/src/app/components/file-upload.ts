@@ -49,7 +49,7 @@ import {environment} from '../../environments/environment';
 
     @if (fileToShow(); as fileToShow) {
       @if ($any(fileToShow).fileId; as fileId) {
-        <pu-backend-image class="mt-4" [fileId]="fileId" [title]="'Logo'" size="140" />
+        <pu-backend-image class="mt-4" [fileId]="fileId" size="140" alt="Logo" />
       }
     }
   `,

@@ -13,6 +13,8 @@ import {MonitorStatusColor} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
 import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
 
+import {environment} from '../../../environments/environment';
+
 @Component({
   template: `
     <div class="flex flex-col gap-6">
@@ -23,7 +25,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
               <pu-backend-image
                 class="rounded-xl"
                 [fileId]="image.fileId"
-                [title]="statusPage.name + ' Logo'"
+                [alt]="statusPage.name + ' Logo'"
                 size="75" />
             }
             <h1 class="text-4xl">{{ statusPage.name }}</h1>
@@ -109,6 +111,8 @@ export class PublicStatusPagePage {
 
   readonly host = this.document.location.host;
 
+  readonly imageBaseUrl = `${environment.apiUrl}/v1/public/file`;
+
   constructor() {
     this.publicStatusPageStore.loadBySlug(
       computed(() => ({
@@ -143,16 +147,21 @@ export class PublicStatusPagePage {
           property: 'og:url',
           content: `${this.document.location.href}`,
         },
+        {
+          property: 'og:image',
+          content: statusPage.image
+            ? `${this.imageBaseUrl}/${statusPage.image.fileId}`
+            : `${this.document.location.origin}/assets/og-image/${status}.png`,
+        },
+        {
+          property: 'og:description',
+          content: s_cut(
+            `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
+            200,
+            '...',
+          ),
+        },
       ]);
-
-      this.meta.addTag({
-        property: 'og:description',
-        content: s_cut(
-          `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
-          200,
-          '...',
-        ),
-      });
     });
   }
 }
