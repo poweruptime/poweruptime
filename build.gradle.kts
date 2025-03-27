@@ -128,6 +128,12 @@ tasks.register("releaseBeta") {
         val timestamp = System.currentTimeMillis()
         val tagName = "$version-beta-$timestamp"
 
+        // Set POWERUPTIME_VERSION in .versions file
+        setPowerUpTimeVersion(tagName)
+
+        // Commit changes
+        commitChanges("Set POWERUPTIME_VERSION to $version for beta release")
+
         println()
         println("Creating git tag $tagName")
         exec {
@@ -146,6 +152,12 @@ tasks.register("releaseProd") {
 
     doLast {
         val version = getNewProdVersion(versionParam)
+
+        // Set POWERUPTIME_VERSION in .versions file
+        setPowerUpTimeVersion(version.toString())
+
+        // Commit changes
+        commitChanges("Set POWERUPTIME_VERSION to $version for production release")
 
         println()
         println("Creating git tag $version")
@@ -246,6 +258,37 @@ fun getLastTag(prod: Boolean): VersionNumber {
         .map(VersionNumber::fromString)
 
     return allExistingVersions.max()
+}
+
+fun setPowerUpTimeVersion(version: String) {
+    val versionsFile = file("./infrastructure/versions.env")
+    val lines = versionsFile.readLines().toMutableList()
+
+    var found = false
+    for (i in lines.indices) {
+        if (lines[i].startsWith("POWERUPTIME_VERSION=")) {
+            lines[i] = "POWERUPTIME_VERSION=\"$version\""
+            found = true
+            break
+        }
+    }
+
+    if (!found) {
+        lines.add("POWERUPTIME_VERSION=\"$version\"")
+    }
+
+    versionsFile.writeText(lines.joinToString("\n"))
+    println("Set POWERUPTIME_VERSION to $version in versions.env file")
+}
+
+fun commitChanges(message: String) {
+    exec {
+        commandLine("git", "add", "./infrastructure/versions.env")
+    }
+    exec {
+        commandLine("git", "commit", "-m", message)
+    }
+    println("Committed changes with message: $message")
 }
 
 data class VersionNumber(
