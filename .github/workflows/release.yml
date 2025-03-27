@@ -40,13 +40,16 @@ jobs:
           ref: beta
           token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
 
-      - name: Push tag ${{ github.ref_name }} to main branch
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
-          commit_sha: beta
-          custom_tag: ${{ github.ref_name }}
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Tag ${{github.ref_name}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+        run: |
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
 
   mirror-infra:
     runs-on: ubuntu-latest
@@ -81,13 +84,16 @@ jobs:
           ref: main
           token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
 
-      - name: Push tag ${{ github.ref_name }} to main branch
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
-          commit_sha: main
-          custom_tag: ${{ github.ref_name }}
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Tag ${{github.ref_name}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+        run: |
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
 
   build-web:
     runs-on: ubuntu-latest
