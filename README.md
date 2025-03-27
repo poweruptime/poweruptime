@@ -3,83 +3,68 @@
 </p>
 <h3 align="center">uptime monitoring tool</h3>
 
-## Local development
+## 🚀 Features
 
-### Backend
+- Uptime monitoring for HTTP(s) / HTTP(s) Keyword / Ping / DNS Record / Push / SSL Certificates
+- Multiple Users / Team(s) management
+- Easy setup
+- Fast & SEO friendly
+- Notifications via E-Mail, Discord, Slack
+- 30-second intervals
+- [Multi Languages](https://github.com/poweruptime/poweruptime/tree/main/web/src/assets/i18n)
+- Multiple status pages with specific domain name support
+- Detailed monitor analysis
+- 2FA support
 
-Install dependencies
+## How to install
 
-```shell
-./gradlew backend:bootJar
-```
+Checkout our [docker compose instructions](./infrastructure/README.md).
 
-#### Using Spring run config
+They boils down to:
 
-Use the `Server with dependencies` run configuration (or just `Server` if you started the docker dependencies manually).
+1. Clone the [docker-compose repository](https://github.com/poweruptime/docker-compose).
+   ```shell
+   git clone https://github.com/poweruptime/docker-compose.git poweruptime && cd ./poweruptime
+   ```
+2. Checkout specific version (or just stay on main, which is the latest release)
+   ```shell
+   git checkout vX.X.X
+   ```
+3. Copy `.env.exmaple` to `.env`
+   ```shell
+   cp .env.example .env
+   ```
+4. Fill out the necessary .env variables.
+   ```shell
+   nano .env
+   ```
+   ```shell
+   vim .env
+   ```
+5. Make sure no other servives listen on port `80` and `443`.
+6. Start the stack
+   ```shell
+   ./start.sh
+   ```
 
-To start the dependencies manually use the `Dependency Containers` run config or run
-
-```shell
-docker compose -f compose-local-dev.yml up
-```
-
-#### Containerized
-
-Use the `Containerized` run config or run
-
-```shell
-./gradlew backend:build -x test -Pversion=local && docker compose -f compose-local-dev.yml -f compose-local.yml up --build
-```
-
-- Web interface: [http://localhost:3000/](http://localhost:3000/)
-- API: [http://localhost/api](http://localhost/api)
-- RabbitMQ Management: [http://localhost:15672/](http://localhost:15672/)
-  - Username: `poweruptime`
-  - Password: `poweruptime`
-
-### Web
-
-Install dependencies
-
-```shell
-pnpm install
-```
-
-#### Using ng serve
-
-Use the `Web Start` run configuration.
-
-Or via the terminal, run
+### Stop the stack
 
 ```shell
-pnpm web:start
+./stop.sh
 ```
 
-## Create Builds/Docker images
+## How to update
 
-It is not required to supply the `version` property. If not supplied you will be asked what to do.
-You can than either increase major, minor or patch. For beta, you can also choose to keep the version
-and just create a news build.
+Read more [here](./infrastructure/README.md).
 
-### Beta
+## Contributing
 
-```
-./gradlew releaseBeta -Pversion=0.0.1
-```
+Take a look at the [starter guide](./CONTRIBUTING.md).
 
-### Prod
+## Motivation
 
-```
-./gradlew releaseProd -Pversion=0.0.1
-```
-
-## Get access token
-
-```bash
-curl -v -XPOST -H "Content-type: application/json" -d '{
-"email": "admin@admin.org",
-"password": "admin",
-"sessionInformation": "CURL DEV",
-"stayLoggedIn": "true"
-}' 'http://localhost:8080/api/v1/auth/login' | jq
-```
+- Long time user of [uptime-kuma](https://github.com/louislam/uptime-kuma) but not happy with the UX of Websockets.
+- Always wanted to share my uptime monitoring instance with friends (so they can track their own services).
+- Wanted to build something with [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
+- Wanted to try out a mono-repo with modern Angular and Kotlin Spring Boot.
+- Needed a project to take my mind of work.

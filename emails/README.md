@@ -1,4 +1,4 @@
-# Email
+# Emails
 
 A live preview right in your browser, so you don't need to keep sending real emails during development.
 
@@ -6,16 +6,16 @@ A live preview right in your browser, so you don't need to keep sending real ema
 
 Run the development server:
 
-`emails` directory:
-
-```sh
-pnpm start
-```
-
 `root` directory:
 
 ```sh
 pnpm emails:start
+```
+
+`emails` directory:
+
+```sh
+pnpm start
 ```
 
 Open [localhost:3000](http://localhost:3000) with your browser to see the result.
