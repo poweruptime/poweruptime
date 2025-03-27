@@ -31,7 +31,7 @@ jobs:
   tag-infra-mirror-beta:
     runs-on: ubuntu-latest
     if: contains(github.ref_name, 'beta')
-    needs: [mirror-infra]
+    needs: [mirror-infra-beta]
     steps:
       - name: Check out docker-compose repository
         uses: actions/checkout@v4
