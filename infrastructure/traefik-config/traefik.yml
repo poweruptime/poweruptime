@@ -21,7 +21,7 @@ http:
       headers:
         contentSecurityPolicy: >
           default-src 'self';
-          img-src 'self' 'unsafe-inline';
+          img-src 'self' data:;
           script-src 'self' 'unsafe-inline' 'unsafe-eval';
           connect-src 'self';
           object-src 'none';
