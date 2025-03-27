@@ -7,6 +7,88 @@ on:
       - '*.*.*'
 
 jobs:
+  mirror-infra-beta:
+    runs-on: ubuntu-latest
+    container: pandoc/latex
+    if: contains(github.ref_name, 'beta')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pushes to docker-compose repository on main branch
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.INFRA_MIRROR_DEPLOY_TOKEN }}
+        with:
+          source-directory: ./infrastructure
+          destination-github-username: 'poweruptime'
+          destination-repository-name: 'docker-compose'
+          user-email: github-actions[bot]@users.noreply.github.com
+          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+          target-branch: beta
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY
+
+  tag-infra-mirror-beta:
+    runs-on: ubuntu-latest
+    if: contains(github.ref_name, 'beta')
+    needs: [mirror-infra]
+    steps:
+      - name: Check out docker-compose repository
+        uses: actions/checkout@v4
+        with:
+          repository: poweruptime/docker-compose
+          ref: beta
+          token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+
+      - name: Push tag ${{ github.ref_name }} to main branch
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+          commit_sha: beta
+          custom_tag: ${{ github.ref_name }}
+
+  mirror-infra:
+    runs-on: ubuntu-latest
+    container: pandoc/latex
+    if: !contains(github.ref_name , 'beta')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pushes to docker-compose repository on main branch
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.INFRA_MIRROR_DEPLOY_TOKEN }}
+        with:
+          source-directory: ./infrastructure
+          destination-github-username: 'poweruptime'
+          destination-repository-name: 'docker-compose'
+          user-email: github-actions[bot]@users.noreply.github.com
+          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+          target-branch: main
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY
+
+  tag-infra-mirror:
+    runs-on: ubuntu-latest
+    if: !contains(github.ref_name , 'beta')
+    needs: [mirror-infra]
+    steps:
+      - name: Check out docker-compose repository
+        uses: actions/checkout@v4
+        with:
+          repository: poweruptime/docker-compose
+          ref: main
+          token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+
+      - name: Push tag ${{ github.ref_name }} to main branch
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
+          commit_sha: main
+          custom_tag: ${{ github.ref_name }}
+
   build-web:
     runs-on: ubuntu-latest
     steps:
