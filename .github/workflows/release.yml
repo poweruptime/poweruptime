@@ -9,8 +9,8 @@ on:
 jobs:
   mirror-infra-beta:
     runs-on: ubuntu-latest
-    container: pandoc/latex
     if: contains(github.ref_name, 'beta')
+    container: pandoc/latex
     steps:
       - uses: actions/checkout@v4
       - name: Pushes to docker-compose repository on main branch
@@ -50,8 +50,8 @@ jobs:
 
   mirror-infra:
     runs-on: ubuntu-latest
+    if: "!contains(github.ref_name, 'beta')"
     container: pandoc/latex
-    if: !contains(github.ref_name , 'beta')
     steps:
       - uses: actions/checkout@v4
       - name: Pushes to docker-compose repository on main branch
@@ -71,7 +71,7 @@ jobs:
 
   tag-infra-mirror:
     runs-on: ubuntu-latest
-    if: !contains(github.ref_name , 'beta')
+    if: "!contains(github.ref_name, 'beta')"
     needs: [mirror-infra]
     steps:
       - name: Check out docker-compose repository
