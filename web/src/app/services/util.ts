@@ -105,5 +105,13 @@ export const TailwindBreakpoints = {
   md: '(min-width: 768px) and (max-width: 1023.98px)', // Medium
   lg: '(min-width: 1024px) and (max-width: 1279.98px)', // Large
   xl: '(min-width: 1280px) and (max-width: 1535.98px)', // Extra large
-  '2xl': 'min-width: 1536px',
+  '2xl': '(min-width: 1536px) and (max-width: 1909.98px)',
+  '3xl': 'min-width: 1910px',
 };
+
+export const isMobileBreakpoints = [
+  TailwindBreakpoints.xs,
+  TailwindBreakpoints.sm,
+  TailwindBreakpoints.md,
+  TailwindBreakpoints.lg,
+];

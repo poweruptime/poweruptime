@@ -16,7 +16,7 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
 import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
-import {TailwindBreakpoints} from '@app/services/util';
+import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
 @Component({
   selector: 'home-layout',
@@ -132,13 +132,17 @@ export class HomeLayout {
 
   readonly drawer = viewChild.required(MatDrawer);
 
-  readonly collapseNav$ = inject(BreakpointObserver)
+  readonly breakpointObserver = inject(BreakpointObserver);
+
+  readonly collapseNav$ = this.breakpointObserver
     .observe([
       TailwindBreakpoints.xs,
       TailwindBreakpoints.sm,
       TailwindBreakpoints.md,
       TailwindBreakpoints.lg,
       TailwindBreakpoints.xl,
+      TailwindBreakpoints['2xl'],
+      TailwindBreakpoints['3xl'],
     ])
     .pipe(map((result) => result.matches));
 
@@ -156,8 +160,10 @@ export class HomeLayout {
 
     pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
 
-    inject(Router)
-      .events.pipe(
+    const router = inject(Router);
+
+    router.events
+      .pipe(
         takeUntilDestroyed(),
         withLatestFrom(this.collapseNav$),
         filter(([a, b]) => b && a instanceof NavigationEnd),
@@ -171,5 +177,26 @@ export class HomeLayout {
         void this.drawer().open('program');
       }
     });
+
+    this.breakpointObserver
+      .observe(isMobileBreakpoints)
+      .pipe(
+        takeUntilDestroyed(),
+        map((result) => result.matches),
+      )
+      .subscribe((isMobile) => {
+        if (!isMobile) {
+          if (router.url.includes('/mm')) {
+            void router.navigateByUrl(router.url.replace('/mm', '/m'));
+          }
+        } else {
+          if (router.url.includes('/m')) {
+            const index = router.url.indexOf('/m');
+            if (router.url[index + 2] !== 'm' && !router.url.substring(index + 2).includes('m')) {
+              void router.navigateByUrl(router.url.replace('/m', '/mm'));
+            }
+          }
+        }
+      });
   }
 }

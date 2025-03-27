@@ -13,9 +13,4 @@ export const ROUTES: Routes = [
     path: ':monitorId',
     loadChildren: () => import('./monitor-detail.routes').then((r) => r.ROUTES),
   },
-  {
-    path: '',
-    pathMatch: 'full',
-    loadComponent: () => import('./monitors-dashboard.page').then((c) => c.MonitorsDashboardPage),
-  },
 ];

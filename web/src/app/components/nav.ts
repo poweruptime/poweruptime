@@ -1,9 +1,13 @@
+import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink, RouterLinkActive} from '@angular/router';
+
+import {map} from 'rxjs';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
@@ -13,14 +17,16 @@ import {NavTeamSelect} from '@app/components/nav-team-select';
 import {IsSystemAdmin} from '@app/directives';
 import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {ThemeService, themeOptions} from '@app/services/theme.service';
+import {isMobileBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
+    @let _isMobile = isMobile();
     <div class="flex h-full flex-col">
       <div class="flex flex-col gap-3 px-2 py-2">
         <pu-nav-team-select [teamId]="teamId()" />
         <mat-nav-list>
-          <a mat-list-item routerLink="/m" routerLinkActive="active">
+          <a [routerLink]="_isMobile ? '/mm' : '/m'" mat-list-item routerLinkActive="active">
             <bi name="lightning" />
             <span class="nav-text">{{ 'nav.personalDashboard' | transloco }}</span>
           </a>
@@ -48,7 +54,10 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
             <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
           </div>
 
-          <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/m" routerLinkActive="active">
+          <a
+            mat-list-item
+            routerLink="/t/{{ selectedTeamId() }}/{{ _isMobile ? 'mm' : 'm' }}"
+            routerLinkActive="active">
             <bi name="speedometer2" />
             <span class="nav-text">{{ 'nav.dashboard' | transloco }}</span>
           </a>
@@ -200,6 +209,13 @@ export class Nav {
   profileInitials = computed(() => getInitials(this.profileStore.name()));
 
   teamId = input<string>();
+
+  isMobile = toSignal(
+    inject(BreakpointObserver)
+      .observe(isMobileBreakpoints)
+      .pipe(map((result) => result.matches)),
+    {requireSync: true},
+  );
 
   openAbout() {
     this.dialog.open(AboutDialog);

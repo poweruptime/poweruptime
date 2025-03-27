@@ -29,58 +29,62 @@ import {NotificationsStore} from '@app/services';
         <mat-card-content>
           <h2 class="text-xl">Notifications</h2>
 
-          <table
-            [dataSource]="notificationsStore.entities()"
-            [matSortActive]="notificationsStore.sortBy()"
-            [matSortDirection]="notificationsStore.sortDirection()"
-            mat-table
-            matSort>
-            <ng-container matColumnDef="monitor">
-              <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
-              <td *matCellDef="let element" mat-cell>
-                <a class="underline" [routerLink]="element.monitor.id">
-                  {{ element.monitor.name }}
-                </a>
-              </td>
-            </ng-container>
+          <div class="table-responsive">
+            <table
+              [dataSource]="notificationsStore.entities()"
+              [matSortActive]="notificationsStore.sortBy()"
+              [matSortDirection]="notificationsStore.sortDirection()"
+              mat-table
+              matSort>
+              <ng-container matColumnDef="monitor">
+                <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
+                <td *matCellDef="let element" mat-cell>
+                  <a class="underline" [routerLink]="element.monitor.id">
+                    {{ element.monitor.name }}
+                  </a>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                {{ 'general.status' | transloco }}
-              </th>
-              <td *matCellDef="let element" mat-cell>
-                <span
-                  class="rounded-md px-2 py-1 font-bold"
-                  [monitor-status-background]="element.checkResult.status">
-                  {{ element.checkResult.status }}
-                </span>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="status">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ 'general.status' | transloco }}
+                </th>
+                <td *matCellDef="let element" mat-cell>
+                  <span
+                    class="rounded-md px-2 py-1 font-bold"
+                    [monitor-status-background]="element.checkResult.status">
+                    {{ element.checkResult.status }}
+                  </span>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="createdAt">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                {{ 'general.createdAt' | transloco }}
-              </th>
-              <td *matCellDef="let element" mat-cell>
-                <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="createdAt">
+                <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ 'general.createdAt' | transloco }}
+                </th>
+                <td *matCellDef="let element" mat-cell>
+                  <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="method">
-              <th *matHeaderCellDef mat-header-cell>{{ 'general.method' | transloco }}</th>
-              <td *matCellDef="let element" mat-cell>
-                {{ element.method.name }}
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="method">
+                <th *matHeaderCellDef mat-header-cell>{{ 'general.method' | transloco }}</th>
+                <td *matCellDef="let element" mat-cell>
+                  {{ element.method.name }}
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="title">
-              <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
-              <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
-            </ng-container>
+              <ng-container matColumnDef="title">
+                <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
+                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                  {{ element.title }}
+                </td>
+              </ng-container>
 
-            <tr *matHeaderRowDef="notificationsStore.columnsToDisplay()" mat-header-row></tr>
-            <tr *matRowDef="let row; columns: notificationsStore.columnsToDisplay()" mat-row></tr>
-          </table>
+              <tr *matHeaderRowDef="notificationsStore.columnsToDisplay()" mat-header-row></tr>
+              <tr *matRowDef="let row; columns: notificationsStore.columnsToDisplay()" mat-row></tr>
+            </table>
+          </div>
 
           <pu-table-loading-bar [loading]="notificationsStore.isPending()" />
 

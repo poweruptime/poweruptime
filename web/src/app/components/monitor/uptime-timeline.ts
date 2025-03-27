@@ -27,10 +27,12 @@ import {MonitorStatusBackground} from '@app/directives';
   template: `
     @let _size = size();
     @let _link = link();
+    @let _hideLabel = hideLabel();
     <cdk-virtual-scroll-viewport
       class="uptime-timeline-viewport"
-      [class.h-24]="_size === 3"
-      [class.h-16]="_size === 2"
+      [class.h-24]="_size === 3 && !_hideLabel"
+      [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
+      [class.h-10]="_size === 2 && _hideLabel"
       [itemSize]="_size === 3 ? '20' : '16'"
       (scrolledIndexChange)="triggerNextPage()"
       appendOnly="true"
@@ -61,6 +63,15 @@ import {MonitorStatusBackground} from '@app/directives';
               [class.w-2]="_size === 2"
               [monitor-status-background]="checkResult.status"
               [mtxTooltip]="checkResultsTooltip"></a>
+
+            <ng-template #checkResultsTooltip>
+              <div class="flex flex-col">
+                <span>
+                  {{ checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
+                </span>
+                <span class="font-bold">{{ checkResult.status }}</span>
+              </div>
+            </ng-template>
           } @else {
             <div
               class="rounded hover:scale-125"
@@ -71,33 +82,35 @@ import {MonitorStatusBackground} from '@app/directives';
               [monitor-status-background]="checkResult.status"
               [mtxTooltip]="checkResultsTooltip"
               stopPropagation></div>
+
+            <ng-template #checkResultsTooltip>
+              <div class="flex flex-col">
+                <span>
+                  {{ checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
+                </span>
+                <span class="font-bold">{{ checkResult.status }}</span>
+              </div>
+            </ng-template>
           }
 
-          <ng-template #checkResultsTooltip>
-            <div class="flex flex-col">
-              <span>
-                {{ checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
+          @if (!hideLabel()) {
+            @if (first) {
+              <span class="absolute -bottom-7 left-1">
+                {{ 'general.latest' | transloco }}
               </span>
-              <span class="font-bold">{{ checkResult.status }}</span>
-            </div>
-          </ng-template>
+            }
 
-          @if (first) {
-            <span class="absolute -bottom-7 left-1">
-              {{ 'general.latest' | transloco }}
-            </span>
-          }
+            @if (last) {
+              <span class="absolute -bottom-7 right-0">
+                {{ checkResult.createdAt | date: 'HH:mm' }}
+              </span>
+            }
 
-          @if (last) {
-            <span class="absolute -bottom-7 right-0">
-              {{ checkResult.createdAt | date: 'HH:mm' }}
-            </span>
-          }
-
-          @if (length > 20 && !first && index % 10 === 0 && index < maxLabelSize) {
-            <span class="absolute -bottom-7 left-1">
-              {{ checkResult.createdAt | date: 'HH:mm' }}
-            </span>
+            @if (length > 20 && !first && index % 10 === 0 && index < maxLabelSize) {
+              <span class="absolute -bottom-7 left-1">
+                {{ checkResult.createdAt | date: 'HH:mm' }}
+              </span>
+            }
           }
         </div>
       </div>
@@ -159,6 +172,7 @@ export class UptimeTimeline {
   size = input<2 | 3>(3);
 
   link = input(false, {transform: booleanAttribute});
+  hideLabel = input(false, {transform: booleanAttribute});
 
   private nextPage$ = new Subject<void>();
   protected nextPage = outputFromObservable(this.nextPage$.pipe(throttleTime(200)));

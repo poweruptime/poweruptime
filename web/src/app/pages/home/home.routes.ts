@@ -1,6 +1,9 @@
 import {Routes} from '@angular/router';
 
+import {isDesktopGuard} from '@app/guards/is-desktop.guard';
+import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {isSystemAdmin} from '@app/guards/is-system-admin.guard';
+import {MonitorsDashboardStore, MonitorsSearchStore, MonitorsStore} from '@app/services';
 
 export const ROUTES: Routes = [
   {
@@ -10,6 +13,8 @@ export const ROUTES: Routes = [
       {
         path: 'm',
         loadComponent: () => import('./monitor/monitors.page').then((c) => c.MonitorsPage),
+        canActivate: [isDesktopGuard],
+        providers: [MonitorsSearchStore, MonitorsDashboardStore],
         children: [
           {
             path: ':monitorId',
@@ -20,6 +25,25 @@ export const ROUTES: Routes = [
             pathMatch: 'full',
             loadComponent: () =>
               import('./monitor/monitors-dashboard.page').then((c) => c.MonitorsDashboardPage),
+          },
+        ],
+      },
+      {
+        path: 'mm',
+        canActivate: [isMobileGuard],
+        providers: [MonitorsStore, MonitorsDashboardStore],
+        children: [
+          {
+            path: ':monitorId',
+            loadChildren: () => import('./monitor/monitor-detail.routes').then((r) => r.ROUTES),
+          },
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./monitor/mobile-monitors-dashboard.page').then(
+                (c) => c.MobileMonitorsDashboardPage,
+              ),
           },
         ],
       },

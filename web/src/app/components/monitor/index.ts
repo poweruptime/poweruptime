@@ -3,6 +3,7 @@ export * from './monitor-card-list';
 export * from './edit-form/monitor-edit-form';
 export * from './edit-form/monitor-edit-form-placeholder';
 export * from './monitor-header-placeholder';
+export * from './monitor-list';
 export * from './monitor-status';
 export * from './monitors-filter';
 export * from './notification-list';

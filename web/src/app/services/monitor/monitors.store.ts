@@ -2,7 +2,16 @@ import {computed, effect, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Router} from '@angular/router';
 
-import {debounceTime, distinctUntilChanged, filter, map, mergeMap, pipe, tap} from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {
@@ -18,6 +27,7 @@ import {
   addEntity,
   removeAllEntities,
   removeEntity,
+  setAllEntities,
   setEntities,
   setEntity,
   updateEntity,
@@ -28,11 +38,19 @@ import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {PushService} from '@app/services';
-import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
+import {
+  PaginationDto,
+  setError,
+  setFulfilled,
+  setPending,
+  setTotalElements,
+  withPaginatedTable,
+  withRequestStatus,
+} from '@app/services/store-features';
 
 const pageSize = 15;
 
-export const MonitorsStore = signalStore(
+export const InfiniteMonitorsStore = signalStore(
   {providedIn: 'root'},
   withState<{
     page: number;
@@ -280,6 +298,86 @@ export const MonitorsSearchStore = signalStore(
             .pipe(
               tapResponse({
                 next: (response) => patchState(store, setEntities(response.data), setFulfilled()),
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+        ),
+      ),
+    ),
+  })),
+  withHooks({
+    onInit(store, pushService = inject(PushService)) {
+      pushService.monitorStatusChange$
+        .pipe(takeUntilDestroyed())
+        .subscribe((it) => store.updateMonitor(it));
+
+      pushService.checkResults$
+        .pipe(takeUntilDestroyed())
+        .subscribe((it) => store.addCheckResult(it));
+    },
+  }),
+);
+
+export const MonitorsStore = signalStore(
+  withState<{
+    teamId: string | undefined;
+  }>({
+    teamId: undefined,
+  }),
+  withPaginatedTable<BackendType['MonitorResponse']>({
+    paramPrefix: 'monitors.',
+    columnsToDisplay: ['name', 'status', 'checkResults', 'actions'],
+    defaultSortBy: 'status',
+    defaultSortDirection: 'asc',
+  }),
+  withMethods((store, api = injectAPI()) => ({
+    updateMonitor(it: BackendType['MonitorResponse']): void {
+      patchState(store, updateEntity({id: it.id, changes: it}));
+    },
+    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
+      const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
+
+      if (monitor) {
+        patchState(
+          store,
+          updateEntity({
+            id: monitor.id,
+            changes: {
+              lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
+            },
+          }),
+        );
+      }
+    },
+    load: rxMethod<
+      {
+        teamId: string | undefined;
+      } & PaginationDto
+    >(
+      pipe(
+        tap(({teamId}) =>
+          patchState(
+            store,
+            setPending(),
+            store.teamId() !== teamId ? removeAllEntities() : () => ({}),
+            () => ({teamId}),
+          ),
+        ),
+        debounceTime(400),
+        switchMap((query) =>
+          api
+            .get('/v1/monitor', {
+              params: {query},
+            })
+            .pipe(
+              tapResponse({
+                next: (response) =>
+                  patchState(
+                    store,
+                    setAllEntities(response.data),
+                    setTotalElements(response.numberOfItems),
+                    setFulfilled(),
+                  ),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

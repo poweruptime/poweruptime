@@ -159,7 +159,15 @@ class MonitorService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("name", "status", "testIntervalSeconds", "retries", "createdAt", "groupMonitors.position"),
+            listOf(
+                "name",
+                "status",
+                "testIntervalSeconds",
+                "retries",
+                "createdAt",
+                "groupMonitors.position",
+                "team.name",
+            ),
         ),
     )
 

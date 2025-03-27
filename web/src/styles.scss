@@ -32,6 +32,9 @@ $light-config: (
     theme-type: 'light',
     primary: mat.$violet-palette,
   ),
+  density: (
+    scale: -1,
+  ),
 );
 
 // Merge the Material theme with Material Extensions theme
@@ -41,10 +44,8 @@ $light-theme: mat.private-deep-merge-all(
 );
 
 html {
-  // Apply the dark theme by default
   @include mat.all-component-themes($light-theme);
 
-  // Apply the light theme only when the user prefers light themes.
   .dark {
     // Use the `-color` mixins to only apply color styles without reapplying the same
     // typography and density styles.

@@ -89,6 +89,8 @@
     "at": "At",
     "body": "Body",
     "cancel": "Cancel",
+    "checkResult": "Check result",
+    "checkResults": "Check results",
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
@@ -242,6 +244,7 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
+    "new": "New {{general.monitor}}",
     "oneDayUptime": "One-day uptime",
     "status": {
       "down": "Down",

@@ -1,6 +1,14 @@
 import {Routes} from '@angular/router';
 
-import {NotificationMethodsStore, StatusPagesStore} from '@app/services';
+import {isDesktopGuard} from '@app/guards/is-desktop.guard';
+import {isMobileGuard} from '@app/guards/is-mobile.guard';
+import {
+  MonitorsDashboardStore,
+  MonitorsSearchStore,
+  MonitorsStore,
+  NotificationMethodsStore,
+  StatusPagesStore,
+} from '@app/services';
 
 export const ROUTES: Routes = [
   {
@@ -24,8 +32,16 @@ export const ROUTES: Routes = [
   },
   {
     path: 'm',
+    canActivate: [isDesktopGuard],
+    providers: [MonitorsSearchStore, MonitorsDashboardStore],
     loadComponent: () => import('./monitor/monitors.page').then((c) => c.MonitorsPage),
-    loadChildren: () => import('./monitor/team-monitor.routes').then((r) => r.ROUTES),
+    loadChildren: () => import('./monitor/desktop-team-monitor.routes').then((r) => r.ROUTES),
+  },
+  {
+    path: 'mm',
+    canActivate: [isMobileGuard],
+    providers: [MonitorsStore, MonitorsDashboardStore],
+    loadChildren: () => import('./monitor/mobile-team-monitor.routes').then((r) => r.ROUTES),
   },
   {
     path: '**',

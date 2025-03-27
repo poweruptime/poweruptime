@@ -241,15 +241,13 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         @if (checkResultsPingStore.data(); as data) {
           <mat-card appearance="outlined">
             <mat-card-content>
-              <div class="flex justify-end">
-                <pu-ping-chart-filter
-                  [filter]="pingChartFilter()"
-                  (filterChange)="
-                    rangeStartPingChartFilter.set($event.range.start);
-                    rangeEndPingChartFilter.set($event.range.end);
-                    precisionPingChartFilter.set($event.precision)
-                  " />
-              </div>
+              <pu-ping-chart-filter
+                [filter]="pingChartFilter()"
+                (filterChange)="
+                  rangeStartPingChartFilter.set($event.range.start);
+                  rangeEndPingChartFilter.set($event.range.end);
+                  precisionPingChartFilter.set($event.precision)
+                " />
 
               <pu-ping-chart [chart]="data" />
             </mat-card-content>
@@ -305,15 +303,18 @@ export class MonitorDetailPage {
   readonly cutDescription = signal(true);
 
   readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
-    defaultValue: toBackendDate(new Date()),
+    parse: (it) => it ?? toBackendDate(new Date()),
+    stringify: (value) => (toBackendDate(new Date()) ? null : value),
   });
   readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
-    defaultValue: toBackendDate(new Date()),
+    parse: (it) => it ?? toBackendDate(new Date()),
+    stringify: (value) => (toBackendDate(new Date()) ? null : value),
   });
   readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
     parse: paramToNumber({
       defaultValue: 15,
     }),
+    stringify: (value) => (value === 15 ? null : value),
   });
 
   readonly pingChartFilter = computed(() => ({

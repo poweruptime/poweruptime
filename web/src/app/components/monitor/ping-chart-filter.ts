@@ -20,7 +20,7 @@ import {toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
-    <form class="flex gap-2" [formGroup]="form">
+    <form class="flex flex-wrap justify-end gap-2 gap-y-4" [formGroup]="form">
       <div>
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.precision' | transloco }}</mat-label>

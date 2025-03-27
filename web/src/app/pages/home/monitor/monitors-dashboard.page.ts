@@ -57,6 +57,8 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
         </div>
       }
 
+      <ng-content />
+
       <pu-notification-list [teamId]="teamId()" />
 
       <pu-check-result-list [teamId]="teamId()" />

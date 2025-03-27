@@ -11,10 +11,10 @@ import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
 import {
+  InfiniteMonitorsStore,
   MonitorDetailStore,
   MonitorNotificationMethodsStore,
   MonitorsSearchStore,
-  MonitorsStore,
 } from './';
 
 export const MonitorEditStore = signalStore(
@@ -30,7 +30,7 @@ export const MonitorEditStore = signalStore(
       router = inject(Router),
       api = injectAPI(),
       monitorDetailStore = inject(MonitorDetailStore),
-      monitorsStore = inject(MonitorsStore),
+      monitorsStore = inject(InfiniteMonitorsStore),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
       monitorNotificationMethodsStore = inject(MonitorNotificationMethodsStore),
     ) => ({

@@ -9,7 +9,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {injectAPI} from '@app/api';
-import {MonitorDetailStore, MonitorsSearchStore, MonitorsStore} from '@app/services';
+import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 export const MonitorActionStore = signalStore(
@@ -20,7 +20,7 @@ export const MonitorActionStore = signalStore(
       api = injectAPI(),
       router = inject(Router),
       relativeTo = inject(ActivatedRoute),
-      monitorsStore = inject(MonitorsStore),
+      monitorsStore = inject(InfiniteMonitorsStore),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
       monitorDetailStore = inject(MonitorDetailStore),
     ) => {

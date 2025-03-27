@@ -44,78 +44,82 @@ import {CheckResultsStore} from '@app/services';
             </mat-slide-toggle>
           </div>
 
-          <table
-            [dataSource]="checkResultsStore.entities()"
-            [matSortActive]="checkResultsStore.sortBy()"
-            [matSortDirection]="checkResultsStore.sortDirection()"
-            mat-table
-            matSort>
-            <ng-container matColumnDef="monitor">
-              <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
-              <td *matCellDef="let element" mat-cell>
-                <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
-                  {{ element.monitor.name }}
-                </a>
-              </td>
-            </ng-container>
+          <div class="table-responsive">
+            <table
+              [dataSource]="checkResultsStore.entities()"
+              [matSortActive]="checkResultsStore.sortBy()"
+              [matSortDirection]="checkResultsStore.sortDirection()"
+              mat-table
+              matSort>
+              <ng-container matColumnDef="monitor">
+                <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
+                <td *matCellDef="let element" mat-cell>
+                  <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
+                    {{ element.monitor.name }}
+                  </a>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                {{ 'general.status' | transloco }}
-              </th>
-              <td *matCellDef="let element" mat-cell>
-                <span
-                  class="rounded-md px-2 py-1 font-bold"
-                  [monitor-status-background]="element.status">
-                  {{ element.status }}
-                </span>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="status">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ 'general.status' | transloco }}
+                </th>
+                <td *matCellDef="let element" mat-cell>
+                  <span
+                    class="rounded-md px-2 py-1 font-bold"
+                    [monitor-status-background]="element.status">
+                    {{ element.status }}
+                  </span>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="createdAt">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                {{ 'general.createdAt' | transloco }}
-              </th>
-              <td *matCellDef="let element" mat-cell>
-                <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="createdAt">
+                <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ 'general.createdAt' | transloco }}
+                </th>
+                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                  <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="title">
-              <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
-              <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
-            </ng-container>
+              <ng-container matColumnDef="title">
+                <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
+                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+                  {{ element.title }}
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="actions">
-              <th *matHeaderCellDef mat-header-cell></th>
-              <td *matCellDef="let element" mat-cell>
-                <a
-                  [matTooltip]="'checkResult.list.action.view' | transloco"
-                  [attr.aria-label]="'checkResult.list.action.view' | transloco"
-                  [routerLink]="
-                    teamId() || (!teamId() && !monitorId())
-                      ? element.monitor.id + '/c/' + element.id + '/logs'
-                      : 'c/' + element.id + '/logs'
-                  "
-                  matTooltipPosition="left"
-                  mat-icon-button
-                  stopPropagation>
-                  <bi name="arrow-right" />
-                </a>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="actions">
+                <th *matHeaderCellDef mat-header-cell></th>
+                <td *matCellDef="let element" mat-cell>
+                  <a
+                    [matTooltip]="'checkResult.list.action.view' | transloco"
+                    [attr.aria-label]="'checkResult.list.action.view' | transloco"
+                    [routerLink]="
+                      teamId() || (!teamId() && !monitorId())
+                        ? element.monitor.id + '/c/' + element.id + '/logs'
+                        : 'c/' + element.id + '/logs'
+                    "
+                    matTooltipPosition="left"
+                    mat-icon-button
+                    stopPropagation>
+                    <bi name="arrow-right" />
+                  </a>
+                </td>
+              </ng-container>
 
-            <tr *matHeaderRowDef="checkResultsStore.columnsToDisplay()" mat-header-row></tr>
-            <tr
-              *matRowDef="let element; columns: checkResultsStore.columnsToDisplay()"
-              [routerLink]="
-                teamId() || (!teamId() && !monitorId())
-                  ? element.monitor.id + '/c/' + element.id + '/logs'
-                  : 'c/' + element.id + '/logs'
-              "
-              mat-row
-              queryParamsHandling="merge"></tr>
-          </table>
+              <tr *matHeaderRowDef="checkResultsStore.columnsToDisplay()" mat-header-row></tr>
+              <tr
+                *matRowDef="let element; columns: checkResultsStore.columnsToDisplay()"
+                [routerLink]="
+                  teamId() || (!teamId() && !monitorId())
+                    ? element.monitor.id + '/c/' + element.id + '/logs'
+                    : 'c/' + element.id + '/logs'
+                "
+                mat-row
+                queryParamsHandling="merge"></tr>
+            </table>
+          </div>
 
           <pu-table-loading-bar [loading]="checkResultsStore.isPending()" />
 
@@ -140,10 +144,6 @@ import {CheckResultsStore} from '@app/services';
 
     .mat-column-status {
       @apply w-32;
-    }
-
-    .mat-column-createdAt {
-      @apply w-52;
     }
   `,
   selector: 'pu-check-result-list',
