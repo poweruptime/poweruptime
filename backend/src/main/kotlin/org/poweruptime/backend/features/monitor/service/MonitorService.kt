@@ -164,6 +164,7 @@ class MonitorService(
                 "status",
                 "testIntervalSeconds",
                 "retries",
+                "deleted",
                 "createdAt",
                 "groupMonitors.position",
                 "team.name",

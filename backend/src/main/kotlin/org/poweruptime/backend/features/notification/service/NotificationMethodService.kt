@@ -82,7 +82,7 @@ class NotificationMethodService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("name", "useByDefault", "sender._type", "createdAt"),
+            listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
         ),
     )
 

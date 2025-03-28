@@ -1,7 +1,8 @@
 import {computed} from '@angular/core';
 
-import {debounceTime, filter, map, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, filter, forkJoin, map, pipe, switchMap, tap} from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
 import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
@@ -9,35 +10,42 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
+import {injectConfirmDialog$} from '@app/components';
 import {
   PaginationDto,
+  resetSelection,
   setError,
   setFulfilled,
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withSelection,
 } from '@app/services/store-features';
 
 export const StatusPagesStore = signalStore(
   withState<{
     teamId: string | undefined;
     search: string;
+    deleted: boolean | undefined;
   }>({
     teamId: undefined,
     search: '',
+    deleted: undefined,
   }),
   withPaginatedTable<BackendType['StatusPageResponse']>({
     columnsToDisplay: ['name', 'slug', 'actions'],
     defaultSortBy: 'name',
   }),
+  withSelection<BackendType['StatusPageResponse']>({}),
   withComputed(({search}) => ({
     isSearching: computed(() => search().length > 0),
   })),
-  withMethods((store, api = injectAPI()) => {
+  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
     const load = rxMethod<
       {
         teamId: string | undefined;
-        search: string;
+        search?: string;
+        deleted?: boolean;
       } & PaginationDto
     >(
       pipe(
@@ -50,7 +58,7 @@ export const StatusPagesStore = signalStore(
               params: {
                 query: {
                   teamId: teamId!!,
-                  name: search.length > 0 ? search : undefined,
+                  name: search && search.length > 0 ? search : undefined,
                   ...query,
                 },
               },
@@ -61,6 +69,7 @@ export const StatusPagesStore = signalStore(
                   patchState(
                     store,
                     removeAllEntities(),
+                    resetSelection(),
                     setEntities(response.data),
                     setTotalElements(response.numberOfItems),
                     setFulfilled(),
@@ -79,42 +88,82 @@ export const StatusPagesStore = signalStore(
           tap((search) => patchState(store, () => ({search}))),
         ),
       ),
+      setDeleted: rxMethod<boolean | undefined>(
+        tap((deleted) => patchState(store, () => ({deleted}))),
+      ),
       load,
+      restoreSelection: rxMethod<void>(
+        switchMap(() =>
+          confirmDialog$(
+            translate('general.confirmRestore.title'),
+            translate('general.confirmRestore.description'),
+          ).pipe(
+            tap(() => patchState(store, setPending())),
+            map(() => store.selection().map((it) => it.id)),
+            switchMap((ids) =>
+              forkJoin(
+                ids.map((id) => api.delete('/v1/status-page/{id}/undo', {params: {path: {id}}})),
+              ).pipe(
+                tapResponse({
+                  next: () => {
+                    toast.success(translate('general.restoreSuccess'));
+
+                    load({
+                      ...store.pageable(),
+                      deleted: store.deleted(),
+                      teamId: store.teamId(),
+                    });
+                  },
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
+            ),
+          ),
+        ),
+      ),
       delete: rxMethod<string>(
-        pipe(
-          tap(() => patchState(store, setPending())),
-          switchMap((id) =>
-            api.delete('/v1/status-page/{id}', {params: {path: {id}}}).pipe(
-              tapResponse({
-                next: () => {
-                  patchState(store, setFulfilled(), removeEntity(id));
+        switchMap((id) =>
+          confirmDialog$(translate('general.confirmDelete')).pipe(
+            tap(() => patchState(store, setPending())),
+            switchMap(() =>
+              api.delete('/v1/status-page/{id}', {params: {path: {id}}}).pipe(
+                tapResponse({
+                  next: () => {
+                    patchState(store, setFulfilled(), removeEntity(id));
 
-                  toast.success('Successfully deleted status page.', {
-                    action: {
-                      label: 'Undo',
-                      onClick: () =>
-                        api
-                          .delete('/v1/status-page/{id}/undo', {params: {path: {id}}})
-                          .pipe(
-                            tapResponse({
-                              next: (statusPage) => {
-                                load({
-                                  ...store.pageable(),
-                                  search: store.search(),
-                                  teamId: store.teamId(),
-                                });
+                    load({
+                      ...store.pageable(),
+                      search: store.search(),
+                      teamId: store.teamId(),
+                    });
 
-                                toast.success(`Successfully restored ${statusPage.name}.`);
-                              },
-                              error: (error) => patchState(store, setError(error)),
-                            }),
-                          )
-                          .subscribe(),
-                    },
-                  });
-                },
-                error: (error) => patchState(store, setError(error)),
-              }),
+                    toast.success('Successfully deleted status page.', {
+                      action: {
+                        label: 'Undo',
+                        onClick: () =>
+                          api
+                            .delete('/v1/status-page/{id}/undo', {params: {path: {id}}})
+                            .pipe(
+                              tapResponse({
+                                next: (statusPage) => {
+                                  load({
+                                    ...store.pageable(),
+                                    search: store.search(),
+                                    teamId: store.teamId(),
+                                  });
+
+                                  toast.success(`Successfully restored ${statusPage.name}.`);
+                                },
+                                error: (error) => patchState(store, setError(error)),
+                              }),
+                            )
+                            .subscribe(),
+                      },
+                    });
+                  },
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
             ),
           ),
         ),

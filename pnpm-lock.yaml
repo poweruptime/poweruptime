@@ -85,11 +85,11 @@ importers:
         specifier: 19.2.2
         version: 19.2.2(e2ef98691dd9cb9f2164d5917e5161ae)
       '@jsverse/transloco':
-        specifier: 7.5.1
-        version: 7.5.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)
+        specifier: 7.6.1
+        version: 7.6.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)
       '@jsverse/transloco-persist-lang':
-        specifier: ^7.0.2
-        version: 7.0.2(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(@jsverse/transloco@7.5.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2))
+        specifier: 7.0.2
+        version: 7.0.2(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(@jsverse/transloco@7.6.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2))
       '@ng-matero/extensions':
         specifier: 19.2.1
         version: 19.2.1(45abefae48c1410d5ec62592b83c7c66)
@@ -182,13 +182,13 @@ importers:
         specifier: 19.2.2
         version: 19.2.2(@angular/compiler@19.2.2(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0)))(typescript@5.8.2)
       '@jsverse/transloco-keys-manager':
-        specifier: ^6.1.0
+        specifier: 6.1.0
         version: 6.1.0(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(tslib@2.8.1)(typescript@5.8.2)
       '@jsverse/transloco-optimize':
-        specifier: ^7.0.1
+        specifier: 7.0.1
         version: 7.0.1
       '@jsverse/transloco-validator':
-        specifier: ^7.0.1
+        specifier: 7.0.1
         version: 7.0.1
       '@types/d3-shape':
         specifier: 3.1.7
@@ -1607,8 +1607,8 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  '@jsverse/transloco@7.5.1':
-    resolution: {integrity: sha512-2GtJKFKmwvw7ygkf51kNMNJ1PSiepvDIqgFM1Sl8aX6if/kZ4/FNKVz0t64QP2JHUU16I2Le05In7IbiRE7ZrQ==}
+  '@jsverse/transloco@7.6.1':
+    resolution: {integrity: sha512-hFFKJ1pVFYeW2E4UFETQpOeOn0tuncCSUdRewbq3LiV+qS9x4Z2XVuCaAaFPdiNhy4nUKHWFX1pWjpZ5XjUPaQ==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
 
@@ -7499,10 +7499,10 @@ snapshots:
       flat: 5.0.2
       glob: 10.4.5
 
-  '@jsverse/transloco-persist-lang@7.0.2(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(@jsverse/transloco@7.5.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2))':
+  '@jsverse/transloco-persist-lang@7.0.2(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(@jsverse/transloco@7.6.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2))':
     dependencies:
       '@angular/core': 19.2.2(rxjs@7.8.2)(zone.js@0.15.0)
-      '@jsverse/transloco': 7.5.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)
+      '@jsverse/transloco': 7.6.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)
       tslib: 2.8.1
 
   '@jsverse/transloco-utils@7.0.2(typescript@5.8.2)':
@@ -7516,7 +7516,7 @@ snapshots:
     dependencies:
       find-duplicated-property-keys: 1.2.9
 
-  '@jsverse/transloco@7.5.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)':
+  '@jsverse/transloco@7.6.1(@angular/core@19.2.2(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.2)':
     dependencies:
       '@angular/core': 19.2.2(rxjs@7.8.2)(zone.js@0.15.0)
       '@jsverse/transloco-utils': 7.0.2(typescript@5.8.2)

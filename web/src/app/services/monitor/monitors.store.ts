@@ -1,11 +1,11 @@
-import {computed, effect, inject} from '@angular/core';
+import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {Router} from '@angular/router';
 
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  forkJoin,
   map,
   mergeMap,
   pipe,
@@ -13,9 +13,9 @@ import {
   tap,
 } from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {
-  getState,
   patchState,
   signalStore,
   withComputed,
@@ -37,21 +37,23 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
+import {injectConfirmDialog$} from '@app/components';
 import {PushService} from '@app/services';
 import {
   PaginationDto,
+  resetSelection,
   setError,
   setFulfilled,
   setPending,
   setTotalElements,
   withPaginatedTable,
   withRequestStatus,
+  withSelection,
 } from '@app/services/store-features';
 
 const pageSize = 15;
 
 export const InfiniteMonitorsStore = signalStore(
-  {providedIn: 'root'},
   withState<{
     page: number;
     requestCount: number;
@@ -321,8 +323,10 @@ export const MonitorsSearchStore = signalStore(
 export const MonitorsStore = signalStore(
   withState<{
     teamId: string | undefined;
+    deleted: boolean | undefined;
   }>({
     teamId: undefined,
+    deleted: undefined,
   }),
   withPaginatedTable<BackendType['MonitorResponse']>({
     paramPrefix: 'monitors.',
@@ -330,28 +334,12 @@ export const MonitorsStore = signalStore(
     defaultSortBy: 'status',
     defaultSortDirection: 'asc',
   }),
-  withMethods((store, api = injectAPI()) => ({
-    updateMonitor(it: BackendType['MonitorResponse']): void {
-      patchState(store, updateEntity({id: it.id, changes: it}));
-    },
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
-
-      if (monitor) {
-        patchState(
-          store,
-          updateEntity({
-            id: monitor.id,
-            changes: {
-              lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
-            },
-          }),
-        );
-      }
-    },
-    load: rxMethod<
+  withSelection<BackendType['MonitorResponse']>({}),
+  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
+    const load = rxMethod<
       {
         teamId: string | undefined;
+        deleted?: boolean;
       } & PaginationDto
     >(
       pipe(
@@ -374,6 +362,7 @@ export const MonitorsStore = signalStore(
                 next: (response) =>
                   patchState(
                     store,
+                    resetSelection(),
                     setAllEntities(response.data),
                     setTotalElements(response.numberOfItems),
                     setFulfilled(),
@@ -383,8 +372,62 @@ export const MonitorsStore = signalStore(
             ),
         ),
       ),
-    ),
-  })),
+    );
+
+    return {
+      setDeleted: rxMethod<boolean | undefined>(
+        tap((deleted) => patchState(store, () => ({deleted}))),
+      ),
+      updateMonitor(it: BackendType['MonitorResponse']): void {
+        patchState(store, updateEntity({id: it.id, changes: it}));
+      },
+      addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
+        const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
+
+        if (monitor) {
+          patchState(
+            store,
+            updateEntity({
+              id: monitor.id,
+              changes: {
+                lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
+              },
+            }),
+          );
+        }
+      },
+      restoreSelection: rxMethod<void>(
+        switchMap(() =>
+          confirmDialog$(
+            translate('general.confirmRestore.title'),
+            translate('general.confirmRestore.description'),
+          ).pipe(
+            tap(() => patchState(store, setPending())),
+            map(() => store.selection().map((it) => it.id)),
+            switchMap((ids) =>
+              forkJoin(
+                ids.map((id) => api.delete('/v1/monitor/{id}/undo', {params: {path: {id}}})),
+              ).pipe(
+                tapResponse({
+                  next: () => {
+                    toast.success(translate('general.restoreSuccess'));
+
+                    load({
+                      ...store.pageable(),
+                      deleted: store.deleted(),
+                      teamId: store.teamId(),
+                    });
+                  },
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
+            ),
+          ),
+        ),
+      ),
+      load,
+    };
+  }),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
       pushService.monitorStatusChange$

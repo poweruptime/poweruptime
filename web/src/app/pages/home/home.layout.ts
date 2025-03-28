@@ -26,7 +26,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
     <mat-drawer-container class="dashboard-container" autosize>
       <mat-drawer
-        class="sidenav"
+        class="border-r border-solid border-r-gray-400"
         #drawer
         [mode]="_collapseNav ? 'over' : 'side'"
         [opened]="!_collapseNav">
@@ -34,27 +34,25 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
       </mat-drawer>
 
       <mat-drawer-content class="grid-container">
-        <header class="header">
-          <div class="flex justify-between gap-4 p-2">
-            <div class="flex items-center gap-4">
-              <div class="flex items-center" [class.hidden]="!_collapseNav">
-                <button
-                  [matTooltip]="'nav.toggle' | transloco"
-                  [attr.aria-label]="'nav.toggle' | transloco"
-                  (click)="drawer.toggle()"
-                  mat-icon-button>
-                  <bi name="list" size="24" />
-                </button>
-              </div>
-              <a class="pb-1" routerLink="/">
-                <h1 class="text-2xl">poweruptime</h1>
-              </a>
+        <div class="my-header flex justify-between gap-4 px-3 py-1 shadow-md dark:text-white">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center" [class.hidden]="!_collapseNav">
+              <button
+                [matTooltip]="'nav.toggle' | transloco"
+                [attr.aria-label]="'nav.toggle' | transloco"
+                (click)="drawer.toggle()"
+                mat-icon-button>
+                <bi name="list" size="24" />
+              </button>
             </div>
-            <div class="hidden items-center gap-2 lg:inline-flex">
-              <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
-            </div>
+            <a class="pb-1" routerLink="/">
+              <h1 class="text-2xl">poweruptime</h1>
+            </a>
           </div>
-        </header>
+          <div class="hidden items-center gap-2 lg:inline-flex">
+            <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
+          </div>
+        </div>
 
         <main class="main">
           @defer (when backendOfflineService.isOffline()) {
@@ -80,14 +78,13 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
       min-height: 100vh;
     }
 
-    .header {
-      @apply shadow-sm dark:text-white;
+    .my-header {
       z-index: 999;
       grid-row: 1;
     }
 
     .main {
-      @apply overflow-y-auto px-2 pt-2;
+      @apply overflow-y-auto px-3 pt-4;
       max-width: 1920px;
       height: 100%;
       grid-row: 2;

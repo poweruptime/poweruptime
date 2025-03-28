@@ -80,7 +80,7 @@ import {isMobileBreakpoints} from '@app/services/util';
             routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
             routerLinkActive="active">
             <bi name="trash3" />
-            <span class="nav-text">Recycle Bin</span>
+            <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
           </a>
           <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
             <bi name="gear-wide" />

@@ -203,7 +203,7 @@ class StatusPageService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("name", "slug", "createdAt", "updatedAt"),
+            listOf("name", "slug", "createdAt", "updatedAt", "deleted"),
         ),
     )
 }

@@ -4,8 +4,6 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {environment} from '../../../../environments/environment';
-
 @Component({
   template: `
     <nav [tabPanel]="tabPanel" mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start">
@@ -26,7 +24,7 @@ import {environment} from '../../../../environments/environment';
       </div>
     </mat-tab-nav-panel>
   `,
-  selector: 'instance-settings-layout',
+  selector: 'pu-recycle-bin-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTabNav,
@@ -38,10 +36,10 @@ import {environment} from '../../../../environments/environment';
     TranslocoPipe,
   ],
 })
-export class ProfileLayout {
+export class RecycleBinLayout {
   readonly routes = [
-    {path: 'overview', text: 'general.overview'},
-    {path: 'security', text: 'general.security'},
-    ...(environment.production ? [] : [{path: 'dev', text: 'profile.devThings'}]),
+    {path: 'monitor', text: 'general.monitors'},
+    {path: 'status-page', text: 'general.statusPages'},
+    {path: 'notification-method', text: 'general.notificationMethods'},
   ];
 }

@@ -1,7 +1,4 @@
-import {registerLocaleData} from '@angular/common';
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
-import localeDe from '@angular/common/locales/de';
-import localeDeExtra from '@angular/common/locales/extra/de';
 import {
   ApplicationConfig,
   LOCALE_ID,
@@ -22,7 +19,7 @@ import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angul
 
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
-import {de as dateFnsLocaleDe} from 'date-fns/locale/de';
+import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
@@ -38,7 +35,7 @@ const MY_DATE_FNS_FORMATS: MatDateFormats = {
     dateInput: 'yyyy-MM-dd',
   },
   display: {
-    dateInput: 'yyyy-MM-dd',
+    dateInput: 'dd.M.yyyy',
     monthYearLabel: 'yyyy',
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'yyyy',
@@ -94,8 +91,8 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline',
       },
     },
-    {provide: LOCALE_ID, useValue: 'de-DE'},
-    {provide: MAT_DATE_LOCALE, useValue: dateFnsLocaleDe},
+    {provide: LOCALE_ID, useValue: 'en-US'},
+    {provide: MAT_DATE_LOCALE, useValue: dateFnsLocale},
     provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
     importProvidersFrom(
       NgxEditorModule.forRoot({
@@ -137,5 +134,3 @@ export const appConfig: ApplicationConfig = {
     ),
   ],
 };
-
-registerLocaleData(localeDe, 'de-DE', localeDeExtra);

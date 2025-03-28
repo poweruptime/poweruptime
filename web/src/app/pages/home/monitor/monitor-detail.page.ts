@@ -95,7 +95,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         }
 
         <div class="flex items-center gap-2">
-          @if (monitor.status === 'PAUSED' || monitor.status === 'MAINTENANCE') {
+          @if (monitor.status === 'PAUSED') {
             <button
               class="secondary-button"
               (click)="monitorActionStore.start(monitor.id)"
@@ -108,12 +108,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               (click)="monitorActionStore.pause(monitor.id)"
               mat-flat-button>
               {{ 'general.pause' | transloco }}
-            </button>
-            <button
-              class="secondary-button"
-              (click)="monitorActionStore.maintenance(monitor.id)"
-              mat-flat-button>
-              {{ 'general.maintenance' | transloco }}
             </button>
           }
           <a
@@ -304,11 +298,11 @@ export class MonitorDetailPage {
 
   readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
     parse: (it) => it ?? toBackendDate(new Date()),
-    stringify: (value) => (toBackendDate(new Date()) ? null : value),
+    stringify: (value) => (value === toBackendDate(new Date()) ? null : value),
   });
   readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
     parse: (it) => it ?? toBackendDate(new Date()),
-    stringify: (value) => (toBackendDate(new Date()) ? null : value),
+    stringify: (value) => (value === toBackendDate(new Date()) ? null : value),
   });
   readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
     parse: paramToNumber({

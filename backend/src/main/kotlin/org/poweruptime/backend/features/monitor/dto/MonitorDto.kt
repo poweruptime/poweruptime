@@ -97,6 +97,7 @@ data class MonitorResponse(
     val id: String,
     val status: MonitorStatus,
     val team: MinTeamResponse,
+    val deleted: Instant?,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
 ) {
@@ -108,6 +109,7 @@ data class MonitorResponse(
         name = it.name,
         id = it.id,
         status = it.status,
+        deleted = it.deleted,
         team = MinTeamResponse(it.team),
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,

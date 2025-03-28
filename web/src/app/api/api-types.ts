@@ -2075,6 +2075,8 @@ export interface components {
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       team: components['schemas']['MinTeamResponse'];
+      /** Format: date-time */
+      deleted?: string;
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };

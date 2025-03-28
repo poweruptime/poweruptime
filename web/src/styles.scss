@@ -46,10 +46,22 @@ $light-theme: mat.private-deep-merge-all(
 html {
   @include mat.all-component-themes($light-theme);
 
+  @include mat.sidenav-overrides(
+    (
+      container-divider-color: lightgray,
+    )
+  );
+
   .dark {
     // Use the `-color` mixins to only apply color styles without reapplying the same
     // typography and density styles.
     @include mat.all-component-colors($dark-theme);
+
+    @include mat.sidenav-overrides(
+      (
+        container-divider-color: #52525b,
+      )
+    );
 
     /** Style editor **/
     & {
@@ -189,6 +201,14 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
 .mdc-list-item__primary-text > bi {
   vertical-align: -0.26rem;
   margin-right: 0.7em;
+}
+
+.mat-column-select {
+  @apply w-28;
+}
+
+.mat-column-deleted {
+  @apply w-52;
 }
 
 .dark {

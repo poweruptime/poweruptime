@@ -68,6 +68,9 @@ export function withPaginatedTable<EntityType>({
       setColumnsToDisplay: rxMethod<EntityKey<EntityType>[]>(
         tap((columnsToDisplay) => patchState(store, () => ({columnsToDisplay}))),
       ),
+      setStartSort: rxMethod<{by: string; direction: SortDirection}>(
+        tap(({by, direction}) => patchState(store, () => ({sortBy: by, sortDirection: direction}))),
+      ),
       setPaginator: rxMethod<MatPaginator>(
         switchMap((paginator) =>
           paginator.page.pipe(

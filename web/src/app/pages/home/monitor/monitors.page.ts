@@ -94,6 +94,7 @@ import {paramToArray} from '@app/util';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore],
   imports: [
     RouterOutlet,
     RouterLink,
@@ -106,7 +107,7 @@ import {paramToArray} from '@app/util';
     MonitorsFilter,
     TranslocoPipe,
   ],
-  selector: 'landing-page',
+  selector: 'pu-monitors-page',
 })
 export class MonitorsPage {
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);

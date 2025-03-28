@@ -56,7 +56,7 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
           <button
             [matTooltip]="'statusPage.list.delete' | transloco"
             [attr.aria-label]="'statusPage.list.delete' | transloco"
-            (click)="deleteConfirm.confirm(element.id)"
+            (click)="statusPagesStore.delete(element.id)"
             mat-icon-button
             stopPropagation>
             <bi name="trash-fill" />
@@ -104,7 +104,6 @@ import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/ser
 })
 export class StatusPagesPage {
   readonly statusPagesStore = inject(StatusPagesStore);
-  readonly deleteConfirm = injectDeleteConfirmDialog((id) => this.statusPagesStore.delete(id));
 
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);

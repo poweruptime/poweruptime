@@ -107,7 +107,7 @@ import {
               <button
                 [matTooltip]="'notificationMethod.list.delete' | transloco"
                 [attr.aria-label]="'notificationMethod.list.delete' | transloco"
-                (click)="deleteConfirm.confirm(element.id)"
+                (click)="notificationMethodsStore.delete(element.id)"
                 mat-icon-button
                 stopPropagation>
                 <bi name="trash-fill" />
@@ -173,10 +173,6 @@ import {
 })
 export class NotificationMethodsPage {
   readonly notificationMethodsStore = inject(NotificationMethodsStore);
-
-  readonly deleteConfirm = injectDeleteConfirmDialog((id) =>
-    this.notificationMethodsStore.delete(id),
-  );
 
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);

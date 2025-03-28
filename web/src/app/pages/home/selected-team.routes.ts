@@ -3,6 +3,7 @@ import {Routes} from '@angular/router';
 import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {
+  InfiniteMonitorsStore,
   MonitorsDashboardStore,
   MonitorsSearchStore,
   MonitorsStore,
@@ -31,9 +32,12 @@ export const ROUTES: Routes = [
     loadChildren: () => import('./status-pages/status-pages.routes').then((r) => r.ROUTES),
   },
   {
+    path: 'recycle-bin',
+    loadChildren: () => import('./recycle-bin/recycle-bin.route').then((r) => r.ROUTES),
+  },
+  {
     path: 'm',
     canActivate: [isDesktopGuard],
-    providers: [MonitorsSearchStore, MonitorsDashboardStore],
     loadComponent: () => import('./monitor/monitors.page').then((c) => c.MonitorsPage),
     loadChildren: () => import('./monitor/desktop-team-monitor.routes').then((r) => r.ROUTES),
   },

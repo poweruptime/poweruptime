@@ -22,7 +22,7 @@ import {
 
     @if (teamId) {
       @if (team; as team) {
-        <h1 class="mb-4 text-4xl">{{ 'team.edit.edit' | transloco: team }}</h1>
+        <h2 class="mb-4 text-3xl">{{ 'team.edit.edit' | transloco: team }}</h2>
 
         <div class="grid md:grid-cols-6">
           <div class="col-span-3 flex w-full flex-col gap-4 xl:col-span-2">

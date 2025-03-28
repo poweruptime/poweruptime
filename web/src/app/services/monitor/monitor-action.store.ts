@@ -3,12 +3,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {pipe, switchMap, tap} from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {injectAPI} from '@app/api';
+import {injectConfirmDialog$} from '@app/components';
 import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
@@ -20,7 +22,8 @@ export const MonitorActionStore = signalStore(
       api = injectAPI(),
       router = inject(Router),
       relativeTo = inject(ActivatedRoute),
-      monitorsStore = inject(InfiniteMonitorsStore),
+      confirmDialog$ = injectConfirmDialog$(),
+      monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
       monitorDetailStore = inject(MonitorDetailStore),
     ) => {
@@ -30,7 +33,7 @@ export const MonitorActionStore = signalStore(
             next: (monitor) => {
               patchState(store, setFulfilled());
 
-              monitorsStore.addMonitor(monitor);
+              monitorsStore?.addMonitor(monitor);
 
               toast.success(`Successfully restored ${monitor.name}.`);
 
@@ -58,7 +61,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore.updateMonitor(monitor);
+                      monitorsStore?.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -85,7 +88,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore.updateMonitor(monitor);
+                      monitorsStore?.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -112,7 +115,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore.updateMonitor(monitor);
+                      monitorsStore?.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -123,28 +126,30 @@ export const MonitorActionStore = signalStore(
           ),
         ),
         delete: rxMethod<string>(
-          pipe(
-            tap(() => patchState(store, setPending())),
-            switchMap((id) =>
-              api.delete('/v1/monitor/{id}', {params: {path: {id}}}).pipe(
-                tapResponse({
-                  next: () => {
-                    patchState(store, setFulfilled());
+          switchMap((id) =>
+            confirmDialog$(translate('general.confirmDelete')).pipe(
+              tap(() => patchState(store, setPending())),
+              switchMap(() =>
+                api.delete('/v1/monitor/{id}', {params: {path: {id}}}).pipe(
+                  tapResponse({
+                    next: () => {
+                      patchState(store, setFulfilled());
 
-                    router.navigate(['..'], {relativeTo}).then(() => {
-                      monitorsStore.removeMonitor(id);
-                      monitorsSearchStore?.removeMonitor(id);
+                      router.navigate(['..'], {relativeTo}).then(() => {
+                        monitorsStore?.removeMonitor(id);
+                        monitorsSearchStore?.removeMonitor(id);
 
-                      toast.success('Successfully deleted monitor.', {
-                        action: {
-                          label: 'Undo',
-                          onClick: () => undelete(id).subscribe(),
-                        },
+                        toast.success('Successfully deleted monitor.', {
+                          action: {
+                            label: 'Undo',
+                            onClick: () => undelete(id).subscribe(),
+                          },
+                        });
                       });
-                    });
-                  },
-                  error: (error) => patchState(store, setError(error)),
-                }),
+                    },
+                    error: (error) => patchState(store, setError(error)),
+                  }),
+                ),
               ),
             ),
           ),
