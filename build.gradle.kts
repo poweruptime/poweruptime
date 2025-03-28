@@ -132,7 +132,7 @@ tasks.register("releaseBeta") {
         setPowerUpTimeVersion(tagName)
 
         // Commit changes
-        commitChanges("Set POWERUPTIME_VERSION to $version for beta release")
+        commitChanges("chore: set POWERUPTIME_VERSION to $version")
 
         println()
         println("Creating git tag $tagName")
@@ -157,7 +157,7 @@ tasks.register("releaseProd") {
         setPowerUpTimeVersion(version.toString())
 
         // Commit changes
-        commitChanges("Set POWERUPTIME_VERSION to $version for production release")
+        commitChanges("chore: set POWERUPTIME_VERSION to $version")
 
         println()
         println("Creating git tag $version")
@@ -287,6 +287,9 @@ fun commitChanges(message: String) {
     }
     exec {
         commandLine("git", "commit", "-m", message)
+    }
+    exec {
+        commandLine("git", "push", "origin", "main")
     }
     println("Committed changes with message: $message")
 }
