@@ -6,6 +6,12 @@ on:
       - '*.*.*-beta-*'
       - '*.*.*'
 
+# We must only run one release workflow at a time to prevent corrupting
+# our release artifacts.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   mirror-infra-beta:
     runs-on: ubuntu-latest
