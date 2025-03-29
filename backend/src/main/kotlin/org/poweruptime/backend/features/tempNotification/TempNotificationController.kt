@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.tempNotification
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.utils.Config
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,6 +23,6 @@ class TempNotificationController(
 
     @GetMapping("/{id}")
     fun getAll(@PathVariable("id") id: String) = if (tempNotificationsEnabled) {
-        tempNotificationService.getAll().find { it.id == id }?.bodyHTML ?: throw NotFoundException()
+        tempNotificationService.getAll().find { it.id == id }?.bodyHTML.orThrowNotFound()
     } else { throw NotFoundException() }
 }

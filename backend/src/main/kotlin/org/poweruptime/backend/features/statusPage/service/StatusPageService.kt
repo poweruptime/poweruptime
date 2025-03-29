@@ -8,10 +8,10 @@ import org.poweruptime.backend.core.Filter
 import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.toDeletedFilter
 import org.poweruptime.backend.core.toPredicate
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.statusPage.domain.StatusPageDomainNameRepository
@@ -65,7 +65,7 @@ class StatusPageService(
                 dto,
                 teamService.getByIdOrThrow(dto.teamId),
                 dto.imageId?.let {
-                    fileService.getByFileId(it) ?: throw NotFoundException("Image not found")
+                    fileService.getByFileId(it).orThrowNotFound("Image not found")
                 },
             ),
         )
@@ -86,7 +86,7 @@ class StatusPageService(
                     StatusPageGroupMonitor(
                         connection = StatusPageGroupMonitorId(
                             group = groups[groupIndex],
-                            monitor = monitors[monitorId] ?: throw NotFoundException(),
+                            monitor = monitors[monitorId].orThrowNotFound(),
                         ),
                         statusPage = statusPage,
                         position = index,
@@ -128,7 +128,7 @@ class StatusPageService(
             oldStatusPage.update(
                 dto,
                 dto.imageId?.let {
-                    fileService.getByFileId(it) ?: throw NotFoundException("Image not found")
+                    fileService.getByFileId(it).orThrowNotFound("Image not found")
                 },
             ),
         )
@@ -157,7 +157,7 @@ class StatusPageService(
                     StatusPageGroupMonitor(
                         connection = StatusPageGroupMonitorId(
                             group = groups[groupIndex],
-                            monitor = monitors[monitorId] ?: throw NotFoundException(),
+                            monitor = monitors[monitorId].orThrowNotFound(),
                         ),
                         statusPage = statusPage,
                         position = index,

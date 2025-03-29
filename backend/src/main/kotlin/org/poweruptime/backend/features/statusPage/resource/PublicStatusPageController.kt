@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
 import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.monitor.service.CheckResultService
@@ -34,7 +34,7 @@ class PublicStatusPageController(
     fun get(@PathVariable slug: String): PublicStatusPageResponse =
         statusPageService.getBySlug(slug)?.let {
             PublicStatusPageResponse(it)
-        } ?: throw NotFoundException("Status page not found")
+        }.orThrowNotFound("Status page not found")
 
     @Operation(
         summary = "Get slug by domain",
@@ -44,7 +44,7 @@ class PublicStatusPageController(
     fun getByDomain(@PathVariable domain: String): PublicStatusPageResponse =
         statusPageService.getByDomainName(domain)?.let {
             PublicStatusPageResponse(it)
-        } ?: throw NotFoundException("Status page not found")
+        }.orThrowNotFound("Status page not found")
 
     @Operation(
         summary = "Get all monitors",

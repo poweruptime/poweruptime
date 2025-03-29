@@ -6,10 +6,10 @@ import jakarta.persistence.criteria.Root
 import org.poweruptime.backend.core.Filter
 import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
-import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.emails.InviteUserEmail
@@ -41,7 +41,7 @@ class UserService(
     val teamUserRepository: TeamUserRepository,
 ) : AEntityService<User>(userRepository) {
     fun getByEmailOrThrow(email: String): User =
-        userRepository.findUserByEmail(email) ?: throw NotFoundException("""${javaClass.simpleName} not found""")
+        userRepository.findUserByEmail(email).orThrowNotFound("""${javaClass.simpleName} not found""")
 
     fun getByEmail(email: String): User? = userRepository.findUserByEmail(email)
 

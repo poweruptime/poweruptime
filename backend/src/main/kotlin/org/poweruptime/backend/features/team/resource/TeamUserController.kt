@@ -15,8 +15,8 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.exceptions.ForbiddenException
-import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.core.exceptions.TooManyRequestsException
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
@@ -137,8 +137,7 @@ class TeamUserController(
         @PathVariable("teamId") teamId: String,
         @RequestBody @Valid dto: UpdateTeamUserDto,
     ): TeamUserResponse {
-        val teamUser = teamUserRepository.findByTeamAndUserId(teamId, dto.userId)
-            ?: throw NotFoundException("User not in team")
+        val teamUser = teamUserRepository.findByTeamAndUserId(teamId, dto.userId).orThrowNotFound("User not in team")
 
         return TeamUserResponse(
             teamUserRepository.save(

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
-import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -23,8 +23,8 @@ class FileController(
     @Operation(summary = "Download file")
     @GetMapping("/v1/public/file/{fileId}")
     fun serveFile(@PathVariable("fileId") fileId: String): ResponseEntity<Resource> {
-        val dbFile = fileService.getByFileId(fileId) ?: throw NotFoundException("File not found: $fileId")
-        val file = fileService.loadAsResource(fileId) ?: throw NotFoundException("File not found: $fileId")
+        val dbFile = fileService.getByFileId(fileId).orThrowNotFound("File not found: $fileId")
+        val file = fileService.loadAsResource(fileId).orThrowNotFound("File not found: $fileId")
 
         return ResponseEntity.ok().header(
             HttpHeaders.CONTENT_DISPOSITION,
