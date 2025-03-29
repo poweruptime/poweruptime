@@ -24,7 +24,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
           </div>
           <a
             class="card"
-            [queryParams]="{'filter.status': 'UP', showFilter: true}"
+            [queryParams]="{'search.status': 'UP', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.upCount }}</span>
@@ -32,7 +32,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
           </a>
           <a
             class="card"
-            [queryParams]="{'filter.status': 'DOWN', showFilter: true}"
+            [queryParams]="{'search.status': 'DOWN', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.downCount }}</span>
@@ -40,7 +40,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
           </a>
           <a
             class="card"
-            [queryParams]="{'filter.status': 'MAINTENANCE', showFilter: true}"
+            [queryParams]="{'search.status': 'MAINTENANCE', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.maintenanceCount }}</span>
@@ -48,7 +48,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
           </a>
           <a
             class="card"
-            [queryParams]="{'filter.status': 'PAUSED', showFilter: true}"
+            [queryParams]="{'search.status': 'PAUSED', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
             <span class="text-2xl">{{ dashboard.pausedCount }}</span>
