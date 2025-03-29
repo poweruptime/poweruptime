@@ -115,6 +115,7 @@
       "matchUpdateTypes": ["digest", "patch", "minor", "major"]
     }
   ],
+  "prHourlyLimit": 5,
   "schedule": ["* * 1,15 * *"],
   "semanticCommitScope": "",
   "semanticCommitType": "build",
