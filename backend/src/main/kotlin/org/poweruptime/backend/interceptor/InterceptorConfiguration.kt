@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-open class InterceptorConfiguration(
+class InterceptorConfiguration(
     @Value(Config.RATE_LIMIT_ENABLED) val rateLimitEnabled: Boolean,
     @Value(Config.HOST) val host: String,
     private val ipBasedRateLimitService: IPBasedRateLimitService,

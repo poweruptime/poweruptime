@@ -99,7 +99,7 @@ export const MonitorEditStore = signalStore(
                   queryParamsHandling: 'merge',
                 });
               },
-              error: (error) => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),

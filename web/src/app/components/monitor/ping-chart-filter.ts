@@ -11,7 +11,7 @@ import {
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
 
-import {distinctUntilChanged, filter, map, tap} from 'rxjs';
+import {distinctUntilChanged, filter, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 

@@ -3,7 +3,6 @@ package org.poweruptime.backend.features.tempNotification
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.springframework.stereotype.Service
 import java.time.Instant
-import java.util.*
 
 data class TempNotification(
     val to: String,

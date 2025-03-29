@@ -1,4 +1,4 @@
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {BreakpointObserver} from '@angular/cdk/layout';
 import {
   CdkFixedSizeVirtualScroll,
   CdkVirtualForOf,
@@ -8,8 +8,6 @@ import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@
 import {MatAnchor} from '@angular/material/button';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
-
-import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {a_chunk} from 'dfts-helper';

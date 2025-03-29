@@ -47,6 +47,5 @@ class DnsMonitorCheckerData(
     val matches: List<String>? = null,
 ) : MonitorCheckerData(MonitorCheckerType.DNS) {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this("1.2.3.4", "1.2.3.4", 1, DnsMonitorCheckerDataType.TXT, null)
 }

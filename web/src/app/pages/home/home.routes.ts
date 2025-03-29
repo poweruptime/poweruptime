@@ -3,12 +3,7 @@ import {Routes} from '@angular/router';
 import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {isSystemAdmin} from '@app/guards/is-system-admin.guard';
-import {
-  InfiniteMonitorsStore,
-  MonitorsDashboardStore,
-  MonitorsSearchStore,
-  MonitorsStore,
-} from '@app/services';
+import {MonitorsDashboardStore, MonitorsStore} from '@app/services';
 
 export const ROUTES: Routes = [
   {

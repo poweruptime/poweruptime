@@ -8,8 +8,6 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {MentionAutocompleteTrigger} from '@app/components';
-
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({

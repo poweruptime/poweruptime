@@ -7,8 +7,6 @@ import {map, of, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-const refreshInSeconds = 120;
-
 @Component({
   template: `
     <div class="flex flex-col items-center py-4">
@@ -27,17 +25,22 @@ export class RefreshInComponent {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly now = new Date();
 
+  protected readonly refreshInSeconds = 120;
+
   countdown = toSignal(
     this.isBrowser
-      ? timer(0, 1000).pipe(map((tick) => refreshInSeconds - (tick % refreshInSeconds)))
-      : of(refreshInSeconds),
+      ? timer(0, 1000).pipe(
+          map((tick) => this.refreshInSeconds - (tick % this.refreshInSeconds)),
+          map((tick) => tick.toString()),
+        )
+      : of(this.refreshInSeconds.toString()),
   );
 
   constructor() {
     if (!this.isBrowser) {
       this.meta.addTag({
         'http-equiv': 'refresh',
-        content: `${refreshInSeconds}`,
+        content: `${this.refreshInSeconds}`,
       });
     }
 

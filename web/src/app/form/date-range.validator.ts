@@ -9,7 +9,8 @@ export function dateRangeValidator(
 
     let invalid = false;
     if (start && end) {
-      invalid = new Date(start).valueOf() + 1000 * 3600 * 24 * 30 < new Date(end).valueOf(); //checking if date difference is less than 31 days
+      invalid =
+        new Date(start).valueOf() + 1000 * 3600 * 24 * maxRangeInDays < new Date(end).valueOf(); //checking if date difference is less than 31 days
     }
 
     return invalid ? {invalidRange: true} : null;

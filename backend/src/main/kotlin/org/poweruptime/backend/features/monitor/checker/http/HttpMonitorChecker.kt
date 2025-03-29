@@ -6,6 +6,7 @@ import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory
 import org.apache.hc.core5.ssl.SSLContexts
 import org.poweruptime.backend.configuration.puRestTemplate
+import org.poweruptime.backend.core.utils.addBasicAuthString
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.slf4j.Logger
@@ -20,7 +21,6 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
-import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 class HttpMonitorChecker : MonitorChecker {
@@ -49,16 +49,9 @@ class HttpMonitorChecker : MonitorChecker {
         )
 
         httpMonitorCheckerData.authType?.let {
-            headers.add(
-                "Authorization",
-                when (it) {
-                    HttpMonitorCheckerDataAuthType.BASIC -> {
-                        val auth = """${
-                            httpMonitorCheckerData.basicAuthDataUsername
-                        }:${httpMonitorCheckerData.basicAuthDataPassword}"""
-                        "Basic " + String(Base64.encodeToByteArray(auth.toByteArray()))
-                    }
-                },
+            headers.addBasicAuthString(
+                httpMonitorCheckerData.basicAuthDataUsername!!,
+                httpMonitorCheckerData.basicAuthDataPassword!!,
             )
         }
 

@@ -204,7 +204,7 @@ export class UserEditForm extends AbstractModelEditFormComponent<
   override overrideRawValue(value: ReturnType<typeof this.form.getRawValue>): unknown {
     // @ts-expect-error role does not exist
     value.role = value.isAdmin ? 'ADMIN' : 'USER';
-    if ((!value.updatePassword || value.updatePassword === undefined) && !this.isCreating()) {
+    if (!value.updatePassword && !this.isCreating()) {
       value.password = undefined;
     }
 

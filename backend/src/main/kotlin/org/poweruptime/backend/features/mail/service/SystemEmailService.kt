@@ -52,7 +52,7 @@ class SystemEmailService(
                 ),
             )
 
-            logger.debug("Saved email to temporary notification; to '${dto.to}', subject: '${dto.subject}'")
+            logger.debug("Saved email to temporary notification; to '{}', subject: '{}'", dto.to, dto.subject)
         }
 
         if (!mailEnabled) {
@@ -71,7 +71,7 @@ class SystemEmailService(
     )
 
     fun queueEmail(email: Email) {
-        logger.debug("Queued system email '${email.to}', subject: '${email.subject}'")
+        logger.debug("Queued system email '{}', subject: '{}'", email.to, email.subject)
 
         rabbitMQService.sendToSendSystemEmail(
             EmailDto(

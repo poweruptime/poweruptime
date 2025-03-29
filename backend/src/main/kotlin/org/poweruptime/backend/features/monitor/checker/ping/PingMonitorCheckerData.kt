@@ -21,8 +21,6 @@ class PingMonitorCheckerData(
     @get:Max(Database.MAX_PORT)
     val port: Int,
 ) : MonitorCheckerData(MonitorCheckerType.PING) {
-
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this("1.2.3.4", 42069)
 }

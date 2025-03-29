@@ -6,7 +6,7 @@ interface ADatabaseEnumConvertable {
     val code: String
 }
 
-@Suppress("com.haulmont.jpb.ConverterNotAnnotatedInspection")
+@Suppress("com.haulmont.jpb.ConverterNotAnnotatedInspection", "ConverterNotAnnotatedInspection")
 abstract class ADatabaseEnumConverter<T : ADatabaseEnumConvertable> : AttributeConverter<T, String> {
     abstract fun getKeys(): Array<T>
 

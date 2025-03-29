@@ -1,10 +1,8 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
-import {TranslocoPipe} from '@jsverse/transloco';
 import {AreaChartModule} from '@swimlane/ngx-charts';
 import * as shape from 'd3-shape';
-import {DfxTimeLeftPipe} from 'dfx-helper';
 
 @Component({
   template: `

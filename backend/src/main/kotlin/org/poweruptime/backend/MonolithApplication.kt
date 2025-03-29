@@ -15,7 +15,7 @@ import java.util.*
 @EnableJpaRepositories("org.poweruptime.backend.*")
 @EnableRetry
 @Import(HttpExceptionHandler::class)
-open class MonolithApplication {
+class MonolithApplication {
     companion object {
         @JvmStatic
         @Suppress("SpreadOperator")

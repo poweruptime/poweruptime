@@ -26,6 +26,5 @@ class DiscordNotificationSenderData(
     val displayName: String? = null,
 ) : NotificationSenderData(NotificationSenderType.DISCORD) {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this("", null)
 }

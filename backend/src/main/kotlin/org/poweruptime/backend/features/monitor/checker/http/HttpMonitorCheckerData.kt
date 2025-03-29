@@ -49,7 +49,6 @@ class HttpMonitorCheckerData(
     val basicAuthDataPassword: String? = null,
 ) : MonitorCheckerData(MonitorCheckerType.HTTP) {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this(
         "1.2.3.4",
         HttpMonitorCheckerDataMethod.GET,

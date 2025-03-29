@@ -78,7 +78,7 @@ export const SelectedTeamStore = signalStore(
             .pipe(
               tapResponse({
                 next: ({data, numberOfPages}) =>
-                  patchState(store, setEntities(data), setFulfilled(), (state) => {
+                  patchState(store, setEntities(data), setFulfilled(), () => {
                     if (numberOfPages === page) {
                       console.warn('Loaded all teams');
                       return {loadedAll: true};

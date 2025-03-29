@@ -3,9 +3,7 @@ import {Routes} from '@angular/router';
 import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {
-  InfiniteMonitorsStore,
   MonitorsDashboardStore,
-  MonitorsSearchStore,
   MonitorsStore,
   NotificationMethodsStore,
   StatusPagesStore,

@@ -29,10 +29,10 @@ val puObjectMapper: JsonMapper = jacksonMapperBuilder()
     .build()
 
 @Configuration
-open class JacksonConfiguration {
+class JacksonConfiguration {
     @Bean
     @Primary
-    open fun objectMapper(): ObjectMapper = puObjectMapper
+    fun objectMapper(): ObjectMapper = puObjectMapper
 }
 
 fun Any.toJSON(): String = puObjectMapper.writeValueAsString(this)

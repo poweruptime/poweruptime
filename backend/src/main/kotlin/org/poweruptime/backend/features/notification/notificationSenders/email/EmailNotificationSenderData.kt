@@ -74,7 +74,6 @@ class EmailNotificationSenderData(
     val bcc: Set<String>? = null,
 ) : NotificationSenderData(NotificationSenderType.EMAIL), EmailSender {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this(
         setOf(""),
         "",

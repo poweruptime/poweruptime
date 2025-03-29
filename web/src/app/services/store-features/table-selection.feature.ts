@@ -39,9 +39,6 @@ export function withSelection<EntityType extends IHasID<EntityType['id']>>({
       }),
     })),
     withMethods((store) => ({
-      resetSelection() {
-        patchState(store, resetSelection());
-      },
       isSelected(o: EntityType): boolean {
         return isEntitySelected(store.selection(), o, find);
       },

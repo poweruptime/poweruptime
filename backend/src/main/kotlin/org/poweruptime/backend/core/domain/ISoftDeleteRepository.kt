@@ -79,7 +79,7 @@ interface ISoftDeleteRepository<T : ISoftDeleteEntity> : Repository<T> {
     }
 
     @Transactional
-    override fun delete(entity: T,) {
+    override fun delete(entity: T) {
         deleteById(entity.id)
     }
 

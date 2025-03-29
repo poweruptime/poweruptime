@@ -116,7 +116,7 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   registerOnChange(fn: (it: string | null) => void): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {}
+  registerOnTouched(_: any): void {}
   setDisabledState?(isDisabled: boolean): void {
     this.isDisabled.set(isDisabled);
   }

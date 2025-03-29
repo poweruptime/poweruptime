@@ -69,7 +69,7 @@ export const NotificationMethodEditStore = signalStore(
                   queryParamsHandling: 'merge',
                 });
               },
-              error: (error) => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),

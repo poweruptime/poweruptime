@@ -2,7 +2,7 @@ import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
-import {addEntity, removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 

@@ -17,9 +17,9 @@ class GeneralRabbitMQTest : BaseTestWithReusingContainers() {
     @Test
     fun `general Rabbit Test`() {
         val messageBody = "Hello world!"
-        rabbitTemplate.convertAndSend(org.poweruptime.backend.amqp.TestRabbit.TEST_EXCHANGE, "test.key1", messageBody)
+        rabbitTemplate.convertAndSend(TestRabbit.TEST_EXCHANGE, "test.key1", messageBody)
 
-        val message: Message? = rabbitTemplate.receive(org.poweruptime.backend.amqp.TestRabbit.TEST_QUEUE)
+        val message: Message? = rabbitTemplate.receive(TestRabbit.TEST_QUEUE)
 
         assertThat(message).isNotNull
         val receivedMessage = message!!.body.decodeToString()

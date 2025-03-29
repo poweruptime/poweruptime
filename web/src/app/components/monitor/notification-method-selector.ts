@@ -1,5 +1,5 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {ChangeDetectionStrategy, Component, inject, input, model, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, model} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {
   MatAutocomplete,
@@ -84,8 +84,6 @@ export class NotificationMethodSelector {
 
   readonly selectedNotificationMethods = model<BackendType['NotificationMethodMinResponse'][]>([]);
   searchNotificationMethod = model('');
-
-  readonly autoComplete = viewChild.required(MatAutocomplete);
 
   readonly announcer = inject(LiveAnnouncer);
 

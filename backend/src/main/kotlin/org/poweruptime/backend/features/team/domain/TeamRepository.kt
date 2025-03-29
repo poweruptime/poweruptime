@@ -16,9 +16,4 @@ interface TeamRepository : ISoftDeleteRepository<Team>, JpaSpecificationExecutor
         @Param("query") query: String,
         pageable: Pageable
     ): Page<Team>
-
-    @Query(
-        "select o from TeamUser ou join ou.id.team o where ou.id.user.id=:id and o.deleted is null",
-    )
-    fun findTeamsByUserId(@Param("id") userId: String): List<Team>
 }

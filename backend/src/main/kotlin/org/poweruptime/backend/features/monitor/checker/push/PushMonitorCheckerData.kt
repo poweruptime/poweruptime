@@ -15,6 +15,5 @@ class PushMonitorCheckerData(
     val pushId: String,
 ) : MonitorCheckerData(MonitorCheckerType.PUSH) {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this("ID")
 }

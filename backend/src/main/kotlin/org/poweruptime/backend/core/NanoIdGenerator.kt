@@ -9,7 +9,6 @@ import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
 import java.io.Serializable
-import java.util.*
 
 class SmallNanoIdGenerator : IdentifierGenerator {
     @Throws(HibernateException::class)

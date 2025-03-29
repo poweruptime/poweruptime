@@ -11,14 +11,14 @@
     color: var(--mat-app-text-color); // Default to dark theme background
     border-radius: 12px;
     overflow: hidden;
-    font-family: var(--font-sans);
+    font-family: var(--font-sans), sans-serif;
     border: 1px solid var(--gray6);
     box-shadow: var(--cmdk-shadow);
     transition: transform 100ms ease;
   }
 
   .cmdk-input {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans), sans-serif;
     border: none;
     width: 100%;
     font-size: 17px;
@@ -106,7 +106,7 @@
     gap: 8px;
 
     kbd {
-      font-family: var(--font-sans);
+      font-family: var(--font-sans), sans-serif;
       font-size: 12px;
       min-width: 20px;
       padding: 4px;

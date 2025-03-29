@@ -36,7 +36,7 @@ fun puRestTemplate() = RestTemplate().apply {
 }
 
 @Configuration
-open class HttpClientConfiguration {
+class HttpClientConfiguration {
     @Bean
-    open fun restTemplate(): RestTemplate = puRestTemplate()
+    fun restTemplate(): RestTemplate = puRestTemplate()
 }

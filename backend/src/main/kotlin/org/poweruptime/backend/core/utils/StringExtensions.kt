@@ -13,7 +13,7 @@ fun String.abbreviate(length: Int): String = if (this.length > length) {
     this
 }
 
-fun HttpHeaders.createBasicAuthString(username: String, password: String) = apply {
+fun HttpHeaders.addBasicAuthString(username: String, password: String) = apply {
     val credentials = "$username:$password"
     val encodedCredentials = Base64.getEncoder().encodeToString(credentials.toByteArray())
     add("Authorization", "Basic $encodedCredentials")
@@ -27,4 +27,4 @@ fun String.lowercaseExceptFirstLetter(): String {
     return this[0] + this.substring(1).lowercase()
 }
 
-public fun <T : Any> T?.orThrowNotFound(): T = this ?: throw NotFoundException("""Not found""")
+fun <T : Any> T?.orThrowNotFound(message: String = "Property not found"): T = this ?: throw NotFoundException(message)

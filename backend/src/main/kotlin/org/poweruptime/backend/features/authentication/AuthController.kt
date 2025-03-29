@@ -36,7 +36,6 @@ class AuthController(
     @Operation(
         summary = "Login",
     )
-    @Suppress("DuplicatedCode")
     @PostMapping("/login")
     fun login(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
@@ -86,7 +85,6 @@ class AuthController(
     @Operation(
         summary = "Refresh access token",
     )
-    @Suppress("DuplicatedCode")
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     fun refresh(@Valid @RequestBody request: RefreshJwtWithSessionTokenDto): JwtResponse {
@@ -109,7 +107,6 @@ class AuthController(
     @Operation(
         summary = "Change password and login",
     )
-    @Suppress("DuplicatedCode")
     @PostMapping("/passwordChange")
     @ResponseStatus(HttpStatus.OK)
     fun passwordChange(

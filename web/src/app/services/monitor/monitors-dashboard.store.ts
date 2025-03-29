@@ -61,7 +61,7 @@ export const MonitorsDashboardStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe((it) => store.update());
+      pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe(() => store.update());
     },
   }),
 );

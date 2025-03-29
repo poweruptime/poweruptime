@@ -4,7 +4,7 @@ import {FormControl, NonNullableFormBuilder, Validators} from '@angular/forms';
 import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BackendType, Database} from '@app/api';
-import {arrayItemMaxLength, arrayItemMinLength, arrayItemPattern, minLengthArray} from '@app/form';
+import {arrayItemMaxLength, arrayItemMinLength} from '@app/form';
 
 const baseCheckerProperties = {
   id: [undefined as string | undefined],

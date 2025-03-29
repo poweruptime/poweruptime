@@ -58,10 +58,10 @@ export const UserEditStore = signalStore(
         switchMap((body) =>
           api.put('/v1/user', {body}).pipe(
             tapResponse({
-              next: (team) => {
+              next: () => {
                 void router.navigate(['../'], {relativeTo});
               },
-              error: (error) => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),

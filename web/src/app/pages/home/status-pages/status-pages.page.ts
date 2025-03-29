@@ -10,8 +10,8 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
-import {SelectedTeamStore, StatusPageEditStore, StatusPagesStore} from '@app/services';
+import {TableLoadingBar} from '@app/components';
+import {SelectedTeamStore, StatusPagesStore} from '@app/services';
 
 @Component({
   template: `

@@ -28,7 +28,6 @@ class SSLCertificateMonitorCheckerData(
     val validDaysLeft: Long? = null,
 ) : MonitorCheckerData(MonitorCheckerType.SSL_CERTIFICATE) {
     // ObjectMapper needs an empty constructor
-    @Suppress("unused")
     constructor() : this(
         "1.2.3.4",
         null,

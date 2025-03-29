@@ -10,13 +10,9 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
+import {TableLoadingBar} from '@app/components';
 import {PuBooleanEmojiPipe} from '@app/pipes';
-import {
-  NotificationMethodEditStore,
-  NotificationMethodsStore,
-  SelectedTeamStore,
-} from '@app/services';
+import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
 
 @Component({
   template: `

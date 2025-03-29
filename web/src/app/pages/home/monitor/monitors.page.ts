@@ -1,11 +1,7 @@
-import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatAnchor} from '@angular/material/button';
 import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {ActivatedRouteSnapshot, Router, RouterLink, RouterOutlet} from '@angular/router';
-
-import {map} from 'rxjs';
+import {RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -14,7 +10,6 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
-import {TailwindBreakpoints} from '@app/services/util';
 import {paramToArray} from '@app/util';
 
 @Component({
