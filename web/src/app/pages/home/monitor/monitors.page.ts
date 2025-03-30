@@ -8,14 +8,14 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {BackendType} from '@app/api';
-import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
+import {MonitorCard, MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
 import {paramToArray} from '@app/util';
 
 @Component({
   template: `
-    <div class="grid h-full grid-cols-1 gap-4 lg:grid-cols-12">
-      <div class="flex flex-col gap-4 overflow-y-hidden pe-1 xl:col-span-4 2xl:col-span-3">
+    <div class="flex gap-4 overflow-y-hidden" style="height: 93vh">
+      <div class="flex flex-col gap-4" style="width: 21rem; min-width: 21rem;">
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
@@ -68,25 +68,10 @@ import {paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="scroll-container pb-4 xl:col-span-8 2xl:col-span-9">
+      <div class="h-screen max-h-screen grow overflow-x-hidden overflow-y-scroll pb-24 pe-2">
         <router-outlet />
       </div>
     </div>
-  `,
-  styles: `
-    /* Hide scrollbar but allow scrolling */
-    .scroll-container {
-      @apply h-full overflow-y-auto;
-    }
-
-    .scroll-container::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Edge */
-    }
-
-    .scroll-container {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore],

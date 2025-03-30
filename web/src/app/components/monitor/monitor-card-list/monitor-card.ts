@@ -24,7 +24,7 @@ import {UptimeTimeline} from '../uptime-timeline';
                   {{ _monitor.status }}
                 }
               </strong>
-              <span class="max-w-72 truncate">{{ _monitor.name }}</span>
+              <span class="max-w-56 truncate">{{ _monitor.name }}</span>
             </div>
             <pu-uptime-timeline
               class="min-w-full"

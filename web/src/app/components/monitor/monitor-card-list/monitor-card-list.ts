@@ -25,7 +25,8 @@ import {MonitorCard} from './monitor-card';
       itemSize="150">
       <pu-monitor-card
         *cdkVirtualFor="let monitor of entities(); trackBy: trackById"
-        [monitor]="monitor" />
+        [monitor]="monitor"
+        style="width: 21rem; min-width: 21rem;" />
 
       @if (isPending()) {
         @for (i of 8 | repeat; track i) {
@@ -47,8 +48,10 @@ import {MonitorCard} from './monitor-card';
   `,
   styles: `
     cdk-virtual-scroll-viewport {
-      height: 90vh;
-      overflow-x: hidden;
+      height: 89vh;
+
+      width: 21rem;
+      min-width: 21rem;
 
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --no-hmr",
+    "start": "ng serve",
     "start:ssr": "NG_APP_BACKEND_URL=http://localhost:8080/api node dist/poweruptime-web/server/server.mjs",
     "transloco:optimize": "transloco-optimize dist/poweruptime-web/browser/assets/i18n",
     "build": "ng build",

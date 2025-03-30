@@ -101,7 +101,7 @@ html {
     .active-card {
       @include mat.card-overrides(
         (
-          outlined-outline-color: white,
+          outlined-outline-color: lightgray,
         )
       );
     }
@@ -134,7 +134,7 @@ html {
 .active-card {
   @include mat.card-overrides(
     (
-      outlined-outline-color: black,
+      outlined-outline-color: gray,
     )
   );
 }

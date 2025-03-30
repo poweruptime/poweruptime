@@ -32,7 +32,7 @@ import {MonitorStatusBackground} from '@app/directives';
       [class.h-24]="_size === 3 && !_hideLabel"
       [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
       [class.h-10]="_size === 2 && _hideLabel"
-      [itemSize]="_size === 3 ? '20' : '16'"
+      [itemSize]="_size === 3 ? '18' : '14'"
       (scrolledIndexChange)="triggerNextPage()"
       appendOnly="true"
       orientation="horizontal">
@@ -48,10 +48,10 @@ import {MonitorStatusBackground} from '@app/directives';
           let last = last
         ">
         <div
-          class="relative inline-flex flex-col items-center gap-1"
+          class="relative inline-flex flex-col items-center"
           [class.h-9]="_size === 3"
           [class.h-6]="_size === 2"
-          [style.width]="_size === 3 ? '20px' : '16px'">
+          [style.width]="_size === 3 ? '18px' : '14px'">
           @if (_link) {
             <a
               class="rounded hover:scale-125"
@@ -79,8 +79,7 @@ import {MonitorStatusBackground} from '@app/directives';
               [class.w-3]="_size === 3"
               [class.w-2]="_size === 2"
               [monitor-status-background]="checkResult.status"
-              [mtxTooltip]="checkResultsTooltip"
-              stopPropagation></div>
+              [mtxTooltip]="checkResultsTooltip"></div>
 
             <ng-template #checkResultsTooltip>
               <div class="flex flex-col">

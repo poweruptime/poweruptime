@@ -19,40 +19,48 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
         <div
           class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           <div class="card">
-            <span class="text-2xl">{{ dashboard.monitorCount }}</span>
-            <span class="text-lg">Monitor(s)</span>
+            <span class="text-4xl font-bold">{{ dashboard.monitorCount }}</span>
+            <span class="text-gray-700 dark:text-gray-200">Monitor(s)</span>
           </div>
           <a
             class="card"
             [queryParams]="{'search.status': 'UP', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
-            <span class="text-2xl">{{ dashboard.upCount }}</span>
-            <span class="text-lg">{{ 'monitor.status.up' | transloco }}</span>
+            <span class="text-4xl font-bold">{{ dashboard.upCount }}</span>
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ 'monitor.status.up' | transloco }}
+            </span>
           </a>
           <a
             class="card"
             [queryParams]="{'search.status': 'DOWN', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
-            <span class="text-2xl">{{ dashboard.downCount }}</span>
-            <span class="text-lg">{{ 'monitor.status.down' | transloco }}</span>
+            <span class="text-4xl font-bold">{{ dashboard.downCount }}</span>
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ 'monitor.status.down' | transloco }}
+            </span>
           </a>
           <a
             class="card"
             [queryParams]="{'search.status': 'MAINTENANCE', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
-            <span class="text-2xl">{{ dashboard.maintenanceCount }}</span>
-            <span class="text-lg">{{ 'general.maintenance' | transloco }}</span>
+            <span class="text-4xl font-bold">{{ dashboard.maintenanceCount }}</span>
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ 'general.maintenance' | transloco }}
+            </span>
           </a>
           <a
             class="card"
             [queryParams]="{'search.status': 'PAUSED', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
-            <span class="text-2xl">{{ dashboard.pausedCount }}</span>
-            <span class="text-lg">{{ 'monitor.status.paused' | transloco }}</span>
+            <span class="text-4xl font-bold">{{ dashboard.pausedCount }}</span>
+            <span class="text-gray-700 dark:text-gray-200">
+              {{ 'monitor.status.paused' | transloco }}
+            </span>
           </a>
         </div>
       }
@@ -67,7 +75,11 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
   selector: 'pu-monitors-dashboard',
   styles: `
     .card {
-      @apply flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 hover:dark:bg-gray-700;
+      @apply grid items-center justify-center gap-3 rounded-md border border-solid p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-500 hover:dark:bg-gray-800;
+
+      span {
+        @apply text-center;
+      }
     }
   `,
   imports: [CheckResultList, NotificationList, RouterLink, TranslocoPipe],
