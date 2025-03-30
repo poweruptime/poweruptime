@@ -21,10 +21,11 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar} from '@app/components';
-import {InfiniteUptimeTimeline} from '@app/components/monitor/uptime-timeline/infinite-uptime-timeline';
 import {MonitorStatusBackground} from '@app/directives';
 import {MonitorsStore} from '@app/services';
+
+import {TableLoadingBar} from '../';
+import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline';
 
 @Component({
   template: `

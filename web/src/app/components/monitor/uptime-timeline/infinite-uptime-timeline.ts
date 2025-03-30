@@ -14,8 +14,9 @@ import {Subject, throttleTime} from 'rxjs';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {BackendType} from '@app/api';
-import {Placeholder} from '@app/components';
-import {UptimeTimelineEntry} from '@app/components/monitor/uptime-timeline/uptime-timeline-entry';
+
+import {Placeholder} from '../../';
+import {UptimeTimelineEntry} from './uptime-timeline-entry';
 
 @Component({
   template: `

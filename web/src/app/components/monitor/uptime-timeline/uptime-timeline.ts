@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 
 import {BackendType} from '@app/api';
-import {UptimeTimelineEntry} from '@app/components/monitor/uptime-timeline/uptime-timeline-entry';
+
+import {UptimeTimelineEntry} from './uptime-timeline-entry';
 
 @Component({
   template: `
