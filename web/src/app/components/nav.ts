@@ -1,6 +1,7 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -11,6 +12,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
+import {StopPropagationDirective} from 'dfx-helper';
 
 import {AboutDialog} from '@app/components/about-dialog';
 import {NavTeamSelect} from '@app/components/nav-team-select';
@@ -42,6 +44,28 @@ import {isMobileBreakpoints} from '@app/services/util';
             </span>
           </a>
 
+          <div class="ps-4">
+            @for (team of selectedTeamStore.onceSelectedTeamsCut(); track team.id) {
+              <a
+                [routerLinkActiveOptions]="{exact: true}"
+                routerLink="/t/{{ team.id }}/{{ _isMobile ? 'mm' : 'm' }}"
+                mat-list-item
+                routerLinkActive="active">
+                <div class="flex items-center justify-between">
+                  <span class="nav-text">
+                    {{ team.name }}
+                  </span>
+                  <button
+                    (click)="$event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)"
+                    mat-icon-button
+                    stopPropagation>
+                    <bi name="x" />
+                  </button>
+                </div>
+              </a>
+            }
+          </div>
+
           <div class="mb-2 mt-4 flex items-center gap-3">
             <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
             <span class="whitespace-nowrap break-keep">
@@ -54,13 +78,6 @@ import {isMobileBreakpoints} from '@app/services/util';
             <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
           </div>
 
-          <a
-            mat-list-item
-            routerLink="/t/{{ selectedTeamId() }}/{{ _isMobile ? 'mm' : 'm' }}"
-            routerLinkActive="active">
-            <bi name="speedometer2" />
-            <span class="nav-text">{{ 'nav.dashboard' | transloco }}</span>
-          </a>
           <a
             mat-list-item
             routerLink="/t/{{ selectedTeamId() }}/notification-methods"
@@ -192,6 +209,8 @@ import {isMobileBreakpoints} from '@app/services/util';
     MatMenuTrigger,
     MatMenuItem,
     TranslocoPipe,
+    MatIconButton,
+    StopPropagationDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

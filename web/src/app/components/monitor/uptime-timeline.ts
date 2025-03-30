@@ -61,7 +61,8 @@ import {MonitorStatusBackground} from '@app/directives';
               [class.w-3]="_size === 3"
               [class.w-2]="_size === 2"
               [monitor-status-background]="checkResult.status"
-              [mtxTooltip]="checkResultsTooltip"></a>
+              [mtxTooltip]="checkResultsTooltip"
+              stopPropagation></a>
 
             <ng-template #checkResultsTooltip>
               <div class="flex flex-col">

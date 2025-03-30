@@ -38,7 +38,7 @@ import {NotificationsStore} from '@app/services';
               matSort>
               <ng-container matColumnDef="monitor">
                 <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
-                <td *matCellDef="let element" mat-cell>
+                <td class="max-w-64 truncate" *matCellDef="let element" mat-cell>
                   <a class="underline" [routerLink]="element.monitor.id">
                     {{ element.monitor.name }}
                   </a>
@@ -104,7 +104,7 @@ import {NotificationsStore} from '@app/services';
   `,
   styles: `
     .mat-column-monitor {
-      @apply w-52;
+      @apply w-64;
     }
     .mat-column-status {
       @apply w-32;

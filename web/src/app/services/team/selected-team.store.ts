@@ -1,14 +1,33 @@
-import {computed} from '@angular/core';
+import {computed, effect, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {debounceTime, distinctUntilChanged, map, mergeMap, of, pipe, switchMap, tap} from 'rxjs';
+import {
+  EMPTY,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  of,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import {removeAllEntities, setEntities, setEntity, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
+import {PushService} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 type SelectedTeamState = {
@@ -21,10 +40,12 @@ export const SelectedTeamStore = signalStore(
     loadedAll: boolean;
     page: number;
     search: string;
+    onceSelectedTeams: BackendType['TeamResponse'][];
   }>({
     loadedAll: false,
     page: 0,
     search: '',
+    onceSelectedTeams: [],
   }),
   withRequestStatus(),
   withEntities<BackendType['TeamResponse']>(),
@@ -40,6 +61,11 @@ export const SelectedTeamStore = signalStore(
       if (!store.loadedAll()) {
         patchState(store, (state) => ({page: state.page + 1}));
       }
+    },
+    removeSelectedTeam(id: string): void {
+      patchState(store, ({onceSelectedTeams}) => ({
+        onceSelectedTeams: onceSelectedTeams.filter((it) => it.id !== id),
+      }));
     },
     setSearch: rxMethod<string | null>(
       pipe(
@@ -100,18 +126,27 @@ export const SelectedTeamStore = signalStore(
           id
             ? api.get('/v1/team/{id}', {params: {path: {id}}}).pipe(
                 tapResponse({
-                  next: (response) => patchState(store, () => ({selectedTeam: response})),
+                  next: (selectedTeam) =>
+                    patchState(store, ({onceSelectedTeams}) => ({
+                      selectedTeam,
+                      onceSelectedTeams: !!onceSelectedTeams.find(
+                        (team) => team.id === selectedTeam.id,
+                      )
+                        ? onceSelectedTeams
+                        : [selectedTeam, ...onceSelectedTeams],
+                    })),
                   error: () => {},
                 }),
               )
-            : of(true).pipe(tap(() => patchState(store, () => ({selectedTeam: undefined})))),
+            : of(EMPTY).pipe(tap(() => patchState(store, () => ({selectedTeam: undefined})))),
         ),
       ),
     ),
   })),
-  withComputed(({selectedTeam, entities}) => ({
+  withComputed(({selectedTeam, entities, onceSelectedTeams}) => ({
     selectedTeamId: computed(() => selectedTeam()?.id),
     personalTeam: computed(() => entities()?.find((team) => team.personal)),
+    onceSelectedTeamsCut: computed(() => onceSelectedTeams().slice(0, 5)),
     sortedEntities: computed(() =>
       entities().sort((a, b) => {
         if (a.personal && !b.personal) {
@@ -137,4 +172,17 @@ export const SelectedTeamStore = signalStore(
         ),
     ),
   })),
+  withHooks({
+    onInit(store) {
+      patchState(store, () => ({
+        onceSelectedTeams: JSON.parse(
+          localStorage.getItem('pu_once_selected_teams') ?? '[]',
+        ) as BackendType['TeamResponse'][],
+      }));
+
+      effect(() => {
+        localStorage.setItem('pu_once_selected_teams', JSON.stringify(store.onceSelectedTeams()));
+      });
+    },
+  }),
 );

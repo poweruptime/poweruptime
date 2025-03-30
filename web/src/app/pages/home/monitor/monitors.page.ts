@@ -68,7 +68,7 @@ import {paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="h-screen max-h-screen grow overflow-x-hidden overflow-y-scroll pb-24 pe-2">
+      <div class="h-screen max-h-screen grow overflow-y-auto overflow-x-hidden pb-24 pe-2">
         <router-outlet />
       </div>
     </div>

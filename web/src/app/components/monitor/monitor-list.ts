@@ -44,7 +44,7 @@ import {MonitorsStore} from '@app/services';
                 <th *matHeaderCellDef mat-header-cell mat-sort-header>
                   {{ 'general.team' | transloco }}
                 </th>
-                <td *matCellDef="let element" mat-cell>
+                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
                   <a class="underline" [routerLink]="'/t/' + element.team.id" stopPropagation>
                     {{ element.team.name }}
                   </a>
@@ -55,7 +55,7 @@ import {MonitorsStore} from '@app/services';
                 <th *matHeaderCellDef mat-header-cell mat-sort-header>
                   {{ 'general.name' | transloco }}
                 </th>
-                <td *matCellDef="let element" mat-cell>
+                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
                   {{ element.name }}
                 </td>
               </ng-container>
