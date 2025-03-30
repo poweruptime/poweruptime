@@ -11,9 +11,9 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
 
 @Component({
   template: `
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-4">
       @for (monitor of publicStatusPageMonitorsStore.entities(); track monitor.id) {
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col justify-between gap-y-2 lg:flex-row lg:items-center">
           <div class="inline-flex items-center gap-4">
             <strong
               class="max-w-24 truncate rounded-lg px-2 py-1"
@@ -36,10 +36,23 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
               <bi size="16" name="box-arrow-up-right" />
             </a>
           </div>
-          <pu-uptime-timeline [checkResults]="monitor.lastCheckResults" [size]="2" />
+          <div class="tl-container">
+            <pu-uptime-timeline [checkResults]="monitor.lastCheckResults" [size]="2" />
+          </div>
         </div>
       }
     </div>
+  `,
+  styles: `
+    @media (min-width: 1024px) {
+      pu-uptime-timeline {
+        min-width: 32rem;
+      }
+
+      .tl-container {
+        min-width: 32rem;
+      }
+    }
   `,
   selector: 'pu-status-page-monitor-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
