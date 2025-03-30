@@ -1,5 +1,6 @@
 export * from './check-result';
 export * from './monitor-card-list';
+export * from './uptime-timeline';
 export * from './edit-form/monitor-edit-form';
 export * from './edit-form/monitor-edit-form-placeholder';
 export * from './monitor-header-placeholder';
@@ -10,4 +11,3 @@ export * from './notification-list';
 export * from './notification-method-selector';
 export * from './ping-chart';
 export * from './ping-chart-filter';
-export * from './uptime-timeline';

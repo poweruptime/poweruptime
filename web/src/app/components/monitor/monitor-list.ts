@@ -22,7 +22,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
-import {UptimeTimeline} from '@app/components/monitor/uptime-timeline';
+import {InfiniteUptimeTimeline} from '@app/components/monitor/uptime-timeline/infinite-uptime-timeline';
 import {MonitorStatusBackground} from '@app/directives';
 import {MonitorsStore} from '@app/services';
 
@@ -83,7 +83,7 @@ import {MonitorsStore} from '@app/services';
                 </th>
                 <td *matCellDef="let element" mat-cell>
                   <div class="pt-1">
-                    <pu-uptime-timeline
+                    <pu-infinite-uptime-timeline
                       [checkResults]="element.lastCheckResults"
                       [size]="2"
                       hideLabel />
@@ -158,7 +158,7 @@ import {MonitorsStore} from '@app/services';
     MatIconAnchor,
     TranslocoPipe,
     MatTooltip,
-    UptimeTimeline,
+    InfiniteUptimeTimeline,
   ],
 })
 export class MonitorList {

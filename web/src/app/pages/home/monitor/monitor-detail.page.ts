@@ -13,12 +13,12 @@ import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 import {Heatmap, Placeholder} from '@app/components';
 import {
   CheckResultList,
+  InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
   MonitorStatus,
   NotificationList,
   PingChart,
   PingChartFilter,
-  UptimeTimeline,
 } from '@app/components/monitor';
 import {
   CheckResultsPingStore,
@@ -170,7 +170,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
       <mat-card appearance="outlined">
         <mat-card-content>
           <div class="flex flex-col gap-2">
-            <pu-uptime-timeline
+            <pu-infinite-uptime-timeline
               [isPending]="infiniteCheckResultsStore.isPending()"
               [checkResults]="infiniteCheckResultsStore.entities()"
               (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
@@ -262,7 +262,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatChip,
     BiComponent,
     MonitorStatus,
-    UptimeTimeline,
+    InfiniteUptimeTimeline,
     PingChart,
     Heatmap,
     MonitorHeaderPlaceholder,

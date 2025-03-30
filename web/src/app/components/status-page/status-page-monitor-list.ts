@@ -58,12 +58,12 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PublicStatusPageMonitorsStore],
   imports: [
-    UptimeTimeline,
     BiComponent,
     RouterLink,
     MonitorStatusBackground,
     MatTooltip,
     TranslocoPipe,
+    UptimeTimeline,
   ],
 })
 export class StatusPageMonitorList {

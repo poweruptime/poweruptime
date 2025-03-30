@@ -1,5 +1,4 @@
 import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
-import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,18 +8,14 @@ import {
   viewChild,
 } from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
-import {RouterLink} from '@angular/router';
 
 import {Subject, throttleTime} from 'rxjs';
 
-import {TranslocoPipe} from '@jsverse/transloco';
-import {MtxTooltip} from '@ng-matero/extensions/tooltip';
-import {StopPropagationDirective} from 'dfx-helper';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {BackendType} from '@app/api';
 import {Placeholder} from '@app/components';
-import {MonitorStatusBackground} from '@app/directives';
+import {UptimeTimelineEntry} from '@app/components/monitor/uptime-timeline/uptime-timeline-entry';
 
 @Component({
   template: `
@@ -47,71 +42,16 @@ import {MonitorStatusBackground} from '@app/directives';
           let first = first;
           let last = last
         ">
-        <div
-          class="relative inline-flex flex-col items-center"
-          [class.h-9]="_size === 3"
-          [class.h-6]="_size === 2"
-          [style.width]="_size === 3 ? '18px' : '14px'">
-          @if (_link) {
-            <a
-              class="rounded hover:scale-125"
-              [routerLink]="'c/' + checkResult.id + '/logs'"
-              [class.h-9]="_size === 3"
-              [class.h-6]="_size === 2"
-              [class.w-3]="_size === 3"
-              [class.w-2]="_size === 2"
-              [monitor-status-background]="checkResult.status"
-              [mtxTooltip]="checkResultsTooltip"
-              stopPropagation></a>
-
-            <ng-template #checkResultsTooltip>
-              <div class="flex flex-col">
-                <span>
-                  {{ checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
-                </span>
-                <span class="font-bold">{{ checkResult.status }}</span>
-              </div>
-            </ng-template>
-          } @else {
-            <div
-              class="rounded hover:scale-125"
-              [class.h-9]="_size === 3"
-              [class.h-6]="_size === 2"
-              [class.w-3]="_size === 3"
-              [class.w-2]="_size === 2"
-              [monitor-status-background]="checkResult.status"
-              [mtxTooltip]="checkResultsTooltip"></div>
-
-            <ng-template #checkResultsTooltip>
-              <div class="flex flex-col">
-                <span>
-                  {{ checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
-                </span>
-                <span class="font-bold">{{ checkResult.status }}</span>
-              </div>
-            </ng-template>
-          }
-
-          @if (!hideLabel()) {
-            @if (first) {
-              <span class="absolute -bottom-7 left-1">
-                {{ 'general.latest' | transloco }}
-              </span>
-            }
-
-            @if (last) {
-              <span class="absolute -bottom-7 right-0">
-                {{ checkResult.createdAt | date: 'HH:mm' }}
-              </span>
-            }
-
-            @if (length > 20 && !first && index % 10 === 0 && index < maxLabelSize) {
-              <span class="absolute -bottom-7 left-1">
-                {{ checkResult.createdAt | date: 'HH:mm' }}
-              </span>
-            }
-          }
-        </div>
+        <pu-uptime-timeline-entry
+          [checkResult]="checkResult"
+          [first]="first"
+          [hideLabel]="_hideLabel"
+          [index]="index"
+          [last]="last"
+          [length]="length"
+          [link]="_link"
+          [maxLabelSize]="maxLabelSize"
+          [size]="_size" />
       </div>
 
       @if (isPending()) {
@@ -148,22 +88,12 @@ import {MonitorStatusBackground} from '@app/directives';
       flex-direction: row;
     }
   `,
-  selector: 'pu-uptime-timeline',
+  selector: 'pu-infinite-uptime-timeline',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DatePipe,
-    MtxTooltip,
-    MonitorStatusBackground,
-    ScrollingModule,
-    TranslocoPipe,
-    Placeholder,
-    RepeatPipe,
-    RouterLink,
-    StopPropagationDirective,
-  ],
+  imports: [ScrollingModule, Placeholder, RepeatPipe, UptimeTimelineEntry],
 })
-export class UptimeTimeline {
+export class InfiniteUptimeTimeline {
   checkResults = input.required<BackendType['CheckResultMinResponse'][]>();
 
   isPending = input<boolean>(false);

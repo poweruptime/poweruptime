@@ -3,9 +3,8 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
 import type {BackendType} from '@app/api';
+import {UptimeTimeline} from '@app/components/monitor';
 import {MonitorStatusBackground} from '@app/directives';
-
-import {UptimeTimeline} from '../uptime-timeline';
 
 @Component({
   template: `
@@ -41,9 +40,10 @@ import {UptimeTimeline} from '../uptime-timeline';
     RouterLink,
     RouterLinkActive,
     MonitorStatusBackground,
-    UptimeTimeline,
     MatCard,
     MatCardContent,
+    UptimeTimeline,
+    UptimeTimeline,
   ],
 })
 export class MonitorCard {
