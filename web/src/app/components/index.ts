@@ -4,7 +4,7 @@ export * from './alert.directive';
 export * from './backend-image';
 export * from './backend-offline-alert';
 export * from './copy-icon-button';
-export * from './delete-confirm-dialog';
+export * from './confirm-dialog';
 export * from './file-upload';
 export * from './heatmap';
 export * from './language-switch';

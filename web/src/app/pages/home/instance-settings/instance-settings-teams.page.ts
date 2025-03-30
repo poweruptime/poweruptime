@@ -10,7 +10,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {TableLoadingBar, injectDeleteConfirmDialog} from '@app/components';
+import {TableLoadingBar} from '@app/components';
 import {TeamsStore} from '@app/services';
 
 @Component({
@@ -61,7 +61,7 @@ import {TeamsStore} from '@app/services';
             </a>
             @if (!element.personal) {
               <button
-                (click)="deleteConfirm.confirm(element.id)"
+                (click)="teamsStore.delete(element.id)"
                 mat-icon-button
                 type="button"
                 matTooltip="Delete"
@@ -121,8 +121,6 @@ import {TeamsStore} from '@app/services';
 })
 export class InstanceSettingsTeamsPage {
   readonly teamsStore = inject(TeamsStore);
-
-  readonly deleteConfirm = injectDeleteConfirmDialog((id) => this.teamsStore.delete(id));
 
   private readonly paginator = viewChild.required(MatPaginator);
   private readonly sort = viewChild.required(MatSort);

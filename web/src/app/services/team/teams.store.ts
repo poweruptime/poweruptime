@@ -1,12 +1,14 @@
 import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
-import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
+import {injectConfirmDialog$} from '@app/components';
 
 import {
   PaginationDto,
@@ -28,10 +30,10 @@ export const TeamsStore = signalStore(
     defaultSortBy: 'name',
     defaultSortDirection: 'asc',
   }),
-  withMethods((store, api = injectAPI()) => {
+  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
     const load = rxMethod<
       {
-        name: string | undefined;
+        name?: string;
       } & PaginationDto
     >(
       pipe(
@@ -68,39 +70,44 @@ export const TeamsStore = signalStore(
       ),
       load,
       delete: rxMethod<string>(
-        pipe(
-          tap(() => patchState(store, setPending())),
-          switchMap((id) =>
-            api.delete('/v1/team/{id}', {params: {path: {id}}}).pipe(
-              tapResponse({
-                next: () => {
-                  patchState(store, setFulfilled(), removeEntity(id));
+        switchMap((id) =>
+          confirmDialog$(translate('general.confirmDelete')).pipe(
+            tap(() => patchState(store, setPending())),
+            switchMap(() =>
+              api.delete('/v1/team/{id}', {params: {path: {id}}}).pipe(
+                tapResponse({
+                  next: () => {
+                    load({
+                      ...store.pageable(),
+                      name: store.name(),
+                    });
 
-                  toast.success('Successfully deleted team.', {
-                    action: {
-                      label: 'Undo',
-                      onClick: () =>
-                        api
-                          .delete('/v1/team/{id}/undo', {params: {path: {id}}})
-                          .pipe(
-                            tapResponse({
-                              next: (team) => {
-                                load({
-                                  ...store.pageable(),
-                                  name: store.name(),
-                                });
+                    toast.success('Successfully deleted team.', {
+                      action: {
+                        label: 'Undo',
+                        onClick: () =>
+                          api
+                            .delete('/v1/team/{id}/undo', {params: {path: {id}}})
+                            .pipe(
+                              tapResponse({
+                                next: (team) => {
+                                  load({
+                                    ...store.pageable(),
+                                    name: store.name(),
+                                  });
 
-                                toast.success(`Successfully restored ${team.name}.`);
-                              },
-                              error: (error) => patchState(store, setError(error)),
-                            }),
-                          )
-                          .subscribe(),
-                    },
-                  });
-                },
-                error: (error) => patchState(store, setError(error)),
-              }),
+                                  toast.success(`Successfully restored ${team.name}.`);
+                                },
+                                error: (error) => patchState(store, setError(error)),
+                              }),
+                            )
+                            .subscribe(),
+                      },
+                    });
+                  },
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
             ),
           ),
         ),
