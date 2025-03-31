@@ -223,27 +223,27 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         <pu-placeholder class="h-64 w-full" />
       }
 
-      @defer (on idle) {
-        @if (checkResultsPingStore.isFulfilled()) {
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <pu-ping-chart-filter
-                [filter]="pingChartFilter()"
-                (filterChange)="
-                  rangeStartPingChartFilter.set($event.range.start);
-                  rangeEndPingChartFilter.set($event.range.end);
-                  precisionPingChartFilter.set($event.precision)
-                " />
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <pu-ping-chart-filter
+            [filter]="pingChartFilter()"
+            (filterChange)="
+              rangeStartPingChartFilter.set($event.range.start);
+              rangeEndPingChartFilter.set($event.range.end);
+              precisionPingChartFilter.set($event.precision)
+            " />
 
+          @defer (on idle) {
+            @if (checkResultsPingStore.isFulfilled()) {
               <pu-ping-chart [chart]="checkResultsPingStore.data()!" />
-            </mat-card-content>
-          </mat-card>
-        } @else {
-          <pu-placeholder class="w-full" style="height: 28rem" />
-        }
-      } @placeholder {
-        <pu-placeholder class="w-full" style="height: 28rem" />
-      }
+            } @else {
+              <pu-placeholder class="w-full" style="height: 24rem" />
+            }
+          } @placeholder {
+            <pu-placeholder class="w-full" style="height: 24rem" />
+          }
+        </mat-card-content>
+      </mat-card>
 
       @if (monitorId(); as monitorId) {
         <pu-check-result-list [monitorId]="monitorId" />
@@ -289,8 +289,16 @@ export class MonitorDetailPage {
   readonly cutDescription = signal(true);
 
   readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
-    parse: (it) => it ?? toBackendDate(new Date()),
-    stringify: (value) => (value === toBackendDate(new Date()) ? null : value),
+    parse: (it) => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      return it ?? toBackendDate(yesterday);
+    },
+    stringify: (value) => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      return value === toBackendDate(yesterday) ? null : value;
+    },
   });
   readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
     parse: (it) => it ?? toBackendDate(new Date()),
@@ -336,11 +344,20 @@ export class MonitorDetailPage {
       computed(() => {
         const filter = this.pingChartFilter();
         const now = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const hasSelectedYesterday = filter.range.start === toBackendDate(yesterday);
         const hasSelectedToday = filter.range.end === toBackendDate(now);
         return {
           monitorId: this.monitorId(),
           precision: this.precisionPingChartFilter(),
-          start: dateToDateTime(filter.range.start, 0, 0, 0, 0),
+          start: dateToDateTime(
+            filter.range.start,
+            hasSelectedYesterday ? yesterday.getHours() : 0,
+            hasSelectedYesterday ? yesterday.getMinutes() : 0,
+            hasSelectedYesterday ? yesterday.getHours() : 0,
+            0,
+          ),
           end: dateToDateTime(
             filter.range.end,
             hasSelectedToday ? now.getHours() : 0,

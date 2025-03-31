@@ -64,105 +64,111 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      <div class="grid grid-cols-2 gap-6">
-        <mat-form-field class="col-span-1">
-          <mat-label>{{ 'general.name' | transloco }}</mat-label>
-          <input matInput formControlName="name" />
+      <div>
+        <div class="grid grid-cols-2 gap-6">
+          <mat-form-field class="col-span-1">
+            <mat-label>{{ 'general.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
 
-          @let nameErrors = form.controls.name.errors;
-          @if (nameErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (nameErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-          }
-          @if (nameErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field class="col-span-1">
-          <mat-label>{{ 'general.slug' | transloco }}</mat-label>
-          <input matInput formControlName="slug" />
-
-          @let slugErrors = form.controls.slug.errors;
-          @if (slugErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (slugErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
-          }
-          @if (slugErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-          }
-          @if (slugErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-          @if (slugErrors?.['slugInUse']) {
-            <mat-error>
-              {{ 'statusPage.edit.slugInUse' | transloco }}
-            </mat-error>
-          }
-        </mat-form-field>
-
-        <pu-file-upload
-          class="col-span-2"
-          [file]="statusPage()?.image"
-          [label]="'statusPage.edit.image' | transloco"
-          (fileId)="form.controls.imageId.setValue($event)" />
-
-        <mat-form-field class="col-span-2">
-          <mat-label>{{ 'general.domainNames' | transloco }}</mat-label>
-          <mat-chip-grid
-            #domainNamesGrid
-            [attr.aria-label]="'statusPage.edit.domainNames.enter' | transloco"
-            formControlName="domainNames">
-            @for (domainName of form.controls.domainNames.getRawValue(); track domainName) {
-              <mat-chip-row (removed)="removeDomainName(form.controls.domainNames, domainName)">
-                {{ domainName }}
-                <button
-                  [attr.aria-label]="'statusPage.edit.domainNames.remove' | transloco: {domainName}"
-                  matChipRemove>
-                  <bi name="x-circle" aria-hidden="true" />
-                </button>
-              </mat-chip-row>
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
             }
-          </mat-chip-grid>
-          <input
-            [matChipInputFor]="domainNamesGrid"
-            [placeholder]="'statusPage.edit.domainNames.new' | transloco"
-            (matChipInputTokenEnd)="addDomainName(form.controls.domainNames, $event)" />
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+          </mat-form-field>
 
-          @let domainNameErrors = form.controls.domainNames.errors;
-          @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-          }
-          @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-          @if (domainNameErrors?.['patternArrayItem']) {
-            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
-          }
-          @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
-            <mat-error>
-              {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
-            </mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field class="col-span-1">
+            <mat-label>{{ 'general.slug' | transloco }}</mat-label>
+            <input matInput formControlName="slug" />
 
-        <pu-editor
-          class="col-span-2"
-          id="description"
-          [control]="form.controls.description"
-          [placeholder]="('general.description' | transloco) + '...'" />
+            @let slugErrors = form.controls.slug.errors;
+            @if (slugErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (slugErrors?.['pattern']) {
+              <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
+            }
+            @if (slugErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (slugErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+            @if (slugErrors?.['slugInUse']) {
+              <mat-error>
+                {{ 'statusPage.edit.slugInUse' | transloco }}
+              </mat-error>
+            }
+          </mat-form-field>
 
-        <pu-editor
-          class="col-span-2"
-          id="footer"
-          [control]="form.controls.footer"
-          [placeholder]="('general.footer' | transloco) + '...'" />
+          <pu-file-upload
+            class="col-span-2 2xl:col-span-1"
+            [file]="statusPage()?.image"
+            [label]="'statusPage.edit.image' | transloco"
+            (fileId)="form.controls.imageId.setValue($event)" />
 
-        <pu-save-button [valid]="isValid()" />
+          <div class="col-span-2 2xl:col-span-1">
+            <mat-form-field class="w-full">
+              <mat-label>{{ 'general.domainNames' | transloco }}</mat-label>
+              <mat-chip-grid
+                #domainNamesGrid
+                [attr.aria-label]="'statusPage.edit.domainNames.enter' | transloco"
+                formControlName="domainNames">
+                @for (domainName of form.controls.domainNames.getRawValue(); track domainName) {
+                  <mat-chip-row (removed)="removeDomainName(form.controls.domainNames, domainName)">
+                    {{ domainName }}
+                    <button
+                      [attr.aria-label]="
+                        'statusPage.edit.domainNames.remove' | transloco: {domainName}
+                      "
+                      matChipRemove>
+                      <bi name="x-circle" aria-hidden="true" />
+                    </button>
+                  </mat-chip-row>
+                }
+              </mat-chip-grid>
+              <input
+                [matChipInputFor]="domainNamesGrid"
+                [placeholder]="'statusPage.edit.domainNames.new' | transloco"
+                (matChipInputTokenEnd)="addDomainName(form.controls.domainNames, $event)" />
+
+              @let domainNameErrors = form.controls.domainNames.errors;
+              @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
+                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+              }
+              @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
+                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              }
+              @if (domainNameErrors?.['patternArrayItem']) {
+                <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+              }
+              @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
+                <mat-error>
+                  {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
+                </mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <pu-editor
+            class="col-span-2"
+            id="description"
+            [control]="form.controls.description"
+            [placeholder]="('general.description' | transloco) + '...'" />
+
+          <pu-editor
+            class="col-span-2"
+            id="footer"
+            [control]="form.controls.footer"
+            [placeholder]="('general.footer' | transloco) + '...'" />
+
+          <pu-save-button [valid]="isValid()" />
+        </div>
       </div>
 
       <div class="flex flex-col gap-4">

@@ -37,21 +37,24 @@ import {SelectedTeamStore, StatusPagesStore} from '@app/services';
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let element" mat-cell>
           <a
-            [href]="'/public/s/' + element.slug"
-            [matTooltip]="'statusPage.list.preview' | transloco"
-            [attr.aria-label]="'statusPage.list.preview' | transloco"
-            target="_blank"
-            mat-icon-button
-            stopPropagation>
-            <bi name="eye" />
-          </a>
-          <a
             [routerLink]="element.id"
             [matTooltip]="'statusPage.list.edit' | transloco"
             [attr.aria-label]="'statusPage.list.edit' | transloco"
             mat-icon-button
             stopPropagation>
             <bi name="pencil-square" />
+          </a>
+          <a
+            [routerLink]="element.id"
+            [queryParams]="{preview: 1}"
+            [matTooltip]="'statusPage.list.preview' | transloco"
+            [attr.aria-label]="'statusPage.list.preview' | transloco"
+            mat-icon-button
+            stopPropagation>
+            <bi name="eye" />
+          </a>
+          <a [href]="'/public/s/' + element.slug" target="_blank" mat-icon-button stopPropagation>
+            <bi name="box-arrow-up-right" />
           </a>
           <button
             [matTooltip]="'statusPage.list.delete' | transloco"

@@ -1,9 +1,22 @@
-import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+} from '@angular/core';
+import {MatAnchor} from '@angular/material/button';
+import {MatTab, MatTabContent, MatTabGroup} from '@angular/material/tabs';
+import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BiComponent} from 'dfx-bootstrap-icons';
+import {linkedQueryParam, paramToBoolean, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {Placeholder} from '@app/components';
 import {StatusPageEditForm} from '@app/components/status-page';
+import {PublicStatusPagePage} from '@app/pages/public/public-status-page.page';
 import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
 
 @Component({
@@ -11,24 +24,35 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
     <div class="flex flex-col gap-8">
       @let _statusPageId = statusPageId();
       @let statusPage = statusPageEditStore.statusPage();
-      @if (_statusPageId) {
-        @if (statusPageEditStore.isFulfilled()) {
-          <h1 class="text-4xl">{{ 'statusPage.edit.edit' | transloco: statusPage }}</h1>
-        } @else {
-          <pu-placeholder class="h-12 w-64" />
-        }
-      } @else {
+      @if (!_statusPageId) {
         <h1 class="text-4xl">{{ 'cmdk.groups.statusPage.create' | transloco }}</h1>
       }
 
       @if (_statusPageId) {
         @if (statusPageEditStore.isFulfilled()) {
-          <pu-status-page-edit-form
-            class="w-full"
-            [statusPage]="statusPage"
-            [selectedTeamId]="selectedTeamStore.selectedTeamId()"
-            (submitCreate)="statusPageEditStore.create($event)"
-            (submitUpdate)="statusPageEditStore.update($event)" />
+          <mat-tab-group
+            [(selectedIndex)]="preview"
+            mat-stretch-tabs="false"
+            mat-align-tabs="start">
+            <mat-tab [label]="'statusPage.edit.edit' | transloco: statusPage">
+              <ng-template matTabContent>
+                <div class="overflow-x-hidden">
+                  <div class="h-8"></div>
+                  <pu-status-page-edit-form
+                    [statusPage]="statusPage"
+                    [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+                    (submitCreate)="statusPageEditStore.create($event)"
+                    (submitUpdate)="statusPageEditStore.update($event)" />
+                </div>
+              </ng-template>
+            </mat-tab>
+            <mat-tab label="Preview">
+              <ng-template matTabContent>
+                <div class="h-8"></div>
+                <pu-public-status-page-page [statusPageSlug]="statusPage!.slug" preview />
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
         } @else {
           <div class="flex animate-pulse justify-between gap-12">
             <div class="flex flex-col gap-3">
@@ -60,7 +84,15 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
   `,
   selector: 'pu-status-page-edit-page',
   providers: [StatusPageEditStore],
-  imports: [StatusPageEditForm, Placeholder, TranslocoPipe],
+  imports: [
+    StatusPageEditForm,
+    Placeholder,
+    TranslocoPipe,
+    PublicStatusPagePage,
+    MatTabGroup,
+    MatTab,
+    MatTabContent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusPageEditPage {
@@ -68,6 +100,11 @@ export class StatusPageEditPage {
   readonly statusPageEditStore = inject(StatusPageEditStore);
 
   readonly statusPageId = input<string>();
+
+  preview = linkedQueryParam('preview', {
+    parse: paramToNumber({defaultValue: 0}),
+    stringify: (it) => (it === 0 ? null : it),
+  });
 
   constructor() {
     this.statusPageEditStore.loadById(this.statusPageId);

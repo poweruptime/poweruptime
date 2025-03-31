@@ -1,5 +1,13 @@
 import {DOCUMENT} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {Meta, Title} from '@angular/platform-browser';
 
@@ -18,6 +26,7 @@ import {environment} from '../../../environments/environment';
 @Component({
   template: `
     <div class="flex flex-col gap-6">
+      @let _preview = preview();
       @if (publicStatusPageStore.isFulfilled()) {
         @if (publicStatusPageStore.statusPage(); as statusPage) {
           <div class="flex items-center gap-4">
@@ -74,10 +83,10 @@ import {environment} from '../../../environments/environment';
           }
         }
 
-        <refresh-in />
-      } @else if (publicStatusPageStore.isPending()) {
-        <!-- placeholder -->
-
+        @if (!_preview) {
+          <refresh-in />
+        }
+      } @else if (publicStatusPageStore.isPending() && !_preview) {
         <refresh-in />
       } @else if (publicStatusPageStore.error()?.httpCode === 404) {
         <h1 class="mt-24 text-center text-4xl">{{ 'statusPage.public.notFound' | transloco }}</h1>
@@ -108,6 +117,8 @@ export class PublicStatusPagePage {
   readonly publicStatusPageMonitorsStore = inject(PublicStatusPageMonitorsStore);
 
   statusPageSlug = input<string>();
+
+  preview = input(false, {transform: booleanAttribute});
 
   readonly host = this.document.location.host;
 

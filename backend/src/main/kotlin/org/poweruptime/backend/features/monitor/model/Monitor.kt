@@ -53,7 +53,7 @@ class Monitor(
     @OneToMany(mappedBy = "monitor")
     var checkResults: List<CheckResult> = ArrayList(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "monitor_notification_method",
         joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
@@ -61,7 +61,7 @@ class Monitor(
     )
     var enabledNotificationMethods: List<NotificationMethod> = ArrayList(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "monitor_tag",
         joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
