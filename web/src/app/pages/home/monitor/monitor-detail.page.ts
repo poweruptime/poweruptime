@@ -224,7 +224,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
       }
 
       @defer (on idle) {
-        @if (checkResultsPingStore.data(); as data) {
+        @if (checkResultsPingStore.isFulfilled()) {
           <mat-card appearance="outlined">
             <mat-card-content>
               <pu-ping-chart-filter
@@ -235,7 +235,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                   precisionPingChartFilter.set($event.precision)
                 " />
 
-              <pu-ping-chart [chart]="data" />
+              <pu-ping-chart [chart]="checkResultsPingStore.data()!" />
             </mat-card-content>
           </mat-card>
         } @else {

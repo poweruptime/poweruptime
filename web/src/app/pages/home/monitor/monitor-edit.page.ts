@@ -52,7 +52,7 @@ export class MonitorEditPage {
 
   readonly monitorId = input<string>();
 
-  readonly searchNotificationMethod = signal('');
+  searchNotificationMethod = signal('');
 
   constructor() {
     this.monitorEditStore.loadMonitorById(this.monitorId);

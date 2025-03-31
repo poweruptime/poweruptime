@@ -11,11 +11,14 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatAnchor} from '@angular/material/button';
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {RouterLink} from '@angular/router';
 
 import {distinctUntilChanged, map} from 'rxjs';
 
@@ -35,15 +38,15 @@ import {MonitorEditFormHttpData} from './monitor-edit-form-http-data';
 import {MonitorEditFormPingData} from './monitor-edit-form-ping-data';
 import {MonitorEditFormPushData} from './monitor-edit-form-push-data';
 import {MonitorEditFormSSLCertificateData} from './monitor-edit-form-ssl-certificate-data';
-
-// Number of seconds in a day
-const SECONDS_IN_DAY = 86400;
-// Number of seconds in an hour
-const SECONDS_IN_HOUR = 3600;
-// Number of seconds in a minute
-const SECONDS_IN_MINUTE = 60;
-
-type TestIntervalUnits = 'seconds' | 'minutes' | 'hours' | 'days';
+import {
+  TestIntervalUnits,
+  getTestInterval,
+  getTestIntervalSeconds,
+  testIntervalDaysValidators,
+  testIntervalHoursValidators,
+  testIntervalMinutesValidators,
+  testIntervalSecondsValidators,
+} from './test-interval';
 
 const CHECKER_DATA_TYPES = [
   {
@@ -70,45 +73,48 @@ const CHECKER_DATA_TYPES = [
 
 @Component({
   template: `
-    <div class="mb-6 flex gap-8">
-      <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-        <div class="flex gap-2">
-          <mat-form-field class="w-full">
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
+    <div class="mb-6 grid gap-6 lg:grid-cols-2">
+      <form
+        class="grid grid-cols-6 gap-2"
+        id="form"
+        #formRef
+        [formGroup]="form"
+        (ngSubmit)="submit()">
+        <mat-form-field class="col-span-6 md:col-span-4">
+          <mat-label>{{ 'general.name' | transloco }}</mat-label>
+          <input matInput formControlName="name" />
 
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
+          @let nameErrors = form.controls.name.errors;
+          @if (nameErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (nameErrors?.['minlength']; as minlength) {
+            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          }
+          @if (nameErrors?.['maxlength']; as maxlength) {
+            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          }
+        </mat-form-field>
 
-          <mat-form-field class="w-56">
-            <mat-label>{{ 'general.type' | transloco }}</mat-label>
-            <mat-select formControlName="type">
-              <mat-option class="pt-1">
-                <ngx-mat-select-search [formControl]="typeFilterControl">
-                  <bi name="x-lg" ngxMatSelectSearchClear />
-                </ngx-mat-select-search>
-              </mat-option>
-              @for (type of filteredTypes(); track type.value) {
-                <mat-option [value]="type.value">{{ type.label }}</mat-option>
-              }
-            </mat-select>
-            @let typeErrors = form.controls.type.errors;
-            @if (typeErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        <mat-form-field class="col-span-6 md:col-span-2">
+          <mat-label>{{ 'general.type' | transloco }}</mat-label>
+          <mat-select formControlName="type">
+            <mat-option class="pt-1">
+              <ngx-mat-select-search [formControl]="typeFilterControl">
+                <bi name="x-lg" ngxMatSelectSearchClear />
+              </ngx-mat-select-search>
+            </mat-option>
+            @for (type of filteredTypes(); track type.value) {
+              <mat-option [value]="type.value">{{ type.label }}</mat-option>
             }
-          </mat-form-field>
-        </div>
+          </mat-select>
+          @let typeErrors = form.controls.type.errors;
+          @if (typeErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+        </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="col-span-6 md:col-span-6">
           <mat-label>{{ 'general.description' | transloco }}</mat-label>
           <textarea
             matInput
@@ -118,126 +124,152 @@ const CHECKER_DATA_TYPES = [
             cdkAutosizeMaxRows="12"></textarea>
         </mat-form-field>
 
-        <div class="flex gap-2">
-          <mat-form-field>
-            <mat-label>
-              {{
-                'monitor.edit.interval'
-                  | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
-              }}
-            </mat-label>
-            <div class="flex">
-              <input matInput type="number" step="1" formControlName="testInterval" />
-              <div class="w-12 ps-1">
-                <mat-select formControlName="testIntervalUnit">
-                  <mat-select-trigger>
-                    {{ form.controls.testIntervalUnit.getRawValue()[0] | lowercase }}
-                  </mat-select-trigger>
-                  @for (time of times; track time.value) {
-                    <mat-option [value]="time.value">{{ time.value }}</mat-option>
-                  }
-                </mat-select>
-              </div>
+        <mat-form-field class="col-span-6 md:col-span-2">
+          <mat-label>
+            {{
+              'monitor.edit.interval'
+                | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
+            }}
+          </mat-label>
+          <div class="flex">
+            <input matInput type="number" step="1" formControlName="testInterval" />
+            <div class="w-12 ps-1">
+              <mat-select formControlName="testIntervalUnit">
+                <mat-select-trigger>
+                  {{ form.controls.testIntervalUnit.getRawValue()[0] | lowercase }}
+                </mat-select-trigger>
+                @for (time of times; track time.value) {
+                  <mat-option [value]="time.value">{{ time.value }}</mat-option>
+                }
+              </mat-select>
             </div>
-            @let testIntervalErrors = form.controls.testInterval.errors;
-            @if (testIntervalErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (testIntervalErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (testIntervalErrors?.['max']; as max) {
-              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-            }
-            @if (testIntervalErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+          </div>
+          @let testIntervalErrors = form.controls.testInterval.errors;
+          @if (testIntervalErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (testIntervalErrors?.['min']; as min) {
+            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+          }
+          @if (testIntervalErrors?.['max']; as max) {
+            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+          }
+          @if (testIntervalErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+          }
+        </mat-form-field>
 
-          <mat-form-field class="w-28">
-            <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="retries" />
+        <mat-form-field class="col-span-6 md:col-span-1">
+          <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
+          <input matInput type="number" formControlName="retries" />
 
-            @let retriesErrors = form.controls.retries.errors;
-            @if (retriesErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (retriesErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (retriesErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+          @let retriesErrors = form.controls.retries.errors;
+          @if (retriesErrors?.['required']) {
+            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          }
+          @if (retriesErrors?.['min']; as min) {
+            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+          }
+          @if (retriesErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+          }
+        </mat-form-field>
 
-          <mat-form-field class="w-96">
-            <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="resendAfter" />
-            <span class="ms-2 break-keep" matTextSuffix>failed checks</span>
-            @let resendAfterErrors = form.controls.resendAfter.errors;
-            @if (resendAfterErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (resendAfterErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
+        <mat-form-field class="col-span-6 md:col-span-3">
+          <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
+          <input matInput type="number" formControlName="resendAfter" />
+          <span class="ms-2 break-keep" matTextSuffix>failed checks</span>
+          @let resendAfterErrors = form.controls.resendAfter.errors;
+          @if (resendAfterErrors?.['min']; as min) {
+            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+          }
+          @if (resendAfterErrors?.['pattern']) {
+            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+          }
+        </mat-form-field>
 
-        <mat-slide-toggle formControlName="upsideDown">
+        <mat-slide-toggle class="col-span-6" formControlName="upsideDown">
           {{ 'monitor.edit.upsideDown' | transloco }}
         </mat-slide-toggle>
 
-        <h2 class="mb-2 mt-6 text-2xl">{{ 'general.data' | transloco }}</h2>
+        <mat-card class="col-span-6 mt-8" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ 'general.data' | transloco }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-4"></div>
+            @if (form.controls.type.getRawValue() !== '') {
+              @let type = form.controls.type.getRawValue();
 
-        @if (form.controls.type.getRawValue() !== '') {
-          @let type = form.controls.type.getRawValue();
+              @defer (when type === 'DNS') {
+                @if (type === 'DNS') {
+                  <pu-monitor-edit-form-dns-data />
+                }
+              }
 
-          @defer (when type === 'DNS') {
-            @if (type === 'DNS') {
-              <pu-monitor-edit-form-dns-data />
+              @defer (when type === 'HTTP') {
+                @if (type === 'HTTP') {
+                  <pu-monitor-edit-form-http-data />
+                }
+              }
+
+              @defer (when type === 'PING') {
+                @if (type === 'PING') {
+                  <pu-monitor-edit-form-ping-data />
+                }
+              }
+
+              @defer (when type === 'PUSH') {
+                @if (type === 'PUSH') {
+                  <pu-monitor-edit-form-push-data />
+                }
+              }
+
+              @defer (when type === 'SSL_CERTIFICATE') {
+                @if (type === 'SSL_CERTIFICATE') {
+                  <pu-monitor-edit-form-ssl-certificate-data />
+                }
+              }
+            } @else {
+              <span>{{ 'monitor.edit.selectTypeToContinue' | transloco }}</span>
             }
-          }
-
-          @defer (when type === 'HTTP') {
-            @if (type === 'HTTP') {
-              <pu-monitor-edit-form-http-data />
-            }
-          }
-
-          @defer (when type === 'PING') {
-            @if (type === 'PING') {
-              <pu-monitor-edit-form-ping-data />
-            }
-          }
-
-          @defer (when type === 'PUSH') {
-            @if (type === 'PUSH') {
-              <pu-monitor-edit-form-push-data />
-            }
-          }
-
-          @defer (when type === 'SSL_CERTIFICATE') {
-            @if (type === 'SSL_CERTIFICATE') {
-              <pu-monitor-edit-form-ssl-certificate-data />
-            }
-          }
-        } @else {
-          <span>{{ 'monitor.edit.selectTypeToContinue' | transloco }}</span>
-        }
+          </mat-card-content>
+        </mat-card>
       </form>
 
-      <div class="w-full">
-        <pu-notification-method-selector
-          class="w-full"
-          [(selectedNotificationMethods)]="_selectedNotificationMethods"
-          [(searchNotificationMethod)]="searchNotificationMethod"
-          [notificationMethods]="filteredNotificationMethods()"
-          [isPending]="isNotificationMethodsPending()" />
+      <div class="flex flex-col gap-6">
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ 'general.notificationMethods' | transloco }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-4"></div>
+            <pu-notification-method-selector
+              class="w-full"
+              [(selectedNotificationMethods)]="_selectedNotificationMethods"
+              [(searchNotificationMethod)]="searchNotificationMethod"
+              [notificationMethods]="filteredNotificationMethods()"
+              [isPending]="isNotificationMethodsPending()" />
 
-        @if (monitor() === undefined && notificationMethodsStore.isPending()) {
-          <mat-progress-bar mode="indeterminate" />
-        }
+            @if (monitor() === undefined && notificationMethodsStore.isPending()) {
+              <mat-progress-bar mode="indeterminate" />
+            }
+
+            <a mat-button routerLink="../../../notification-methods/new" target="_blank">
+              {{ 'cmdk.groups.notificationMethod.create' | transloco }}
+              <bi class="ms-1" name="box-arrow-up-right" />
+            </a>
+          </mat-card-content>
+        </mat-card>
+
+        <!--        <mat-card appearance="outlined">-->
+        <!--          <mat-card-header>-->
+        <!--            <mat-card-title>{{ 'general.tags' | transloco }}</mat-card-title>-->
+        <!--          </mat-card-header>-->
+        <!--          <mat-card-content>-->
+        <!--            <div class="h-4"></div>-->
+        <!--          </mat-card-content>-->
+        <!--        </mat-card>-->
       </div>
     </div>
 
@@ -269,6 +301,12 @@ const CHECKER_DATA_TYPES = [
     MonitorEditFormSSLCertificateData,
     MonitorEditFormPingData,
     MonitorEditFormPushData,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatCardHeader,
+    RouterLink,
+    MatAnchor,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -385,7 +423,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
 
   readonly allNotificationMethods = input.required<BackendType['NotificationMethodResponse'][]>();
   readonly isNotificationMethodsPending = input.required<boolean>();
-  readonly searchNotificationMethod = model('');
+  searchNotificationMethod = model('');
   readonly selectedNotificationMethods =
     input.required<BackendType['NotificationMethodMinResponse'][]>();
 
@@ -398,7 +436,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     );
   });
 
-  readonly _selectedNotificationMethods = linkedSignal<
+  _selectedNotificationMethods = linkedSignal<
     {
       selectedNotificationMethods: BackendType['NotificationMethodMinResponse'][];
       defaultSelectedNotificationMethods: BackendType['NotificationMethodMinResponse'][];
@@ -492,68 +530,3 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     this.form.updateValueAndValidity();
   }
 }
-
-function getTestIntervalSeconds(testInterval: number, testIntervalUnit: TestIntervalUnits): number {
-  switch (testIntervalUnit) {
-    case 'days':
-      return testInterval * SECONDS_IN_DAY;
-    case 'hours':
-      return testInterval * SECONDS_IN_HOUR;
-    case 'minutes':
-      return testInterval * SECONDS_IN_MINUTE;
-    case 'seconds':
-    default:
-      return testInterval;
-  }
-}
-
-function getTestInterval(testIntervalInSeconds: number): {
-  testInterval: number;
-  testIntervalUnit: TestIntervalUnits;
-} {
-  // Check if it is a whole number of days
-  if (testIntervalInSeconds % SECONDS_IN_DAY === 0) {
-    return {
-      testInterval: testIntervalInSeconds / SECONDS_IN_DAY,
-      testIntervalUnit: 'days',
-    };
-  }
-  // Check if it is a whole number of hours
-  else if (testIntervalInSeconds % SECONDS_IN_HOUR === 0) {
-    return {
-      testInterval: testIntervalInSeconds / SECONDS_IN_HOUR,
-      testIntervalUnit: 'hours',
-    };
-  }
-  // Check if it is a whole number of minutes
-  else if (testIntervalInSeconds % SECONDS_IN_MINUTE === 0) {
-    return {
-      testInterval: testIntervalInSeconds / SECONDS_IN_MINUTE,
-      testIntervalUnit: 'minutes',
-    };
-  }
-  // Otherwise, default to seconds
-  else {
-    return {
-      testInterval: testIntervalInSeconds,
-      testIntervalUnit: 'seconds',
-    };
-  }
-}
-
-const testIntervalSecondsValidators = [
-  Validators.min(Database.MIN_TEST_INTERVAL_SECONDS),
-  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS),
-];
-const testIntervalMinutesValidators = [
-  Validators.min(1),
-  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_MINUTE),
-];
-const testIntervalHoursValidators = [
-  Validators.min(1),
-  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_HOUR),
-];
-const testIntervalDaysValidators = [
-  Validators.min(1),
-  Validators.max(Database.MAX_TEST_INTERVAL_SECONDS / SECONDS_IN_DAY),
-];

@@ -30,7 +30,7 @@ export const MonitorEditStore = signalStore(
       router = inject(Router),
       api = injectAPI(),
       monitorDetailStore = inject(MonitorDetailStore),
-      monitorsStore = inject(InfiniteMonitorsStore),
+      monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
       monitorNotificationMethodsStore = inject(MonitorNotificationMethodsStore),
     ) => ({
@@ -65,7 +65,7 @@ export const MonitorEditStore = signalStore(
             tapResponse({
               next: (monitor) => {
                 monitorDetailStore.updateMonitor(monitor);
-                monitorsStore.addMonitor(monitor);
+                monitorsStore?.addMonitor(monitor);
 
                 monitorNotificationMethodsStore.set({
                   id: monitor.id,
@@ -87,7 +87,7 @@ export const MonitorEditStore = signalStore(
             tapResponse({
               next: (monitor) => {
                 monitorDetailStore.updateMonitor(monitor);
-                monitorsStore.updateMonitor(monitor);
+                monitorsStore?.updateMonitor(monitor);
                 monitorsSearchStore?.updateMonitor(monitor);
 
                 monitorNotificationMethodsStore.set({
