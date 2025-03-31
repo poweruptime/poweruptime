@@ -133,7 +133,7 @@ export const SelectedTeamStore = signalStore(
                         (team) => team.id === selectedTeam.id,
                       )
                         ? onceSelectedTeams
-                        : [selectedTeam, ...onceSelectedTeams],
+                        : [...onceSelectedTeams, selectedTeam],
                     })),
                   error: () => {},
                 }),

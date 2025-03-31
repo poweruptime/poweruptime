@@ -47,7 +47,6 @@ import {isMobileBreakpoints} from '@app/services/util';
           <div class="ps-4">
             @for (team of selectedTeamStore.onceSelectedTeamsCut(); track team.id) {
               <a
-                [routerLinkActiveOptions]="{exact: true}"
                 routerLink="/t/{{ team.id }}/{{ _isMobile ? 'mm' : 'm' }}"
                 mat-list-item
                 routerLinkActive="active">

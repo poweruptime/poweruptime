@@ -4,6 +4,7 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
+import {MatToolbar} from '@angular/material/toolbar';
 import {MatTooltip} from '@angular/material/tooltip';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 
@@ -34,25 +35,23 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
       </mat-drawer>
 
       <mat-drawer-content class="grid-container">
-        <div class="my-header flex justify-between gap-4 px-3 py-1 shadow-md dark:text-white">
-          <div class="flex items-center gap-4">
-            <div class="flex items-center" [class.hidden]="!_collapseNav">
-              <button
-                [matTooltip]="'nav.toggle' | transloco"
-                [attr.aria-label]="'nav.toggle' | transloco"
-                (click)="drawer.toggle()"
-                mat-icon-button>
-                <bi name="list" size="24" />
-              </button>
-            </div>
-            <a class="pb-1" routerLink="/">
-              <h1 class="text-2xl">poweruptime</h1>
-            </a>
-          </div>
+        <mat-toolbar>
+          @if (_collapseNav) {
+            <button
+              [matTooltip]="'nav.toggle' | transloco"
+              [attr.aria-label]="'nav.toggle' | transloco"
+              (click)="drawer.toggle()"
+              mat-icon-button>
+              <bi name="list" size="24" />
+            </button>
+          }
+          <span>poweruptime</span>
+          <span class="spacer"></span>
+
           <div class="hidden items-center gap-2 lg:inline-flex">
             <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
           </div>
-        </div>
+        </mat-toolbar>
 
         <main class="main">
           @defer (when backendOfflineService.isOffline()) {
@@ -78,19 +77,25 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
       min-height: 100vh;
     }
 
-    .my-header {
-      z-index: 999;
-      grid-row: 1;
+    .spacer {
+      flex: 1 1 auto;
     }
 
     .main {
-      @apply overflow-y-auto px-3 pt-4;
+      @apply overflow-y-auto px-3;
       max-width: 1920px;
       height: 100%;
       grid-row: 2;
 
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */
+    }
+
+    @media (min-width: 2283px) {
+      .main {
+        min-width: 1924px;
+        @apply mx-auto;
+      }
     }
 
     /* Hide scrollbar but allow scrolling */
@@ -101,7 +106,6 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
   imports: [
     RouterOutlet,
     ReactiveFormsModule,
-    RouterLink,
     MatSidenavModule,
     BiComponent,
     MatIconButton,
@@ -110,6 +114,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     MatTooltip,
     TranslocoPipe,
     BackendOfflineAlert,
+    MatToolbar,
   ],
 })
 export class HomeLayout {
@@ -145,7 +150,7 @@ export class HomeLayout {
 
   readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
 
-  readonly hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
+  hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
     defaultValue: 0,
     storageSync: true,
   });
