@@ -18,7 +18,7 @@ import org.poweruptime.backend.features.monitor.dto.fromDto
 import org.poweruptime.backend.features.monitor.dto.update
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -30,20 +30,36 @@ class MonitorService(
     private val teamRepository: TeamRepository,
     private val monitorScheduler: MonitorScheduler,
     private val monitorCheckerDataService: MonitorCheckerDataService,
+    private val notificationMethodService: NotificationMethodService
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
-    fun create(dto: CreateMonitorDto): Monitor = save(
-        Monitor.fromDto(
-            dto,
-            teamRepository.findByIdOrThrow(dto.teamId),
-            monitorCheckerDataService.save(dto.checker),
-        ),
-    ).start()
+    fun create(dto: CreateMonitorDto): Monitor {
+        val notificationMethods = notificationMethodService.getByIdOrThrow(dto.notificationMethodIds)
+        notificationMethodService.ensureAllNotificationMethodsInTeam(
+            teamId = dto.teamId,
+            notificationMethods = notificationMethods,
+        )
+
+        return save(
+            Monitor.fromDto(
+                dto,
+                teamRepository.findByIdOrThrow(dto.teamId),
+                notificationMethods,
+                monitorCheckerDataService.save(dto.checker),
+            ),
+        ).start()
+    }
 
     fun update(dto: UpdateMonitorDto): Monitor = getByIdOrThrow(dto.id).let {
+        val notificationMethods = notificationMethodService.getByIdOrThrow(dto.notificationMethodIds)
+        notificationMethodService.ensureAllNotificationMethodsInTeam(
+            teamId = it.team.id,
+            notificationMethods = notificationMethods,
+        )
+
         val oldCheckerId = it.checker.id
         val newChecker = monitorCheckerDataService.save(dto.checker)
 
-        val monitor = monitorRepository.saveAndFlush(it.update(dto, newChecker)).stop().start()
+        val monitor = monitorRepository.saveAndFlush(it.update(dto, notificationMethods, newChecker)).stop().start()
 
         monitorCheckerDataService.deleteByIdOrThrow(oldCheckerId)
 
@@ -68,12 +84,6 @@ class MonitorService(
         monitorCheckerDataService.undeleteById(it.checker.id)
         it.start()
         it
-    }
-
-    fun setEnabledNotificationMethods(monitor: Monitor, notificationMethods: List<NotificationMethod>) {
-        monitor.enabledNotificationMethods = notificationMethods
-
-        save(monitor)
     }
 
     fun pause(id: String): Monitor = getByIdOrThrow(id).let {

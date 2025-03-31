@@ -55,8 +55,8 @@ class NotificationMethodController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String,
         @RequestParam("name") name: String?,
-        @RequestParam("usedByMonitorIds") usedByMonitorIds: Set<String>?,
-        @RequestParam("types") types: Set<NotificationSenderType>?,
+        @RequestParam("usedByMonitorIds") usedByMonitorIds: List<String>?,
+        @RequestParam("types") types: List<NotificationSenderType>?,
         @RequestParam("useByDefault") useByDefault: Boolean?,
         @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<NotificationMethodResponse> = notificationMethodService.getAllPaginated(

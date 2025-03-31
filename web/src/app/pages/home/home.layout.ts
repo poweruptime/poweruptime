@@ -8,7 +8,7 @@ import {MatToolbar} from '@angular/material/toolbar';
 import {MatTooltip} from '@angular/material/tooltip';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 
-import {filter, map, skip, withLatestFrom} from 'rxjs';
+import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -185,6 +185,7 @@ export class HomeLayout {
       .pipe(
         takeUntilDestroyed(),
         map((result) => result.matches),
+        debounceTime(400),
       )
       .subscribe((isMobile) => {
         if (!isMobile) {
@@ -194,7 +195,7 @@ export class HomeLayout {
         } else {
           if (router.url.includes('/m')) {
             const index = router.url.indexOf('/m');
-            if (router.url[index + 2] !== 'm' && !router.url.substring(index + 2).includes('m')) {
+            if (router.url[index + 2] !== 'm') {
               void router.navigateByUrl(router.url.replace('/m', '/mm'));
             }
           }

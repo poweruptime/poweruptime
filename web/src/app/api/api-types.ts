@@ -331,30 +331,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/monitor/{id}/notification-method': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Get monitor's notification methods
-     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
-     */
-    get: operations['getAll_6'];
-    /**
-     * Set notification methods of monitor
-     * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
-     */
-    put: operations['set'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/monitor/{id}/maintenance': {
     parameters: {
       query?: never;
@@ -873,7 +849,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['getAll_7'];
+    get: operations['getAll_6'];
     put?: never;
     post?: never;
     delete?: never;
@@ -889,7 +865,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['getAll_8'];
+    get: operations['getAll_7'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1112,7 +1088,7 @@ export interface paths {
      * Get notificationSenders
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_9'];
+    get: operations['getAll_8'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1257,7 +1233,7 @@ export interface paths {
      * Get all dead letters
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    get: operations['getAll_10'];
+    get: operations['getAll_9'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1277,7 +1253,7 @@ export interface paths {
      * Get check results
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_11'];
+    get: operations['getAll_10'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1317,7 +1293,7 @@ export interface paths {
      * Get check result logs
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_12'];
+    get: operations['getAll_11'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1683,7 +1659,6 @@ export interface components {
     NotificationSenderData: {
       /** @enum {string} */
       _type: 'EMAIL' | 'DISCORD';
-      isDeleted: boolean;
     };
     UpdateNotificationMethodDto: {
       id: string;
@@ -1706,7 +1681,6 @@ export interface components {
     MonitorCheckerData: {
       /** @enum {string} */
       _type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
-      isDeleted: boolean;
     };
     UpdateMonitorDto: {
       id: string;
@@ -1720,6 +1694,7 @@ export interface components {
       resendAfter?: number;
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
+      notificationMethodIds: string[];
     };
     CheckResultMinResponse: {
       id: string;
@@ -1768,9 +1743,6 @@ export interface components {
       threeMonths?: string;
       sixMonths?: string;
       oneYear?: string;
-    };
-    SetMonitorNotificationMethodsDto: {
-      ids: string[];
     };
     InstanceSettingsResponse: {
       timezone: string;
@@ -1847,6 +1819,7 @@ export interface components {
       resendAfter?: number;
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
+      notificationMethodIds: string[];
     };
     PasswordForgotRequestDto: {
       email: string;
@@ -2911,52 +2884,6 @@ export interface operations {
       };
     };
   };
-  getAll_6: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['NotificationMethodMinResponse'][];
-        };
-      };
-    };
-  };
-  set: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SetMonitorNotificationMethodsDto'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   maintenance: {
     parameters: {
       query?: never;
@@ -3681,7 +3608,7 @@ export interface operations {
       };
     };
   };
-  getAll_7: {
+  getAll_6: {
     parameters: {
       query?: never;
       header?: never;
@@ -3701,7 +3628,7 @@ export interface operations {
       };
     };
   };
-  getAll_8: {
+  getAll_7: {
     parameters: {
       query?: never;
       header?: never;
@@ -3995,7 +3922,7 @@ export interface operations {
       };
     };
   };
-  getAll_9: {
+  getAll_8: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4192,7 +4119,7 @@ export interface operations {
       };
     };
   };
-  getAll_10: {
+  getAll_9: {
     parameters: {
       query?: never;
       header?: never;
@@ -4212,7 +4139,7 @@ export interface operations {
       };
     };
   };
-  getAll_11: {
+  getAll_10: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4265,7 +4192,7 @@ export interface operations {
       };
     };
   };
-  getAll_12: {
+  getAll_11: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */

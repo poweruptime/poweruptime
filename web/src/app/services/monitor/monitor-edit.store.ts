@@ -10,12 +10,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
-import {
-  InfiniteMonitorsStore,
-  MonitorDetailStore,
-  MonitorNotificationMethodsStore,
-  MonitorsSearchStore,
-} from './';
+import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore} from './';
 
 export const MonitorEditStore = signalStore(
   withRequestStatus(),
@@ -32,7 +27,6 @@ export const MonitorEditStore = signalStore(
       monitorDetailStore = inject(MonitorDetailStore),
       monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
-      monitorNotificationMethodsStore = inject(MonitorNotificationMethodsStore),
     ) => ({
       loadMonitorById: rxMethod<string | undefined>(
         pipe(
@@ -57,20 +51,13 @@ export const MonitorEditStore = signalStore(
           ),
         ),
       ),
-      create: rxMethod<
-        BackendType['CreateMonitorDto'] & BackendType['SetMonitorNotificationMethodsDto']
-      >(
+      create: rxMethod<BackendType['CreateMonitorDto']>(
         switchMap((body) =>
           api.post('/v1/monitor', {body}).pipe(
             tapResponse({
               next: (monitor) => {
                 monitorDetailStore.updateMonitor(monitor);
                 monitorsStore?.addMonitor(monitor);
-
-                monitorNotificationMethodsStore.set({
-                  id: monitor.id,
-                  ids: body.ids,
-                });
 
                 void router.navigate(['/', 't', monitor.team.id, 'm', monitor.id, 'edit']);
               },
@@ -79,9 +66,7 @@ export const MonitorEditStore = signalStore(
           ),
         ),
       ),
-      update: rxMethod<
-        BackendType['UpdateMonitorDto'] & BackendType['SetMonitorNotificationMethodsDto']
-      >(
+      update: rxMethod<BackendType['UpdateMonitorDto']>(
         switchMap((body) =>
           api.put('/v1/monitor', {body}).pipe(
             tapResponse({
@@ -89,11 +74,6 @@ export const MonitorEditStore = signalStore(
                 monitorDetailStore.updateMonitor(monitor);
                 monitorsStore?.updateMonitor(monitor);
                 monitorsSearchStore?.updateMonitor(monitor);
-
-                monitorNotificationMethodsStore.set({
-                  id: monitor.id,
-                  ids: body.ids,
-                });
 
                 void router.navigate(['/', 't', monitor.team.id, 'm', monitor.id], {
                   queryParamsHandling: 'merge',

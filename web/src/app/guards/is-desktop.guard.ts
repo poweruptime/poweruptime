@@ -22,7 +22,7 @@ export const isDesktopGuard: CanActivateFn = (
         }
 
         const index = state.url.indexOf('/m');
-        if (state.url[index + 2] !== 'm' && !state.url.substring(index + 2).includes('m')) {
+        if (state.url[index + 2] !== 'm') {
           return router.parseUrl(state.url.replace('/m', '/mm'));
         }
         return false;

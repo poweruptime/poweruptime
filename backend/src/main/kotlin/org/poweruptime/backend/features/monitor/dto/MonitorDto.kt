@@ -200,6 +200,7 @@ data class CreateMonitorDto(
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
     @get:NotNull val checker: MonitorCheckerData,
+    @get:NotNull val notificationMethodIds: List<String>,
 )
 
 data class UpdateMonitorDto(
@@ -214,4 +215,5 @@ data class UpdateMonitorDto(
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
     @get:NotNull val checker: MonitorCheckerData,
+    @get:NotNull val notificationMethodIds: List<String>,
 )

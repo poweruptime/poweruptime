@@ -366,13 +366,13 @@ create table status_page_group
     created_at     timestamp with time zone default now() not null,
     updated_at     timestamp with time zone default now() not null,
     version        bigint                   default 0     not null,
-    id             varchar(21)                            not null
-        primary key,
     status_page_id varchar(12)                            not null
         constraint fkkwrqh3s6ku7p9cj8vykjg0rah
             references status_page
             on delete cascade,
-    name           varchar(70)              collate numeric       not null,
+    id             varchar(21)                            not null
+        primary key,
+    name           varchar(70)         collate numeric    not null,
     description    text
 );
 
@@ -395,6 +395,32 @@ create table status_page_group_monitor
         unique,
     primary key (monitor_id, status_page_group_id),
     unique (status_page_id, monitor_id)
+);
+
+create table tag
+(
+    hex_color  varchar(7),
+    created_at timestamp with time zone default now() not null,
+    deleted    timestamp with time zone,
+    updated_at timestamp with time zone default now() not null,
+    version    bigint                   default 0     not null,
+    team_id    varchar(12)                            not null
+        constraint fkc1xo69bpeqcws2fqubwqcxkvv
+            references team
+            on delete cascade,
+    id         varchar(21)                            not null
+        primary key,
+    name       varchar(70)                            not null
+);
+
+create table monitor_tag
+(
+    monitor_id varchar(12) not null
+        constraint fkthjnoj7vt2o7mfbcuggn81uxf
+            references monitor,
+    tag_id     varchar(21) not null
+        constraint fkknb9ipiq47f5wxwcqhg7fcu2e
+            references tag
 );
 
 create table team_setting

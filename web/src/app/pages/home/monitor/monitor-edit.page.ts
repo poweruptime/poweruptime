@@ -4,8 +4,13 @@ import {TranslocoPipe} from '@jsverse/transloco';
 
 import {Placeholder} from '@app/components';
 import {MonitorEditForm, MonitorEditFormPlaceholder} from '@app/components/monitor';
-import {MonitorEditStore, NotificationMethodsStore, SelectedTeamStore} from '@app/services';
-import {MonitorNotificationMethodsStore} from '@app/services/monitor/monitor-notification-methods.store';
+import {
+  DefaultSelectedNotificationMethodsStore,
+  MonitorEditStore,
+  NotificationMethodsStore,
+  SelectedNotificationMethodsForMonitorStore,
+  SelectedTeamStore,
+} from '@app/services';
 
 @Component({
   template: `
@@ -29,8 +34,15 @@ import {MonitorNotificationMethodsStore} from '@app/services/monitor/monitor-not
           [monitor]="monitorEditStore.monitor()"
           [selectedTeamId]="selectedTeamStore.selectedTeamId()"
           [allNotificationMethods]="notificationMethodsStore.entities()"
-          [isNotificationMethodsPending]="notificationMethodsStore.isPending()"
-          [selectedNotificationMethods]="monitorNotificationMethodsStore.entities()"
+          [isNotificationMethodsSearchPending]="notificationMethodsStore.isPending()"
+          [defaultNotificationMethods]="defaultSelectedNotificationMethodsStore.entities()"
+          [isDefaultSelectedNotificationMethodsPending]="
+            defaultSelectedNotificationMethodsStore.isPending()
+          "
+          [selectedNotificationMethods]="selectedNotificationMethodsForMonitorStore.entities()"
+          [isSelectedNotificationMethodsPending]="
+            selectedNotificationMethodsForMonitorStore.isPending()
+          "
           (submitCreate)="monitorEditStore.create($event)"
           (submitUpdate)="monitorEditStore.update($event)" />
       } @else {
@@ -40,7 +52,12 @@ import {MonitorNotificationMethodsStore} from '@app/services/monitor/monitor-not
   `,
   selector: 'pu-monitor-edit-page',
   standalone: true,
-  providers: [MonitorEditStore, MonitorNotificationMethodsStore, NotificationMethodsStore],
+  providers: [
+    MonitorEditStore,
+    NotificationMethodsStore,
+    SelectedNotificationMethodsForMonitorStore,
+    DefaultSelectedNotificationMethodsStore,
+  ],
   imports: [MonitorEditForm, MonitorEditFormPlaceholder, Placeholder, TranslocoPipe],
 })
 export class MonitorEditPage {
@@ -48,7 +65,12 @@ export class MonitorEditPage {
   readonly monitorEditStore = inject(MonitorEditStore);
 
   readonly notificationMethodsStore = inject(NotificationMethodsStore);
-  readonly monitorNotificationMethodsStore = inject(MonitorNotificationMethodsStore);
+  readonly selectedNotificationMethodsForMonitorStore = inject(
+    SelectedNotificationMethodsForMonitorStore,
+  );
+  readonly defaultSelectedNotificationMethodsStore = inject(
+    DefaultSelectedNotificationMethodsStore,
+  );
 
   readonly monitorId = input<string>();
 
@@ -57,7 +79,25 @@ export class MonitorEditPage {
   constructor() {
     this.monitorEditStore.loadMonitorById(this.monitorId);
 
-    this.monitorNotificationMethodsStore.load(this.monitorId);
+    this.defaultSelectedNotificationMethodsStore.load(
+      computed(() => ({
+        teamId: this.selectedTeamStore.selectedTeamId(),
+        page: 0,
+        size: 200,
+        sort: ['name,ASC,ignorecase'],
+        useByDefault: true,
+      })),
+    );
+
+    this.selectedNotificationMethodsForMonitorStore.load(
+      computed(() => ({
+        teamId: this.selectedTeamStore.selectedTeamId(),
+        usedByMonitorIds: [this.monitorId()!],
+        page: 0,
+        size: 200,
+        sort: ['name,ASC,ignorecase'],
+      })),
+    );
 
     this.notificationMethodsStore.setSearch(this.searchNotificationMethod);
 
@@ -65,8 +105,6 @@ export class MonitorEditPage {
       computed(() => ({
         teamId: this.selectedTeamStore.selectedTeamId(),
         search: this.notificationMethodsStore.search(),
-        types: this.notificationMethodsStore.types(),
-        useByDefault: this.notificationMethodsStore.useByDefault(),
         page: 0,
         size: 40,
         sort: ['name,ASC,ignorecase'],

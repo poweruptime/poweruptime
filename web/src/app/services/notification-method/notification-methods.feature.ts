@@ -1,0 +1,120 @@
+import {computed} from '@angular/core';
+
+import {debounceTime, filter, map, pipe, switchMap, tap} from 'rxjs';
+
+import {tapResponse} from '@ngrx/operators';
+import {patchState, signalStoreFeature, withComputed, withMethods, withState} from '@ngrx/signals';
+import {removeAllEntities, setEntities} from '@ngrx/signals/entities';
+import {rxMethod} from '@ngrx/signals/rxjs-interop';
+
+import {BackendType, injectAPI} from '@app/api';
+import {
+  PaginationDto,
+  resetSelection,
+  setError,
+  setFulfilled,
+  setPending,
+  setTotalElements,
+  withPaginatedTable,
+  withSelection,
+} from '@app/services/store-features';
+
+export function withNotificationMethodsLoad() {
+  return signalStoreFeature(
+    withState<{
+      teamId: string | undefined;
+      search: string | undefined;
+      types: BackendType['NotificationMethodResponse']['sender']['_type'][] | undefined;
+      usedByMonitorIds: string[] | undefined;
+      useByDefault: boolean | undefined;
+      deleted: boolean | undefined;
+    }>({
+      teamId: undefined,
+      search: undefined,
+      types: undefined,
+      usedByMonitorIds: undefined,
+      useByDefault: undefined,
+      deleted: undefined,
+    }),
+    withPaginatedTable<BackendType['NotificationMethodResponse']>({
+      columnsToDisplay: ['name', 'sender._type', 'sender', 'useByDefault', 'actions'],
+      defaultSortBy: 'name',
+    }),
+    withSelection<BackendType['NotificationMethodResponse']>({}),
+    withComputed(({search, types, useByDefault}) => ({
+      isSearching: computed(
+        () =>
+          (search() && search()!.length > 0) ||
+          (types() && types()!.length > 0) ||
+          useByDefault() !== undefined,
+      ),
+    })),
+    withMethods((store, api = injectAPI()) => {
+      return {
+        setSearch: rxMethod<string | null>(
+          pipe(
+            map((it) => it ?? ''),
+            tap((search) => patchState(store, () => ({search}))),
+          ),
+        ),
+        setTypes: rxMethod<BackendType['NotificationMethodResponse']['sender']['_type'][] | null>(
+          pipe(
+            map((it) => it ?? []),
+            tap((types) => patchState(store, () => ({types}))),
+          ),
+        ),
+        setUseByDefault: rxMethod<
+          BackendType['NotificationMethodResponse']['useByDefault'] | undefined
+        >(tap((useByDefault) => patchState(store, () => ({useByDefault})))),
+        setUsedByMonitorIds: rxMethod<string[] | undefined>(
+          tap((usedByMonitorIds) => patchState(store, () => ({usedByMonitorIds}))),
+        ),
+        setDeleted: rxMethod<boolean | undefined>(
+          tap((deleted) => patchState(store, () => ({deleted}))),
+        ),
+        load: rxMethod<
+          {
+            teamId: string | undefined;
+            search?: string;
+            types?: BackendType['NotificationMethodResponse']['sender']['_type'][];
+            usedByMonitorIds?: string[];
+            useByDefault?: boolean;
+            deleted?: boolean;
+          } & PaginationDto
+        >(
+          pipe(
+            filter(({teamId}) => !!teamId),
+            tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
+            debounceTime(400),
+            switchMap(({teamId, search, ...query}) =>
+              api
+                .get('/v1/notification-method', {
+                  params: {
+                    query: {
+                      teamId: teamId!!,
+                      name: search && search.length > 0 ? search : undefined,
+                      ...query,
+                    },
+                  },
+                })
+                .pipe(
+                  tapResponse({
+                    next: (response) =>
+                      patchState(
+                        store,
+                        removeAllEntities(),
+                        resetSelection(),
+                        setEntities(response.data),
+                        setTotalElements(response.numberOfItems),
+                        setFulfilled(),
+                      ),
+                    error: (error) => patchState(store, setError(error)),
+                  }),
+                ),
+            ),
+          ),
+        ),
+      };
+    }),
+  );
+}

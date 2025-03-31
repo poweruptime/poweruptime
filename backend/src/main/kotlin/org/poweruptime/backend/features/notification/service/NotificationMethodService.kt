@@ -56,8 +56,8 @@ class NotificationMethodService(
         pageable: Pageable,
         teamId: String,
         name: String?,
-        usedByMonitorIds: Set<String>?,
-        types: Set<NotificationSenderType>?,
+        usedByMonitorIds: List<String>?,
+        types: List<NotificationSenderType>?,
         useByDefault: Boolean?,
         deleted: Boolean = false,
     ): Page<NotificationMethod> = notificationMethodRepository.findAll(
@@ -65,7 +65,7 @@ class NotificationMethodService(
             fun getFilterPredicates() = criteriaBuilder.and(
                 *buildList {
                     add(deleted.toDeletedFilter())
-                    usedByMonitorIds?.let { add(Filter("usedByMonitors.monitor.id", it, FilterCompare.IN)) }
+                    usedByMonitorIds?.let { add(Filter("usedByMonitors.id", it, FilterCompare.IN)) }
                     types?.let { add(Filter("type", it, FilterCompare.IN)) }
                     useByDefault?.let { add(Filter("useByDefault", it, FilterCompare.EQ)) }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
@@ -85,8 +85,6 @@ class NotificationMethodService(
             listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
         ),
     )
-
-    fun getByMonitorId(monitorId: String) = notificationMethodRepository.findByMonitorId(monitorId)
 
     fun ensureAllNotificationMethodsInTeam(notificationMethods: List<NotificationMethod>, teamId: String) =
         notificationMethods.all { it.team.id == teamId }

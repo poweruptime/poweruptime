@@ -66,5 +66,6 @@ abstract class ASoftDeleteEntity : AEntity(), ISoftDeleteEntity {
     @Column(name = "deleted", columnDefinition = "timestamptz", nullable = true)
     override var deleted: Instant? = null
 
+    @JsonIgnore
     override fun isDeleted() = deleted != null
 }

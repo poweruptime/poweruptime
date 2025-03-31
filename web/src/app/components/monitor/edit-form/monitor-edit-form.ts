@@ -29,7 +29,6 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {BackendType, Database} from '@app/api';
 import {NotificationMethodSelector} from '@app/components/monitor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
-import {NotificationMethodsStore} from '@app/services';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -124,7 +123,7 @@ const CHECKER_DATA_TYPES = [
             cdkAutosizeMaxRows="12"></textarea>
         </mat-form-field>
 
-        <mat-form-field class="col-span-6 md:col-span-2">
+        <mat-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
           <mat-label>
             {{
               'monitor.edit.interval'
@@ -159,7 +158,7 @@ const CHECKER_DATA_TYPES = [
           }
         </mat-form-field>
 
-        <mat-form-field class="col-span-6 md:col-span-1">
+        <mat-form-field class="col-span-6 md:col-span-3 2xl:col-span-1">
           <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
           <input matInput type="number" formControlName="retries" />
 
@@ -175,7 +174,7 @@ const CHECKER_DATA_TYPES = [
           }
         </mat-form-field>
 
-        <mat-form-field class="col-span-6 md:col-span-3">
+        <mat-form-field class="col-span-6 2xl:col-span-3">
           <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
           <input matInput type="number" formControlName="resendAfter" />
           <span class="ms-2 break-keep" matTextSuffix>failed checks</span>
@@ -249,9 +248,13 @@ const CHECKER_DATA_TYPES = [
               [(selectedNotificationMethods)]="_selectedNotificationMethods"
               [(searchNotificationMethod)]="searchNotificationMethod"
               [notificationMethods]="filteredNotificationMethods()"
-              [isPending]="isNotificationMethodsPending()" />
+              [isPending]="isNotificationMethodsSearchPending()" />
 
-            @if (monitor() === undefined && notificationMethodsStore.isPending()) {
+            @if (
+              monitor() !== undefined &&
+              (isDefaultSelectedNotificationMethodsPending() ||
+                isSelectedNotificationMethodsPending())
+            ) {
               <mat-progress-bar mode="indeterminate" />
             }
 
@@ -276,7 +279,7 @@ const CHECKER_DATA_TYPES = [
     <pu-save-button [valid]="isValid()" />
   `,
   selector: 'pu-monitor-edit-form',
-  providers: [NotificationMethodsStore, MonitorEditFormDataService],
+  providers: [MonitorEditFormDataService],
   imports: [
     ReactiveFormsModule,
     LowerCasePipe,
@@ -312,8 +315,8 @@ const CHECKER_DATA_TYPES = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorEditForm extends AbstractModelEditFormComponent<
-  BackendType['CreateMonitorDto'] & BackendType['SetMonitorNotificationMethodsDto'],
-  BackendType['UpdateMonitorDto'] & BackendType['SetMonitorNotificationMethodsDto']
+  BackendType['CreateMonitorDto'],
+  BackendType['UpdateMonitorDto']
 > {
   private readonly monitorEditFormDataService = inject(MonitorEditFormDataService);
 
@@ -422,12 +425,16 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   });
 
   readonly allNotificationMethods = input.required<BackendType['NotificationMethodResponse'][]>();
-  readonly isNotificationMethodsPending = input.required<boolean>();
+  readonly isNotificationMethodsSearchPending = input.required<boolean>();
   searchNotificationMethod = model('');
+
+  readonly isSelectedNotificationMethodsPending = input.required<boolean>();
   readonly selectedNotificationMethods =
     input.required<BackendType['NotificationMethodMinResponse'][]>();
 
-  readonly notificationMethodsStore = inject(NotificationMethodsStore);
+  readonly isDefaultSelectedNotificationMethodsPending = input.required<boolean>();
+  readonly defaultNotificationMethods =
+    input.required<BackendType['NotificationMethodResponse'][]>();
 
   readonly filteredNotificationMethods = computed(() => {
     const selectedNotificationMethodIds = this._selectedNotificationMethods().map((it) => it.id);
@@ -446,7 +453,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   >({
     source: computed(() => ({
       selectedNotificationMethods: this.selectedNotificationMethods(),
-      defaultSelectedNotificationMethods: this.notificationMethodsStore.entities(),
+      defaultSelectedNotificationMethods: this.defaultNotificationMethods(),
       isCreating: this.monitor() === undefined,
     })),
     computation: ({
@@ -472,24 +479,12 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     this.form.controls.testIntervalUnit.valueChanges
       .pipe(takeUntilDestroyed(), distinctUntilChanged())
       .subscribe((it) => this.setTestIntervalValidators(it));
-
-    this.notificationMethodsStore.load(
-      computed(() => ({
-        teamId: this.selectedTeamId(),
-        page: 0,
-        size: 100,
-        sort: ['name,ASC'],
-        useByDefault: true,
-        search: '',
-        types: [],
-      })),
-    );
   }
 
   override overrideRawValue(value: ReturnType<typeof this.form.getRawValue>): unknown {
     return {
       ...value,
-      ids: this._selectedNotificationMethods().map((it) => it.id),
+      notificationMethodIds: this._selectedNotificationMethods().map((it) => it.id),
       testIntervalSeconds: getTestIntervalSeconds(value.testInterval, value.testIntervalUnit),
     };
   }

@@ -54,4 +54,7 @@ object Database {
 
     const val MIN_PORT = 1L
     const val MAX_PORT = 65535L
+
+    const val HEX_COLOR_LENGTH = 7
+    const val HEX_COLOR_REGEX = """#([0-9A-Fa-f]{6})$"""
 }

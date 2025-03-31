@@ -53,13 +53,21 @@ class Monitor(
     @OneToMany(mappedBy = "monitor")
     var checkResults: List<CheckResult> = ArrayList(),
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
         name = "monitor_notification_method",
         joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "notification_method_id", referencedColumnName = "id")],
     )
     var enabledNotificationMethods: List<NotificationMethod> = ArrayList(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "monitor_tag",
+        joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_id", referencedColumnName = "id")],
+    )
+    var selectedTags: List<Monitor> = ArrayList(),
 
     @OneToMany(mappedBy = "connection.monitor")
     var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),
