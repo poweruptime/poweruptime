@@ -31,7 +31,7 @@
     "@angular/ssr": "19.2.2",
     "@jsverse/transloco": "7.6.1",
     "@jsverse/transloco-persist-lang": "7.0.2",
-    "@ng-matero/extensions": "19.2.1",
+    "@ng-matero/extensions": "19.3.0",
     "@ngneat/overview": "6.1.1",
     "@ngneat/until-destroy": "10.0.0",
     "@ngrx/operators": "19.0.1",
