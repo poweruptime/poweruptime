@@ -7,7 +7,7 @@ import org.poweruptime.backend.features.mail.service.SendEmailService
 import org.poweruptime.backend.features.notification.core.NotificationSender
 import org.poweruptime.backend.features.notification.core.NotificationSenderType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
-import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.Notification
 
 class EmailNotificationSender(
     val emailTemplateService: EmailTemplateService,
@@ -16,10 +16,10 @@ class EmailNotificationSender(
     private val emailSender = SendEmailService()
 
     override fun send(
-        notificationMethod: NotificationMethod,
-        notificationTemplate: NotificationTemplate
+        notification: Notification,
+        notificationTemplate: NotificationTemplate,
     ): String? = try {
-        val emailNotificationMethodData = notificationMethod.sender as EmailNotificationSenderData
+        val emailNotificationMethodData = notification.method.sender as EmailNotificationSenderData
         val email = EmailNotificationEmail(
             to = emailNotificationMethodData.to,
             title = notificationTemplate.title,

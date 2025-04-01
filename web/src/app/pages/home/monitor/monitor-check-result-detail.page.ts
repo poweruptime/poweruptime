@@ -47,17 +47,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             <span class="text-gray-400">#{{ checkResult.id }}</span>
           </div>
 
-          @if (checkResult.message; as message) {
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <div class="flex items-start justify-between gap-2">
-                  <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
-                  <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
-                </div>
-              </mat-card-content>
-            </mat-card>
-          }
-
           <mat-card appearance="outlined">
             <mat-card-content>
               <div class="flex gap-10 px-2">
@@ -66,10 +55,12 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                   <span class="text-lg font-bold">{{ checkResult.status }}</span>
                 </div>
 
-                <div class="flex flex-col gap-2">
-                  <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>
-                  <span class="text-lg font-bold">{{ checkResult.pingMs }}ms</span>
-                </div>
+                @if (checkResult.pingMs; as pingMs) {
+                  <div class="flex flex-col gap-2">
+                    <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>
+                    <span class="text-lg font-bold">{{ pingMs }}ms</span>
+                  </div>
+                }
 
                 @let logEntries = checkResultLogEntriesStore.entities();
                 @if (logEntries.length > 1) {
@@ -83,6 +74,17 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
               </div>
             </mat-card-content>
           </mat-card>
+
+          @if (checkResult.message; as message) {
+            <mat-card appearance="outlined">
+              <mat-card-content>
+                <div class="flex items-start justify-between gap-2">
+                  <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
+                  <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
         }
 
         @if (checkResultLogEntriesStore.entities().length === 0) {

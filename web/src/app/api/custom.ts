@@ -2,6 +2,40 @@ import type {components} from './api-types';
 
 export type BackendType = components['schemas'];
 
+export const MONITOR_CHECKER_DATA_TYPES = [
+  {
+    label: 'monitor.checker.DNS',
+    value: 'DNS',
+  },
+  {
+    label: 'monitor.checker.HTTP',
+    value: 'HTTP',
+  },
+  {
+    label: 'monitor.checker.PING',
+    value: 'PING',
+  },
+  {
+    label: 'monitor.checker.PUSH',
+    value: 'PUSH',
+  },
+  {
+    label: 'monitor.checker.SSL_CERTIFICATE',
+    value: 'SSL_CERTIFICATE',
+  },
+] satisfies {value: BackendType['MonitorCheckerData']['_type']; label: string}[];
+
+export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
+  {
+    label: 'notificationMethod.sender.EMAIL',
+    value: 'EMAIL',
+  },
+  {
+    label: 'notificationMethod.sender.DISCORD',
+    value: 'DISCORD',
+  },
+] satisfies {value: BackendType['NotificationSenderData']['_type']; label: string}[];
+
 export type HttpMonitorDataMethod =
   | 'GET'
   | 'POST'

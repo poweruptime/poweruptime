@@ -1,17 +1,22 @@
-import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {ReactiveFormsModule, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/divider';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
-import {TranslocoPipe} from '@jsverse/transloco';
-import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
+import {map} from 'rxjs';
 
-import {BackendType, Database} from '@app/api';
+import {TranslocoPipe} from '@jsverse/transloco';
+import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+
+import {BackendType, Database, NOTIFICATION_METHOD_SENDER_DATA_TYPES} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditFormDiscordData} from './notification-method-edit-form-discord-data';
@@ -20,89 +25,108 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
 @Component({
   template: `
-    <form class="flex flex-col gap-3" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div class="grid gap-16 lg:grid-cols-2">
-        <div class="col-span-1 flex flex-col gap-4">
-          <div class="flex flex-col gap-2">
-            <div class="grid grid-cols-6 gap-4">
-              <mat-form-field class="col-span-4">
-                <mat-label>{{ 'general.name' | transloco }}</mat-label>
-                <input matInput formControlName="name" />
+    <form
+      class="mb-6 grid gap-6 lg:grid-cols-2"
+      id="form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+      @let typeValue = form.controls.type.getRawValue();
 
-                @let nameErrors = form.controls.name.errors;
-                @if (nameErrors?.['required']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-                @if (nameErrors?.['minlength']; as minlength) {
-                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                }
-                @if (nameErrors?.['maxlength']; as maxlength) {
-                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-                }
-              </mat-form-field>
+      <div class="grid-cols-6">
+        <div class="grid gap-2">
+          <mat-form-field class="col-span-4">
+            <mat-label>{{ 'general.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
 
-              <mat-form-field class="col-span-2">
-                <mat-label>{{ 'general.type' | transloco }}</mat-label>
-                <mat-select formControlName="type">
-                  <mat-option value="EMAIL">Email</mat-option>
-                  <mat-option value="DISCORD">Discord</mat-option>
-                </mat-select>
-
-                @let typeErrors = form.controls.type.errors;
-                @if (typeErrors?.['required']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-              </mat-form-field>
-            </div>
-
-            <mat-slide-toggle formControlName="useByDefault">
-              {{ 'notificationMethod.edit.useByDefault' | transloco }}
-            </mat-slide-toggle>
-          </div>
-
-          @let typeValue = form.controls.type.getRawValue();
-
-          <h2 class="mb-2 mt-6 text-2xl">
-            @if (typeValue !== '') {
-              {{ typeValue | s_lowerCaseAllExceptFirstLetter }} -
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
             }
-            {{ 'general.data' | transloco }}
-          </h2>
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+          </mat-form-field>
 
-          @if (form.controls.type.getRawValue() !== '') {
-            @let type = form.controls.type.getRawValue();
-            @defer (when type === 'EMAIL') {
-              @if (type === 'EMAIL') {
-                <pu-notification-method-edit-form-email-data />
+          <mat-form-field class="md:col-span-2">
+            <mat-label>{{ 'general.type' | transloco }}</mat-label>
+            <mat-select formControlName="type">
+              <mat-option class="pt-1">
+                <ngx-mat-select-search [formControl]="typeFilterControl">
+                  <bi name="x-lg" ngxMatSelectSearchClear />
+                </ngx-mat-select-search>
+              </mat-option>
+              @for (type of filteredTypes(); track type.value) {
+                <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
               }
+            </mat-select>
+            @let typeErrors = form.controls.type.errors;
+            @if (typeErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
             }
+          </mat-form-field>
 
-            @defer (when type === 'DISCORD') {
-              @if (type === 'DISCORD') {
-                <pu-notification-method-edit-form-discord-data />
+          <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
+            {{ 'notificationMethod.edit.useByDefault' | transloco }}
+          </mat-slide-toggle>
+
+          <mat-card class="col-span-6 mt-8" appearance="outlined">
+            <mat-card-header>
+              <mat-card-title>
+                @if (typeValue !== '') {
+                  {{ typeValue | notificationSenderDataValueLabel | transloco }} -
+                }
+                {{ 'general.data' | transloco }}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="h-4"></div>
+              @if (typeValue !== '') {
+                @defer (when typeValue === 'EMAIL') {
+                  @if (typeValue === 'EMAIL') {
+                    <pu-notification-method-edit-form-email-data />
+                  }
+                }
+
+                @defer (when typeValue === 'DISCORD') {
+                  @if (typeValue === 'DISCORD') {
+                    <pu-notification-method-edit-form-discord-data />
+                  }
+                }
+              } @else {
+                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
               }
-            }
-          } @else {
-            <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
-          }
+            </mat-card-content>
+          </mat-card>
         </div>
-
-        @if (!isCreating()) {
-          <div class="col-span-1 flex flex-col gap-10">
-            <pu-notification-method-edit-template
-              [label]="'notificationMethod.edit.titleTemplate' | transloco"
-              formControlName="titleTemplate" />
-
-            <mat-divider />
-
-            <pu-notification-method-edit-template
-              [label]="'notificationMethod.edit.body' | transloco"
-              formControlName="bodyTemplate" />
-          </div>
-        } @else {
-          <div class="flex grow"></div>
-        }
       </div>
+
+      @if (!isCreating()) {
+        <div>
+          <mat-card appearance="outlined">
+            <mat-card-content>
+              <div class="flex flex-col gap-10">
+                @if (typeValue !== 'DISCORD') {
+                  <pu-notification-method-edit-template
+                    [label]="'notificationMethod.edit.titleTemplate' | transloco"
+                    formControlName="titleTemplate" />
+
+                  <mat-divider />
+                }
+
+                <pu-notification-method-edit-template
+                  [label]="'notificationMethod.edit.body' | transloco"
+                  formControlName="bodyTemplate" />
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      } @else {
+        <div class="flex grow"></div>
+      }
 
       <pu-save-button [valid]="isValid()" />
     </form>
@@ -125,7 +149,13 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     NotificationMethodEditTemplate,
     MatDivider,
     MatError,
-    DfxLowerCaseExceptFirstLettersPipe,
+    MatCard,
+    MatCardTitle,
+    MatCardHeader,
+    MatCardContent,
+    NotificationSenderDataValueLabelPipe,
+    NgxMatSelectSearchModule,
+    BiComponent,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -189,6 +219,18 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
       }
       return it;
     },
+  });
+
+  readonly typeFilterControl = new FormControl<string>('');
+  readonly typeFilter = toSignal(this.typeFilterControl.valueChanges.pipe(map((it) => it ?? '')), {
+    initialValue: '',
+  });
+
+  readonly filteredTypes = computed(() => {
+    const filter = this.typeFilter().trim().toLowerCase();
+    return NOTIFICATION_METHOD_SENDER_DATA_TYPES.filter((it) =>
+      it.value.trim().toLowerCase().includes(filter),
+    );
   });
 
   constructor() {

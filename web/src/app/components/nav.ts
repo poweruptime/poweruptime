@@ -44,6 +44,8 @@ import {isMobileBreakpoints} from '@app/services/util';
             </span>
           </a>
 
+          @let selectedTeam = selectedTeamStore.selectedTeam();
+
           <div class="ps-4">
             @for (team of selectedTeamStore.onceSelectedTeamsCut(); track team.id) {
               <a
@@ -54,54 +56,56 @@ import {isMobileBreakpoints} from '@app/services/util';
                   <span class="nav-text">
                     {{ team.name }}
                   </span>
-                  <button
-                    (click)="$event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)"
-                    mat-icon-button
-                    stopPropagation>
-                    <bi name="x" />
-                  </button>
+                  @if (team.id !== selectedTeam?.id) {
+                    <button
+                      (click)="
+                        $event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)
+                      "
+                      mat-icon-button
+                      stopPropagation>
+                      <bi name="x" />
+                    </button>
+                  }
                 </div>
               </a>
             }
           </div>
 
-          <div class="mb-2 mt-4 flex items-center gap-3">
-            <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
-            <span class="whitespace-nowrap break-keep">
-              @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
+          @if (selectedTeam; as selectedTeam) {
+            <div class="mb-2 mt-4 flex items-center gap-3">
+              <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
+              <span class="whitespace-nowrap break-keep">
                 {{ selectedTeam.name }}
-              } @else {
-                {{ 'general.team' | transloco }}
-              }
-            </span>
-            <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
-          </div>
+              </span>
+              <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
+            </div>
 
-          <a
-            mat-list-item
-            routerLink="/t/{{ selectedTeamId() }}/notification-methods"
-            routerLinkActive="active">
-            <bi name="bell" />
-            <span class="nav-text">{{ 'general.notificationMethods' | transloco }}</span>
-          </a>
-          <a
-            mat-list-item
-            routerLink="/t/{{ selectedTeamId() }}/status-pages"
-            routerLinkActive="active">
-            <bi name="chat-left-quote" />
-            <span class="nav-text">{{ 'general.statusPages' | transloco }}</span>
-          </a>
-          <a
-            mat-list-item
-            routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
-            routerLinkActive="active">
-            <bi name="trash3" />
-            <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
-          </a>
-          <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
-            <bi name="gear-wide" />
-            <span class="nav-text">{{ 'general.settings' | transloco }}</span>
-          </a>
+            <a
+              mat-list-item
+              routerLink="/t/{{ selectedTeamId() }}/notification-methods"
+              routerLinkActive="active">
+              <bi name="bell" />
+              <span class="nav-text">{{ 'general.notificationMethods' | transloco }}</span>
+            </a>
+            <a
+              mat-list-item
+              routerLink="/t/{{ selectedTeamId() }}/status-pages"
+              routerLinkActive="active">
+              <bi name="chat-left-quote" />
+              <span class="nav-text">{{ 'general.statusPages' | transloco }}</span>
+            </a>
+            <a
+              mat-list-item
+              routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
+              routerLinkActive="active">
+              <bi name="trash3" />
+              <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
+            </a>
+            <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
+              <bi name="gear-wide" />
+              <span class="nav-text">{{ 'general.settings' | transloco }}</span>
+            </a>
+          }
         </mat-nav-list>
       </div>
       <div class="mt-auto px-2">

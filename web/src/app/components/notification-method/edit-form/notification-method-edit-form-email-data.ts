@@ -95,22 +95,18 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </mat-form-field>
       </div>
 
-      <div class="col-span-2 grid sm:grid-cols-2">
-        <div class="col-span-1 grid gap-2">
-          <mat-form-field class="grow" subscriptSizing="dynamic">
-            <mat-label>{{ 'general.security' | transloco }}</mat-label>
-            <mat-select formControlName="security">
-              <mat-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</mat-option>
-              <mat-option value="TLS">TLS (465)</mat-option>
-            </mat-select>
-          </mat-form-field>
+      <div class="col-span-2 mb-5 grid items-center gap-4 xl:grid-cols-6">
+        <mat-form-field class="col-span-4" subscriptSizing="dynamic">
+          <mat-label>{{ 'general.security' | transloco }}</mat-label>
+          <mat-select formControlName="security">
+            <mat-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</mat-option>
+            <mat-option value="TLS">TLS (465)</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <div>
-            <mat-slide-toggle formControlName="ignoreTLSErrors">
-              {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
-            </mat-slide-toggle>
-          </div>
-        </div>
+        <mat-slide-toggle class="col-span-2" formControlName="ignoreTLSErrors">
+          {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
+        </mat-slide-toggle>
       </div>
 
       <mat-form-field class="col-span-1">

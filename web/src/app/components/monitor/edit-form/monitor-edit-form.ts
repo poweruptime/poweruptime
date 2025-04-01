@@ -26,9 +26,10 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
-import {BackendType, Database} from '@app/api';
+import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES} from '@app/api';
 import {NotificationMethodSelector} from '@app/components/monitor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -46,29 +47,6 @@ import {
   testIntervalMinutesValidators,
   testIntervalSecondsValidators,
 } from './test-interval';
-
-const CHECKER_DATA_TYPES = [
-  {
-    label: 'DNS',
-    value: 'DNS',
-  },
-  {
-    label: 'HTTP',
-    value: 'HTTP',
-  },
-  {
-    label: 'Ping (Port)',
-    value: 'PING',
-  },
-  {
-    label: 'Push',
-    value: 'PUSH',
-  },
-  {
-    label: 'SSL Certificate',
-    value: 'SSL_CERTIFICATE',
-  },
-] satisfies {value: BackendType['MonitorCheckerData']['_type']; label: string}[];
 
 @Component({
   template: `
@@ -104,7 +82,7 @@ const CHECKER_DATA_TYPES = [
               </ngx-mat-select-search>
             </mat-option>
             @for (type of filteredTypes(); track type.value) {
-              <mat-option [value]="type.value">{{ type.label }}</mat-option>
+              <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
             }
           </mat-select>
           @let typeErrors = form.controls.type.errors;
@@ -192,40 +170,44 @@ const CHECKER_DATA_TYPES = [
         </mat-slide-toggle>
 
         <mat-card class="col-span-6 mt-8" appearance="outlined">
+          @let typeValue = form.controls.type.getRawValue();
           <mat-card-header>
-            <mat-card-title>{{ 'general.data' | transloco }}</mat-card-title>
+            <mat-card-title>
+              @if (typeValue !== '') {
+                {{ typeValue | monitorCheckerDataValueLabel | transloco }} -
+              }
+              {{ 'general.data' | transloco }}
+            </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="h-4"></div>
-            @if (form.controls.type.getRawValue() !== '') {
-              @let type = form.controls.type.getRawValue();
-
-              @defer (when type === 'DNS') {
-                @if (type === 'DNS') {
+            @if (typeValue !== '') {
+              @defer (when typeValue === 'DNS') {
+                @if (typeValue === 'DNS') {
                   <pu-monitor-edit-form-dns-data />
                 }
               }
 
-              @defer (when type === 'HTTP') {
-                @if (type === 'HTTP') {
+              @defer (when typeValue === 'HTTP') {
+                @if (typeValue === 'HTTP') {
                   <pu-monitor-edit-form-http-data />
                 }
               }
 
-              @defer (when type === 'PING') {
-                @if (type === 'PING') {
+              @defer (when typeValue === 'PING') {
+                @if (typeValue === 'PING') {
                   <pu-monitor-edit-form-ping-data />
                 }
               }
 
-              @defer (when type === 'PUSH') {
-                @if (type === 'PUSH') {
+              @defer (when typeValue === 'PUSH') {
+                @if (typeValue === 'PUSH') {
                   <pu-monitor-edit-form-push-data />
                 }
               }
 
-              @defer (when type === 'SSL_CERTIFICATE') {
-                @if (type === 'SSL_CERTIFICATE') {
+              @defer (when typeValue === 'SSL_CERTIFICATE') {
+                @if (typeValue === 'SSL_CERTIFICATE') {
                   <pu-monitor-edit-form-ssl-certificate-data />
                 }
               }
@@ -310,6 +292,7 @@ const CHECKER_DATA_TYPES = [
     MatCardHeader,
     RouterLink,
     MatAnchor,
+    MonitorCheckerDataValueLabelPipe,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -346,7 +329,9 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
 
   readonly filteredTypes = computed(() => {
     const filter = this.typeFilter().trim().toLowerCase();
-    return CHECKER_DATA_TYPES.filter((it) => it.value.trim().toLowerCase().includes(filter));
+    return MONITOR_CHECKER_DATA_TYPES.filter((it) =>
+      it.value.trim().toLowerCase().includes(filter),
+    );
   });
 
   override form = this.fb.nonNullable.group({

@@ -5,11 +5,11 @@ import org.poweruptime.backend.features.HostService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
-import java.time.ZoneId
 import javax.naming.directory.InvalidAttributesException
 
 const val OPENING_SQUARE_BRACKET_REPLACEMENT_CHAR = "¼"
@@ -18,6 +18,7 @@ const val CLOSING_SQUARE_BRACKET_REPLACEMENT_CHAR = "½"
 @Service
 class NotificationTemplateService(
     @Qualifier("textTemplateEngine") private val templateEngine: TemplateEngine,
+    private val teamSettingService: TeamSettingService,
     private val hostService: HostService,
 ) {
     fun getRenderedNotification(notification: Notification): NotificationTemplate {
@@ -41,8 +42,8 @@ class NotificationTemplateService(
         setVariable(
             "status",
             when (notification.checkResult.status) {
-                MonitorStatus.UP -> """✅UP"""
-                MonitorStatus.DOWN -> """🔴DOWN"""
+                MonitorStatus.UP -> """✅ UP"""
+                MonitorStatus.DOWN -> """🔴 DOWN"""
                 else -> throw InvalidAttributesException(
                     "Check result status not allowed to be ${notification.checkResult.status}",
                 )
@@ -52,7 +53,7 @@ class NotificationTemplateService(
         setVariable(
             "checkStartedAt",
             notification.checkResult.pickedUpAt
-                ?.atZone(ZoneId.systemDefault())
+                ?.atZone(teamSettingService.getTimeZone(notification.method.team.id))
                 ?.format(DateTimeUtils.dateTimeFormatter),
         )
         setVariable("pingMs", notification.checkResult.pingMs)

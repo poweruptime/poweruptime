@@ -20,6 +20,7 @@ import {
   PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
+import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {
   CheckResultsPingStore,
   InfiniteCheckResultsStore,
@@ -118,26 +119,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
         <mat-chip-set aria-label="Dog selection">
           <mat-chip>
-            @switch (monitor.checker._type) {
-              @case ('HTTP') {
-                HTTP
-              }
-              @case ('SSL_CERTIFICATE') {
-                SSL
-              }
-              @case ('DNS') {
-                DNS
-              }
-              @case ('PING') {
-                Ping
-              }
-              @case ('PUSH') {
-                Push
-              }
-              @default {
-                Unknown
-              }
-            }
+            {{ monitor.checker._type | monitorCheckerDataValueLabel | transloco }}
             {{ 'general.monitor' | transloco }}
           </mat-chip>
 
@@ -275,6 +257,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     Placeholder,
     TranslocoPipe,
     PingChartFilter,
+    MonitorCheckerDataValueLabelPipe,
   ],
 })
 export class MonitorDetailPage {

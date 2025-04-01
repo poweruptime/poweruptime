@@ -27,7 +27,7 @@ export const NotificationsStore = signalStore(
   }),
   withPaginatedTable<BackendType['NotificationResponse']>({
     paramPrefix: 'notifi.',
-    columnsToDisplay: ['status', 'createdAt', 'method', 'title'],
+    columnsToDisplay: ['status', 'createdAt', 'method', 'title', 'actions'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',
   }),

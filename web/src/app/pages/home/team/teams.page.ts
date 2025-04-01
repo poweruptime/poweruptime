@@ -5,7 +5,10 @@ import {
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatAnchor} from '@angular/material/button';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {RouterLink} from '@angular/router';
 
@@ -18,11 +21,18 @@ import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
-    @if (instanceSettingsStore.settings()?.isUserAllowedToCreateTeams) {
-      <div class="px-4 pb-2">
-        <a mat-flat-button routerLink="new">{{ 'cmdk.groups.team.create' | transloco }}</a>
-      </div>
-    }
+    <div class="flex items-center justify-between gap-4 px-4 py-2">
+      @if (instanceSettingsStore.settings()?.isUserAllowedToCreateTeams) {
+        <a class="w-48" mat-flat-button routerLink="new">
+          {{ 'cmdk.groups.team.create' | transloco }}
+        </a>
+      }
+
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
+        <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
+        <input [formControl]="searchControl" matInput />
+      </mat-form-field>
+    </div>
     <cdk-virtual-scroll-viewport
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
@@ -65,6 +75,10 @@ import {TailwindBreakpoints} from '@app/services/util';
     MatProgressBar,
     MatAnchor,
     TranslocoPipe,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -75,13 +89,18 @@ export class TeamsPage {
 
   readonly viewport = viewChild.required(CdkVirtualScrollViewport);
 
+  readonly searchControl = new FormControl<string>('');
+
   constructor() {
     this.instanceSettingsStore.load();
+
+    this.selectedTeamStore.setSearch(this.searchControl.valueChanges);
+
     this.selectedTeamStore.loadAvailableTeams(
       computed(() => ({
         page: this.selectedTeamStore.page(),
         size: 60,
-        search: '',
+        search: this.selectedTeamStore.search(),
       })),
     );
   }

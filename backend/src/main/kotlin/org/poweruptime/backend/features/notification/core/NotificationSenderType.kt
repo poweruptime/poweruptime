@@ -10,13 +10,33 @@ object NotificationSenderTypes {
 enum class NotificationSenderType : ADatabaseEnumConvertable, NotificationMethodTemplate {
     EMAIL {
         override val code = NotificationSenderTypes.EMAIL
-        override val titleTemplate = DEFAULT_TITLE_TEMPLATE
-        override val bodyTemplate = DEFAULT_BODY_TEMPLATE
+        override val titleTemplate = "[:monitorName] [:status] :title"
+        override val bodyTemplate = """
+        |[:monitorName] [:status] :title
+        |Ping: :pingMsms
+        |Check started at: :checkStartedAt
+        |More information: :checkResultLink
+        |
+        |:message
+        """.trimMargin()
     },
     DISCORD {
         override val code = NotificationSenderTypes.DISCORD
-        override val titleTemplate = DEFAULT_TITLE_TEMPLATE
-        override val bodyTemplate = DEFAULT_BODY_TEMPLATE
+        override val titleTemplate = ""
+        override val bodyTemplate = """
+        |**:status: :monitorName - :title**
+        |
+        |**Service Name**
+        |:monitorName
+        |
+        |**Ping**
+        |:pingMsms
+        |
+        |**Started at**
+        |:checkStartedAt
+        |
+        |[Link to detailed information](:checkResultLink).
+        """.trimMargin()
     },
 }
 
@@ -24,13 +44,3 @@ interface NotificationMethodTemplate {
     val titleTemplate: String
     val bodyTemplate: String
 }
-
-const val DEFAULT_TITLE_TEMPLATE = "[:monitorName] [:status] :title"
-val DEFAULT_BODY_TEMPLATE = """
-    |[:monitorName] [:status] :title
-    |Ping: :pingMsms
-    |Check started at: :checkStartedAt
-    |More information: :checkResultLink
-    |
-    |:message
-""".trimMargin()

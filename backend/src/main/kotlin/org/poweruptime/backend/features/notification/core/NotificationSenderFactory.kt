@@ -51,7 +51,7 @@ class NotificationSenderFactory(
         val checker = senders[notification.method.sender._type]
             ?: throw IllegalArgumentException("Unknown notification sender: ${notification.method.sender._type}")
 
-        val result = checker.send(notification.method, notificationTemplate)
+        val result = checker.send(notification, notificationTemplate)
 
         if (result != null) {
             notification.error = result.abbreviate(Database.MAX_MESSAGE_LENGTH)

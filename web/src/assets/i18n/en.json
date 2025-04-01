@@ -218,6 +218,13 @@
     "mfa": "Multi-factor authentication"
   },
   "monitor": {
+    "checker": {
+      "DNS": "DNS",
+      "HTTP": "HTTP",
+      "PING": "Ping (Port)",
+      "PUSH": "Push",
+      "SSL_CERTIFICATE": "SSL Certificate"
+    },
     "details": {
       "check": "Check every {{testIntervalDuration}}",
       "pingChart": {
@@ -278,6 +285,11 @@
     "home": "Back to home",
     "title": "Page not found"
   },
+  "notification": {
+    "list": {
+      "openCheckResult": "Open the connected {{general.checkResult}}"
+    }
+  },
   "notificationMethod": {
     "edit": {
       "body": "Body template",
@@ -322,6 +334,10 @@
       "list": "{{general.notificationMethods}} list",
       "remove": "remove {{name}}",
       "selected": "Selected {{general.notificationMethods}}"
+    },
+    "sender": {
+      "DISCORD": "Discord",
+      "EMAIL": "{{general.email}}"
     }
   },
   "profile": {

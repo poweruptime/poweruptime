@@ -6,16 +6,19 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import {MatIconAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {TableLoadingBar} from '@app/components';
 import {MonitorStatusBackground} from '@app/directives';
@@ -81,6 +84,24 @@ import {NotificationsStore} from '@app/services';
                 </td>
               </ng-container>
 
+              <ng-container matColumnDef="actions">
+                <th *matHeaderCellDef mat-header-cell></th>
+                <td *matCellDef="let element" mat-cell>
+                  <a
+                    [matTooltip]="'notification.list.openCheckResult' | transloco"
+                    [attr.aria-label]="'notification.list.openCheckResult' | transloco"
+                    [routerLink]="
+                      teamId() || (!teamId() && !monitorId())
+                        ? element.monitor.id + '/c/' + element.checkResult.id + '/logs'
+                        : 'c/' + element.checkResult.id + '/logs'
+                    "
+                    matTooltipPosition="left"
+                    mat-icon-button>
+                    <bi name="crosshair" />
+                  </a>
+                </td>
+              </ng-container>
+
               <tr *matHeaderRowDef="notificationsStore.columnsToDisplay()" mat-header-row></tr>
               <tr *matRowDef="let row; columns: notificationsStore.columnsToDisplay()" mat-row></tr>
             </table>
@@ -131,6 +152,9 @@ import {NotificationsStore} from '@app/services';
     TableLoadingBar,
     TranslocoPipe,
     RelativeTimeWithTooltip,
+    BiComponent,
+    MatTooltip,
+    MatIconAnchor,
   ],
 })
 export class NotificationList {
@@ -156,7 +180,7 @@ export class NotificationList {
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeMonitorColumn) => {
-        let it = ['status', 'createdAt', 'method', 'title'];
+        let it = ['status', 'createdAt', 'method', 'title', 'actions'];
 
         if (includeMonitorColumn) {
           it = ['monitor', ...it];

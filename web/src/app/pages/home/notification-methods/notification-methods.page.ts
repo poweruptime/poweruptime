@@ -11,7 +11,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
-import {PuBooleanEmojiPipe} from '@app/pipes';
+import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pipes';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
 
 @Component({
@@ -38,7 +38,9 @@ import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.type' | transloco }}
           </th>
-          <td *matCellDef="let element" mat-cell>{{ element.sender._type }}</td>
+          <td *matCellDef="let element" mat-cell>
+            {{ element.sender._type | notificationSenderDataValueLabel | transloco }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="sender">
@@ -49,7 +51,7 @@ import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
                 <div class="inline-flex items-center gap-1">
                   <span>{{ 'notificationMethod.list.email.recipient' | transloco }}</span>
                   <a
-                    class="font-extrabold text-green-500"
+                    class="font-extrabold underline"
                     [href]="'mailto:' + $any(element.sender)['to']"
                     stopPropagation
                     target="_blank"
@@ -58,24 +60,14 @@ import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
                   </a>
                   <span>{{ 'notificationMethod.list.email.via' | transloco }}</span>
                   <a
-                    class="font-extrabold text-green-500"
-                    [href]="$any(element.sender)['host']"
+                    class="font-extrabold underline"
+                    [href]="'https://' + $any(element.sender)['host']"
                     stopPropagation
                     target="_blank"
                     rel="noopener noreferrer">
                     {{ $any(element.sender)['host'] }}
                   </a>
                 </div>
-              }
-              @case ('DISCORD') {
-                <a
-                  class="font-extrabold text-green-500"
-                  [href]="$any(element.sender)['url']"
-                  stopPropagation
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  {{ $any(element.sender)['url'] }}
-                </a>
               }
             }
           </td>
@@ -164,6 +156,7 @@ import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
     TranslocoPipe,
     MatTooltip,
     MatIconAnchor,
+    NotificationSenderDataValueLabelPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
