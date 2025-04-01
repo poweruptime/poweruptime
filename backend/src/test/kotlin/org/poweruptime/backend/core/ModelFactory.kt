@@ -168,6 +168,7 @@ object ModelFactory {
         resendAfter = null,
         upsideDown = false,
         checker = checker,
+        notificationMethodIds = listOf(),
     )
 
     fun getUpdateMonitorDto(
@@ -183,5 +184,6 @@ object ModelFactory {
         resendAfter = null,
         upsideDown = false,
         checker = checker,
+        notificationMethodIds = listOf(),
     )
 }

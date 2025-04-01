@@ -20,8 +20,8 @@ class NotificationTemplateTest(
             ),
         )
 
-        assertThat(template.title).isEqualTo("""[Test] [✅UP]  this is a "test" """)
-        assertThat(template.body.lines().first()).isEqualTo("""[Test] [✅UP]  this is a "test" """)
+        assertThat(template.title).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
+        assertThat(template.body.lines().first()).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
         assertThat(template.body.lines()[1]).isEqualTo("""Ping: 1000ms""")
         assertThat(template.body.lines().last()).isEqualTo("""Test Message""")
 
