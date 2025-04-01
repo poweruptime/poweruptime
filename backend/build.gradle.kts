@@ -40,7 +40,7 @@ dependencies {
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:4.31.1")
