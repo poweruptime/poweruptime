@@ -50,7 +50,7 @@
     "dfx-openapi": "0.1.1",
     "dfx-qrcode": "^4.0.0",
     "eventsource": "^3.0.5",
-    "express": "4.21.2",
+    "express": "5.0.1",
     "nanoid": "^5.0.9",
     "ngx-editor": "^18.0.0",
     "ngx-mat-select-search": "^8.0.0",
