@@ -12,7 +12,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST:poweruptime-db}:${DATABASE_PORT:5432}/${DATABASE_NAME:poweruptime}
-    username: ${DATABASE_USER:poweruptime}
+    username: ${DATABASE_USERNAME:poweruptime}
     password: ${DATABASE_PASSWORD}
 
   sql:

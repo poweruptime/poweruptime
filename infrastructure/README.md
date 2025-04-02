@@ -34,11 +34,40 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    ./start.sh
    ```
 
-## Stop the stack
+### Stop the stack
 
 ```shell
 ./stop.sh
 ```
+
+## Available environment variables
+
+| Name                             | Description                                                                        | Default value    | Required |
+| -------------------------------- | ---------------------------------------------------------------------------------- | ---------------- | -------- |
+| `POWERUPTIME_HOST`               | Host / Domain of the poweruptime instance.                                         | -                | ✅       |
+| `DOMAIN_NAMES`                   | A list of domain names allowed for the status pages.                               | -                | ❌       |
+| `DATABASE_HOST`                  | Hostname or IP address of the database server.                                     | `poweruptime-db` | ✅       |
+| `DATABASE_PORT`                  | Port number used to connect to the database server.                                | `5432`           | ✅       |
+| `DATABASE_NAME`                  | Name of the database to be used by the poweruptime.                                | `poweruptime`    | ✅       |
+| `DATABASE_USERNAME`              | Username for authenticating with the database server.                              | `poweruptime`    | ✅       |
+| `DATABASE_PASSWORD`              | Password for authenticating with the database server.                              | -                | ✅       |
+| `RABBIT_HOST`                    | Hostname or IP address of the RabbitMQ server.                                     | `poweruptime-db` | ✅       |
+| `RABBIT_PORT`                    | Port number used to connect to the RabbitMQ server.                                | `5432`           | ✅       |
+| `RABBIT_USERNAME`                | Username for authenticating with the RabbitMQ server.                              | `poweruptime`    | ✅       |
+| `RABBIT_PASSWORD`                | Password for authenticating with the RabbitMQ server.                              | -                | ✅       |
+| `MAIL_ENABLED`                   | Value indicating whether email functionality is enabled.                           | `true`           | ✅       |
+| `MAIL_HOST`                      | Hostname or IP address of the mail server.                                         | -                | ✅       |
+| `MAIL_PORT`                      | Port number used to connect to the mail server.                                    | -                | ✅       |
+| `MAIL_USERNAME`                  | Username for authenticating with the mail server.                                  | -                | ✅       |
+| `MAIL_PASSWORD`                  | Password for authenticating with the mail server.                                  | -                | ✅       |
+| `MAIL_SECURITY`                  | The type of security to use for email communication.                               | `NONE_STARTTLS`  | ✅       |
+| `MAIL_IGNORE_TLS_ERRORS`         | Value indicating whether to ignore TLS errors when connecting to the mail server.  | `false`          | ✅       |
+| `PUSH_ENABLED`                   | Value indicating whether push notifications are enabled.                           | `true`           | ✅       |
+| `TEMP_NOTIFICATIONS_ENABLED`     | Value indicating whether temporary notifications are enabled for testing purposes. | `false`          | ✅       |
+| `SWAGGER_ENABLED`                | Value indicating whether the Swagger/OpenAPI documentation interface is enabled.   | `false`          | ✅       |
+| `RATE_LIMIT_ENABLED`             | Value indicating whether rate limiting is enabled.                                 | `true`           | ✅       |
+| `RATE_LIMIT_DURATION_IN_SECONDS` | Duration, in seconds, of the rate limiting window.                                 | `240`            | ✅       |
+| `RATE_LIMIT_TRIES`               | Maximum number of requests allowed within the rate limiting window.                | `40`             | ✅       |
 
 ## Good to know
 

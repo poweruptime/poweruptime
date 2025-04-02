@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-poweruptime}
-      POSTGRES_USER: ${DATABASE_USER:-poweruptime}
+      POSTGRES_USER: ${DATABASE_USERNAME:-poweruptime}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
     volumes:
       - poweruptime-db-data:/var/lib/postgresql/data:z

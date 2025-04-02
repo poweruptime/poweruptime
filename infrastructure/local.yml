@@ -23,7 +23,7 @@ services:
     #image: postgres:17.2-bookworm # Uncomment to use a custom version for local testing
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-poweruptime}
-      POSTGRES_USER: ${DATABASE_USER:-poweruptime}
+      POSTGRES_USER: ${DATABASE_USERNAME:-poweruptime}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
 
   poweruptime-rabbitmq:
