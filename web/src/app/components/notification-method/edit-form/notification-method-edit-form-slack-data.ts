@@ -4,6 +4,7 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 
@@ -12,7 +13,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     <div class="flex flex-col gap-6" [formGroup]="slackDataFormGroup">
       <div class="flex flex-col">
         <mat-form-field>
-          <mat-label>{{ 'notificationMethod.edit.discord.url' | transloco }}</mat-label>
+          <mat-label>{{ 'notificationMethod.edit.slack.url' | transloco }}</mat-label>
           <input matInput type="text" formControlName="url" />
 
           @let urlErrors = slackDataFormGroup.controls.url.errors;
@@ -30,11 +31,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           }
         </mat-form-field>
 
-        <small>{{ 'notificationMethod.edit.discord.urlHelp' | transloco }}</small>
+        <small>
+          <transloco
+            [params]="{webhookHelpUrl: 'https://api.slack.com/messaging/webhooks'}"
+            key="notificationMethod.edit.slack.urlHelp" />
+        </small>
       </div>
 
       <mat-form-field>
-        <mat-label>{{ 'notificationMethod.edit.discord.displayName' | transloco }}</mat-label>
+        <mat-label>{{ 'notificationMethod.edit.slack.displayName' | transloco }}</mat-label>
         <input matInput formControlName="displayName" />
 
         @let displayNameErrors = slackDataFormGroup.controls.displayName.errors;
@@ -49,7 +54,16 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
   `,
   selector: 'pu-notification-method-edit-form-slack-data',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatFormField, MatInput, MatLabel, MatError, TranslocoPipe],
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatError,
+    TranslocoPipe,
+    TranslocoPipe,
+    TranslocoMarkupComponent,
+  ],
 })
 export class NotificationMethodEditFormSlackData {
   slackDataFormGroup = inject(NotificationMethodEditFormDataService).slackDataFormGroup;

@@ -23,9 +23,20 @@ import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
+import {
+  BoldTextTranspiler,
+  ItalicTextTranspiler,
+  LinkTranspiler,
+  provideLinkRenderer,
+  provideTranslationMarkupTranspiler,
+} from 'ngx-transloco-markup';
 
 import {authInterceptor, backendOfflineInterceptor, mfaInterceptor} from '@app/interceptors';
 import {TranslocoHttpLoader, injectIsPlatformDocker} from '@app/services';
+import {
+  CustomExternalLinkObjectLinkRenderer,
+  CustomLinkRenderer,
+} from '@app/services/custom-link-renderer.service';
 import {DOCKER_WEB_URL} from '@app/util';
 
 import {ROUTES} from './app.routes';
@@ -79,6 +90,11 @@ export const appConfig: ApplicationConfig = {
         useValue: cookiesStorage(),
       },
     }),
+    provideTranslationMarkupTranspiler(BoldTextTranspiler),
+    provideTranslationMarkupTranspiler(ItalicTextTranspiler),
+    provideTranslationMarkupTranspiler(LinkTranspiler),
+    provideLinkRenderer(CustomLinkRenderer),
+    provideLinkRenderer(CustomExternalLinkObjectLinkRenderer),
     provideBi(
       withCDN(() =>
         injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',

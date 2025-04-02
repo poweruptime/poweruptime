@@ -318,6 +318,11 @@
         }
       },
       "selectTypeToContinue": "Please select a type to continue",
+      "slack": {
+        "displayName": "Author name",
+        "url": "Slack Webhook {{general.url}}",
+        "urlHelp": "Find more information [link:webhookHelpUrl]here[/link]."
+      },
       "titleTemplate": "Title template",
       "useByDefault": "Use by default"
     },
@@ -337,7 +342,8 @@
     },
     "sender": {
       "DISCORD": "Discord",
-      "EMAIL": "{{general.email}}"
+      "EMAIL": "{{general.email}}",
+      "SLACK": "Slack"
     }
   },
   "profile": {
