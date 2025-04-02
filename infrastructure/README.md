@@ -40,34 +40,63 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
 ./stop.sh
 ```
 
-## Available environment variables
+## Environment variables
 
-| Name                             | Description                                                                        | Default value    | Required |
-| -------------------------------- | ---------------------------------------------------------------------------------- | ---------------- | -------- |
-| `POWERUPTIME_HOST`               | Host / Domain of the poweruptime instance.                                         | -                | ✅       |
-| `DOMAIN_NAMES`                   | A list of domain names allowed for the status pages.                               | -                | ❌       |
-| `DATABASE_HOST`                  | Hostname or IP address of the database server.                                     | `poweruptime-db` | ✅       |
-| `DATABASE_PORT`                  | Port number used to connect to the database server.                                | `5432`           | ✅       |
-| `DATABASE_NAME`                  | Name of the database to be used by the poweruptime.                                | `poweruptime`    | ✅       |
-| `DATABASE_USERNAME`              | Username for authenticating with the database server.                              | `poweruptime`    | ✅       |
-| `DATABASE_PASSWORD`              | Password for authenticating with the database server.                              | -                | ✅       |
-| `RABBIT_HOST`                    | Hostname or IP address of the RabbitMQ server.                                     | `poweruptime-db` | ✅       |
-| `RABBIT_PORT`                    | Port number used to connect to the RabbitMQ server.                                | `5432`           | ✅       |
-| `RABBIT_USERNAME`                | Username for authenticating with the RabbitMQ server.                              | `poweruptime`    | ✅       |
-| `RABBIT_PASSWORD`                | Password for authenticating with the RabbitMQ server.                              | -                | ✅       |
-| `MAIL_ENABLED`                   | Value indicating whether email functionality is enabled.                           | `true`           | ✅       |
-| `MAIL_HOST`                      | Hostname or IP address of the mail server.                                         | -                | ✅       |
-| `MAIL_PORT`                      | Port number used to connect to the mail server.                                    | -                | ✅       |
-| `MAIL_USERNAME`                  | Username for authenticating with the mail server.                                  | -                | ✅       |
-| `MAIL_PASSWORD`                  | Password for authenticating with the mail server.                                  | -                | ✅       |
-| `MAIL_SECURITY`                  | The type of security to use for email communication.                               | `NONE_STARTTLS`  | ✅       |
-| `MAIL_IGNORE_TLS_ERRORS`         | Value indicating whether to ignore TLS errors when connecting to the mail server.  | `false`          | ✅       |
-| `PUSH_ENABLED`                   | Value indicating whether push notifications are enabled.                           | `true`           | ✅       |
-| `TEMP_NOTIFICATIONS_ENABLED`     | Value indicating whether temporary notifications are enabled for testing purposes. | `false`          | ✅       |
-| `SWAGGER_ENABLED`                | Value indicating whether the Swagger/OpenAPI documentation interface is enabled.   | `false`          | ✅       |
-| `RATE_LIMIT_ENABLED`             | Value indicating whether rate limiting is enabled.                                 | `true`           | ✅       |
-| `RATE_LIMIT_DURATION_IN_SECONDS` | Duration, in seconds, of the rate limiting window.                                 | `240`            | ✅       |
-| `RATE_LIMIT_TRIES`               | Maximum number of requests allowed within the rate limiting window.                | `40`             | ✅       |
+### General
+
+| Name               | Description                                          | Default value | Required |
+| ------------------ | ---------------------------------------------------- | ------------- | -------- |
+| `POWERUPTIME_HOST` | Host / Domain of the poweruptime instance.           |               | x        |
+| `DOMAIN_NAMES`     | A list of domain names allowed for the status pages. |               |          |
+
+### Database
+
+| Name                | Description                                           | Default value    | Required |
+| ------------------- | ----------------------------------------------------- | ---------------- | -------- |
+| `DATABASE_HOST`     | Hostname or IP address of the database server.        | `poweruptime-db` | x        |
+| `DATABASE_PORT`     | Port number used to connect to the database server.   | `5432`           | x        |
+| `DATABASE_NAME`     | Name of the database to be used by the poweruptime.   | `poweruptime`    | x        |
+| `DATABASE_USERNAME` | Username for authenticating with the database server. | `poweruptime`    | x        |
+| `DATABASE_PASSWORD` | Password for authenticating with the database server. |                  | x        |
+
+### RabbitMQ
+
+| Name              | Description                                           | Default value          | Required |
+| ----------------- | ----------------------------------------------------- | ---------------------- | -------- |
+| `RABBIT_HOST`     | Hostname or IP address of the RabbitMQ server.        | `poweruptime-rabbitmq` | x        |
+| `RABBIT_PORT`     | Port number used to connect to the RabbitMQ server.   | `5672`                 | x        |
+| `RABBIT_USERNAME` | Username for authenticating with the RabbitMQ server. | `poweruptime`          | x        |
+| `RABBIT_PASSWORD` | Password for authenticating with the RabbitMQ server. |                        | x        |
+
+### Mailing
+
+These configuration values only effect the System E-Mail service.
+
+| Name                     | Description                                                                   | Default value   | Required |
+| ------------------------ | ----------------------------------------------------------------------------- | --------------- | -------- |
+| `MAIL_ENABLED`           | Whether email functionality is enabled.                                       | `true`          | x        |
+| `MAIL_HOST`              | Hostname or IP address of the mail server.                                    |                 | x        |
+| `MAIL_PORT`              | Port number used to connect to the mail server.                               |                 | x        |
+| `MAIL_USERNAME`          | Username for authenticating with the mail server.                             |                 | x        |
+| `MAIL_PASSWORD`          | Password for authenticating with the mail server.                             |                 | x        |
+| `MAIL_SECURITY`          | The type of security to use for email communication. (`NONE_STARTTLS`, `TLS`) | `NONE_STARTTLS` | x        |
+| `MAIL_IGNORE_TLS_ERRORS` | Whether to ignore TLS errors when connecting to the mail server.              | `false`         | x        |
+
+### Rate Limiting
+
+| Name                             | Description                                                         | Default value | Required |
+| -------------------------------- | ------------------------------------------------------------------- | ------------- | -------- |
+| `RATE_LIMIT_ENABLED`             | Whether rate limiting is enabled.                                   | `true`        | x        |
+| `RATE_LIMIT_DURATION_IN_SECONDS` | Duration, in seconds, of the rate limiting window.                  | `240`         | x        |
+| `RATE_LIMIT_TRIES`               | Maximum number of requests allowed within the rate limiting window. | `40`          | x        |
+
+### Development
+
+| Name                         | Description                                                       | Default value | Required |
+| ---------------------------- | ----------------------------------------------------------------- | ------------- | -------- |
+| `PUSH_ENABLED`               | Whether push notifications are enabled.                           | `true`        | x        |
+| `TEMP_NOTIFICATIONS_ENABLED` | Whether temporary notifications are enabled for testing purposes. | `false`       | x        |
+| `SWAGGER_ENABLED`            | Whether the Swagger/OpenAPI documentation interface is enabled.   | `false`       | x        |
 
 ## Good to know
 
