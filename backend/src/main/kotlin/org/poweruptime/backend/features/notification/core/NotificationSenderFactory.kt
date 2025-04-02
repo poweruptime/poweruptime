@@ -7,6 +7,7 @@ import org.poweruptime.backend.features.mail.service.EmailTemplateService
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.notificationSenders.discord.DiscordNotificationSender
 import org.poweruptime.backend.features.notification.notificationSenders.email.EmailNotificationSender
+import org.poweruptime.backend.features.notification.notificationSenders.slack.SlackNotificationSender
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
@@ -26,6 +27,7 @@ class NotificationSenderFactory(
     private val senders = listOf(
         DiscordNotificationSender(restTemplate),
         EmailNotificationSender(emailTemplateService),
+        SlackNotificationSender(restTemplate),
     ).associateBy { it.type }
 
     fun send(notification: Notification): Notification {

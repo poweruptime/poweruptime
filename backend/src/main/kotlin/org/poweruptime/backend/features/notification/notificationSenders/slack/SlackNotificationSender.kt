@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.notification.notificationSenders.discord
+package org.poweruptime.backend.features.notification.notificationSenders.slack
 
 import org.poweruptime.backend.features.notification.core.NotificationSender
 import org.poweruptime.backend.features.notification.core.NotificationSenderType
@@ -9,43 +9,37 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
 
-private const val HEX_SYSTEM_BASE = 16
-
-class DiscordNotificationSender(
+class SlackNotificationSender(
     private val restTemplate: RestTemplate,
-    override val type: NotificationSenderType = NotificationSenderType.DISCORD,
+    override val type: NotificationSenderType = NotificationSenderType.SLACK,
 ) : NotificationSender {
-    data class DiscordEmbedDto(
-        val description: String?,
-        val color: Int?,
-        val title: String? = null,
+    @Suppress("ConstructorParameterNaming")
+    data class SlackAttachmentDto(
+        val color: String?,
+        val author_name: String?,
+        val text: String?,
+        val mrkdwn_in: List<String> = listOf("text"),
     )
-
-    data class DiscordWebhookDto(
-        val username: String?,
-        val embeds: List<DiscordEmbedDto>?,
-        val content: String? = null,
+    data class SlackWebhookDto(
+        val attachments: List<SlackAttachmentDto>?
     )
 
     override fun send(
         notification: Notification,
         notificationTemplate: NotificationTemplate,
     ): String? = try {
-        val discordNotificationSenderData = notification.method.sender as DiscordNotificationSenderData
+        val slackNotificationSenderData = notification.method.sender as SlackNotificationSenderData
 
         restTemplate.exchange(
-            discordNotificationSenderData.url,
+            slackNotificationSenderData.url,
             HttpMethod.POST,
             HttpEntity(
-                DiscordWebhookDto(
-                    username = discordNotificationSenderData.displayName,
-                    embeds = listOf(
-                        DiscordEmbedDto(
-                            description = notificationTemplate.body,
-                            color = Integer.parseInt(
-                                notification.checkResult.status.color.removePrefix("#"),
-                                HEX_SYSTEM_BASE,
-                            ),
+                SlackWebhookDto(
+                    attachments = listOf(
+                        SlackAttachmentDto(
+                            text = notificationTemplate.body,
+                            color = notification.checkResult.status.color,
+                            author_name = slackNotificationSenderData.displayName,
                         ),
                     ),
                 ),

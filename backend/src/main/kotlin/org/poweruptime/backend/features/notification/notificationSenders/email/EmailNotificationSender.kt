@@ -10,7 +10,7 @@ import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.model.Notification
 
 class EmailNotificationSender(
-    val emailTemplateService: EmailTemplateService,
+    private val emailTemplateService: EmailTemplateService,
     override val type: NotificationSenderType = NotificationSenderType.EMAIL,
 ) : NotificationSender {
     private val emailSender = SendEmailService()

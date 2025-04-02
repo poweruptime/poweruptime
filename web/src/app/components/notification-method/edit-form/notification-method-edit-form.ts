@@ -21,6 +21,7 @@ import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditFormDiscordData} from './notification-method-edit-form-discord-data';
 import {NotificationMethodEditFormEmailData} from './notification-method-edit-form-email-data';
+import {NotificationMethodEditFormSlackData} from './notification-method-edit-form-slack-data';
 import {NotificationMethodEditTemplate} from './notification-method-edit-template';
 
 @Component({
@@ -85,15 +86,21 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
             <mat-card-content>
               <div class="h-4"></div>
               @if (typeValue !== '') {
+                @defer (when typeValue === 'DISCORD') {
+                  @if (typeValue === 'DISCORD') {
+                    <pu-notification-method-edit-form-discord-data />
+                  }
+                }
+
                 @defer (when typeValue === 'EMAIL') {
                   @if (typeValue === 'EMAIL') {
                     <pu-notification-method-edit-form-email-data />
                   }
                 }
 
-                @defer (when typeValue === 'DISCORD') {
-                  @if (typeValue === 'DISCORD') {
-                    <pu-notification-method-edit-form-discord-data />
+                @defer (when typeValue === 'SLACK') {
+                  @if (typeValue === 'SLACK') {
+                    <pu-notification-method-edit-form-slack-data />
                   }
                 }
               } @else {
@@ -156,6 +163,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     NotificationSenderDataValueLabelPipe,
     NgxMatSelectSearchModule,
     BiComponent,
+    NotificationMethodEditFormSlackData,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -245,7 +253,10 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
 
   private setFormCheckerType(type: BackendType['NotificationSenderData']['_type']) {
     // @ts-expect-error Sender Form Control
-    this.form.setControl('sender', this.notificationMethodFormDataService.formCheckerFactory(type));
+    this.form.setControl(
+      'sender',
+      this.notificationMethodFormDataService.formSenderDataFactory(type),
+    );
 
     // @ts-expect-error Sender Form Control
     this.form.controls['sender'].patchValue({

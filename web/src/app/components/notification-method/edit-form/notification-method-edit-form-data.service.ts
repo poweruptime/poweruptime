@@ -74,8 +74,28 @@ export const NotificationMethodEditFormDataService = createInjectable(
       displayName: [
         undefined as string | undefined,
         [
-          Validators.minLength(Database.MIN_DISCORD_DISPLAY_NAME_LENGTH),
-          Validators.maxLength(Database.MAX_DISCORD_DISPLAY_NAME_LENGTH),
+          Validators.minLength(Database.MIN_DISPLAY_NAME_LENGTH),
+          Validators.maxLength(Database.MAX_DISPLAY_NAME_LENGTH),
+        ],
+      ],
+    });
+
+    const slackDataFormGroup = fb.group({
+      ...baseCheckerProperties,
+      url: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(Database.URL_REGEX),
+          Validators.minLength(Database.MIN_URL_LENGTH),
+          Validators.maxLength(Database.MAX_URL_LENGTH),
+        ],
+      ],
+      displayName: [
+        undefined as string | undefined,
+        [
+          Validators.minLength(Database.MIN_DISPLAY_NAME_LENGTH),
+          Validators.maxLength(Database.MAX_DISPLAY_NAME_LENGTH),
         ],
       ],
     });
@@ -83,12 +103,15 @@ export const NotificationMethodEditFormDataService = createInjectable(
     return {
       emailDataFormGroup,
       discordDataFormGroup,
-      formCheckerFactory: (type: BackendType['NotificationSenderData']['_type']) => {
+      slackDataFormGroup,
+      formSenderDataFactory: (type: BackendType['NotificationSenderData']['_type']) => {
         switch (type) {
-          case 'EMAIL':
-            return emailDataFormGroup;
           case 'DISCORD':
             return discordDataFormGroup;
+          case 'EMAIL':
+            return emailDataFormGroup;
+          case 'SLACK':
+            return slackDataFormGroup;
           default:
             throw `Unsupported type "${type}"`;
         }

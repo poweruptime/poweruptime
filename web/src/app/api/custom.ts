@@ -27,12 +27,16 @@ export const MONITOR_CHECKER_DATA_TYPES = [
 
 export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
   {
+    label: 'notificationMethod.sender.DISCORD',
+    value: 'DISCORD',
+  },
+  {
     label: 'notificationMethod.sender.EMAIL',
     value: 'EMAIL',
   },
   {
-    label: 'notificationMethod.sender.DISCORD',
-    value: 'DISCORD',
+    label: 'notificationMethod.sender.SLACK',
+    value: 'SLACK',
   },
 ] satisfies {value: BackendType['NotificationSenderData']['_type']; label: string}[];
 
@@ -94,8 +98,8 @@ export class Database {
   static readonly MAX_TITLE_LENGTH: number = 2000;
   static readonly MAX_MESSAGE_LENGTH: number = 4000;
 
-  static readonly MIN_DISCORD_DISPLAY_NAME_LENGTH: number = 1;
-  static readonly MAX_DISCORD_DISPLAY_NAME_LENGTH: number = 32;
+  static readonly MIN_DISPLAY_NAME_LENGTH: number = 1;
+  static readonly MAX_DISPLAY_NAME_LENGTH: number = 32;
 
   static readonly URL_REGEX =
     /^(https?|ftp|file):\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]/;

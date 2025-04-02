@@ -3,11 +3,30 @@ package org.poweruptime.backend.features.notification.core
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
 object NotificationSenderTypes {
-    const val EMAIL = "EMAIL"
     const val DISCORD = "DISCORD"
+    const val EMAIL = "EMAIL"
+    const val SLACK = "SLACK"
 }
 
 enum class NotificationSenderType : ADatabaseEnumConvertable, NotificationMethodTemplate {
+    DISCORD {
+        override val code = NotificationSenderTypes.DISCORD
+        override val titleTemplate = ""
+        override val bodyTemplate = """
+        |**:status: :monitorName - :title**
+        |
+        |**Service Name**
+        |:monitorName
+        |
+        |**Ping**
+        |:pingMsms
+        |
+        |**Started at**
+        |:checkStartedAt
+        |
+        |[Link to detailed information](:checkResultLink).
+        """.trimMargin()
+    },
     EMAIL {
         override val code = NotificationSenderTypes.EMAIL
         override val titleTemplate = "[:monitorName] [:status] :title"
@@ -20,8 +39,8 @@ enum class NotificationSenderType : ADatabaseEnumConvertable, NotificationMethod
         |:message
         """.trimMargin()
     },
-    DISCORD {
-        override val code = NotificationSenderTypes.DISCORD
+    SLACK {
+        override val code = NotificationSenderTypes.SLACK
         override val titleTemplate = ""
         override val bodyTemplate = """
         |**:status: :monitorName - :title**

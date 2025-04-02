@@ -1658,7 +1658,7 @@ export interface components {
     };
     NotificationSenderData: {
       /** @enum {string} */
-      _type: 'EMAIL' | 'DISCORD';
+      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     UpdateNotificationMethodDto: {
       id: string;
@@ -2026,7 +2026,7 @@ export interface components {
     };
     NotificationSenderMinDto: {
       /** @enum {string} */
-      _type: 'EMAIL' | 'DISCORD';
+      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     PaginatedResponseNotificationResponse: {
       /** Format: int64 */
@@ -2689,7 +2689,7 @@ export interface operations {
         teamId: string;
         name?: string;
         usedByMonitorIds?: string[];
-        types?: ('EMAIL' | 'DISCORD')[];
+        types?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
         useByDefault?: boolean;
         deleted?: boolean;
       };
@@ -3933,7 +3933,7 @@ export interface operations {
         sort?: string[];
         monitorId?: string;
         teamId?: string;
-        methods?: ('EMAIL' | 'DISCORD')[];
+        methods?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
       };
       header?: never;

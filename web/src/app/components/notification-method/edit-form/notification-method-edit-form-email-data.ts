@@ -18,7 +18,6 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 
 @Component({
-  selector: 'pu-notification-method-edit-form-email-data',
   template: `
     <div class="grid grid-cols-2 gap-4" [formGroup]="emailDataFormGroup">
       <mat-form-field class="col-span-2">
@@ -190,6 +189,8 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </mat-form-field>
     </div>
   `,
+  selector: 'pu-notification-method-edit-form-email-data',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     MatFormField,
@@ -206,7 +207,6 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     MatSlideToggle,
     MatError,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodEditFormEmailData {
   emailDataFormGroup = inject(NotificationMethodEditFormDataService).emailDataFormGroup;

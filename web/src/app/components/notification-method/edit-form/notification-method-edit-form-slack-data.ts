@@ -9,13 +9,13 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 
 @Component({
   template: `
-    <div class="flex flex-col gap-6" [formGroup]="discordDataFormGroup">
+    <div class="flex flex-col gap-6" [formGroup]="slackDataFormGroup">
       <div class="flex flex-col">
         <mat-form-field>
           <mat-label>{{ 'notificationMethod.edit.discord.url' | transloco }}</mat-label>
           <input matInput type="text" formControlName="url" />
 
-          @let urlErrors = discordDataFormGroup.controls.url.errors;
+          @let urlErrors = slackDataFormGroup.controls.url.errors;
           @if (urlErrors?.['required']) {
             <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
           }
@@ -37,7 +37,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         <mat-label>{{ 'notificationMethod.edit.discord.displayName' | transloco }}</mat-label>
         <input matInput formControlName="displayName" />
 
-        @let displayNameErrors = discordDataFormGroup.controls.displayName.errors;
+        @let displayNameErrors = slackDataFormGroup.controls.displayName.errors;
         @if (displayNameErrors?.['minlength']; as minlength) {
           <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
         }
@@ -47,10 +47,10 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </mat-form-field>
     </div>
   `,
-  selector: 'pu-notification-method-edit-form-discord-data',
+  selector: 'pu-notification-method-edit-form-slack-data',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, MatFormField, MatInput, MatLabel, MatError, TranslocoPipe],
 })
-export class NotificationMethodEditFormDiscordData {
-  discordDataFormGroup = inject(NotificationMethodEditFormDataService).discordDataFormGroup;
+export class NotificationMethodEditFormSlackData {
+  slackDataFormGroup = inject(NotificationMethodEditFormDataService).slackDataFormGroup;
 }

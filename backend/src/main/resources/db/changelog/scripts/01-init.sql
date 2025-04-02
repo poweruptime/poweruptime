@@ -165,6 +165,16 @@ create table notification_sender_data_email
     mail_to                text[]       not null
 );
 
+create table notification_sender_data_slack
+(
+    id                 varchar(12) not null
+        primary key
+        constraint fkakc5zephtfnw3rozytcxgb78g
+            references notification_sender_data,
+    slack_display_name varchar(32),
+    slack_url          varchar(2048) not null
+);
+
 create table system_notification
 (
     active      boolean                  default true  not null,
