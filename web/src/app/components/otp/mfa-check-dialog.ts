@@ -37,7 +37,7 @@ import {injectIsValid} from '@app/form';
               [maxLength]="6"
               [pattern]="ONLY_DIGITS"
               formControlName="code"
-              containerClass="group flex items-center has-[:disabled]:opacity-30">
+              containerClass="group flex items-center has-disabled:opacity-30">
               <div class="flex">
                 @for (
                   slot of otp.slots().slice(0, 3);

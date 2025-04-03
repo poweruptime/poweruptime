@@ -4,10 +4,8 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   selector: 'pu-placeholder',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: ``,
-  styles: `
-    :host {
-      @apply animate-pulse rounded bg-slate-400 dark:bg-slate-700;
-    }
-  `,
+  host: {
+    class: 'animate-pulse rounded bg-slate-400 dark:bg-slate-700;',
+  },
 })
 export class Placeholder {}

@@ -60,7 +60,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
               [maxLength]="6"
               [pattern]="ONLY_DIGITS"
               formControlName="code"
-              containerClass="group w-full flex items-center justify-between has-[:disabled]:opacity-30">
+              containerClass="group w-full flex items-center justify-between has-disabled:opacity-30">
               <div class="flex">
                 @for (
                   slot of setupOtp.slots().slice(0, 3);

@@ -43,7 +43,7 @@ import {MentionAutocompleteTrigger} from '@app/components';
       </mat-autocomplete>
 
       <div
-        class="border-1 min-h-24 rounded border border-dashed border-gray-400 p-4"
+        class="border-1 min-h-24 rounded-sm border border-dashed border-gray-400 p-4"
         style="margin-top: -0.5rem">
         <div class="preview" [innerHTML]="preview()"></div>
       </div>

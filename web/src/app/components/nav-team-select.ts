@@ -92,6 +92,8 @@ import {SelectedTeamStore} from '@app/services';
     </div>
   `,
   styles: `
+    @reference "../../styles.css";
+
     ::ng-deep .mtx-popover-panel {
       @apply rounded-md border bg-neutral-50 dark:border-none dark:bg-neutral-800 !important;
     }

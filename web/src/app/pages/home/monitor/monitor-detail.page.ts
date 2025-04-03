@@ -179,7 +179,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
                 <div
-                  class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 hover:dark:bg-gray-700">
+                  class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
                   <span class="text-center text-2xl">{{ uptimeResult.value }}</span>
                   <span class="text-center text-lg">{{ uptimeResult.name }}</span>
                 </div>

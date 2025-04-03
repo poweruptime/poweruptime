@@ -83,6 +83,7 @@ import {BackendType} from '../api';
     </div>
   `,
   styles: `
+    @reference "../../styles.css";
     .heatmap-x-axis-label {
       @apply h-2 w-6;
     }

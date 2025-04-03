@@ -129,6 +129,8 @@ import {trackBy} from '@app/util';
       showFirstLastButtons />
   `,
   styles: `
+    @reference "../../../styles.css";
+
     .mat-column-name {
       @apply w-52 text-nowrap;
     }

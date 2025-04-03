@@ -22,7 +22,7 @@ import {MonitorStatusBackground} from '@app/directives';
       [style.min-width]="_size === 3 ? '18px' : '14px'">
       @if (link()) {
         <a
-          class="rounded hover:scale-125"
+          class="rounded-sm hover:scale-125"
           [routerLink]="'c/' + _checkResult.id + '/logs'"
           [class.h-9]="_size === 3"
           [class.h-6]="_size === 2"
@@ -42,7 +42,7 @@ import {MonitorStatusBackground} from '@app/directives';
         </ng-template>
       } @else {
         <div
-          class="rounded hover:scale-125"
+          class="rounded-sm hover:scale-125"
           [class.h-9]="_size === 3"
           [class.h-6]="_size === 2"
           [class.w-3]="_size === 3"

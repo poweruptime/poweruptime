@@ -74,6 +74,8 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
   `,
   selector: 'pu-monitors-dashboard',
   styles: `
+    @reference "../../../../styles.css";
+
     .card {
       @apply grid items-center justify-center gap-3 rounded-md border border-solid p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-500 hover:dark:bg-gray-800;
 

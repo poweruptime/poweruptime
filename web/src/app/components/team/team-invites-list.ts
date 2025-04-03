@@ -86,6 +86,8 @@ import {trackBy} from '@app/util';
       showFirstLastButtons />
   `,
   styles: `
+    @reference "../../../styles.css";
+
     .mat-column-role {
       @apply w-32;
     }

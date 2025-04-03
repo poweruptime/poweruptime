@@ -25,7 +25,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
   template: `
     @let _collapseNav = collapseNav();
 
-    <mat-drawer-container class="dashboard-container" autosize>
+    <mat-drawer-container class="h-screen w-screen" autosize>
       <mat-drawer
         class="border-r border-solid border-r-gray-400"
         #drawer
@@ -53,7 +53,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
           </div>
         </mat-toolbar>
 
-        <main class="main">
+        <main class="main overflow-y-auto px-3">
           @defer (when backendOfflineService.isOffline()) {
             @if (backendOfflineService.isOffline()) {
               <pu-backend-offline-alert />
@@ -66,9 +66,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     </mat-drawer-container>
   `,
   styles: `
-    .dashboard-container {
-      @apply h-screen w-screen;
-    }
+    @reference "../../../styles.css";
 
     .grid-container {
       margin: 0;
@@ -82,7 +80,6 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     }
 
     .main {
-      @apply overflow-y-auto px-3;
       max-width: 1920px;
       height: 100%;
       grid-row: 2;

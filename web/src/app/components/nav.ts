@@ -189,6 +189,8 @@ import {isMobileBreakpoints} from '@app/services/util';
     </div>
   `,
   styles: `
+    @reference "../../styles.css";
+
     .active {
       @apply bg-neutral-100 dark:bg-neutral-800;
 

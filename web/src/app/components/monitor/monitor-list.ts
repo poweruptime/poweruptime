@@ -131,6 +131,8 @@ import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline
     </div>
   `,
   styles: `
+    @reference "../../../styles.css";
+
     .mat-column-status {
       @apply w-32;
     }

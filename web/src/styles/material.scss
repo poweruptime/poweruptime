@@ -72,16 +72,6 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   border-right: none;
 }
 
-/* White background on Angular Material text-fields */
-.mat-mdc-text-field-wrapper {
-  .mat-mdc-form-field-icon-suffix {
-    @apply p-1 pe-4;
-  }
-}
-.mat-mdc-form-field-focus-overlay {
-  @apply bg-neutral-000 dark:bg-bg-dark;
-}
-
 /* Fix vertical text alignment in buttons with icons */
 .mdc-icon-button > bi {
   vertical-align: 7px;
@@ -113,13 +103,4 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
 .table-responsive {
   width: 100%;
   overflow-x: auto;
-}
-
-/* Column Width */
-.mat-column-select {
-  @apply w-28;
-}
-
-.mat-column-deleted {
-  @apply w-52;
 }

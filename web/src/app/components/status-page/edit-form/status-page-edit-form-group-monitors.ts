@@ -121,6 +121,8 @@ type DragEventType = {
     </div>
   `,
   styles: `
+    @reference "../../../styles.css";
+
     .cdk-drag-animating {
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }

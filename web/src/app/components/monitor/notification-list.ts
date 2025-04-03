@@ -126,6 +126,8 @@ import {trackBy} from '@app/util';
     </div>
   `,
   styles: `
+    @reference "../../../styles.css";
+
     .mat-column-monitor {
       @apply w-64;
     }

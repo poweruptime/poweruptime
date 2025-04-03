@@ -35,7 +35,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
                 track uptimeResult.name
               ) {
                 <div
-                  class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 hover:dark:bg-gray-700">
+                  class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
                   <span class="text-2xl">{{ uptimeResult.value }}</span>
                   <span class="text-lg">{{ uptimeResult.name }}</span>
                 </div>

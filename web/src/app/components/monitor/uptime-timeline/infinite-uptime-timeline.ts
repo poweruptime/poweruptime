@@ -61,7 +61,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
             class="relative inline-flex flex-col items-center gap-1"
             [style.width]="_size === 3 ? '20px' : '16px'">
             <pu-placeholder
-              class="rounded hover:scale-125"
+              class="rounded-sm hover:scale-125"
               [class.h-9]="_size === 3"
               [class.h-6]="_size === 2"
               [class.w-3]="_size === 3"
@@ -74,6 +74,8 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     <!--    <span>&nbsp;</span>-->
   `,
   styles: `
+    @reference "../../../../styles.css";
+
     .uptime-timeline-viewport {
       width: 100%;
 
