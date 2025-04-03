@@ -13,6 +13,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {TableLoadingBar} from '@app/components';
 import {ProfileMFAForm, ProfilePasswordEditForm} from '@app/components/profile';
 import {ProfileEditStore, SessionsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -55,6 +56,7 @@ import {ProfileEditStore, SessionsStore} from '@app/services';
             [dataSource]="sessionsStore.entities()"
             [matSortActive]="sessionsStore.sortBy()"
             [matSortDirection]="sessionsStore.sortDirection()"
+            [trackBy]="trackBy"
             mat-table
             matSort>
             <ng-container matColumnDef="description">
@@ -154,4 +156,6 @@ export class ProfileSecurityPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

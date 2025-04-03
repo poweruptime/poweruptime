@@ -13,6 +13,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
 import {UsersStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -23,6 +24,7 @@ import {UsersStore} from '@app/services';
         [dataSource]="usersStore.entities()"
         [matSortActive]="usersStore.sortBy()"
         [matSortDirection]="usersStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <ng-container matColumnDef="email">
@@ -133,4 +135,6 @@ export class InstanceSettingsUsersPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

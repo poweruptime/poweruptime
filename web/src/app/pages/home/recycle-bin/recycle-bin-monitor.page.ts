@@ -18,6 +18,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {MonitorsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -33,6 +34,7 @@ import {MonitorsStore} from '@app/services';
         [dataSource]="monitorsStore.entities()"
         [matSortActive]="monitorsStore.sortBy()"
         [matSortDirection]="monitorsStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <!-- Checkbox Column -->
@@ -127,4 +129,6 @@ export class RecycleBinMonitorPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

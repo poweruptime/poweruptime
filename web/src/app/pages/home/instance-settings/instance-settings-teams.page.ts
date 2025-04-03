@@ -12,6 +12,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
 import {TeamsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -22,6 +23,7 @@ import {TeamsStore} from '@app/services';
         [dataSource]="teamsStore.entities()"
         [matSortActive]="teamsStore.sortBy()"
         [matSortDirection]="teamsStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <ng-container matColumnDef="name">
@@ -136,4 +138,6 @@ export class InstanceSettingsTeamsPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

@@ -13,6 +13,7 @@ import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 import {TableLoadingBar} from '@app/components';
 import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pipes';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -25,6 +26,7 @@ import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
         [dataSource]="notificationMethodsStore.entities()"
         [matSortActive]="notificationMethodsStore.sortBy()"
         [matSortDirection]="notificationMethodsStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <ng-container matColumnDef="name">
@@ -182,4 +184,6 @@ export class NotificationMethodsPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

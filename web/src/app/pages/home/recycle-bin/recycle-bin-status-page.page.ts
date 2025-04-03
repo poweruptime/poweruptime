@@ -18,6 +18,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {StatusPagesStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -33,6 +34,7 @@ import {StatusPagesStore} from '@app/services';
         [dataSource]="statusPagesStore.entities()"
         [matSortActive]="statusPagesStore.sortBy()"
         [matSortDirection]="statusPagesStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <!-- Checkbox Column -->
@@ -127,4 +129,6 @@ export class RecycleBinStatusPagePage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

@@ -24,6 +24,7 @@ import {TableLoadingBar} from '@app/components';
 import {MonitorStatusBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -37,6 +38,7 @@ import {NotificationsStore} from '@app/services';
               [dataSource]="notificationsStore.entities()"
               [matSortActive]="notificationsStore.sortBy()"
               [matSortDirection]="notificationsStore.sortDirection()"
+              [trackBy]="trackBy"
               mat-table
               matSort>
               <ng-container matColumnDef="monitor">
@@ -192,4 +194,6 @@ export class NotificationList {
 
     setColumnsToDisplay(computed(() => !this.monitorId()));
   }
+
+  protected readonly trackBy = trackBy;
 }

@@ -27,6 +27,7 @@ import {TableLoadingBar} from '@app/components';
 import {MonitorStatusBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {CheckResultsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -49,6 +50,7 @@ import {CheckResultsStore} from '@app/services';
               [dataSource]="checkResultsStore.entities()"
               [matSortActive]="checkResultsStore.sortBy()"
               [matSortDirection]="checkResultsStore.sortDirection()"
+              [trackBy]="trackBy"
               mat-table
               matSort>
               <ng-container matColumnDef="monitor">
@@ -208,4 +210,6 @@ export class CheckResultList {
 
     setColumnsToDisplay(computed(() => !this.monitorId()));
   }
+
+  protected readonly trackBy = trackBy;
 }

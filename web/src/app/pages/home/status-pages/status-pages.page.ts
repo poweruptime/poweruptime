@@ -12,6 +12,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
 import {SelectedTeamStore, StatusPagesStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -21,6 +22,7 @@ import {SelectedTeamStore, StatusPagesStore} from '@app/services';
       [dataSource]="statusPagesStore.entities()"
       [matSortActive]="statusPagesStore.sortBy()"
       [matSortDirection]="statusPagesStore.sortDirection()"
+      [trackBy]="trackBy"
       mat-table
       matSort>
       <ng-container matColumnDef="name">
@@ -125,4 +127,6 @@ export class StatusPagesPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

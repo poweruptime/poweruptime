@@ -18,6 +18,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationMethodsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -33,6 +34,7 @@ import {NotificationMethodsStore} from '@app/services';
         [dataSource]="notificationMethodsStore.entities()"
         [matSortActive]="notificationMethodsStore.sortBy()"
         [matSortDirection]="notificationMethodsStore.sortDirection()"
+        [trackBy]="trackBy"
         mat-table
         matSort>
         <!-- Checkbox Column -->
@@ -133,4 +135,6 @@ export class RecycleBinNotificationMethodPage {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }

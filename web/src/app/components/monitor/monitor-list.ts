@@ -23,6 +23,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 
 import {MonitorStatusBackground} from '@app/directives';
 import {MonitorsStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 import {TableLoadingBar} from '../';
 import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline';
@@ -39,6 +40,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline
               [dataSource]="monitorsStore.entities()"
               [matSortActive]="monitorsStore.sortBy()"
               [matSortDirection]="monitorsStore.sortDirection()"
+              [trackBy]="trackBy"
               mat-table
               matSort>
               <ng-container matColumnDef="team.name">
@@ -195,4 +197,6 @@ export class MonitorList {
 
     setColumnsToDisplay(computed(() => !this.teamId()));
   }
+
+  protected readonly trackBy = trackBy;
 }

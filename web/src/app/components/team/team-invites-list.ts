@@ -16,6 +16,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {TeamInvitesStore} from '@app/services';
+import {trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -23,6 +24,7 @@ import {TeamInvitesStore} from '@app/services';
       [dataSource]="teamInvitesStore.entities()"
       [matSortActive]="teamInvitesStore.sortBy()"
       [matSortDirection]="teamInvitesStore.sortDirection()"
+      [trackBy]="trackBy"
       mat-table
       matSort>
       <ng-container matColumnDef="inviteeEmail">
@@ -136,4 +138,6 @@ export class TeamInvitesList {
       })),
     );
   }
+
+  protected readonly trackBy = trackBy;
 }
