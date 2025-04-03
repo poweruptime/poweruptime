@@ -296,7 +296,7 @@
       "discord": {
         "displayName": "Display name",
         "url": "Discord Webhook {{general.url}}",
-        "urlHelp": "You can get this by going to Server Settings -> Integrations -> View Webhooks -> New Webhook"
+        "urlHelp": "Find more information [link:webhookHelpUrl]here[/link]. Alternatively, you can get this by going to Server Settings -> Integrations -> View Webhooks -> New Webhook"
       },
       "edit": "Edit {{name}}",
       "email": {

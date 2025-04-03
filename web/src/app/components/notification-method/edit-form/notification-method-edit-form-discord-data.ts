@@ -4,6 +4,7 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 
@@ -30,7 +31,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           }
         </mat-form-field>
 
-        <small>{{ 'notificationMethod.edit.discord.urlHelp' | transloco }}</small>
+        <small>{{ '' | transloco }}</small>
+        <small>
+          <transloco
+            [params]="{
+              webhookHelpUrl:
+                'https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks',
+            }"
+            key="notificationMethod.edit.discord.urlHelp" />
+        </small>
       </div>
 
       <mat-form-field>
@@ -49,7 +58,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
   `,
   selector: 'pu-notification-method-edit-form-discord-data',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatFormField, MatInput, MatLabel, MatError, TranslocoPipe],
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatError,
+    TranslocoPipe,
+    TranslocoMarkupComponent,
+  ],
 })
 export class NotificationMethodEditFormDiscordData {
   discordDataFormGroup = inject(NotificationMethodEditFormDataService).discordDataFormGroup;
