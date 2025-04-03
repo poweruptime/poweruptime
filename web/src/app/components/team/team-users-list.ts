@@ -102,7 +102,7 @@ import {TeamUsersStore} from '@app/services';
       showFirstLastButtons />
   `,
   styles: `
-    @reference "../../../styles.css";
+    @reference "#styles.css";
 
     .mat-column-role {
       @apply w-32;

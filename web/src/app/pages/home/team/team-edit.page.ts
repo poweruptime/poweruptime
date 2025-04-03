@@ -6,8 +6,7 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 
 import {Placeholder} from '@app/components';
-import {TeamEditForm, TeamSettings, TeamUsersList} from '@app/components/team';
-import {TeamInvitesList} from '@app/components/team/team-invites-list';
+import {TeamEditForm, TeamInvitesList, TeamSettings, TeamUsersList} from '@app/components/team';
 import {
   InstanceAvailableTimezonesStore,
   SelectedTeamStore,

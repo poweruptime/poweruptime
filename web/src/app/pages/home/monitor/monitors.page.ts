@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
-import {MatAnchor} from '@angular/material/button';
+import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -11,6 +11,8 @@ import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
 import {paramToArray} from '@app/util';
+
+import {TeamSelect} from '../../../components/team-select';
 
 @Component({
   template: `
@@ -22,6 +24,10 @@ import {paramToArray} from '@app/util';
           <div class="flex items-center gap-2">
             @if (teamId()) {
               <a mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
+            } @else {
+              <pu-team-select (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])">
+                <button mat-flat-button>{{ 'monitor.new' | transloco }}</button>
+              </pu-team-select>
             }
           </div>
 
@@ -86,10 +92,13 @@ import {paramToArray} from '@app/util';
     MatAnchor,
     MonitorsFilter,
     TranslocoPipe,
+    MatButton,
+    TeamSelect,
   ],
   selector: 'pu-monitors-page',
 })
 export class MonitorsPage {
+  readonly router = inject(Router);
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
   readonly monitorsStore = inject(InfiniteMonitorsStore);
   readonly monitorsSearchStore = inject(MonitorsSearchStore);
@@ -102,19 +111,21 @@ export class MonitorsPage {
     queryParamsHandling: '',
   });
 
-  readonly searchFilter = linkedQueryParam('search.name');
+  readonly searchFilter = linkedQueryParam('search.name', {
+    stringify: (value) => (value.length > 0 ? value : null),
+  });
   readonly statusesFilter = linkedQueryParam<BackendType['MonitorResponse']['status'][]>(
     'search.status',
     {
       parse: paramToArray<BackendType['MonitorResponse']['status']>(),
-      stringify: (value) => value.join(','),
+      stringify: (value) => (value.length > 0 ? value.join(',') : null),
     },
   );
   readonly typesFilter = linkedQueryParam<BackendType['MonitorCheckerData']['_type'][]>(
     'search.type',
     {
       parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
-      stringify: (value) => value.join(','),
+      stringify: (value) => (value.length > 0 ? value.join(',') : null),
     },
   );
 

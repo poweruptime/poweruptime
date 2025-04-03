@@ -20,9 +20,9 @@ import {MatDropzone} from '@ngx-dropzone/material';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
-import {BackendImage} from '@app/components/backend-image';
 
 import {environment} from '../../environments/environment';
+import {BackendImage} from './backend-image';
 
 @Component({
   template: `

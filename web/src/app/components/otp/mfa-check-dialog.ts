@@ -14,8 +14,9 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
 
-import {FakeDash, Slot} from '@app/components/otp/slot';
 import {injectIsValid} from '@app/form';
+
+import {FakeDash, Slot} from './slot';
 
 @Component({
   template: `

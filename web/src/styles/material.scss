@@ -37,7 +37,7 @@ html {
 .secondary-button {
   @include mat.button-overrides(
     (
-      filled-container-color: #efe5fd,
+      filled-container-color: #2196f3,
     )
   );
 }
@@ -45,7 +45,7 @@ html {
 .error-button {
   @include mat.button-overrides(
     (
-      filled-container-color: #ee6002,
+      filled-container-color: #ef5350,
     )
   );
 }

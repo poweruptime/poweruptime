@@ -15,7 +15,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {Cmdk} from '@app/components/cmdk/cmdk';
+import {Cmdk} from './cmdk';
 
 @Component({
   selector: 'pu-cmdk-overlay',

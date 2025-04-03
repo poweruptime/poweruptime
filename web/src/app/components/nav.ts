@@ -1,12 +1,12 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 
 import {map} from 'rxjs';
 
@@ -14,19 +14,37 @@ import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {AboutDialog} from '@app/components/about-dialog';
-import {NavTeamSelect} from '@app/components/nav-team-select';
 import {IsSystemAdmin} from '@app/directives';
 import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {ThemeService, themeOptions} from '@app/services/theme.service';
 import {isMobileBreakpoints} from '@app/services/util';
+
+import {AboutDialog} from './about-dialog';
+import {TeamSelect} from './team-select';
 
 @Component({
   template: `
     @let _isMobile = isMobile();
     <div class="flex h-full flex-col">
       <div class="flex flex-col gap-3 px-2 py-2">
-        <pu-nav-team-select [teamId]="teamId()" />
+        <div class="px-4">
+          <pu-team-select [teamId]="teamId()" (teamIdSelected)="navigateToTeamDashboard($event)">
+            <button class="w-full" mat-stroked-button>
+              <span>
+                @if (teamId()) {
+                  @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
+                    {{ selectedTeam.name }}
+                  } @else {
+                    {{ 'general.loading' | transloco }}
+                  }
+                } @else {
+                  {{ 'nav.teamSelect.select' | transloco }}
+                }
+              </span>
+              <bi name="chevron-expand" />
+            </button>
+          </pu-team-select>
+        </div>
         <mat-nav-list>
           <a [routerLink]="_isMobile ? '/mm' : '/m'" mat-list-item routerLinkActive="active">
             <bi name="lightning" />
@@ -189,7 +207,7 @@ import {isMobileBreakpoints} from '@app/services/util';
     </div>
   `,
   styles: `
-    @reference "../../styles.css";
+    @reference "#styles.css";
 
     .active {
       @apply bg-neutral-100 dark:bg-neutral-800;
@@ -206,7 +224,6 @@ import {isMobileBreakpoints} from '@app/services/util';
     RouterLink,
     RouterLinkActive,
     MatNavList,
-    NavTeamSelect,
     IsSystemAdmin,
     BiComponent,
     MatTooltip,
@@ -216,6 +233,8 @@ import {isMobileBreakpoints} from '@app/services/util';
     TranslocoPipe,
     MatIconButton,
     StopPropagationDirective,
+    TeamSelect,
+    MatButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -226,6 +245,7 @@ export class Nav {
   readonly themeService = inject(ThemeService);
   readonly dialog = inject(MatDialog);
   readonly translocoService = inject(TranslocoService);
+  readonly router = inject(Router);
 
   readonly themeOptions = themeOptions;
 
@@ -243,6 +263,10 @@ export class Nav {
 
   openAbout() {
     this.dialog.open(AboutDialog);
+  }
+
+  navigateToTeamDashboard(teamId: string) {
+    void this.router.navigate(['/', 't', teamId]);
   }
 }
 

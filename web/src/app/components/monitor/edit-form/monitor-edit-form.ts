@@ -27,11 +27,11 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES} from '@app/api';
-import {NotificationMethodSelector} from '@app/components/monitor';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
 
+import {NotificationMethodSelector} from '../';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 import {MonitorEditFormDnsData} from './monitor-edit-form-dns-data';
 import {MonitorEditFormHttpData} from './monitor-edit-form-http-data';

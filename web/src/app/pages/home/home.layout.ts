@@ -15,7 +15,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
-import {CmdkOverlay} from '@app/components/cmdk/cmdk-overlay';
+import {CmdkOverlay} from '@app/components/cmdk';
 import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
@@ -45,7 +45,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
               <bi name="list" size="24" />
             </button>
           }
-          <span>poweruptime</span>
+          <a class="ps-1" routerLink="/">poweruptime</a>
           <span class="spacer"></span>
 
           <div class="hidden items-center gap-2 lg:inline-flex">
@@ -66,7 +66,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     </mat-drawer-container>
   `,
   styles: `
-    @reference "../../../styles.css";
+    @reference "#styles.css";
 
     .grid-container {
       margin: 0;
@@ -112,6 +112,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     TranslocoPipe,
     BackendOfflineAlert,
     MatToolbar,
+    RouterLink,
   ],
 })
 export class HomeLayout {

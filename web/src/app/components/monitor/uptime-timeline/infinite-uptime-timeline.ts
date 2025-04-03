@@ -74,7 +74,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     <!--    <span>&nbsp;</span>-->
   `,
   styles: `
-    @reference "../../../../styles.css";
+    @reference "#styles.css";
 
     .uptime-timeline-viewport {
       width: 100%;

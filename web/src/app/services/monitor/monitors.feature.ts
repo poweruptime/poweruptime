@@ -142,10 +142,15 @@ export function withMonitorsLoad() {
             ),
           ),
           debounceTime(400),
-          switchMap((query) =>
+          switchMap(({search, ...query}) =>
             api
               .get('/v1/monitor', {
-                params: {query},
+                params: {
+                  query: {
+                    ...query,
+                    name: search && search.length > 0 ? search : undefined,
+                  },
+                },
               })
               .pipe(
                 tapResponse({
