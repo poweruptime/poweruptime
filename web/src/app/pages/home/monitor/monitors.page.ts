@@ -8,7 +8,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {BackendType} from '@app/api';
-import {MonitorCard, MonitorCardList, MonitorsFilter} from '@app/components/monitor';
+import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
 import {paramToArray} from '@app/util';
 
@@ -133,10 +133,10 @@ export class MonitorsPage {
     this.monitorsSearchStore.setStatuses(this.statusesFilter);
     this.monitorsSearchStore.setTypes(this.typesFilter);
 
-    this.monitorsSearchStore.searchMonitorsByTeamId(
+    this.monitorsSearchStore.load(
       computed(() => ({
+        ...this.monitorsSearchStore.pageable(),
         teamId: this.teamId(),
-        page: this.monitorsSearchStore.page(),
         search: this.monitorsSearchStore.search(),
         statuses: this.monitorsSearchStore.statuses(),
         types: this.monitorsSearchStore.types(),

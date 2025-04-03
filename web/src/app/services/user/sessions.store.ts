@@ -2,7 +2,7 @@ import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
-import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntity, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
@@ -14,9 +14,12 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const SessionsStore = signalStore(
+  withRequestStatus(),
+  withEntities<BackendType['SessionResponse']>(),
   withPaginatedTable<BackendType['SessionResponse']>({
     columnsToDisplay: ['description', 'updatedAt', 'createdAt', 'actions'],
     defaultSortBy: 'updatedAt',

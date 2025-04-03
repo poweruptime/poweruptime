@@ -36,15 +36,9 @@ import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline
           <h2 class="text-xl">Monitors</h2>
 
           <div class="table-responsive">
-            <table
-              [dataSource]="monitorsStore.entities()"
-              [matSortActive]="monitorsStore.sortBy()"
-              [matSortDirection]="monitorsStore.sortDirection()"
-              [trackBy]="trackBy"
-              mat-table
-              matSort>
+            <table [dataSource]="monitorsStore.entities()" [trackBy]="trackBy" mat-table>
               <ng-container matColumnDef="team.name">
-                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                <th *matHeaderCellDef mat-header-cell>
                   {{ 'general.team' | transloco }}
                 </th>
                 <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
@@ -55,7 +49,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline
               </ng-container>
 
               <ng-container matColumnDef="name">
-                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                <th *matHeaderCellDef mat-header-cell>
                   {{ 'general.name' | transloco }}
                 </th>
                 <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
@@ -64,7 +58,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline
               </ng-container>
 
               <ng-container matColumnDef="status">
-                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                <th *matHeaderCellDef mat-header-cell>
                   {{ 'general.status' | transloco }}
                 </th>
                 <td *matCellDef="let element" mat-cell>
@@ -170,16 +164,15 @@ export class MonitorList {
   readonly teamId = input<string>();
 
   private readonly paginator = viewChild.required(MatPaginator);
-  private readonly sort = viewChild.required(MatSort);
 
   constructor() {
     this.monitorsStore.setPaginator(this.paginator);
-    this.monitorsStore.setSort(this.sort);
 
     this.monitorsStore.load(
       computed(() => ({
-        teamId: this.teamId(),
         ...this.monitorsStore.pageable(),
+        teamId: this.teamId(),
+        sort: ['status,ASC', 'name,ASC,ignorecase'],
       })),
     );
 

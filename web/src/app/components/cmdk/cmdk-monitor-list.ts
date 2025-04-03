@@ -35,10 +35,10 @@ export class CmdkMonitorList {
   constructor() {
     this.monitorsSearchStore.setSearch(this.searchValue);
 
-    this.monitorsSearchStore.searchMonitorsByTeamId(
+    this.monitorsSearchStore.load(
       computed(() => ({
+        ...this.monitorsSearchStore.pageable(),
         teamId: undefined,
-        page: 0,
         statuses: [
           'UP' as const,
           'DOWN' as const,

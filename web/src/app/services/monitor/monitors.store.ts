@@ -39,6 +39,7 @@ import {toast} from 'ngx-sonner';
 import {BackendType, injectAPI} from '@app/api';
 import {injectConfirmDialog$} from '@app/components';
 import {PushService} from '@app/services';
+import {withMonitorsLoad} from '@app/services/monitor/monitors.feature';
 import {
   PaginationDto,
   resetSelection,
@@ -204,198 +205,22 @@ export const InfiniteMonitorsStore = signalStore(
   }),
 );
 
-export type MonitorSearchParams = {
-  search: string;
-  statuses: BackendType['MonitorResponse']['status'][];
-  types: BackendType['MonitorCheckerData']['_type'][];
-};
-
 export const MonitorsSearchStore = signalStore(
-  withState<{page: number} & MonitorSearchParams>({page: 0, search: '', statuses: [], types: []}),
-  withRequestStatus(),
-  withEntities<BackendType['MonitorResponse']>(),
-  withComputed(({search, statuses, types}) => ({
-    isSearching: computed(() => search().length > 0 || statuses().length > 0 || types().length > 0),
-  })),
-  withMethods((store, api = injectAPI()) => ({
+  withMonitorsLoad(),
+  withMethods((store) => ({
     nextPage(): void {
       patchState(store, (state) => ({page: state.page + 1}));
-    },
-    setSearch: rxMethod<string | null | undefined>(
-      pipe(
-        map((it) => it ?? ''),
-        tap((search) => patchState(store, () => ({search}))),
-      ),
-    ),
-    setStatuses: rxMethod<MonitorSearchParams['statuses'] | null | undefined>(
-      pipe(
-        map((it) => it ?? []),
-        tap((statuses) => patchState(store, () => ({statuses}))),
-      ),
-    ),
-    setTypes: rxMethod<MonitorSearchParams['types'] | null | undefined>(
-      pipe(
-        map((it) => it ?? []),
-        tap((types) => patchState(store, () => ({types}))),
-      ),
-    ),
-    updateMonitor(it: Partial<BackendType['MonitorMinResponse']>): void {
-      patchState(store, updateEntity({id: it.id!!, changes: it}));
-    },
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
-
-      if (monitor) {
-        patchState(
-          store,
-          updateEntity({
-            id: monitor.id,
-            changes: {
-              lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
-            },
-          }),
-        );
-      }
     },
     removeMonitor(id: string): void {
       patchState(store, removeEntity(id));
     },
-    searchMonitorsByTeamId: rxMethod<
-      {
-        teamId: string | undefined;
-        page: number;
-      } & MonitorSearchParams
-    >(
-      pipe(
-        filter((it) => it.search.length > 0 || it.statuses.length > 0 || it.types.length > 0),
-        distinctUntilChanged((prev, cur) => {
-          if (
-            prev.search !== cur.search ||
-            prev.statuses !== cur.statuses ||
-            prev.types !== cur.types
-          ) {
-            patchState(store, removeAllEntities(), () => ({page: 0}));
-            return false;
-          }
-
-          return prev.page === cur.page && prev.teamId === cur.teamId;
-        }),
-        tap(() => patchState(store, setPending())),
-        debounceTime(400),
-        mergeMap(({page, teamId, search, statuses, types}) =>
-          api
-            .get('/v1/monitor', {
-              params: {
-                query: {
-                  teamId,
-                  page,
-                  size: pageSize,
-                  sort: ['name,asc,ignorecase'],
-                  name: search.length > 0 ? search : undefined,
-                  statuses,
-                  types,
-                },
-              },
-            })
-            .pipe(
-              tapResponse({
-                next: (response) => patchState(store, setEntities(response.data), setFulfilled()),
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
-        ),
-      ),
-    ),
   })),
-  withHooks({
-    onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.updateMonitor(it));
-
-      pushService.checkResults$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
-    },
-  }),
 );
 
 export const MonitorsStore = signalStore(
-  withState<{
-    teamId: string | undefined;
-    deleted: boolean | undefined;
-  }>({
-    teamId: undefined,
-    deleted: undefined,
-  }),
-  withPaginatedTable<BackendType['MonitorResponse']>({
-    paramPrefix: 'monitors.',
-    columnsToDisplay: ['name', 'status', 'checkResults', 'actions'],
-    defaultSortBy: 'status',
-    defaultSortDirection: 'asc',
-  }),
-  withSelection<BackendType['MonitorResponse']>({}),
+  withMonitorsLoad(),
   withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
-    const load = rxMethod<
-      {
-        teamId: string | undefined;
-        deleted?: boolean;
-      } & PaginationDto
-    >(
-      pipe(
-        tap(({teamId}) =>
-          patchState(
-            store,
-            setPending(),
-            store.teamId() !== teamId ? removeAllEntities() : () => ({}),
-            () => ({teamId}),
-          ),
-        ),
-        debounceTime(400),
-        switchMap((query) =>
-          api
-            .get('/v1/monitor', {
-              params: {query},
-            })
-            .pipe(
-              tapResponse({
-                next: (response) =>
-                  patchState(
-                    store,
-                    resetSelection(),
-                    setAllEntities(response.data),
-                    setTotalElements(response.numberOfItems),
-                    setFulfilled(),
-                  ),
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
-        ),
-      ),
-    );
-
     return {
-      setDeleted: rxMethod<boolean | undefined>(
-        tap((deleted) => patchState(store, () => ({deleted}))),
-      ),
-      updateMonitor(it: BackendType['MonitorResponse']): void {
-        patchState(store, updateEntity({id: it.id, changes: it}));
-      },
-      addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-        const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
-
-        if (monitor) {
-          patchState(
-            store,
-            updateEntity({
-              id: monitor.id,
-              changes: {
-                lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
-              },
-            }),
-          );
-        }
-      },
       restoreSelection: rxMethod<void>(
         switchMap(() =>
           confirmDialog$(
@@ -412,7 +237,7 @@ export const MonitorsStore = signalStore(
                   next: () => {
                     toast.success(translate('general.restoreSuccess'));
 
-                    load({
+                    store.load({
                       ...store.pageable(),
                       deleted: store.deleted(),
                       teamId: store.teamId(),
@@ -425,18 +250,6 @@ export const MonitorsStore = signalStore(
           ),
         ),
       ),
-      load,
     };
-  }),
-  withHooks({
-    onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.updateMonitor(it));
-
-      pushService.checkResults$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
-    },
   }),
 );

@@ -4,7 +4,7 @@ import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods} from '@ngrx/signals';
-import {removeAllEntities, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -15,9 +15,12 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const PublicStatusPageMonitorsStore = signalStore(
+  withRequestStatus(),
+  withEntities<BackendType['PublicMonitorMinResponse']>(),
   withPaginatedTable<BackendType['PublicMonitorMinResponse']>({
     columnsToDisplay: [],
     defaultSortBy: 'groupMonitors.position',

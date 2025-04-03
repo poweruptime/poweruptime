@@ -9,16 +9,17 @@ import {distinctUntilChanged, map, switchMap, tap} from 'rxjs';
 import {
   patchState,
   signalStoreFeature,
+  type,
   withComputed,
   withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
-import {withEntities} from '@ngrx/signals/entities';
+import {EntityState} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {loggerOf, n_from} from 'dfts-helper';
 
-import {withRequestStatus} from './request-status.feature';
+import {RequestStatusState} from './request-status.feature';
 
 type EntityKey<EntityType> = keyof EntityType | 'actions' | string;
 
@@ -54,8 +55,7 @@ export function withPaginatedTable<EntityType>({
   paramPrefix = '',
 }: withTableOptions<EntityType>) {
   return signalStoreFeature(
-    withEntities<EntityType>(),
-    withRequestStatus(),
+    {state: type<EntityState<EntityType> & RequestStatusState>()},
     withState<TableState<EntityType>>({
       columnsToDisplay,
       totalElements: 0,
@@ -116,7 +116,10 @@ export function withPaginatedTable<EntityType>({
       ),
     })),
     withComputed((store) => ({
-      isEmpty: computed(() => store.isFulfilled() && store.entities().length === 0),
+      isEmpty: computed(
+        () =>
+          store.requestStatus() === 'fulfilled' && Object.values(store.entityMap()).length === 0,
+      ),
       pageable: computed(
         () =>
           ({

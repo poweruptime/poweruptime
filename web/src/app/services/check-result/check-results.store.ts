@@ -5,7 +5,7 @@ import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
-import {removeAllEntities, setAllEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -17,6 +17,7 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const CheckResultsStore = signalStore(
@@ -27,6 +28,8 @@ export const CheckResultsStore = signalStore(
     showDuplicates: true,
     monitorId: undefined,
   }),
+  withRequestStatus(),
+  withEntities<BackendType['CheckResultResponse']>(),
   withPaginatedTable<BackendType['CheckResultResponse']>({
     paramPrefix: 'checks.',
     columnsToDisplay: ['status', 'createdAt', 'title', 'actions'],

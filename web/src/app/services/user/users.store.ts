@@ -2,7 +2,7 @@ import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
-import {removeAllEntities, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -14,6 +14,7 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '../store-features';
 
 export const UsersStore = signalStore(
@@ -28,6 +29,8 @@ export const UsersStore = signalStore(
     activated: undefined,
     role: undefined,
   }),
+  withRequestStatus(),
+  withEntities<BackendType['UserResponse']>(),
   withPaginatedTable<BackendType['UserResponse']>({
     columnsToDisplay: ['email', 'name', 'activated', 'role', 'actions'],
     defaultSortBy: 'createdAt',

@@ -5,7 +5,7 @@ import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
-import {removeEntity, setAllEntities} from '@ngrx/signals/entities';
+import {removeEntity, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
@@ -17,9 +17,12 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const TeamUsersStore = signalStore(
+  withRequestStatus(),
+  withEntities<BackendType['TeamUserResponse']>(),
   withPaginatedTable<BackendType['TeamUserResponse']>({
     columnsToDisplay: ['id.user.name', 'role', 'invitedBy.name', 'createdAt', 'actions'],
     defaultSortBy: 'id.user.name',

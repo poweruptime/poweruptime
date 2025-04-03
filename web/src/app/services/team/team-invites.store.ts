@@ -2,7 +2,7 @@ import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
-import {setAllEntities} from '@ngrx/signals/entities';
+import {setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -13,9 +13,12 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const TeamInvitesStore = signalStore(
+  withRequestStatus(),
+  withEntities<BackendType['TeamJoinTokenResponse']>(),
   withPaginatedTable<BackendType['TeamJoinTokenResponse']>({
     columnsToDisplay: ['inviteeEmail', 'role', 'inviter.name', 'createdAt', 'actions'],
     defaultSortBy: 'createdAt',

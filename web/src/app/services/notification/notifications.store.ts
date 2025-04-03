@@ -5,7 +5,7 @@ import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
-import {removeAllEntities, setAllEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -17,6 +17,7 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
 } from '@app/services/store-features';
 
 export const NotificationsStore = signalStore(
@@ -25,6 +26,8 @@ export const NotificationsStore = signalStore(
   }>({
     monitorId: undefined,
   }),
+  withRequestStatus(),
+  withEntities<BackendType['NotificationResponse']>(),
   withPaginatedTable<BackendType['NotificationResponse']>({
     paramPrefix: 'notifi.',
     columnsToDisplay: ['status', 'createdAt', 'method', 'title', 'actions'],

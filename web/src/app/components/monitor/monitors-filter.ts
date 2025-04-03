@@ -16,19 +16,6 @@ import {BackendType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
 
 @Component({
-  selector: 'pu-monitors-filter',
-  imports: [
-    ReactiveFormsModule,
-    BiComponent,
-    MatFormField,
-    MatLabel,
-    MatSelect,
-    MatOption,
-    MatIconButton,
-    MatInput,
-    DfxAutofocus,
-    TranslocoPipe,
-  ],
   template: `
     <form
       class="flex flex-col rounded-lg border border-solid border-black p-4 dark:border-gray-300"
@@ -71,8 +58,20 @@ import {MonitorSearchParams} from '@app/services';
       </mat-form-field>
     </form>
   `,
-  styles: ``,
+  selector: 'pu-monitors-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+    BiComponent,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatIconButton,
+    MatInput,
+    DfxAutofocus,
+    TranslocoPipe,
+  ],
 })
 export class MonitorsFilter {
   private readonly fb = inject(NonNullableFormBuilder);

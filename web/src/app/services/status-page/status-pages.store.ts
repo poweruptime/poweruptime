@@ -5,7 +5,7 @@ import {debounceTime, filter, forkJoin, map, pipe, switchMap, tap} from 'rxjs';
 import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
-import {removeAllEntities, removeEntity, setEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntity, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
@@ -19,6 +19,7 @@ import {
   setPending,
   setTotalElements,
   withPaginatedTable,
+  withRequestStatus,
   withSelection,
 } from '@app/services/store-features';
 
@@ -32,6 +33,8 @@ export const StatusPagesStore = signalStore(
     search: '',
     deleted: undefined,
   }),
+  withRequestStatus(),
+  withEntities<BackendType['StatusPageResponse']>(),
   withPaginatedTable<BackendType['StatusPageResponse']>({
     columnsToDisplay: ['name', 'slug', 'actions'],
     defaultSortBy: 'name',

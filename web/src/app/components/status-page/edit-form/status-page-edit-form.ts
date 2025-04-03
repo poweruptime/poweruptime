@@ -428,10 +428,10 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
     super();
 
     this.monitorsSearchStore.setSearch(this.monitorSearch);
-    this.monitorsSearchStore.searchMonitorsByTeamId(
+    this.monitorsSearchStore.load(
       computed(() => ({
+        ...this.monitorsSearchStore.pageable(),
         teamId: this.selectedTeamId(),
-        page: 0,
         statuses: [
           'UP' as const,
           'DOWN' as const,
