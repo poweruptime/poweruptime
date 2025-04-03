@@ -1,0 +1,125 @@
+@use '@angular/material' as mat;
+
+$config: (
+  color: mat.$violet-palette,
+  density: -1,
+);
+
+html {
+  color-scheme: light;
+  @include mat.theme($config);
+
+  @include mat.sidenav-overrides(
+    (
+      container-divider-color: lightgray,
+    )
+  );
+
+  .dark {
+    color-scheme: dark;
+
+    @include mat.sidenav-overrides(
+      (
+        container-divider-color: #52525b,
+      )
+    );
+
+    .active-card {
+      @include mat.card-overrides(
+        (
+          outlined-outline-color: lightgray,
+        )
+      );
+    }
+  }
+}
+
+.secondary-button {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #efe5fd,
+    )
+  );
+}
+
+.error-button {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #ee6002,
+    )
+  );
+}
+
+.active-card {
+  @include mat.card-overrides(
+    (
+      outlined-outline-color: gray,
+    )
+  );
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+/** Fix; Angular Material + TailwindCSS conflict
+https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-properly-a-border-line-appears-inside-the-f **/
+.mdc-notched-outline__notch {
+  border-right: none;
+}
+
+/* White background on Angular Material text-fields */
+.mat-mdc-text-field-wrapper {
+  .mat-mdc-form-field-icon-suffix {
+    @apply p-1 pe-4;
+  }
+}
+.mat-mdc-form-field-focus-overlay {
+  @apply bg-neutral-000 dark:bg-bg-dark;
+}
+
+/* Fix vertical text alignment in buttons with icons */
+.mdc-icon-button > bi {
+  vertical-align: 7px;
+}
+
+.mdc-fab > .mdc-button__label > bi {
+  vertical-align: -0.26rem !important;
+}
+
+.mdc-button__label > bi {
+  vertical-align: -0.225em;
+}
+
+.mat-mdc-chip-action-label > bi {
+  vertical-align: -0.19em;
+}
+
+.mat-mdc-menu-item-text > bi {
+  vertical-align: -0.4em;
+  margin-right: 0.4em;
+}
+
+.mdc-list-item__primary-text > bi {
+  vertical-align: -0.26rem;
+  margin-right: 0.7em;
+}
+
+/* Material Table Column Width */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Column Width */
+.mat-column-select {
+  @apply w-28;
+}
+
+.mat-column-deleted {
+  @apply w-52;
+}

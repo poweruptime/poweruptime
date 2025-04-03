@@ -1,0 +1,33 @@
+html {
+  .dark {
+    & {
+      --ngx-editor-background-color: #000 !important;
+      --ngx-editor-text-color: #f9fafb !important;
+      --ngx-editor-placeholder-color: 000 !important;
+      --ngx-editor-border-color: white !important;
+      --ngx-editor-wrapper-border-color: white !important;
+
+      --ngx-editor-menubar-bg-color: #000 !important;
+
+      --ngx-editor-blockquote-color: #ddd;
+      --ngx-editor-blockquote-border-width: 3px;
+
+      --ngx-editor-popup-bg-color: #000 !important;
+      --ngx-editor-popup-shadow: #1f2937 0px 2px 6px 2px !important;
+
+      --ngx-editor-menu-item-active-color: white !important;
+      --ngx-editor-menu-item-hover-bg-color: #9ca3af !important;
+      --ngx-editor-menu-item-active-bg-color: #374151 !important;
+
+      --ngx-editor-seperator-color: #ccc !important;
+
+      --ngx-editor-bubble-bg-color: #000 !important;
+      --ngx-editor-bubble-text-color: #fff !important;
+      --ngx-editor-bubble-item-hover-color: #636262;
+      --ngx-editor-bubble-seperator-color: #fff;
+
+      --ngx-editor-focus-ring-color: white !important;
+      --ngx-editor-error-color: red;
+    }
+  }
+}

@@ -18,6 +18,7 @@ export class FakeDash {}
       <div class="h-8 w-[2px] bg-black/75 dark:bg-white/75"></div>
     </div>
   `,
+  styles: ``,
 })
 export class FakeCaret {}
 

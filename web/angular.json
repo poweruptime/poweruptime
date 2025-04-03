@@ -50,7 +50,14 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles/material.scss",
+              "src/styles.css",
+              "src/styles/chart.scss",
+              "src/styles/editor.css",
+              "node_modules/@ngxpert/cmdk/styles/scss/globals.scss",
+              "src/styles/vercel-cmdk.scss"
+            ],
             "tsConfig": "tsconfig.app.json"
           }
         },

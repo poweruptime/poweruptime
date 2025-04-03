@@ -7,8 +7,8 @@
   .cmdk-command {
     max-width: 640px;
     padding: 8px;
-    background-color: var(--mat-app-background-color); // Default to dark theme background
-    color: var(--mat-app-text-color); // Default to dark theme background
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
     border-radius: 12px;
     overflow: hidden;
     font-family: var(--font-sans), sans-serif;
@@ -24,8 +24,8 @@
     font-size: 17px;
     padding: 8px 8px 16px 8px;
     outline: none;
-    color: var(--mat-app-text-color); // Default to dark theme background
-    background-color: var(--mat-app-background-color);
+    color: var(--mat-sys-on-surface);
+    background-color: var(--mat-sys-surface);
     border-bottom: 1px solid var(--gray6);
     margin-bottom: 16px;
     border-radius: 0;
@@ -47,7 +47,7 @@
     align-items: center;
     gap: 8px;
     padding: 0 16px;
-    color: var(--mat-app-text-color); // Default to dark theme background
+    color: var(--mat-sys-on-surface);
     user-select: none;
     will-change: background, color;
     transition: all 150ms ease;
@@ -55,30 +55,30 @@
 
     &[aria-selected='true'] {
       background: var(--mat-select-panel-background-color);
-      color: var(--mat-option-selected-state-label-text-color); // Default to dark theme background
+      color: var(--mat-option-selected-state-label-text-color);
     }
 
     &[aria-disabled='true'] {
-      color: var(--mat-app-text-color);
+      color: var(--mat-sys-on-surface);
       cursor: not-allowed;
     }
 
     &:active {
       transition-property: background;
       background: var(--mat-select-panel-background-color);
-      color: var(--mat-option-selected-state-label-text-color); // Default to dark theme background
+      color: var(--mat-option-selected-state-label-text-color);
     }
 
     &:hover {
       transition-property: background;
       background: var(--mat-select-panel-background-color);
-      color: var(--mat-option-selected-state-label-text-color); // Default to dark theme background
+      color: var(--mat-option-selected-state-label-text-color);
     }
 
     &:focus {
       outline: none;
       background: var(--mat-select-panel-background-color);
-      color: var(--mat-option-selected-state-label-text-color); // Default to dark theme background
+      color: var(--mat-option-selected-state-label-text-color);
     }
 
     & + .cmdk-item {
@@ -112,8 +112,8 @@
       padding: 4px;
       height: 20px;
       border-radius: 4px;
-      color: var(--mat-app-text-color);
-      background-color: var(--mat-sys-on-background); // Default to dark theme background
+      color: var(--mat-sys-on-surface);
+      background-color: var(--mat-sys-surface);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -139,7 +139,7 @@
   .cmdk-group-label {
     user-select: none;
     font-size: 12px;
-    color: var(--mat-app-text-color);
+    color: var(--mat-sys-on-surface);
     padding: 0 8px;
     display: flex;
     align-items: center;
@@ -153,6 +153,6 @@
     justify-content: center;
     height: 48px;
     white-space: pre-wrap;
-    color: var(--mat-app-text-color);
+    color: var(--mat-sys-on-surface);
   }
 }
