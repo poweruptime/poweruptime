@@ -29,7 +29,7 @@ interface PasswordResetTokenRepository : JpaRepository<PasswordResetToken, Strin
             urt.user.id = :userId and
             urt.id = :token and
             urt.createdAt > :createdAfter and
-            urt.version = 1
+            urt.version = 0
         """,
     )
     fun findValidByUserIdTokenAndCreatedAfter(

@@ -22,7 +22,7 @@ export const ResetPassword = () => {
       <Section className="mb-[32px] mt-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
-          th:href="@{{host}/login/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}">
+          th:href="@{{host}/auth/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}">
           Reset password
         </Button>
       </Section>
@@ -31,8 +31,8 @@ export const ResetPassword = () => {
         <br />
         <Link
           className="text-blue-600 no-underline"
-          th:href="@{{host}/login/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}"
-          th:text="@{{host}/login/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}">
+          th:href="@{{host}/auth/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}"
+          th:text="@{{host}/auth/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}">
           Placeholder link name
         </Link>
       </PuText>

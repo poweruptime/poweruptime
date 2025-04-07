@@ -1,11 +1,14 @@
 {
   "auth": {
     "changePassword": "Change password",
+    "forgotPassword": "Forgot password?",
     "invalidCredentials": "Invalid credentials.",
     "login": "Login",
     "newPassword": "New {{general.password}}",
     "newPasswordConfirm": "New {{general.password}} to confirm",
     "oldPassword": "Old {{general.password}}",
+    "requestPasswordReset": "Request password reset",
+    "resetPassword": "Reset password",
     "stayLoggedIn": "Stay logged in"
   },
   "backendOffline": {

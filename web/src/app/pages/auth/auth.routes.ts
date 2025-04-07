@@ -1,6 +1,8 @@
 import {Routes} from '@angular/router';
 
 import {isNotLoggedIn} from '@app/guards/is-not-logged-in.guard';
+import {isNotSetupGuard} from '@app/guards/is-not-setup.guard';
+import {isSetupGuard} from '@app/guards/is-setup.guard';
 
 export const ROUTES: Routes = [
   {
@@ -11,12 +13,23 @@ export const ROUTES: Routes = [
     children: [
       {
         path: 'login',
+        canActivate: [isNotSetupGuard],
         loadComponent: () => import('./login.page').then((c) => c.LoginPage),
       },
       {
         path: 'password-change',
+        canActivate: [isNotSetupGuard],
         loadComponent: () =>
           import('./password-change-login-page.component').then((c) => c.PasswordChangeLoginPage),
+      },
+      {
+        path: 'setup',
+        canActivate: [isSetupGuard],
+        loadComponent: () => import('./setup.page').then((c) => c.SetupPage),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () => import('./forgot-password.page').then((c) => c.ForgotPasswordPage),
       },
     ],
   },

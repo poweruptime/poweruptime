@@ -9,7 +9,7 @@ export class CustomLinkRenderer extends LinkRenderer<string> {
   }
 
   public render(link: string, targetElement: HTMLAnchorElement): void {
-    targetElement.classList.add('underline');
+    targetElement.style.textDecorationLine = 'underline';
     targetElement.href = link;
     targetElement.target = '_blank';
   }
@@ -21,12 +21,11 @@ export class CustomLinkRenderer extends LinkRenderer<string> {
 @Injectable()
 export class CustomExternalLinkObjectLinkRenderer extends LinkRenderer<ExternalLink> {
   public supports(link: unknown): link is ExternalLink {
-    console.warn('called');
     return isExternalLinkObject(link);
   }
 
   public render(link: ExternalLink, targetElement: HTMLAnchorElement): void {
-    targetElement.classList.add('underline');
+    targetElement.style.textDecorationLine = 'underline';
 
     targetElement.href = link.url;
     if (typeof link.target === 'string') {

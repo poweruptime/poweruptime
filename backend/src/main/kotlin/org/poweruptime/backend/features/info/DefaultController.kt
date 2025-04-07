@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
+import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
@@ -14,7 +15,8 @@ import java.time.Instant
 @RequestMapping("/v1")
 @Tag(name = "Default Secure API")
 class SecureDefaultController(
-    private val infoService: InfoService
+    private val infoService: InfoService,
+    private val userService: UserService,
 ) {
     @Operation(
         summary = "Get info",
@@ -38,6 +40,7 @@ class SecureDefaultController(
         serverStartTime = InfoService.startTime,
         buildTime = infoService.buildTime,
         host = infoService.host,
+        setup = userService.getIsSetup(),
     )
 }
 
@@ -45,7 +48,8 @@ class SecureDefaultController(
 @RequestMapping("/v1/public")
 @Tag(name = "Default API")
 class DefaultController(
-    private val infoService: InfoService
+    private val infoService: InfoService,
+    private val userService: UserService,
 ) {
     @GetMapping
     fun api() = "Running ${infoService.name}! ( ͡° ͜ʖ ͡°) <br> Version: ${infoService.version}"
@@ -61,6 +65,7 @@ class DefaultController(
         serverStartTime = InfoService.startTime,
         buildTime = infoService.buildTime,
         host = infoService.host,
+        setup = userService.getIsSetup(),
     )
 }
 
@@ -71,4 +76,5 @@ data class JsonInfoResponse(
     val serverStartTime: Instant,
     val buildTime: Instant,
     val host: String,
+    val setup: Boolean,
 )

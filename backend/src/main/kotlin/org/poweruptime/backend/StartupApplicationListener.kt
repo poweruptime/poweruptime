@@ -1,7 +1,6 @@
 package org.poweruptime.backend
 
 import org.poweruptime.backend.core.utils.Config
-import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.mail.EmailSecurity
@@ -23,8 +22,6 @@ import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
-import org.poweruptime.backend.features.user.dto.CreateUserDto
-import org.poweruptime.backend.features.user.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -35,7 +32,6 @@ import java.time.Instant
 
 @Component
 class StartupApplicationListener(
-    private val userService: UserService,
     private val tempNotificationService: TempNotificationService,
     private val monitorService: MonitorService,
     private val monitorCheckerDataService: MonitorCheckerDataService,
@@ -62,7 +58,6 @@ class StartupApplicationListener(
 
     @Suppress("MaxLineLength", "LongMethod")
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
-        addFirstAdminUserIfNotExists()
         initStorage()
         setupTempNotification()
 
@@ -285,25 +280,6 @@ class StartupApplicationListener(
     private fun startMonitoring() = monitorService.startAll()
 
     private fun initStorage() = fileService.init()
-
-    /**
-     * Adds admin user if there is none
-     */
-    private fun addFirstAdminUserIfNotExists() {
-        if (!userService.minOneUserWithRoleExists(SystemRole.ADMIN)) {
-            userService.create(
-                dto = CreateUserDto(
-                    name = "admin",
-                    email = "admin@admin.org",
-                    password = "Password1234",
-                    role = SystemRole.ADMIN,
-                    sendInvitation = false,
-                    activated = true,
-                ),
-            )
-            log.info("Added first admin user!")
-        }
-    }
 
     private fun setupTempNotification() {
         log.info("Temp tempNotification enabled: $tempNotificationsEnabled")

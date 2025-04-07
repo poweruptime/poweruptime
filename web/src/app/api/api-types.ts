@@ -467,6 +467,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/auth/setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Setup first user */
+    post: operations['setup_1'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/auth/resetPassword': {
     parameters: {
       query?: never;
@@ -1821,6 +1838,10 @@ export interface components {
       checker: components['schemas']['MonitorCheckerData'];
       notificationMethodIds: string[];
     };
+    SetupDto: {
+      name: string;
+      email: string;
+    };
     PasswordForgotRequestDto: {
       email: string;
     };
@@ -1935,6 +1956,7 @@ export interface components {
       /** Format: date-time */
       buildTime: string;
       host: string;
+      setup?: boolean;
     };
     TempNotification: {
       to: string;
@@ -3089,6 +3111,30 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['FileResponse'];
+        };
+      };
+    };
+  };
+  setup_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetupDto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['IdResponse'];
         };
       };
     };

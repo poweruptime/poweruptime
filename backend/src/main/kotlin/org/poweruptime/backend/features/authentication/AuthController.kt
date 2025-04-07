@@ -3,14 +3,18 @@ package org.poweruptime.backend.features.authentication
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.poweruptime.backend.core.dto.IdResponse
 import org.poweruptime.backend.core.exceptions.*
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.features.authentication.config.AuthUtils
+import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.service.AccessTokenGenerationService
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.user.dto.CreateUserDto
+import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -31,6 +35,7 @@ class AuthController(
     private val authService: AuthService,
     private val passwordResetTokenService: PasswordResetTokenService,
     private val mfaService: MFAService,
+    private val userService: UserService,
 ) {
 
     @Operation(
@@ -105,6 +110,30 @@ class AuthController(
     }
 
     @Operation(
+        summary = "Setup first user",
+    )
+    @PostMapping("/setup")
+    @ResponseStatus(HttpStatus.OK)
+    fun setup(@Valid @RequestBody request: SetupDto): IdResponse {
+        if (!userService.getIsSetup()) {
+            throw BadRequestException()
+        }
+
+        return IdResponse(
+            userService.create(
+                dto = CreateUserDto(
+                    name = request.name,
+                    email = request.email,
+                    role = SystemRole.ADMIN,
+                    sendInvitation = true,
+                    password = null,
+                    activated = true,
+                ),
+            ),
+        )
+    }
+
+    @Operation(
         summary = "Change password and login",
     )
     @PostMapping("/passwordChange")
@@ -164,10 +193,6 @@ class AuthController(
     fun requestPasswordReset(@Valid @RequestBody request: PasswordForgotRequestDto) {
         val user = authService.getByEmail(request.email) ?: return
 
-        if (user.isAdmin()) {
-            return
-        }
-
         passwordResetTokenService.create(user)
     }
 
@@ -181,10 +206,6 @@ class AuthController(
         @Valid @RequestBody request: PasswordForgotResetDto
     ) {
         val user = authService.getByEmailOrThrow(request.email)
-
-        if (user.isAdmin()) {
-            throw UnauthorizedException()
-        }
 
         mfaService.validate(user.id, mfaCode)
 

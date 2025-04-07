@@ -45,8 +45,6 @@ class UserService(
 
     fun getByEmail(email: String): User? = userRepository.findUserByEmail(email)
 
-    fun minOneUserWithRoleExists(role: SystemRole) = userRepository.minOneUserWithRoleExists(role)
-
     fun create(dto: CreateUserDto, inviter: User? = null): User {
         val onetimePassword = dto.password ?: RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
 
@@ -55,10 +53,8 @@ class UserService(
         val user = User.fromDto(dto, passwordEncoder.encode(onetimePassword), team)
 
         if (dto.sendInvitation) {
-            assert(inviter != null)
-
             systemEmailService.queueEmail(
-                InviteUserEmail(invitee = user, inviter = inviter!!, onetimePassword = onetimePassword),
+                InviteUserEmail(invitee = user, inviter = inviter, onetimePassword = onetimePassword),
             )
             user.activated = true
             // force password change is automatically set to true in the User.fromDto() method
@@ -138,4 +134,14 @@ class UserService(
             listOf("name", "activated", "role", "createdAt"),
         ),
     )
+
+    private var isSetup: Boolean? = null
+
+    fun getIsSetup(): Boolean {
+        if (isSetup == null || isSetup == true) {
+            return userRepository.isSetup()
+        }
+
+        return isSetup == true
+    }
 }
