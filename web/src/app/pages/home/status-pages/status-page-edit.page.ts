@@ -1,18 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  linkedSignal,
-} from '@angular/core';
-import {MatAnchor} from '@angular/material/button';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {MatTab, MatTabContent, MatTabGroup} from '@angular/material/tabs';
-import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
-import {linkedQueryParam, paramToBoolean, paramToNumber} from 'ngxtension/linked-query-param';
+import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {Placeholder} from '@app/components';
 import {StatusPageEditForm} from '@app/components/status-page';

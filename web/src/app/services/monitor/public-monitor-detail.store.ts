@@ -8,12 +8,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
 
-import {
-  setError,
-  setFulfilled,
-  setPending,
-  withRequestStatus,
-} from '../store-features/request-status.feature';
+import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
 import {calculatePingChart, mapUptime} from '../util';
 
 export const PublicMonitorDetailStore = signalStore(

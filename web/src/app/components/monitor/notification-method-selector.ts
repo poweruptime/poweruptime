@@ -10,7 +10,6 @@ import {
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatProgressBar} from '@angular/material/progress-bar';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

@@ -1,17 +1,7 @@
 import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  forkJoin,
-  map,
-  mergeMap,
-  pipe,
-  switchMap,
-  tap,
-} from 'rxjs';
+import {distinctUntilChanged, filter, forkJoin, map, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
 import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
@@ -27,7 +17,6 @@ import {
   addEntity,
   removeAllEntities,
   removeEntity,
-  setAllEntities,
   setEntities,
   setEntity,
   updateEntity,
@@ -40,17 +29,7 @@ import {BackendType, injectAPI} from '@app/api';
 import {injectConfirmDialog$} from '@app/components';
 import {PushService} from '@app/services';
 import {withMonitorsLoad} from '@app/services/monitor/monitors.feature';
-import {
-  PaginationDto,
-  resetSelection,
-  setError,
-  setFulfilled,
-  setPending,
-  setTotalElements,
-  withPaginatedTable,
-  withRequestStatus,
-  withSelection,
-} from '@app/services/store-features';
+import {setError, setPending} from '@app/services/store-features';
 
 const pageSize = 15;
 

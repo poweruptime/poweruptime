@@ -10,12 +10,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 import {PushService} from '@app/services';
 
-import {
-  setError,
-  setFulfilled,
-  setPending,
-  withRequestStatus,
-} from '../store-features/request-status.feature';
+import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
 
 export const MonitorsDashboardStore = signalStore(
   withRequestStatus(),

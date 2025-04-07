@@ -9,7 +9,7 @@ import {
 import {MatIconAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
@@ -26,7 +26,7 @@ import {MonitorsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
 import {TableLoadingBar} from '../';
-import {InfiniteUptimeTimeline} from './uptime-timeline/infinite-uptime-timeline';
+import {InfiniteUptimeTimeline} from './uptime-timeline';
 
 @Component({
   template: `

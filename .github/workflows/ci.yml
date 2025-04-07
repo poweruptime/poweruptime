@@ -12,19 +12,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  commitlint:
+    name: Commitlint Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Needed to get the commitlint config
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: dafnik/setup-node-pnpm@v3
-        with:
-          install-ignore-scripts: true
-
-      - name: Build
-        run: pnpm web:build
+      - name: Run commitlint
+        uses: dafnik/commitlint@v1
 
   prettier:
     runs-on: ubuntu-latest
@@ -39,19 +38,6 @@ jobs:
 
       - name: Style check
         run: pnpm format:check
-
-  commitlint:
-    name: Commitlint Check
-    runs-on: ubuntu-latest
-    steps:
-      # Needed to get the commitlint config
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run commitlint
-        uses: dafnik/commitlint@v1
 
   detekt:
     runs-on: ubuntu-latest
@@ -77,7 +63,7 @@ jobs:
       # SARIF-Upload/CodeQL is not available for private repositories (also not for team plan) :(
       # -> Use https://github.com/reviewdog/reviewdog to get a similar result
       - name: Add detekt result to PR
-        if: success() || failure()
+        if: (success() || failure()) && github.event_name == 'pull_request'
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

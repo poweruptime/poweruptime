@@ -12,7 +12,6 @@
 /web/.angular
 /web/node_modules
 /web/dist
-/web/package.json
 
 build.gradle.kts
 gradlew

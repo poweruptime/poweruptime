@@ -1,5 +1,4 @@
-import {computed, effect, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {computed, effect} from '@angular/core';
 
 import {
   EMPTY,
@@ -27,7 +26,6 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
-import {PushService} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 type SelectedTeamState = {
