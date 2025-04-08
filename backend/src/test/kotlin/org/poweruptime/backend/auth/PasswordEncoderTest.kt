@@ -10,6 +10,7 @@ class PasswordEncoderTest(
 ) : BaseTestWithReusingContainers() {
     @Test
     fun `test password encoder`() {
-        println("Password: ${passwordEncoder.encode("test")}")
+        println("Test user Password: ${passwordEncoder.encode("test1234")}")
+        println("Admin user Password: ${passwordEncoder.encode("admin1234")}")
     }
 }

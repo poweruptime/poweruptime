@@ -28,7 +28,7 @@ class SessionIntegrationTests(
 
         mvc.get("/v1/profile/sessions") {
             headers {
-                setBearerAuth(jwtResponse.accessToken!!)
+                setBearerAuth(jwtResponse.accessToken)
             }
         }.andExpect {
             status { isOk() }

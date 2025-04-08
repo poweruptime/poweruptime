@@ -136,7 +136,7 @@ object ModelFactory {
 
     fun getAdminSignInDto(stayLoggedIn: Boolean = true) = LoginDto(
         email = "admin@admin.org",
-        password = "admin",
+        password = "admin1234",
         sessionInformation = "TestTestTestTest",
         stayLoggedIn = stayLoggedIn,
     )

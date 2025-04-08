@@ -12,18 +12,18 @@ INSERT INTO team (id, name) VALUES ('Ue3EDswEefwu', 'Hannes Schwatz');
 
 -- System Admin Users
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('ZD5CjpPYSPEk', true, 'admin@admin.org', 'Gerhold Walburga', false, '{bcrypt}$2a$12$b0pyQmdrre5N5jM9hUC7PeTYw.jtcItnLfOA0PbsICgS.5r.I21Sm', 'A', 'Ew1uauhgwaMR')
+VALUES ('ZD5CjpPYSPEk', true, 'admin@admin.org', 'Gerhold Walburga', false, '{bcrypt}$2a$10$fWZC48Sm9NVD68NaHya2q.CyU8bc0Vo8obPC.YyzPze9fqMt0okFq', 'A', 'Ew1uauhgwaMR')
 ON CONFLICT DO NOTHING;
 
 -- Users
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('ccYmAsus39gG', true, 'test1@test.org', 'Maria Bauer', false, '{bcrypt}$2y$12$sysJ25.IN.butJu7QIpYleQ6Suw69.1NJ5K3TQJlJkVVCwZtG9xny', 'U', '5KP6CoeMBmHo');
+VALUES ('ccYmAsus39gG', true, 'test1@test.org', 'Maria Bauer', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', '5KP6CoeMBmHo');
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('8BS4AaxuYG9h', true, 'test2@test.org', 'Herbert Müller', false, '{bcrypt}$2y$12$sysJ25.IN.butJu7QIpYleQ6Suw69.1NJ5K3TQJlJkVVCwZtG9xny', 'U', 'rRzu565wSrSf');
+VALUES ('8BS4AaxuYG9h', true, 'test2@test.org', 'Herbert Müller', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'rRzu565wSrSf');
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('2XxpcofD6Ubg', true, 'test3@test.org', 'Franz Lugger', false, '{bcrypt}$2y$12$sysJ25.IN.butJu7QIpYleQ6Suw69.1NJ5K3TQJlJkVVCwZtG9xny', 'U', 'kLGeRaxXMM1t');
+VALUES ('2XxpcofD6Ubg', true, 'test3@test.org', 'Franz Lugger', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'kLGeRaxXMM1t');
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcrypt}$2y$12$sysJ25.IN.butJu7QIpYleQ6Suw69.1NJ5K3TQJlJkVVCwZtG9xny', 'U', 'Ue3EDswEefwu');
+VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'Ue3EDswEefwu');
 
 -- MFA Code
 -- Add to user 4
@@ -38,6 +38,19 @@ INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2x
 INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'FhU9Bj4e45YkykD93LBL792Ty', 'YMe11pfsja9koBmbRRoe5P5M2');
 INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', '6E11k3mse8z45HAFCa3ht74z8', '9aCfPaFRkMAxAWbCX5jAMWmj3');
 INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'YMFHMLycHwuP7F2k2GtKEzrRa', 'cbrxML8Ew4BDZWAuST8pE8ubZ');
+
+-- Add to user 3 but inactive
+INSERT INTO mfa (active, secret, id, user_id) VALUES (false, '7tyBXh9ckw', 'WBAouSY2rZWP', '2XxpcofD6Ubg');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'sA1XZuMTFWTX8kxaS8CEP2fZx', 'FP9B3GADrRggkLYSZYp7LUMRf');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'MrZcfxDk6kbFKrrw7APWk4Zz3', '2bmREy7FBH4ZxWjYXyGB6By85');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'HU5ELSCkW4XXFE5cpekk2buRM', '1PSAWXg8tG41WHyKTT3SBf49j');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'BGGL5mMBfA76yufDpkPjbUXsa', 'wRh3WRoSeMcx8UKkt8y4B2k8o');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'fYKsMyzK6SAK16Y2Kyo2Sth6e', 'bHKTeG2WXEH9eyUxAThhU6DaH');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'fA1UzgyF2U8rsCXKs2FF2p7GU', 'SGYX4H479eym3xEbjgwc4A9aU');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', '6eaMP1ojKwaoRyaE385gm8xpo', 'pPufKYmZaS92YHRZeurSFF9uC');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'FhU9Bj4e45YkykD93LBL792Ty', 'jCaohE282KgKk8YhRsZMj2KFy');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', '6E11k3mse8z45HAFCa3ht74z8', 'r7oCkDz1w7GFAFBTGh1DTyZkC');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'YMFHMLycHwuP7F2k2GtKEzrRa', 'sZUWjt2YtUDbuRjAX83TUbjrg');
 
 -- Team Users
 -- Add user 1 to team 1

@@ -191,5 +191,6 @@ tasks.processTestResources {
 }
 
 tasks.test {
+    dependsOn(addLiquibaseTestdataInitChange)
     jvmArgs("-XX:+EnableDynamicAgentLoading")
 }

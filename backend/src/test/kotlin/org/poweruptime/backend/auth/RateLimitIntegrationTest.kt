@@ -62,7 +62,7 @@ class RateLimitDisabledIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "admin@admin.org",
-                    password = "admin",
+                    password = "admin1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {

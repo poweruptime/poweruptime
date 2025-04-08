@@ -1,6 +1,5 @@
 package org.poweruptime.backend.auth
 
-import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -10,8 +9,8 @@ import org.poweruptime.backend.core.AuthTestUtils
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.core.resource.CustomHttpHeader
+import org.poweruptime.backend.core.setMFACode
 import org.poweruptime.backend.core.toDto
-import org.poweruptime.backend.core.utils.toBase32EncodedByteArray
 import org.poweruptime.backend.features.authentication.JwtResponse
 import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.RefreshJwtWithSessionTokenDto
@@ -81,7 +80,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "admin@admin.org",
-                    password = "admin",
+                    password = "admin1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -100,7 +99,7 @@ class AuthIntegrationTest(
                 contentType = MediaType.APPLICATION_JSON
                 content = LoginDto(
                     email = "admin@admin.org",
-                    password = "admin",
+                    password = "admin1234",
                     sessionInformation = "Testing",
                     stayLoggedIn = true,
                 ).toJSON()
@@ -152,7 +151,7 @@ class AuthIntegrationTest(
             val user1Result = mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "admin@admin.org",
-                    password = "admin",
+                    password = "admin1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -167,7 +166,7 @@ class AuthIntegrationTest(
             val user2Result = mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test1@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -186,7 +185,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
@@ -199,7 +198,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
@@ -221,21 +220,34 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                     stayLoggedIn = true,
                     sessionInformation = "Testing1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
-                    set(
-                        CustomHttpHeader.MFA_CODE,
-                        GoogleAuthenticator(
-                            base32secret = "7tyjXh9ckw".toBase32EncodedByteArray(),
-                        ).generate(getDateTwoDaysAgo()),
-                    )
+                    setMFACode("7tyjXh9ckw", getDateTwoDaysAgo())
                 }
             }.andExpect {
                 status { isForbidden() }
+            }
+        }
+
+        @Test
+        fun `test sign in with MFA code but inactive`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test3@test.org",
+                    password = "test1234",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
             }
         }
 
@@ -244,16 +256,13 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                     stayLoggedIn = true,
                     sessionInformation = "Testing1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
-                    set(
-                        CustomHttpHeader.MFA_CODE,
-                        GoogleAuthenticator(base32secret = "7tyjXh9ckw".toBase32EncodedByteArray()).generate(),
-                    )
+                    setMFACode("7tyjXh9ckw")
                 }
             }.andExpect {
                 status { isOk() }
@@ -270,7 +279,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
@@ -286,7 +295,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
@@ -307,7 +316,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
@@ -325,7 +334,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "test4@test.org",
-                    password = "test",
+                    password = "test1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
                 headers {
