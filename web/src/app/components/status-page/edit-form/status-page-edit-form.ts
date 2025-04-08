@@ -167,7 +167,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             [control]="form.controls.footer"
             [placeholder]="('general.footer' | transloco) + '...'" />
 
-          <pu-save-button [valid]="isValid()" />
+          <pu-save-button class="ms-3" [valid]="isValid()" />
         </div>
       </div>
 

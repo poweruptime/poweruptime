@@ -63,7 +63,7 @@ export const NotificationsStore = signalStore(
             () => ({monitorId}),
           ),
         ),
-        debounceTime(400),
+        debounceTime(275),
         switchMap((query) =>
           api
             .get('/v1/notification', {

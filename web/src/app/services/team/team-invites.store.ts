@@ -28,7 +28,7 @@ export const TeamInvitesStore = signalStore(
       pipe(
         filter(({teamId}) => !!teamId),
         tap(() => patchState(store, setPending())),
-        debounceTime(400),
+        debounceTime(275),
         switchMap(({teamId, ...query}) =>
           api
             .get('/v1/team/{teamId}/invites', {

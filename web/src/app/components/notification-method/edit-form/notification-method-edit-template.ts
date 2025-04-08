@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   LOCALE_ID,
+  booleanAttribute,
   computed,
   effect,
   forwardRef,
@@ -15,6 +16,8 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+
+import {MarkdownComponent} from 'ngx-markdown';
 
 import {MentionAutocompleteTrigger} from '@app/components';
 
@@ -45,7 +48,11 @@ import {MentionAutocompleteTrigger} from '@app/components';
       <div
         class="border-1 min-h-24 rounded-sm border border-dashed border-gray-400 p-4"
         style="margin-top: -0.5rem">
-        <div class="preview" [innerHTML]="preview()"></div>
+        @if (markdown()) {
+          <markdown class="preview" [data]="preview()" emoji />
+        } @else {
+          <div class="preview" [innerHTML]="preview()"></div>
+        }
       </div>
     </div>
   `,
@@ -72,6 +79,7 @@ import {MentionAutocompleteTrigger} from '@app/components';
     MatAutocomplete,
     MatOption,
     FormsModule,
+    MarkdownComponent,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -79,6 +87,8 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   private readonly dateFormat = new DatePipe(this.locale);
   private readonly document = inject(DOCUMENT);
   private readonly now = this.dateFormat.transform(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS z (Z)');
+
+  markdown = input(false, {transform: booleanAttribute});
 
   label = input.required<string>();
 

@@ -23,6 +23,7 @@ import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {NgxEditorModule} from 'ngx-editor';
+import {provideMarkdown} from 'ngx-markdown';
 import {
   BoldTextTranspiler,
   ItalicTextTranspiler,
@@ -110,6 +111,7 @@ export const appConfig: ApplicationConfig = {
     {provide: LOCALE_ID, useValue: 'en-US'},
     {provide: MAT_DATE_LOCALE, useValue: dateFnsLocale},
     provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
+    provideMarkdown(),
     importProvidersFrom(
       NgxEditorModule.forRoot({
         locals: {

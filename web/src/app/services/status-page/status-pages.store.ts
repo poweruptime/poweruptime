@@ -54,7 +54,7 @@ export const StatusPagesStore = signalStore(
       pipe(
         filter(({teamId}) => !!teamId),
         tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
-        debounceTime(400),
+        debounceTime(275),
         switchMap(({teamId, search, ...query}) =>
           api
             .get('/v1/status-page', {

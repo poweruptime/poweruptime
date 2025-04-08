@@ -56,6 +56,11 @@
   }
 }
 
+/* Fix select search transparent input */
+.mat-select-search-input {
+  background: var(--mat-sys-surface) !important;
+}
+
 /* Column Width */
 .mat-column-select {
   @apply w-28;

@@ -41,7 +41,7 @@ export const TeamsStore = signalStore(
     >(
       pipe(
         tap(() => patchState(store, setPending())),
-        debounceTime(400),
+        debounceTime(275),
         switchMap((query) =>
           api
             .get('/v1/team', {

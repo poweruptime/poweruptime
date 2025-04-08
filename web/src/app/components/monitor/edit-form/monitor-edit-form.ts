@@ -256,9 +256,9 @@ import {
         <!--          </mat-card-content>-->
         <!--        </mat-card>-->
       </div>
-    </div>
 
-    <pu-save-button [valid]="isValid()" />
+      <pu-save-button class="ms-3" [valid]="isValid()" />
+    </div>
   `,
   selector: 'pu-monitor-edit-form',
   providers: [MonitorEditFormDataService],

@@ -141,7 +141,7 @@ export function withMonitorsLoad() {
               () => ({teamId}),
             ),
           ),
-          debounceTime(400),
+          debounceTime(275),
           switchMap(({search, ...query}) =>
             api
               .get('/v1/monitor', {

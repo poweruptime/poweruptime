@@ -7,8 +7,10 @@ import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
+import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
 
 import {Database} from '@app/api';
+import {AlertDirective} from '@app/components';
 import {injectIsValid} from '@app/form';
 import {AuthStore} from '@app/services';
 
@@ -18,12 +20,15 @@ import {AuthStore} from '@app/services';
       <mat-card class="w-full">
         <mat-card-header>
           <mat-card-title>
-            <strong>poweruptime</strong>
-            | {{ 'auth.setup' | transloco }}
+            <span class="text-2xl">
+              <strong>poweruptime</strong>
+              | {{ 'auth.setup.title' | transloco }}
+            </span>
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <form class="mt-6 grid gap-4" [formGroup]="form" (ngSubmit)="submit()">
+            <h3>{{ 'auth.setup.description' | transloco }}:</h3>
             <mat-form-field>
               <mat-label>{{ 'general.name' | transloco }}</mat-label>
               <input matInput formControlName="name" />
@@ -59,9 +64,18 @@ import {AuthStore} from '@app/services';
               }
             </mat-form-field>
 
+            <div puAlert type="INFO">
+              <b>{{ 'auth.setup.info1' | transloco }}</b>
+              <br />
+              <br />
+              <transloco
+                [params]="{forgotPasswordUrl: '/auth/forgot-password'}"
+                key="auth.setup.info2" />
+            </div>
+
             <button [disabled]="!isValid()" mat-flat-button type="submit">
-              <bi class="mr-2" name="box-arrow-in-right" />
-              {{ 'auth.login' | transloco }}
+              <bi class="mr-2" name="envelope-plus" />
+              {{ 'auth.setup.send' | transloco }}
             </button>
           </form>
         </mat-card-content>
@@ -83,6 +97,8 @@ import {AuthStore} from '@app/services';
     MatCardContent,
     MatCardTitle,
     TranslocoPipe,
+    AlertDirective,
+    TranslocoMarkupComponent,
   ],
 })
 export class SetupPage {

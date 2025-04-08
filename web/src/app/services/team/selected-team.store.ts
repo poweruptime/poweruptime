@@ -67,7 +67,7 @@ export const SelectedTeamStore = signalStore(
     },
     setSearch: rxMethod<string | null>(
       pipe(
-        debounceTime(400),
+        debounceTime(275),
         map((it) => it ?? ''),
         tap((search) => patchState(store, () => ({search}))),
       ),

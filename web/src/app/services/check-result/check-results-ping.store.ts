@@ -25,7 +25,7 @@ export const CheckResultsPingStore = signalStore(
     }>(
       pipe(
         tap(({monitorId}) => patchState(store, setPending(), () => ({monitorId}))),
-        debounceTime(400),
+        debounceTime(275),
         switchMap((query) =>
           api.get('/v1/check-result/ping', {params: {query}}).pipe(
             tapResponse({

@@ -9,6 +9,13 @@
     "oldPassword": "Old {{general.password}}",
     "requestPasswordReset": "Request password reset",
     "resetPassword": "Reset password",
+    "setup": {
+      "description": "Your Admin-Account data",
+      "info1": "An invitation will be sent to the specified email address.",
+      "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]",
+      "send": "Send E-Mail",
+      "title": "First-time Setup"
+    },
     "stayLoggedIn": "Stay logged in"
   },
   "backendOffline": {

@@ -1,18 +1,12 @@
-import {DatePipe} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatOption, MatSelect} from '@angular/material/select';
-
-import {map, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType} from '@app/api';
+import {TimezoneInput} from '@app/components';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 
 @Component({
@@ -28,28 +22,9 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           #formRef
           [formGroup]="form"
           (ngSubmit)="submit()">
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'instanceSettings.timezone' | transloco }}</mat-label>
-              <mat-select formControlName="timezone">
-                <mat-option class="pt-1">
-                  <ngx-mat-select-search [formControl]="timezoneFilterControl">
-                    <bi name="x-lg" ngxMatSelectSearchClear />
-                  </ngx-mat-select-search>
-                </mat-option>
-                @for (timeZone of filteredTimezones(); track timeZone) {
-                  <mat-option [value]="timeZone">
-                    {{ timeZone }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-
-            <div>
-              <span>{{ 'general.time' | transloco }}:</span>
-              {{ nowInTimezone() | date: 'YYYY-MM-dd HH:mm:ss' }}
-            </div>
-          </div>
+          <pu-timezone-input
+            [availableTimezones]="availableTimezones()"
+            formControlName="timezone" />
 
           <pu-save-button [valid]="isValid()" form="general-form" />
         </form>
@@ -59,19 +34,14 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   selector: 'pu-instance-settings-general-form',
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatSelect,
-    MatLabel,
-    MatOption,
     MatCard,
     MatCardContent,
     MatCardHeader,
     MatCardTitle,
     NgxMatSelectSearchModule,
-    BiComponent,
     SaveButton,
-    DatePipe,
     TranslocoPipe,
+    TimezoneInput,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -85,12 +55,6 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
 
   readonly isValid = injectIsValid(this.form);
 
-  readonly now = toSignal(timer(0, 1000).pipe(map(() => new Date())), {initialValue: new Date()});
-  readonly timezone = toSignal(this.form.controls.timezone.valueChanges);
-  readonly nowInTimezone = computed(() =>
-    this.now().toLocaleString('en', {timeZone: this.timezone()}),
-  );
-
   availableTimezones = input<string[]>();
 
   settings = input.required({
@@ -98,26 +62,5 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
       this.form.patchValue(it);
       return it;
     },
-  });
-
-  readonly timezoneFilterControl = new FormControl('');
-  readonly timezoneFilter = toSignal(
-    this.timezoneFilterControl.valueChanges.pipe(map((it) => it ?? '')),
-    {
-      initialValue: '',
-    },
-  );
-
-  readonly filteredTimezones = computed(() => {
-    const filter = this.timezoneFilter().trim().toLowerCase();
-    return (
-      this.availableTimezones()
-        ?.filter((it) => it.trim().toLowerCase().includes(filter))
-        ?.sort((a, b) =>
-          a
-            .toLowerCase()
-            .localeCompare(b.toLowerCase(), undefined, {numeric: true, sensitivity: 'base'}),
-        ) ?? []
-    );
   });
 }

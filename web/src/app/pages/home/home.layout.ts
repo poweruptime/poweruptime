@@ -183,7 +183,7 @@ export class HomeLayout {
       .pipe(
         takeUntilDestroyed(),
         map((result) => result.matches),
-        debounceTime(400),
+        debounceTime(275),
       )
       .subscribe((isMobile) => {
         if (!isMobile) {

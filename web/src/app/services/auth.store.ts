@@ -213,7 +213,9 @@ export const AuthStore = signalStore(
           tapResponse({
             next: () => {
               toast.success(
-                translate('Successfully setup your first admin account. Please login now.'),
+                translate(
+                  'Successfully setup your first admin account. Please check your E-Mail inbox.',
+                ),
               );
               void router.navigate(['', 'auth', 'login']);
             },

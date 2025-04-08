@@ -21,7 +21,7 @@ enum class NotificationSenderType : ADatabaseEnumConvertable, NotificationMethod
         |**Ping**
         |:pingMsms
         |
-        |**Started at**
+        |**Check started at**
         |:checkStartedAt
         |
         |[Link to detailed information](:checkResultLink).
@@ -51,7 +51,7 @@ enum class NotificationSenderType : ADatabaseEnumConvertable, NotificationMethod
         |**Ping**
         |:pingMsms
         |
-        |**Started at**
+        |**Check started at**
         |:checkStartedAt
         |
         |[Link to detailed information](:checkResultLink).

@@ -13,3 +13,4 @@ export * from './refresh-in';
 export * from './shadow-render.component';
 export * from './table-loading-bar';
 export * from './theme-switch';
+export * from './timezone-input';

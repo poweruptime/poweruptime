@@ -116,7 +116,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
           <mat-card appearance="outlined">
             <mat-card-content>
               <div class="flex flex-col gap-10">
-                @if (typeValue !== 'DISCORD') {
+                @if (typeValue !== 'DISCORD' && typeValue !== 'SLACK') {
                   <pu-notification-method-edit-template
                     [label]="'notificationMethod.edit.titleTemplate' | transloco"
                     formControlName="titleTemplate" />
@@ -126,6 +126,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
                 <pu-notification-method-edit-template
                   [label]="'notificationMethod.edit.body' | transloco"
+                  [markdown]="typeValue === 'DISCORD' || typeValue === 'SLACK'"
                   formControlName="bodyTemplate" />
               </div>
             </mat-card-content>

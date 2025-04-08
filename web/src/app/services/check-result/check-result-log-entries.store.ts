@@ -77,7 +77,7 @@ export const CheckResultLogEntriesStore = signalStore(
         filter((it): it is string => !!it),
         distinctUntilChanged(),
         tap(() => patchState(store, setPending(), removeAllEntities())),
-        debounceTime(400),
+        debounceTime(275),
         switchMap((checkResultId) =>
           api
             .get('/v1/check-result/{checkResultId}/log', {
