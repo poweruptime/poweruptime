@@ -25,6 +25,20 @@ VALUES ('2XxpcofD6Ubg', true, 'test3@test.org', 'Franz Lugger', false, '{bcrypt}
 INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
 VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcrypt}$2y$12$sysJ25.IN.butJu7QIpYleQ6Suw69.1NJ5K3TQJlJkVVCwZtG9xny', 'U', 'Ue3EDswEefwu');
 
+-- MFA Code
+-- Add to user 4
+INSERT INTO mfa (active, secret, id, user_id) VALUES (true, '7tyjXh9ckw', 'mMyKW886w2xP', 'phECfcYSejyt');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (false, 'mMyKW886w2xP', 'sA1XZuMTFWTX8kxaS8CEP2fZx', 'fxRzehwsFHt36SKhjabxLjCUA');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'MrZcfxDk6kbFKrrw7APWk4Zz3', 'a66mbDpPC1BG1a9tp4Xy5DGb3');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'HU5ELSCkW4XXFE5cpekk2buRM', 'sA5yBDfrRfsyw8ZW9cHKFhs8E');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'BGGL5mMBfA76yufDpkPjbUXsa', 'FowEwe3AUyYCyPKkWwEpBDaLu');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'fYKsMyzK6SAK16Y2Kyo2Sth6e', 'zeft6hGCxhSaEpA39P5XAgpyb');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'fA1UzgyF2U8rsCXKs2FF2p7GU', 'CehX3ysKcfj8Ej5mCszboUhxX');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', '6eaMP1ojKwaoRyaE385gm8xpo', 'hkFhM9pcbYzrYCeL3c6wMRapM');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'FhU9Bj4e45YkykD93LBL792Ty', 'YMe11pfsja9koBmbRRoe5P5M2');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', '6E11k3mse8z45HAFCa3ht74z8', '9aCfPaFRkMAxAWbCX5jAMWmj3');
+INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'YMFHMLycHwuP7F2k2GtKEzrRa', 'cbrxML8Ew4BDZWAuST8pE8ubZ');
+
 -- Team Users
 -- Add user 1 to team 1
 INSERT INTO team_user (team_id, role, user_id) VALUES ('4Lxhu5YKWPBr', 'A', 'ccYmAsus39gG');

@@ -97,8 +97,6 @@ class MFAService(
         }
     }
 
-    fun toBase32EncodedString(secret: String): String = Base32().encodeToString(secret.toByteArray(Charsets.UTF_8))
-
     private fun isValid(secret: String, code: String): Boolean {
         val plainTextSecret = secret.toByteArray(Charsets.UTF_8)
         val base32EncodedSecret = Base32().encode(plainTextSecret)

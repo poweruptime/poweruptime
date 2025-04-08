@@ -1,13 +1,10 @@
 package org.poweruptime.backend.core
 
-import org.poweruptime.backend.configuration.puObjectMapper
-import org.poweruptime.backend.core.dto.IdResponse
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import org.springframework.test.web.servlet.MvcResult
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
@@ -18,6 +15,7 @@ import org.testcontainers.lifecycle.Startables
  * Context and Containers will be reused until one test class in between which inherits from [BaseTest].
  * In this case the context gets "dirtied" and the reusing functionality needs to be recreated as well
  */
+@Suppress("UtilityClassWithPublicConstructor")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
@@ -48,11 +46,6 @@ abstract class BaseTestWithReusingContainers {
             registry.add("spring.rabbitmq.password", rabbitMQContainer::getAdminPassword)
         }
     }
-
-    fun MvcResult.toIdResponse(): IdResponse = toDto(IdResponse::class.java)
-
-    // Extension function to map the content of MvcResult using the object mapper
-    fun <T : Any> MvcResult.toDto(clazz: Class<T>): T = puObjectMapper.readValue(response.contentAsByteArray, clazz)
 }
 
 @SpringBootTest(

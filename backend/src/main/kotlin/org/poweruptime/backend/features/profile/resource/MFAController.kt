@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.resource.CustomHttpHeader
+import org.poweruptime.backend.core.utils.toBase32EncodedString
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.profile.dto.ConfirmMFADto
@@ -40,7 +41,7 @@ class MFAController(
 
         val mfa = mfaService.create(user)
 
-        return SetupMFAResponse(base32Secret = mfaService.toBase32EncodedString(mfa.secret))
+        return SetupMFAResponse(base32Secret = mfa.secret.toBase32EncodedString())
     }
 
     @Operation(

@@ -299,7 +299,7 @@ class MonitorIntegrationTests(
                         jsonPath("$.name") { value(teamModel.name) }
                     }
                 }
-            }.andReturn().toDto(TeamResponse::class.java)
+            }.andReturn().toDto<TeamResponse>()
 
             val monitorModel = ModelFactory.getCreateMonitorDto(
                 dnsMonitorCheckerData,
@@ -358,7 +358,7 @@ class MonitorIntegrationTests(
                             jsonPath("$.checker._type") { value(it._type.code) }
                         }
                     }
-                }.andReturn().toDto(MonitorFullResponse::class.java)
+                }.andReturn().toDto<MonitorFullResponse>()
 
                 assertThat(monitor.checker.toJSON()).isEqualTo(it.toJSON())
 
@@ -382,7 +382,7 @@ class MonitorIntegrationTests(
                             jsonPath("$.checker._type") { value(model.checker._type.code) }
                         }
                     }
-                }.andReturn().toDto(MonitorFullResponse::class.java)
+                }.andReturn().toDto<MonitorFullResponse>()
 
                 assertThat(monitor.checker.toJSON()).isEqualTo(model.checker.toJSON())
             }

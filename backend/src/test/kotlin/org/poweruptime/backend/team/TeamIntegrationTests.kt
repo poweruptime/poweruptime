@@ -241,7 +241,7 @@ class TeamIntegrationTests(
                         jsonPath("$.name") { value(model.name) }
                     }
                 }
-            }.andReturn().toDto(TeamResponse::class.java)
+            }.andReturn().toDto<TeamResponse>()
 
             // Checks if user has team member access
             mockMvc.get("/v1/team/$teamId").andExpect {

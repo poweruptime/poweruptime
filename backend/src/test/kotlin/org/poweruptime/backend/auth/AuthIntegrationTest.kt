@@ -1,5 +1,6 @@
 package org.poweruptime.backend.auth
 
+import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -8,6 +9,9 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.AuthTestUtils
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
+import org.poweruptime.backend.core.resource.CustomHttpHeader
+import org.poweruptime.backend.core.toDto
+import org.poweruptime.backend.core.utils.toBase32EncodedByteArray
 import org.poweruptime.backend.features.authentication.JwtResponse
 import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.RefreshJwtWithSessionTokenDto
@@ -17,6 +21,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import java.util.Calendar
+import java.util.Date
 
 class AuthIntegrationTest(
     @Autowired private val authTestUtils: AuthTestUtils,
@@ -156,7 +162,7 @@ class AuthIntegrationTest(
                     jsonPath("$.accessToken") { exists() }
                     jsonPath("$.refreshToken") { doesNotExist() }
                 }
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
 
             val user2Result = mvc.post("/v1/auth/login") {
                 content = LoginDto(
@@ -171,8 +177,163 @@ class AuthIntegrationTest(
                     jsonPath("$.accessToken") { exists() }
                     jsonPath("$.refreshToken") { doesNotExist() }
                 }
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
             assertThat(user1Result.accessToken).isNotEqualTo(user2Result.accessToken)
+        }
+
+        @Test
+        fun `test sign in with missing MFA code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isForbidden() }
+            }
+        }
+
+        @Test
+        fun `test sign in with incorrect MFA code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(CustomHttpHeader.MFA_CODE, "12345")
+                }
+            }.andExpect {
+                status { isForbidden() }
+            }
+        }
+
+        fun getDateTwoDaysAgo(): Date {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -2)
+            return calendar.time
+        }
+
+        @Test
+        fun `test sign in with outdated MFA code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                    stayLoggedIn = true,
+                    sessionInformation = "Testing1234",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(
+                        CustomHttpHeader.MFA_CODE,
+                        GoogleAuthenticator(
+                            base32secret = "7tyjXh9ckw".toBase32EncodedByteArray(),
+                        ).generate(getDateTwoDaysAgo()),
+                    )
+                }
+            }.andExpect {
+                status { isForbidden() }
+            }
+        }
+
+        @Test
+        fun `test sign in with MFA code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                    stayLoggedIn = true,
+                    sessionInformation = "Testing1234",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(
+                        CustomHttpHeader.MFA_CODE,
+                        GoogleAuthenticator(base32secret = "7tyjXh9ckw".toBase32EncodedByteArray()).generate(),
+                    )
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { exists() }
+                }
+            }
+        }
+
+        @Test
+        fun `test sign in with used MFA backup code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(CustomHttpHeader.MFA_CODE, "sA1XZuMTFWTX8kxaS8CEP2fZx")
+                }
+            }.andExpect {
+                status { isForbidden() }
+            }
+        }
+
+        @Test
+        fun `test sign in with MFA backup code`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(CustomHttpHeader.MFA_CODE, "MrZcfxDk6kbFKrrw7APWk4Zz3")
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }
+        }
+
+        @Test
+        fun `test sign in with MFA backup code used twice`() {
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+                }
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                    jsonPath("$.refreshToken") { doesNotExist() }
+                }
+            }
+
+            mvc.post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test4@test.org",
+                    password = "test",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+                }
+            }.andExpect {
+                status { isForbidden() }
+            }
         }
     }
 
@@ -196,7 +357,7 @@ class AuthIntegrationTest(
                     jsonPath("$.accessToken") { exists() }
                     jsonPath("$.refreshToken") { exists() }
                 }
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
 
             assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
             assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
@@ -221,7 +382,7 @@ class AuthIntegrationTest(
                     jsonPath("$.accessToken") { exists() }
                     jsonPath("$.refreshToken") { exists() }
                 }
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
 
             assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
             assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
@@ -240,7 +401,7 @@ class AuthIntegrationTest(
             val jwtResponse = mvc.post("/v1/auth/login") {
                 content = ModelFactory.getAdminSignInDto().toJSON()
                 contentType = MediaType.APPLICATION_JSON
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
 
             mvc.post("/v1/auth/refresh") {
                 contentType = MediaType.APPLICATION_JSON
@@ -259,7 +420,7 @@ class AuthIntegrationTest(
             val response = mvc.post("/v1/auth/login") {
                 content = ModelFactory.getAdminSignInDto().toJSON()
                 contentType = MediaType.APPLICATION_JSON
-            }.andReturn().toDto(JwtResponse::class.java)
+            }.andReturn().toDto<JwtResponse>()
             assertThat(response.accessToken).isNotNull
             assertThat(response.refreshToken).isNotNull
 

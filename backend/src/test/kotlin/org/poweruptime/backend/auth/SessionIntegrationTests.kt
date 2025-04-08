@@ -5,6 +5,7 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.MockAdmin
 import org.poweruptime.backend.core.ModelFactory
+import org.poweruptime.backend.core.toDto
 import org.poweruptime.backend.features.authentication.JwtResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -23,7 +24,7 @@ class SessionIntegrationTests(
         val jwtResponse = mvc.post("/v1/auth/login") {
             content = ModelFactory.getAdminSignInDto().toJSON()
             contentType = MediaType.APPLICATION_JSON
-        }.andReturn().toDto(JwtResponse::class.java)
+        }.andReturn().toDto<JwtResponse>()
 
         mvc.get("/v1/profile/sessions") {
             headers {
