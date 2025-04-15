@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: dafnik/setup-node-pnpm@v3
+      - uses: dafnik/setup-node-pnpm@v4
         with:
           install-ignore-scripts: true
 
