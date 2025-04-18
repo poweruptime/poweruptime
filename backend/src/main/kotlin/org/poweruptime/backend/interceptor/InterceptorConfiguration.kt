@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
@@ -15,6 +16,15 @@ class InterceptorConfiguration(
     private val ipBasedRateLimitService: IPBasedRateLimitService,
     private val userIdBasedRateLimitService: UserIdBasedRateLimitService,
 ) : WebMvcConfigurer {
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry
+            .addResourceHandler("/v1/public/static-files/**")
+            // … will be served from classpath:/static/
+            .addResourceLocations("classpath:/static/")
+            // optional: cache for 3d
+            .setCachePeriod(3 * 24 * 60 * 60)
+    }
 
     @Suppress("SpreadOperator")
     override fun addInterceptors(registry: InterceptorRegistry) {

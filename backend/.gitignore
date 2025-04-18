@@ -8,6 +8,7 @@ src/test/**/build/
 
 src/main/resources/templates/html/
 src/main/resources/db/db.changelog-test.yaml
+src/main/resources/static/backend.xml
 src/test/resources/db/
 
 tmp/

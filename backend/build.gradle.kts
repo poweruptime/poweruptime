@@ -1,10 +1,15 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import com.github.jk1.license.filter.DependencyFilter
+import com.github.jk1.license.filter.LicenseBundleNormalizer
+import com.github.jk1.license.render.ReportRenderer
+import com.github.jk1.license.render.XmlReportRenderer
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     kotlin("plugin.jpa")
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
+    id ("com.github.jk1.dependency-license-report") version "2.9"
 }
 
 springBoot {
@@ -97,6 +102,15 @@ tasks.bootJar {
     archiveFileName.set("backend.jar")
 }
 
+val licenseReportPath: String = project.layout.buildDirectory.dir("reports/dependency-license").get().asFile.path
+
+licenseReport {
+    renderers = arrayOf<ReportRenderer>(XmlReportRenderer("backend.xml", "Backend Licenses"))
+    filters = arrayOf<DependencyFilter>(LicenseBundleNormalizer())
+    outputDir = licenseReportPath
+}
+
+
 node {
     download = true
     version = "22.0.0"
@@ -124,13 +138,18 @@ configurations.detekt {
     }
 }
 
+val copyLicenseReport = tasks.register<Copy>("copyLicenseReport") {
+    dependsOn("generateLicenseReport")
+    from("$licenseReportPath/backend.xml")
+    into(project.layout.projectDirectory.dir("src/main/resources/static").asFile.path)
+}
 
 /**
  * Needed to use properties from external sources and forward them to application*.yaml files.
  * For more details: https://www.baeldung.com/spring-boot-auto-property-expansion
  */
 tasks.processResources {
-    dependsOn(exportEmails)
+    dependsOn(exportEmails, copyLicenseReport)
 
     copySpec {
         from("src/main/resources")
