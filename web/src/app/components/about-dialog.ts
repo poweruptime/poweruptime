@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, resource} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MatDialogActions,
@@ -6,16 +6,37 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from '@angular/material/dialog';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
+import * as licensesJson from '../../assets/licenses.json';
 import {environment} from '../../environments/environment';
+
+interface BackendEntry {
+  project: {
+    name: string;
+    url: string;
+  };
+  version: string;
+  license: {
+    name: string;
+    url: string;
+  };
+}
 
 @Component({
   template: `
-    <h2 class="text-3xl" mat-dialog-title>{{ 'general.about' | transloco }} poweruptime</h2>
+    <h2 mat-dialog-title>
+      <span class="text-3xl">{{ 'general.about' | transloco }} poweruptime</span>
+    </h2>
     <mat-dialog-content>
-      <div class="grid gap-4">
+      <div class="grid gap-4 pb-4">
         <p>
           Learn more on
           <a
@@ -28,6 +49,45 @@ import {environment} from '../../environments/environment';
           .
         </p>
         <h3 class="text-xl">Version: {{ version }}</h3>
+        <h3 class="text-xl">Licenses ❤️</h3>
+
+        <mat-accordion multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Web</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="grid gap-4">
+              @for (license of feLicenses(); track $index) {
+                <a class="grid" [href]="license.link" rel="noreferrer" target="_blank">
+                  <div class="w-100 flex justify-between">
+                    <h6>{{ license.name }}</h6>
+                    <small>{{ license.licenseType }}</small>
+                  </div>
+                  @if (license.author !== 'n/a') {
+                    <small class="mb-1">by {{ license.author }}</small>
+                  }
+                  <small>{{ license.installedVersion }}</small>
+                </a>
+              }
+            </div>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Backend</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="grid gap-4">
+              @for (license of beLicenses(); track $index) {
+                <a class="grid" [href]="license.project.url" rel="noreferrer" target="_blank">
+                  <h6>{{ license.project.name }}</h6>
+                  <small>{{ license.license.name }}</small>
+                  <small>{{ license.version }}</small>
+                </a>
+              }
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -43,8 +103,64 @@ import {environment} from '../../environments/environment';
     MatButton,
     MatDialogClose,
     TranslocoPipe,
+    MatExpansionPanelTitle,
+    MatExpansionPanelHeader,
+    MatExpansionPanel,
+    MatAccordion,
   ],
 })
 export class AboutDialog {
   version = environment.version;
+
+  feLicenses$ = resource({
+    loader: () =>
+      fetch('/assets/licenses.json')
+        .then((res) => res.json())
+        .then((json) => json as typeof licensesJson),
+  });
+
+  feLicenses = computed(
+    () =>
+      this.feLicenses$.value()?.map((it) => {
+        it.link = it.link.replace('git+', '');
+        it.link = it.link.replace('git:', 'https:');
+        it.link = it.link.replace('ssh://git@', 'https:');
+        return it;
+      }) ?? [],
+  );
+
+  baLicenses$ = resource({
+    loader: () =>
+      fetch(`${environment.apiUrl}/v1/public/static-files/backend.xml`).then((res) => res.text()),
+  });
+
+  beLicenses = computed(() => {
+    const xmlString = this.baLicenses$.value();
+
+    if (!xmlString) {
+      return [];
+    }
+
+    const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
+    const rows = Array.from(doc.querySelectorAll('table > tr'));
+
+    // drop header row
+    return rows.slice(1).map((tr) => {
+      const [projTd, verTd, licTd] = Array.from(tr.querySelectorAll('td'));
+      const aProj = projTd.querySelector('a');
+      const aLic = licTd.querySelector('a');
+
+      return {
+        project: {
+          name: aProj?.textContent?.trim() ?? 'Unknown',
+          url: aProj?.getAttribute('href') ?? 'Unknown',
+        },
+        version: verTd.textContent?.trim() ?? 'Unknown',
+        license: {
+          name: aLic?.textContent?.trim() ?? licTd.textContent?.trim() ?? 'Unknown',
+          url: aLic?.getAttribute('href') ?? 'Unknown',
+        },
+      } satisfies BackendEntry;
+    });
+  });
 }

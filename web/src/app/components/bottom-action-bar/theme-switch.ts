@@ -8,11 +8,9 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
 
 @Component({
   template: `
-    <div class="fixed bottom-4 right-4">
-      <button [matMenuTriggerFor]="menu" mat-mini-fab>
-        <bi name="paint-bucket" size="20" />
-      </button>
-    </div>
+    <button [matMenuTriggerFor]="menu" mat-mini-fab>
+      <bi name="paint-bucket" size="20" />
+    </button>
     @let selectedTheme = themeService.selectedTheme();
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {

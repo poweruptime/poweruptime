@@ -1,16 +1,18 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {MatButton} from '@angular/material/button';
+import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
+import {RouterLink} from '@angular/router';
 
 import {AuthStore} from '@app/services';
 
 @Component({
   template: `
-    <div class="grid md:grid-cols-3">
+    <div class="grid gap-4 md:grid-cols-3">
       <div>
         <mat-card appearance="outlined">
           <mat-card-content>
             <div class="flex flex-col gap-4">
+              <h2 class="text-xl">Auth</h2>
               <button class="secondary-button" (click)="setInvalidAccessToken()" mat-flat-button>
                 Access token invalidate
               </button>
@@ -21,11 +23,48 @@ import {AuthStore} from '@app/services';
           </mat-card-content>
         </mat-card>
       </div>
+      <div>
+        <mat-card appearance="outlined">
+          <mat-card-content>
+            <div class="flex flex-col gap-4">
+              <h2 class="text-xl">Preview</h2>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/auth/login">
+                Open Login
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/auth/forgot-password">
+                Open Forgot Password
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/auth/password-change">
+                Open Password Change
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/auth/setup">
+                Open Setup
+              </a>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   `,
   selector: 'pu-profile-dev-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCard, MatCardContent, MatButton],
+  imports: [MatCard, MatCardContent, MatButton, MatAnchor, RouterLink],
 })
 export class ProfileDevPage {
   private readonly authStore = inject(AuthStore);

@@ -1,3 +1,4 @@
+export * from './bottom-action-bar/bottom-action-bar';
 export * from './mat-mentions';
 export * from './alert.directive';
 export * from './backend-image';
@@ -6,11 +7,9 @@ export * from './copy-icon-button';
 export * from './confirm-dialog';
 export * from './file-upload';
 export * from './heatmap';
-export * from './language-switch';
 export * from './nav';
 export * from './placeholder';
 export * from './refresh-in';
 export * from './shadow-render.component';
 export * from './table-loading-bar';
-export * from './theme-switch';
 export * from './timezone-input';

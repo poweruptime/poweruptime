@@ -7,11 +7,9 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 @Component({
   template: `
-    <div class="fixed bottom-4 right-16">
-      <button [matMenuTriggerFor]="languageMenu" mat-mini-fab>
-        <bi name="translate" size="20" />
-      </button>
-    </div>
+    <button [matMenuTriggerFor]="languageMenu" mat-mini-fab>
+      <bi name="translate" size="20" />
+    </button>
     @let selectedLang = translocoService.getActiveLang();
     <mat-menu #languageMenu="matMenu" yPosition="above">
       @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
