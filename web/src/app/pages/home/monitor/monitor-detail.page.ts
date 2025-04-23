@@ -123,10 +123,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             {{ 'general.monitor' | transloco }}
           </mat-chip>
 
-          @if (monitor.retries !== 0) {
+          @if (monitor.retries; as retries) {
             <mat-chip class="flex items-center">
               <bi class="mr-1" name="arrow-repeat" />
-              <span>{{ 'monitor.details.retries' | transloco: monitor }}</span>
+              <span>{{ 'monitor.details.retries' | transloco: {retries} }}</span>
             </mat-chip>
           }
 

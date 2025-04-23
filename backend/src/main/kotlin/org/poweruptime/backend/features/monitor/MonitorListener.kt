@@ -27,6 +27,7 @@ import java.time.Duration
 import java.time.Instant
 
 private const val QUEUE_MONITOR_TIMEOUT_SECONDS = 10L
+private const val MONITOR_DEFAULT_RETRY = 0L
 
 /**
  * Extension function to flip [Boolean] if [upsideDown] is true.
@@ -351,12 +352,12 @@ class MonitorListener(
 
                 // Mark as DOWN if the down-check count (including this one) >= retries
                 // Otherwise, remain UP until all retries are used
-                if (timesRetried >= monitor.retries) {
+                if (timesRetried >= (monitor.retries ?: MONITOR_DEFAULT_RETRY)) {
                     checkResultLogEntryService.info(
                         stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
                         checkResult = checkResult,
                         message = """Monitor exceeded maximal retries. Currently retried ${timesRetried}x
-                                | (max ${monitor.retries}x retries)
+                                | (max ${monitor.retries ?: 0}x retries)
                         """.trimMargin(),
                     )
                     MonitorStatus.DOWN
@@ -365,7 +366,7 @@ class MonitorListener(
                         stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
                         checkResult = checkResult,
                         message = """Monitor did not exceed maximal retries. Currently retried ${timesRetried}x
-                                | (max ${monitor.retries}x retries)
+                                | (max ${monitor.retries ?: 0}x retries)
                         """.trimMargin(),
                     )
                     MonitorStatus.UP

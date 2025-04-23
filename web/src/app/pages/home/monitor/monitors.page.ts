@@ -15,7 +15,7 @@ import {paramToArray} from '@app/util';
 
 @Component({
   template: `
-    <div class="flex gap-4 overflow-y-hidden" style="height: 93vh">
+    <div class="flex gap-4">
       <div class="flex flex-col gap-4" style="width: 21rem; min-width: 21rem;">
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
@@ -73,10 +73,16 @@ import {paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="h-screen max-h-screen grow overflow-y-auto overflow-x-hidden pb-24 pe-2">
+      <div class="content grow overflow-y-auto overflow-x-hidden pb-24 pe-2">
         <router-outlet />
       </div>
     </div>
+  `,
+  styles: `
+    .content {
+      height: 91.5vh;
+      max-height: 91.5vh;
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore],

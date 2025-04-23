@@ -208,7 +208,7 @@ create table monitor
     created_at            timestamp with time zone default now() not null,
     deleted               timestamp with time zone,
     resend_after          bigint,
-    retries               bigint                                 not null,
+    retries               bigint,
     test_interval_seconds bigint                                 not null,
     updated_at            timestamp with time zone default now() not null,
     version               bigint                   default 0     not null,

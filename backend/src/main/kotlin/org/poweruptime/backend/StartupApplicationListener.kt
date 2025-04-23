@@ -87,7 +87,6 @@ class StartupApplicationListener(
                         ),
                         testIntervalSeconds = 3600,
                         upsideDown = false,
-                        retries = 0,
                     )
                 },
             )
@@ -112,7 +111,6 @@ class StartupApplicationListener(
                     ),
                     testIntervalSeconds = 120,
                     upsideDown = false,
-                    retries = 0,
                 ),
             )
         }
@@ -184,7 +182,6 @@ class StartupApplicationListener(
                 // data = """{"host":"dafnik.me","server":"9.9.9.9","port":53,"type":"A"}""",
                 testIntervalSeconds = 120,
                 upsideDown = false,
-                retries = 0,
                 enabledNotificationMethods = listOf(emailNotificationMethod),
             ),
         )
@@ -202,7 +199,6 @@ class StartupApplicationListener(
                 ),
                 testIntervalSeconds = 120,
                 upsideDown = false,
-                retries = 0,
                 enabledNotificationMethods = listOf(emailNotificationMethod),
             ),
         )
@@ -229,7 +225,6 @@ class StartupApplicationListener(
 //                    ),
 //                    testIntervalSeconds = 86400,
 //                    upsideDown = false,
-//                    retries = 0,
 //                ),
 //            )
 //        }

@@ -50,9 +50,9 @@ import {
 
 @Component({
   template: `
-    <div class="mb-6 grid gap-6 lg:grid-cols-2">
+    <div class="mb-6 grid gap-6 lg:grid-cols-3">
       <form
-        class="grid grid-cols-6 gap-2"
+        class="col-span-2 grid grid-cols-6 gap-2"
         id="form"
         #formRef
         [formGroup]="form"
@@ -218,7 +218,7 @@ import {
         </mat-card>
       </form>
 
-      <div class="flex flex-col gap-6">
+      <div class="col-span-1 flex flex-col gap-6">
         <mat-card appearance="outlined">
           <mat-card-header>
             <mat-card-title>{{ 'general.notificationMethods' | transloco }}</mat-card-title>
@@ -357,8 +357,8 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
       ],
     ],
     retries: [
-      0,
-      [Validators.required, Validators.pattern(Database.INTEGER_REGEX), Validators.min(0)],
+      undefined as number | undefined,
+      [Validators.pattern(Database.INTEGER_REGEX), Validators.min(1)],
     ],
     resendAfter: [
       undefined as number | undefined,

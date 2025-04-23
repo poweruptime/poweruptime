@@ -22,9 +22,6 @@ class Monitor(
     @Column(name = "test_interval_seconds", nullable = false, columnDefinition = "bigint")
     var testIntervalSeconds: Long,
 
-    @Column(name = "retries", nullable = false, columnDefinition = "bigint")
-    var retries: Long,
-
     @Column(name = "upside_down", nullable = false, columnDefinition = "boolean")
     var upsideDown: Boolean,
 
@@ -36,6 +33,9 @@ class Monitor(
     @JoinColumn(name = "monitor_checker_id", nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
     var checker: MonitorCheckerData,
+
+    @Column(name = "retries", nullable = false, columnDefinition = "bigint")
+    var retries: Long? = null,
 
     @Column(name = "resend_after", nullable = true, columnDefinition = "bigint")
     var resendAfter: Long? = null,

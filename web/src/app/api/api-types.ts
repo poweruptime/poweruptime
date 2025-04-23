@@ -1706,7 +1706,7 @@ export interface components {
       /** Format: int64 */
       testIntervalSeconds: number;
       /** Format: int64 */
-      retries: number;
+      retries?: number;
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
@@ -1738,7 +1738,7 @@ export interface components {
       /** Format: int64 */
       testIntervalSeconds: number;
       /** Format: int64 */
-      retries: number;
+      retries?: number;
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
@@ -1831,7 +1831,7 @@ export interface components {
       /** Format: int64 */
       testIntervalSeconds: number;
       /** Format: int64 */
-      retries: number;
+      retries?: number;
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
@@ -1956,7 +1956,7 @@ export interface components {
       /** Format: date-time */
       buildTime: string;
       host: string;
-      setup?: boolean;
+      setup: boolean;
     };
     TempNotification: {
       to: string;
@@ -2094,7 +2094,7 @@ export interface components {
       /** Format: int64 */
       testIntervalSeconds: number;
       /** Format: int64 */
-      retries: number;
+      retries?: number;
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
