@@ -1,7 +1,8 @@
 @use '@angular/material' as mat;
+@use './theme-colors' as tc;
 
 $config: (
-  color: mat.$violet-palette,
+  color: tc.$primary-palette,
   density: -1,
 );
 
@@ -37,7 +38,8 @@ html {
 .secondary-button {
   @include mat.button-overrides(
     (
-      filled-container-color: #2196f3,
+      filled-container-color: var(--mat-sys-secondary),
+      filled-label-text-color: var(--mat-sys-on-secondary),
     )
   );
 }
@@ -45,7 +47,8 @@ html {
 .error-button {
   @include mat.button-overrides(
     (
-      filled-container-color: #ef5350,
+      filled-container-color: var(--mat-sys-error-container),
+      filled-label-text-color: var(--mat-sys-on-error-container),
     )
   );
 }
