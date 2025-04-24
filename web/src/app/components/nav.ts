@@ -67,6 +67,7 @@ import {TeamSelect} from './team-select';
           <div class="ps-4">
             @for (team of selectedTeamStore.onceSelectedTeamsCut(); track team.id) {
               <a
+                class="nav-item"
                 routerLink="/t/{{ team.id }}/{{ _isMobile ? 'mm' : 'm' }}"
                 mat-list-item
                 routerLinkActive="active">
@@ -76,6 +77,7 @@ import {TeamSelect} from './team-select';
                   </span>
                   @if (team.id !== selectedTeam?.id) {
                     <button
+                      class="close-button"
                       (click)="
                         $event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)
                       "
@@ -215,6 +217,14 @@ import {TeamSelect} from './team-select';
       .nav-text {
         @apply font-semibold;
       }
+    }
+
+    .close-button {
+      display: none;
+    }
+
+    .nav-item:hover .close-button {
+      display: block;
     }
   `,
   selector: 'pu-nav',
