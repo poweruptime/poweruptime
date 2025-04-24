@@ -34,6 +34,9 @@ object Database {
     const val MIN_VALID_DAYS_LEFT = 1L
     const val MAX_VALID_DAYS_LEFT = 3650L // 4 years
 
+    const val MIN_REDIRECTS = 1L
+    const val MAX_REDIRECTS = 20L
+
     const val MAX_TITLE_LENGTH = 2000
     const val MAX_MESSAGE_LENGTH = 4000
 
@@ -41,6 +44,9 @@ object Database {
     const val MAX_DISCORD_DISPLAY_NAME_LENGTH = 32
 
     const val URL_REGEX = """^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"""
+
+    const val MIN_STATUS_CODES = 1
+    const val STATUS_CODE_REGEX = """^\d{3}\s*-\s*\d{3}${'$'}"""
 
     @Suppress("MaxLineLength")
     const val DOMAIN_REGEX = """(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]"""

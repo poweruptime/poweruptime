@@ -12,7 +12,7 @@ import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
 import {Database} from '@app/api';
 import {AlertDirective} from '@app/components';
 import {injectIsValid} from '@app/form';
-import {AuthStore} from '@app/services';
+import {SetupStore} from '@app/services';
 
 @Component({
   template: `
@@ -28,6 +28,10 @@ import {AuthStore} from '@app/services';
         </mat-card-header>
         <mat-card-content>
           <form class="mt-6 grid gap-4" [formGroup]="form" (ngSubmit)="submit()">
+            @if (setupStore.error()) {
+              <div puAlert type="WARN">Error while finishing setup... Already setup?</div>
+            }
+
             <h3>{{ 'auth.setup.description' | transloco }}:</h3>
             <mat-form-field>
               <mat-label>{{ 'general.name' | transloco }}</mat-label>
@@ -102,7 +106,7 @@ import {AuthStore} from '@app/services';
   ],
 })
 export class SetupPage {
-  authStore = inject(AuthStore);
+  readonly setupStore = inject(SetupStore);
 
   form = inject(NonNullableFormBuilder).group({
     name: [
@@ -126,6 +130,6 @@ export class SetupPage {
   isValid = injectIsValid(this.form);
 
   submit(): void {
-    this.authStore.setup(this.form.getRawValue());
+    this.setupStore.setup(this.form.getRawValue());
   }
 }

@@ -11,6 +11,8 @@ import {
   HttpMonitorDataMethod,
 } from '@app/api';
 
+import {arrayItemMaxLength, arrayItemMinLength, arrayItemPattern} from '../../../form';
+
 const baseCheckerProperties = {
   _type: [''],
 };
@@ -65,7 +67,32 @@ export const MonitorEditFormDataService = createInjectable(
       ],
       method: ['GET' as HttpMonitorDataMethod, [Validators.required]],
       contentType: ['JSON' as HttpMonitorDataContentType, [Validators.required]],
+      allowedStatusCodeRanges: new FormControl<string[]>(
+        ['200 - 299'],
+        [
+          Validators.required,
+          arrayItemMinLength(Database.MIN_STATUS_CODES),
+          arrayItemPattern(Database.STATUS_CODE_REGEX),
+        ],
+      ),
+      maxRedirects: [
+        10 as number | undefined,
+        [
+          Validators.min(Database.MIN_REDIRECTS),
+          Validators.max(Database.MAX_REDIRECTS),
+          Validators.pattern(Database.INTEGER_REGEX),
+        ],
+      ],
       ignoreTLS: [false, [Validators.required]],
+      certificateExpiry: [false, [Validators.required]],
+      certificateValidDaysLeft: [
+        undefined as number | undefined,
+        [
+          Validators.min(Database.MIN_VALID_DAYS_LEFT),
+          Validators.max(Database.MAX_VALID_DAYS_LEFT),
+          Validators.pattern(Database.INTEGER_REGEX),
+        ],
+      ],
       body: [undefined as string | undefined],
       searchTerm: [undefined as string | undefined],
       authType: [undefined as 'BASIC_AUTH' | undefined],

@@ -6,10 +6,14 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import java.io.IOException
 import java.net.URL
+import java.security.KeyStore
+import java.security.SecureRandom
+import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
+import javax.net.ssl.*
 import javax.net.ssl.HttpsURLConnection
 
 class SSLCertificateMonitorChecker(
@@ -18,63 +22,101 @@ class SSLCertificateMonitorChecker(
     override val type = MonitorCheckerType.SSL_CERTIFICATE
 
     override fun execute(monitor: Monitor): CheckResultDto {
-        val sslCertificateMonitorCheckerData = monitor.checker as SSLCertificateMonitorCheckerData
-
+        val sslData = monitor.checker as SSLCertificateMonitorCheckerData
         val result = MonitoringResultHandler()
-        val currentTime = Instant.now()
+        val now = Instant.now()
 
         try {
-            // Create a URL object
-            val url = URL(sslCertificateMonitorCheckerData.url)
+            // 1) Grab the default TM
+            val tmf = TrustManagerFactory
+                .getInstance(TrustManagerFactory.getDefaultAlgorithm())
+            tmf.init(null as KeyStore?)
 
-            // Open an HTTPS connection
-            val connection = url.openConnection() as HttpsURLConnection
-            connection.connect()
+            val defaultTm = tmf.trustManagers
+                .filterIsInstance<X509TrustManager>()
+                .firstOrNull()
+                ?: error("No X509TrustManager found")
 
-            // Get the certificates
-            val certs = connection.serverCertificates
+            // 2) Build our “swallow all CertificateException” TM
+            val permissiveTm = object : X509TrustManager {
+                override fun getAcceptedIssuers(): Array<X509Certificate> =
+                    defaultTm.acceptedIssuers
 
-            // Check validity of all certificates
-            val mappedCerts = certs.filterIsInstance<X509Certificate>().groupBy { cert ->
-                val notAfter = cert.notAfter.toInstant()
+                override fun checkClientTrusted(
+                    chain: Array<out X509Certificate>,
+                    authType: String
+                ) = defaultTm.checkClientTrusted(chain, authType)
 
-                val valid = if (sslCertificateMonitorCheckerData.validDaysLeft != null) {
-                    // Calculate remaining days
-                    val daysRemaining = Duration.between(currentTime, notAfter).toDays()
-
-                    daysRemaining >= sslCertificateMonitorCheckerData.validDaysLeft!!
-                } else {
-                    // Check if the certificate is invalid now
-                    currentTime.isAfter(cert.notBefore.toInstant()) || currentTime.isBefore(notAfter)
+                override fun checkServerTrusted(
+                    chain: Array<out X509Certificate>,
+                    authType: String
+                ) {
+                    try {
+                        defaultTm.checkServerTrusted(chain, authType)
+                    } catch (_: CertificateException) {
+                        // swallow every certificate exception (expired, path, whatever)
+                    }
                 }
-
-                return@groupBy valid
             }
 
-            connection.disconnect()
+            // 3) Init an SSLContext with it
+            val sslContext = SSLContext.getInstance("TLS").apply {
+                init(null, arrayOf<TrustManager>(permissiveTm), SecureRandom())
+            }
 
-            val teamTimeZoneId = teamSettingService.getTimeZone(monitor.team.id)
+            // 3) open the connection & inject our SSLSocketFactory
+            val url = URL(sslData.url)
+            val conn = url.openConnection() as HttpsURLConnection
+            conn.sslSocketFactory = sslContext.socketFactory
+            conn.connectTimeout = 5_000
+            conn.readTimeout = 5_000
+            conn.connect()
 
-            return if (mappedCerts.isEmpty()) {
-                result.error("No certificates found")
-            } else if (mappedCerts[false]?.isNotEmpty() == true) {
-                result.error(
+            val certs = conn.serverCertificates
+                .filterIsInstance<X509Certificate>()
+
+            conn.disconnect()
+
+            if (certs.isEmpty()) {
+                return result.error("No certificates found")
+            }
+
+            // group by “still within your expected days‐left” vs “too close/expired”
+            val grouped = certs.groupBy { cert ->
+                val expiresAt = cert.notAfter.toInstant()
+                val validDaysLeft = sslData.validDaysLeft
+                if (validDaysLeft != null) {
+                    Duration.between(now, expiresAt).toDays() >= validDaysLeft
+                } else {
+                    // if no threshold given, just check “is it not yet expired?”
+                    now.isBefore(expiresAt)
+                }
+            }
+
+            val tz = teamSettingService.getTimeZone(monitor.team.id)
+
+            return when {
+                grouped[false]?.isNotEmpty() == true -> result.error(
                     title = "Certificate valid, but expiry check failed",
-                    message = mappedCerts[false]!!.toMessage(currentTime, teamTimeZoneId),
+                    message = grouped[false]!!
+                        .toMessage(now, tz),
                 )
-            } else {
-                result.success(
+
+                else -> result.success(
                     title = "All certificates valid",
-                    message = mappedCerts[true]!!.toMessage(currentTime, teamTimeZoneId),
+                    message = grouped[true]!!
+                        .toMessage(now, tz),
                 )
             }
-        } catch (_: IOException) {
-            return result.error("Invalid certificates")
+        } catch (e: IOException) {
+            return result.error("I/O error validating certificate", e.message)
+        } catch (e: Exception) {
+            return result.error("Unexpected error", e.message)
         }
     }
 }
 
-fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId) = this.joinToString("\n") {
+private fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId) = this.joinToString("\n") {
     // Calculate remaining days
     val notAfter = it.notAfter.toInstant()
     val duration = Duration.between(currentTime, notAfter)
@@ -92,5 +134,5 @@ fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId) = this
     }"
 }
 
-val issuerNameRegex = Regex("""(?<=O=)[^,]+""")
-val subjectNameRegex = Regex("""(?<=CN=)[^,]+""")
+private val issuerNameRegex = Regex("""(?<=O=)[^,]+""")
+private val subjectNameRegex = Regex("""(?<=CN=)[^,]+""")

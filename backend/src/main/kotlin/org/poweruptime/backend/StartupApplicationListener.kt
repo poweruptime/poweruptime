@@ -64,7 +64,7 @@ class StartupApplicationListener(
         startMonitoring()
         return
 
-        if (false) {
+        if (true) {
             val team = teamService.create(CreateTeamDto(name = "HTTP Monitor Test Team"))
 
             monitorService.saveAll(
@@ -77,12 +77,7 @@ class StartupApplicationListener(
                                 url = "https://httpstat.us/$statusCode",
                                 method = HttpMonitorCheckerDataMethod.GET,
                                 contentType = HttpMonitorCheckerDataContentType.JSON,
-                                ignoreTLS = false,
-                                body = null,
-                                searchTerm = null,
-                                authType = null,
-                                basicAuthDataUsername = null,
-                                basicAuthDataPassword = null,
+                                allowedStatusCodeRanges = listOf("$statusCode - $statusCode"),
                             ),
                         ),
                         testIntervalSeconds = 3600,
@@ -101,12 +96,8 @@ class StartupApplicationListener(
                             url = "https://expired.badssl.com/",
                             method = HttpMonitorCheckerDataMethod.GET,
                             contentType = HttpMonitorCheckerDataContentType.JSON,
+                            allowedStatusCodeRanges = listOf("200 - 299"),
                             ignoreTLS = true,
-                            body = null,
-                            searchTerm = null,
-                            authType = null,
-                            basicAuthDataUsername = null,
-                            basicAuthDataPassword = null,
                         ),
                     ),
                     testIntervalSeconds = 120,
@@ -114,6 +105,9 @@ class StartupApplicationListener(
                 ),
             )
         }
+
+//        startMonitoring()
+//        return
 
         val team = teamService.create(CreateTeamDto(name = "Monitor Test Team"))
 
@@ -171,12 +165,8 @@ class StartupApplicationListener(
                         url = "https://dafnik.me",
                         method = HttpMonitorCheckerDataMethod.GET,
                         contentType = HttpMonitorCheckerDataContentType.JSON,
-                        ignoreTLS = false,
-                        body = null,
-                        searchTerm = null,
-                        authType = null,
-                        basicAuthDataUsername = null,
-                        basicAuthDataPassword = null,
+                        allowedStatusCodeRanges = listOf("200 - 299"),
+                        maxRedirects = 10,
                     ),
                 ),
                 // data = """{"host":"dafnik.me","server":"9.9.9.9","port":53,"type":"A"}""",

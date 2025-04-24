@@ -1,3 +1,4 @@
+export * from './auth';
 export * from './check-result';
 export * from './monitor';
 export * from './notification';
@@ -7,7 +8,6 @@ export * from './instance-settings';
 export * from './status-page';
 export * from './team';
 export * from './user';
-export * from './auth.store';
 export * from './backend-offline.service';
 export * from './email-change.store';
 export * from './platform.service';

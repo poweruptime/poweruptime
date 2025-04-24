@@ -50,6 +50,8 @@ abstract class ASoftDeleteEntityService<T : ISoftDeleteEntity>(
         return entities
     }
 
+    fun finalDeleteById(id: String) = repository.finalDeleteById(id)
+
     open fun undeleteById(id: String): T = repository.undeleteById(id).let {
         repository.flush()
         getByIdOrThrow(id)

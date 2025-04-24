@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary
 
 val puObjectMapper: JsonMapper = jacksonMapperBuilder()
     .addModule(JavaTimeModule())
-    .serializationInclusion(JsonInclude.Include.NON_NULL)
+    .serializationInclusion(JsonInclude.Include.ALWAYS)
     // Write instants as string
     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
     // Ignore unknown json properties

@@ -17,7 +17,7 @@ class MonitorCheckerFactory(
 ) {
     private val checkers = listOf(
         DnsMonitorChecker(),
-        HttpMonitorChecker(),
+        HttpMonitorChecker(teamSettingService),
         PingMonitorChecker(),
         PushMonitorChecker(pushMonitorCheckerEntryRepository, teamSettingService),
         SSLCertificateMonitorChecker(teamSettingService),

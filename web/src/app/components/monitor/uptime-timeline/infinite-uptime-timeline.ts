@@ -70,8 +70,6 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
         }
       }
     </cdk-virtual-scroll-viewport>
-
-    <!--    <span>&nbsp;</span>-->
   `,
   styles: `
     @reference "#styles.css";
@@ -86,6 +84,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
 
     .uptime-timeline-viewport .cdk-virtual-scroll-content-wrapper {
       @apply p-1;
+      min-width: 5rem;
 
       display: flex;
       flex-direction: row;

@@ -12,7 +12,7 @@ import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
-import {AuthStore} from '@app/services';
+import {AuthStore, ForgotPasswordStore} from '@app/services';
 
 @Component({
   template: `
@@ -143,8 +143,8 @@ import {AuthStore} from '@app/services';
   ],
 })
 export class ForgotPasswordPage {
-  readonly authStore = inject(AuthStore);
-  readonly fb = inject(NonNullableFormBuilder);
+  private readonly forgotPasswordStore = inject(ForgotPasswordStore);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   state = signal<'REQUEST' | 'RESET'>('REQUEST');
 
@@ -205,12 +205,12 @@ export class ForgotPasswordPage {
   }
 
   submitRequest(): void {
-    this.authStore.forgotPassword(this.requestPasswordResetForm.getRawValue());
+    this.forgotPasswordStore.forgotPassword(this.requestPasswordResetForm.getRawValue());
   }
 
   submitReset(): void {
     const value = this.resetPasswordForm.getRawValue();
-    this.authStore.forgotPasswordUpdate({
+    this.forgotPasswordStore.forgotPasswordUpdate({
       ...value,
       newPassword: value.newPassword.newPassword,
     });

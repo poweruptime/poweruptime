@@ -95,6 +95,9 @@ export class Database {
   static readonly MIN_VALID_DAYS_LEFT: number = 1;
   static readonly MAX_VALID_DAYS_LEFT: number = 3650; // 4 years
 
+  static readonly MIN_REDIRECTS = 1;
+  static readonly MAX_REDIRECTS = 20;
+
   static readonly MAX_TITLE_LENGTH: number = 2000;
   static readonly MAX_MESSAGE_LENGTH: number = 4000;
 
@@ -103,6 +106,9 @@ export class Database {
 
   static readonly URL_REGEX =
     /^(https?|ftp|file):\/\/[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]/;
+
+  static readonly MIN_STATUS_CODES = 1;
+  static readonly STATUS_CODE_REGEX = /^\d{3}\s*-\s*\d{3}$/;
 
   static readonly DOMAIN_REGEX =
     /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/;

@@ -8,9 +8,9 @@ import {toast} from 'ngx-sonner';
 import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BackendType, PushDto} from '@app/api';
-import {AuthStore} from '@app/services/auth.store';
 
 import {environment} from '../../environments/environment';
+import {AuthStore} from './auth/auth.store';
 import {connectToEventSource} from './event-source.service';
 
 export const PushService = createInjectable(() => {

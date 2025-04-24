@@ -34,7 +34,7 @@ class Monitor(
     @OneToOne(fetch = FetchType.EAGER)
     var checker: MonitorCheckerData,
 
-    @Column(name = "retries", nullable = false, columnDefinition = "bigint")
+    @Column(name = "retries", nullable = true, columnDefinition = "bigint")
     var retries: Long? = null,
 
     @Column(name = "resend_after", nullable = true, columnDefinition = "bigint")

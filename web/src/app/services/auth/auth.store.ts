@@ -4,15 +4,13 @@ import {Router} from '@angular/router';
 
 import {switchMap} from 'rxjs';
 
-import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {i_complete, s_fromStorage, st_removeAll, st_set} from 'dfts-helper';
-import {toast} from 'ngx-sonner';
 import {createInjectionToken} from 'ngxtension/create-injection-token';
 
-import {BackendType, injectAPI} from '@app/api';
+import {BackendType, injectAPI} from '../../api';
 
 interface AuthState {
   error: 'INVALID_CREDENTIALS' | 'PASSWORDS_IDENTICAL' | 'NONE';
@@ -205,49 +203,6 @@ export const AuthStore = signalStore(
               },
             }),
           ),
-      ),
-    ),
-    setup: rxMethod<BackendType['SetupDto']>(
-      switchMap((body) =>
-        api.post('/v1/auth/setup', {body}).pipe(
-          tapResponse({
-            next: () => {
-              toast.success(
-                translate(
-                  'Successfully setup your first admin account. Please check your E-Mail inbox.',
-                ),
-              );
-              void router.navigate(['', 'auth', 'login']);
-            },
-            error: () => {},
-          }),
-        ),
-      ),
-    ),
-    forgotPassword: rxMethod<BackendType['PasswordForgotRequestDto']>(
-      switchMap((body) =>
-        api.post('/v1/auth/resetPassword', {body}).pipe(
-          tapResponse({
-            next: () => {
-              toast.success(translate('Sent password reset email to your email address.'));
-              void router.navigate(['', 'auth', 'login']);
-            },
-            error: () => {},
-          }),
-        ),
-      ),
-    ),
-    forgotPasswordUpdate: rxMethod<BackendType['PasswordForgotResetDto']>(
-      switchMap((body) =>
-        api.post('/v1/auth/resetPassword/update', {body}).pipe(
-          tapResponse({
-            next: () => {
-              toast.success(translate('Password reset successful. Please login now.'));
-              void router.navigate(['', 'auth', 'login']);
-            },
-            error: () => {},
-          }),
-        ),
       ),
     ),
   })),

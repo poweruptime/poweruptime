@@ -256,8 +256,21 @@
       },
       "edit": "Edit {{name}}",
       "http": {
+        "allowedStatusCodeRanges": {
+          "enter": "Enter status code range",
+          "inputRegexError": "Please follow the pattern: 'XXX - YYY'",
+          "inputStartBiggerThenEndError": "The second status code has to be higher than the first one",
+          "new": "New status code range",
+          "remove": "Remove status code range",
+          "title": "Allowed Status Code Range"
+        },
         "authType": "Auth-Type",
+        "certificateExpiry": "Certificate Expiry Notification",
         "ignoreTLS": "Ignore TLS",
+        "maxRedirects": {
+          "hint": "Leave blank to disable redirect.",
+          "label": "Max-Redirects"
+        },
         "searchTerm": "{{general.search}} term"
       },
       "interval": "Interval in {{unit}}",

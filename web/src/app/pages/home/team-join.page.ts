@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {TeamJoinStore} from '@app/services/team-join.store';
+import {TeamJoinStore} from '@app/services';
 
 @Component({
   template: `
@@ -12,7 +12,6 @@ import {TeamJoinStore} from '@app/services/team-join.store';
       </div>
     </div>
   `,
-  providers: [TeamJoinStore],
   selector: 'pu-team-invite-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe],

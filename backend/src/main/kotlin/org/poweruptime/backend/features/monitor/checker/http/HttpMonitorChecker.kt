@@ -1,62 +1,55 @@
 package org.poweruptime.backend.features.monitor.checker.http
 
+import org.apache.hc.client5.http.config.RequestConfig
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory
 import org.apache.hc.core5.ssl.SSLContexts
+import org.apache.hc.core5.util.Timeout
 import org.poweruptime.backend.configuration.puRestTemplate
 import org.poweruptime.backend.core.utils.addBasicAuthString
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorCheckerData
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
-import kotlin.io.encoding.ExperimentalEncodingApi
+import java.time.Duration
 
-class HttpMonitorChecker : MonitorChecker {
+class HttpMonitorChecker(
+    private val teamSettingService: TeamSettingService
+) : MonitorChecker {
     private val logger: Logger = LoggerFactory.getLogger(HttpMonitorChecker::class.java)
 
     override val type = MonitorCheckerType.HTTP
 
-    @OptIn(ExperimentalEncodingApi::class)
-    @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "CyclomaticComplexMethod", "LongMethod")
+    @Suppress("ReturnCount")
     override fun execute(monitor: Monitor): CheckResultDto {
         val httpMonitorCheckerData = monitor.checker as HttpMonitorCheckerData
-
-        val restTemplate = puRestTemplate()
-
-        val headers = HttpHeaders().apply {
-            add("Accept", "*/*")
-        }
-
-        headers.add(
-            "Content-Type",
-            when (httpMonitorCheckerData.contentType) {
-                HttpMonitorCheckerDataContentType.HTML -> "text/html"
-                HttpMonitorCheckerDataContentType.JSON -> "application/json"
-                HttpMonitorCheckerDataContentType.XML -> "application/xml"
-            },
-        )
-
-        httpMonitorCheckerData.authType?.let {
-            headers.addBasicAuthString(
-                httpMonitorCheckerData.basicAuthDataUsername!!,
-                httpMonitorCheckerData.basicAuthDataPassword!!,
+        if (httpMonitorCheckerData.certificateExpiry) {
+            monitor.checker = SSLCertificateMonitorCheckerData(
+                url = httpMonitorCheckerData.url,
+                validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
             )
-        }
-
-        if (httpMonitorCheckerData.ignoreTLS) {
-            restTemplate.requestFactory = getTLSIgnoringRequestFactory()
+            val certificateExpiryResult = SSLCertificateMonitorChecker(teamSettingService).execute(
+                monitor,
+            )
+            if (!certificateExpiryResult.isUp) {
+                return certificateExpiryResult
+            }
         }
 
         logger.debug(
@@ -67,8 +60,99 @@ class HttpMonitorChecker : MonitorChecker {
         )
 
         val result = MonitoringResultHandler()
-        @Suppress("TooGenericExceptionCaught")
+
         try {
+            val httpResponse = makeHttpRequest(httpMonitorCheckerData)
+
+            if (!httpMonitorCheckerData.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
+                return result.error("Invalid status code: ${httpResponse.title}", httpResponse.message)
+            }
+
+            if (httpMonitorCheckerData.searchTerm == null) {
+                return result.success(httpResponse.title, httpResponse.message)
+            }
+
+            val responseBody = httpResponse.responseBody ?: return result.error("HTTP Body not found")
+
+            if (!(responseBody as String).contains(httpMonitorCheckerData.searchTerm)) {
+                return result.error("Search term not found in body", responseBody)
+            }
+
+            return result.success(httpResponse.title, httpResponse.message)
+        } catch (ex: ResourceAccessException) {
+            // Handle connection errors (e.g., timeout, unreachable host)
+            return result.error("Connection error", ex.message)
+        } catch (ex: RestClientException) {
+            // Catch-all for other RestTemplate-related exceptions
+            return result.error("Unexpected error", ex.message)
+        }
+    }
+
+    data class HttpResponse(
+        val statusCode: HttpStatusCode,
+        val title: String,
+        val message: String? = null,
+        val responseBody: Any? = null,
+    )
+
+    @Suppress("LongMethod")
+    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorCheckerData): HttpResponse {
+        val requestConfig = RequestConfig.custom().apply {
+            if (httpMonitorCheckerData.maxRedirects == null) {
+                setRedirectsEnabled(false)
+            } else {
+                setRedirectsEnabled(true)
+                setMaxRedirects(httpMonitorCheckerData.maxRedirects!!.toInt())
+            }
+        }.setResponseTimeout(Timeout.of(Duration.ofSeconds(10)))
+            .build()
+
+        val httpBuilder = HttpClientBuilder.create()
+            .setDefaultRequestConfig(requestConfig)
+
+        if (httpMonitorCheckerData.ignoreTLS) {
+            val sslFactory = SSLConnectionSocketFactory(
+                SSLContexts.custom()
+                    .loadTrustMaterial(null) { _, _ -> true }
+                    .build(),
+                NoopHostnameVerifier(),
+            )
+            httpBuilder
+                .setConnectionManager(
+                    PoolingHttpClientConnectionManagerBuilder.create()
+                        .setSSLSocketFactory(sslFactory)
+                        .build(),
+                )
+                .setConnectionManagerShared(true)
+        }
+
+        val factory = HttpComponentsClientHttpRequestFactory(httpBuilder.build())
+
+        try {
+            val headers = HttpHeaders().apply {
+                add("Accept", "*/*")
+            }
+
+            headers.add(
+                "Content-Type",
+                when (httpMonitorCheckerData.contentType) {
+                    HttpMonitorCheckerDataContentType.HTML -> "text/html"
+                    HttpMonitorCheckerDataContentType.JSON -> "application/json"
+                    HttpMonitorCheckerDataContentType.XML -> "application/xml"
+                },
+            )
+
+            httpMonitorCheckerData.authType?.let {
+                headers.addBasicAuthString(
+                    httpMonitorCheckerData.basicAuthDataUsername!!,
+                    httpMonitorCheckerData.basicAuthDataPassword!!,
+                )
+            }
+
+            val restTemplate = puRestTemplate().apply {
+                requestFactory = factory
+            }
+
             val responseType: Class<*> = if (httpMonitorCheckerData.searchTerm == null) {
                 Void::class.java
             } else {
@@ -81,73 +165,40 @@ class HttpMonitorChecker : MonitorChecker {
                 HttpEntity(httpMonitorCheckerData.body ?: "", headers),
                 responseType,
             )
-
-            val successMessage = try {
+            val httpStatus = try {
                 HttpStatus.valueOf(
                     response.statusCode.value(),
                 )
             } catch (e: IllegalArgumentException) {
-                if (response.statusCode.value() == 306) {
-                    HttpStatus.valueOf(305)
-                } else {
-                    HttpStatus.valueOf(200)
-                }
-            }.let { "${it.value()} - ${it.reasonPhrase}" }
-
-            if (httpMonitorCheckerData.searchTerm == null) {
-                return result.success(successMessage)
+                HttpStatus.valueOf(200)
             }
 
-            val responseBody = response.body ?: return result.error("HTTP Body not found")
-
-            if (!(responseBody as String).contains(httpMonitorCheckerData.searchTerm)) {
-                return result.error("Search term not found in body", responseBody)
-            }
-
-            return result.success(successMessage)
+            return HttpResponse(
+                httpStatus,
+                httpStatus.let { "${it.value()} - ${it.reasonPhrase}" },
+                responseBody = response.body,
+            )
         } catch (ex: HttpClientErrorException) {
             // Handle 4xx errors (e.g., Not Found, Bad Request)
-            return result.error(
+            return HttpResponse(
+                HttpStatusCode.valueOf(ex.statusCode.value()),
                 "${ex.statusCode.value()} - ${ex.statusText}",
-                ex.responseBodyAsString,
             )
         } catch (ex: HttpServerErrorException) {
             // Handle 5xx errors (e.g., Internal Server Error, Service Unavailable)
-            return result.error(
+            return HttpResponse(
+                HttpStatusCode.valueOf(ex.statusCode.value()),
                 "${ex.statusCode.value()} - ${ex.statusText}",
-                ex.responseBodyAsString,
             )
         } catch (ex: RestClientResponseException) {
             // Handle other response-related exceptions
-            return result.error(
-                "${ex.statusText} - HTTP error",
+            return HttpResponse(
+                HttpStatusCode.valueOf(ex.statusCode.value()),
+                "${ex.statusCode.value()} - ${ex.statusText}",
                 ex.responseBodyAsString,
             )
-        } catch (ex: ResourceAccessException) {
-            // Handle connection errors (e.g., timeout, unreachable host)
-            return result.error("Connection error", ex.message)
-        } catch (ex: RestClientException) {
-            // Catch-all for other RestTemplate-related exceptions
-            return result.error("Unexpected error", ex.message)
         }
     }
-
-    private fun getTLSIgnoringRequestFactory() = HttpComponentsClientHttpRequestFactory(
-        HttpClientBuilder.create()
-            .setConnectionManager(
-                PoolingHttpClientConnectionManagerBuilder
-                    .create()
-                    .setSSLSocketFactory(
-                        SSLConnectionSocketFactory(
-                            SSLContexts.custom().loadTrustMaterial(null) { _, _ -> true }.build(),
-                            NoopHostnameVerifier(),
-                        ),
-                    )
-                    .build(),
-            )
-            .setConnectionManagerShared(true)
-            .build(),
-    )
 
     private fun HttpMonitorCheckerDataMethod.toHttpMethod() = when (this) {
         HttpMonitorCheckerDataMethod.GET -> HttpMethod.GET
@@ -158,7 +209,6 @@ class HttpMonitorChecker : MonitorChecker {
         HttpMonitorCheckerDataMethod.HEAD -> HttpMethod.HEAD
         HttpMonitorCheckerDataMethod.OPTIONS -> HttpMethod.OPTIONS
     }
-
 //    private fun getTLSIgnoringRequestFactory2() = HttpComponentsClientHttpRequestFactory(
 //        HttpClientBuilder.create()
 //            .setConnectionManager(
@@ -179,4 +229,22 @@ class HttpMonitorChecker : MonitorChecker {
 //            .setConnectionManagerShared(true)
 //            .build(),
 //    )
+
+    /**
+     * Checks if the given HTTP status code is within any of the allowed ranges.
+     *
+     * @param statusCode the response status
+     * @return true if statusCode is in any of the allowed ranges, false otherwise
+     */
+    private fun List<IntRange>.isStatusCodeAllowed(
+        statusCode: HttpStatusCode,
+    ): Boolean {
+        val code = statusCode.value()
+        for (statusCodeRange in this) {
+            if (code in statusCodeRange) {
+                return true
+            }
+        }
+        return false
+    }
 }

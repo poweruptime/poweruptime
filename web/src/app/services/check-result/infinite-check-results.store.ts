@@ -41,7 +41,9 @@ export const InfiniteCheckResultsStore = signalStore(
       }
     },
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      patchState(store, setAllEntities([checkResult, ...store.entities()]));
+      if (store.monitorId() === checkResult.monitor.id) {
+        patchState(store, setAllEntities([checkResult, ...store.entities()]));
+      }
     },
     load: rxMethod<{monitorId: string; page: number}>(
       pipe(

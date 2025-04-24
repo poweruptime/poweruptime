@@ -3,12 +3,20 @@ package org.poweruptime.backend.features.monitor.checker.http
 import jakarta.persistence.Column
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
+import jakarta.validation.Constraint
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
+import jakarta.validation.Payload
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import org.poweruptime.backend.core.ListItemRegex
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.core.*
+import kotlin.reflect.KClass
 
 @Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.HTTP}")
 @DiscriminatorValue(MonitorCheckerTypes.HTTP)
@@ -27,9 +35,34 @@ class HttpMonitorCheckerData(
     @get:NotNull
     val contentType: HttpMonitorCheckerDataContentType,
 
+    @Suppress("JpaAttributeTypeInspection")
+    @Column(name = "http_allowed_status_code_ranges", columnDefinition = "text[]")
+    @get:NotNull
+    @get:Size(min = Database.MIN_STATUS_CODES)
+    @get:ListItemRegex(
+        pattern = Database.STATUS_CODE_REGEX,
+        message = "Each StatusCode range must be in the form “XXX - YYY”",
+    )
+    @get:StatusCodeRangeOrder
+    val allowedStatusCodeRanges: List<String>,
+
+    @Column(name = "http_max_redirects", columnDefinition = "bigint")
+    @get:Min(Database.MIN_REDIRECTS)
+    @get:Max(Database.MAX_REDIRECTS)
+    var maxRedirects: Long? = null,
+
     @Column(name = "http_ignore_tls", columnDefinition = "boolean")
     @get:NotNull
     val ignoreTLS: Boolean = false,
+
+    @Column(name = "http_certificate_expiry", columnDefinition = "boolean")
+    @get:NotNull
+    val certificateExpiry: Boolean = false,
+
+    @Column(name = "http_certificate_valid_days_left", columnDefinition = "bigint")
+    @get:Min(Database.MIN_VALID_DAYS_LEFT)
+    @get:Max(Database.MAX_VALID_DAYS_LEFT)
+    val certificateValidDaysLeft: Long? = null,
 
     @Column(name = "http_body", columnDefinition = "text")
     val body: String? = null,
@@ -53,11 +86,56 @@ class HttpMonitorCheckerData(
         "1.2.3.4",
         HttpMonitorCheckerDataMethod.GET,
         HttpMonitorCheckerDataContentType.JSON,
+        listOf(""),
+        10,
+        false,
         false,
         null,
         null,
         null,
         null,
         null,
+        null,
     )
+
+    fun getAllowedStatusCodesRanges(): List<IntRange> = allowedStatusCodeRanges.map { statusCodeRange ->
+        val parts = statusCodeRange.split("-").map(String::trim)
+        require(parts.size == 2)
+
+        parts[0].toInt()..parts[1].toInt()
+    }
+}
+
+@Target(
+    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.VALUE_PARAMETER,
+)
+@Retention(AnnotationRetention.RUNTIME)
+@Constraint(validatedBy = [StatusCodeRangeOrderValidator::class])
+@MustBeDocumented
+annotation class StatusCodeRangeOrder(
+    val message: String = "Each status‐code range must have start =< end",
+    val groups: Array<KClass<*>> = [],
+    val payload: Array<KClass<out Payload>> = []
+)
+
+class StatusCodeRangeOrderValidator : ConstraintValidator<StatusCodeRangeOrder, List<String>> {
+    override fun isValid(
+        value: List<String>?,
+        context: ConstraintValidatorContext
+    ): Boolean {
+        // null==valid here; @NotNull handles null if you've added it
+        if (value == null) return true
+
+        return value.all { rangeStr ->
+            val parts = rangeStr.split("-").map(String::trim)
+            if (parts.size != 2) return@all false
+
+            val start = parts[0].toIntOrNull() ?: return@all false
+            val end = parts[1].toIntOrNull() ?: return@all false
+
+            start <= end
+        }
+    }
 }

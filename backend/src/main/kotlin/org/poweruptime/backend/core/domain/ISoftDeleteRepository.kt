@@ -66,6 +66,15 @@ interface ISoftDeleteRepository<T : ISoftDeleteEntity> : Repository<T> {
 
     @Query(
         """
+        delete from #{#entityName} e where e.id = ?1
+        """,
+    )
+    @Transactional
+    @Modifying
+    fun finalDeleteById(id: String)
+
+    @Query(
+        """
         update #{#entityName} e set e.deleted=?2 where e.id = ?1 and e.deleted is null
         """,
     )

@@ -61,7 +61,7 @@ class MonitorService(
 
         val monitor = monitorRepository.saveAndFlush(it.update(dto, notificationMethods, newChecker)).stop().start()
 
-        monitorCheckerDataService.deleteByIdOrThrow(oldCheckerId)
+        monitorCheckerDataService.finalDeleteById(oldCheckerId)
 
         monitor
     }

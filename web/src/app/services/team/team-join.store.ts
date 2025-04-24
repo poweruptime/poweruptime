@@ -8,10 +8,11 @@ import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
-import {injectAPI} from '@app/api';
-import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
+import {injectAPI} from '../../api';
+import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
 
 export const TeamJoinStore = signalStore(
+  {providedIn: 'root'},
   withRequestStatus(),
   withMethods((store, api = injectAPI(), router = inject(Router)) => ({
     join: rxMethod<string | undefined>(

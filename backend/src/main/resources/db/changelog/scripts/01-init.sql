@@ -63,19 +63,27 @@ create table monitor_checker_data_dns
 
 create table monitor_checker_data_http
 (
-    http_content_type        varchar(4)    not null,
-    http_ignore_tls          boolean       not null,
-    http_auth_type           varchar(5),
-    http_method              varchar(7)    not null,
-    id                       varchar(12)   not null
+    http_certificate_expiry          boolean       not null,
+    http_content_type                varchar(4)    not null,
+    http_ignore_tls                  boolean       not null,
+    http_auth_type                   varchar(5),
+    http_method                      varchar(7)    not null,
+    http_certificate_valid_days_left bigint
+        constraint monitor_checker_data_http_http_certificate_valid_days_lef_check
+            check ((http_certificate_valid_days_left <= 3650) AND (http_certificate_valid_days_left >= 1)),
+    http_max_redirects               bigint
+        constraint monitor_checker_data_http_http_max_redirects_check
+            check ((http_max_redirects <= 20) AND (http_max_redirects >= 1)),
+    id                               varchar(12)   not null
         primary key
         constraint fk3jcho78xid46flf824cn981l7
             references monitor_checker_data,
-    http_basic_auth_password varchar(512),
-    http_basic_auth_username varchar(512),
-    http_url                 varchar(2048) not null,
-    http_body                text,
-    http_search_term         text
+    http_basic_auth_password         varchar(512),
+    http_basic_auth_username         varchar(512),
+    http_url                         varchar(2048) not null,
+    http_body                        text,
+    http_search_term                 text,
+    http_allowed_status_code_ranges  text[]        not null
 );
 
 create table monitor_checker_data_ping
@@ -167,9 +175,9 @@ create table notification_sender_data_email
 
 create table notification_sender_data_slack
 (
-    id                 varchar(12) not null
+    id                 varchar(12)   not null
         primary key
-        constraint fkakc5zephtfnw3rozytcxgb78g
+        constraint fk2btfjks0gtw9c0xgy1aapa3sq
             references notification_sender_data,
     slack_display_name varchar(32),
     slack_url          varchar(2048) not null
