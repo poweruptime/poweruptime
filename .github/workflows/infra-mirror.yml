@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/infra-mirror.yml'
       - 'infrastructure'
+      - 'infrastructure/**'
 
 jobs:
   mirror-infra:
