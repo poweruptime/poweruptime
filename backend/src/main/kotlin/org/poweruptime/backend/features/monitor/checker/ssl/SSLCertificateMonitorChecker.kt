@@ -8,7 +8,10 @@ import java.io.IOException
 import java.net.URL
 import java.security.KeyStore
 import java.security.SecureRandom
+import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
+import java.security.cert.CertificateExpiredException
+import java.security.cert.CertificateNotYetValidException
 import java.security.cert.X509Certificate
 import java.time.Duration
 import java.time.Instant
@@ -21,67 +24,20 @@ class SSLCertificateMonitorChecker(
 ) : MonitorChecker {
     override val type = MonitorCheckerType.SSL_CERTIFICATE
 
+    @Suppress("ReturnCount")
     override fun execute(monitor: Monitor): CheckResultDto {
         val sslData = monitor.checker as SSLCertificateMonitorCheckerData
         val result = MonitoringResultHandler()
         val now = Instant.now()
 
         try {
-            // 1) Grab the default TM
-            val tmf = TrustManagerFactory
-                .getInstance(TrustManagerFactory.getDefaultAlgorithm())
-            tmf.init(null as KeyStore?)
-
-            val defaultTm = tmf.trustManagers
-                .filterIsInstance<X509TrustManager>()
-                .firstOrNull()
-                ?: error("No X509TrustManager found")
-
-            // 2) Build our “swallow all CertificateException” TM
-            val permissiveTm = object : X509TrustManager {
-                override fun getAcceptedIssuers(): Array<X509Certificate> =
-                    defaultTm.acceptedIssuers
-
-                override fun checkClientTrusted(
-                    chain: Array<out X509Certificate>,
-                    authType: String
-                ) = defaultTm.checkClientTrusted(chain, authType)
-
-                override fun checkServerTrusted(
-                    chain: Array<out X509Certificate>,
-                    authType: String
-                ) {
-                    try {
-                        defaultTm.checkServerTrusted(chain, authType)
-                    } catch (_: CertificateException) {
-                        // swallow every certificate exception (expired, path, whatever)
-                    }
-                }
-            }
-
-            // 3) Init an SSLContext with it
-            val sslContext = SSLContext.getInstance("TLS").apply {
-                init(null, arrayOf<TrustManager>(permissiveTm), SecureRandom())
-            }
-
-            // 3) open the connection & inject our SSLSocketFactory
-            val url = URL(sslData.url)
-            val conn = url.openConnection() as HttpsURLConnection
-            conn.sslSocketFactory = sslContext.socketFactory
-            conn.connectTimeout = 5_000
-            conn.readTimeout = 5_000
-            conn.connect()
-
-            val certs = conn.serverCertificates
-                .filterIsInstance<X509Certificate>()
-
-            conn.disconnect()
+            val certs = makeRequest(sslData.url)
 
             if (certs.isEmpty()) {
                 return result.error("No certificates found")
             }
 
-            // group by “still within your expected days‐left” vs “too close/expired”
+            // group by “still within your expected days‐left” vs. “too close/expired”
             val grouped = certs.groupBy { cert ->
                 val expiresAt = cert.notAfter.toInstant()
                 val validDaysLeft = sslData.validDaysLeft
@@ -108,12 +64,95 @@ class SSLCertificateMonitorChecker(
                         .toMessage(now, tz),
                 )
             }
+        } catch (e: SSLHandshakeException) {
+            // untrusted‐root, self‐signed, bad‐chain, etc.
+            return result.error("Certificate trust error", e.cause?.message ?: e.message)
         } catch (e: IOException) {
-            return result.error("I/O error validating certificate", e.message)
+            return result.error("Certificate trust error", e.cause?.message ?: e.message)
         } catch (e: Exception) {
             return result.error("Unexpected error", e.message)
         }
     }
+}
+
+private fun makeRequest(url: String): List<X509Certificate> {
+    // 1) Default X509TrustManager
+    val tmf = TrustManagerFactory
+        .getInstance(TrustManagerFactory.getDefaultAlgorithm())
+    tmf.init(null as KeyStore?)
+    val defaultTm = tmf.trustManagers
+        .filterIsInstance<X509TrustManager>()
+        .firstOrNull()
+        ?: error("No X509TrustManager found")
+
+    // 2) Wrap it so only date-errors are swallowed
+    val permissiveTm = object : X509TrustManager {
+        override fun getAcceptedIssuers(): Array<X509Certificate> =
+            defaultTm.acceptedIssuers
+
+        override fun checkClientTrusted(
+            chain: Array<out X509Certificate>,
+            authType: String
+        ) = defaultTm.checkClientTrusted(chain, authType)
+
+        override fun checkServerTrusted(
+            chain: Array<out X509Certificate>,
+            authType: String
+        ) {
+            try {
+                defaultTm.checkServerTrusted(chain, authType)
+            } catch (e: CertificateException) {
+                if (!isDateOnlyException(e)) {
+                    // re-throw everything *except* expired / not-yet-valid
+                    throw e
+                }
+                // otherwise swallow and let us handle expiry below
+            }
+        }
+    }
+
+    val sslContext = SSLContext.getInstance("TLS").apply {
+        init(null, arrayOf<TrustManager>(permissiveTm), SecureRandom())
+    }
+
+    val url = URL(url)
+    val conn = (url.openConnection() as HttpsURLConnection).apply {
+        sslSocketFactory = sslContext.socketFactory
+        connectTimeout = 4_000
+        readTimeout = 4_000
+        connect()
+    }
+
+    val certs = conn.serverCertificates
+        .filterIsInstance<X509Certificate>()
+    conn.disconnect()
+
+    return certs
+}
+
+/**
+ * Walks the cause chain and returns true if the failure
+ * is *only* due to expiry / not‐yet‐valid.
+ */
+private fun isDateOnlyException(e: CertificateException): Boolean {
+    var curr: Throwable? = e
+    while (curr != null) {
+        when (curr) {
+            is CertificateExpiredException,
+            is CertificateNotYetValidException -> return true
+            is CertPathValidatorException -> {
+                val reason = curr.reason
+                // only swallow EXPIRED or NOT_YET_VALID
+                if (reason == CertPathValidatorException.BasicReason.EXPIRED ||
+                    reason == CertPathValidatorException.BasicReason.NOT_YET_VALID
+                ) {
+                    return true
+                }
+            }
+        }
+        curr = curr.cause
+    }
+    return false
 }
 
 private fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId) = this.joinToString("\n") {

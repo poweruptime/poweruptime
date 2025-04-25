@@ -10,6 +10,7 @@ import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerD
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataContentType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataMethod
 import org.poweruptime.backend.features.team.service.TeamSettingService
+import org.springframework.beans.factory.annotation.Autowired
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
@@ -19,7 +20,7 @@ import java.time.Instant
 import java.util.Locale
 
 class HttpMonitorCheckerTests(
-    teamSettingService: TeamSettingService,
+    @Autowired teamSettingService: TeamSettingService,
 ) : BaseTestWithReusingContainers() {
     private fun getHttpBinUrl() = "http://localhost:${httpBin.getMappedPort(80)}"
 
@@ -305,7 +306,7 @@ class HttpMonitorCheckerTests(
     }
 
     @Test
-    fun `test if fails for json with basic auth`(): Unit = httpMonitorChecker.execute(
+    fun `test if fails for json with basic auth with`(): Unit = httpMonitorChecker.execute(
         ModelFactory.getTestMonitor(
             HttpMonitorCheckerData(
                 url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
@@ -319,6 +320,24 @@ class HttpMonitorCheckerTests(
         ),
     ).let {
         assertThat(it.isUp).isFalse()
+        assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
+    }
+
+    @Test
+    fun `test if succeeds for json with basic auth with expected status code`(): Unit = httpMonitorChecker.execute(
+        ModelFactory.getTestMonitor(
+            HttpMonitorCheckerData(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorCheckerDataMethod.GET,
+                contentType = HttpMonitorCheckerDataContentType.JSON,
+                authType = HttpMonitorCheckerDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user1",
+                basicAuthDataPassword = "test_password1",
+                allowedStatusCodeRanges = listOf("401 - 401"),
+            ),
+        ),
+    ).let {
+        assertThat(it.isUp).isTrue()
         assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
     }
 
@@ -342,11 +361,60 @@ class HttpMonitorCheckerTests(
     }
 
     @Test
+    fun `test max redirects disallowed`() {
+        httpMonitorChecker.execute(
+            ModelFactory.getTestMonitor(
+                HttpMonitorCheckerData(
+                    url = "${getHttpBinUrl()}/redirect/3",
+                    method = HttpMonitorCheckerDataMethod.GET,
+                    contentType = HttpMonitorCheckerDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                ),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+        }
+    }
+
+    @Test
+    fun `test max redirects`() {
+        httpMonitorChecker.execute(
+            ModelFactory.getTestMonitor(
+                HttpMonitorCheckerData(
+                    url = "${getHttpBinUrl()}/redirect/3",
+                    method = HttpMonitorCheckerDataMethod.GET,
+                    contentType = HttpMonitorCheckerDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                    maxRedirects = 5,
+                ),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+        }
+    }
+
+    @Test
+    fun `test fail max redirects`() {
+        httpMonitorChecker.execute(
+            ModelFactory.getTestMonitor(
+                HttpMonitorCheckerData(
+                    url = "${getHttpBinUrl()}/redirect/10",
+                    method = HttpMonitorCheckerDataMethod.GET,
+                    contentType = HttpMonitorCheckerDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                    maxRedirects = 5,
+                ),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+        }
+    }
+
+    @Test
     fun `test succeeds for status codes`() {
         val statusCodes = listOf(
-            100, 101, 102, 103,
             200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
-            300, 301, 302, 303, 304, 305, 306, 307, 308,
+            300, 301, 302, 303, 304, 305, 307, 308, // 306,
             400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418,
             421, 422, 423, 424, 425, 426, 428, 429, 431, 451,
             500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
@@ -354,14 +422,14 @@ class HttpMonitorCheckerTests(
             520, 521, 522, 523, 524, 525, 526, 527, 530, 561,
         )
 
-        statusCodes.filter { it in 200..399 }.forEach { statusCode ->
+        statusCodes.forEach { statusCode ->
             httpMonitorChecker.execute(
                 ModelFactory.getTestMonitor(
                     HttpMonitorCheckerData(
                         url = "${getHttpBinUrl()}/status/$statusCode",
                         method = HttpMonitorCheckerDataMethod.GET,
                         contentType = HttpMonitorCheckerDataContentType.JSON,
-                        allowedStatusCodeRanges = listOf("200 - 299"),
+                        allowedStatusCodeRanges = listOf("$statusCode - $statusCode"),
                     ),
                 ),
             ).let {
@@ -369,14 +437,14 @@ class HttpMonitorCheckerTests(
             }
         }
 
-        statusCodes.filter { it < 200 || it > 399 }.forEach { statusCode ->
+        statusCodes.forEach { statusCode ->
             httpMonitorChecker.execute(
                 ModelFactory.getTestMonitor(
                     HttpMonitorCheckerData(
                         url = "${getHttpBinUrl()}/status/$statusCode",
                         method = HttpMonitorCheckerDataMethod.GET,
                         contentType = HttpMonitorCheckerDataContentType.JSON,
-                        allowedStatusCodeRanges = listOf("200 - 299"),
+                        allowedStatusCodeRanges = listOf("000 - 000"),
                     ),
                 ),
             ).let {

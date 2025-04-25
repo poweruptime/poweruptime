@@ -65,7 +65,7 @@ class HttpMonitorChecker(
             val httpResponse = makeHttpRequest(httpMonitorCheckerData)
 
             if (!httpMonitorCheckerData.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
-                return result.error("Invalid status code: ${httpResponse.title}", httpResponse.message)
+                return result.error(httpResponse.title, httpResponse.message)
             }
 
             if (httpMonitorCheckerData.searchTerm == null) {
@@ -104,8 +104,8 @@ class HttpMonitorChecker(
                 setRedirectsEnabled(true)
                 setMaxRedirects(httpMonitorCheckerData.maxRedirects!!.toInt())
             }
-        }.setResponseTimeout(Timeout.of(Duration.ofSeconds(10)))
-            .build()
+            setResponseTimeout(Timeout.of(Duration.ofSeconds(8)))
+        }.build()
 
         val httpBuilder = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
@@ -126,7 +126,10 @@ class HttpMonitorChecker(
                 .setConnectionManagerShared(true)
         }
 
-        val factory = HttpComponentsClientHttpRequestFactory(httpBuilder.build())
+        val factory = HttpComponentsClientHttpRequestFactory(httpBuilder.build()).apply {
+            setConnectTimeout(4000)
+            setReadTimeout(4000)
+        }
 
         try {
             val headers = HttpHeaders().apply {
