@@ -1,4 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
+import {NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -48,7 +49,15 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
                     <bi name="list" size="24" />
                   </button>
                 }
-                <a class="text-2xl" routerLink="/">poweruptime</a>
+                <a class="inline-flex items-center gap-2 text-2xl" routerLink="/">
+                  <img
+                    class="rounded-full"
+                    ngSrc="/assets/logo.webp"
+                    alt="logo"
+                    width="48"
+                    height="48" />
+                  <span class="mb-1">poweruptime</span>
+                </a>
               </div>
 
               <div class="hidden items-center gap-2 lg:inline-flex">
@@ -105,6 +114,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     BackendOfflineAlert,
     MatToolbar,
     RouterLink,
+    NgOptimizedImage,
   ],
 })
 export class HomeLayout {
