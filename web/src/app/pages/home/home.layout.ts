@@ -25,69 +25,59 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
   template: `
     @let _collapseNav = collapseNav();
 
-    <mat-drawer-container class="h-screen max-h-screen w-screen" autosize>
+    <mat-drawer-container autosize>
       <mat-drawer
         class="border-r border-solid border-r-gray-400"
         #drawer
         [mode]="_collapseNav ? 'over' : 'side'"
         [opened]="!_collapseNav">
-        <pu-nav [teamId]="storageTeamId()" />
+        <pu-nav [teamId]="selectedTeamStore.storageSelectedTeamId()" />
       </mat-drawer>
 
-      <mat-drawer-content class="grid-container">
-        <mat-toolbar>
-          @if (_collapseNav) {
-            <button
-              [matTooltip]="'nav.toggle' | transloco"
-              [attr.aria-label]="'nav.toggle' | transloco"
-              (click)="drawer.toggle()"
-              mat-icon-button>
-              <bi name="list" size="24" />
-            </button>
-          }
-          <a class="ps-1" routerLink="/">poweruptime</a>
-          <span class="spacer"></span>
+      <mat-drawer-content>
+        <div class="m-0 flex h-screen max-h-screen flex-col items-start gap-4">
+          <mat-toolbar>
+            <div class="flex w-full justify-between pt-2">
+              <div class="flex items-center gap-2">
+                @if (_collapseNav) {
+                  <button
+                    [matTooltip]="'nav.toggle' | transloco"
+                    [attr.aria-label]="'nav.toggle' | transloco"
+                    (click)="drawer.toggle()"
+                    mat-icon-button>
+                    <bi name="list" size="24" />
+                  </button>
+                }
+                <a class="text-2xl" routerLink="/">poweruptime</a>
+              </div>
 
-          <div class="hidden items-center gap-2 lg:inline-flex">
-            <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
-          </div>
-        </mat-toolbar>
+              <div class="hidden items-center gap-2 lg:inline-flex">
+                <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
+              </div>
+            </div>
+          </mat-toolbar>
 
-        <main class="main px-3">
-          @defer (when backendOfflineService.isOffline()) {
-            @if (backendOfflineService.isOffline()) {
-              <pu-backend-offline-alert />
+          <main class="main w-full overflow-y-scroll px-2 pb-2">
+            @defer (when backendOfflineService.isOffline()) {
+              @if (backendOfflineService.isOffline()) {
+                <pu-backend-offline-alert />
+              }
             }
-          }
 
-          <router-outlet />
-        </main>
+            <router-outlet />
+          </main>
+        </div>
       </mat-drawer-content>
     </mat-drawer-container>
   `,
   styles: `
     @reference "#styles.css";
 
-    .grid-container {
-      margin: 0;
-      display: grid;
-      grid-template-rows: 64px 1fr auto; /* Header, Main, Footer */
-      min-height: 100vh;
-    }
-
-    .spacer {
-      flex: 1 1 auto;
-    }
-
     .main {
       max-width: 1920px;
-      height: max-content;
-      max-height: max-content;
-      overflow-y: auto;
-      grid-row: 2;
 
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
+      /*-ms-overflow-style: none; !* IE and Edge *!*/
+      /*scrollbar-width: none; !* Firefox *!*/
     }
 
     @media (min-width: 2283px) {
@@ -124,13 +114,11 @@ export class HomeLayout {
   teamId = input(undefined, {
     transform: (it: string | undefined) => {
       if (it) {
-        this.storageTeamId.set(it);
+        this.selectedTeamStore.storageSelectedTeamId.set(it);
       }
       return it;
     },
   });
-
-  readonly storageTeamId = injectLocalStorage<string>('pu_selected_team_id');
 
   readonly drawer = viewChild.required(MatDrawer);
 
@@ -156,7 +144,7 @@ export class HomeLayout {
   });
 
   constructor() {
-    this.selectedTeamStore.loadSelectedTeam(this.storageTeamId);
+    this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     const pushService = inject(PushService);
 

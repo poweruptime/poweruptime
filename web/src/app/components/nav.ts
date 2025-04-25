@@ -75,17 +75,13 @@ import {TeamSelect} from './team-select';
                   <span class="nav-text">
                     {{ team.name }}
                   </span>
-                  @if (team.id !== selectedTeam?.id) {
-                    <button
-                      class="close-button"
-                      (click)="
-                        $event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)
-                      "
-                      mat-icon-button
-                      stopPropagation>
-                      <bi name="x" />
-                    </button>
-                  }
+                  <button
+                    class="close-button"
+                    (click)="$event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)"
+                    mat-icon-button
+                    stopPropagation>
+                    <bi name="x" />
+                  </button>
                 </div>
               </a>
             }
@@ -275,8 +271,21 @@ export class Nav {
     this.dialog.open(AboutDialog);
   }
 
-  navigateToTeamDashboard(teamId: string) {
-    void this.router.navigate(['/', 't', teamId]);
+  navigateToTeamDashboard(newTeamId: string) {
+    const current = this.router.url; // e.g. "/org/5/t/123/dashboard"
+    const teamSegmentRe = /t\/[^\/;?]+/;
+
+    if (teamSegmentRe.test(current)) {
+      // replace "t/{oldId}" with "t/{newTeamId}"
+      const updated = current.replace(teamSegmentRe, `t/${newTeamId}`);
+      void this.router.navigateByUrl(updated);
+    } else {
+      // no match → go directly to "/t/{newTeamId}"
+      void this.router.navigate(['/', 't', newTeamId], {
+        queryParamsHandling: 'preserve',
+        preserveFragment: true,
+      });
+    }
   }
 }
 

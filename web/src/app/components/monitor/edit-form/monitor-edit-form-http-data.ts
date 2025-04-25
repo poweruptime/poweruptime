@@ -142,6 +142,11 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
             }}
           </mat-error>
         }
+        @if (allowedStatusCodeRangeErrors?.['rangeIncorrect']) {
+          <mat-error>
+            {{ 'monitor.edit.http.allowedStatusCodeRanges.rangeIncorrectError' | transloco }}
+          </mat-error>
+        }
       </mat-form-field>
 
       <div class="col-span-8 xl:col-span-3">
@@ -354,6 +359,13 @@ export class MonitorEditFormHttpData {
     const parts = value.split('-').map((it) => it.trim());
     const start = Number(parts[0]);
     const end = Number(parts[1]);
+
+    if (start < 100 || end > 599) {
+      setTimeout(() => {
+        control.setErrors({rangeIncorrect: true});
+      }, 10);
+      return false;
+    }
 
     if (start > end) {
       setTimeout(() => {

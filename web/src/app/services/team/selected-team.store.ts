@@ -1,4 +1,5 @@
-import {computed, effect} from '@angular/core';
+import {computed, inject} from '@angular/core';
+import {Router} from '@angular/router';
 
 import {
   EMPTY,
@@ -17,13 +18,14 @@ import {
   patchState,
   signalStore,
   withComputed,
-  withHooks,
   withMethods,
+  withProps,
   withState,
 } from '@ngrx/signals';
 import {removeAllEntities, setEntities, setEntity, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
+import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
@@ -38,17 +40,21 @@ export const SelectedTeamStore = signalStore(
     loadedAll: boolean;
     page: number;
     search: string;
-    onceSelectedTeams: BackendType['TeamResponse'][];
   }>({
     loadedAll: false,
     page: 0,
     search: '',
-    onceSelectedTeams: [],
   }),
+  withProps(() => ({
+    storageSelectedTeamId: injectLocalStorage<string>('pu_selected_team_id'),
+    onceSelectedTeams: injectLocalStorage<BackendType['TeamResponse'][]>('pu_once_selected_teams', {
+      defaultValue: [],
+    }),
+  })),
   withRequestStatus(),
   withEntities<BackendType['TeamResponse']>(),
   withState({selectedTeam: undefined} as SelectedTeamState),
-  withMethods((store, api = injectAPI()) => ({
+  withMethods((store, api = injectAPI(), router = inject(Router)) => ({
     updateTeam(team: BackendType['TeamResponse']) {
       if (store.selectedTeam()?.id === team.id) {
         patchState(store, () => ({selectedTeam: team}));
@@ -61,9 +67,41 @@ export const SelectedTeamStore = signalStore(
       }
     },
     removeSelectedTeam(id: string): void {
-      patchState(store, ({onceSelectedTeams}) => ({
-        onceSelectedTeams: onceSelectedTeams.filter((it) => it.id !== id),
-      }));
+      store.onceSelectedTeams.update((it) => it.filter((it) => it.id !== id));
+
+      if (store.selectedTeam()?.id === id) {
+        if (store.onceSelectedTeams().length > 0) {
+          const newTeam = store.onceSelectedTeams()[0];
+
+          const current = router.url; // e.g. "/org/5/t/123/dashboard"
+          const teamSegmentRe = /t\/[^\/;?]+/;
+
+          let routerPromise: Promise<unknown>;
+
+          if (teamSegmentRe.test(current)) {
+            // replace "t/{oldId}" with "t/{newTeamId}"
+            const updated = current.replace(teamSegmentRe, `t/${newTeam.id}`);
+            routerPromise = router.navigateByUrl(updated);
+          } else {
+            // no match → go directly to "/t/{newTeamId}"
+            routerPromise = router.navigate(['/', 't', newTeam.id], {
+              queryParamsHandling: 'preserve',
+              preserveFragment: true,
+            });
+          }
+          void routerPromise.then(() => patchState(store, () => ({selectedTeam: newTeam})));
+
+          return;
+        }
+
+        console.log('No more teams to select, redirecting to /m');
+
+        store.storageSelectedTeamId.set(undefined);
+
+        patchState(store, () => ({selectedTeam: undefined}));
+
+        void router.navigate(['m']);
+      }
     },
     setSearch: rxMethod<string | null>(
       pipe(
@@ -124,15 +162,15 @@ export const SelectedTeamStore = signalStore(
           id
             ? api.get('/v1/team/{id}', {params: {path: {id}}}).pipe(
                 tapResponse({
-                  next: (selectedTeam) =>
-                    patchState(store, ({onceSelectedTeams}) => ({
+                  next: (selectedTeam) => {
+                    patchState(store, () => ({
                       selectedTeam,
-                      onceSelectedTeams: !!onceSelectedTeams.find(
-                        (team) => team.id === selectedTeam.id,
-                      )
-                        ? onceSelectedTeams
-                        : [...onceSelectedTeams, selectedTeam],
-                    })),
+                    }));
+
+                    if (!store.onceSelectedTeams().find((team) => team.id === selectedTeam.id)) {
+                      store.onceSelectedTeams.update((it) => [...it, selectedTeam]);
+                    }
+                  },
                   error: () => {},
                 }),
               )
@@ -170,17 +208,4 @@ export const SelectedTeamStore = signalStore(
         ),
     ),
   })),
-  withHooks({
-    onInit(store) {
-      patchState(store, () => ({
-        onceSelectedTeams: JSON.parse(
-          localStorage.getItem('pu_once_selected_teams') ?? '[]',
-        ) as BackendType['TeamResponse'][],
-      }));
-
-      effect(() => {
-        localStorage.setItem('pu_once_selected_teams', JSON.stringify(store.onceSelectedTeams()));
-      });
-    },
-  }),
 );

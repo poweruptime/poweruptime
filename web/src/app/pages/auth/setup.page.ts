@@ -32,41 +32,47 @@ import {SetupStore} from '@app/services';
               <div puAlert type="WARN">Error while finishing setup... Already setup?</div>
             }
 
-            <h3>{{ 'auth.setup.description' | transloco }}:</h3>
-            <mat-form-field>
-              <mat-label>{{ 'general.name' | transloco }}</mat-label>
-              <input matInput formControlName="name" />
+            @if (!setupStore.isFulfilled()) {
+              <h3>{{ 'auth.setup.description' | transloco }}:</h3>
+              <mat-form-field>
+                <mat-label>{{ 'general.name' | transloco }}</mat-label>
+                <input matInput formControlName="name" />
 
-              @let nameErrors = form.controls.name.errors;
-              @if (nameErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (nameErrors?.['minlength']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-              }
-              @if (nameErrors?.['maxlength']; as maxlength) {
-                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-              }
-            </mat-form-field>
+                @let nameErrors = form.controls.name.errors;
+                @if (nameErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (nameErrors?.['minlength']; as minlength) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
+                @if (nameErrors?.['maxlength']; as maxlength) {
+                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+                }
+              </mat-form-field>
 
-            <mat-form-field>
-              <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
-              <input matInput formControlName="email" />
+              <mat-form-field>
+                <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
+                <input matInput formControlName="email" />
 
-              @let emailErrors = form.controls.email.errors;
-              @if (emailErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (emailErrors?.['email']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (emailErrors?.['minlength']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-              }
-              @if (emailErrors?.['maxlength']; as maxlength) {
-                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-              }
-            </mat-form-field>
+                @let emailErrors = form.controls.email.errors;
+                @if (emailErrors?.['required']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (emailErrors?.['email']) {
+                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                }
+                @if (emailErrors?.['minlength']; as minlength) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
+                @if (emailErrors?.['maxlength']; as maxlength) {
+                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+                }
+              </mat-form-field>
+            } @else {
+              <div class="flex h-40 items-center justify-center">
+                <bi name="check-circle-fill" size="64" style="color: var(--mat-sys-primary)" />
+              </div>
+            }
 
             <div puAlert type="INFO">
               <b>{{ 'auth.setup.info1' | transloco }}</b>
@@ -77,10 +83,12 @@ import {SetupStore} from '@app/services';
                 key="auth.setup.info2" />
             </div>
 
-            <button [disabled]="!isValid()" mat-flat-button type="submit">
-              <bi class="mr-2" name="envelope-plus" />
-              {{ 'auth.setup.send' | transloco }}
-            </button>
+            @if (!setupStore.isFulfilled()) {
+              <button [disabled]="!isValid()" mat-flat-button type="submit">
+                <bi class="mr-2" name="envelope-plus" />
+                {{ 'auth.setup.send' | transloco }}
+              </button>
+            }
           </form>
         </mat-card-content>
       </mat-card>

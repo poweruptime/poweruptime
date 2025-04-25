@@ -261,6 +261,7 @@
           "inputRegexError": "Please follow the pattern: 'XXX - YYY'",
           "inputStartBiggerThenEndError": "The second status code has to be higher than the first one",
           "new": "New status code range",
+          "rangeIncorrectError": "Status codes have to be in the range of 100 - 599",
           "remove": "Remove status code range",
           "title": "Allowed Status Code Range"
         },

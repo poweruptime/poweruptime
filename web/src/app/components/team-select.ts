@@ -36,7 +36,7 @@ import {SelectedTeamStore} from '@app/services';
       [closeOnBackdropClick]="true"
       [hideArrow]="true">
       <div class="flex max-w-80 flex-col">
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field class="mat-select-search-input" subscriptSizing="dynamic">
           <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
           <input [formControl]="searchControl" matInput />
         </mat-form-field>
