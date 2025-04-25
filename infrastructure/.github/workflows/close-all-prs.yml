@@ -10,7 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Close Pull
-        run: gh pr close ${{ github.event.number }} --comment "Auto-closing pull request. We do not accept PRs in this repository. Please commit to https://github.com/poweruptime/poweruptime"
+      - name: Close & Lock Pull Request
+        run: |
+          gh pr close ${{ github.event.number }} --comment "Auto-closing pull request. We do not accept PRs in this repository. Please submit it to https://github.com/poweruptime/poweruptime"
+          gh pr lock ${{ github.event.number }} --reason "resolved"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

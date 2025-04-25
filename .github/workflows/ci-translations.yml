@@ -24,4 +24,4 @@ jobs:
       - name: Validate changed i18n files
         run: |
           # Find the changed i18n files and run the validator on them
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'src/assets/i18n/.*\.json' | xargs npx transloco-validator
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'src/assets/i18n/.*\.json' | xargs pnpm exec transloco-validator

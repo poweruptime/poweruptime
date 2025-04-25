@@ -22,13 +22,22 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    cp .env.example .env
    ```
 4. Fill out the necessary .env variables.
+
    ```shell
    nano .env
    ```
+
    ```shell
    vim .env
    ```
-5. Make sure no other servives listen on port `80` and `443`.
+
+   Generate secrets for `DATABASE_PASSWORD` and `POSTGRES_PASSWORD` with the `openssl` command:
+
+   ```shell
+   openssl rand -base64 64 | tr -dc A-Za-z0-9 | head -c 60 ; echo
+   ```
+
+5. Make sure no other services listen on port `80` and `443`.
 6. Start the stack
    ```shell
    ./start.sh
@@ -44,10 +53,10 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
 
 ### General
 
-| Name               | Description                                          | Default value | Required |
-| ------------------ | ---------------------------------------------------- | ------------- | -------- |
-| `POWERUPTIME_HOST` | Host / Domain of the poweruptime instance.           |               | x        |
-| `DOMAIN_NAMES`     | A list of domain names allowed for the status pages. |               |          |
+| Name               | Description                                                                                                                                                                       | Default value | Required |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | -------- |
+| `POWERUPTIME_HOST` | Host / Domain of the poweruptime instance.                                                                                                                                        |               | x        |
+| `DOMAIN_NAMES`     | A list of domain names allowed for the status pages. Examples: ``DOMAIN_NAMES="Host(`status.abc.xyz`)"``, ``DOMAIN_NAMES="Host(`status1.abc.xyz`) \|\| Host(`status2.abc.xzy`)"`` |               |          |
 
 ### Database
 
