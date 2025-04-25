@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional
 import org.apache.commons.codec.binary.Base32
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.service.AEntityService
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.authentication.MFACodeIncorrectException
 import org.poweruptime.backend.features.authentication.MFACodeRequiredException
 import org.poweruptime.backend.features.authentication.domain.MFABackupCodeRepository
@@ -12,25 +14,28 @@ import org.poweruptime.backend.features.authentication.domain.MFARepository
 import org.poweruptime.backend.features.authentication.model.MFA
 import org.poweruptime.backend.features.authentication.model.MFABackupCode
 import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.mail.emails.MFALowBackupCodesEmail
+import org.poweruptime.backend.features.mail.service.SystemEmailService
 import org.poweruptime.backend.features.user.domain.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import kotlin.jvm.Throws
 
 @Service
 class MFAService(
+    private val passwordEncoder: PasswordEncoder,
+    private val systemEmailService: SystemEmailService,
     private val mfaRepository: MFARepository,
     private val mfaBackupCodeRepository: MFABackupCodeRepository,
     private val userRepository: UserRepository,
 ) : AEntityService<MFA>(mfaRepository) {
 
-    fun getBackupCodesByMFAId(mfaId: String) = mfaBackupCodeRepository.findByMFAId(mfaId)
-
     fun getByUserId(userId: String) = mfaRepository.findByUserId(userId)
 
     @Throws(MFACodeIncorrectException::class, MFACodeRequiredException::class)
     fun validate(userId: String, code: String?) {
-        mfaRepository.findByUserId(userId)?.let {
-            if (!it.active) {
+        mfaRepository.findByUserId(userId)?.let { mfa ->
+            if (!mfa.active) {
                 return
             }
 
@@ -38,11 +43,22 @@ class MFAService(
                 throw MFACodeRequiredException()
             }
 
-            if (!isValid(it.secret, code)) {
-                val backupCode = mfaBackupCodeRepository.findValidByMFAIdAndCode(it.id, code)
-                    ?: throw MFACodeIncorrectException()
+            if (!isValid(mfa.secret, code)) {
+                val backupCodes = mfaBackupCodeRepository.findByMFAId(mfa.id)
+                val backupCode = backupCodes.matches(code) ?: throw MFACodeIncorrectException()
 
                 mfaBackupCodeRepository.invalidateCode(backupCode.id)
+
+                val remainingBackupCodes = backupCodes.size - 1
+
+                if (remainingBackupCodes < 5) {
+                    systemEmailService.queueEmail(
+                        MFALowBackupCodesEmail(
+                            user = mfa.user,
+                            backupCodesCount = remainingBackupCodes,
+                        ),
+                    )
+                }
             }
         }
     }
@@ -59,13 +75,11 @@ class MFAService(
 
         val mfa = save(MFA(user = user, active = false))
 
-        mfaBackupCodeRepository.saveAll(buildList { repeat(10) { add(MFABackupCode(mfa = mfa)) } })
-
         return mfa
     }
 
     @Transactional
-    fun activate(userId: String, code: String): MFA {
+    fun activate(userId: String, code: String): List<String> {
         val mfa = mfaRepository.findByUserId(userId) ?: throw BadRequestException("Setup MFA first")
 
         if (mfa.active) {
@@ -77,7 +91,22 @@ class MFAService(
         }
 
         mfa.active = true
-        return save(mfa)
+        save(mfa)
+
+        val backupCodes = buildList { repeat(10) { add(RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)) } }
+
+        assert(backupCodes.size == 10)
+
+        mfaBackupCodeRepository.saveAll(
+            backupCodes.map { backupCode ->
+                MFABackupCode(
+                    mfa = mfa,
+                    codeHash = passwordEncoder.encode(backupCode),
+                )
+            },
+        )
+
+        return backupCodes
     }
 
     @Transactional
@@ -103,4 +132,11 @@ class MFAService(
 
         return GoogleAuthenticator(base32secret = base32EncodedSecret).isValid(code)
     }
+
+    private fun List<MFABackupCode>.matches(code: String): MFABackupCode? =
+        filter {
+            it.valid
+        }.find {
+            passwordEncoder.matches(code, it.codeHash)
+        }
 }

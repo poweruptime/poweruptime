@@ -6,6 +6,8 @@ object Database {
     const val MIN_MAIL_LENGTH = 5
     const val MAX_MAIL_LENGTH = 255
 
+    const val MAX_BCRYPT_LENGTH = 68
+
     const val MIN_FILE_NAME_LENGTH = 1
     const val MAX_FILE_NAME_LENGTH = 256
 

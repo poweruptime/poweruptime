@@ -471,7 +471,7 @@ create table "user"
         constraint fkeukpy99fybt6wyx9ojnau1nhb
             references team,
     name                  varchar(70)              collate numeric       not null,
-    password_hash         varchar(80)                                    not null,
+    password_hash         varchar(68)                                    not null,
     email                 varchar(255)                                   not null
         unique
 );
@@ -515,10 +515,10 @@ create table mfa_backup_code
     mfa_id     varchar(12)                            not null
         constraint fki960t04n7pkv6r44nhe0527vp
             references mfa,
-    code       varchar(25)                            not null,
+    code_hash       varchar(68)                            not null,
     id         varchar(25)                            not null
         primary key,
-    unique (mfa_id, code)
+    unique (mfa_id, code_hash)
 );
 
 create table password_reset_token

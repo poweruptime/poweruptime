@@ -31,9 +31,6 @@ object AuthUtils {
 
 @Configuration
 class AuthConfig(val keyUtils: KeyUtils) {
-    /**
-     * PasswordEncoder which is only used for User password encoding
-     */
     @Bean
     fun passwordEncoder(): PasswordEncoder =
         PasswordEncoderFactories.createDelegatingPasswordEncoder()

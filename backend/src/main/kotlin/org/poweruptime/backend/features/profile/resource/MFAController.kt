@@ -50,13 +50,13 @@ class MFAController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    fun confirm(authentication: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse {
-        val user = authService.getByAuthOrThrow(authentication)
-
-        val mfa = mfaService.activate(user.id, dto.code)
-
-        return ConfirmMFAResponse(backupCodes = mfaService.getBackupCodesByMFAId(mfa.id).map { it.code })
-    }
+    fun confirm(authentication: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse =
+        ConfirmMFAResponse(
+            backupCodes = mfaService.activate(
+                userId = authService.getByAuthOrThrow(authentication).id,
+                code = dto.code,
+            ),
+        )
 
     @Operation(
         summary = "Delete MFA",

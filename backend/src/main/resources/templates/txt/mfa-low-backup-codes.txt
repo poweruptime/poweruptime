@@ -1,0 +1,9 @@
+Urgent: Backup Codes Running Low
+
+Hello [(${name})],
+
+We are notifying you that your backup codes for MFA are running low. You currently have only [(${backupCodesCount})] backup codes remaining.
+
+If you have lost access to your MFA secret, please reactivate your MFA setup on your account settings. "[(${urlHost})]/profile/security"
+
+This notification was sent to [(${email})].

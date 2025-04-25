@@ -34,7 +34,7 @@ class User(
     @Column(nullable = false, unique = true, length = Database.MAX_MAIL_LENGTH)
     var email: String,
 
-    @Column(name = "password_hash", nullable = false, length = 80)
+    @Column(name = "password_hash", nullable = false, length = Database.MAX_BCRYPT_LENGTH)
     var passwordHash: String,
 
     @ColumnDefault("true")

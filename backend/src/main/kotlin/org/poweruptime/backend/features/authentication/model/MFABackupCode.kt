@@ -12,25 +12,25 @@ import jakarta.persistence.UniqueConstraint
 import org.hibernate.annotations.ColumnDefault
 import org.poweruptime.backend.core.MaxNanoId
 import org.poweruptime.backend.core.models.AEntity
+import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
-import org.poweruptime.backend.core.utils.RandomGenerator
 
 @Entity
 @Table(
     name = "mfa_backup_code",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["mfa_id", "code"])],
+    uniqueConstraints = [UniqueConstraint(columnNames = ["mfa_id", "code_hash"])],
 )
 class MFABackupCode(
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "mfa_id", nullable = false)
     val mfa: MFA,
 
+    @Column(name = "code_hash", nullable = false, length = Database.MAX_BCRYPT_LENGTH)
+    val codeHash: String,
+
     @ColumnDefault("true")
     @Column(nullable = false, columnDefinition = "boolean")
     var valid: Boolean = true,
-
-    @Column(name = "code", nullable = false, length = NANO_ID_MAX_LENGTH)
-    val code: String = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
 ) : AEntity() {
     @Id
     @MaxNanoId

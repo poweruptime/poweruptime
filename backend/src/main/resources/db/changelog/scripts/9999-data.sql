@@ -28,29 +28,29 @@ VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcryp
 -- MFA Code
 -- Add to user 4
 INSERT INTO mfa (active, secret, id, user_id) VALUES (true, '7tyjXh9ckw', 'mMyKW886w2xP', 'phECfcYSejyt');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (false, 'mMyKW886w2xP', 'sA1XZuMTFWTX8kxaS8CEP2fZx', 'fxRzehwsFHt36SKhjabxLjCUA');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'MrZcfxDk6kbFKrrw7APWk4Zz3', 'a66mbDpPC1BG1a9tp4Xy5DGb3');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'HU5ELSCkW4XXFE5cpekk2buRM', 'sA5yBDfrRfsyw8ZW9cHKFhs8E');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'BGGL5mMBfA76yufDpkPjbUXsa', 'FowEwe3AUyYCyPKkWwEpBDaLu');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'fYKsMyzK6SAK16Y2Kyo2Sth6e', 'zeft6hGCxhSaEpA39P5XAgpyb');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'fA1UzgyF2U8rsCXKs2FF2p7GU', 'CehX3ysKcfj8Ej5mCszboUhxX');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', '6eaMP1ojKwaoRyaE385gm8xpo', 'hkFhM9pcbYzrYCeL3c6wMRapM');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'FhU9Bj4e45YkykD93LBL792Ty', 'YMe11pfsja9koBmbRRoe5P5M2');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', '6E11k3mse8z45HAFCa3ht74z8', '9aCfPaFRkMAxAWbCX5jAMWmj3');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'mMyKW886w2xP', 'YMFHMLycHwuP7F2k2GtKEzrRa', 'cbrxML8Ew4BDZWAuST8pE8ubZ');
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (false, 'mMyKW886w2xP', '{bcrypt}$2a$10$frxq0jWijNHwXc48MBKKGuYRQj6sz02tvxvyaU9CuOUMOCYI72I6C', 'fxRzehwsFHt36SKhjabxLjCUA'); -- sA1XZuMTFWTX8kxaS8CEP2fZx
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$/Cf.xm.JDCjEg10I4cKXV.3lcwe6A4rf/580bka3mVphbW49t2eC6', 'a66mbDpPC1BG1a9tp4Xy5DGb3'); -- MrZcfxDk6kbFKrrw7APWk4Zz3
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$oO0eeOdkaPzTLpXbT9HE8.tJ95LCA1O4Ijxc9jCP6risRr7xQkXrq', 'sA5yBDfrRfsyw8ZW9cHKFhs8E'); -- HU5ELSCkW4XXFE5cpekk2buRM
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$cb9Ekb.qhDRpjZOxMZVDOOhojTlpJU.ih86F8ns206PhBC8HYh6IK', 'FowEwe3AUyYCyPKkWwEpBDaLu'); -- BGGL5mMBfA76yufDpkPjbUXsa
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$Geu.HIDKF4NVHU70RxcqO.TqJFt5RjTfQhUbPHmF.5XzA0M2LGcY2', 'zeft6hGCxhSaEpA39P5XAgpyb'); -- fYKsMyzK6SAK16Y2Kyo2Sth6e
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$G34qJdqHfXLWd66Vvs4YzOuxtnfhBLor5gp.cWPBnBtXMINMdw5E.', 'CehX3ysKcfj8Ej5mCszboUhxX'); -- fA1UzgyF2U8rsCXKs2FF2p7GU
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$qxqLK7VB4/Enj8LxBXgBxeN.ITJqhWFsQuep/ph7JbrmWQyQH.84y', 'hkFhM9pcbYzrYCeL3c6wMRapM'); -- 6eaMP1ojKwaoRyaE385gm8xpo
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$UqtL9jeGYeog7XJRRQO/J.CQF0xkMsnlnGooX2VBveQXhrX9pU4NW', 'YMe11pfsja9koBmbRRoe5P5M2'); -- FhU9Bj4e45YkykD93LBL792Ty
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$5wAF5PNvkETmLYZzURtRt.4tzJmxGhlZHWKDHYLZDP2FOxqwm7MFO', '9aCfPaFRkMAxAWbCX5jAMWmj3'); -- 6E11k3mse8z45HAFCa3ht74z8
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW886w2xP', '{bcrypt}$2a$10$e8ASy6gL5cfhao/x8TSYhuX7l3QOKFJ9P3Jjw2veVhAZBr0sAx5NO', 'cbrxML8Ew4BDZWAuST8pE8ubZ'); -- YMFHMLycHwuP7F2k2GtKEzrRa
 
 -- Add to user 3 but inactive
 INSERT INTO mfa (active, secret, id, user_id) VALUES (false, '7tyBXh9ckw', 'WBAouSY2rZWP', '2XxpcofD6Ubg');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'sA1XZuMTFWTX8kxaS8CEP2fZx', 'FP9B3GADrRggkLYSZYp7LUMRf');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'MrZcfxDk6kbFKrrw7APWk4Zz3', '2bmREy7FBH4ZxWjYXyGB6By85');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'HU5ELSCkW4XXFE5cpekk2buRM', '1PSAWXg8tG41WHyKTT3SBf49j');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'BGGL5mMBfA76yufDpkPjbUXsa', 'wRh3WRoSeMcx8UKkt8y4B2k8o');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'fYKsMyzK6SAK16Y2Kyo2Sth6e', 'bHKTeG2WXEH9eyUxAThhU6DaH');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'fA1UzgyF2U8rsCXKs2FF2p7GU', 'SGYX4H479eym3xEbjgwc4A9aU');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', '6eaMP1ojKwaoRyaE385gm8xpo', 'pPufKYmZaS92YHRZeurSFF9uC');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'FhU9Bj4e45YkykD93LBL792Ty', 'jCaohE282KgKk8YhRsZMj2KFy');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', '6E11k3mse8z45HAFCa3ht74z8', 'r7oCkDz1w7GFAFBTGh1DTyZkC');
-INSERT INTO mfa_backup_code (valid, mfa_id, code, id) VALUES (true, 'WBAouSY2rZWP', 'YMFHMLycHwuP7F2k2GtKEzrRa', 'sZUWjt2YtUDbuRjAX83TUbjrg');
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$CHWBnFJhXdOqAol/WXfwyuzKQ00BhxhDziPEPWcEj7/vsJwYOxrxm', 'FP9B3GADrRggkLYSZYp7LUMRf'); -- sA1XZuMTFWTX8kxaS8CEP2fZx
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$3kGMbZYdvDdmyYhZ.4JqBOPzKt3kyBcf/jZsLCR52zg7BeDpVyrs.', '2bmREy7FBH4ZxWjYXyGB6By85'); -- MrZcfxDk6kbFKrrw7APWk4Zz3
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$oO0eeOdkaPzTLpXbT9HE8.tJ95LCA1O4Ijxc9jCP6risRr7xQkXrq', '1PSAWXg8tG41WHyKTT3SBf49j'); -- HU5ELSCkW4XXFE5cpekk2buRM
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$hEUBxUVcScln2i3vEuogg.ftjydYckj0HVUEp5dHIcGDTgWBIacja', 'wRh3WRoSeMcx8UKkt8y4B2k8o'); -- BGGL5mMBfA76yufDpkPjbUXsa
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$/e.eSoLMcqZHiuFzMFXyHuVJrtTba1BRSciUFX5vySOjSAh9/2uGy', 'bHKTeG2WXEH9eyUxAThhU6DaH'); -- fYKsMyzK6SAK16Y2Kyo2Sth6e
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$fmLdwo8tthFSP8zWWUKuReDbQAm2NDsFmOelo2BZsi8N1kuK0rUiK', 'SGYX4H479eym3xEbjgwc4A9aU'); -- fA1UzgyF2U8rsCXKs2FF2p7GU
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$QV31DO0VapDkHgElc7ZXzOby8/5tNoiH6zLfMwIkD8p/ABjvzj0R.', 'pPufKYmZaS92YHRZeurSFF9uC'); -- 6eaMP1ojKwaoRyaE385gm8xpo
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$17FgK04Xk5jhIzPOw8OKZuBX6WhPcbP5/tVJ413KGnXtcTuJsjDt6', 'jCaohE282KgKk8YhRsZMj2KFy'); -- FhU9Bj4e45YkykD93LBL792Ty
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$Tl6bVKZOaCKg2EkfhAqnbevmq2E/gNXBRDI1O8APBCUXPqvIPCf/y', 'r7oCkDz1w7GFAFBTGh1DTyZkC'); -- 6E11k3mse8z45HAFCa3ht74z8
+INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$ZrFDwhiWampLsbZfCLlr2umv5Wx0Msjyrbse7/VD3Sfn/gDfmybpO', 'sZUWjt2YtUDbuRjAX83TUbjrg'); -- YMFHMLycHwuP7F2k2GtKEzrRa
 
 -- Team Users
 -- Add user 1 to team 1
