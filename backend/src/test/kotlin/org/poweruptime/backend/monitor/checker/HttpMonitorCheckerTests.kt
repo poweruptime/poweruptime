@@ -9,6 +9,7 @@ import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerD
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataAuthType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataContentType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataMethod
+import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
@@ -17,10 +18,12 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 
-class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
+class HttpMonitorCheckerTests(
+    teamSettingService: TeamSettingService,
+) : BaseTestWithReusingContainers() {
     private fun getHttpBinUrl() = "http://localhost:${httpBin.getMappedPort(80)}"
 
-    private val httpMonitorChecker = HttpMonitorChecker()
+    private val httpMonitorChecker = HttpMonitorChecker(teamSettingService)
 
     @Test
     fun `test if simple works`(): Unit = httpMonitorChecker.execute(
@@ -29,6 +32,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "https://dafnik.me",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -43,6 +47,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "https://expired.badssl.com/",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -58,6 +63,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
                 ignoreTLS = true,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -72,6 +78,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "${getHttpBinUrl()}/xml",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.XML,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -87,6 +94,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "${getHttpBinUrl()}/json",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -101,6 +109,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "${getHttpBinUrl()}/html",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.HTML,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -115,6 +124,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 url = "${getHttpBinUrl()}/gzip",
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -133,6 +143,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                             url = "${getHttpBinUrl()}/${method.name.lowercase(Locale.getDefault())}",
                             method = method,
                             contentType = HttpMonitorCheckerDataContentType.JSON,
+                            allowedStatusCodeRanges = listOf("200 - 299"),
                         ),
                     ),
                 ).let {
@@ -149,6 +160,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.HTML,
                 searchTerm = "shameful story of his wretched fate",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -164,6 +176,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.HTML,
                 searchTerm = "NOT_FOUND_THIS",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -179,6 +192,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.JSON,
                 searchTerm = """"title": "Wake up to WonderWidgets!",""",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -194,6 +208,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.HTML,
                 searchTerm = "NOT_FOUND_THIS",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -209,6 +224,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.XML,
                 searchTerm = "Sample Slide Show",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -224,6 +240,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 method = HttpMonitorCheckerDataMethod.GET,
                 contentType = HttpMonitorCheckerDataContentType.XML,
                 searchTerm = "NOT_FOUND_THIS",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -241,6 +258,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 authType = HttpMonitorCheckerDataAuthType.BASIC,
                 basicAuthDataUsername = "test_user",
                 basicAuthDataPassword = "test_password",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -259,6 +277,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 basicAuthDataUsername = "test_user",
                 basicAuthDataPassword = "test_password",
                 searchTerm = """"authenticated": true""",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -277,6 +296,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 basicAuthDataUsername = "test_user",
                 basicAuthDataPassword = "test_password",
                 searchTerm = "NOT_FOUND",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -294,6 +314,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                 authType = HttpMonitorCheckerDataAuthType.BASIC,
                 basicAuthDataUsername = "test_user1",
                 basicAuthDataPassword = "test_password1",
+                allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ),
     ).let {
@@ -310,6 +331,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                     url = "${getHttpBinUrl()}/delay/10",
                     method = HttpMonitorCheckerDataMethod.GET,
                     contentType = HttpMonitorCheckerDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
                 ),
             ),
         ).let {
@@ -339,6 +361,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                         url = "${getHttpBinUrl()}/status/$statusCode",
                         method = HttpMonitorCheckerDataMethod.GET,
                         contentType = HttpMonitorCheckerDataContentType.JSON,
+                        allowedStatusCodeRanges = listOf("200 - 299"),
                     ),
                 ),
             ).let {
@@ -353,6 +376,7 @@ class HttpMonitorCheckerTests : BaseTestWithReusingContainers() {
                         url = "${getHttpBinUrl()}/status/$statusCode",
                         method = HttpMonitorCheckerDataMethod.GET,
                         contentType = HttpMonitorCheckerDataContentType.JSON,
+                        allowedStatusCodeRanges = listOf("200 - 299"),
                     ),
                 ),
             ).let {

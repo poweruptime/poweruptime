@@ -82,8 +82,8 @@ VALUES ('k6A6bEK7C9pC', 'BbTCKAKofbF1', '4Lxhu5YKWPBr', 'Test SSL Certificate', 
 
 -- HTTP
 INSERT INTO monitor_checker_data (id, _type) VALUES ('sPDD36R7KTgs', 'HTTP');
-INSERT INTO monitor_checker_data_http (id, http_url, http_content_type, http_ignore_tls, http_method)
-VALUES ('sPDD36R7KTgs', 'https://expired.badssl.com/', 'JSON', true, 'GET');
+INSERT INTO monitor_checker_data_http (id, http_url, http_content_type, http_ignore_tls, http_method, http_allowed_status_code_ranges, http_certificate_expiry)
+VALUES ('sPDD36R7KTgs', 'https://expired.badssl.com/', 'JSON', true, 'GET', ARRAY['200-299'], false);
 
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
                      version, id, monitor_checker_id, team_id, name, description)

@@ -42,11 +42,7 @@ class MonitorIntegrationTests(
             method = HttpMonitorCheckerDataMethod.GET,
             contentType = HttpMonitorCheckerDataContentType.JSON,
             ignoreTLS = true,
-            body = null,
-            searchTerm = null,
-            authType = null,
-            basicAuthDataUsername = null,
-            basicAuthDataPassword = null,
+            allowedStatusCodeRanges = listOf("200 - 299"),
         ),
         PingMonitorCheckerData(
             ip = "1.1.1.1",

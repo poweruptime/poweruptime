@@ -202,6 +202,9 @@ importers:
       '@jsverse/transloco-optimize':
         specifier: 7.0.1
         version: 7.0.1
+      '@jsverse/transloco-utils':
+        specifier: ^7.0.2
+        version: 7.0.2(typescript@5.8.3)
       '@jsverse/transloco-validator':
         specifier: 7.0.1
         version: 7.0.1
