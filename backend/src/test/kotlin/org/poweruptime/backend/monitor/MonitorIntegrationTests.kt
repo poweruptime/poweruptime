@@ -139,7 +139,7 @@ class MonitorIntegrationTests(
 
     @Nested
     @DisplayName("API Get all /v1/monitor")
-    inner class GetAllTeams {
+    inner class GetAllMonitors {
         @Test
         fun `test if secured`() {
             mockMvc.get("/v1/monitor").andExpect {
