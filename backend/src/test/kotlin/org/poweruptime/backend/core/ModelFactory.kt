@@ -15,6 +15,8 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
+import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.systemNotification.dto.CreateSystemNotificationDto
@@ -185,5 +187,30 @@ object ModelFactory {
         upsideDown = false,
         checker = checker,
         notificationMethodIds = listOf(),
+    )
+
+    fun getCreateNotificationMethodDto(
+        sender: NotificationSenderData,
+        teamId: String = "4Lxhu5YKWPBr", // Team 1
+    ) = CreateNotificationMethodDto(
+        teamId = teamId,
+        name = "Test Notification Method",
+        sender = sender,
+        useByDefault = false,
+        titleTemplate = null,
+        bodyTemplate = null,
+    )
+
+    fun getUpdateNotificationMethodDto(
+        id: String,
+        sender: NotificationSenderData,
+        name: String? = null
+    ) = UpdateNotificationMethodDto(
+        id = id,
+        name = name ?: "Updated Test Notification Method",
+        sender = sender,
+        useByDefault = false,
+        titleTemplate = null,
+        bodyTemplate = null,
     )
 }

@@ -1,6 +1,6 @@
-package org.poweruptime.backend
+package org.poweruptime.backend.notification
 
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
@@ -20,10 +20,10 @@ class NotificationTemplateTest(
             ),
         )
 
-        assertThat(template.title).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
-        assertThat(template.body.lines().first()).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
-        assertThat(template.body.lines()[1]).isEqualTo("""Ping: 1000ms""")
-        assertThat(template.body.lines().last()).isEqualTo("""Test Message""")
+        Assertions.assertThat(template.title).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
+        Assertions.assertThat(template.body.lines().first()).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
+        Assertions.assertThat(template.body.lines()[1]).isEqualTo("""Ping: 1000ms""")
+        Assertions.assertThat(template.body.lines().last()).isEqualTo("""Test Message""")
 
         println("""Title: "${template.title}" """)
         println("""Body: "${template.body}" """)
