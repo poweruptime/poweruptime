@@ -45,7 +45,7 @@ class MFAService(
 
             if (!isValid(mfa.secret, code)) {
                 val backupCodes = mfaBackupCodeRepository.findByMFAId(mfa.id)
-                val backupCode = backupCodes.matches(code) ?: throw MFACodeIncorrectException()
+                val backupCode = backupCodes.matches(rawCode = code) ?: throw MFACodeIncorrectException()
 
                 mfaBackupCodeRepository.invalidateCode(backupCode.id)
 
@@ -93,20 +93,20 @@ class MFAService(
         mfa.active = true
         save(mfa)
 
-        val backupCodes = buildList { repeat(10) { add(RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)) } }
+        val rawBackupCodes = buildList { repeat(10) { add(RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)) } }
 
-        assert(backupCodes.size == 10)
+        assert(rawBackupCodes.size == 10)
 
         mfaBackupCodeRepository.saveAll(
-            backupCodes.map { backupCode ->
+            rawBackupCodes.map { rawBackupCode ->
                 MFABackupCode(
                     mfa = mfa,
-                    codeHash = passwordEncoder.encode(backupCode),
+                    codeHash = passwordEncoder.encode(rawBackupCode),
                 )
             },
         )
 
-        return backupCodes
+        return rawBackupCodes
     }
 
     @Transactional
@@ -133,10 +133,10 @@ class MFAService(
         return GoogleAuthenticator(base32secret = base32EncodedSecret).isValid(code)
     }
 
-    private fun List<MFABackupCode>.matches(code: String): MFABackupCode? =
+    private fun List<MFABackupCode>.matches(rawCode: String): MFABackupCode? =
         filter {
             it.valid
         }.find {
-            passwordEncoder.matches(code, it.codeHash)
+            passwordEncoder.matches(rawCode, it.codeHash)
         }
 }

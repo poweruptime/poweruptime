@@ -49,8 +49,9 @@ class TokenCleanupSchedule(
             )
         }
 
-        logger.info("Removing email change token older than $date1DayAgo")
-        for (emailChangeToken in emailChangeTokenService.clearOlderThan(date1DayAgo)) {
+        val date3DayAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 3) // 3 days
+        logger.info("Removing email change token older than $date3DayAgo")
+        for (emailChangeToken in emailChangeTokenService.clearOlderThan(date3DayAgo)) {
             logger.info(
                 "Removed email change token '{}' from user '{}', createdAt: '{}'",
                 emailChangeToken.id,
@@ -59,7 +60,6 @@ class TokenCleanupSchedule(
             )
         }
 
-        val date3DayAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 3) // 3 days
         logger.info("Removing team join token older than $date3DayAgo")
         for (teamJoinToken in teamJoinTokenService.deleteOlderThan(date3DayAgo)) {
             logger.info(

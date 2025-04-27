@@ -9,9 +9,9 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
+import org.poweruptime.backend.core.MaxNanoId
 import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 
 @Entity
 @Table(name = "password_reset_token")
@@ -22,7 +22,7 @@ class PasswordResetToken(
     var user: User,
 ) : AEntity() {
     @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
+    @MaxNanoId
+    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
     override lateinit var id: String
 }

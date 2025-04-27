@@ -41,16 +41,6 @@ INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'mMyKW8
 
 -- Add to user 3 but inactive
 INSERT INTO mfa (active, secret, id, user_id) VALUES (false, '7tyBXh9ckw', 'WBAouSY2rZWP', '2XxpcofD6Ubg');
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$CHWBnFJhXdOqAol/WXfwyuzKQ00BhxhDziPEPWcEj7/vsJwYOxrxm', 'FP9B3GADrRggkLYSZYp7LUMRf'); -- sA1XZuMTFWTX8kxaS8CEP2fZx
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$3kGMbZYdvDdmyYhZ.4JqBOPzKt3kyBcf/jZsLCR52zg7BeDpVyrs.', '2bmREy7FBH4ZxWjYXyGB6By85'); -- MrZcfxDk6kbFKrrw7APWk4Zz3
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$oO0eeOdkaPzTLpXbT9HE8.tJ95LCA1O4Ijxc9jCP6risRr7xQkXrq', '1PSAWXg8tG41WHyKTT3SBf49j'); -- HU5ELSCkW4XXFE5cpekk2buRM
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$hEUBxUVcScln2i3vEuogg.ftjydYckj0HVUEp5dHIcGDTgWBIacja', 'wRh3WRoSeMcx8UKkt8y4B2k8o'); -- BGGL5mMBfA76yufDpkPjbUXsa
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$/e.eSoLMcqZHiuFzMFXyHuVJrtTba1BRSciUFX5vySOjSAh9/2uGy', 'bHKTeG2WXEH9eyUxAThhU6DaH'); -- fYKsMyzK6SAK16Y2Kyo2Sth6e
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$fmLdwo8tthFSP8zWWUKuReDbQAm2NDsFmOelo2BZsi8N1kuK0rUiK', 'SGYX4H479eym3xEbjgwc4A9aU'); -- fA1UzgyF2U8rsCXKs2FF2p7GU
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$QV31DO0VapDkHgElc7ZXzOby8/5tNoiH6zLfMwIkD8p/ABjvzj0R.', 'pPufKYmZaS92YHRZeurSFF9uC'); -- 6eaMP1ojKwaoRyaE385gm8xpo
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$17FgK04Xk5jhIzPOw8OKZuBX6WhPcbP5/tVJ413KGnXtcTuJsjDt6', 'jCaohE282KgKk8YhRsZMj2KFy'); -- FhU9Bj4e45YkykD93LBL792Ty
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$Tl6bVKZOaCKg2EkfhAqnbevmq2E/gNXBRDI1O8APBCUXPqvIPCf/y', 'r7oCkDz1w7GFAFBTGh1DTyZkC'); -- 6E11k3mse8z45HAFCa3ht74z8
-INSERT INTO mfa_backup_code (valid, mfa_id, code_hash, id) VALUES (true, 'WBAouSY2rZWP', '{bcrypt}$2a$10$ZrFDwhiWampLsbZfCLlr2umv5Wx0Msjyrbse7/VD3Sfn/gDfmybpO', 'sZUWjt2YtUDbuRjAX83TUbjrg'); -- YMFHMLycHwuP7F2k2GtKEzrRa
 
 -- Team Users
 -- Add user 1 to team 1
@@ -109,3 +99,22 @@ INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, ret
                      version, id, monitor_checker_id, team_id, name, description)
 VALUES ('U', false, '2025-01-04 13:56:03.979055 +00:00', null, null, 2, 60, '2025-01-04 14:40:08.846185 +00:00', 25,
         'pbP9gekfhG44', '5PkEZTcxCt9f', 'wERfKhghD98U', 'Test playground A DNS null matches', 'Test');
+
+-- Notification Methods
+-- E-Mail
+INSERT INTO notification_sender_data (id, _type) VALUES ('mWj79S7CpUyM', 'EMAIL');
+INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+VALUES (false, 1234, 'S', 'mWj79S7CpUyM', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
+INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('UoKSMt62oFcX', 'mWj79S7CpUyM', '4Lxhu5YKWPBr', 'Test E-Mail');
+
+-- E-Mail
+INSERT INTO notification_sender_data (id, _type) VALUES ('F9MeayHjjpB3', 'EMAIL');
+INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+VALUES (false, 1234, 'S', 'F9MeayHjjpB3', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
+INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('gs7jTakASRSp', 'F9MeayHjjpB3', '4Lxhu5YKWPBr', 'Test E-Mail 2');
+
+-- E-Mail
+INSERT INTO notification_sender_data (id, _type) VALUES ('xStfmBA6wH4C', 'EMAIL');
+INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+VALUES (false, 1234, 'S', 'xStfmBA6wH4C', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
+INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('TPAbk1uHLp7p', 'xStfmBA6wH4C', '4Lxhu5YKWPBr', 'Test E-Mail 2');

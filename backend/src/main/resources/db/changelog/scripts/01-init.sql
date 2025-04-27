@@ -485,7 +485,7 @@ create table email_change_token
         constraint fkqir00p6v2xhhvfb5y63tqeurw
             references "user"
             on delete cascade,
-    id         varchar(21)                            not null
+    id         varchar(25)                            not null
         primary key,
     email      varchar(255)                           not null,
     old_email  varchar(255)                           not null
@@ -530,7 +530,7 @@ create table password_reset_token
         constraint fkopijiiwpt01x008euhjywip27
             references "user"
             on delete cascade,
-    id         varchar(21)                            not null
+    id         varchar(25)                            not null
         primary key
 );
 

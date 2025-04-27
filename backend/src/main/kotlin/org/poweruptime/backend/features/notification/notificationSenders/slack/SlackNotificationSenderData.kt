@@ -24,7 +24,7 @@ class SlackNotificationSenderData(
     @Column(name = "slack_display_name", length = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
-) : NotificationSenderData(NotificationSenderType.DISCORD) {
+) : NotificationSenderData(NotificationSenderType.SLACK) {
     // ObjectMapper needs an empty constructor
     constructor() : this("", null)
 }
