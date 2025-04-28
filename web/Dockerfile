@@ -1,14 +1,19 @@
 FROM node:22-alpine
-LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
+LABEL org.opencontainers.image.source=\
+"https://github.com/poweruptime/poweruptime"
+
+# set a working dir
+WORKDIR /app
+
+# copy your built files
 COPY dist/poweruptime-web ./
 
-# Copy the entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# copy and fix permissions on entrypoint
+COPY entrypoint.sh .
+RUN chmod +x ./entrypoint.sh
 
-# Set the entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD node server/server.mjs
+# expose and run
 EXPOSE 4200
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "server/server.mjs"]

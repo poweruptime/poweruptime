@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # entrypoint.sh
 
 # Path to your ngx-env.js file
