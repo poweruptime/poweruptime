@@ -132,7 +132,7 @@ tasks.register("releaseBeta") {
         setPowerUpTimeVersion(tagName)
 
         // Commit changes
-        commitChanges("chore: set POWERUPTIME_VERSION to $version")
+        commitChanges("chore: set POWERUPTIME_VERSION to $tagName")
 
         println()
         println("Creating git tag $tagName")
