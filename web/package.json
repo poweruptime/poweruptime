@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --verbose",
+    "start": "ng serve",
     "start:ssr": "NG_APP_BACKEND_URL=http://localhost:8080/api node dist/poweruptime-web/server/server.mjs",
     "transloco:optimize": "transloco-optimize dist/poweruptime-web/browser/assets/i18n",
     "build": "ng build",
@@ -38,6 +38,7 @@
     "@ngrx/signals": "19.1.0",
     "@ngx-dropzone/cdk": "19.2.1",
     "@ngx-dropzone/material": "19.2.1",
+    "@ngx-env/builder": "^19.0.4",
     "@ngxpert/cmdk": "^3.0.0",
     "@ngxpert/input-otp": "^1.0.3",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.6",

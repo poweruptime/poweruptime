@@ -22,7 +22,7 @@ import {environment} from '../../environments/environment';
 })
 export class BackendImage {
   private readonly isDocker = injectIsPlatformDocker();
-  protected readonly baseUrl = this.isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl;
+  protected readonly baseUrl = environment.apiUrl;
 
   fileId = input.required<string>();
   class = input<string>();

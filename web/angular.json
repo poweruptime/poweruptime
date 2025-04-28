@@ -5,7 +5,7 @@
     "poweruptime-web": {
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@ngx-env/builder:application",
           "configurations": {
             "development": {
               "extractLicenses": false,
@@ -28,7 +28,12 @@
           },
           "defaultConfiguration": "production",
           "options": {
-            "allowedCommonJsDependencies": ["rfdc"],
+            "ngxEnv": {
+              "runtime": true
+            },
+            "allowedCommonJsDependencies": [
+              "rfdc"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -45,7 +50,9 @@
             "index": "src/index.html",
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",
-            "scripts": ["node_modules/emoji-toolkit/lib/js/joypixels.min.js"],
+            "scripts": [
+              "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
+            ],
             "server": "src/main.server.ts",
             "ssr": {
               "entry": "src/server.ts"
@@ -62,10 +69,11 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@ngx-env/builder:extract-i18n",
+          "options": {}
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@ngx-env/builder:dev-server",
           "configurations": {
             "development": {
               "buildTarget": "poweruptime-web:build:development"
@@ -74,7 +82,8 @@
               "buildTarget": "poweruptime-web:build:production"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {}
         }
       },
       "prefix": "app",

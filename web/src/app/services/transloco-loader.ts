@@ -4,7 +4,7 @@ import {Injectable, inject} from '@angular/core';
 import {Translation, TranslocoLoader} from '@jsverse/transloco';
 
 import {injectIsPlatformDocker} from '@app/services/platform.service';
-import {DOCKER_WEB_URL} from '@app/util';
+import {DOCKER_WEB_URL, NG_APP_HOST} from '@app/util';
 
 @Injectable({providedIn: 'root'})
 export class TranslocoHttpLoader implements TranslocoLoader {
@@ -13,6 +13,6 @@ export class TranslocoHttpLoader implements TranslocoLoader {
   private url = injectIsPlatformDocker() ? `${DOCKER_WEB_URL}` : '';
 
   getTranslation(lang: string) {
-    return this.http.get<Translation>(`${this.url}/assets/i18n/${lang}.json`);
+    return this.http.get<Translation>(`${NG_APP_HOST}/assets/i18n/${lang}.json`);
   }
 }
