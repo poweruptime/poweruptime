@@ -28,12 +28,7 @@
           },
           "defaultConfiguration": "production",
           "options": {
-            "ngxEnv": {
-              "runtime": true
-            },
-            "allowedCommonJsDependencies": [
-              "rfdc"
-            ],
+            "allowedCommonJsDependencies": ["rfdc"],
             "assets": [
               {
                 "glob": "**/*",
@@ -48,11 +43,12 @@
             ],
             "browser": "src/main.ts",
             "index": "src/index.html",
+            "ngxEnv": {
+              "runtime": true
+            },
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",
-            "scripts": [
-              "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
-            ],
+            "scripts": ["node_modules/emoji-toolkit/lib/js/joypixels.min.js"],
             "server": "src/main.server.ts",
             "ssr": {
               "entry": "src/server.ts"

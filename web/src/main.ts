@@ -3,4 +3,8 @@ import {bootstrapApplication} from '@angular/platform-browser';
 import {AppComponent} from '@app/app.component';
 import {appConfig} from '@app/app.config';
 
-bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+import {environment} from './environments/environment';
+
+bootstrapApplication(AppComponent, appConfig)
+  .then(() => console.log('Application bootstrapped', environment))
+  .catch((err) => console.error(err));

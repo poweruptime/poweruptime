@@ -5,6 +5,7 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 
+import '@ngx-env/builder/runtime';
 import express from 'express';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';

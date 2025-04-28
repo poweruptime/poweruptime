@@ -86,6 +86,9 @@ services:
     container_name: poweruptime-web
     image: ghcr.io/poweruptime/web:${POWERUPTIME_VERSION:?}
     restart: unless-stopped
+    environment:
+      HOST: ${POWERUPTIME_HOST:?}
+      API_HOST: ${API_HOST:-${POWERUPTIME_HOST}}
     labels:
       traefik.enable: true
       traefik.http.services.poweruptime-web.loadbalancer.server.port: 4200
