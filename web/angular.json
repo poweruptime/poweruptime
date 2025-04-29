@@ -74,7 +74,10 @@
               "buildTarget": "poweruptime-web:build:production"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
+          }
         }
       },
       "prefix": "app",
