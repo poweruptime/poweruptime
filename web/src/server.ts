@@ -6,7 +6,7 @@ import {
 } from '@angular/ssr/node';
 
 import express from 'express';
-import proxy from 'express-http-proxy';
+import {createProxyMiddleware} from 'http-proxy-middleware';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -41,7 +41,14 @@ app.use(
   }),
 );
 
-app.use('/api', proxy('poweruptime-backend:8080'));
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: environment.backendHost,
+    changeOrigin: true,
+    pathRewrite: {'': '/api'},
+  }),
+);
 
 /**
  * Handle all other requests by rendering the Angular application.

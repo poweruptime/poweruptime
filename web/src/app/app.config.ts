@@ -98,11 +98,7 @@ export const appConfig: ApplicationConfig = {
     provideTranslationMarkupTranspiler(LinkTranspiler),
     provideLinkRenderer(CustomLinkRenderer),
     provideLinkRenderer(CustomExternalLinkObjectLinkRenderer),
-    provideBi(
-      withCDN(() =>
-        injectIsPlatformDocker() ? `${DOCKER_WEB_URL}/assets/icons` : '/assets/icons',
-      ),
-    ),
+    provideBi(withCDN('/assets/icons')),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

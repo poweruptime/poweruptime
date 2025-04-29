@@ -10,7 +10,7 @@ import {DOCKER_WEB_URL} from '@app/util';
 export class TranslocoHttpLoader implements TranslocoLoader {
   private http = inject(HttpClient);
 
-  private url = injectIsPlatformDocker() ? `${DOCKER_WEB_URL}` : '';
+  private url = '';
 
   getTranslation(lang: string) {
     return this.http.get<Translation>(`${this.url}/assets/i18n/${lang}.json`);
