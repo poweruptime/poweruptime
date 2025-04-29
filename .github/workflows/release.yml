@@ -37,7 +37,7 @@ jobs:
           grep '"version"' web/package.json
 
       - name: Build
-        run: pnpm web:build:prod
+        run: pnpm web:build:docker
 
       - name: Archive web artifacts
         uses: actions/upload-artifact@v4

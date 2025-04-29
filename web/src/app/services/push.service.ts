@@ -9,7 +9,7 @@ import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BackendType, PushDto} from '@app/api';
 
-import {environment} from '../../environments/environment';
+import {BACKEND_API_URL} from '../util';
 import {AuthStore} from './auth/auth.store';
 import {connectToEventSource} from './event-source.service';
 
@@ -21,7 +21,7 @@ export const PushService = createInjectable(() => {
     filter((it): it is string => !!it),
     switchMap((accessToken) =>
       connectToEventSource(
-        `${environment.apiUrl}/v1/sse`,
+        `${BACKEND_API_URL}/v1/sse`,
         {
           fetch: (input, init) =>
             fetch(input, {

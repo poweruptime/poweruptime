@@ -1,10 +1,7 @@
 import {NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
-import {injectIsPlatformDocker} from '@app/services';
-import {DOCKER_BACKEND_API_URL} from '@app/util';
-
-import {environment} from '../../environments/environment';
+import {BACKEND_API_URL} from '@app/util';
 
 @Component({
   template: `
@@ -21,8 +18,7 @@ import {environment} from '../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackendImage {
-  private readonly isDocker = injectIsPlatformDocker();
-  protected readonly baseUrl = this.isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl;
+  protected readonly baseUrl = BACKEND_API_URL;
 
   fileId = input.required<string>();
   class = input<string>();

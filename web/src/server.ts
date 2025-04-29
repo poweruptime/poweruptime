@@ -6,6 +6,7 @@ import {
 } from '@angular/ssr/node';
 
 import express from 'express';
+import {createProxyMiddleware} from 'http-proxy-middleware';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -40,6 +41,15 @@ app.use(
   }),
 );
 
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: environment.backendHost,
+    changeOrigin: true,
+    pathRewrite: {'': '/api'},
+  }),
+);
+
 /**
  * Handle all other requests by rendering the Angular application.
  */
@@ -55,7 +65,7 @@ app.use('/**', (req, res, next) => {
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
 if (isMainModule(import.meta.url)) {
-  const port = process.env['PORT'] || 4200;
+  const port = process.env['PORT'] || 80;
   app.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`, environment);
   });

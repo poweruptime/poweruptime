@@ -39,4 +39,4 @@ jobs:
           install-ignore-scripts: true
 
       - name: Build
-        run: pnpm web:build:prod
+        run: pnpm web:build:docker
