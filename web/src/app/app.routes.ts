@@ -1,5 +1,7 @@
 import {Routes} from '@angular/router';
 
+import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
+
 import {statusPageGuard} from '@app/guards/status-page.guard';
 
 import {isLoggedIn} from './guards/is-logged-in.guard';
@@ -13,6 +15,7 @@ export const ROUTES: Routes = [
     children: [
       {
         path: '',
+        providers: [provideNgxMetaOpenGraph()],
         loadComponent: () =>
           import('./pages/public/public-status-page.page').then((c) => c.PublicStatusPagePage),
       },

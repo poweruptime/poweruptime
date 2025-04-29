@@ -17,6 +17,8 @@ import {
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
+import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
+import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
@@ -111,6 +113,7 @@ export const appConfig: ApplicationConfig = {
     {provide: LOCALE_ID, useValue: 'en-US'},
     {provide: MAT_DATE_LOCALE, useValue: dateFnsLocale},
     provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
+    provideNgxMetaCore(),
     provideMarkdown(),
     importProvidersFrom(
       NgxEditorModule.forRoot({

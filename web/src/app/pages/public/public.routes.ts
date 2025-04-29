@@ -1,9 +1,12 @@
 import {Routes} from '@angular/router';
 
+import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
+
 export const ROUTES: Routes = [
   {
     path: '',
     loadComponent: () => import('../outside.layout').then((c) => c.OutsideLayout),
+    providers: [provideNgxMetaOpenGraph()],
     children: [
       {
         path: 'm/:monitorId',

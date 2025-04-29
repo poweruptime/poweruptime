@@ -9,8 +9,9 @@ import {
   input,
 } from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
-import {Meta, Title} from '@angular/platform-browser';
 
+import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
+import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {s_cut} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -109,8 +110,7 @@ import {environment} from '../../../environments/environment';
   ],
 })
 export class PublicStatusPagePage {
-  private readonly meta = inject(Meta);
-  private readonly title = inject(Title);
+  private readonly ngxMetaService = inject(NgxMetaService);
   private readonly document = inject(DOCUMENT);
 
   readonly publicStatusPageStore = inject(PublicStatusPageStore);
@@ -147,32 +147,32 @@ export class PublicStatusPagePage {
         return;
       }
 
-      this.title.setTitle(`${statusPage.name} - poweruptime`);
+      const description = s_cut(
+        `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
+        200,
+        '...',
+      );
 
-      this.meta.addTags([
-        {
-          property: 'og:title',
-          content: statusPage.name,
+      this.ngxMetaService.set({
+        title: `${statusPage.name} - poweruptime`,
+        description,
+        openGraph: {
+          description,
+          type: 'website',
+          siteName: 'poweruptime',
+          url: this.document.location.href,
+          title: statusPage.name,
+          image: {
+            url: statusPage.image
+              ? `${this.imageBaseUrl}/${statusPage.image.fileId}`
+              : `${this.document.location.origin}/assets/og-image/${status}.png`,
+            alt: statusPage.image
+              ? `${statusPage.name} Logo`
+              : `Image representing the ${status} status`,
+            type: 'image/png',
+          },
         },
-        {
-          property: 'og:url',
-          content: `${this.document.location.href}`,
-        },
-        {
-          property: 'og:image',
-          content: statusPage.image
-            ? `${this.imageBaseUrl}/${statusPage.image.fileId}`
-            : `${this.document.location.origin}/assets/og-image/${status}.png`,
-        },
-        {
-          property: 'og:description',
-          content: s_cut(
-            `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
-            200,
-            '...',
-          ),
-        },
-      ]);
+      } satisfies GlobalMetadata & OpenGraphMetadata);
     });
   }
 }

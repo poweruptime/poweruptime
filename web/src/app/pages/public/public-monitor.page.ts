@@ -1,8 +1,9 @@
 import {DOCUMENT} from '@angular/common';
 import {ChangeDetectionStrategy, Component, effect, inject, input} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
-import {Meta, Title} from '@angular/platform-browser';
 
+import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
+import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {AreaChartModule} from '@swimlane/ngx-charts';
 import {s_cut} from 'dfts-helper';
 
@@ -93,8 +94,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
   ],
 })
 export class PublicMonitorPage {
-  private readonly meta = inject(Meta);
-  private readonly title = inject(Title);
+  private readonly ngxMetaService = inject(NgxMetaService);
   private readonly document = inject(DOCUMENT);
 
   readonly monitorId = input<string>();
@@ -114,39 +114,28 @@ export class PublicMonitorPage {
       }
 
       const title = `${monitor.name} monitor`;
+      const description = s_cut(
+        `${monitor.status === 'UP' ? 'Service operational.' : 'Service experiences issues'}. ${monitor.description ?? ''}`,
+        200,
+        '...',
+      );
 
-      this.title.setTitle(`${title} - poweruptime`);
-
-      this.meta.addTags([
-        {
-          property: 'og:title',
-          content: `${title} - ${monitor.status}`,
+      this.ngxMetaService.set({
+        title: `${title} - poweruptime`,
+        description,
+        openGraph: {
+          description,
+          type: 'website',
+          siteName: 'poweruptime',
+          url: this.document.location.href,
+          title: `${title} - ${monitor.status}`,
+          image: {
+            url: `${this.document.location.origin}/assets/og-image/${monitor.status}.png`,
+            alt: `Image representing the ${monitor.status} status`,
+            type: 'image/png',
+          },
         },
-        {
-          property: 'og:type',
-          content: 'website',
-        },
-        {
-          property: 'og:site_name',
-          content: 'poweruptime',
-        },
-        {
-          property: 'og:url',
-          content: `${this.document.location.href}`,
-        },
-        {
-          property: 'og:image',
-          content: `${this.document.location.origin}/assets/og-image/${monitor.status}.png`,
-        },
-        {
-          property: 'og:description',
-          content: s_cut(
-            `${monitor.status === 'UP' ? 'Service operational.' : 'Service experiences issues'}. ${monitor.description ?? ''}`,
-            200,
-            '...',
-          ),
-        },
-      ]);
+      } satisfies GlobalMetadata & OpenGraphMetadata);
     });
   }
 }
