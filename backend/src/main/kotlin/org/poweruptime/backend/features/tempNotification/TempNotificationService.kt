@@ -10,7 +10,8 @@ data class TempNotification(
     val body: String,
     val bodyHTML: String? = null,
     val id: String = RandomGenerator.nanoId(),
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
+    val url: String = "http://localhost:8080/api/v1/public/temp-notification/$id"
 )
 
 @Service

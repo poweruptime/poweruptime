@@ -22,7 +22,7 @@ class TempNotificationController(
     fun getAll() = if (tempNotificationsEnabled) { tempNotificationService.getAll() } else { throw NotFoundException() }
 
     @GetMapping("/{id}")
-    fun getAll(@PathVariable("id") id: String) = if (tempNotificationsEnabled) {
+    fun getSingle(@PathVariable("id") id: String) = if (tempNotificationsEnabled) {
         tempNotificationService.getAll().find { it.id == id }?.bodyHTML.orThrowNotFound()
     } else { throw NotFoundException() }
 }
