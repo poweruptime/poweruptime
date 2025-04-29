@@ -28,7 +28,6 @@ export function authInterceptor(
 ): Observable<HttpEvent<unknown>> {
   const authStore = inject(AuthStore);
   const api = injectAPI();
-  const window = injectWindow();
   const lumber = loggerOf('authInterceptor');
 
   let toIntercept = true;
@@ -54,7 +53,6 @@ export function authInterceptor(
         if (request.url.includes('/logout')) {
           authStore.logout();
 
-          window?.location.reload();
           return throwError(() => error);
         }
 
@@ -93,16 +91,16 @@ export function authInterceptor(
               lumber.error('handle401Error', 'Could not refresh access token with refresh token');
               if (environment.production) {
                 authStore.logout();
-                window?.location.reload();
+              } else {
+                lumber.error(
+                  'handle401Error',
+                  'Something did not work out during the session refresh! On prod you would have been logged out and the window would have been force refreshed.',
+                );
+                toast.error(
+                  'Something did not work out during the session refresh! On prod you would have been logged out and the window would have been force refreshed.',
+                  {duration: 20000},
+                );
               }
-              lumber.error(
-                'handle401Error',
-                'Something did not work out during the session refresh! On prod you would have been logged out and the window would have been force refreshed.',
-              );
-              toast.error(
-                'Something did not work out during the session refresh! On prod you would have been logged out and the window would have been force refreshed.',
-                {duration: 20000},
-              );
 
               return throwError(() => error);
             }),

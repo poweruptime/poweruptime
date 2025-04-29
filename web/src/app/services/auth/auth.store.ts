@@ -8,6 +8,7 @@ import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {i_complete, s_fromStorage, st_removeAll, st_set} from 'dfts-helper';
+import {injectWindow} from 'dfx-helper';
 import {createInjectionToken} from 'ngxtension/create-injection-token';
 
 import {BackendType, injectAPI} from '../../api';
@@ -55,7 +56,7 @@ const logoutState = () => ({
 export const AuthStore = signalStore(
   {providedIn: 'root'},
   withState(() => injectInitialAuthState()),
-  withMethods((store, api = injectAPI(), router = inject(Router)) => ({
+  withMethods((store, api = injectAPI(), router = inject(Router), window = injectWindow()) => ({
     setRedirectUrl(redirectUrl: string): void {
       patchState(store, () => ({redirectUrl}));
     },
@@ -69,7 +70,7 @@ export const AuthStore = signalStore(
       patchState(store, logoutState);
 
       st_removeAll();
-      void router.navigate(['', 'auth', 'login']);
+      window?.location.reload();
     },
     login: rxMethod<Omit<BackendType['LoginDto'], 'sessionInformation'>>(
       switchMap((body) =>
