@@ -16,7 +16,7 @@ export const APIService = createInjectable(() => {
   const isDocker = injectIsPlatformDocker();
 
   return createOpenAPIHttpClient<paths>(httpClient, {
-    baseUrl: isDocker ? DOCKER_BACKEND_API_URL : environment.apiUrl,
+    baseUrl: environment.apiUrl,
   });
 });
 

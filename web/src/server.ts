@@ -6,6 +6,7 @@ import {
 } from '@angular/ssr/node';
 
 import express from 'express';
+import proxy from 'express-http-proxy';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -39,6 +40,8 @@ app.use(
     redirect: false,
   }),
 );
+
+app.use('/api', proxy('poweruptime-backend:8080'));
 
 /**
  * Handle all other requests by rendering the Angular application.
