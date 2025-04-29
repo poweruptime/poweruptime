@@ -17,6 +17,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 
 import * as licensesJson from '../../assets/licenses.json';
 import {environment} from '../../environments/environment';
+import {BACKEND_API_URL} from '../util';
 
 interface BackendEntry {
   project: {
@@ -131,7 +132,7 @@ export class AboutDialog {
 
   baLicenses$ = resource({
     loader: () =>
-      fetch(`${environment.apiUrl}/v1/public/static-files/backend.xml`).then((res) => res.text()),
+      fetch(`${BACKEND_API_URL}/v1/public/static-files/backend.xml`).then((res) => res.text()),
   });
 
   beLicenses = computed(() => {

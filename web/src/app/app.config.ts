@@ -35,12 +35,11 @@ import {
 } from 'ngx-transloco-markup';
 
 import {authInterceptor, backendOfflineInterceptor, mfaInterceptor} from '@app/interceptors';
-import {TranslocoHttpLoader, injectIsPlatformDocker} from '@app/services';
+import {TranslocoHttpLoader} from '@app/services';
 import {
   CustomExternalLinkObjectLinkRenderer,
   CustomLinkRenderer,
 } from '@app/services/custom-link-renderer.service';
-import {DOCKER_WEB_URL} from '@app/util';
 
 import {ROUTES} from './app.routes';
 

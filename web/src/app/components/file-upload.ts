@@ -21,7 +21,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
 
-import {environment} from '../../environments/environment';
+import {BACKEND_API_URL} from '../util';
 import {BackendImage} from './backend-image';
 
 @Component({
@@ -93,7 +93,7 @@ export class FileUpload {
           formData.append('file', file);
 
           return this.httpClient.post<BackendType['FileResponse']>(
-            `${environment.apiUrl}/v1/file`,
+            `${BACKEND_API_URL}/v1/file`,
             formData,
           );
         }),

@@ -12,12 +12,12 @@
               "optimization": false,
               "sourceMap": true
             },
-            "production": {
+            "docker": {
               "extractLicenses": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.docker.ts"
                 }
               ],
               "namedChunks": false,
@@ -26,7 +26,7 @@
               "sourceMap": false
             }
           },
-          "defaultConfiguration": "production",
+          "defaultConfiguration": "docker",
           "options": {
             "allowedCommonJsDependencies": ["rfdc"],
             "assets": [
@@ -70,8 +70,8 @@
             "development": {
               "buildTarget": "poweruptime-web:build:development"
             },
-            "production": {
-              "buildTarget": "poweruptime-web:build:production"
+            "docker": {
+              "buildTarget": "poweruptime-web:build:docker"
             }
           },
           "defaultConfiguration": "development",

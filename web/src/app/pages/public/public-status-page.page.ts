@@ -22,7 +22,7 @@ import {MonitorStatusColor} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
 import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
 
-import {environment} from '../../../environments/environment';
+import {BACKEND_API_URL} from '../../util';
 
 @Component({
   template: `
@@ -122,7 +122,7 @@ export class PublicStatusPagePage {
 
   readonly host = this.document.location.host;
 
-  readonly imageBaseUrl = `${environment.apiUrl}/v1/public/file`;
+  readonly imageBaseUrl = `${BACKEND_API_URL}/v1/public/file`;
 
   constructor() {
     this.publicStatusPageStore.loadBySlug(
