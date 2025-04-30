@@ -1,8 +1,6 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import team.yi.gradle.plugin.ChangelogTask
-import team.yi.gradle.plugin.FileSet
 import java.io.ByteArrayOutputStream
 
 group = "org.poweruptime.backend"
@@ -28,8 +26,6 @@ plugins {
     kotlin("plugin.spring") version "2.1.20"
     kotlin("plugin.jpa") version "2.1.20"
     kotlin("plugin.serialization") version "2.1.20"
-
-    id("team.yi.semantic-gitlog") version "0.4.1.1"
 }
 
 val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
@@ -98,21 +94,6 @@ subprojects {
     }
 }
 
-val nextTag: Property<String> = objects.property(String::class.java)
-tasks.named<ChangelogTask>("changelog") {
-    toRef = nextTag.getOrElse("main")
-    isUnstable = true
-    jsonFile = file("$rootDir/CHANGELOG.json")
-    setFileSets(
-        listOf(
-            closureOf<FileSet> {
-                template = file("${rootDir}/.github/CHANGELOG.mustache")
-                target = file("${rootDir}/CHANGELOG.md")
-            },
-        )
-    )
-}
-
 /**
  * Setup coverage report
  */
@@ -154,11 +135,12 @@ tasks.register("releaseBeta") {
         // Commit changes
         commitChanges("chore: set POWERUPTIME_VERSION to $tagName")
 
-        nextTag.set(tagName)
+        println()
+        println("Creating git tag $tagName")
+        exec {
+            commandLine("git", "tag", tagName)
+        }
     }
-}.configure {
-    // after releaseBeta.doLast → run changelog
-    finalizedBy(tasks.named("changelog"))
 }
 
 tasks.register("releaseProd") {
@@ -178,39 +160,7 @@ tasks.register("releaseProd") {
         exec {
             commandLine("git", "tag", version)
         }
-
-        println("Push git tag $version to origin")
-        exec {
-            commandLine("git", "push", "origin", version)
-        }
     }
-}
-
-tasks.register("commitChangelog") {
-    doLast {
-        val tag = nextTag.get()
-        // stage & commit CHANGELOG.md
-        commitChanges("docs: update CHANGELOG.md for $tag")
-    }
-}.configure {
-    mustRunAfter(tasks.named("changelog"))
-    // then tag it
-    finalizedBy("tagAndPush")
-}
-
-// 5) create & push the git tag, which will now include both commits
-tasks.register("tagAndPush") {
-    doLast {
-        val tag = nextTag.get()
-        println()
-        println("Creating git tag $tag")
-        exec { commandLine("git", "tag", tag) }
-
-//        println("Pushing git tag $tag to origin")
-//        exec { commandLine("git", "push", "origin", tag) }
-    }
-}.configure {
-    mustRunAfter("commitChangelog")
 }
 
 fun getNewBetaVersion(version: String?): VersionNumber {
