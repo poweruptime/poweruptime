@@ -37,7 +37,7 @@ dependencies {
     implementation("dnsjava:dnsjava:3.6.3")
 
     // HttpClient library
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.3")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.4")
 
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
     implementation("commons-codec:commons-codec:1.18.0")
@@ -51,7 +51,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core:4.31.1")
     runtimeOnly("org.postgresql:postgresql:42.7.5")
     // Postgres Arrays
-    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.9")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.10")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -81,9 +81,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter:1.20.6")
-    testImplementation("org.testcontainers:postgresql:1.20.6")
-    testImplementation("org.testcontainers:rabbitmq:1.20.6")
+    testImplementation("org.testcontainers:junit-jupiter:1.21.0")
+    testImplementation("org.testcontainers:postgresql:1.21.0")
+    testImplementation("org.testcontainers:rabbitmq:1.21.0")
 
     testImplementation("com.icegreen:greenmail-junit5:2.1.3")
 }
