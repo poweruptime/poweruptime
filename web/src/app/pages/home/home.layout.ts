@@ -17,7 +17,7 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {CmdkOverlay} from '@app/components/cmdk';
-import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
+import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
 @Component({
@@ -156,9 +156,8 @@ export class HomeLayout {
   constructor() {
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
-    const pushService = inject(PushService);
-
-    pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
+    inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
+    inject(ChangelogStore).load();
 
     const router = inject(Router);
 

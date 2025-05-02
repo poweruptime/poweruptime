@@ -882,7 +882,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['getAll_7'];
+    get: operations['getSingle'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1105,7 +1105,7 @@ export interface paths {
      * Get notificationSenders
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_8'];
+    get: operations['getAll_7'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1250,7 +1250,7 @@ export interface paths {
      * Get all dead letters
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    get: operations['getAll_9'];
+    get: operations['getAll_8'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1270,7 +1270,7 @@ export interface paths {
      * Get check results
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_10'];
+    get: operations['getAll_9'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1310,7 +1310,7 @@ export interface paths {
      * Get check result logs
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_11'];
+    get: operations['getAll_10'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1331,6 +1331,23 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
     get: operations['getPingTimeline'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/changelog': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get changelog */
+    get: operations['getChangelog'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1966,6 +1983,7 @@ export interface components {
       id: string;
       /** Format: date-time */
       createdAt: string;
+      url: string;
     };
     PublicStatusPageGroupResponse: {
       id: string;
@@ -3674,7 +3692,7 @@ export interface operations {
       };
     };
   };
-  getAll_7: {
+  getSingle: {
     parameters: {
       query?: never;
       header?: never;
@@ -3968,7 +3986,7 @@ export interface operations {
       };
     };
   };
-  getAll_8: {
+  getAll_7: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4165,7 +4183,7 @@ export interface operations {
       };
     };
   };
-  getAll_9: {
+  getAll_8: {
     parameters: {
       query?: never;
       header?: never;
@@ -4185,7 +4203,7 @@ export interface operations {
       };
     };
   };
-  getAll_10: {
+  getAll_9: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4238,7 +4256,7 @@ export interface operations {
       };
     };
   };
-  getAll_11: {
+  getAll_10: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4288,6 +4306,28 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PingTimelineResponse'];
+        };
+      };
+    };
+  };
+  getChangelog: {
+    parameters: {
+      query: {
+        version: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/markdown': string;
         };
       };
     };

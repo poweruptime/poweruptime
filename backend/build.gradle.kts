@@ -102,6 +102,18 @@ tasks.bootJar {
     archiveFileName.set("backend.jar")
 }
 
+/**
+ * Needs to be set if the project kotlin version is not supported by detekt.
+ */
+configurations.detekt {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("2.0.21") // Add the version of Kotlin that detekt needs
+        }
+    }
+}
+
+
 val licenseReportPath: String = project.layout.buildDirectory.dir("reports/dependency-license").get().asFile.path
 
 licenseReport {
@@ -127,20 +139,14 @@ val exportEmails = tasks.register<PnpmTask>("exportEmails") {
     pnpmCommand.addAll("run", "emails:export")
 }
 
-/**
- * Needs to be set if the project kotlin version is not supported by detekt.
- */
-configurations.detekt {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.0.21") // Add the version of Kotlin that detekt needs
-        }
-    }
-}
-
 val copyLicenseReport = tasks.register<Copy>("copyLicenseReport") {
     dependsOn("generateLicenseReport")
     from("$licenseReportPath/backend.xml")
+    into(project.layout.projectDirectory.dir("src/main/resources/static").asFile.path)
+}
+
+val copyChangelogs = tasks.register<Copy>("copyChangelogs") {
+    from("${project.rootDir.path}/changelogs/CHANGELOG.md", "${project.rootDir.path}/changelogs/CHANGELOG-beta.md")
     into(project.layout.projectDirectory.dir("src/main/resources/static").asFile.path)
 }
 
@@ -149,7 +155,7 @@ val copyLicenseReport = tasks.register<Copy>("copyLicenseReport") {
  * For more details: https://www.baeldung.com/spring-boot-auto-property-expansion
  */
 tasks.processResources {
-    dependsOn(exportEmails, copyLicenseReport)
+    dependsOn(exportEmails, copyLicenseReport, copyChangelogs)
 
     copySpec {
         from("src/main/resources")

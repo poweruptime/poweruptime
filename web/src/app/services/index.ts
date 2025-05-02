@@ -9,6 +9,7 @@ export * from './status-page';
 export * from './team';
 export * from './user';
 export * from './backend-offline.service';
+export * from './changelog.store';
 export * from './email-change.store';
 export * from './push.service';
 export * from './transloco-loader';

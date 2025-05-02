@@ -18,14 +18,14 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
-import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
+import {MarkedOptions} from 'marked';
 import {NgxEditorModule} from 'ngx-editor';
-import {provideMarkdown} from 'ngx-markdown';
+import {MARKED_OPTIONS, MarkedRenderer, provideMarkdown} from 'ngx-markdown';
 import {
   BoldTextTranspiler,
   ItalicTextTranspiler,
@@ -53,6 +53,21 @@ const MY_DATE_FNS_FORMATS: MatDateFormats = {
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'yyyy',
   },
+};
+
+const markedOptionsFactory = (): MarkedOptions => {
+  const renderer = new MarkedRenderer();
+
+  renderer.link = ({href, text}): string => {
+    return `<a target="_blank" href="${href}">${text}</a>`;
+  };
+
+  return {
+    renderer: renderer,
+    gfm: true,
+    breaks: true,
+    pedantic: false,
+  };
 };
 
 export const appConfig: ApplicationConfig = {
@@ -109,7 +124,7 @@ export const appConfig: ApplicationConfig = {
     {provide: MAT_DATE_LOCALE, useValue: dateFnsLocale},
     provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
     provideNgxMetaCore(),
-    provideMarkdown(),
+    provideMarkdown({markedOptions: {provide: MARKED_OPTIONS, useFactory: markedOptionsFactory}}),
     importProvidersFrom(
       NgxEditorModule.forRoot({
         locals: {

@@ -73,6 +73,7 @@
     "@jsverse/transloco-optimize": "7.0.1",
     "@jsverse/transloco-utils": "^7.0.2",
     "@jsverse/transloco-validator": "7.0.1",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/d3-shape": "3.1.7",
     "@types/express": "5.0.1",
     "@types/node": "22.15.3",

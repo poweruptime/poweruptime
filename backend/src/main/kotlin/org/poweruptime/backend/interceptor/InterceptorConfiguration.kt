@@ -22,8 +22,8 @@ class InterceptorConfiguration(
             .addResourceHandler("/v1/public/static-files/**")
             // … will be served from classpath:/static/
             .addResourceLocations("classpath:/static/")
-            // optional: cache for 3d
-            .setCachePeriod(3 * 24 * 60 * 60)
+            // optional: cache for 1d
+            .setCachePeriod(24 * 60 * 60)
     }
 
     @Suppress("SpreadOperator")
