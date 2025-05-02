@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, resource} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, resource} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MatDialogActions,
@@ -17,6 +17,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 
 import * as licensesJson from '../../assets/licenses.json';
 import {environment} from '../../environments/environment';
+import {ChangelogStore} from '../services';
 import {BACKEND_API_URL} from '../util';
 
 interface BackendEntry {
@@ -33,11 +34,14 @@ interface BackendEntry {
 
 @Component({
   template: `
-    <h2 mat-dialog-title>
-      <span class="text-3xl">{{ 'general.about' | transloco }} poweruptime</span>
-    </h2>
     <mat-dialog-content>
-      <div class="grid gap-4 pb-4">
+      <div class="flex items-center justify-between gap-4">
+        <h2 class="text-3xl">{{ 'general.about' | transloco }} poweruptime</h2>
+        <button (click)="changelogStore.load(true)" mat-stroked-button mat-dialog-close>
+          Show Changelog
+        </button>
+      </div>
+      <div class="grid gap-4 py-4">
         <p>
           Learn more on
           <a
@@ -50,6 +54,7 @@ interface BackendEntry {
           .
         </p>
         <h3 class="text-xl">Version: {{ version }}</h3>
+
         <h3 class="text-xl">Licenses ❤️</h3>
 
         <mat-accordion multi>
@@ -111,6 +116,8 @@ interface BackendEntry {
   ],
 })
 export class AboutDialog {
+  changelogStore = inject(ChangelogStore);
+
   version = environment.version;
 
   feLicenses$ = resource({

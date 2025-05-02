@@ -13,10 +13,8 @@ import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
-import {CmdkOverlay} from '@app/components/cmdk';
 import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
@@ -58,10 +56,6 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
                     height="48" />
                   <span class="mb-1">poweruptime</span>
                 </a>
-              </div>
-
-              <div class="hidden items-center gap-2 lg:inline-flex">
-                <pu-cmdk-overlay [(hasUsedShortcut)]="hasUsedCmdkShortcut" />
               </div>
             </div>
           </mat-toolbar>
@@ -108,7 +102,6 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     BiComponent,
     MatIconButton,
     Nav,
-    CmdkOverlay,
     MatTooltip,
     TranslocoPipe,
     BackendOfflineAlert,
@@ -148,16 +141,15 @@ export class HomeLayout {
 
   readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
 
-  hasUsedCmdkShortcut = injectLocalStorage<number>('pu_cmdk_used_shortcut', {
-    defaultValue: 0,
-    storageSync: true,
-  });
-
   constructor() {
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
-    inject(ChangelogStore).load();
+
+    const changelogStore = inject(ChangelogStore);
+    if (changelogStore.showNewChangelog()) {
+      changelogStore.load(false);
+    }
 
     const router = inject(Router);
 
