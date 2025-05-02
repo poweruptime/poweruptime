@@ -4,7 +4,6 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
-import {AreaChartModule} from '@swimlane/ngx-charts';
 import {s_cut} from 'dfts-helper';
 
 import {Heatmap, Placeholder, RefreshInComponent} from '@app/components';
@@ -84,7 +83,6 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
   imports: [
     MatCard,
     MatCardContent,
-    AreaChartModule,
     RefreshInComponent,
     Heatmap,
     UptimeTimeline,
