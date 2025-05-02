@@ -1,11 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, resource} from '@angular/core';
 import {MatButton} from '@angular/material/button';
-import {
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import {MatDialogActions, MatDialogClose, MatDialogContent} from '@angular/material/dialog';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -103,7 +98,6 @@ interface BackendEntry {
   selector: 'pu-about-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
     MatButton,

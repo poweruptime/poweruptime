@@ -122,7 +122,7 @@ export class PublicStatusPagePage {
 
   readonly host = this.document.location.host;
 
-  readonly imageBaseUrl = `${BACKEND_API_URL}/v1/public/file`;
+  readonly imageBaseUrl = `${this.document.location.origin}${BACKEND_API_URL}/v1/public/file`;
 
   constructor() {
     this.publicStatusPageStore.loadBySlug(

@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
 
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
+import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 
 import {statusPageGuard} from '@app/guards/status-page.guard';
 
@@ -15,7 +16,6 @@ export const ROUTES: Routes = [
     children: [
       {
         path: '',
-        providers: [provideNgxMetaOpenGraph()],
         loadComponent: () =>
           import('./pages/public/public-status-page.page').then((c) => c.PublicStatusPagePage),
       },
