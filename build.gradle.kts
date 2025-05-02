@@ -2,6 +2,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
+import java.time.Instant
 
 group = "org.poweruptime.backend"
 
@@ -126,14 +127,19 @@ tasks.register("releaseBeta") {
     doLast {
         val version = getNewBetaVersion(versionParam)
 
-        val timestamp = System.currentTimeMillis()
+        val timestamp = Instant.now().epochSecond
         val tagName = "$version-beta-$timestamp"
 
         // Set POWERUPTIME_VERSION in .versions file
         setPowerUpTimeVersion(tagName)
 
+        exec {
+            // Use bash -c to execute it
+            commandLine("bash", "-c", """git-cliff --count-tags "beta" --output ./changelogs/CHANGELOG-beta.md --tag "$tagName" """)
+        }
+
         // Commit changes
-        commitChanges("chore: set POWERUPTIME_VERSION to $tagName")
+        commitChanges("chore: set POWERUPTIME_VERSION to $tagName", listOf("./infrastructure/versions.env", "./changelogs/CHANGELOG-beta.md"))
 
         println()
         println("Creating git tag $tagName")
@@ -152,8 +158,13 @@ tasks.register("releaseProd") {
         // Set POWERUPTIME_VERSION in .versions file
         setPowerUpTimeVersion(version.toString())
 
+        exec {
+            // Use bash -c to execute it
+            commandLine("bash", "-c", """git-cliff --ignore-tags "beta" --output ./changelogs/CHANGELOG.md --tag "$version" """)
+        }
+
         // Commit changes
-        commitChanges("chore: set POWERUPTIME_VERSION to $version")
+        commitChanges("chore: set POWERUPTIME_VERSION to $version", listOf("./infrastructure/versions.env", "./changelogs/CHANGELOG.md"))
 
         println()
         println("Creating git tag $version")
@@ -168,8 +179,8 @@ fun getNewBetaVersion(version: String?): VersionNumber {
         return VersionNumber.fromString(version)
     }
 
-    val lastBetaTagVersion = getLastTag(false)
-    val lastProdTagVersion = getLastTag(true)
+    val lastBetaTagVersion = getLastVersion(false)
+    val lastProdTagVersion = getLastVersion(true)
     println("The latest beta tag is: $lastBetaTagVersion")
     println("The latest production tag is: $lastProdTagVersion")
 
@@ -201,8 +212,8 @@ fun getNewProdVersion(version: String?): VersionNumber {
         return VersionNumber.fromString(version)
     }
 
-    val lastBetaTagVersion = getLastTag(false)
-    val lastProdTagVersion = getLastTag(true)
+    val lastBetaTagVersion = getLastVersion(false)
+    val lastProdTagVersion = getLastVersion(true)
     println("The latest beta tag is: $lastBetaTagVersion")
     println("The latest production tag is: $lastProdTagVersion")
     println()
@@ -228,11 +239,11 @@ fun getNewProdVersion(version: String?): VersionNumber {
     return newVersion
 }
 
-fun getLastTag(prod: Boolean): VersionNumber {
+fun getLastTag(prod: Boolean): String {
     // Fetch all the remote tags
     exec {
-        commandLine("git", "fetch", "--tags")
-    }
+            commandLine("git", "fetch", "--tags")
+        }
 
     // Capture the names of all tags
     val osAllTags = ByteArrayOutputStream()
@@ -240,15 +251,17 @@ fun getLastTag(prod: Boolean): VersionNumber {
         commandLine("git", "tag", "-l")
         standardOutput = osAllTags
     }
-    val allExistingVersions: List<VersionNumber> = osAllTags.toString("UTF-8")
+    val allExistingVersions: List<String> = osAllTags.toString("UTF-8")
         .trim()
         .lines()
         .filter { if (prod) !it.contains("beta") else it.contains("beta") }
-        .map { it.substringBefore('-') }
-        .filter { it.matches(VersionNumber.versionRegex) }
-        .map(VersionNumber::fromString)
+        .filter { it.substringBefore('-').matches(VersionNumber.versionRegex) }
 
     return allExistingVersions.max()
+}
+
+fun getLastVersion(prod: Boolean): VersionNumber {
+    return VersionNumber.fromString(getLastTag(prod).substringBefore('-'))
 }
 
 fun setPowerUpTimeVersion(version: String) {
@@ -272,15 +285,14 @@ fun setPowerUpTimeVersion(version: String) {
     println("Set POWERUPTIME_VERSION to $version in versions.env file")
 }
 
-fun commitChanges(message: String) {
-    exec {
-        commandLine("git", "add", "./infrastructure/versions.env")
+fun commitChanges(message: String, files: List<String>) {
+    files.forEach {
+        exec {
+            commandLine("git", "add", it)
+        }
     }
     exec {
         commandLine("git", "commit", "-m", message)
-    }
-    exec {
-        commandLine("git", "push", "origin", "main")
     }
     println("Committed changes with message: $message")
 }
