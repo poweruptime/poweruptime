@@ -21,7 +21,7 @@ import {toast} from 'ngx-sonner';
       @if (state() === 'BUTTON') {
         <bi name="clipboard" />
       } @else {
-        <bi class="text-blue-700 dark:text-blue-500" name="clipboard-check-fill" />
+        <bi class="text-blue-700 dark:text-blue-500" name="check-lg" />
       }
     </button>
   `,

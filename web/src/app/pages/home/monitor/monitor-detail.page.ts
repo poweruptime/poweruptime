@@ -41,6 +41,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <a href="/public/m/{{ monitor.id }}" target="_blank">
                 <bi
                   class="text-gray-500 dark:text-gray-400"
+                  style="vertical-align: -0.25em"
                   size="18"
                   name="box-arrow-up-right"
                   aria-hidden="true" />

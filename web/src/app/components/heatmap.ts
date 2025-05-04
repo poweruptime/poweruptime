@@ -3,6 +3,7 @@ import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {MtxTooltip} from '@ng-matero/extensions/tooltip';
+import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {
@@ -83,7 +84,7 @@ import {BackendType} from '../api';
                     [class.scale-125]="_selected === number"
                     [style.background-color]="number | heatmapDotBackground"
                     (click)="
-                      _selected === number ? selected.set(undefined) : selected.set(number)
+                      _selected === number ? selected.set(null) : selected.set(number)
                     "></div>
                   @if (first) {
                     <span>0%</span>
@@ -138,5 +139,9 @@ export class Heatmap {
 
   entries = input.required<BackendType['DayUptimeStatistics'][]>();
 
-  selected = signal<number | undefined>(undefined);
+  selected = linkedQueryParam('heatmap', {
+    parse: paramToNumber(),
+    stringify: (value) => (Number.isNaN(Number(value)) ? undefined : Number(value)),
+    queryParamsHandling: 'merge',
+  });
 }

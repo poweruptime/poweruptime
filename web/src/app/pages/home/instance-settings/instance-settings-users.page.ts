@@ -61,7 +61,7 @@ import {trackBy} from '@app/util';
           <td *matCellDef="let element" mat-cell>
             <mat-chip>
               @if (element.role === 'ADMIN') {
-                <bi name="star-fill"/>
+                <bi name="star-fill" />
               }
               {{ element.role }}
             </mat-chip>
