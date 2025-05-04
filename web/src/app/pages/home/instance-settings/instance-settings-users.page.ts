@@ -59,7 +59,12 @@ import {trackBy} from '@app/util';
             {{ 'general.role' | transloco }}
           </th>
           <td *matCellDef="let element" mat-cell>
-            <mat-chip>{{ element.role }}</mat-chip>
+            <mat-chip>
+              @if (element.role === 'ADMIN') {
+                <bi name="star-fill"/>
+              }
+              {{ element.role }}
+            </mat-chip>
           </td>
         </ng-container>
 

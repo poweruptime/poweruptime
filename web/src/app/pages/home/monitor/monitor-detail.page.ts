@@ -50,7 +50,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             <pu-monitor-status [status]="monitor.status" />
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3">
             @if (monitor.status === 'PAUSED') {
               <button
                 class="secondary-button"

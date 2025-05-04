@@ -14,7 +14,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     @let valid = isValid();
 
-    <form class="grid gap-6" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+    <form class="grid gap-6 pb-4" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field>
         <mat-label>{{ 'general.name' | transloco }}</mat-label>
         <input matInput formControlName="name" />
