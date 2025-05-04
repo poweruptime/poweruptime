@@ -4312,8 +4312,9 @@ export interface operations {
   };
   getChangelog: {
     parameters: {
-      query: {
-        version: string;
+      query?: {
+        beta?: boolean;
+        version?: string;
       };
       header?: never;
       path?: never;

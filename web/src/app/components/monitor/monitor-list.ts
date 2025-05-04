@@ -21,7 +21,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {MonitorStatusBackground} from '@app/directives';
+import {MonitorStatusTextBackground} from '@app/directives';
 import {MonitorsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
@@ -63,8 +63,8 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
                 </th>
                 <td *matCellDef="let element" mat-cell>
                   <strong
-                    class="max-w-24 truncate rounded-lg px-2 py-1"
-                    [monitor-status-background]="element.status">
+                    class="max-w-24 truncate rounded-lg px-2 py-1 font-bold"
+                    [monitor-status-text-background]="element.status">
                     @if (element.status === 'UP') {
                       {{ element.oneDayUptime }}
                     } @else {
@@ -149,7 +149,6 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     MatTableModule,
     MatPaginator,
     MatSortModule,
-    MonitorStatusBackground,
     RouterLink,
     TableLoadingBar,
     StopPropagationDirective,
@@ -158,6 +157,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     TranslocoPipe,
     MatTooltip,
     InfiniteUptimeTimeline,
+    MonitorStatusTextBackground,
   ],
 })
 export class MonitorList {

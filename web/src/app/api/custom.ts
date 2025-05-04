@@ -1,6 +1,7 @@
-import type {components} from './api-types';
+import type {components, operations} from './api-types';
 
 export type BackendType = components['schemas'];
+export type BackendOperation = operations;
 
 export const MONITOR_CHECKER_DATA_TYPES = [
   {

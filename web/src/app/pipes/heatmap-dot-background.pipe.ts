@@ -20,16 +20,27 @@ const colors = [
   pure: true,
 })
 export class HeatmapDotBackgroundPipe implements PipeTransform {
-  transform(value: string | number) {
+  transform(value: number) {
+    return colors[value];
+  }
+}
+
+@Pipe({
+  name: 'heatmapDotNumber',
+  standalone: true,
+  pure: true,
+})
+export class HeatmapDotNumberPipe implements PipeTransform {
+  transform(value: string | number): number {
     if (typeof value === 'string') {
       value = Number(value.replace(',', '.').replace('%', ''));
     }
     if (value === 100) {
-      return colors.at(-1);
+      return 10;
     }
     if (value < 10) {
-      return colors[0];
+      return 0;
     }
-    return colors[Number(value.toString()[0])];
+    return Number(value.toString()[0]);
   }
 }

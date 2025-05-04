@@ -34,15 +34,55 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
   template: `
     <div class="flex flex-col gap-2">
       @if (monitorDetailStore.monitor(); as monitor) {
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-x-16 gap-y-2">
           <div class="flex items-center gap-6">
-            <h1 class="text-4xl">{{ monitor.name }}</h1>
-            <a href="/public/m/{{ monitor.id }}" target="_blank">
-              <bi size="28" name="box-arrow-up-right" aria-hidden="true" />
-            </a>
+            <div class="flex items-center gap-2">
+              <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
+              <a href="/public/m/{{ monitor.id }}" target="_blank">
+                <bi
+                  class="text-gray-500 dark:text-gray-400"
+                  size="18"
+                  name="box-arrow-up-right"
+                  aria-hidden="true" />
+              </a>
+            </div>
+
+            <pu-monitor-status [status]="monitor.status" />
           </div>
 
-          <pu-monitor-status [status]="monitor.status" />
+          <div class="flex items-center gap-2">
+            @if (monitor.status === 'PAUSED') {
+              <button
+                class="secondary-button"
+                (click)="monitorActionStore.start(monitor.id)"
+                mat-flat-button>
+                <bi name="play-btn" />
+                {{ 'general.start' | transloco }}
+              </button>
+            } @else {
+              <button
+                class="secondary-button"
+                (click)="monitorActionStore.pause(monitor.id)"
+                mat-flat-button>
+                <bi name="pause-btn" />
+                {{ 'general.pause' | transloco }}
+              </button>
+            }
+            <a
+              [routerLink]="'/t/' + monitor.team.id + '/m/' + monitor.id + '/edit'"
+              queryParamsHandling="merge"
+              mat-flat-button>
+              <bi name="pencil-square" />
+              {{ 'general.edit' | transloco }}
+            </a>
+            <button
+              class="error-button"
+              (click)="monitorActionStore.delete(monitor.id)"
+              mat-flat-button>
+              <bi name="trash" />
+              {{ 'general.delete' | transloco }}
+            </button>
+          </div>
         </div>
 
         @if (monitor.description; as description) {
@@ -55,66 +95,38 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             ">@if (cutDescription()) {{{ description | s_cut: 300 : '....' }} } @else {{{ description }}}</pre>
         }
 
-        @switch (monitor.checker._type) {
-          @case ('HTTP') {
-            <a
-              class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
-              [href]="$any(monitor.checker)['url']"
-              target="_blank"
-              rel="noopener noreferrer">
-              {{ $any(monitor.checker)['url'] }}
-            </a>
+        <div>
+          @switch (monitor.checker._type) {
+            @case ('HTTP') {
+              <a
+                class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
+                [href]="$any(monitor.checker)['url']"
+                target="_blank"
+                rel="noopener noreferrer">
+                {{ $any(monitor.checker)['url'] }}
+              </a>
+            }
+            @case ('SSL_CERTIFICATE') {
+              <a
+                class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
+                [href]="$any(monitor.checker)['url']"
+                target="_blank"
+                rel="noopener noreferrer">
+                {{ $any(monitor.checker)['url'] }}
+              </a>
+            }
+            @case ('DNS') {
+              <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
+                [{{ $any(monitor.checker)['type'] }}]
+                {{ $any(monitor.checker)['host'] }}
+              </span>
+            }
+            @case ('PING') {
+              <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
+                {{ $any(monitor.checker)['ip'] }}:{{ $any(monitor.checker)['port'] }}
+              </span>
+            }
           }
-          @case ('SSL_CERTIFICATE') {
-            <a
-              class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
-              [href]="$any(monitor.checker)['url']"
-              target="_blank"
-              rel="noopener noreferrer">
-              {{ $any(monitor.checker)['url'] }}
-            </a>
-          }
-          @case ('DNS') {
-            <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
-              [{{ $any(monitor.checker)['type'] }}]
-              {{ $any(monitor.checker)['host'] }}
-            </span>
-          }
-          @case ('PING') {
-            <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
-              {{ $any(monitor.checker)['ip'] }}:{{ $any(monitor.checker)['port'] }}
-            </span>
-          }
-        }
-
-        <div class="flex items-center gap-2">
-          @if (monitor.status === 'PAUSED') {
-            <button
-              class="secondary-button"
-              (click)="monitorActionStore.start(monitor.id)"
-              mat-flat-button>
-              {{ 'general.start' | transloco }}
-            </button>
-          } @else {
-            <button
-              class="secondary-button"
-              (click)="monitorActionStore.pause(monitor.id)"
-              mat-flat-button>
-              {{ 'general.pause' | transloco }}
-            </button>
-          }
-          <a
-            [routerLink]="'/t/' + monitor.team.id + '/m/' + monitor.id + '/edit'"
-            queryParamsHandling="merge"
-            mat-flat-button>
-            {{ 'general.edit' | transloco }}
-          </a>
-          <button
-            class="error-button"
-            (click)="monitorActionStore.delete(monitor.id)"
-            mat-flat-button>
-            {{ 'general.delete' | transloco }}
-          </button>
         </div>
 
         <mat-chip-set aria-label="Dog selection">

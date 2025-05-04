@@ -21,7 +21,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {TableLoadingBar} from '@app/components';
-import {MonitorStatusBackground} from '@app/directives';
+import {MonitorStatusTextBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationsStore} from '@app/services';
 import {trackBy} from '@app/util';
@@ -57,7 +57,7 @@ import {trackBy} from '@app/util';
                 <td *matCellDef="let element" mat-cell>
                   <span
                     class="rounded-md px-2 py-1 font-bold"
-                    [monitor-status-background]="element.checkResult.status">
+                    [monitor-status-text-background]="element.checkResult.status">
                     {{ element.checkResult.status }}
                   </span>
                 </td>
@@ -151,7 +151,6 @@ import {trackBy} from '@app/util';
     MatTableModule,
     MatPaginator,
     MatSortModule,
-    MonitorStatusBackground,
     RouterLink,
     TableLoadingBar,
     TranslocoPipe,
@@ -159,6 +158,7 @@ import {trackBy} from '@app/util';
     BiComponent,
     MatTooltip,
     MatIconAnchor,
+    MonitorStatusTextBackground,
   ],
 })
 export class NotificationList {

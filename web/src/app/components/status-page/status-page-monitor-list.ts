@@ -6,7 +6,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {UptimeTimeline} from '@app/components/monitor';
-import {MonitorStatusBackground} from '@app/directives';
+import {MonitorStatusTextBackground} from '@app/directives';
 import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
 
 @Component({
@@ -22,7 +22,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
                   ? ('monitor.oneDayUptime' | transloco)
                   : ('general.status' | transloco)
               "
-              [monitor-status-background]="monitor.status">
+              [monitor-status-text-background]="monitor.status">
               @if (monitor.status === 'UP') {
                 {{ monitor.oneDayUptime }}
               } @else {
@@ -60,10 +60,10 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   imports: [
     BiComponent,
     RouterLink,
-    MonitorStatusBackground,
     MatTooltip,
     TranslocoPipe,
     UptimeTimeline,
+    MonitorStatusTextBackground,
   ],
 })
 export class StatusPageMonitorList {

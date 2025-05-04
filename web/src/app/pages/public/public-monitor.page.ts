@@ -15,9 +15,9 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
     <div class="flex flex-col gap-4">
       @if (publicMonitorDetailStore.monitor(); as monitor) {
         <div class="flex items-center justify-between">
-          <h1 class="text-4xl">{{ monitor.name }}</h1>
+          <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
 
-          <pu-monitor-status [status]="monitor.status" animate />
+          <pu-monitor-status [status]="monitor.status" />
         </div>
 
         <mat-card appearance="outlined">

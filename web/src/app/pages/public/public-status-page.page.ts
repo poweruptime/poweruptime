@@ -38,7 +38,7 @@ import {BACKEND_API_URL} from '../../util';
                 [alt]="statusPage.name + ' Logo'"
                 size="75" />
             }
-            <h1 class="text-4xl">{{ statusPage.name }}</h1>
+            <h1 class="text-4xl font-bold">{{ statusPage.name }}</h1>
           </div>
 
           <mat-card appearance="outlined">

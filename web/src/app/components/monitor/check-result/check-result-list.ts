@@ -24,7 +24,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {TableLoadingBar} from '@app/components';
-import {MonitorStatusBackground} from '@app/directives';
+import {MonitorStatusTextBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {CheckResultsStore} from '@app/services';
 import {trackBy} from '@app/util';
@@ -69,7 +69,7 @@ import {trackBy} from '@app/util';
                 <td *matCellDef="let element" mat-cell>
                   <span
                     class="rounded-md px-2 py-1 font-bold"
-                    [monitor-status-background]="element.status">
+                    [monitor-status-text-background]="element.status">
                     {{ element.status }}
                   </span>
                 </td>
@@ -159,7 +159,6 @@ import {trackBy} from '@app/util';
     MatTableModule,
     MatPaginator,
     MatSortModule,
-    MonitorStatusBackground,
     MatSlideToggle,
     RouterLink,
     TableLoadingBar,
@@ -169,6 +168,7 @@ import {trackBy} from '@app/util';
     MatIconAnchor,
     TranslocoPipe,
     MatTooltip,
+    MonitorStatusTextBackground,
   ],
 })
 export class CheckResultList {

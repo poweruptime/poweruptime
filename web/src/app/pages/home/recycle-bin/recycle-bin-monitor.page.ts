@@ -23,7 +23,7 @@ import {trackBy} from '@app/util';
 @Component({
   template: `
     <button
-      [disabled]="monitorsStore.isPending()"
+      [disabled]="!monitorsStore.hasValue() || monitorsStore.isPending()"
       (click)="monitorsStore.restoreSelection()"
       mat-flat-button>
       <bi name="arrow-counterclockwise" />

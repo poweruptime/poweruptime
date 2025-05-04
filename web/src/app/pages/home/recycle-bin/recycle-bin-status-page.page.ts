@@ -23,7 +23,7 @@ import {trackBy} from '@app/util';
 @Component({
   template: `
     <button
-      [disabled]="statusPagesStore.isPending()"
+      [disabled]="!statusPagesStore.hasValue() || statusPagesStore.isPending()"
       (click)="statusPagesStore.restoreSelection()"
       mat-flat-button>
       <bi name="arrow-counterclockwise" />

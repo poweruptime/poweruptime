@@ -13,8 +13,7 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {CopyIconButton, Placeholder} from '@app/components';
-import {CheckResultLogEntry} from '@app/components/monitor';
-import {MonitorStatusBackground} from '@app/directives';
+import {CheckResultLogEntry, MonitorStatus} from '@app/components/monitor';
 import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services';
 
 @Component({
@@ -38,11 +37,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             </a>
           </div>
           <div class="flex flex-wrap gap-2 text-2xl">
-            <strong
-              class="rounded-lg px-2 py-1 text-lg"
-              [monitor-status-background]="checkResult.status">
-              {{ checkResult.status }}
-            </strong>
+            <pu-monitor-status [status]="checkResult.status" />
             <h1>{{ checkResult.title }}</h1>
             <span class="text-gray-400">#{{ checkResult.id }}</span>
           </div>
@@ -188,7 +183,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     BiComponent,
     MatAnchor,
     RouterLink,
-    MonitorStatusBackground,
     MatCard,
     MatCardContent,
     MatSlideToggle,
@@ -199,6 +193,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     CopyIconButton,
     RepeatPipe,
     TranslocoPipe,
+    MonitorStatus,
   ],
 })
 export class MonitorCheckResultDetailPage {

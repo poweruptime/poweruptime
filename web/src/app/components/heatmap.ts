@@ -5,12 +5,17 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {MtxTooltip} from '@ng-matero/extensions/tooltip';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
-import {HeatmapDotBackgroundPipe, HeatmapXAxisFormattingPipe} from '@app/pipes';
+import {
+  HeatmapDotBackgroundPipe,
+  HeatmapDotNumberPipe,
+  HeatmapXAxisFormattingPipe,
+} from '@app/pipes';
 
 import {BackendType} from '../api';
 
 @Component({
   template: `
+    @let _selected = selected();
     <div class="flex flex-row gap-2 overflow-x-auto pb-8 pt-0.5">
       <div class="text-xxs flex flex-col gap-3 pr-2">
         <div class="heatmap-x-axis-label">Mon</div>
@@ -28,14 +33,22 @@ import {BackendType} from '../api';
           [class.justify-end]="_firstWeekNotFull"
           [style.margin-bottom]="_firstWeekNotFull ? '0.9rem' : ''">
           @for (day of entry.series; track day.date) {
-            <div
-              class="heatmap-dot"
-              [class.animate-pulse]="
-                (day.date | date: 'YYYY-MM-dd') === (currentDate() | date: 'YYYY-MM-dd')
-              "
-              [style.background-color]="day.value | heatmapDotBackground"
-              [mtxTooltip]="heatmapDotTooltip"
-              mtxTooltipPosition="above"></div>
+            @let number = day.value | heatmapDotNumber;
+            @if (!_selected || _selected <= number) {
+              <div
+                class="heatmap-dot hover:scale-125"
+                [class.animate-pulse]="
+                  (day.date | date: 'YYYY-MM-dd') === (currentDate() | date: 'YYYY-MM-dd')
+                "
+                [style.background-color]="number | heatmapDotBackground"
+                [mtxTooltip]="heatmapDotTooltip"
+                mtxTooltipPosition="above"></div>
+            } @else {
+              <div
+                class="heatmap-dot border border-solid border-slate-900 hover:scale-125 dark:border-slate-700"
+                [mtxTooltip]="heatmapDotTooltip"
+                mtxTooltipPosition="above"></div>
+            }
 
             <ng-template #heatmapDotTooltip>
               <div class="flex flex-col">
@@ -64,9 +77,14 @@ import {BackendType} from '../api';
               @for (i of 11 | repeat; track i; let first = $first; let last = $last) {
                 <div
                   class="heatmap-legend-text flex h-3 w-12 items-center justify-between whitespace-nowrap">
+                  @let number = i + '0' | heatmapDotNumber;
                   <div
                     class="heatmap-dot"
-                    [style.background-color]="i + '0' | heatmapDotBackground"></div>
+                    [class.scale-125]="_selected === number"
+                    [style.background-color]="number | heatmapDotBackground"
+                    (click)="
+                      _selected === number ? selected.set(undefined) : selected.set(number)
+                    "></div>
                   @if (first) {
                     <span>0%</span>
                   } @else if (last) {
@@ -94,7 +112,7 @@ import {BackendType} from '../api';
     }
 
     .heatmap-dot {
-      @apply h-3 w-3 cursor-pointer rounded-sm hover:scale-125;
+      @apply h-3 w-3 cursor-pointer rounded-sm;
     }
 
     .heatmap-legend-text {
@@ -112,10 +130,13 @@ import {BackendType} from '../api';
     MtxTooltip,
     MatCard,
     MatCardContent,
+    HeatmapDotNumberPipe,
   ],
 })
 export class Heatmap {
   currentDate = signal(new Date());
 
   entries = input.required<BackendType['DayUptimeStatistics'][]>();
+
+  selected = signal<number | undefined>(undefined);
 }
