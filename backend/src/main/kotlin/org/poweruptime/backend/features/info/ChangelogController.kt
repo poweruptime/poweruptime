@@ -23,9 +23,9 @@ class ChangelogController(
     )
     @GetMapping(produces = [MediaType.TEXT_MARKDOWN_VALUE])
     fun getChangelog(
-        @RequestParam version: String,
-        @RequestParam includeAll: Boolean = false
+        @RequestParam beta: Boolean = false,
+        @RequestParam version: String? = null,
     ): ResponseEntity<String> = ResponseEntity.ok()
         .contentType(MediaType.TEXT_MARKDOWN)
-        .body(changelogService.fetchChangelog(version, includeAll))
+        .body(changelogService.fetchChangelog(beta, version))
 }

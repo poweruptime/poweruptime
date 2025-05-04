@@ -14,10 +14,10 @@ class ChangelogService {
 
     @Throws(BadRequestException::class, NotFoundException::class)
     fun fetchChangelog(
-        version: String,
-        includeAll: Boolean
+        beta: Boolean,
+        version: String?,
     ): String {
-        val resourcePath = if (version.contains("-beta-")) {
+        val resourcePath = if (beta) {
             "static/CHANGELOG-beta.md"
         } else {
             "static/CHANGELOG.md"
@@ -31,13 +31,11 @@ class ChangelogService {
             throw BadRequestException("Changelog file could not be read")
         }
 
-        val content = if (includeAll) {
-            lines.joinToString(System.lineSeparator())
-        } else {
-            excerptForVersion(lines, version)
-        }
+        fun getAll(): String = lines.joinToString(System.lineSeparator())
 
-        return content
+        return version?.let {
+            excerptForVersion(lines, it) ?: getAll()
+        } ?: getAll()
     }
 
     private fun loadFileLines(path: String): List<String>? {
@@ -49,13 +47,13 @@ class ChangelogService {
     private fun excerptForVersion(
         lines: List<String>,
         version: String
-    ): String {
+    ): String? {
         val headerRegex = Regex(
             "^##\\s+${Regex.escape(version)}(?:\\s*-\\s*$datePattern)?$",
         )
         val cutIndex = lines.indexOfFirst { headerRegex.containsMatchIn(it) }
         if (cutIndex < 0) {
-            throw NotFoundException("Version '$version' not found in changelog.")
+            return null
         }
         return lines.subList(0, cutIndex).joinToString(System.lineSeparator())
     }

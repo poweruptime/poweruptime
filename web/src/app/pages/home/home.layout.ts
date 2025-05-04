@@ -18,6 +18,8 @@ import {BackendOfflineAlert, Nav} from '@app/components';
 import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
+import {environment} from '../../../environments/environment';
+
 @Component({
   selector: 'home-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -148,7 +150,8 @@ export class HomeLayout {
 
     const changelogStore = inject(ChangelogStore);
     if (changelogStore.showNewChangelog()) {
-      changelogStore.load(false);
+      changelogStore.load(changelogStore.lastVersion());
+      changelogStore.lastVersion.set(environment.version);
     }
 
     const router = inject(Router);

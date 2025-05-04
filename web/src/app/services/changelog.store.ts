@@ -13,6 +13,7 @@ import {ChangelogDialog} from '@app/components';
 import {BACKEND_API_URL} from '@app/util';
 
 import {environment} from '../../environments/environment';
+import {BackendOperation} from '../api';
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
 
 export const ChangelogStore = signalStore(
@@ -31,19 +32,21 @@ export const ChangelogStore = signalStore(
       }
       return environment.version !== store.lastVersion();
     },
-    load: rxMethod<boolean>(
+    load: rxMethod<string | undefined>(
       pipe(
         tap(() => patchState(store, setPending())),
-        switchMap((includeAll) =>
+        switchMap((version) =>
           httpClient
             .get(`${BACKEND_API_URL}/v1/changelog`, {
               responseType: 'text',
-              params: {version: store.lastVersion()!, includeAll},
+              params: {
+                ...(version ? {version} : {}),
+                beta: !environment.production,
+              } satisfies BackendOperation['getChangelog']['parameters']['query'],
             })
             .pipe(
               tapResponse({
                 next: (changelog) => {
-                  store.lastVersion.set(environment.version);
                   patchState(store, setFulfilled());
                   dialog.open(ChangelogDialog, {data: {changelog}});
                 },

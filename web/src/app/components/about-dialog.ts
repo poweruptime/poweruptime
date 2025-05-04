@@ -9,6 +9,7 @@ import {
 } from '@angular/material/expansion';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {MatButtonLoading} from '@ng-matero/extensions/button';
 
 import * as licensesJson from '../../assets/licenses.json';
 import {environment} from '../../environments/environment';
@@ -32,7 +33,10 @@ interface BackendEntry {
     <mat-dialog-content>
       <div class="flex items-center justify-between gap-4">
         <h2 class="text-3xl">{{ 'general.about' | transloco }} poweruptime</h2>
-        <button (click)="changelogStore.load(true)" mat-stroked-button mat-dialog-close>
+        <button
+          [loading]="changelogStore.isPending()"
+          (click)="changelogStore.load(undefined)"
+          mat-stroked-button>
           Show Changelog
         </button>
       </div>
@@ -107,6 +111,7 @@ interface BackendEntry {
     MatExpansionPanelHeader,
     MatExpansionPanel,
     MatAccordion,
+    MatButtonLoading,
   ],
 })
 export class AboutDialog {
