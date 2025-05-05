@@ -43,7 +43,7 @@ import {
   CustomLinkRenderer,
 } from '@app/services/custom-link-renderer.service';
 
-import {ROUTES} from './app.routes';
+import {ROUTES} from './pages/pages.routes';
 
 const MY_DATE_FNS_FORMATS: MatDateFormats = {
   parse: {

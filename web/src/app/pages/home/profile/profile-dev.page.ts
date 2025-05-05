@@ -53,7 +53,7 @@ import {AuthStore} from '@app/services';
                 class="secondary-button"
                 [queryParams]="{preview: true}"
                 mat-flat-button
-                routerLink="/auth/setup">
+                routerLink="/setup">
                 Open Setup
               </a>
             </div>

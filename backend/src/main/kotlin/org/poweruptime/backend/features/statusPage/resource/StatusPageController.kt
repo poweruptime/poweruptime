@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.BooleanResponse
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.STATUS_PAGE_ADMIN
@@ -64,8 +65,6 @@ class StatusPageController(
             deleted = deleted,
         ).toDto { it.toResponse() }
     }
-
-    data class BooleanResponse(val it: Boolean)
 
     @Operation(
         summary = "Check if slug is free",

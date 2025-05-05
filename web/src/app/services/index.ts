@@ -12,4 +12,5 @@ export * from './backend-offline.service';
 export * from './changelog.store';
 export * from './email-change.store';
 export * from './push.service';
+export * from './setup.store';
 export * from './transloco-loader';

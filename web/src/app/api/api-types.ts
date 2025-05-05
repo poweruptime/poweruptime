@@ -431,6 +431,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/public/setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Setup first user */
+    post: operations['setup'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/setup/email': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Test e-mail setup */
+    post: operations['setupEmailTest'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/profile/mfa': {
     parameters: {
       query?: never;
@@ -439,7 +473,7 @@ export interface paths {
       cookie?: never;
     };
     /** Setup MFA */
-    get: operations['setup'];
+    get: operations['setup_1'];
     put?: never;
     /** Confirm MFA */
     post: operations['confirm'];
@@ -477,7 +511,7 @@ export interface paths {
     get?: never;
     put?: never;
     /** Setup first user */
-    post: operations['setup_1'];
+    post: operations['setup_2'];
     delete?: never;
     options?: never;
     head?: never;
@@ -934,6 +968,23 @@ export interface paths {
     };
     /** Get slug by domain */
     get: operations['getByDomain'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/setup/email/verify': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Test e-mail setup */
+    get: operations['verifyTestEmail'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1827,6 +1878,10 @@ export interface components {
       imageId?: string;
       domainNames: string[];
     };
+    SetupDto: {
+      name: string;
+      email: string;
+    };
     ConfirmMFADto: {
       code: string;
     };
@@ -1854,10 +1909,6 @@ export interface components {
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
       notificationMethodIds: string[];
-    };
-    SetupDto: {
-      name: string;
-      email: string;
     };
     PasswordForgotRequestDto: {
       email: string;
@@ -3049,6 +3100,50 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetupDto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['IdResponse'];
+        };
+      };
+    };
+  };
+  setupEmailTest: {
+    parameters: {
+      query: {
+        email: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  setup_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
     requestBody?: never;
     responses: {
       /** @description OK */
@@ -3133,7 +3228,7 @@ export interface operations {
       };
     };
   };
-  setup_1: {
+  setup_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -3784,6 +3879,28 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PublicStatusPageResponse'];
+        };
+      };
+    };
+  };
+  verifyTestEmail: {
+    parameters: {
+      query: {
+        code: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
         };
       };
     };

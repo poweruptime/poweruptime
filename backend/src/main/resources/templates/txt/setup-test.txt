@@ -1,0 +1,6 @@
+Test email successfully delivered.
+
+Complete setup : "[(${urlHost})]/setup?email=[(${inviteeEmail})]&code=[(${code})]"
+
+This email was intended for [(${inviteeEmail})].
+If you were not expecting this, you can ignore this email.

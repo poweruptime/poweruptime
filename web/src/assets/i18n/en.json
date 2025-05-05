@@ -10,10 +10,12 @@
     "requestPasswordReset": "Request password reset",
     "resetPassword": "Reset password",
     "setup": {
+      "continueAnyway": "Continue anyway",
       "description": "Your Admin-Account data",
       "info1": "An invitation will be sent to the specified email address.",
       "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]",
-      "send": "Send E-Mail",
+      "sendInvitation": "Send invitation E-Mail",
+      "sendTest": "Send Test E-Mail",
       "title": "First-time Setup"
     },
     "stayLoggedIn": "Stay logged in"

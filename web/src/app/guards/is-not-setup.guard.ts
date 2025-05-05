@@ -19,7 +19,7 @@ export const isNotSetupGuard: CanActivateFn = (route) => {
   return json$.pipe(
     take(1),
     map(({setup}) => setup),
-    map((isSetup) => !isSetup || router.parseUrl('/auth/setup')),
+    map((isSetup) => !isSetup || router.parseUrl('/setup')),
     catchError(() => of(true)),
   );
 };

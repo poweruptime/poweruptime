@@ -4,6 +4,7 @@ import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.authentication.LoginDto
+import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerData
@@ -212,5 +213,10 @@ object ModelFactory {
         useByDefault = false,
         titleTemplate = null,
         bodyTemplate = null,
+    )
+
+    fun getTestSetupDto() = SetupDto(
+        name = "admin",
+        email = "admin@admin.org",
     )
 }
