@@ -14,9 +14,13 @@ import {TableLoadingBar} from '@app/components';
 import {SelectedTeamStore, StatusPagesStore} from '@app/services';
 import {trackBy} from '@app/util';
 
+import {IsTeamAdmin} from '../../../directives/is-team-admin';
+
 @Component({
   template: `
-    <a mat-flat-button routerLink="new">{{ 'cmdk.groups.statusPage.create' | transloco }}</a>
+    <a *isTeamAdmin mat-flat-button routerLink="new">
+      {{ 'cmdk.groups.statusPage.create' | transloco }}
+    </a>
 
     <table
       [dataSource]="statusPagesStore.entities()"
@@ -38,34 +42,36 @@ import {trackBy} from '@app/util';
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
         <td *matCellDef="let element" mat-cell>
-          <a
-            [routerLink]="element.id"
-            [matTooltip]="'statusPage.list.edit' | transloco"
-            [attr.aria-label]="'statusPage.list.edit' | transloco"
-            mat-icon-button
-            stopPropagation>
-            <bi name="pencil-square" />
-          </a>
-          <a
-            [routerLink]="element.id"
-            [queryParams]="{preview: 1}"
-            [matTooltip]="'statusPage.list.preview' | transloco"
-            [attr.aria-label]="'statusPage.list.preview' | transloco"
-            mat-icon-button
-            stopPropagation>
-            <bi name="eye" />
-          </a>
-          <a [href]="'/public/s/' + element.slug" target="_blank" mat-icon-button stopPropagation>
-            <bi name="box-arrow-up-right" />
-          </a>
-          <button
-            [matTooltip]="'statusPage.list.delete' | transloco"
-            [attr.aria-label]="'statusPage.list.delete' | transloco"
-            (click)="statusPagesStore.delete(element.id)"
-            mat-icon-button
-            stopPropagation>
-            <bi name="trash-fill" />
-          </button>
+          <div class="flex gap-2" *isTeamAdmin>
+            <a
+              [routerLink]="element.id"
+              [matTooltip]="'statusPage.list.edit' | transloco"
+              [attr.aria-label]="'statusPage.list.edit' | transloco"
+              mat-icon-button
+              stopPropagation>
+              <bi name="pencil-square" />
+            </a>
+            <a
+              [routerLink]="element.id"
+              [queryParams]="{preview: 1}"
+              [matTooltip]="'statusPage.list.preview' | transloco"
+              [attr.aria-label]="'statusPage.list.preview' | transloco"
+              mat-icon-button
+              stopPropagation>
+              <bi name="eye" />
+            </a>
+            <a [href]="'/public/s/' + element.slug" target="_blank" mat-icon-button stopPropagation>
+              <bi name="box-arrow-up-right" />
+            </a>
+            <button
+              [matTooltip]="'statusPage.list.delete' | transloco"
+              [attr.aria-label]="'statusPage.list.delete' | transloco"
+              (click)="statusPagesStore.delete(element.id)"
+              mat-icon-button
+              stopPropagation>
+              <bi name="trash-fill" />
+            </button>
+          </div>
         </td>
       </ng-container>
 
@@ -104,6 +110,7 @@ import {trackBy} from '@app/util';
     MatIconAnchor,
     TranslocoPipe,
     MatTooltip,
+    IsTeamAdmin,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

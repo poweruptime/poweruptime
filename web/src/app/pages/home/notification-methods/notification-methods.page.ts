@@ -15,9 +15,11 @@ import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pip
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
 import {trackBy} from '@app/util';
 
+import {IsTeamAdmin} from '../../../directives/is-team-admin';
+
 @Component({
   template: `
-    <a mat-flat-button routerLink="new">
+    <a *isTeamAdmin mat-flat-button routerLink="new">
       {{ 'cmdk.groups.notificationMethod.create' | transloco }}
     </a>
 
@@ -85,7 +87,7 @@ import {trackBy} from '@app/util';
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell></th>
           <td *matCellDef="let element" mat-cell>
-            <div class="flex gap-2">
+            <div class="flex gap-2" *isTeamAdmin>
               <a
                 [routerLink]="element.id"
                 [matTooltip]="'notificationMethod.list.edit' | transloco"
@@ -161,6 +163,7 @@ import {trackBy} from '@app/util';
     MatTooltip,
     MatIconAnchor,
     NotificationSenderDataValueLabelPipe,
+    IsTeamAdmin,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

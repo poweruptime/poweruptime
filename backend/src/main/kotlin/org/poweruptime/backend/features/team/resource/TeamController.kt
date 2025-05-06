@@ -10,6 +10,7 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
+import org.poweruptime.backend.features.authentication.domain.PermissionRepository
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
@@ -20,6 +21,7 @@ import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.poweruptime.backend.features.team.dto.UpdateTeamDto
 import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -37,6 +39,7 @@ class TeamController(
     private val monitorService: MonitorService,
     private val authService: AuthService,
     private val instanceSettingService: InstanceSettingService,
+    private val permissionRepository: PermissionRepository,
 ) {
 
     @Operation(
@@ -127,8 +130,13 @@ class TeamController(
         teamService.undeleteById(id).toResponse(authService.getByAuthOrThrow(authentication))
 
     private fun Team.toResponse(user: User): TeamResponse = TeamResponse(
-        this,
-        this.personalUser?.id == user.id,
-        monitorService.getTeamDashboard(this.id),
+        team = this,
+        personal = this.personalUser?.id == user.id,
+        dashboard = monitorService.getTeamDashboard(this.id),
+        role = if (user.isAdmin()) {
+            TeamRole.ADMIN
+        } else {
+            permissionRepository.findByTeamId(user.id, this.id)?.role ?: throw ForbiddenException("User not in team")
+        },
     )
 }

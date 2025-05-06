@@ -19,6 +19,7 @@ import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {ThemeService, themeOptions} from '@app/services/theme.service';
 import {isMobileBreakpoints} from '@app/services/util';
 
+import {IsTeamAdmin} from '../directives/is-team-admin';
 import {AboutDialog} from './about-dialog';
 import {TeamSelect} from './team-select';
 
@@ -110,17 +111,22 @@ import {TeamSelect} from './team-select';
               <bi name="chat-left-quote" />
               <span class="nav-text">{{ 'general.statusPages' | transloco }}</span>
             </a>
-            <a
-              mat-list-item
-              routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
-              routerLinkActive="active">
-              <bi name="trash3" />
-              <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
-            </a>
-            <a mat-list-item routerLink="/t/{{ selectedTeamId() }}/edit" routerLinkActive="active">
-              <bi name="gear-wide" />
-              <span class="nav-text">{{ 'general.settings' | transloco }}</span>
-            </a>
+            <ng-container *isTeamAdmin>
+              <a
+                mat-list-item
+                routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
+                routerLinkActive="active">
+                <bi name="trash3" />
+                <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
+              </a>
+              <a
+                mat-list-item
+                routerLink="/t/{{ selectedTeamId() }}/edit"
+                routerLinkActive="active">
+                <bi name="gear-wide" />
+                <span class="nav-text">{{ 'general.settings' | transloco }}</span>
+              </a>
+            </ng-container>
           }
         </mat-nav-list>
       </div>
@@ -241,6 +247,7 @@ import {TeamSelect} from './team-select';
     StopPropagationDirective,
     TeamSelect,
     MatButton,
+    IsTeamAdmin,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

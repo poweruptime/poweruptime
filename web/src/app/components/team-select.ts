@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  booleanAttribute,
   computed,
   inject,
   input,
@@ -52,7 +53,7 @@ import {SelectedTeamStore} from '@app/services';
             </mat-radio-button>
           }
 
-          @let entities = selectedTeamStore.sortedEntitiesWithoutPersonal();
+          @let entities = sortedEntitiesWithoutPersonalWithOrWithoutAdmin();
           @if (entities.length > 0) {
             <h2 class="font-bold">{{ 'general.teams' | transloco }}</h2>
             @for (team of entities; track team.id) {
@@ -108,6 +109,18 @@ export class TeamSelect {
 
       return teamId;
     },
+  });
+
+  readonly adminOnly = input(false, {transform: booleanAttribute});
+
+  readonly sortedEntitiesWithoutPersonalWithOrWithoutAdmin = computed(() => {
+    if (this.adminOnly()) {
+      return this.selectedTeamStore
+        .sortedEntitiesWithoutPersonal()
+        .filter((it) => it.role === 'ADMIN');
+    }
+
+    return this.selectedTeamStore.sortedEntitiesWithoutPersonal();
   });
 
   readonly selectedTeamControl = new FormControl<string>('');

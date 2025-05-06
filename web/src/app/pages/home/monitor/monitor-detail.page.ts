@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input, signal} fro
 import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip, MatChipSet} from '@angular/material/chips';
+import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -30,6 +31,8 @@ import {
 } from '@app/services';
 import {dateToDateTime, toBackendDate} from '@app/services/util';
 
+import {IsTeamAdmin} from '../../../directives/is-team-admin';
+
 @Component({
   template: `
     <div class="flex flex-col gap-2">
@@ -41,9 +44,11 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <a href="/public/m/{{ monitor.id }}" target="_blank">
                 <bi
                   class="text-gray-500 dark:text-gray-400"
+                  [matTooltip]="'monitor.details.openPublic' | transloco"
                   style="vertical-align: -0.25em"
                   size="18"
                   name="box-arrow-up-right"
+                  matTooltipPosition="below"
                   aria-hidden="true" />
               </a>
             </div>
@@ -51,7 +56,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             <pu-monitor-status [status]="monitor.status" />
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3" *isTeamAdmin>
             @if (monitor.status === 'PAUSED') {
               <button
                 class="secondary-button"
@@ -171,12 +176,9 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
               link />
 
-            @if (monitorDetailStore.monitor(); as monitor) {
+            @if (testIntervalDuration(); as testIntervalDuration) {
               <span>
-                {{
-                  'monitor.details.check'
-                    | transloco: {testIntervalDuration: testIntervalDuration()}
-                }}
+                {{ 'monitor.details.check' | transloco: {testIntervalDuration} }}
               </span>
             } @else {
               <pu-placeholder class="h-6 w-40" />
@@ -185,7 +187,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         </mat-card-content>
       </mat-card>
 
-      @if (monitorDetailStore.monitor(); as monitor) {
+      @if (monitorDetailStore.isFulfilled()) {
         <mat-card appearance="outlined">
           <mat-card-content>
             <div
@@ -271,6 +273,8 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     TranslocoPipe,
     PingChartFilter,
     MonitorCheckerDataValueLabelPipe,
+    MatTooltip,
+    IsTeamAdmin,
   ],
 })
 export class MonitorDetailPage {
@@ -319,7 +323,7 @@ export class MonitorDetailPage {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
 
     if (!seconds) {
-      return '';
+      return undefined;
     }
 
     return format(seconds * 1000, {ignoreZero: true, style: 'full'});

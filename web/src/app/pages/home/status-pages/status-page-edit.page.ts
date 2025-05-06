@@ -31,6 +31,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
                   <pu-status-page-edit-form
                     [statusPage]="statusPage"
                     [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+                    [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
                     (submitCreate)="statusPageEditStore.create($event)"
                     (submitUpdate)="statusPageEditStore.update($event)" />
                 </div>

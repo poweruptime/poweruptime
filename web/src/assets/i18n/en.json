@@ -239,6 +239,7 @@
     },
     "details": {
       "check": "Check every {{testIntervalDuration}}",
+      "openPublic": "Open public {{general.monitor}} page",
       "pingChart": {
         "endDate": "{{general.end}} {{general.date}}",
         "exceedsMaxWindow": "Selected window may not exceed 1 month",

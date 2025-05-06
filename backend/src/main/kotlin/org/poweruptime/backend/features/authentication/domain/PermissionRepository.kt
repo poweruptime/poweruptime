@@ -69,7 +69,7 @@ interface PermissionRepository : Repository<TeamUser, String> {
         select count(tu)>0 from StatusPage sp
         join sp.team t
         join t.teamUsers tu
-        where tu.id.user.id = :uId and sp.id = :nmId
+        where tu.id.user.id = :uId and sp.id = :spId
         """,
     )
     fun isPartOfByStatusPageId(
@@ -83,7 +83,7 @@ interface PermissionRepository : Repository<TeamUser, String> {
         join spg.statusPage sp
         join sp.team t
         join t.teamUsers tu
-        where tu.id.user.id = :uId and sp.id = :nmId
+        where tu.id.user.id = :uId and sp.id = :spId
         """,
     )
     fun isPartOfByStatusPageGroupId(
@@ -163,7 +163,7 @@ interface PermissionRepository : Repository<TeamUser, String> {
         join spg.statusPage sp
         join sp.team t
         join t.teamUsers tu
-        where tu.id.user.id = :uId and sp.id = :nmId
+        where tu.id.user.id = :uId and sp.id = :spId
         """,
     )
     fun findByStatusPageGroupId(

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
 import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRole
 import java.time.Instant
 
 data class MinTeamResponse(
@@ -24,13 +25,15 @@ data class TeamResponse(
     val deleted: Instant?,
     val personal: Boolean,
     val dashboard: MonitorDashboardResponse,
+    val role: TeamRole,
 ) {
-    constructor(team: Team, personal: Boolean, dashboard: MonitorDashboardResponse) : this(
+    constructor(team: Team, personal: Boolean, dashboard: MonitorDashboardResponse, role: TeamRole) : this(
         team.id,
         team.name,
         team.deleted,
         personal,
         dashboard,
+        role,
     )
 }
 

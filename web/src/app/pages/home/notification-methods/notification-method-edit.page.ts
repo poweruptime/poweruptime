@@ -30,6 +30,7 @@ import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
           <pu-notification-method-edit-form
             [notificationMethod]="notificationMethodEditStore.notificationMethod()"
             [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+            [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
             (submitCreate)="notificationMethodEditStore.create($event)"
             (submitUpdate)="notificationMethodEditStore.update($event)" />
         } @else {

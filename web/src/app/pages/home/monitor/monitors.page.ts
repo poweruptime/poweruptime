@@ -13,6 +13,8 @@ import {TeamSelect} from '@app/components/team-select';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
 import {paramToArray} from '@app/util';
 
+import {IsTeamAdmin} from '../../../directives/is-team-admin';
+
 @Component({
   template: `
     <div class="flex gap-4">
@@ -22,9 +24,11 @@ import {paramToArray} from '@app/util';
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             @if (teamId()) {
-              <a mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
+              <a *isTeamAdmin mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
             } @else {
-              <pu-team-select (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])">
+              <pu-team-select
+                (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])"
+                adminOnly>
                 <button mat-flat-button>{{ 'monitor.new' | transloco }}</button>
               </pu-team-select>
             }
@@ -99,6 +103,7 @@ import {paramToArray} from '@app/util';
     TranslocoPipe,
     MatButton,
     TeamSelect,
+    IsTeamAdmin,
   ],
   selector: 'pu-monitors-page',
 })

@@ -176,7 +176,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 
         <div class="flex justify-between">
           <div>
-            <button (click)="onGroupAdd()" type="button" mat-flat-button>
+            <button [disabled]="form.disabled" (click)="onGroupAdd()" type="button" mat-flat-button>
               {{ 'statusPage.edit.group.add' | transloco }}
             </button>
           </div>
@@ -237,6 +237,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                     </div>
 
                     <button
+                      [disabled]="form.disabled"
                       (click)="form.controls.groups.removeAt(index)"
                       type="button"
                       mat-icon-button>

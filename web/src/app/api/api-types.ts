@@ -1625,6 +1625,8 @@ export interface components {
       deleted?: string;
       personal: boolean;
       dashboard: components['schemas']['MonitorDashboardResponse'];
+      /** @enum {string} */
+      role: 'ADMIN' | 'MEMBER';
     };
     UpdateTeamUserDto: {
       userId: string;
@@ -3899,9 +3901,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          '*/*': components['schemas']['BooleanResponse'];
-        };
+        content?: never;
       };
     };
   };

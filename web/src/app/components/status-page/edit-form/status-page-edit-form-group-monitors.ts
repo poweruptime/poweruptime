@@ -45,6 +45,7 @@ type DragEventType = {
 @Component({
   template: `
     <hr />
+    @let _isDisabled = isDisabled();
 
     <div class="mt-3 flex flex-col gap-2">
       <div class="flex items-center justify-between">
@@ -93,7 +94,10 @@ type DragEventType = {
           @let monitor = _allMonitors.get(monitorIdWithWritableSignal.monitorId);
 
           @if (monitor; as monitor) {
-            <mat-card [cdkDragData]="monitorIdWithWritableSignal" cdkDrag>
+            <mat-card
+              [cdkDragData]="monitorIdWithWritableSignal"
+              [cdkDragDisabled]="_isDisabled"
+              cdkDrag>
               <div class="monitor-drag-placeholder" *cdkDragPlaceholder></div>
               <mat-card-content>
                 <div class="flex items-center justify-between text-xl">
@@ -103,6 +107,7 @@ type DragEventType = {
                   </div>
                   <div>
                     <button
+                      [disabled]="_isDisabled"
                       (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
                       mat-icon-button>
                       <bi name="trash-fill" />
@@ -219,6 +224,11 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
   registerOnTouched(): void {}
   setDisabledState?(isDisabled: boolean): void {
     this.isDisabled.set(isDisabled);
+    if (isDisabled) {
+      this.selectedMonitor.disable();
+    } else {
+      this.selectedMonitor.enable();
+    }
   }
 
   onAdd(it: MatSelectChange): void {
