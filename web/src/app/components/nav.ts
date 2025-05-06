@@ -15,11 +15,11 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {IsSystemAdmin} from '@app/directives';
+import {IsTeamAdmin} from '@app/directives';
 import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {ThemeService, themeOptions} from '@app/services/theme.service';
 import {isMobileBreakpoints} from '@app/services/util';
 
-import {IsTeamAdmin} from '../directives/is-team-admin';
 import {AboutDialog} from './about-dialog';
 import {TeamSelect} from './team-select';
 

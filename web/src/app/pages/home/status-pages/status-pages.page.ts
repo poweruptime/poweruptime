@@ -11,10 +11,9 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
+import {IsTeamAdmin} from '@app/directives';
 import {SelectedTeamStore, StatusPagesStore} from '@app/services';
 import {trackBy} from '@app/util';
-
-import {IsTeamAdmin} from '../../../directives/is-team-admin';
 
 @Component({
   template: `

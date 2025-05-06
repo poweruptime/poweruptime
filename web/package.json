@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --no-hmr",
     "start:ssr": "node dist/poweruptime-web/server/server.mjs",
     "build": "ng build --configuration development --verbose",
     "build:docker": "ng build --configuration docker --verbose && pnpm i18n:optimize",

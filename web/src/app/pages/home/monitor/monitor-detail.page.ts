@@ -21,6 +21,7 @@ import {
   PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
+import {IsTeamAdmin} from '@app/directives';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {
   CheckResultsPingStore,
@@ -30,8 +31,6 @@ import {
   MonitorDetailsYearlyUptimeStore,
 } from '@app/services';
 import {dateToDateTime, toBackendDate} from '@app/services/util';
-
-import {IsTeamAdmin} from '../../../directives/is-team-admin';
 
 @Component({
   template: `

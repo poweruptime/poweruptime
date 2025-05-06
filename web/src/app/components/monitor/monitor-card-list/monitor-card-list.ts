@@ -22,7 +22,7 @@ import {MonitorCard} from './monitor-card';
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
       maxBufferPx="1500"
-      itemSize="150">
+      itemSize="130">
       <pu-monitor-card
         *cdkVirtualFor="let monitor of entities(); trackBy: trackById"
         [monitor]="monitor"
@@ -63,7 +63,7 @@ import {MonitorCard} from './monitor-card';
 
       pu-monitor-card {
         display: block;
-        height: 150px;
+        height: 130px;
       }
     }
   `,

@@ -23,7 +23,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
       class="scroll-container"
       [class.h-24]="_size === 3 && !_hideLabel"
       [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
-      [class.h-10]="_size === 2 && _hideLabel">
+      [class.h-8]="_size === 2 && _hideLabel">
       <div class="flex p-1">
         @for (
           checkResult of _checkResults;

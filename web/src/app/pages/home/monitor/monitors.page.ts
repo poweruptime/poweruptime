@@ -10,10 +10,9 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {TeamSelect} from '@app/components/team-select';
+import {IsTeamAdmin} from '@app/directives';
 import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
 import {paramToArray} from '@app/util';
-
-import {IsTeamAdmin} from '../../../directives/is-team-admin';
 
 @Component({
   template: `

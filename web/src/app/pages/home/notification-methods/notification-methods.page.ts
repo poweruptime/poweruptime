@@ -11,11 +11,10 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
+import {IsTeamAdmin} from '@app/directives';
 import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pipes';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
 import {trackBy} from '@app/util';
-
-import {IsTeamAdmin} from '../../../directives/is-team-admin';
 
 @Component({
   template: `

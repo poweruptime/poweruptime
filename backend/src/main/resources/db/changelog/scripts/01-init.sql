@@ -417,7 +417,7 @@ create table status_page_group_monitor
 
 create table tag
 (
-    hex_color  varchar(7),
+    variant  varchar(1) not null,
     created_at timestamp with time zone default now() not null,
     deleted    timestamp with time zone,
     updated_at timestamp with time zone default now() not null,

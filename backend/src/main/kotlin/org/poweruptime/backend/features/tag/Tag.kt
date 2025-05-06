@@ -13,12 +13,16 @@ import org.poweruptime.backend.features.team.model.Team
 
 @Entity
 @Table(name = "tag")
-class Tag(
+open class Tag(
     @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
     override var name: String,
 
-    @Column(nullable = true, length = Database.HEX_COLOR_LENGTH)
-    var hexColor: String? = null,
+    /**
+     * Usage of `TagVariantDatabaseConverter` to minify enum to 1 char
+     * @see TagVariantDatabaseConverter
+     */
+    @Column(nullable = false, length = 1)
+    var variant: TagVariant,
 
     @JoinColumn(name = "team_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
