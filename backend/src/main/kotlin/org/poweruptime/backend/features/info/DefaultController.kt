@@ -40,7 +40,7 @@ class SecureDefaultController(
         serverStartTime = InfoService.startTime,
         buildTime = infoService.buildTime,
         host = infoService.host,
-        setup = userService.getIsSetup(),
+        setup = userService.isSetup(),
     )
 }
 
@@ -65,7 +65,7 @@ class DefaultController(
         serverStartTime = InfoService.startTime,
         buildTime = infoService.buildTime,
         host = infoService.host,
-        setup = userService.getIsSetup(),
+        setup = userService.isSetup(),
     )
 }
 

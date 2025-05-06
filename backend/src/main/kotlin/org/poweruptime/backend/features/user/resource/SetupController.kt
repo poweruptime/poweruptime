@@ -42,7 +42,7 @@ class SetupController(
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     fun setup(@Valid @RequestBody request: SetupDto): IdResponse {
-        if (!userService.getIsSetup()) {
+        if (!userService.isSetup()) {
             throw SetupCompletedException()
         }
 
@@ -66,7 +66,7 @@ class SetupController(
     @PostMapping("/email")
     @ResponseStatus(HttpStatus.OK)
     fun setupEmailTest(@RequestParam("email") email: String) {
-        if (!userService.getIsSetup()) {
+        if (!userService.isSetup()) {
             throw SetupCompletedException()
         }
 
@@ -83,7 +83,7 @@ class SetupController(
     @GetMapping("/email/verify")
     @ResponseStatus(HttpStatus.OK)
     fun verifyTestEmail(@RequestParam("code") code: String) {
-        if (!userService.getIsSetup()) {
+        if (!userService.isSetup()) {
             throw SetupCompletedException()
         }
 

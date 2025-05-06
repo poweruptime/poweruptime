@@ -137,9 +137,9 @@ class UserService(
 
     private var isSetup: Boolean? = null
 
-    fun getIsSetup(): Boolean {
+    fun isSetup(): Boolean {
         if (isSetup == null || isSetup == true) {
-            return userRepository.isSetup()
+            isSetup = userRepository.isSetup()
         }
 
         return isSetup == true

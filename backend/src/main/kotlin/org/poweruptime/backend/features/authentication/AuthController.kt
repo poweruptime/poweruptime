@@ -115,7 +115,7 @@ class AuthController(
     @PostMapping("/setup")
     @ResponseStatus(HttpStatus.OK)
     fun setup(@Valid @RequestBody request: SetupDto): IdResponse {
-        if (!userService.getIsSetup()) {
+        if (!userService.isSetup()) {
             throw BadRequestException()
         }
 
