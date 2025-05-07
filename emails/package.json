@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "email build",
-    "start": "email dev",
+    "start": "rm -rf emails/static && cp -r ../backend/src/main/resources/static ./emails/static && email dev",
     "export": "email export --outDir ../backend/src/main/resources/templates/html"
   },
   "dependencies": {
