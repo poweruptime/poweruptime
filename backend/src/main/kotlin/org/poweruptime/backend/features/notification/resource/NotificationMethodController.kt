@@ -9,9 +9,7 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.permission.*
-import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.core.NotificationSenderType
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Notification Method API")
 class NotificationMethodController(
     private val notificationMethodService: NotificationMethodService,
-    private val monitorService: MonitorService
 ) {
     @Operation(
         summary = "Get notification method",
@@ -55,7 +52,6 @@ class NotificationMethodController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String,
         @RequestParam("name") name: String?,
-        @RequestParam("usedByMonitorIds") usedByMonitorIds: List<String>?,
         @RequestParam("types") types: List<NotificationSenderType>?,
         @RequestParam("useByDefault") useByDefault: Boolean?,
         @RequestParam("deleted") deleted: Boolean = false,
@@ -65,13 +61,6 @@ class NotificationMethodController(
         teamId = teamId,
         types = types,
         useByDefault = useByDefault,
-        usedByMonitorIds = usedByMonitorIds?.let {
-            if (!monitorService.ensureAllMonitorsInTeam(monitorService.getById(it), teamId)) {
-                throw ForbiddenException("Can only check for checker in same team")
-            }
-
-            it
-        },
         deleted = deleted,
     ).toDto {
         NotificationMethodResponse(it)

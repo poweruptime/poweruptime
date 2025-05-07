@@ -93,8 +93,4 @@ export const NotificationMethodsStore = signalStore(
   })),
 );
 
-export const SelectedNotificationMethodsForMonitorStore = signalStore(
-  withNotificationMethodsLoad(),
-);
-
 export const DefaultSelectedNotificationMethodsStore = signalStore(withNotificationMethodsLoad());

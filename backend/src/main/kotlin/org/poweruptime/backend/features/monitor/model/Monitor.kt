@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
+import org.poweruptime.backend.features.tag.Tag
 import org.poweruptime.backend.features.team.model.Team
 
 @Entity
@@ -67,7 +68,7 @@ class Monitor(
         joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id", referencedColumnName = "id")],
     )
-    var selectedTags: List<Monitor> = ArrayList(),
+    var selectedTags: List<Tag> = ArrayList(),
 
     @OneToMany(mappedBy = "connection.monitor")
     var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),

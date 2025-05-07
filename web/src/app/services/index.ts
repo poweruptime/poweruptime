@@ -13,4 +13,5 @@ export * from './changelog.store';
 export * from './email-change.store';
 export * from './push.service';
 export * from './setup.store';
+export * from './tags.store';
 export * from './transloco-loader';

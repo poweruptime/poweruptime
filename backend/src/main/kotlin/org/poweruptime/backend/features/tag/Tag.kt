@@ -12,8 +12,11 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.team.model.Team
 
 @Entity
-@Table(name = "tag")
-open class Tag(
+@Table(
+    name = "tag",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["team_id", "name"])],
+)
+class Tag(
     @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
     override var name: String,
 

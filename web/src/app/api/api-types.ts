@@ -748,6 +748,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/tag': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get tags
+     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
+     */
+    get: operations['getAll_6'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/system-notification/active': {
     parameters: {
       query?: never;
@@ -900,7 +920,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['getAll_6'];
+    get: operations['getAll_7'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1156,7 +1176,7 @@ export interface paths {
      * Get notificationSenders
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_7'];
+    get: operations['getAll_8'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1301,7 +1321,7 @@ export interface paths {
      * Get all dead letters
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    get: operations['getAll_8'];
+    get: operations['getAll_9'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1321,7 +1341,7 @@ export interface paths {
      * Get check results
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_9'];
+    get: operations['getAll_10'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1361,7 +1381,7 @@ export interface paths {
      * Get check result logs
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_10'];
+    get: operations['getAll_11'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1769,6 +1789,11 @@ export interface components {
       /** @enum {string} */
       _type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
     };
+    TagDto: {
+      name: string;
+      /** @enum {string} */
+      variant: 'RED' | 'BLUE' | 'GREEN' | 'PINK' | 'YELLOW';
+    };
     UpdateMonitorDto: {
       id: string;
       name: string;
@@ -1782,6 +1807,7 @@ export interface components {
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
       notificationMethodIds: string[];
+      tags: components['schemas']['TagDto'][];
     };
     CheckResultMinResponse: {
       id: string;
@@ -1800,6 +1826,8 @@ export interface components {
       team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
+      tags: components['schemas']['TagDto'][];
+      notificationMethods: components['schemas']['NotificationMethodMinResponse'][];
       description?: string;
       /** Format: int64 */
       testIntervalSeconds: number;
@@ -1812,6 +1840,15 @@ export interface components {
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
+    };
+    NotificationMethodMinResponse: {
+      id: string;
+      name: string;
+      sender: components['schemas']['NotificationSenderMinDto'];
+    };
+    NotificationSenderMinDto: {
+      /** @enum {string} */
+      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     PublicMonitorUptimeStatistics: {
       oneHour?: string;
@@ -1911,6 +1948,7 @@ export interface components {
       upsideDown: boolean;
       checker: components['schemas']['MonitorCheckerData'];
       notificationMethodIds: string[];
+      tags: components['schemas']['TagDto'][];
     };
     PasswordForgotRequestDto: {
       email: string;
@@ -2014,6 +2052,13 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
+    PaginatedResponseTagDto: {
+      /** Format: int64 */
+      numberOfItems: number;
+      /** Format: int32 */
+      numberOfPages: number;
+      data: components['schemas']['TagDto'][];
+    };
     PaginatedResponseStatusPageResponse: {
       /** Format: int64 */
       numberOfItems: number;
@@ -2107,11 +2152,6 @@ export interface components {
     SetupMFAResponse: {
       base32Secret: string;
     };
-    NotificationMethodMinResponse: {
-      id: string;
-      name: string;
-      sender: components['schemas']['NotificationSenderMinDto'];
-    };
     NotificationResponse: {
       id: string;
       checkResult: components['schemas']['CheckResultMinResponse'];
@@ -2124,10 +2164,6 @@ export interface components {
       sentAt?: string;
       error?: string;
       monitor: components['schemas']['MonitorMinResponse'];
-    };
-    NotificationSenderMinDto: {
-      /** @enum {string} */
-      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     PaginatedResponseNotificationResponse: {
       /** Format: int64 */
@@ -2151,6 +2187,8 @@ export interface components {
       team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
+      tags: components['schemas']['TagDto'][];
+      notificationMethods: components['schemas']['NotificationMethodMinResponse'][];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };
@@ -2169,6 +2207,8 @@ export interface components {
       team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
+      tags: components['schemas']['TagDto'][];
+      notificationMethods: components['schemas']['NotificationMethodMinResponse'][];
       description?: string;
       /** Format: int64 */
       testIntervalSeconds: number;
@@ -3592,6 +3632,35 @@ export interface operations {
       };
     };
   };
+  getAll_6: {
+    parameters: {
+      query: {
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+        teamId: string;
+        name?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PaginatedResponseTagDto'];
+        };
+      };
+    };
+  };
   getActive: {
     parameters: {
       query?: never;
@@ -3778,7 +3847,7 @@ export interface operations {
       };
     };
   };
-  getAll_6: {
+  getAll_7: {
     parameters: {
       query?: never;
       header?: never;
@@ -4112,7 +4181,7 @@ export interface operations {
       };
     };
   };
-  getAll_7: {
+  getAll_8: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4309,7 +4378,7 @@ export interface operations {
       };
     };
   };
-  getAll_8: {
+  getAll_9: {
     parameters: {
       query?: never;
       header?: never;
@@ -4329,7 +4398,7 @@ export interface operations {
       };
     };
   };
-  getAll_9: {
+  getAll_10: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4382,7 +4451,7 @@ export interface operations {
       };
     };
   };
-  getAll_10: {
+  getAll_11: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */

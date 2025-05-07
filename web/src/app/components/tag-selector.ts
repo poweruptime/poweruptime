@@ -1,13 +1,29 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {ChangeDetectionStrategy, Component, inject, input, model} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  model,
+  signal,
+} from '@angular/core';
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
   MatAutocompleteTrigger,
   MatOption,
 } from '@angular/material/autocomplete';
-import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
+import {
+  MatChipGrid,
+  MatChipInput,
+  MatChipInputEvent,
+  MatChipRemove,
+  MatChipRow,
+} from '@angular/material/chips';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
@@ -22,7 +38,7 @@ import {BackendType} from '@app/api';
     <mat-form-field class="w-full">
       <mat-label>{{ 'tag.selector.selected' | transloco }}</mat-label>
       <mat-chip-grid #chipGrid [attr.aria-label]="'tag.selector.list' | transloco">
-        @for (tag of selectedTags(); track tag.id) {
+        @for (tag of value(); track tag.name) {
           <a (removed)="remove(tag)" mat-chip-row>
             {{ tag.name }}
             <button
@@ -35,22 +51,30 @@ import {BackendType} from '@app/api';
         }
       </mat-chip-grid>
       <input
-        [(ngModel)]="searchTags"
+        [(ngModel)]="searchTag"
         [matChipInputFor]="chipGrid"
         [matAutocomplete]="auto"
         [placeholder]="'tag.selector.add' | transloco"
+        (matChipInputTokenEnd)="add($event)"
         name="searchTags" />
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
         @if (isPending()) {
           <mat-progress-bar mode="indeterminate" />
         }
-        @for (notificationMethod of tags(); track notificationMethod.id) {
-          <mat-option [value]="notificationMethod">{{ notificationMethod.name }}</mat-option>
+        @for (tag of filteredTags(); track tag.name) {
+          <mat-option [value]="tag">{{ tag.name }}</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>
   `,
   selector: 'pu-tag-selector',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TagSelector),
+      multi: true,
+    },
+  ],
   imports: [
     FormsModule,
     MatFormField,
@@ -69,18 +93,25 @@ import {BackendType} from '@app/api';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TagSelector {
-  readonly tags = input.required<BackendType['NotificationMethodMinResponse'][]>();
-  readonly isPending = input.required<boolean>();
+export class TagSelector implements ControlValueAccessor {
+  private readonly announcer = inject(LiveAnnouncer);
 
-  readonly selectedTags = model<BackendType['NotificationMethodMinResponse'][]>([]);
-  searchTags = model('');
+  tags = input.required<BackendType['TagDto'][]>();
+  isPending = input.required<boolean>();
+  searchTag = model('');
 
-  readonly announcer = inject(LiveAnnouncer);
+  readonly filteredTags = computed(() => {
+    const selectedTags = this.value()?.map((it) => it.name);
+    return this.tags().filter((it) => !selectedTags?.includes(it.name));
+  });
 
-  remove(tag: BackendType['NotificationMethodMinResponse']): void {
-    this.selectedTags.update((selectedTags) => {
-      const index = selectedTags.findIndex((it) => it.id === tag.id);
+  remove(tag: BackendType['TagDto']): void {
+    this.value.update((selectedTags) => {
+      if (!selectedTags) {
+        return null;
+      }
+
+      const index = selectedTags.findIndex((it) => it.name === tag.name);
       if (index < 0) {
         return selectedTags;
       }
@@ -92,8 +123,47 @@ export class TagSelector {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.update((selectedTags) => [...selectedTags, event.option.value]);
-    this.searchTags.set('');
+    this.value.update((selectedTags) => [...(selectedTags ?? []), event.option.value]);
+    this.searchTag.set('');
     event.option.deselect();
   }
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.value.update((selectedTags) => [
+        ...(selectedTags ?? []),
+        {
+          name: value,
+          variant: 'BLUE',
+        },
+      ]);
+    }
+
+    // Clear the input value
+    this.searchTag.set('');
+  }
+
+  value = signal<BackendType['TagDto'][] | null>(null);
+  isDisabled = signal(false);
+  onChange?: (it: BackendType['TagDto'][] | null) => void;
+
+  constructor() {
+    effect(() => {
+      this.onChange?.(this.value());
+    });
+  }
+
+  writeValue(it: BackendType['TagDto'][]): void {
+    this.value.set(it);
+  }
+  registerOnChange(fn: (it: BackendType['TagDto'][] | null) => void): void {
+    this.onChange = fn;
+  }
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
+  registerOnTouched(_: unknown): void {}
 }

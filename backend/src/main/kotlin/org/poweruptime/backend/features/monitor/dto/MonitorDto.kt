@@ -10,6 +10,8 @@ import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.notification.dto.NotificationMethodMinResponse
+import org.poweruptime.backend.features.tag.TagDto
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
 
@@ -98,6 +100,8 @@ data class MonitorResponse(
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
+    val tags: List<TagDto>,
+    val notificationMethods: List<NotificationMethodMinResponse>,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
 ) {
@@ -109,8 +113,10 @@ data class MonitorResponse(
         name = it.name,
         id = it.id,
         status = it.status,
-        deleted = it.deleted,
         team = TeamMinResponse(it.team),
+        deleted = it.deleted,
+        tags = it.selectedTags.map { TagDto(it) },
+        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,
     )
@@ -122,6 +128,8 @@ data class MonitorMaxResponse(
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
+    val tags: List<TagDto>,
+    val notificationMethods: List<NotificationMethodMinResponse>,
     val description: String?,
     val testIntervalSeconds: Long,
     val retries: Long?,
@@ -139,6 +147,8 @@ data class MonitorMaxResponse(
         status = it.status,
         team = TeamMinResponse(it.team),
         deleted = it.deleted,
+        tags = it.selectedTags.map { TagDto(it) },
+        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
         description = it.description,
         testIntervalSeconds = it.testIntervalSeconds,
         retries = it.retries,
@@ -155,6 +165,8 @@ data class MonitorFullResponse(
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
+    val tags: List<TagDto>,
+    val notificationMethods: List<NotificationMethodMinResponse>,
     val description: String?,
     val testIntervalSeconds: Long,
     val retries: Long?,
@@ -175,9 +187,9 @@ data class MonitorFullResponse(
         id = it.id,
         status = it.status,
         team = TeamMinResponse(it.team),
-        lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
-        oneDayUptime = oneDayUptime,
         deleted = it.deleted,
+        tags = it.selectedTags.map { TagDto(it) },
+        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
         description = it.description,
         testIntervalSeconds = it.testIntervalSeconds,
         retries = it.retries,
@@ -185,6 +197,8 @@ data class MonitorFullResponse(
         upsideDown = it.upsideDown,
         checker = it.checker,
         uptime = uptime,
+        lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
+        oneDayUptime = oneDayUptime,
     )
 }
 
@@ -201,6 +215,7 @@ data class CreateMonitorDto(
     @get:NotNull val upsideDown: Boolean,
     @get:NotNull val checker: MonitorCheckerData,
     @get:NotNull val notificationMethodIds: List<String>,
+    @get:NotNull val tags: List<TagDto>,
 )
 
 data class UpdateMonitorDto(
@@ -216,4 +231,5 @@ data class UpdateMonitorDto(
     @get:NotNull val upsideDown: Boolean,
     @get:NotNull val checker: MonitorCheckerData,
     @get:NotNull val notificationMethodIds: List<String>,
+    @get:NotNull val tags: List<TagDto>,
 )

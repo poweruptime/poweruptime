@@ -135,13 +135,5 @@ class UserService(
         ),
     )
 
-    private var isSetup: Boolean? = null
-
-    fun isSetup(): Boolean {
-        if (isSetup == null || isSetup == true) {
-            isSetup = userRepository.isSetup()
-        }
-
-        return isSetup == true
-    }
+    fun isSetup(): Boolean = userRepository.isSetup()
 }

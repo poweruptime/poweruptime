@@ -172,6 +172,7 @@ object ModelFactory {
         upsideDown = false,
         checker = checker,
         notificationMethodIds = listOf(),
+        tags = listOf(),
     )
 
     fun getUpdateMonitorDto(
@@ -188,6 +189,7 @@ object ModelFactory {
         upsideDown = false,
         checker = checker,
         notificationMethodIds = listOf(),
+        tags = listOf(),
     )
 
     fun getCreateNotificationMethodDto(

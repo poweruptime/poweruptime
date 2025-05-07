@@ -1,6 +1,16 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {ChangeDetectionStrategy, Component, inject, input, model} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  model,
+  signal,
+} from '@angular/core';
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
@@ -22,7 +32,7 @@ import {BackendType} from '@app/api';
     <mat-form-field class="w-full">
       <mat-label>{{ 'notificationMethod.selector.selected' | transloco }}</mat-label>
       <mat-chip-grid #chipGrid [attr.aria-label]="'notificationMethod.selector.list' | transloco">
-        @for (notificationMethod of selectedNotificationMethods(); track notificationMethod.id) {
+        @for (notificationMethod of value(); track notificationMethod.id) {
           <a (removed)="remove(notificationMethod)" mat-chip-row>
             {{ notificationMethod.name }}
             <button
@@ -46,13 +56,20 @@ import {BackendType} from '@app/api';
         @if (isPending()) {
           <mat-progress-bar mode="indeterminate" />
         }
-        @for (notificationMethod of notificationMethods(); track notificationMethod.id) {
+        @for (notificationMethod of filteredNotificationMethods(); track notificationMethod.id) {
           <mat-option [value]="notificationMethod">{{ notificationMethod.name }}</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>
   `,
   selector: 'pu-notification-method-selector',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NotificationMethodSelector),
+      multi: true,
+    },
+  ],
   imports: [
     FormsModule,
     MatFormField,
@@ -71,17 +88,24 @@ import {BackendType} from '@app/api';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotificationMethodSelector {
-  readonly notificationMethods = input.required<BackendType['NotificationMethodMinResponse'][]>();
-  readonly isPending = input.required<boolean>();
-
-  readonly selectedNotificationMethods = model<BackendType['NotificationMethodMinResponse'][]>([]);
-  searchNotificationMethod = model('');
-
+export class NotificationMethodSelector implements ControlValueAccessor {
   readonly announcer = inject(LiveAnnouncer);
 
+  notificationMethods = input.required<BackendType['NotificationMethodMinResponse'][]>();
+  isPending = input.required<boolean>();
+  searchNotificationMethod = model('');
+
+  readonly filteredNotificationMethods = computed(() => {
+    const selectedNotificationMethods = this.value()?.map((it) => it.id);
+    return this.notificationMethods().filter((it) => !selectedNotificationMethods?.includes(it.id));
+  });
+
   remove(notificationMethod: BackendType['NotificationMethodMinResponse']): void {
-    this.selectedNotificationMethods.update((selectedNotificationMethods) => {
+    this.value.update((selectedNotificationMethods) => {
+      if (!selectedNotificationMethods) {
+        return null;
+      }
+
       const index = selectedNotificationMethods.findIndex((it) => it.id === notificationMethod.id);
       if (index < 0) {
         return selectedNotificationMethods;
@@ -94,11 +118,32 @@ export class NotificationMethodSelector {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedNotificationMethods.update((notificationMethods) => [
-      ...notificationMethods,
+    this.value.update((notificationMethods) => [
+      ...(notificationMethods ?? []),
       event.option.value,
     ]);
     this.searchNotificationMethod.set('');
     event.option.deselect();
   }
+
+  value = signal<BackendType['NotificationMethodMinResponse'][] | null>(null);
+  isDisabled = signal(false);
+  onChange?: (it: BackendType['NotificationMethodMinResponse'][] | null) => void;
+
+  constructor() {
+    effect(() => {
+      this.onChange?.(this.value());
+    });
+  }
+
+  writeValue(it: BackendType['NotificationMethodMinResponse'][]): void {
+    this.value.set(it);
+  }
+  registerOnChange(fn: (it: BackendType['NotificationMethodMinResponse'][] | null) => void): void {
+    this.onChange = fn;
+  }
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
+  registerOnTouched(_: unknown): void {}
 }

@@ -19,6 +19,7 @@ import org.poweruptime.backend.features.monitor.dto.update
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
+import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -30,7 +31,8 @@ class MonitorService(
     private val teamRepository: TeamRepository,
     private val monitorScheduler: MonitorScheduler,
     private val monitorCheckerDataService: MonitorCheckerDataService,
-    private val notificationMethodService: NotificationMethodService
+    private val notificationMethodService: NotificationMethodService,
+    private val tagService: TagService,
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
     fun create(dto: CreateMonitorDto): Monitor {
         val notificationMethods = notificationMethodService.getByIdOrThrow(dto.notificationMethodIds)
@@ -39,12 +41,15 @@ class MonitorService(
             notificationMethods = notificationMethods,
         )
 
+        val team = teamRepository.findByIdOrThrow(dto.teamId)
+
         return save(
             Monitor.fromDto(
-                dto,
-                teamRepository.findByIdOrThrow(dto.teamId),
-                notificationMethods,
-                monitorCheckerDataService.save(dto.checker),
+                it = dto,
+                team = team,
+                notificationMethods = notificationMethods,
+                tags = tagService.getByTeamIdAndNames(team, dto.tags),
+                attachedChecker = monitorCheckerDataService.save(dto.checker),
             ),
         ).start()
     }
@@ -59,7 +64,14 @@ class MonitorService(
         val oldCheckerId = it.checker.id
         val newChecker = monitorCheckerDataService.save(dto.checker)
 
-        val monitor = monitorRepository.saveAndFlush(it.update(dto, notificationMethods, newChecker)).stop().start()
+        val monitor = monitorRepository.saveAndFlush(
+            it.update(
+                it = dto,
+                notificationMethods = notificationMethods,
+                tags = tagService.getByTeamIdAndNames(it.team, dto.tags),
+                attachedChecker = newChecker,
+            ),
+        ).stop().start()
 
         monitorCheckerDataService.finalDeleteById(oldCheckerId)
 

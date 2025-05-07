@@ -8,8 +8,8 @@ import {
   DefaultSelectedNotificationMethodsStore,
   MonitorEditStore,
   NotificationMethodsStore,
-  SelectedNotificationMethodsForMonitorStore,
   SelectedTeamStore,
+  TagsStore,
 } from '@app/services';
 
 @Component({
@@ -31,6 +31,7 @@ import {
       @if (!_monitorId || monitorEditStore.isFulfilled()) {
         <pu-monitor-edit-form
           [(searchNotificationMethod)]="searchNotificationMethod"
+          [(searchTag)]="searchTag"
           [monitor]="monitorEditStore.monitor()"
           [selectedTeamId]="selectedTeamStore.selectedTeamId()"
           [allNotificationMethods]="notificationMethodsStore.entities()"
@@ -39,10 +40,8 @@ import {
           [isDefaultSelectedNotificationMethodsPending]="
             defaultSelectedNotificationMethodsStore.isPending()
           "
-          [selectedNotificationMethods]="selectedNotificationMethodsForMonitorStore.entities()"
-          [isSelectedNotificationMethodsPending]="
-            selectedNotificationMethodsForMonitorStore.isPending()
-          "
+          [allTags]="tagsStore.entities()"
+          [isTagsSearchPending]="tagsStore.isPending()"
           (submitCreate)="monitorEditStore.create($event)"
           (submitUpdate)="monitorEditStore.update($event)" />
       } @else {
@@ -55,8 +54,8 @@ import {
   providers: [
     MonitorEditStore,
     NotificationMethodsStore,
-    SelectedNotificationMethodsForMonitorStore,
     DefaultSelectedNotificationMethodsStore,
+    TagsStore,
   ],
   imports: [MonitorEditForm, MonitorEditFormPlaceholder, Placeholder, TranslocoPipe],
 })
@@ -65,16 +64,16 @@ export class MonitorEditPage {
   readonly monitorEditStore = inject(MonitorEditStore);
 
   readonly notificationMethodsStore = inject(NotificationMethodsStore);
-  readonly selectedNotificationMethodsForMonitorStore = inject(
-    SelectedNotificationMethodsForMonitorStore,
-  );
   readonly defaultSelectedNotificationMethodsStore = inject(
     DefaultSelectedNotificationMethodsStore,
   );
 
+  readonly tagsStore = inject(TagsStore);
+
   readonly monitorId = input<string>();
 
   searchNotificationMethod = signal('');
+  searchTag = signal('');
 
   constructor() {
     this.monitorEditStore.loadMonitorById(this.monitorId);
@@ -89,25 +88,20 @@ export class MonitorEditPage {
       })),
     );
 
-    this.selectedNotificationMethodsForMonitorStore.load(
+    this.notificationMethodsStore.load(
       computed(() => ({
         teamId: this.selectedTeamStore.selectedTeamId(),
-        usedByMonitorIds: [this.monitorId()!],
+        search: this.searchNotificationMethod(),
         page: 0,
-        size: 200,
+        size: 40,
         sort: ['name,ASC,ignorecase'],
       })),
     );
 
-    this.notificationMethodsStore.setSearch(this.searchNotificationMethod);
-
-    this.notificationMethodsStore.load(
+    this.tagsStore.load(
       computed(() => ({
         teamId: this.selectedTeamStore.selectedTeamId(),
-        search: this.notificationMethodsStore.search(),
-        page: 0,
-        size: 40,
-        sort: ['name,ASC,ignorecase'],
+        name: this.searchTag(),
       })),
     );
   }

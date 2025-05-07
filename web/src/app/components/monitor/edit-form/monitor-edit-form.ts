@@ -1,14 +1,6 @@
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {LowerCasePipe} from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  linkedSignal,
-  model,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, model} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatAnchor} from '@angular/material/button';
@@ -32,6 +24,7 @@ import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
 
 import {NotificationMethodSelector} from '../';
+import {TagSelector} from '../../tag-selector';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 import {MonitorEditFormDnsData} from './monitor-edit-form-dns-data';
 import {MonitorEditFormHttpData} from './monitor-edit-form-http-data';
@@ -50,13 +43,13 @@ import {
 
 @Component({
   template: `
-    <div class="mb-6 grid gap-6 lg:grid-cols-3">
-      <form
-        class="col-span-2 grid grid-cols-6 gap-2"
-        id="form"
-        #formRef
-        [formGroup]="form"
-        (ngSubmit)="submit()">
+    <form
+      class="mb-6 grid gap-6 lg:grid-cols-3"
+      id="form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+      <div class="col-span-2 grid grid-cols-6 gap-2">
         <mat-form-field class="col-span-6 md:col-span-4">
           <mat-label>{{ 'general.name' | transloco }}</mat-label>
           <input matInput formControlName="name" />
@@ -216,7 +209,7 @@ import {
             }
           </mat-card-content>
         </mat-card>
-      </form>
+      </div>
 
       <div class="col-span-1 flex flex-col gap-6">
         <mat-card appearance="outlined">
@@ -226,17 +219,12 @@ import {
           <mat-card-content>
             <div class="h-4"></div>
             <pu-notification-method-selector
-              class="w-full"
-              [(selectedNotificationMethods)]="_selectedNotificationMethods"
               [(searchNotificationMethod)]="searchNotificationMethod"
-              [notificationMethods]="filteredNotificationMethods()"
-              [isPending]="isNotificationMethodsSearchPending()" />
+              [notificationMethods]="allNotificationMethods()"
+              [isPending]="isNotificationMethodsSearchPending()"
+              formControlName="notificationMethods" />
 
-            @if (
-              monitor() !== undefined &&
-              (isDefaultSelectedNotificationMethodsPending() ||
-                isSelectedNotificationMethodsPending())
-            ) {
+            @if (!monitor() && isDefaultSelectedNotificationMethodsPending()) {
               <mat-progress-bar mode="indeterminate" />
             }
 
@@ -247,24 +235,30 @@ import {
           </mat-card-content>
         </mat-card>
 
-        <!--        <mat-card appearance="outlined">-->
-        <!--          <mat-card-header>-->
-        <!--            <mat-card-title>{{ 'general.tags' | transloco }}</mat-card-title>-->
-        <!--          </mat-card-header>-->
-        <!--          <mat-card-content>-->
-        <!--            <div class="h-4"></div>-->
-        <!--          </mat-card-content>-->
-        <!--        </mat-card>-->
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ 'general.tags' | transloco }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-4"></div>
+            <pu-tag-selector
+              [(searchTag)]="searchTag"
+              [tags]="allTags()"
+              [isPending]="isTagsSearchPending()"
+              formControlName="tags" />
+          </mat-card-content>
+        </mat-card>
       </div>
 
       <pu-save-button class="ms-3" [valid]="isValid()" />
-    </div>
+    </form>
   `,
   selector: 'pu-monitor-edit-form',
   providers: [MonitorEditFormDataService],
   imports: [
     ReactiveFormsModule,
     LowerCasePipe,
+    RouterLink,
     MatFormField,
     MatInput,
     MatLabel,
@@ -275,24 +269,24 @@ import {
     MatSuffix,
     MatSlideToggle,
     MatProgressBar,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatCardHeader,
+    MatAnchor,
     CdkTextareaAutosize,
     TranslocoPipe,
     NgxMatSelectSearchModule,
     BiComponent,
-    NotificationMethodSelector,
     SaveButton,
+    NotificationMethodSelector,
     MonitorEditFormDnsData,
     MonitorEditFormHttpData,
     MonitorEditFormSSLCertificateData,
     MonitorEditFormPingData,
     MonitorEditFormPushData,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatCardHeader,
-    RouterLink,
-    MatAnchor,
     MonitorCheckerDataValueLabelPipe,
+    TagSelector,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -365,6 +359,8 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
       [Validators.pattern(Database.INTEGER_REGEX), Validators.min(1)],
     ],
     upsideDown: [false],
+    notificationMethods: [[] as BackendType['NotificationMethodMinResponse'][]],
+    tags: [[] as BackendType['TagDto'][]],
   });
 
   isValid = injectIsValid(this.form);
@@ -413,42 +409,19 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   readonly isNotificationMethodsSearchPending = input.required<boolean>();
   searchNotificationMethod = model('');
 
-  readonly isSelectedNotificationMethodsPending = input.required<boolean>();
-  readonly selectedNotificationMethods =
-    input.required<BackendType['NotificationMethodMinResponse'][]>();
-
   readonly isDefaultSelectedNotificationMethodsPending = input.required<boolean>();
-  readonly defaultNotificationMethods =
-    input.required<BackendType['NotificationMethodResponse'][]>();
-
-  readonly filteredNotificationMethods = computed(() => {
-    const selectedNotificationMethodIds = this._selectedNotificationMethods().map((it) => it.id);
-    return this.allNotificationMethods().filter(
-      (it) => !selectedNotificationMethodIds.includes(it.id),
-    );
-  });
-
-  _selectedNotificationMethods = linkedSignal<
-    {
-      selectedNotificationMethods: BackendType['NotificationMethodMinResponse'][];
-      defaultSelectedNotificationMethods: BackendType['NotificationMethodMinResponse'][];
-      isCreating: boolean;
-    },
-    BackendType['NotificationMethodMinResponse'][]
-  >({
-    source: computed(() => ({
-      selectedNotificationMethods: this.selectedNotificationMethods(),
-      defaultSelectedNotificationMethods: this.defaultNotificationMethods(),
-      isCreating: this.monitor() === undefined,
-    })),
-    computation: ({
-      selectedNotificationMethods,
-      defaultSelectedNotificationMethods,
-      isCreating,
-    }) => {
-      return isCreating ? defaultSelectedNotificationMethods : selectedNotificationMethods;
+  readonly defaultNotificationMethods = input.required({
+    transform: (it: BackendType['NotificationMethodResponse'][]) => {
+      if (this.isCreating()) {
+        this.form.controls.notificationMethods.patchValue(it);
+      }
+      return it;
     },
   });
+
+  readonly allTags = input.required<BackendType['TagDto'][]>();
+  readonly isTagsSearchPending = input.required<boolean>();
+  searchTag = model('');
 
   constructor() {
     super();
@@ -469,7 +442,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   override overrideRawValue(value: ReturnType<typeof this.form.getRawValue>): unknown {
     return {
       ...value,
-      notificationMethodIds: this._selectedNotificationMethods().map((it) => it.id),
+      notificationMethodIds: value.notificationMethods.map((it) => it.id),
       testIntervalSeconds: getTestIntervalSeconds(value.testInterval, value.testIntervalUnit),
     };
   }

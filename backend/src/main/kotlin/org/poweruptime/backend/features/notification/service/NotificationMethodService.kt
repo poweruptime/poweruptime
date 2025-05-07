@@ -56,7 +56,6 @@ class NotificationMethodService(
         pageable: Pageable,
         teamId: String,
         name: String?,
-        usedByMonitorIds: List<String>?,
         types: List<NotificationSenderType>?,
         useByDefault: Boolean?,
         deleted: Boolean = false,
@@ -65,7 +64,6 @@ class NotificationMethodService(
             fun getFilterPredicates() = criteriaBuilder.and(
                 *buildList {
                     add(deleted.toDeletedFilter())
-                    usedByMonitorIds?.let { add(Filter("usedByMonitors.id", it, FilterCompare.IN)) }
                     types?.let { add(Filter("type", it, FilterCompare.IN)) }
                     useByDefault?.let { add(Filter("useByDefault", it, FilterCompare.EQ)) }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }

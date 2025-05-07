@@ -31,7 +31,7 @@ import {UptimeTimeline} from '../uptime-timeline';
             </div>
 
             @let _isHovering = isHovering();
-            @let hasTags = false;
+            @let hasTags = _monitor.tags.length > 0;
             <pu-uptime-timeline
               class="min-w-full"
               [hideLabel]="hasTags && !_isHovering"
@@ -44,11 +44,9 @@ import {UptimeTimeline} from '../uptime-timeline';
               <div
                 class="badge-container flex gap-2 overflow-x-auto"
                 style="max-width: 19.25rem; padding: 5px">
-                <span [pu-tag]="'red'" clickable>Badge</span>
-                <span [pu-tag]="'blue'" clickable>Badge</span>
-                <span [pu-tag]="'green'" clickable>Badge</span>
-                <span [pu-tag]="'pink'" clickable>Badge</span>
-                <span [pu-tag]="'yellow'" clickable>Badge</span>
+                @for (tag of _monitor.tags; track tag.name) {
+                  <span [pu-tag]="tag.variant" clickable>{{ tag.name }}</span>
+                }
               </div>
             }
           </div>
