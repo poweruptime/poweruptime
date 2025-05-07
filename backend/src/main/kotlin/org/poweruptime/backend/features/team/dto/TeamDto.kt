@@ -9,7 +9,7 @@ import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRole
 import java.time.Instant
 
-data class MinTeamResponse(
+data class TeamMinResponse(
     val id: String,
     val name: String,
 ) {
@@ -20,6 +20,22 @@ data class MinTeamResponse(
 }
 
 data class TeamResponse(
+    val id: String,
+    val name: String,
+    val deleted: Instant?,
+    val personal: Boolean,
+    val dashboard: MonitorDashboardResponse,
+) {
+    constructor(team: Team, personal: Boolean, dashboard: MonitorDashboardResponse) : this(
+        team.id,
+        team.name,
+        team.deleted,
+        personal,
+        dashboard,
+    )
+}
+
+data class TeamMaxResponse(
     val id: String,
     val name: String,
     val deleted: Instant?,

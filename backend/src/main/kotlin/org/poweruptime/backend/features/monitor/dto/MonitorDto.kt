@@ -10,7 +10,7 @@ import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.team.dto.MinTeamResponse
+import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
 
 data class PublicMonitorUptimeStatistics(
@@ -96,7 +96,7 @@ data class MonitorResponse(
     val name: String,
     val id: String,
     val status: MonitorStatus,
-    val team: MinTeamResponse,
+    val team: TeamMinResponse,
     val deleted: Instant?,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
@@ -110,7 +110,7 @@ data class MonitorResponse(
         id = it.id,
         status = it.status,
         deleted = it.deleted,
-        team = MinTeamResponse(it.team),
+        team = TeamMinResponse(it.team),
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,
     )
@@ -120,7 +120,7 @@ data class MonitorMaxResponse(
     val name: String,
     val id: String,
     val status: MonitorStatus,
-    val team: MinTeamResponse,
+    val team: TeamMinResponse,
     val deleted: Instant?,
     val description: String?,
     val testIntervalSeconds: Long,
@@ -137,7 +137,7 @@ data class MonitorMaxResponse(
         name = it.name,
         id = it.id,
         status = it.status,
-        team = MinTeamResponse(it.team),
+        team = TeamMinResponse(it.team),
         deleted = it.deleted,
         description = it.description,
         testIntervalSeconds = it.testIntervalSeconds,
@@ -153,7 +153,7 @@ data class MonitorFullResponse(
     val name: String,
     val id: String,
     val status: MonitorStatus,
-    val team: MinTeamResponse,
+    val team: TeamMinResponse,
     val deleted: Instant?,
     val description: String?,
     val testIntervalSeconds: Long,
@@ -174,7 +174,7 @@ data class MonitorFullResponse(
         name = it.name,
         id = it.id,
         status = it.status,
-        team = MinTeamResponse(it.team),
+        team = TeamMinResponse(it.team),
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,
         deleted = it.deleted,

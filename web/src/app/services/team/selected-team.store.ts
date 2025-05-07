@@ -31,7 +31,7 @@ import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 type SelectedTeamState = {
-  selectedTeam: BackendType['TeamResponse'] | undefined;
+  selectedTeam: BackendType['TeamMaxResponse'] | undefined;
 };
 
 export const SelectedTeamStore = signalStore(
@@ -39,27 +39,30 @@ export const SelectedTeamStore = signalStore(
   withState<{
     loadedAll: boolean;
     page: number;
-    search: string;
+    search: string | undefined;
   }>({
     loadedAll: false,
     page: 0,
-    search: '',
+    search: undefined,
   }),
   withProps(() => ({
     storageSelectedTeamId: injectLocalStorage<string>('pu_selected_team_id'),
-    onceSelectedTeams: injectLocalStorage<BackendType['TeamResponse'][]>('pu_once_selected_teams', {
-      defaultValue: [],
-    }),
+    onceSelectedTeams: injectLocalStorage<BackendType['TeamMaxResponse'][]>(
+      'pu_once_selected_teams',
+      {
+        defaultValue: [],
+      },
+    ),
   })),
   withRequestStatus(),
   withEntities<BackendType['TeamResponse']>(),
   withState({selectedTeam: undefined} as SelectedTeamState),
   withMethods((store, api = injectAPI(), router = inject(Router)) => ({
-    updateTeam(team: BackendType['TeamResponse']) {
+    updateTeam(team: BackendType['TeamMaxResponse']) {
       if (store.selectedTeam()?.id === team.id) {
         patchState(store, () => ({selectedTeam: team}));
       }
-      patchState(store, setEntity(team));
+      patchState(store, setEntity<BackendType['TeamResponse']>(team));
     },
     nextPage(): void {
       if (!store.loadedAll()) {
@@ -106,14 +109,13 @@ export const SelectedTeamStore = signalStore(
     setSearch: rxMethod<string | null>(
       pipe(
         debounceTime(275),
-        map((it) => it ?? ''),
+        map((it) => it ?? undefined),
         tap((search) => patchState(store, () => ({search}))),
       ),
     ),
     loadAvailableTeams: rxMethod<{
       page: number;
-      search: string;
-      size: number;
+      search: string | undefined;
     }>(
       pipe(
         distinctUntilChanged((prev, cur) => {
@@ -125,14 +127,13 @@ export const SelectedTeamStore = signalStore(
           return prev.page === cur.page;
         }),
         tap(() => patchState(store, setPending())),
-        mergeMap(({page, search, size}) =>
+        mergeMap(({page, ...query}) =>
           api
             .get('/v1/team', {
               params: {
                 query: {
-                  page,
-                  size,
-                  name: search.length > 0 ? search : undefined,
+                  ...query,
+                  size: 60,
                   sort: ['personalUser.id,ASC', 'name,ASC,ignorecase'],
                 },
               },
@@ -181,7 +182,6 @@ export const SelectedTeamStore = signalStore(
   })),
   withComputed(({selectedTeam, entities, onceSelectedTeams}) => ({
     selectedTeamId: computed(() => selectedTeam()?.id),
-    personalTeam: computed(() => entities()?.find((team) => team.personal)),
     onceSelectedTeamsCut: computed(() => onceSelectedTeams().slice(0, 5)),
     sortedEntities: computed(() =>
       entities().sort((a, b) => {
@@ -196,16 +196,6 @@ export const SelectedTeamStore = signalStore(
           });
         }
       }),
-    ),
-    sortedEntitiesWithoutPersonal: computed(() =>
-      entities()
-        .filter((it) => !it.personal)
-        .sort((a, b) =>
-          a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
-            numeric: true,
-            sensitivity: 'base',
-          }),
-        ),
     ),
   })),
 );

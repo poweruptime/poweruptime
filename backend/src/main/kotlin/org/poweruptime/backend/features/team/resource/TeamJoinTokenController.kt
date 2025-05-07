@@ -9,7 +9,7 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_USER
 import org.poweruptime.backend.core.exceptions.UnauthorizedException
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
-import org.poweruptime.backend.features.team.dto.MinTeamResponse
+import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.TeamUserId
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
@@ -35,7 +35,7 @@ class TeamJoinTokenController(
     fun joinTeam(
         @PathVariable("token") token: String,
         authentication: Authentication
-    ): MinTeamResponse {
+    ): TeamMinResponse {
         val invitee = authService.getByAuthOrThrow(authentication)
         val joinToken = teamJoinTokenService.validateToken(
             inviteeId = invitee.id,
@@ -57,6 +57,6 @@ class TeamJoinTokenController(
             ),
         )
 
-        return MinTeamResponse(joinToken.team)
+        return TeamMinResponse(joinToken.team)
     }
 }

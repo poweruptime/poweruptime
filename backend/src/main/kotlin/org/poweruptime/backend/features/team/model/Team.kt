@@ -17,6 +17,7 @@ import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.tag.Tag
 
 @Entity
 @Table(name = "team")
@@ -44,6 +45,10 @@ class Team(
 
     @OneToMany(mappedBy = "team")
     var teamSettings: List<TeamSetting> = ArrayList(),
+
+    @SQLRestriction("deleted IS null")
+    @OneToMany(mappedBy = "team")
+    var tags: List<Tag> = ArrayList(),
 ) : ASoftDeleteEntity(), EntityWithName {
     @Id
     @SmallNanoId

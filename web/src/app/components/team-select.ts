@@ -19,7 +19,7 @@ import {distinctUntilChanged, filter} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {MtxPopover, MtxPopoverTrigger} from '@ng-matero/extensions/popover';
 
-import {SelectedTeamStore} from '@app/services';
+import {SelectedTeamStore, TeamsStore} from '@app/services';
 
 @Component({
   template: `
@@ -46,14 +46,14 @@ import {SelectedTeamStore} from '@app/services';
           class="mt-3 flex flex-col gap-2"
           [formControl]="selectedTeamControl"
           aria-labelledby="example-radio-group-label">
-          @if (selectedTeamStore.personalTeam(); as personalTeam) {
+          @if (teamsStore.personalTeam(); as personalTeam) {
             <h2 class="font-bold">{{ 'nav.teamSelect.personal' | transloco }}</h2>
             <mat-radio-button [value]="personalTeam.id" (click)="close()">
               {{ personalTeam.name }}
             </mat-radio-button>
           }
 
-          @let entities = sortedEntitiesWithoutPersonalWithOrWithoutAdmin();
+          @let entities = teamsStore.sortedEntitiesWithoutPersonal();
           @if (entities.length > 0) {
             <h2 class="font-bold">{{ 'general.teams' | transloco }}</h2>
             @for (team of entities; track team.id) {
@@ -64,11 +64,11 @@ import {SelectedTeamStore} from '@app/services';
           }
         </mat-radio-group>
 
-        @if (selectedTeamStore.isFulfilled() && selectedTeamStore.entities().length === 0) {
+        @if (teamsStore.isEmpty()) {
           <span>{{ 'general.nothingFound' | transloco }}</span>
         }
 
-        @if (selectedTeamStore.isPending()) {
+        @if (teamsStore.isPending()) {
           <mat-progress-bar mode="indeterminate" />
         }
       </div>
@@ -81,6 +81,7 @@ import {SelectedTeamStore} from '@app/services';
       @apply rounded-md border bg-neutral-50 dark:border-none dark:bg-neutral-800;
     }
   `,
+  providers: [TeamsStore],
   selector: 'pu-team-select',
   imports: [
     ReactiveFormsModule,
@@ -97,7 +98,7 @@ import {SelectedTeamStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamSelect {
-  readonly selectedTeamStore = inject(SelectedTeamStore);
+  readonly teamsStore = inject(TeamsStore);
 
   readonly trigger = viewChild(MtxPopoverTrigger);
 
@@ -113,16 +114,6 @@ export class TeamSelect {
 
   readonly adminOnly = input(false, {transform: booleanAttribute});
 
-  readonly sortedEntitiesWithoutPersonalWithOrWithoutAdmin = computed(() => {
-    if (this.adminOnly()) {
-      return this.selectedTeamStore
-        .sortedEntitiesWithoutPersonal()
-        .filter((it) => it.role === 'ADMIN');
-    }
-
-    return this.selectedTeamStore.sortedEntitiesWithoutPersonal();
-  });
-
   readonly selectedTeamControl = new FormControl<string>('');
   readonly searchControl = new FormControl<string>('');
 
@@ -135,13 +126,16 @@ export class TeamSelect {
   );
 
   constructor() {
-    this.selectedTeamStore.setSearch(this.searchControl.valueChanges);
+    this.teamsStore.setName(this.searchControl.valueChanges);
+    this.teamsStore.setRole(computed(() => (this.adminOnly() ? 'ADMIN' : undefined)));
 
-    this.selectedTeamStore.loadAvailableTeams(
+    this.teamsStore.load(
       computed(() => ({
         page: 0,
         size: 10,
-        search: this.selectedTeamStore.search(),
+        name: this.teamsStore.name(),
+        role: this.teamsStore.role(),
+        sort: ['personalUser.id,ASC', 'name,ASC,ignorecase'],
       })),
     );
   }

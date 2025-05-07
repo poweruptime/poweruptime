@@ -55,6 +55,7 @@ class TeamService(
         pageable: Pageable,
         userId: String?,
         name: String?,
+        role: TeamRole?,
         deleted: Boolean = false,
     ): Page<Team> = teamRepository.findAll(
         { root: Root<Team>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
@@ -62,6 +63,9 @@ class TeamService(
                 *buildList {
                     add(deleted.toDeletedFilter())
                     userId?.let { add(Filter("teamUsers.id.user.id", it, FilterCompare.EQ)) }
+                    if (userId != null && role != null) {
+                        add(Filter("teamUsers.role", role, FilterCompare.EQ))
+                    }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
                 }.toPredicate(root, criteriaBuilder).toTypedArray(),
             )

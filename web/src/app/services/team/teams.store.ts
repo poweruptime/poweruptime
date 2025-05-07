@@ -1,8 +1,10 @@
+import {computed} from '@angular/core';
+
 import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
 import {removeAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
@@ -23,8 +25,10 @@ import {
 export const TeamsStore = signalStore(
   withState<{
     name: string | undefined;
+    role: BackendType['TeamMaxResponse']['role'] | undefined;
   }>({
     name: undefined,
+    role: undefined,
   }),
   withRequestStatus(),
   withEntities<BackendType['TeamResponse']>(),
@@ -37,6 +41,7 @@ export const TeamsStore = signalStore(
     const load = rxMethod<
       {
         name?: string;
+        role?: BackendType['TeamMaxResponse']['role'];
       } & PaginationDto
     >(
       pipe(
@@ -70,6 +75,9 @@ export const TeamsStore = signalStore(
     return {
       setName: rxMethod<string | null>(
         tap((name) => patchState(store, () => ({name: name ?? undefined}))),
+      ),
+      setRole: rxMethod<BackendType['TeamMaxResponse']['role'] | undefined>(
+        pipe(tap((role) => patchState(store, () => ({role})))),
       ),
       load,
       delete: rxMethod<string>(
@@ -117,4 +125,17 @@ export const TeamsStore = signalStore(
       ),
     };
   }),
+  withComputed(({entities}) => ({
+    personalTeam: computed(() => entities()?.find((team) => team.personal)),
+    sortedEntitiesWithoutPersonal: computed(() =>
+      entities()
+        .filter((it) => !it.personal)
+        .sort((a, b) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
+            numeric: true,
+            sensitivity: 'base',
+          }),
+        ),
+    ),
+  })),
 );

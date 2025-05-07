@@ -1618,7 +1618,7 @@ export interface components {
       /** Format: int64 */
       pausedCount: number;
     };
-    TeamResponse: {
+    TeamMaxResponse: {
       id: string;
       name: string;
       /** Format: date-time */
@@ -1792,16 +1792,12 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
-    MinTeamResponse: {
-      id: string;
-      name: string;
-    };
     MonitorFullResponse: {
       name: string;
       id: string;
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
-      team: components['schemas']['MinTeamResponse'];
+      team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
       description?: string;
@@ -1830,6 +1826,10 @@ export interface components {
       threeMonths?: string;
       sixMonths?: string;
       oneYear?: string;
+    };
+    TeamMinResponse: {
+      id: string;
+      name: string;
     };
     InstanceSettingsResponse: {
       timezone: string;
@@ -1982,6 +1982,14 @@ export interface components {
       /** Format: int32 */
       numberOfPages: number;
       data: components['schemas']['TeamResponse'][];
+    };
+    TeamResponse: {
+      id: string;
+      name: string;
+      /** Format: date-time */
+      deleted?: string;
+      personal: boolean;
+      dashboard: components['schemas']['MonitorDashboardResponse'];
     };
     PaginatedResponseTeamUserResponse: {
       /** Format: int64 */
@@ -2140,7 +2148,7 @@ export interface components {
       id: string;
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
-      team: components['schemas']['MinTeamResponse'];
+      team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
@@ -2158,7 +2166,7 @@ export interface components {
       id: string;
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
-      team: components['schemas']['MinTeamResponse'];
+      team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
       description?: string;
@@ -2350,6 +2358,7 @@ export interface operations {
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[];
         name?: string;
+        role?: 'ADMIN' | 'MEMBER';
         deleted?: boolean;
       };
       header?: never;
@@ -2388,7 +2397,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['TeamResponse'];
+          '*/*': components['schemas']['TeamMaxResponse'];
         };
       };
     };
@@ -2412,7 +2421,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['TeamResponse'];
+          '*/*': components['schemas']['TeamMaxResponse'];
         };
       };
     };
@@ -3536,7 +3545,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['TeamResponse'];
+          '*/*': components['schemas']['TeamMaxResponse'];
         };
       };
     };
@@ -3578,7 +3587,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['MinTeamResponse'];
+          '*/*': components['schemas']['TeamMinResponse'];
         };
       };
     };
@@ -4508,7 +4517,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['TeamResponse'];
+          '*/*': components['schemas']['TeamMaxResponse'];
         };
       };
     };
