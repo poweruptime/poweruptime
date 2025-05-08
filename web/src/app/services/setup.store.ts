@@ -10,6 +10,8 @@ import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
 
+import confetti from 'canvas-confetti';
+
 type SetupStoreState = {state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted'};
 
 export const SetupStore = signalStore(
@@ -69,6 +71,13 @@ export const SetupStore = signalStore(
                     'Successfully setup your first admin account. Please check your E-Mail inbox.',
                   ),
                 );
+
+                confetti({
+                  particleCount: 100,
+                  spread: 160,
+                  origin: { y: 0.6 },
+                });
+                setTimeout(() => confetti.reset(), 3000);
               },
               error: (error) => patchState(store, setError(error)),
             }),

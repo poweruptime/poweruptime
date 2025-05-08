@@ -17,6 +17,7 @@ import {AlertDirective} from '../components';
 import {FakeDash, Slot} from '../components/otp';
 import {injectIsValid} from '../form';
 import {SetupStore} from '../services';
+import confetti from 'canvas-confetti';
 
 @Component({
   template: `
@@ -317,7 +318,6 @@ export class SetupPage {
   submitSetup(): void {
     this.setupStore.setup(this.setupForm.getRawValue());
   }
-
   constructor() {
     effect(() => {
       const email = this.emailQueryParam();
