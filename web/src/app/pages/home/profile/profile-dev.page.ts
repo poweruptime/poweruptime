@@ -13,10 +13,13 @@ import {AuthStore} from '@app/services';
           <mat-card-content>
             <div class="flex flex-col gap-4">
               <h2 class="text-xl">Auth</h2>
-              <button class="secondary-button" (click)="setInvalidAccessToken()" mat-flat-button>
+              <button class="secondary-button" (click)="setInvalidAccessToken()" mat-stroked-button>
                 Access token invalidate
               </button>
-              <button class="secondary-button" (click)="setInvalidRefreshToken()" mat-flat-button>
+              <button
+                class="secondary-button"
+                (click)="setInvalidRefreshToken()"
+                mat-stroked-button>
                 Refresh token invalidate
               </button>
             </div>
@@ -32,59 +35,59 @@ import {AuthStore} from '@app/services';
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/not-found">
-                Open Not Found
+                Not Found Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/t/join/1234">
                 Team Join Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/email-change/confirm/1234">
-                Email Change Confirm
+                Email Change Confirm Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/email-change/undo/1234">
-                Email Change Undo
+                Email Change Undo Page
               </a>
               <h3 class="text-lg">Auth</h3>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/auth/login">
-                Open Login
+                Login Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/auth/forgot-password">
-                Open Forgot Password
+                Forgot Password Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/auth/password-change">
-                Open Password Change
+                Password Change Page
               </a>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"
-                mat-flat-button
+                mat-stroked-button
                 routerLink="/setup">
-                Open Setup
+                Setup Page
               </a>
             </div>
           </mat-card-content>

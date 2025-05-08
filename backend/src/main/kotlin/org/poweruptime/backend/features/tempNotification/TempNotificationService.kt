@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service
 import java.time.Instant
 
 data class TempNotification(
+    val id: String = RandomGenerator.nanoId(),
+    val url: String = "http://localhost:8080/api/v1/public/temp-notification/$id",
+    val createdAt: Instant = Instant.now(),
     val to: String,
     val subject: String,
     val body: String,
     val bodyHTML: String? = null,
-    val id: String = RandomGenerator.nanoId(),
-    val createdAt: Instant = Instant.now(),
-    val url: String = "http://localhost:8080/api/v1/public/temp-notification/$id"
 )
 
 @Service

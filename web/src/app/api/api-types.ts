@@ -2082,14 +2082,14 @@ export interface components {
       setup: boolean;
     };
     TempNotification: {
+      id: string;
+      url: string;
+      /** Format: date-time */
+      createdAt: string;
       to: string;
       subject: string;
       body: string;
       bodyHTML?: string;
-      id: string;
-      /** Format: date-time */
-      createdAt: string;
-      url: string;
     };
     PublicStatusPageGroupResponse: {
       id: string;
@@ -2830,7 +2830,6 @@ export interface operations {
         sort?: string[];
         teamId: string;
         name?: string;
-        usedByMonitorIds?: string[];
         types?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
         useByDefault?: boolean;
         deleted?: boolean;
@@ -2914,6 +2913,7 @@ export interface operations {
         enabledNotificationMethodIds?: string[];
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
         types?: ('DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE')[];
+        tags?: string[];
         usedInStatusPageGroupIds?: string[];
         deleted?: boolean;
       };
@@ -3634,14 +3634,14 @@ export interface operations {
   };
   getAll_6: {
     parameters: {
-      query: {
+      query?: {
         /** @description Zero-based page index (0..N) */
         page?: number;
         /** @description The size of the page to be returned */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[];
-        teamId: string;
+        teamId?: string;
         name?: string;
       };
       header?: never;

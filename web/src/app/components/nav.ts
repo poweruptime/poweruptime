@@ -141,7 +141,7 @@ import {TeamSelect} from './team-select';
           </mat-nav-list>
           <div
             class="hover:cursor-pointer"
-            [matTooltip]="'general.settings' | transloco"
+            [matTooltip]="profileStore.email()"
             [matMenuTriggerFor]="menu"
             matTooltipPosition="left">
             @if (profileInitials(); as initials) {

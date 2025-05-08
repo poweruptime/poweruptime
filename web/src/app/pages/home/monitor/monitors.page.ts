@@ -72,6 +72,16 @@ import {paramToArray} from '@app/util';
           }
         }
 
+        @if (isSearching()) {
+          @if (monitorsSearchStore.isFulfilled() && monitorsSearchStore.entities().length === 0) {
+            <span>No monitors found.</span>
+          }
+        } @else {
+          @if (!monitorsStore.isPending() && monitorsStore.entities().length === 0) {
+            <span>{{ 'monitor.empty' | transloco }}</span>
+          }
+        }
+
         @if (isSearching() && _showFilter) {
           <pu-monitor-card-list
             [entities]="monitorsSearchStore.entities()"

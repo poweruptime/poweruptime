@@ -19,7 +19,6 @@ export const TagsStore = signalStore(
       size?: number;
     }>(
       pipe(
-        filter(({teamId}) => !!teamId),
         tap(() => patchState(store, setPending())),
         debounceTime(275),
         switchMap(({teamId, ...query}) =>
@@ -28,7 +27,6 @@ export const TagsStore = signalStore(
               params: {
                 query: {
                   ...query,
-                  teamId: teamId!,
                   page: query.page ?? 0,
                   size: query.size ?? 10,
                   sort: ['name,ASC,ignorecase'],

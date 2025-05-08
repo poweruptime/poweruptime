@@ -74,17 +74,33 @@ class TagService(
 
     fun getAllPaginated(
         pageable: Pageable,
-        teamId: String,
-        name: String? = null,
+        teamId: String?,
+        userId: String?,
+        name: String?,
         deleted: Boolean = false
     ): Page<Tag> = tagRepository.findAll(
         { root: Root<Tag>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            criteriaBuilder.and(
+            fun getTeamOrUserIdPredicate() = (
+                teamId?.let {
+                    Filter("team.id", it, FilterCompare.EQ)
+                } ?: userId?.let {
+                    Filter("team.teamUsers.id.user.id", it, FilterCompare.EQ)
+                } ?: throw AssertionError("teamId or userId needs to be provided")
+                ).toPredicate(root, criteriaBuilder)
+
+            fun getFilterPredicates() = criteriaBuilder.and(
                 *buildList {
-                    Filter("team.id", teamId, FilterCompare.EQ)
                     add(deleted.toDeletedFilter())
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
                 }.toPredicate(root, criteriaBuilder).toTypedArray(),
+            )
+
+            criteriaBuilder.and(
+                *buildList {
+                    add(getTeamOrUserIdPredicate())
+
+                    add(getFilterPredicates())
+                }.toTypedArray(),
             )
         },
         PageableValidator.validateSort(
