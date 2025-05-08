@@ -49,7 +49,7 @@ class EmailNotificationSenderData(
 
     /**
      * Usage of `EmailSecurityDatabaseConverter` to minify enum to 1 char
-     * @see EmailSecurityDatabaseConverter
+     * @see org.poweruptime.backend.features.mail.EmailSecurityDatabaseConverter
      */
     @Column(name = "mail_security", nullable = false, length = 1)
     @get:NotNull

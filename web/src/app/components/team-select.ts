@@ -19,7 +19,7 @@ import {distinctUntilChanged, filter} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {MtxPopover, MtxPopoverTrigger} from '@ng-matero/extensions/popover';
 
-import {SelectedTeamStore, TeamsStore} from '@app/services';
+import {TeamsStore} from '@app/services';
 
 @Component({
   template: `

@@ -11,7 +11,7 @@ import {
   HttpMonitorDataMethod,
 } from '@app/api';
 
-import {arrayItemMaxLength, arrayItemMinLength, arrayItemPattern} from '../../../form';
+import {arrayItemMinLength, arrayItemPattern} from '../../../form';
 
 const baseCheckerProperties = {
   _type: [''],

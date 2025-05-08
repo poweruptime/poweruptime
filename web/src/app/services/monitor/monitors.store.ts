@@ -198,37 +198,35 @@ export const MonitorsSearchStore = signalStore(
 
 export const MonitorsStore = signalStore(
   withMonitorsLoad(),
-  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
-    return {
-      restoreSelection: rxMethod<void>(
-        switchMap(() =>
-          confirmDialog$(
-            translate('general.confirmRestore.title'),
-            translate('general.confirmRestore.description'),
-          ).pipe(
-            tap(() => patchState(store, setPending())),
-            map(() => store.selection().map((it) => it.id)),
-            switchMap((ids) =>
-              forkJoin(
-                ids.map((id) => api.delete('/v1/monitor/{id}/undo', {params: {path: {id}}})),
-              ).pipe(
-                tapResponse({
-                  next: () => {
-                    toast.success(translate('general.restoreSuccess'));
+  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => ({
+    restoreSelection: rxMethod<void>(
+      switchMap(() =>
+        confirmDialog$(
+          translate('general.confirmRestore.title'),
+          translate('general.confirmRestore.description'),
+        ).pipe(
+          tap(() => patchState(store, setPending())),
+          map(() => store.selection().map((it) => it.id)),
+          switchMap((ids) =>
+            forkJoin(
+              ids.map((id) => api.delete('/v1/monitor/{id}/undo', {params: {path: {id}}})),
+            ).pipe(
+              tapResponse({
+                next: () => {
+                  toast.success(translate('general.restoreSuccess'));
 
-                    store.load({
-                      ...store.pageable(),
-                      deleted: store.deleted(),
-                      teamId: store.teamId(),
-                    });
-                  },
-                  error: (error) => patchState(store, setError(error)),
-                }),
-              ),
+                  store.load({
+                    ...store.pageable(),
+                    deleted: true,
+                    teamId: store.teamId(),
+                  });
+                },
+                error: (error) => patchState(store, setError(error)),
+              }),
             ),
           ),
         ),
       ),
-    };
-  }),
+    ),
+  })),
 );

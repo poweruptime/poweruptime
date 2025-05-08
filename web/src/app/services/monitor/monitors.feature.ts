@@ -1,13 +1,13 @@
-import {computed, inject} from '@angular/core';
+import {inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {debounceTime, distinctUntilChanged, map, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {
   patchState,
   signalStoreFeature,
-  withComputed,
+  type,
   withHooks,
   withMethods,
   withState,
@@ -24,6 +24,7 @@ import {BackendType, injectAPI} from '@app/api';
 import {PushService} from '@app/services';
 import {
   PaginationDto,
+  RequestStatusState,
   resetSelection,
   setError,
   setFulfilled,
@@ -38,22 +39,12 @@ export type MonitorSearchParams = {
   search: string | undefined;
   statuses: BackendType['MonitorResponse']['status'][] | undefined;
   types: BackendType['MonitorCheckerData']['_type'][] | undefined;
+  tags: string[] | undefined;
 };
 
 export function withMonitorsLoad() {
   return signalStoreFeature(
-    withState<
-      {
-        teamId: string | undefined;
-        deleted: boolean | undefined;
-      } & MonitorSearchParams
-    >({
-      teamId: undefined,
-      search: undefined,
-      statuses: undefined,
-      types: undefined,
-      deleted: undefined,
-    }),
+    withState<{teamId: string | undefined}>({teamId: undefined}),
     withRequestStatus(),
     withEntities<BackendType['MonitorResponse']>(),
     withPaginatedTable<BackendType['MonitorResponse']>({
@@ -63,14 +54,6 @@ export function withMonitorsLoad() {
       defaultSortDirection: 'asc',
     }),
     withSelection<BackendType['MonitorResponse']>({}),
-    withComputed(({search, types, statuses}) => ({
-      isSearching: computed(
-        () =>
-          (search() && search()!.length > 0) ||
-          (statuses() && statuses()!.length > 0) ||
-          (types() && types()!.length > 0),
-      ),
-    })),
     withMethods((store, api = injectAPI()) => ({
       updateMonitor(it: BackendType['MonitorResponse']): void {
         patchState(store, updateEntity({id: it.id, changes: it}));
@@ -90,33 +73,13 @@ export function withMonitorsLoad() {
           );
         }
       },
-      setSearch: rxMethod<string | null | undefined>(
-        pipe(
-          map((it) => it ?? undefined),
-          tap((search) => patchState(store, () => ({search}))),
-        ),
-      ),
-      setStatuses: rxMethod<BackendType['MonitorResponse']['status'][] | null | undefined>(
-        pipe(
-          map((it) => it ?? undefined),
-          tap((statuses) => patchState(store, () => ({statuses}))),
-        ),
-      ),
-      setTypes: rxMethod<BackendType['MonitorCheckerData']['_type'][] | null | undefined>(
-        pipe(
-          map((it) => it ?? undefined),
-          tap((types) => patchState(store, () => ({types}))),
-        ),
-      ),
-      setDeleted: rxMethod<boolean | undefined>(
-        tap((deleted) => patchState(store, () => ({deleted}))),
-      ),
       load: rxMethod<
         {
           teamId?: string;
           search?: string;
           statuses?: BackendType['MonitorResponse']['status'][];
           types?: BackendType['MonitorCheckerData']['_type'][];
+          tags?: string[];
           deleted?: boolean;
         } & PaginationDto
       >(
@@ -125,7 +88,8 @@ export function withMonitorsLoad() {
             if (
               prev.search !== cur.search ||
               prev.statuses !== cur.statuses ||
-              prev.types !== cur.types
+              prev.types !== cur.types ||
+              prev.tags !== cur.tags
             ) {
               patchState(store, removeAllEntities(), () => ({page: 0}));
               return false;
@@ -180,5 +144,37 @@ export function withMonitorsLoad() {
           .subscribe((it) => store.addCheckResult(it));
       },
     }),
+  );
+}
+
+export function withMonitorLoad() {
+  return signalStoreFeature(
+    {state: type<RequestStatusState>()},
+    withState<{monitor: BackendType['MonitorMaxResponse'] | undefined}>({monitor: undefined}),
+    withMethods((store, api = injectAPI()) => ({
+      loadMonitorById: rxMethod<string | undefined>(
+        pipe(
+          filter((it): it is string => !!it),
+          distinctUntilChanged(),
+          tap(() => patchState(store, setPending(), () => ({monitor: undefined}))),
+          switchMap((id) =>
+            api
+              .get('/v1/monitor/{id}', {
+                params: {
+                  path: {
+                    id,
+                  },
+                },
+              })
+              .pipe(
+                tapResponse({
+                  next: (monitor) => patchState(store, () => ({monitor}), setFulfilled()),
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
+          ),
+        ),
+      ),
+    })),
   );
 }

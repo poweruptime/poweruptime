@@ -7,12 +7,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 
 import {Placeholder} from '@app/components';
 import {TeamEditForm, TeamInvitesList, TeamSettings, TeamUsersList} from '@app/components/team';
-import {
-  InstanceAvailableTimezonesStore,
-  SelectedTeamStore,
-  TeamEditStore,
-  TeamSettingsStore,
-} from '@app/services';
+import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from '@app/services';
 
 @Component({
   template: `

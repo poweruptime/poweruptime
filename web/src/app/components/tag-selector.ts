@@ -25,13 +25,16 @@ import {
   MatChipRow,
 } from '@angular/material/chips';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {StopPropagationDirective} from 'dfx-helper';
+import {DfxLowerCaseExceptFirstLettersPipe, StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
+
+import {Tag} from '../directives';
 
 @Component({
   template: `
@@ -39,15 +42,30 @@ import {BackendType} from '@app/api';
       <mat-label>{{ 'tag.selector.selected' | transloco }}</mat-label>
       <mat-chip-grid #chipGrid [attr.aria-label]="'tag.selector.list' | transloco">
         @for (tag of value(); track tag.name) {
-          <a (removed)="remove(tag)" mat-chip-row>
+          <a [matMenuTriggerFor]="menu" [pu-tag]="tag.variant" (removed)="remove(tag)" mat-chip-row>
             {{ tag.name }}
             <button
               [attr.aria-label]="'tag.selector.remove' | transloco: tag"
+              type="button"
               matChipRemove
               stopPropagation>
               <bi name="x-circle" aria-hidden="true" />
             </button>
           </a>
+          <mat-menu #menu="matMenu">
+            @for (tagVariant of tagVariants; track tagVariant) {
+              <button (click)="updateTagVariant(tag, tagVariant)" mat-menu-item type="button">
+                <div class="inline-flex items-center gap-2">
+                  <bi
+                    [name]="tag.variant === tagVariant ? 'check-circle-fill' : 'circle'"
+                    size="16" />
+                  <span>
+                    {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
+                  </span>
+                </div>
+              </button>
+            }
+          </mat-menu>
         }
       </mat-chip-grid>
       <input
@@ -90,11 +108,24 @@ import {BackendType} from '@app/api';
     BiComponent,
     StopPropagationDirective,
     TranslocoPipe,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    DfxLowerCaseExceptFirstLettersPipe,
+    Tag,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagSelector implements ControlValueAccessor {
   private readonly announcer = inject(LiveAnnouncer);
+
+  tagVariants: BackendType['TagDto']['variant'][] = [
+    'RED' as const,
+    'BLUE' as const,
+    'GREEN' as const,
+    'PINK' as const,
+    'YELLOW' as const,
+  ];
 
   tags = input.required<BackendType['TagDto'][]>();
   isPending = input.required<boolean>();
@@ -144,6 +175,31 @@ export class TagSelector implements ControlValueAccessor {
 
     // Clear the input value
     this.searchTag.set('');
+  }
+
+  updateTagVariant(tag: BackendType['TagDto'], variant: BackendType['TagDto']['variant']) {
+    this.value.update((selectedTags) => {
+      const index = selectedTags?.findIndex((it) => it.name === tag.name) ?? -1;
+
+      if (index === -1 || !selectedTags) {
+        return selectedTags;
+      }
+
+      // Tag found. Create a new array with the updated tag at the same index.
+      // We create a copy of the tag at 'index' and update its variant.
+      const updatedTag = {
+        ...selectedTags[index], // Copy all existing properties
+        variant: variant, // Overwrite or set the variant property
+      };
+
+      // Return a new array with the updated tag replacing the old one.
+      // This is a common pattern for immutability in state updates.
+      return [
+        ...selectedTags.slice(0, index), // Elements before the found index
+        updatedTag, // The updated tag
+        ...selectedTags.slice(index + 1), // Elements after the found index
+      ];
+    });
   }
 
   value = signal<BackendType['TagDto'][] | null>(null);

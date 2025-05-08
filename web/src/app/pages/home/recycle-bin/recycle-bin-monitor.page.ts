@@ -116,7 +116,6 @@ export class RecycleBinMonitorPage {
   constructor() {
     this.monitorsStore.setColumnsToDisplay(['select', 'name', 'deleted']);
     this.monitorsStore.setStartSort({by: 'deleted', direction: 'desc'});
-    this.monitorsStore.setDeleted(true);
 
     this.monitorsStore.setPaginator(this.paginator);
     this.monitorsStore.setSort(this.sort);
@@ -124,7 +123,7 @@ export class RecycleBinMonitorPage {
     this.monitorsStore.load(
       computed(() => ({
         teamId: this.teamId(),
-        deleted: this.monitorsStore.deleted(),
+        deleted: true,
         ...this.monitorsStore.pageable(),
       })),
     );

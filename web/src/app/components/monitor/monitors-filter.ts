@@ -56,6 +56,17 @@ import {MonitorSearchParams} from '@app/services';
           }
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'general.tags' | transloco }}</mat-label>
+        <mat-select formControlName="tags" multiple>
+          @for (tag of tags(); track tag.name) {
+            <mat-option [value]="tag.name">
+              {{ tag.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     </form>
   `,
   selector: 'pu-monitors-filter',
@@ -79,7 +90,12 @@ export class MonitorsFilter {
     search: [''],
     statuses: this.fb.control<BackendType['MonitorResponse']['status'][]>([]),
     types: this.fb.control<BackendType['MonitorCheckerData']['_type'][]>([]),
+    tags: this.fb.control<string[]>([]),
   });
+
+  dashboard = input<BackendType['MonitorDashboardResponse']>();
+
+  tags = input<BackendType['TagDto'][]>();
 
   filter = input(undefined, {
     transform: (filter?: Partial<MonitorSearchParams>) => {
@@ -95,8 +111,6 @@ export class MonitorsFilter {
       return filter;
     },
   });
-
-  dashboard = input.required<BackendType['MonitorDashboardResponse'] | undefined>();
 
   filterChange = outputFromObservable(
     this.form.valueChanges.pipe(

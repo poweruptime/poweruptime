@@ -12,7 +12,7 @@ import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
-import {AuthStore, ForgotPasswordStore} from '@app/services';
+import {ForgotPasswordStore} from '@app/services';
 
 @Component({
   template: `

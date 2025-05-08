@@ -10,7 +10,7 @@ import org.poweruptime.backend.core.utils.*
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorStatusDatabaseConverter
 
-@Entity()
+@Entity
 @Table(name = "monitor_push_entry")
 class PushMonitorCheckerEntry(
     @Column(name = "push_id", nullable = false, length = NANO_ID_SMALL_LENGTH)

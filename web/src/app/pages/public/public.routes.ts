@@ -1,8 +1,5 @@
 import {Routes} from '@angular/router';
 
-import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
-import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
-
 export const ROUTES: Routes = [
   {
     path: '',

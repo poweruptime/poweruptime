@@ -18,18 +18,57 @@ import org.springframework.stereotype.Service
 class TagService(
     private val tagRepository: TagRepository,
 ) : ASoftDeleteEntityService<Tag>(tagRepository) {
-    fun getByTeamIdAndNames(team: Team, tags: List<TagDto>): List<Tag> {
-        val existingTags = tagRepository.findByTeamIdAndNames(team.id, tags.map { it.name })
-        val existingTagNames = existingTags.map { it.name }.toSet()
-        val notYetExistingTags = tags.filter { !existingTagNames.contains(it.name) }
+    fun getByTeamIdAndNames(
+        team: Team,
+        tags: List<TagDto>
+    ): List<Tag> {
+        // 1) fetch all existing tags for this team & name set
+        val existingByName = tagRepository
+            .findByTeamIdAndNames(
+                team.id,
+                tags.map(TagDto::name),
+            )
+            .associateBy(Tag::name)
+
+        // 2) index DTOs by name for quick lookup
+        val tagDtosByName = tags.associateBy(TagDto::name)
+
+        // 3) find & mutate only those tags whose variantProperties changed
+        val toUpdate = existingByName.values
+            .filter { tag ->
+                val dto = tagDtosByName[tag.name]!!
+                tag.variant != dto.variant
+            }
+            .onEach { tag ->
+                val dto = tagDtosByName[tag.name]!!
+                tag.variant = dto.variant
+            }
+
+        // 4) persist the updates (if any)
+        val updatedTags = if (toUpdate.isNotEmpty()) {
+            tagRepository.saveAll(toUpdate)
+        } else {
+            emptyList()
+        }
+
+        // 5) build & persist new tags for names that didn’t exist
+        val toCreate = tags
+            .filter { it.name !in existingByName }
+            .map { Tag.fromDto(it, team) }
+
+        val createdTags = if (toCreate.isNotEmpty()) {
+            tagRepository.saveAll(toCreate)
+        } else {
+            emptyList()
+        }
+
+        // 6) return unchanged existing + updated + newly created
+        val unchanged = existingByName.values - toUpdate.toSet()
 
         return buildList {
-            addAll(existingTags)
-            addAll(
-                saveAll(
-                    notYetExistingTags.map { Tag.fromDto(it, team) },
-                ),
-            )
+            addAll(unchanged)
+            addAll(updatedTags)
+            addAll(createdTags)
         }
     }
 

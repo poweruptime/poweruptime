@@ -1,24 +1,20 @@
 import {inject} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
+import {switchMap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
 
-import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
-import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore} from './';
+import {setError, withRequestStatus} from '../store-features';
+import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore, withMonitorLoad} from './';
 
 export const MonitorEditStore = signalStore(
   withRequestStatus(),
-  withState<{
-    monitor: BackendType['MonitorMaxResponse'] | undefined;
-  }>({
-    monitor: undefined,
-  }),
+  withMonitorLoad(),
   withMethods(
     (
       store,
@@ -28,29 +24,6 @@ export const MonitorEditStore = signalStore(
       monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
     ) => ({
-      loadMonitorById: rxMethod<string | undefined>(
-        pipe(
-          filter((it): it is string => !!it),
-          distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({monitor: undefined}))),
-          switchMap((id) =>
-            api
-              .get('/v1/monitor/{id}', {
-                params: {
-                  path: {
-                    id,
-                  },
-                },
-              })
-              .pipe(
-                tapResponse({
-                  next: (monitor) => patchState(store, () => ({monitor}), setFulfilled()),
-                  error: (error) => patchState(store, setError(error)),
-                }),
-              ),
-          ),
-        ),
-      ),
       create: rxMethod<BackendType['CreateMonitorDto']>(
         switchMap((body) =>
           api.post('/v1/monitor', {body}).pipe(
@@ -61,7 +34,7 @@ export const MonitorEditStore = signalStore(
 
                 void router.navigate(['/', 't', monitor.team.id, 'm', monitor.id, 'edit']);
               },
-              error: () => {},
+              error: (error) => patchState(store, setError(error)),
             }),
           ),
         ),

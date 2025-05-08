@@ -130,6 +130,7 @@ class MonitorService(
         enabledNotificationMethodIds: List<String>? = null,
         statuses: List<MonitorStatus>? = null,
         types: List<MonitorCheckerType>? = null,
+        tags: List<String>? = null,
         usedInStatusPageGroupIds: List<String>? = null,
         deleted: Boolean = false
     ): Page<Monitor> = monitorRepository.findAll(
@@ -150,7 +151,7 @@ class MonitorService(
                     enabledNotificationMethodIds?.let {
                         add(
                             Filter(
-                                "enabledNotificationMethods.notificationMethod.id",
+                                "enabledNotificationMethods.id",
                                 it,
                                 FilterCompare.IN,
                             ),
@@ -167,6 +168,7 @@ class MonitorService(
                     }
                     statuses?.let { add(Filter("status", it, FilterCompare.IN)) }
                     types?.let { add(Filter("checker._type", it, FilterCompare.IN)) }
+                    tags?.let { add(Filter("selectedTags.name", it, FilterCompare.IN)) }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
                 }.toPredicate(root, criteriaBuilder).toTypedArray(),
             )

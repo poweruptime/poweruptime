@@ -113,3 +113,12 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
     margin-left: 0.6rem;
   }
 }
+
+.mat-chip-tag {
+  @include mat.chips-overrides(
+    (
+      label-text-color: var(--mat-chip-label-text-color),
+      outline-color: var(--mat-chip-outline-color),
+    )
+  );
+}

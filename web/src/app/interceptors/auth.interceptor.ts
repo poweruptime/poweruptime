@@ -4,7 +4,6 @@ import {inject} from '@angular/core';
 import {BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError} from 'rxjs';
 
 import {loggerOf} from 'dfts-helper';
-import {injectWindow} from 'dfx-helper';
 import {toast} from 'ngx-sonner';
 
 import {injectAPI} from '@app/api';

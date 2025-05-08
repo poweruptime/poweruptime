@@ -428,7 +428,7 @@ create table tag
             on delete cascade,
     id         varchar(21)                            not null
         primary key,
-    name       varchar(70)                            not null
+    name       varchar(70) collate numeric            not null
 );
 
 create table monitor_tag

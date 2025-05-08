@@ -10,7 +10,7 @@ import {createInjectable} from 'ngxtension/create-injectable';
 import {BackendType, PushDto} from '@app/api';
 
 import {BACKEND_API_URL} from '../util';
-import {AuthStore} from './auth/auth.store';
+import {AuthStore} from './auth';
 import {connectToEventSource} from './event-source.service';
 
 export const PushService = createInjectable(() => {

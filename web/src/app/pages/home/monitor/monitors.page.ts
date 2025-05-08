@@ -11,7 +11,12 @@ import {BackendType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {TeamSelect} from '@app/components/team-select';
 import {IsTeamAdmin} from '@app/directives';
-import {InfiniteMonitorsStore, MonitorsDashboardStore, MonitorsSearchStore} from '@app/services';
+import {
+  InfiniteMonitorsStore,
+  MonitorsDashboardStore,
+  MonitorsSearchStore,
+  TagsStore,
+} from '@app/services';
 import {paramToArray} from '@app/util';
 
 @Component({
@@ -54,17 +59,20 @@ import {paramToArray} from '@app/util';
                 search: $any(searchFilter()),
                 types: typesFilter(),
                 statuses: statusesFilter(),
+                tags: tagsFilter(),
               }"
+              [tags]="tagsStore.entities()"
               [dashboard]="dashboard"
               (filterChange)="
                 searchFilter.set($event.search);
                 typesFilter.set($event.types);
-                statusesFilter.set($event.statuses)
+                statusesFilter.set($event.statuses);
+                tagsFilter.set($event.tags)
               " />
           }
         }
 
-        @if (monitorsSearchStore.isSearching() && _showFilter) {
+        @if (isSearching() && _showFilter) {
           <pu-monitor-card-list
             [entities]="monitorsSearchStore.entities()"
             [isPending]="monitorsSearchStore.isPending()"
@@ -88,7 +96,7 @@ import {paramToArray} from '@app/util';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore],
+  providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore, TagsStore],
   imports: [
     RouterOutlet,
     RouterLink,
@@ -111,6 +119,7 @@ export class MonitorsPage {
   readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
   readonly monitorsStore = inject(InfiniteMonitorsStore);
   readonly monitorsSearchStore = inject(MonitorsSearchStore);
+  readonly tagsStore = inject(TagsStore);
 
   readonly teamId = input<string | undefined>(undefined);
 
@@ -123,19 +132,26 @@ export class MonitorsPage {
   readonly searchFilter = linkedQueryParam('search.name', {
     stringify: (value) => (value.length > 0 ? value : null),
   });
-  readonly statusesFilter = linkedQueryParam<BackendType['MonitorResponse']['status'][]>(
-    'search.status',
-    {
-      parse: paramToArray<BackendType['MonitorResponse']['status']>(),
-      stringify: (value) => (value.length > 0 ? value.join(',') : null),
-    },
-  );
-  readonly typesFilter = linkedQueryParam<BackendType['MonitorCheckerData']['_type'][]>(
-    'search.type',
-    {
-      parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
-      stringify: (value) => (value.length > 0 ? value.join(',') : null),
-    },
+  readonly statusesFilter = linkedQueryParam('search.status', {
+    parse: paramToArray<BackendType['MonitorResponse']['status']>(),
+    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+  });
+  readonly typesFilter = linkedQueryParam('search.type', {
+    parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
+    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+  });
+
+  readonly tagsFilter = linkedQueryParam('search.tag', {
+    parse: paramToArray<string>(),
+    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+  });
+
+  isSearching = computed(
+    () =>
+      (this.searchFilter() && this.searchFilter()!.length > 0) ||
+      (this.statusesFilter() && this.statusesFilter()!.length > 0) ||
+      (this.typesFilter() && this.typesFilter()!.length > 0) ||
+      (this.tagsFilter() && this.tagsFilter()!.length > 0),
   );
 
   constructor() {
@@ -149,17 +165,22 @@ export class MonitorsPage {
       })),
     );
 
-    this.monitorsSearchStore.setSearch(this.searchFilter);
-    this.monitorsSearchStore.setStatuses(this.statusesFilter);
-    this.monitorsSearchStore.setTypes(this.typesFilter);
-
     this.monitorsSearchStore.load(
       computed(() => ({
         ...this.monitorsSearchStore.pageable(),
+        teamId: this.teamId() ?? undefined,
+        search: this.searchFilter() ?? undefined,
+        statuses: this.statusesFilter() ?? undefined,
+        types: this.typesFilter() ?? undefined,
+        tags: this.tagsFilter() ?? undefined,
+      })),
+    );
+
+    this.tagsStore.load(
+      computed(() => ({
         teamId: this.teamId(),
-        search: this.monitorsSearchStore.search(),
-        statuses: this.monitorsSearchStore.statuses(),
-        types: this.monitorsSearchStore.types(),
+        page: 0,
+        size: 200,
       })),
     );
   }

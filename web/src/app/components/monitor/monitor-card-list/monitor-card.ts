@@ -45,7 +45,15 @@ import {UptimeTimeline} from '../uptime-timeline';
                 class="badge-container flex gap-2 overflow-x-auto"
                 style="max-width: 19.25rem; padding: 5px">
                 @for (tag of _monitor.tags; track tag.name) {
-                  <span [pu-tag]="tag.variant" clickable>{{ tag.name }}</span>
+                  <span
+                    class="text-xs"
+                    [pu-tag]="tag.variant"
+                    [routerLink]="[]"
+                    [queryParams]="{'search.show': true, 'search.tag': tag.name}"
+                    clickable
+                    queryParamsHandling="merge">
+                    {{ tag.name }}
+                  </span>
                 }
               </div>
             }

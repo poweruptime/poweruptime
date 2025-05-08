@@ -70,14 +70,15 @@ class MonitorController(
         @RequestParam("enabledNotificationMethodIds") enabledNotificationMethodIds: Set<String>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
         @RequestParam("types") types: List<MonitorCheckerType>?,
+        @RequestParam("tags") tags: List<String>?,
         @RequestParam("usedInStatusPageGroupIds") usedInStatusPageGroupIds: Set<String>?,
         @RequestParam("deleted") deleted: Boolean = false
     ): PaginatedResponse<MonitorResponse> {
         val user = authService.getByAuthOrThrow(authentication)
 
-        teamId?.let { teamId ->
+        teamId?.let {
             user.throwIfNotPartOf { user ->
-                permissionRepository.isPartOfByTeamId(user.id, teamId)
+                permissionRepository.isPartOfByTeamId(user.id, it)
             }
         }
 
@@ -88,6 +89,7 @@ class MonitorController(
             statuses = statuses,
             types = types,
             name = name,
+            tags = tags,
             enabledNotificationMethodIds = enabledNotificationMethodIds?.apply {
                 if (teamId != null) {
                     if (!notificationMethodService.ensureAllNotificationMethodsInTeam(

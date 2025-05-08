@@ -1,17 +1,10 @@
 import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
+import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import {patchState, signalStore, withComputed, withHooks, withMethods} from '@ngrx/signals';
 import {
   SelectEntityId,
   removeAllEntities,
@@ -21,7 +14,7 @@ import {
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {PushService} from '@app/services';
+import {PushService, withMonitorLoad} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 import {mapUptime} from '../util';
@@ -29,11 +22,7 @@ import {mapUptime} from '../util';
 export const MonitorDetailStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
-  withState<{
-    monitor: BackendType['MonitorMaxResponse'] | undefined;
-  }>({
-    monitor: undefined,
-  }),
+  withMonitorLoad(),
   withComputed(({monitor}) => ({
     uptimeResults: computed(() => (monitor() ? mapUptime(monitor()!.uptime) : [])),
   })),
@@ -43,29 +32,6 @@ export const MonitorDetailStore = signalStore(
         patchState(store, () => ({monitor}));
       }
     },
-    loadMonitorById: rxMethod<string | undefined>(
-      pipe(
-        filter((it): it is string => !!it),
-        distinctUntilChanged(),
-        tap(() => patchState(store, setPending(), () => ({monitor: undefined}))),
-        switchMap((id) =>
-          api
-            .get('/v1/monitor/{id}', {
-              params: {
-                path: {
-                  id,
-                },
-              },
-            })
-            .pipe(
-              tapResponse({
-                next: (monitor) => patchState(store, () => ({monitor}), setFulfilled()),
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
-        ),
-      ),
-    ),
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {

@@ -13,23 +13,25 @@ export const TagsStore = signalStore(
   withEntities<BackendType['TagDto']>(),
   withMethods((store, api = injectAPI()) => ({
     load: rxMethod<{
-      teamId: string | undefined;
-      name: string | undefined;
+      teamId?: string;
+      name?: string;
+      page?: number;
+      size?: number;
     }>(
       pipe(
         filter(({teamId}) => !!teamId),
         tap(() => patchState(store, setPending())),
         debounceTime(275),
-        switchMap(({teamId, name}) =>
+        switchMap(({teamId, ...query}) =>
           api
             .get('/v1/tag', {
               params: {
                 query: {
-                  name,
+                  ...query,
                   teamId: teamId!,
-                  page: 0,
-                  size: 10,
-                  sort: [],
+                  page: query.page ?? 0,
+                  size: query.size ?? 10,
+                  sort: ['name,ASC,ignorecase'],
                 },
               },
             })

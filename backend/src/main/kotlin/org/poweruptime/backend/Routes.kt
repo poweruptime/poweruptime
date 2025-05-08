@@ -3,7 +3,7 @@ package org.poweruptime.backend
 object Routes {
     private const val PUBLIC = "/v1/public/**"
 
-    const val USER_AUTH = "/v1/auth/**"
+    private const val USER_AUTH = "/v1/auth/**"
 
     val ipRateLimited = buildList {
         add(USER_AUTH)

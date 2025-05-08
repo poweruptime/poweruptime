@@ -430,7 +430,6 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   constructor() {
     super();
 
-    this.monitorsSearchStore.setSearch(this.monitorSearch);
     this.monitorsSearchStore.load(
       computed(() => ({
         ...this.monitorsSearchStore.pageable(),
@@ -442,8 +441,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
           'PAUSED' as const,
           'PENDING' as const,
         ],
-        search: this.monitorsSearchStore.search(),
-        types: this.monitorsSearchStore.types(),
+        search: this.monitorSearch(),
       })),
     );
   }
