@@ -1,21 +1,32 @@
-import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} from '@angular/core';
+
+import {TranslocoPipe} from '@jsverse/transloco';
+import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {EmailChangeStore} from '@app/services';
 
 @Component({
   template: `
-    <p>Redirecting...</p>
+    <div class="flex h-screen items-center">
+      <div class="w-full text-center">
+        <h1 class="text-6xl">{{ 'general.redirecting' | transloco }}</h1>
+      </div>
+    </div>
   `,
   selector: 'pu-email-change-undo-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [EmailChangeStore],
-  imports: [],
+  imports: [TranslocoPipe],
 })
 export class EmailChangeUndoPage {
   private readonly emailChangeStore = inject(EmailChangeStore);
   readonly cancelToken = input.required<string>();
 
+  readonly preview = injectQueryParams('preview', {transform: booleanAttribute});
+
   constructor() {
-    this.emailChangeStore.undo(this.cancelToken);
+    if (!this.preview()) {
+      this.emailChangeStore.undo(this.cancelToken);
+    }
   }
 }

@@ -28,6 +28,36 @@ import {AuthStore} from '@app/services';
           <mat-card-content>
             <div class="flex flex-col gap-4">
               <h2 class="text-xl">Preview</h2>
+              <h3 class="text-lg">General</h3>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/not-found">
+                Open Not Found
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/t/join/1234">
+                Team Join Page
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/email-change/confirm/1234">
+                Email Change Confirm
+              </a>
+              <a
+                class="secondary-button"
+                [queryParams]="{preview: true}"
+                mat-flat-button
+                routerLink="/email-change/undo/1234">
+                Email Change Undo
+              </a>
+              <h3 class="text-lg">Auth</h3>
               <a
                 class="secondary-button"
                 [queryParams]="{preview: true}"

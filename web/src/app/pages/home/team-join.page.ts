@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {TeamJoinStore} from '@app/services';
 
@@ -21,7 +22,11 @@ export class TeamJoinPage {
 
   readonly token = input<string>();
 
+  readonly preview = injectQueryParams('preview', {transform: booleanAttribute});
+
   constructor() {
-    this.teamJoinStore.join(this.token);
+    if (!this.preview()) {
+      this.teamJoinStore.join(this.token);
+    }
   }
 }
