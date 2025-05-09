@@ -4,6 +4,7 @@ import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.ReportRenderer
 import com.github.jk1.license.render.XmlReportRenderer
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     kotlin("plugin.jpa")
@@ -221,4 +222,14 @@ tasks.processTestResources {
 tasks.test {
     dependsOn(addLiquibaseTestdataInitChange)
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+}
+
+tasks.register<BootRun>("seed") {
+    group = "application"
+    description = "Seed the database and exit"
+    mainClass.set("org.poweruptime.backend.MonolithApplication")
+    // pick up your normal runtime classpath
+    classpath = sourceSets["main"].runtimeClasspath
+    // activate only the seed profile
+    args = listOf("--spring.profiles.active=seed")
 }

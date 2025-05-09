@@ -1,0 +1,108 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: poweruptime-backend
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/poweruptime
+    username: poweruptime
+    password: poweruptime
+
+  sql:
+    init:
+      mode: never
+
+  jpa:
+    show-sql: false
+    generate-ddl: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        format_sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/db.changelog-master.yaml
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: poweruptime
+    password: poweruptime
+    listener:
+      simple:
+        default-requeue-rejected: 'false'
+        concurrency: 8
+        max-concurrency: 16
+
+  mail:
+    host: smtp.google.com
+    port: 587
+    username: test@test.at
+    password: test
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger/docs-json
+  swagger-ui:
+    path: /swagger/docs
+    operationsSorter: alpha
+    tagsSorter: alpha
+  packagesToScan: org.poweruptime.backend
+
+logging:
+  level:
+    org.poweruptime: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.web: DEBUG
+#    org.hibernate: ERROR
+
+management:
+  health:
+    mail:
+      enabled: false
+
+poweruptime:
+  swagger: true
+  host: localhost:4200
+  mail:
+    enabled: false
+    security: NONE_STARTTLS
+    ignore-tls-errors: false # greenmail does not support STARTTLS
+  notification-temp:
+    enabled: true
+  storage:
+    directory: storage
+  keys:
+    directory: keys/some
+    access-token:
+      private: access-token-private.key
+      public: access-token-public.key
+    refresh-token:
+      private: refresh-token-private.key
+      public: refresh-token-public.key
+  rate-limit:
+    enabled: true
+    duration-in-seconds: 120
+    tries: 20
+  push:
+    enabled: true
