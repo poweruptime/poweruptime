@@ -153,7 +153,7 @@ export const InfiniteMonitorsStore = signalStore(
               tapResponse({
                 next: (response) => {
                   patchState(store, setEntities(response.data), (state) => {
-                    if (response.numberOfPages === page && state.requestCount === 0) {
+                    if (page >= response.numberOfPages && state.requestCount === 0) {
                       console.warn(`Team ${teamId} has loaded all items`);
                       state.loadedAll.add(teamId);
                       return {loadedAll: state.loadedAll};
