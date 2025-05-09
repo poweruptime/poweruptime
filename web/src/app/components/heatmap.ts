@@ -141,7 +141,6 @@ export class Heatmap {
 
   selected = linkedQueryParam('heatmap', {
     parse: paramToNumber(),
-    stringify: (value) => (Number.isNaN(Number(value)) ? undefined : Number(value)),
     queryParamsHandling: 'merge',
   });
 }
