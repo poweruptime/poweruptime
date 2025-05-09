@@ -238,6 +238,9 @@ importers:
       tailwindcss:
         specifier: 4.1.4
         version: 4.1.4
+      tailwindcss-motion:
+        specifier: ^1.1.0
+        version: 1.1.0(tailwindcss@4.1.4)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -5852,6 +5855,11 @@ packages:
   table-layout@4.1.1:
     resolution: {integrity: sha512-iK5/YhZxq5GO5z8wb0bY1317uDF3Zjpha0QFFLA8/trAoiLbQD0HUbMesEaxyzUgDxi2QlcbM8IvqOlEjgoXBA==}
     engines: {node: '>=12.17'}
+
+  tailwindcss-motion@1.1.0:
+    resolution: {integrity: sha512-0lK6rA4+367ffJdi1TtB72GlMCxJi2TP/xRiHc6An5pZSlU6WfIHhSvLxpcGilGZfBrOqc2q4woH1DEP/lCNbQ==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders'
 
   tailwindcss@4.1.4:
     resolution: {integrity: sha512-1ZIUqtPITFbv/DxRmDr5/agPqJwF69d24m9qmM1939TJehgY539CtzeZRjbLt5G6fSy/7YqqYsfvoTEw9xUI2A==}
@@ -12298,6 +12306,10 @@ snapshots:
     dependencies:
       array-back: 6.2.2
       wordwrapjs: 5.1.0
+
+  tailwindcss-motion@1.1.0(tailwindcss@4.1.4):
+    dependencies:
+      tailwindcss: 4.1.4
 
   tailwindcss@4.1.4: {}
 

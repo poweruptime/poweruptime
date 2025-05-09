@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {MatIconButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
@@ -17,11 +17,10 @@ import {MonitorSearchParams} from '@app/services';
 
 @Component({
   template: `
-    <form
-      class="flex flex-col rounded-lg border border-solid border-black p-4 dark:border-gray-300"
-      [formGroup]="form">
-      <mat-form-field>
+    <form class="motion-preset-slide-down motion-duration-300 grid gap-2" [formGroup]="form">
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.search' | transloco }}</mat-label>
+        <bi name="search" matIconPrefix />
         <input formControlName="search" matInput focus />
         @if (form.controls.search.getRawValue().length > 0) {
           <button
@@ -35,8 +34,9 @@ import {MonitorSearchParams} from '@app/services';
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.status' | transloco }}</mat-label>
+        <bi name="arrow-down-up" matIconPrefix />
         <mat-select formControlName="statuses" multiple>
           @for (status of availableStatuses(); track status.status) {
             <mat-option [value]="status.status">
@@ -46,8 +46,9 @@ import {MonitorSearchParams} from '@app/services';
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.type' | transloco }}</mat-label>
+        <bi name="list-check" matIconPrefix />
         <mat-select formControlName="types" multiple>
           @for (type of types; track type.value) {
             <mat-option [value]="type.value">
@@ -57,8 +58,9 @@ import {MonitorSearchParams} from '@app/services';
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.tags' | transloco }}</mat-label>
+        <bi name="tag" matIconPrefix />
         <mat-select formControlName="tags" multiple>
           @for (tag of tags(); track tag.name) {
             <mat-option [value]="tag.name">
@@ -82,6 +84,8 @@ import {MonitorSearchParams} from '@app/services';
     MatInput,
     DfxAutofocus,
     TranslocoPipe,
+    MatPrefix,
+    MatSuffix,
   ],
 })
 export class MonitorsFilter {
@@ -95,7 +99,16 @@ export class MonitorsFilter {
 
   dashboard = input<BackendType['MonitorDashboardResponse']>();
 
-  tags = input<BackendType['TagDto'][]>();
+  tags = input([], {
+    transform: (it: BackendType['TagDto'][]) => {
+      if (it.length === 0) {
+        this.form.controls.tags.disable();
+      } else {
+        this.form.controls.tags.enable();
+      }
+      return it;
+    },
+  });
 
   filter = input(undefined, {
     transform: (filter?: Partial<MonitorSearchParams>) => {

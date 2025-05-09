@@ -38,18 +38,11 @@ import {paramToArray} from '@app/util';
             }
           </div>
 
-          <div class="flex items-center gap-2">
-            <mat-chip>
-              {{ dashboard?.monitorCount }}
-              monitor(s)
-            </mat-chip>
-
-            <mat-chip-listbox (change)="showFilter.set(!_showFilter)">
-              <mat-chip-option [selected]="_showFilter">
-                <bi name="filter" />
-              </mat-chip-option>
-            </mat-chip-listbox>
-          </div>
+          <mat-chip-listbox (change)="showFilter.set(!_showFilter)">
+            <mat-chip-option [selected]="_showFilter">
+              <bi name="filter" />
+            </mat-chip-option>
+          </mat-chip-listbox>
         </div>
 
         @defer (when _showFilter) {
@@ -110,7 +103,6 @@ import {paramToArray} from '@app/util';
   imports: [
     RouterOutlet,
     RouterLink,
-    MatChip,
     BiComponent,
     MonitorCardList,
     MatChipListbox,

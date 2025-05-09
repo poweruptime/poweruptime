@@ -102,6 +102,12 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   margin-right: 0.7em;
 }
 
+.mat-mdc-form-field-icon-prefix > bi {
+  margin-top: 0.15rem;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+}
+
 /* Material Table Column Width */
 .table-responsive {
   width: 100%;

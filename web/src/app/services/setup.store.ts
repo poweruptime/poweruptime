@@ -4,13 +4,12 @@ import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import confetti from 'canvas-confetti';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
-
-import confetti from 'canvas-confetti';
 
 type SetupStoreState = {state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted'};
 
@@ -75,7 +74,7 @@ export const SetupStore = signalStore(
                 confetti({
                   particleCount: 100,
                   spread: 160,
-                  origin: { y: 0.6 },
+                  origin: {y: 0.6},
                 });
                 setTimeout(() => confetti.reset(), 3000);
               },
