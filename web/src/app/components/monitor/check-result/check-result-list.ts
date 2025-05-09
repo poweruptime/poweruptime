@@ -4,11 +4,16 @@ import {
   computed,
   inject,
   input,
+  signal,
   viewChild,
 } from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {MatIconAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatSelect} from '@angular/material/select';
+import {MatOption} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
@@ -27,7 +32,9 @@ import {TableLoadingBar} from '@app/components';
 import {MonitorStatusTextBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {CheckResultsStore} from '@app/services';
-import {trackBy} from '@app/util';
+import {paramToArray, trackBy} from '@app/util';
+
+import {BackendType} from '../../../api';
 
 @Component({
   template: `
@@ -36,13 +43,28 @@ import {trackBy} from '@app/util';
         <mat-card-content>
           <div class="flex justify-between">
             <h2 class="text-xl">{{ 'checkResult.list.title' | transloco }}</h2>
-            @let _showDuplicates = showDuplicates();
-            <mat-slide-toggle
-              [checked]="_showDuplicates ?? false"
-              (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
-              labelPosition="before">
-              {{ 'general.showDuplicates' | transloco }}
-            </mat-slide-toggle>
+
+            <div class="flex items-center gap-2">
+              @let _showDuplicates = showDuplicates();
+              <mat-slide-toggle
+                [checked]="_showDuplicates ?? false"
+                (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
+                labelPosition="before">
+                {{ 'general.showDuplicates' | transloco }}
+              </mat-slide-toggle>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>{{ 'general.status' | transloco }}</mat-label>
+                <bi name="arrow-down-up" matIconPrefix />
+                <mat-select [(ngModel)]="statuses" multiple>
+                  @for (status of availableStatuses(); track status.status) {
+                    <mat-option [value]="status.status">
+                      {{ status.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
 
           <div class="table-responsive">
@@ -169,6 +191,11 @@ import {trackBy} from '@app/util';
     TranslocoPipe,
     MatTooltip,
     MonitorStatusTextBackground,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
   ],
 })
 export class CheckResultList {
@@ -184,15 +211,29 @@ export class CheckResultList {
     parse: paramToBoolean(),
   });
 
+  statuses = linkedQueryParam('search.status', {
+    parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
+    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+  });
+
+  readonly availableStatuses = signal([
+    {status: 'UP' as const, name: 'Up'},
+    {status: 'DOWN' as const, name: 'Down'},
+    {status: 'MAINTENANCE' as const, name: 'Maintenance'},
+    {status: 'PAUSED' as const, name: 'Paused'},
+  ]);
+
   constructor() {
     this.checkResultsStore.setPaginator(this.paginator);
     this.checkResultsStore.setSort(this.sort);
     this.checkResultsStore.setShowDuplicates(this.showDuplicates);
+    this.checkResultsStore.setStatuses(this.statuses);
 
     this.checkResultsStore.load(
       computed(() => ({
         teamId: this.teamId(),
         monitorId: this.monitorId(),
+        statuses: this.checkResultsStore.statuses(),
         onlyChanges: !this.checkResultsStore.showDuplicates(),
         ...this.checkResultsStore.pageable(),
       })),

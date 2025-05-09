@@ -24,9 +24,11 @@ export const CheckResultsStore = signalStore(
   withState<{
     showDuplicates: boolean;
     monitorId: string | undefined;
+    statuses: BackendType['CheckResultResponse']['status'][] | undefined;
   }>({
     showDuplicates: true,
     monitorId: undefined,
+    statuses: undefined,
   }),
   withRequestStatus(),
   withEntities<BackendType['CheckResultResponse']>(),
@@ -39,6 +41,9 @@ export const CheckResultsStore = signalStore(
   withMethods((store, api = injectAPI()) => ({
     setShowDuplicates: rxMethod<boolean | null>(
       tap((showDuplicates) => patchState(store, () => ({showDuplicates: showDuplicates ?? false}))),
+    ),
+    setStatuses: rxMethod<BackendType['CheckResultResponse']['status'][]>(
+      tap((statuses) => patchState(store, () => ({statuses}))),
     ),
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       if (!store.monitorId() || store.monitorId() === checkResult.monitor.id) {
@@ -59,9 +64,10 @@ export const CheckResultsStore = signalStore(
     },
     load: rxMethod<
       {
-        teamId: string | undefined;
-        monitorId: string | undefined;
+        teamId?: string;
+        monitorId?: string;
         onlyChanges: boolean;
+        statuses?: BackendType['CheckResultResponse']['status'][];
       } & PaginationDto
     >(
       pipe(
