@@ -21,7 +21,7 @@ export const TagsStore = signalStore(
       pipe(
         tap(() => patchState(store, setPending())),
         debounceTime(275),
-        switchMap(({teamId, ...query}) =>
+        switchMap((query) =>
           api
             .get('/v1/tag', {
               params: {
