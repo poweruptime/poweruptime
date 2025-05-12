@@ -1,6 +1,9 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -9,18 +12,36 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {TableLoadingBar} from '@app/components';
 import {IsTeamAdmin} from '@app/directives';
 import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pipes';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
-import {trackBy} from '@app/util';
+import {paramToArray, trackBy} from '@app/util';
+
+import {BackendType} from '../../../api';
 
 @Component({
   template: `
-    <a *isTeamAdmin mat-flat-button routerLink="new">
-      {{ 'cmdk.groups.notificationMethod.create' | transloco }}
-    </a>
+    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+      <a *isTeamAdmin mat-flat-button routerLink="new">
+        {{ 'cmdk.groups.notificationMethod.create' | transloco }}
+      </a>
+
+      <div class="flex items-center gap-2">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.type' | transloco }}</mat-label>
+          <mat-select [(ngModel)]="typesFilter" multiple>
+            @for (type of types; track type.value) {
+              <mat-option [value]="type.value">
+                {{ type.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
 
     <div class="table-responsive">
       <table
@@ -163,6 +184,12 @@ import {trackBy} from '@app/util';
     MatIconAnchor,
     NotificationSenderDataValueLabelPipe,
     IsTeamAdmin,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    ReactiveFormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -172,9 +199,15 @@ export class NotificationMethodsPage {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
+  readonly typesFilter = linkedQueryParam('type', {
+    parse: paramToArray<BackendType['NotificationMethodResponse']['sender']['_type']>(),
+    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+  });
+
   constructor() {
     this.notificationMethodsStore.setPaginator(this.paginator);
     this.notificationMethodsStore.setSort(this.sort);
+    this.notificationMethodsStore.setTypes(this.typesFilter);
 
     const teamId = inject(SelectedTeamStore).selectedTeamId;
 
@@ -188,6 +221,12 @@ export class NotificationMethodsPage {
       })),
     );
   }
+
+  readonly types = [
+    {value: 'DISCORD' as const, name: 'Discord'},
+    {value: 'EMAIL' as const, name: 'DNS'},
+    {value: 'SLACK' as const, name: 'Slack'},
+  ];
 
   protected readonly trackBy = trackBy;
 }

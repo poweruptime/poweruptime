@@ -64,7 +64,7 @@ class NotificationMethodService(
             fun getFilterPredicates() = criteriaBuilder.and(
                 *buildList {
                     add(deleted.toDeletedFilter())
-                    types?.let { add(Filter("type", it, FilterCompare.IN)) }
+                    types?.let { add(Filter("sender._type", it, FilterCompare.IN)) }
                     useByDefault?.let { add(Filter("useByDefault", it, FilterCompare.EQ)) }
                     name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
                 }.toPredicate(root, criteriaBuilder).toTypedArray(),
