@@ -17,7 +17,7 @@ import {
   MonitorsSearchStore,
   TagsStore,
 } from '@app/services';
-import {paramToArray} from '@app/util';
+import {arrayToParam, paramToArray} from '@app/util';
 
 @Component({
   template: `
@@ -136,16 +136,15 @@ export class MonitorsPage {
   });
   readonly statusesFilter = linkedQueryParam('search.status', {
     parse: paramToArray<BackendType['MonitorResponse']['status']>(),
-    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+    stringify: arrayToParam(),
   });
   readonly typesFilter = linkedQueryParam('search.type', {
     parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
-    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+    stringify: arrayToParam(),
   });
-
   readonly tagsFilter = linkedQueryParam('search.tag', {
     parse: paramToArray<string>(),
-    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+    stringify: arrayToParam(),
   });
 
   isSearching = computed(

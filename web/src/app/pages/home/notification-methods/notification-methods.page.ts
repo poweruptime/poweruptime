@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -12,15 +14,14 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
-import {linkedQueryParam} from 'ngxtension/linked-query-param';
+import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
+import {BackendType} from '@app/api';
 import {TableLoadingBar} from '@app/components';
 import {IsTeamAdmin} from '@app/directives';
-import {NotificationSenderDataValueLabelPipe, PuBooleanEmojiPipe} from '@app/pipes';
+import {BooleanEmojiPipe, NotificationSenderDataValueLabelPipe} from '@app/pipes';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
-import {paramToArray, trackBy} from '@app/util';
-
-import {BackendType} from '../../../api';
+import {arrayToParam, paramToArray, trackBy} from '@app/util';
 
 @Component({
   template: `
@@ -29,7 +30,22 @@ import {BackendType} from '../../../api';
         {{ 'cmdk.groups.notificationMethod.create' | transloco }}
       </a>
 
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.search' | transloco }}</mat-label>
+          <bi name="search" matIconPrefix />
+          <input [(ngModel)]="searchFilter" matInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button
+              class="flex items-center"
+              [attr.aria-label]="'general.clear' | transloco"
+              (click)="searchFilter.set('')"
+              matSuffix
+              mat-icon-button>
+              <bi name="x-lg" aria-hidden="true" />
+            </button>
+          }
+        </mat-form-field>
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.type' | transloco }}</mat-label>
           <mat-select [(ngModel)]="typesFilter" multiple>
@@ -40,6 +56,14 @@ import {BackendType} from '../../../api';
             }
           </mat-select>
         </mat-form-field>
+
+        @let _useByDefault = useByDefaultFilter();
+        <mat-slide-toggle
+          [checked]="_useByDefault ?? false"
+          (toggleChange)="useByDefaultFilter.set(_useByDefault ? null : true)"
+          labelPosition="before">
+          {{ 'notificationMethod.edit.useByDefault' | transloco }}
+        </mat-slide-toggle>
       </div>
     </div>
 
@@ -101,7 +125,7 @@ import {BackendType} from '../../../api';
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'notificationMethod.edit.useByDefault' | transloco }}
           </th>
-          <td *matCellDef="let element" mat-cell>{{ element.useByDefault | puBooleanEmoji }}</td>
+          <td *matCellDef="let element" mat-cell>{{ element.useByDefault | booleanEmoji }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -168,28 +192,31 @@ import {BackendType} from '../../../api';
   `,
   selector: 'pu-notification-methods-page',
   imports: [
+    FormsModule,
+    RouterLink,
     MatTableModule,
     MatSortModule,
     MatPaginator,
-    RouterLink,
-    StopPropagationDirective,
     MatAnchor,
     MatIconButton,
-    BiComponent,
-    PuBooleanEmojiPipe,
-    TableLoadingBar,
-    DfxImplodePipe,
-    TranslocoPipe,
-    MatTooltip,
-    MatIconAnchor,
-    NotificationSenderDataValueLabelPipe,
-    IsTeamAdmin,
-    FormsModule,
-    MatFormField,
+    MatPrefix,
+    MatSuffix,
     MatLabel,
     MatOption,
     MatSelect,
-    ReactiveFormsModule,
+    MatInput,
+    MatTooltip,
+    MatIconAnchor,
+    MatFormField,
+    MatSlideToggle,
+    StopPropagationDirective,
+    BiComponent,
+    DfxImplodePipe,
+    TranslocoPipe,
+    IsTeamAdmin,
+    TableLoadingBar,
+    BooleanEmojiPipe,
+    NotificationSenderDataValueLabelPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -199,15 +226,24 @@ export class NotificationMethodsPage {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  readonly typesFilter = linkedQueryParam('type', {
+  searchFilter = linkedQueryParam('name', {
+    stringify: (value) => (value.length > 0 ? value : null),
+  });
+  typesFilter = linkedQueryParam('type', {
     parse: paramToArray<BackendType['NotificationMethodResponse']['sender']['_type']>(),
-    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+    stringify: arrayToParam(),
+  });
+  useByDefaultFilter = linkedQueryParam('useByDefault', {
+    parse: paramToBoolean(),
   });
 
   constructor() {
     this.notificationMethodsStore.setPaginator(this.paginator);
     this.notificationMethodsStore.setSort(this.sort);
+
+    this.notificationMethodsStore.setSearch(this.searchFilter);
     this.notificationMethodsStore.setTypes(this.typesFilter);
+    this.notificationMethodsStore.setUseByDefault(this.useByDefaultFilter);
 
     const teamId = inject(SelectedTeamStore).selectedTeamId;
 
@@ -224,7 +260,7 @@ export class NotificationMethodsPage {
 
   readonly types = [
     {value: 'DISCORD' as const, name: 'Discord'},
-    {value: 'EMAIL' as const, name: 'DNS'},
+    {value: 'EMAIL' as const, name: 'Email'},
     {value: 'SLACK' as const, name: 'Slack'},
   ];
 

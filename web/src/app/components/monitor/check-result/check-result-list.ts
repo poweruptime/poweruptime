@@ -32,7 +32,7 @@ import {TableLoadingBar} from '@app/components';
 import {MonitorStatusTextBackground} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {CheckResultsStore} from '@app/services';
-import {paramToArray, trackBy} from '@app/util';
+import {arrayToParam, paramToArray, trackBy} from '@app/util';
 
 import {BackendType} from '../../../api';
 
@@ -213,7 +213,7 @@ export class CheckResultList {
 
   statuses = linkedQueryParam('search.status', {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
-    stringify: (value) => (value.length > 0 ? value.join(',') : null),
+    stringify: arrayToParam(),
   });
 
   readonly availableStatuses = signal([

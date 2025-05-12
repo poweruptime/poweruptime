@@ -1,5 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
@@ -9,6 +12,7 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {TableLoadingBar} from '@app/components';
 import {IsTeamAdmin} from '@app/directives';
@@ -17,9 +21,29 @@ import {trackBy} from '@app/util';
 
 @Component({
   template: `
-    <a *isTeamAdmin mat-flat-button routerLink="new">
-      {{ 'cmdk.groups.statusPage.create' | transloco }}
-    </a>
+    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+      <a *isTeamAdmin mat-flat-button routerLink="new">
+        {{ 'cmdk.groups.statusPage.create' | transloco }}
+      </a>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.search' | transloco }}</mat-label>
+          <bi name="search" matIconPrefix />
+          <input [(ngModel)]="searchFilter" matInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button
+              class="flex items-center"
+              [attr.aria-label]="'general.clear' | transloco"
+              (click)="searchFilter.set('')"
+              matSuffix
+              mat-icon-button>
+              <bi name="x-lg" aria-hidden="true" />
+            </button>
+          }
+        </mat-form-field>
+      </div>
+    </div>
 
     <table
       [dataSource]="statusPagesStore.entities()"
@@ -29,12 +53,16 @@ import {trackBy} from '@app/util';
       mat-table
       matSort>
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.name' | transloco }}</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ 'general.name' | transloco }}
+        </th>
         <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="slug">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'general.slug' | transloco }}</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>
+          {{ 'general.slug' | transloco }}
+        </th>
         <td *matCellDef="let element" mat-cell>{{ element.slug }}</td>
       </ng-container>
 
@@ -97,18 +125,24 @@ import {trackBy} from '@app/util';
   `,
   selector: 'pu-status-pages-page',
   imports: [
-    MatAnchor,
     RouterLink,
+    FormsModule,
+    MatAnchor,
     MatTableModule,
     MatSortModule,
     MatPaginator,
-    StopPropagationDirective,
-    TableLoadingBar,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatPrefix,
+    MatSuffix,
     MatIconButton,
-    BiComponent,
     MatIconAnchor,
-    TranslocoPipe,
     MatTooltip,
+    StopPropagationDirective,
+    BiComponent,
+    TranslocoPipe,
+    TableLoadingBar,
     IsTeamAdmin,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -119,9 +153,14 @@ export class StatusPagesPage {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
+  searchFilter = linkedQueryParam('name', {
+    stringify: (value) => (value.length > 0 ? value : null),
+  });
+
   constructor() {
     this.statusPagesStore.setPaginator(this.paginator);
     this.statusPagesStore.setSort(this.sort);
+    this.statusPagesStore.setSearch(this.searchFilter);
 
     const teamId = inject(SelectedTeamStore).selectedTeamId;
 

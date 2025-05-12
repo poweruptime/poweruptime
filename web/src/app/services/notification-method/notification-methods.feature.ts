@@ -66,8 +66,10 @@ export function withNotificationMethodsLoad() {
         ),
       ),
       setUseByDefault: rxMethod<
-        BackendType['NotificationMethodResponse']['useByDefault'] | undefined
-      >(tap((useByDefault) => patchState(store, () => ({useByDefault})))),
+        BackendType['NotificationMethodResponse']['useByDefault'] | undefined | null
+      >(
+        tap((useByDefault) => patchState(store, () => ({useByDefault: useByDefault ?? undefined}))),
+      ),
       setUsedByMonitorIds: rxMethod<string[] | undefined>(
         tap((usedByMonitorIds) => patchState(store, () => ({usedByMonitorIds}))),
       ),

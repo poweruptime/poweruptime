@@ -1,10 +1,10 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'puBooleanEmoji',
+  name: 'booleanEmoji',
   pure: true,
 })
-export class PuBooleanEmojiPipe implements PipeTransform {
+export class BooleanEmojiPipe implements PipeTransform {
   transform(value: boolean) {
     return value ? '✅' : '❌';
   }
