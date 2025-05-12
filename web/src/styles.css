@@ -71,3 +71,7 @@
 .mat-column-deleted {
   @apply w-52;
 }
+
+.tox-promotion-link {
+  display: none !important;
+}

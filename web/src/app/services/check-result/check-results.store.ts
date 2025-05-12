@@ -22,12 +22,14 @@ import {
 
 export const CheckResultsStore = signalStore(
   withState<{
-    showDuplicates: boolean;
     monitorId: string | undefined;
+    teamId: string | undefined;
+    showDuplicates: boolean;
     statuses: BackendType['CheckResultResponse']['status'][] | undefined;
   }>({
-    showDuplicates: true,
     monitorId: undefined,
+    teamId: undefined,
+    showDuplicates: true,
     statuses: undefined,
   }),
   withRequestStatus(),
@@ -46,21 +48,23 @@ export const CheckResultsStore = signalStore(
       tap((statuses) => patchState(store, () => ({statuses}))),
     ),
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      if (!store.monitorId() || store.monitorId() === checkResult.monitor.id) {
-        if (store.page() === 0 && store.sortBy() === 'createdAt') {
-          if (store.showDuplicates() || checkResult.status !== checkResult.previousStatus) {
-            patchState(
-              store,
-              setAllEntities([
-                checkResult,
-                ...store
-                  .entities()
-                  .slice(0, Math.max(store.size() - 1, store.entities().length - 1)),
-              ]),
-            );
-          }
-        }
-      }
+      // 1) must be the right monitor (or, if no monitor selected, the right team)
+      const isCorrectMonitorOrTeam =
+        store.monitorId() === checkResult.monitor.id ||
+        (store.monitorId() === undefined && store.teamId() === checkResult.team.id);
+      if (!isCorrectMonitorOrTeam) return;
+
+      // 2) only on the first page, sorted by createdAt
+      if (store.page() !== 0 || store.sortBy() !== 'createdAt') return;
+
+      // 3) either show duplicates or a real status change
+      const isNewStatus = checkResult.status !== checkResult.previousStatus;
+      if (!store.showDuplicates() && !isNewStatus) return;
+
+      const trimmed = store
+        .entities()
+        .slice(0, Math.max(store.size() - 1, store.entities().length - 1));
+      patchState(store, setAllEntities([checkResult, ...trimmed]));
     },
     load: rxMethod<
       {
@@ -71,12 +75,14 @@ export const CheckResultsStore = signalStore(
       } & PaginationDto
     >(
       pipe(
-        tap(({monitorId}) =>
+        tap(({monitorId, teamId}) =>
           patchState(
             store,
             setPending(),
-            store.monitorId() !== monitorId ? removeAllEntities() : () => ({}),
-            () => ({monitorId}),
+            store.monitorId() !== monitorId || store.teamId() !== teamId
+              ? removeAllEntities()
+              : () => ({}),
+            () => ({monitorId, teamId}),
           ),
         ),
         debounceTime(275),

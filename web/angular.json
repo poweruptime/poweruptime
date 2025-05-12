@@ -39,7 +39,8 @@
                 "glob": "*",
                 "input": "node_modules/dfx-bootstrap-icons/icons",
                 "output": "/assets/icons"
-              }
+              },
+              {"glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/"}
             ],
             "browser": "src/main.ts",
             "index": "src/index.html",

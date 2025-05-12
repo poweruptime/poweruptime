@@ -94,8 +94,8 @@ import {arrayToParam, paramToArray} from '@app/util';
   `,
   styles: `
     .content {
-      height: 91.5vh;
-      max-height: 91.5vh;
+      height: 92.5vh;
+      max-height: 92.5vh;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

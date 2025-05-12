@@ -155,17 +155,19 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             </mat-form-field>
           </div>
 
-          <pu-editor
-            class="col-span-2"
-            id="description"
-            [control]="form.controls.description"
-            [placeholder]="('general.description' | transloco) + '...'" />
+          <div class="col-span-2">
+            <label>Description</label>
+            <pu-editor
+              [placeholder]="('general.description' | transloco) + '...'"
+              formControlName="description" />
+          </div>
 
-          <pu-editor
-            class="col-span-2"
-            id="footer"
-            [control]="form.controls.footer"
-            [placeholder]="('general.footer' | transloco) + '...'" />
+          <div class="col-span-2">
+            <label>Footer</label>
+            <pu-editor
+              [placeholder]="('general.footer' | transloco) + '...'"
+              formControlName="footer" />
+          </div>
 
           <pu-save-button class="ms-3" [valid]="isValid()" />
         </div>
@@ -246,9 +248,8 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                   </div>
 
                   <pu-editor
-                    id="description"
-                    [control]="statusPageGroupControl.controls.description"
-                    [placeholder]="('general.description' | transloco) + '...'" />
+                    [placeholder]="('general.description' | transloco) + '...'"
+                    formControlName="description" />
 
                   <pu-status-page-edit-form-group-monitors
                     [(allSelectedMonitors)]="allSelectedMonitors"

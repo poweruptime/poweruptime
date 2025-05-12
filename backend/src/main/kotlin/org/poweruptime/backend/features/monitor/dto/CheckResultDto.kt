@@ -2,6 +2,7 @@ package org.poweruptime.backend.features.monitor.dto
 
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
 import java.time.LocalDate
 
@@ -24,7 +25,8 @@ data class CheckResultResponse(
     val previousStatus: MonitorStatus?,
     val title: String?,
     val message: String?,
-    val monitor: MonitorMinResponse
+    val monitor: MonitorMinResponse,
+    val team: TeamMinResponse,
 ) {
     constructor(it: CheckResult) : this(
         id = it.id,
@@ -37,6 +39,7 @@ data class CheckResultResponse(
         title = it.title,
         message = it.message,
         monitor = MonitorMinResponse(it.monitor),
+        team = TeamMinResponse(it.monitor.team),
     )
 }
 

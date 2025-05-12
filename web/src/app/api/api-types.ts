@@ -2255,6 +2255,7 @@ export interface components {
       title?: string;
       message?: string;
       monitor: components['schemas']['MonitorMinResponse'];
+      team: components['schemas']['TeamMinResponse'];
     };
     PaginatedResponseCheckResultResponse: {
       /** Format: int64 */

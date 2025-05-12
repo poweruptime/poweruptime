@@ -36,7 +36,7 @@ import {environment} from '../../../environments/environment';
       </mat-drawer>
 
       <mat-drawer-content>
-        <div class="m-0 flex h-screen max-h-screen flex-col items-start gap-4">
+        <div class="flex h-screen max-h-screen flex-col gap-2">
           <mat-toolbar>
             <div class="flex w-full justify-between pt-2">
               <div class="flex items-center gap-2">

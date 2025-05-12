@@ -1,42 +1,72 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, input} from '@angular/core';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {Editor as NgxEditor, NgxEditorModule, Toolbar} from 'ngx-editor';
+import {EditorComponent, TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
+
+import {ThemeService} from '../services/theme.service';
 
 @Component({
   selector: 'pu-editor',
   template: `
-    <div class="NgxEditor__Wrapper">
-      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar" />
-      <ngx-editor
-        [editor]="editor"
-        [formControl]="control()"
-        [placeholder]="placeholder()"
-        outputFormat="html" />
-    </div>
+    <editor [(ngModel)]="value" [init]="init()" [disabled]="isDisabled()" licenseKey="gpl" />
   `,
-  imports: [NgxEditorModule, ReactiveFormsModule],
+  providers: [
+    {provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js'},
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => Editor),
+      multi: true,
+    },
+  ],
+  imports: [EditorComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Editor implements OnDestroy {
-  control = input.required<FormControl<string | null | undefined>>();
-  id = input<string>();
+export class Editor implements ControlValueAccessor {
+  private themeService = inject(ThemeService);
+
   placeholder = input<string>('');
 
-  toolbar: Toolbar = [
-    ['bold', 'italic'],
-    ['underline', 'strike'],
-    ['code'],
-    ['ordered_list', 'bullet_list'],
-    // [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-    ['link', 'image'],
-    ['text_color', 'background_color'],
-    ['align_left', 'align_center', 'align_right', 'align_justify'],
-  ];
+  init = computed(() => {
+    const currenTheme = this.themeService.currentTheme();
+    return {
+      base_url: '/tinymce', // Root for resources
+      suffix: '.min', // Suffix to use when loading resources
+      plugins: 'advlist link image lists wordcount table searchreplace emoticons',
+      toolbar:
+        'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | emoticons',
+      menubar: 'edit insert format table',
+      skin: currenTheme === 'dark' ? 'oxide-dark' : 'oxide',
+      content_css: currenTheme === 'dark' ? 'dark' : 'default',
+    } satisfies EditorComponent['init'];
+  });
 
-  editor = new NgxEditor();
+  value = signal<string | null>(null);
+  isDisabled = signal(false);
+  onChange?: (it: string | null) => void;
 
-  ngOnDestroy(): void {
-    this.editor.destroy();
+  constructor() {
+    effect(() => {
+      this.onChange?.(this.value());
+    });
   }
+
+  writeValue(it: string): void {
+    this.value.set(it);
+  }
+  registerOnChange(fn: (it: string | null) => void): void {
+    this.onChange = fn;
+  }
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
+  registerOnTouched(_: unknown): void {}
 }
