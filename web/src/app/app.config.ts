@@ -2,7 +2,6 @@ import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/ht
 import {
   ApplicationConfig,
   LOCALE_ID,
-  importProvidersFrom,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
@@ -26,7 +25,6 @@ import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {MarkedOptions} from 'marked';
-import {NgxEditorModule} from 'ngx-editor';
 import {MARKED_OPTIONS, MarkedRenderer, provideMarkdown} from 'ngx-markdown';
 import {
   BoldTextTranspiler,
@@ -129,43 +127,5 @@ export const appConfig: ApplicationConfig = {
     provideNgxMetaStandard(),
     provideNgxMetaOpenGraph(),
     provideMarkdown({markedOptions: {provide: MARKED_OPTIONS, useFactory: markedOptionsFactory}}),
-    importProvidersFrom(
-      NgxEditorModule.forRoot({
-        locals: {
-          // menu
-          bold: 'Bold',
-          italic: 'Italic',
-          code: 'Code',
-          blockquote: 'Blockquote',
-          underline: 'Underline',
-          strike: 'Strike',
-          bullet_list: 'Bullet List',
-          ordered_list: 'Ordered List',
-          heading: 'Heading',
-          h1: 'Header 1',
-          h2: 'Header 2',
-          h3: 'Header 3',
-          h4: 'Header 4',
-          h5: 'Header 5',
-          h6: 'Header 6',
-          align_left: 'Left Align',
-          align_center: 'Center Align',
-          align_right: 'Right Align',
-          align_justify: 'Justify',
-          text_color: 'Text Color',
-          background_color: 'Background Color',
-
-          // popups, forms, others...
-          url: 'URL',
-          text: 'Text',
-          openInNewTab: 'Open in new tab',
-          insert: 'Insert',
-          altText: 'Alt Text',
-          title: 'Title',
-          remove: 'Remove',
-          enterValidUrl: 'Please enter a valid URL',
-        },
-      }),
-    ),
   ],
 };

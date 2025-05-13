@@ -104,7 +104,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           @switch (monitor.checker._type) {
             @case ('HTTP') {
               <a
-                class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
+                class="font-extrabold text-emerald-700 dark:text-green-500"
                 [href]="$any(monitor.checker)['url']"
                 target="_blank"
                 rel="noopener noreferrer">
@@ -113,7 +113,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             }
             @case ('SSL_CERTIFICATE') {
               <a
-                class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500"
+                class="font-extrabold text-emerald-700 dark:text-green-500"
                 [href]="$any(monitor.checker)['url']"
                 target="_blank"
                 rel="noopener noreferrer">
@@ -121,13 +121,13 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               </a>
             }
             @case ('DNS') {
-              <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
+              <span class="font-extrabold text-emerald-700 dark:text-green-500">
                 [{{ $any(monitor.checker)['type'] }}]
                 {{ $any(monitor.checker)['host'] }}
               </span>
             }
             @case ('PING') {
-              <span class="flex gap-2 font-extrabold text-emerald-700 dark:text-green-500">
+              <span class="font-extrabold text-emerald-700 dark:text-green-500">
                 {{ $any(monitor.checker)['ip'] }}:{{ $any(monitor.checker)['port'] }}
               </span>
             }
@@ -170,7 +170,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         <mat-card-content>
           <div class="flex flex-col gap-2">
             <pu-infinite-uptime-timeline
-              [isPending]="infiniteCheckResultsStore.isPending()"
+              [isPending]="infiniteCheckResultsStore.isInfinitePending()"
               [checkResults]="infiniteCheckResultsStore.entities()"
               (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
               link />

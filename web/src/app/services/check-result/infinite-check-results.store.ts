@@ -1,7 +1,7 @@
 import {computed, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 
-import {distinctUntilChanged, mergeMap, pipe, tap} from 'rxjs';
+import {delayWhen, distinctUntilChanged, filter, mergeMap, pipe, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {
@@ -12,11 +12,19 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import {removeAllEntities, setAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
+import {
+  prependEntity,
+  removeAllEntities,
+  setEntities,
+  setEntity,
+  withEntities,
+} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
 import {PushService} from '@app/services';
+
+import {setFulfilled, setPending, withRequestStatus} from '../store-features';
 
 export const InfiniteCheckResultsStore = signalStore(
   withState<{
@@ -30,9 +38,10 @@ export const InfiniteCheckResultsStore = signalStore(
     requestCount: 0,
     loadedAll: new Set<string>(),
   }),
+  withRequestStatus(),
   withEntities<BackendType['CheckResultResponse']>(),
   withComputed(({requestCount}) => ({
-    isPending: computed(() => requestCount() > 0),
+    isInfinitePending: computed(() => requestCount() > 0),
   })),
   withMethods((store, api = injectAPI()) => ({
     nextPage(monitorId: string): void {
@@ -42,7 +51,7 @@ export const InfiniteCheckResultsStore = signalStore(
     },
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       if (store.monitorId() === checkResult.monitor.id) {
-        patchState(store, setAllEntities([checkResult, ...store.entities()]));
+        patchState(store, prependEntity(checkResult), setEntity(checkResult));
       }
     },
     load: rxMethod<{monitorId: string; page: number}>(
@@ -63,7 +72,11 @@ export const InfiniteCheckResultsStore = signalStore(
           return prev.page === cur.page;
         }),
         tap(({monitorId}) =>
-          patchState(store, (state) => ({requestCount: state.requestCount + 1, monitorId})),
+          patchState(
+            store,
+            (state) => ({requestCount: state.requestCount + 1, monitorId}),
+            setPending(),
+          ),
         ),
         mergeMap((query) =>
           api
@@ -84,7 +97,7 @@ export const InfiniteCheckResultsStore = signalStore(
               ),
               tapResponse({
                 next: (response) =>
-                  patchState(store, setEntities(response.data), (state) => {
+                  patchState(store, setEntities(response.data), setFulfilled(), (state) => {
                     if (response.numberOfPages === query.page && state.requestCount === 0) {
                       console.warn(`Monitor ${query.monitorId} has loaded all check results`);
                       state.loadedAll.add(query.monitorId);
@@ -101,8 +114,13 @@ export const InfiniteCheckResultsStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
+      const entitiesLoaded = toObservable(store.isFulfilled).pipe(filter((it) => it));
+      // Only start processing pushes when initial request has been fulfilled
       pushService.checkResults$
-        .pipe(takeUntilDestroyed())
+        .pipe(
+          takeUntilDestroyed(),
+          delayWhen(() => entitiesLoaded),
+        )
         .subscribe((it) => store.addCheckResult(it));
     },
   }),
