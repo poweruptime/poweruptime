@@ -67,19 +67,19 @@ import {MonitorStatusBackground} from '@app/directives';
         @let _length = length();
 
         @if (_first) {
-          <span class="absolute -bottom-7 left-1">
+          <span class="absolute -bottom-8 left-1">
             {{ 'general.latest' | transloco }}
           </span>
         }
 
         @if (_last && _length > 10) {
-          <span class="absolute -bottom-7 right-0">
+          <span class="absolute -bottom-8 right-0">
             {{ _checkResult.createdAt | date: 'HH:mm' }}
           </span>
         }
 
-        @if (_length > 20 && !_first && _index % 10 === 0 && _index < maxLabelSize()) {
-          <span class="absolute -bottom-7 left-1">
+        @if (_length > 22 && !_first && _index % 10 === 0 && _index < maxLabelSize()) {
+          <span class="absolute -bottom-8 left-1">
             {{ _checkResult.createdAt | date: 'HH:mm' }}
           </span>
         }

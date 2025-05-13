@@ -38,6 +38,9 @@ export class Editor implements ControlValueAccessor {
   init = computed(() => {
     const currenTheme = this.themeService.currentTheme();
     return {
+      selector: 'textarea',
+      placeholder: this.placeholder(),
+      height: 300,
       base_url: '/tinymce', // Root for resources
       suffix: '.min', // Suffix to use when loading resources
       plugins: 'advlist link image lists wordcount table searchreplace emoticons',

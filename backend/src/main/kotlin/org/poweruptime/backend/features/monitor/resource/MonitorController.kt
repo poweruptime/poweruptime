@@ -34,6 +34,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
+const val LAST_CHECK_RESULTS_COUNT = 22
+
 @RestController
 @RequestMapping("/v1/monitor")
 @Tag(name = "Monitor API")
@@ -120,7 +122,7 @@ class MonitorController(
         ).toDto {
             MonitorResponse(
                 it,
-                lastCheckResults = checkResultService.getLastByMonitorId(it.id, 20),
+                lastCheckResults = checkResultService.getLastByMonitorId(it.id, LAST_CHECK_RESULTS_COUNT),
                 oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
                     it.id,
                     TimeOption.ONE_DAY,
@@ -238,7 +240,7 @@ class MonitorController(
     private fun Monitor.toFullResponse() = MonitorFullResponse(
         this,
         uptime = checkResultService.uptimeStatisticsDto(this),
-        lastCheckResults = checkResultService.getLastByMonitorId(this.id, 20),
+        lastCheckResults = checkResultService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
         oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
     )
 }

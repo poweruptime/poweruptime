@@ -13,6 +13,7 @@ import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.TimeOption
+import org.poweruptime.backend.features.monitor.resource.LAST_CHECK_RESULTS_COUNT
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
@@ -241,7 +242,7 @@ class MonitorListener(
     private fun Monitor.toFullResponse() = MonitorFullResponse(
         this,
         uptime = checkResultService.uptimeStatisticsDto(this),
-        lastCheckResults = checkResultService.getLastByMonitorId(this.id, 20),
+        lastCheckResults = checkResultService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
         oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
     )
 

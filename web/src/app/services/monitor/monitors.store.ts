@@ -65,9 +65,11 @@ export const InfiniteMonitorsStore = signalStore(
   })),
   withMethods((store, api = injectAPI()) => ({
     nextPage(teamId: string | undefined): void {
-      if (!store.loadedAll().has(teamId)) {
-        patchState(store, (state) => ({page: state.page + 1}));
+      if (store.loadedAll().has(teamId)) {
+        return;
       }
+
+      patchState(store, (state) => ({page: state.page + 1}));
     },
     addMonitor(it: BackendType['MonitorResponse']): void {
       patchState(store, addEntity(it));
@@ -77,24 +79,27 @@ export const InfiniteMonitorsStore = signalStore(
       // If another status, only update it if its already in the loaded list
       if (it.status === 'DOWN') {
         patchState(store, setEntity(it));
-      } else {
-        patchState(store, updateEntity({id: it.id, changes: it}));
+        return;
       }
+
+      patchState(store, updateEntity({id: it.id, changes: it}));
     },
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
 
-      if (monitor) {
-        patchState(
-          store,
-          updateEntity({
-            id: monitor.id,
-            changes: {
-              lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
-            },
-          }),
-        );
+      if (!monitor) {
+        return;
       }
+
+      patchState(
+        store,
+        updateEntity({
+          id: monitor.id,
+          changes: {
+            lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 21)],
+          },
+        }),
+      );
     },
     removeMonitor(id: string): void {
       patchState(store, removeEntity(id));

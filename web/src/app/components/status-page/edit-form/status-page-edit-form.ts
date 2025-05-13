@@ -156,14 +156,12 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
           </div>
 
           <div class="col-span-2">
-            <label>Description</label>
             <pu-editor
               [placeholder]="('general.description' | transloco) + '...'"
               formControlName="description" />
           </div>
 
           <div class="col-span-2">
-            <label>Footer</label>
             <pu-editor
               [placeholder]="('general.footer' | transloco) + '...'"
               formControlName="footer" />

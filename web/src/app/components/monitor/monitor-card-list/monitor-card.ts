@@ -15,49 +15,47 @@ import {UptimeTimeline} from '../uptime-timeline';
     @let _monitor = monitor();
     <a [routerLink]="_monitor.id" [queryParamsHandling]="'merge'" style="height: 120px">
       <mat-card routerLinkActive="active-card" appearance="outlined" style="height: 120px">
-        <div class="p-3">
-          <div class="flex flex-col items-start gap-1 rounded-lg" style="height: 110px">
-            <div class="flex max-w-72 items-center gap-1">
-              <span
-                class="rounded-4xl px-2 py-0.5"
-                [monitor-status-text-background]="_monitor.status">
-                @if (_monitor.status === 'UP') {
-                  {{ _monitor.oneDayUptime }}
-                } @else {
-                  {{ _monitor.status }}
-                }
-              </span>
-              <span class="truncate">{{ _monitor.name }}</span>
-            </div>
-
-            @let _isHovering = isHovering();
-            @let hasTags = _monitor.tags.length > 0;
-            <pu-uptime-timeline
-              class="min-w-full"
-              [hideLabel]="hasTags && !_isHovering"
-              [checkResults]="_monitor.lastCheckResults"
-              [size]="2"
-              (mouseenter)="hoveringTrigger.set(true)"
-              (mouseleave)="hoveringTrigger.set(false)" />
-
-            @if (!_isHovering && hasTags) {
-              <div
-                class="badge-container flex gap-2 overflow-x-auto"
-                style="max-width: 19.25rem; padding: 5px">
-                @for (tag of _monitor.tags; track tag.name) {
-                  <span
-                    class="text-xs"
-                    [pu-tag]="tag.variant"
-                    [routerLink]="[]"
-                    [queryParams]="{'search.show': true, 'search.tag': tag.name}"
-                    clickable
-                    queryParamsHandling="merge">
-                    {{ tag.name }}
-                  </span>
-                }
-              </div>
-            }
+        <div class="flex flex-col items-start gap-1 rounded-lg p-2">
+          <div class="flex max-w-80 items-center gap-1">
+            <span
+              class="rounded-4xl px-2 py-0.5"
+              [monitor-status-text-background]="_monitor.status">
+              @if (_monitor.status === 'UP') {
+                {{ _monitor.oneDayUptime }}
+              } @else {
+                {{ _monitor.status }}
+              }
+            </span>
+            <span class="truncate">{{ _monitor.name }}</span>
           </div>
+
+          @let _isHovering = isHovering();
+          @let hasTags = _monitor.tags.length > 0;
+          <pu-uptime-timeline
+            class="min-w-full"
+            [hideLabel]="hasTags && !_isHovering"
+            [checkResults]="_monitor.lastCheckResults"
+            [size]="2"
+            (mouseenter)="hoveringTrigger.set(true)"
+            (mouseleave)="hoveringTrigger.set(false)" />
+
+          @if (!_isHovering && hasTags) {
+            <div
+              class="badge-container flex gap-2 overflow-x-auto"
+              style="max-width: 19.25rem; padding: 5px">
+              @for (tag of _monitor.tags; track tag.name) {
+                <span
+                  class="text-xs"
+                  [pu-tag]="tag.variant"
+                  [routerLink]="[]"
+                  [queryParams]="{'search.show': true, 'search.tag': tag.name}"
+                  clickable
+                  queryParamsHandling="merge">
+                  {{ tag.name }}
+                </span>
+              }
+            </div>
+          }
         </div>
       </mat-card>
     </a>
