@@ -1,38 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source .env
 trap 'echo "ERROR"' ERR
 
-TARGET_VERSION=""
-TARGET_BACKUP_FILE=""
-CMD=""
+source .env
+
+: "${DATABASE_USER:?DATABASE_USER must be set in .env}"
+: "${DATABASE_PASSWORD:?DATABASE_PASSWORD must be set in .env}"
+: "${DATABASE_NAME:?DATABASE_NAME must be set in .env}"
+
 LOCAL=false
 DRY_RUN=false
+CMD=""
+TARGET=""
 
 usage() {
   cat <<EOF
-Usage: $0 [--local] [--dryRun] <command> [version-for-update|db-backup-file-path]
+Usage: $0 [--local] [--dry-run] <command> [target] [extra]
 
 Commands:
-  up               Deploy the stack (including pull)
-  down             Stop and remove the stack
+  up               Deploy the stack (incl. pull)
+  down             Stop & remove the stack
   start            Alias for up
   stop             Alias for down
   restart          Restart the stack
-  pull             Pull the latest images
-  backup           Create database backup (to ./backup/poweruptime-db/)
-  backup-prune     Prune all except the latest 5 backups
-  backup-verify    Verifies encrypted database backup
-  backup-extract   Extracts encrypted database backup
-  backup-import    Imports encrypted database backup into database container. (DANGEROUS!!)
-  update           Pull the specified version, create database backup and redeploy the stack
-  config           Print the combined config
-  version          Show the poweruptime version
+  pull             Pull images per versions.env
+  backup           Create DB backup
+  backup-prune     Prune all but latest 5 backups
+  backup-verify    Verify encrypted DB backup
+  backup-extract   Extract encrypted DB backup
+  backup-import    Import encrypted DB backup (DANGEROUS)
+  update           Checkout, backup DB & redeploy stack
+  config           Print combined compose config
+  version          Show current version
 
 Options:
   --local          Use local compose files (local environment)
-  --dryRun         Print the docker commands without executing
-  -h, --help       Show this help message
+  --dry-run        Print commands without executing
+  -h, --help       Show this help
 EOF
 }
 
@@ -58,7 +62,7 @@ parse_args() {
       update)
         CMD="update"
         if [[ $# -ge 2 && ! "$2" =~ ^- ]]; then
-          TARGET_VERSION="$2"
+          TARGET="$2"
           shift 2
         else
           shift
@@ -67,7 +71,7 @@ parse_args() {
       backup-verify|backup-extract|backup-import)
         CMD="$1"
         if [[ $# -ge 2 && ! "$2" =~ ^- ]]; then
-          TARGET_BACKUP_FILE="$2"
+          TARGET="$2"
           shift 2
         else
           shift
@@ -103,6 +107,30 @@ setup_compose_args() {
   fi
 }
 
+run_cmd() {
+  if $DRY_RUN; then
+    printf '+ %s\n' "$*"
+  else
+    "$@"
+  fi
+}
+
+docker_login() {
+  if $DRY_RUN; then
+    echo '+ docker login ghcr.io'
+  else
+    docker login ghcr.io
+  fi
+}
+
+docker_compose() {
+  if $DRY_RUN; then
+    echo "+ docker compose ${COMPOSE_ARGS[*]} $*"
+  else
+    docker compose "${COMPOSE_ARGS[@]}" "$@"
+  fi
+}
+
 confirm() {
   local prompt="${1:-Are you sure?}"
   local ans
@@ -112,7 +140,7 @@ confirm() {
     read -r -p "$prompt [y/N] " ans
 
     case "$ans" in
-      [Yy]|[Yy][Ee][Ss]) return 0 ;;
+      [Yy]|[Yy][Ee][Ss][Jj]) return 0 ;;
       [Nn]|[Nn][Oo]|"")  return 1 ;;
       *)
         echo "Please answer yes or no." ;;
@@ -120,26 +148,21 @@ confirm() {
   done
 }
 
-run_cmd() {
-  if [[ "$DRY_RUN" == true ]]; then
-    echo "+ $*"
-  else
-    "$@"
-  fi
-}
+ts()  { date +%Y%m%d%H%M%S; }
+log() { printf '%s: %s\n' "$(ts)" "$*"; }
+err() { printf '%s: ERROR: %s\n' "$(ts)" "$*" >&2; }
 
 do_pull() {
-  run_cmd docker login ghcr.io
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" pull
+  docker_login
+  docker_compose pull
 }
 
 do_up() {
-  run_cmd docker login ghcr.io
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" pull
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" up -d
-
-  if [[ "$DRY_RUN" == false ]]; then
-    if [[ "$LOCAL" == true ]]; then
+  docker_login
+  docker_compose pull
+  docker_compose up -d
+  if ! $DRY_RUN; then
+    if $LOCAL; then
       echo "Successfully started poweruptime locally."
       echo "  - Web interface: http://localhost/"
       echo "  - API: http://localhost/api"
@@ -147,126 +170,148 @@ do_up() {
       echo "  - RabbitMQ Management: http://localhost/rabbit/"
     else
       docker image prune -a -f
-      echo "Successfully deployed the new version/config"
+      echo "Successfully deployed"
     fi
   fi
 }
 
 do_down() {
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" down
+  docker_compose down
 }
 
 do_restart() {
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" restart
+  docker_compose restart
 }
 
 do_config() {
-  run_cmd docker compose "${COMPOSE_ARGS[@]}" config
+  docker_compose config
 }
 
 do_version() {
   if [[ ! -f versions.env ]]; then
-    echo "Error: versions.env not found" >&2
-    exit 1
+    err "versions.env not found"; exit 1
   fi
-
   grep -E '^POWERUPTIME_VERSION=' versions.env \
-    | cut -d= -f2- \
-    | tr -d '"' \
-    || {
-      echo "Error: POWERUPTIME_VERSION not set in versions.env" >&2
-      exit 1
-    }
+    | cut -d= -f2- | tr -d '"' \
+    || { err "POWERUPTIME_VERSION not set"; exit 1; }
 }
 
 do_backup() {
-  mkdir -p ./backup/poweruptime-db
-
-  OUT="./backup/poweruptime-db/$(date +'%Y%m%d%H%M%S').sql.gpg"
-  run_cmd bash -c "docker exec --env PGPASSWORD='${DATABASE_PASSWORD}' poweruptime-db pg_dump -U '${DATABASE_USER}' '${DATABASE_NAME}' | gpg -c --batch --passphrase '${DATABASE_PASSWORD}' > '${OUT}'"
-}
-
-do_backup_verify() {
-  if [[ -z "$TARGET_BACKUP_FILE" ]]; then
-    echo "Missing argument: TARGET_BACKUP_FILE"
-    usage
-    exit 1
+  local dir=./backup/poweruptime-db
+  local ts out pg_cmd gpg_cmd
+  mkdir -p "$dir"
+  ts=$(date +%Y%m%d%H%M%S)
+  out="$dir/${ts}.sql.gpg"
+  pg_cmd=(
+    docker exec --env "PGPASSWORD=$DATABASE_PASSWORD" poweruptime-db pg_dump -U "$DATABASE_USER" "$DATABASE_NAME"
+  )
+  gpg_cmd=(
+    gpg --batch --passphrase "$DATABASE_PASSWORD" -c -o "$out"
+  )
+  if $DRY_RUN; then
+    printf '+ %s | %s\n' "${pg_cmd[*]}" "${gpg_cmd[*]}"
+  else
+    "${pg_cmd[@]}" | "${gpg_cmd[@]}"
+    echo "Wrote backup to $out"
   fi
-
-  gpg --batch --passphrase "${DATABASE_PASSWORD}" --decrypt "${TARGET_BACKUP_FILE}" > /dev/null
-  echo "Verification succeeded: ${TARGET_BACKUP_FILE}"
-}
-
-do_backup_extract() {
-  if [[ -z "$TARGET_BACKUP_FILE" ]]; then
-    echo "Missing argument: TARGET_BACKUP_FILE"
-    usage
-    exit 1
-  fi
-
-  local out=${2:-"${TARGET_BACKUP_FILE%.gpg}"}
-
-  run_cmd bash -c "gpg --batch --passphrase '${DATABASE_PASSWORD}' --decrypt '$TARGET_BACKUP_FILE' > '$out'"
-  echo "Extraction succeeded"
-}
-
-do_backup_import() {
-  if [[ -z "$TARGET_BACKUP_FILE" ]]; then
-    echo "Missing argument: TARGET_BACKUP_FILE"
-    usage
-    exit 1
-  fi
-
-  do_backup_verify
-
-  if ! confirm "Restore '$TARGET_BACKUP_FILE' into '$DATABASE_NAME'?"; then
-    echo "Import cancelled."
-    exit 1
-  fi
-
-  echo "Restoring ${TARGET_BACKUP_FILE} into ${DATABASE_NAME}..."
-  run_cmd bash -c "gpg --batch --passphrase '${DATABASE_PASSWORD}' --decrypt '${TARGET_BACKUP_FILE}' | docker exec -i --env PGPASSWORD='${DATABASE_PASSWORD}' poweruptime-db psql -U '${DATABASE_USER}' -d '${DATABASE_NAME}'"
 }
 
 do_backup_prune() {
-  run_cmd bash -c "cd ./backup/poweruptime-db && ls -1t | tail -n +6 | xargs rm -f --"
+  local dir=./backup/poweruptime-db files f
+  readarray -t files < <(ls -1t "$dir"/*.sql.gpg 2>/dev/null || true)
+  for f in "${files[@]:5}"; do
+    if $DRY_RUN; then
+      printf '+ rm -f %s\n' "$f"
+    else
+      rm -f "$f"
+    fi
+  done
+}
+
+do_backup_verify() {
+  if [[ -z "$TARGET" ]]; then
+    err "Missing backup file"; usage; exit 1
+  fi
+  gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" >/dev/null
+  echo "Verified: $TARGET"
+}
+
+do_backup_extract() {
+  if [[ -z "$TARGET" ]]; then
+    err "Missing backup file"; usage; exit 1
+  fi
+  local out=${2:-"${TARGET%.gpg}"}
+  if $DRY_RUN; then
+    echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' > '$out'"
+  else
+    gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" > "$out"
+    echo "Extracted to $out"
+  fi
+}
+
+do_backup_import() {
+  if [[ -z "$TARGET" ]]; then
+    err "Missing backup file"; usage; exit 1
+  fi
+  do_backup_verify
+  if ! confirm "Restore '$TARGET' into '$DATABASE_NAME'?"; then
+    echo "Import cancelled."; exit 1
+  fi
+  log "Importing $TARGET"
+  if $DRY_RUN; then
+    echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' \
+    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+  else
+    gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" \
+    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+  fi
 }
 
 do_update() {
-  LOG=./backup/update.log
+  local log_file=./backup/update.log
+  mkdir -p "$(dirname "$log_file")"
 
-  if [[ -d ../web && -d ../backend ]]; then
-    echo "$(date +'%Y%m%d%H%M%S'): Detected development parent folder with web/ and backend/ – skipping update" | tee -a "$LOG"
+  if [[ -d ../web && -d ../backend ]] && ! $DRY_RUN; then
+    log "Dev folders detected; skipping update" >>"$log_file"
     exit 1
   fi
 
-  ts()  { date +'%Y%m%d%H%M%S'; }
-  log() { echo "$(ts): $*" | tee -a "$LOG"; }
-  err() { echo "$(ts): ERROR: $*" | tee -a "$LOG" >&2; }
+  # In non‐dry‐run mode, pipe ALL output through tee(1):
+  if ! $DRY_RUN; then
+    exec > >(tee -a "$log_file") 2>&1
+  fi
 
-  [[ "$DRY_RUN" == true ]] && log "DRY_RUN!!!"
   log "Update started"
 
-  # fail fast if no version was provided
-  if [[ -z "$TARGET_VERSION" ]]; then
-    err "no version provided"
-    exit 1
+  if [[ -z "$TARGET" ]]; then
+    TARGET=main
+    log "TARGET not supplied, defaulting to 'main'"
   fi
 
-  log "Checking out version $TARGET_VERSION"
-  run_cmd git fetch --tags
-  if ! run_cmd git checkout "$TARGET_VERSION"; then
-    err "failed to checkout version $TARGET_VERSION"
-    exit 1
+  if [[ "$TARGET" == main || "$TARGET" == beta ]]; then
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$branch" != "$TARGET" ]]; then
+      err "On '$branch', need '$TARGET'"
+      exit 1
+    fi
+    run_cmd git pull
+  else
+    if ! confirm "Checkout '$TARGET'?"; then
+      err "Checkout cancelled"
+      exit 1
+    fi
+    run_cmd git fetch --tags
+    run_cmd git checkout "$TARGET"
   fi
 
-  log "Creating db backup"
+  log "Backing up DB"
   do_backup
 
-  log "Removing old backups"
+  log "Pruning backups"
   do_backup_prune
 
-  log "Redeploy stack"
+  log "Redeploying stack"
   do_up
 
   log "Update finished"
@@ -275,20 +320,19 @@ do_update() {
 main() {
   parse_args "$@"
   setup_compose_args
-
   case "$CMD" in
-    up|start)           do_up          ;;
-    down|stop)          do_down        ;;
-    pull)               do_pull        ;;
-    restart)            do_restart     ;;
-    backup)             do_backup     ;;
-    backup-prune)       do_backup_prune;;
-    backup-verify)      do_backup_verify;;
-    backup-extract)     do_backup_extract;;
-    backup-import)      do_backup_import;;
-    update)             do_update      ;;
-    config)             do_config      ;;
-    version)            do_version     ;;
+    up|start)           do_up               ;;
+    down|stop)          do_down             ;;
+    pull)               do_pull             ;;
+    restart)            do_restart          ;;
+    backup)             do_backup           ;;
+    backup-prune)       do_backup_prune     ;;
+    backup-verify)      do_backup_verify    ;;
+    backup-extract)     do_backup_extract   ;;
+    backup-import)      do_backup_import    ;;
+    update)             do_update           ;;
+    config)             do_config           ;;
+    version)            do_version          ;;
   esac
 }
 
