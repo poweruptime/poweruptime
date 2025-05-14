@@ -99,6 +99,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_SECRET }}
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -127,6 +133,9 @@ jobs:
             ghcr.io/poweruptime/${{ matrix.containers }}:${{ github.ref_name }}
             ghcr.io/poweruptime/${{ matrix.containers }}:${{ steps.version.outputs.version }}
             ghcr.io/poweruptime/${{ matrix.containers }}:latest-beta
+            dafnik/poweruptime-${{ matrix.containers }}:${{ github.ref_name }}
+            dafnik/poweruptime-${{ matrix.containers }}:${{ steps.version.outputs.version }}
+            dafnik/poweruptime-${{ matrix.containers }}:latest-beta
 
       - name: Build and push prod Docker image
         if: "!contains(github.ref_name, 'beta')"
@@ -141,6 +150,8 @@ jobs:
           tags: |
             ghcr.io/poweruptime/${{ matrix.containers }}:${{ github.ref_name }}
             ghcr.io/poweruptime/${{ matrix.containers }}:latest
+            dafnik/poweruptime-${{ matrix.containers }}:${{ github.ref_name }}
+            dafnik/poweruptime-${{ matrix.containers }}:latest
 
   mirror-infra-beta:
     runs-on: ubuntu-latest
