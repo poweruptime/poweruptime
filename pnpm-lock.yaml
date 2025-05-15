@@ -115,8 +115,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))
       '@std/fmt':
-        specifier: npm:@jsr/std__fmt@1.0.7
-        version: '@jsr/std__fmt@1.0.7'
+        specifier: npm:@jsr/std__fmt@1.0.8
+        version: '@jsr/std__fmt@1.0.8'
       '@swimlane/ngx-charts':
         specifier: 21.1.3
         version: 21.1.3(6f996e0c44f943293b5b580d21fee0de)
@@ -1645,8 +1645,8 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  '@jsr/std__fmt@1.0.7':
-    resolution: {integrity: sha512-yudaEC8/pufd+FPbXUgE0NAHCj9MJOojuKV29kUlSHgYSBvi3aMLqlaO02bqCQYBhLVgKbllsTPKY9VTYS+5Hg==, tarball: https://npm.jsr.io/~/11/@jsr/std__fmt/1.0.7.tgz}
+  '@jsr/std__fmt@1.0.8':
+    resolution: {integrity: sha512-miZHzj9OgjuajrcMKzpqNVwFb9O71UHZzV/FHVq0E0Uwmv/1JqXgmXAoBNPrn+MP0fHT3mMgaZ6XvQO7dam67Q==, tarball: https://npm.jsr.io/~/11/@jsr/std__fmt/1.0.8.tgz}
 
   '@jsverse/transloco-keys-manager@6.1.0':
     resolution: {integrity: sha512-iwDg2nw6rMruMJEUISx5g1SPFw9yPGEd42oZFSLrXTBG1t0N2lBWEDL4wmcDIPxvbERABHHvHXcG/JmzJhJVfw==}
@@ -7792,7 +7792,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@jsr/std__fmt@1.0.7': {}
+  '@jsr/std__fmt@1.0.8': {}
 
   '@jsverse/transloco-keys-manager@6.1.0(tslib@2.8.1)(typescript@5.8.3)':
     dependencies:
