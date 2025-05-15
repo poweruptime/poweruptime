@@ -15,7 +15,8 @@
     ":pinVersions",
     "npm:unpublishSafe",
     ":preserveSemverRanges",
-    ":rebaseStalePrs"
+    ":rebaseStalePrs",
+    ":semanticCommitTypeAll(chore)"
   ],
   "labels": ["dependencies"],
   "lockFileMaintenance": {
@@ -23,7 +24,7 @@
     "automergeType": "branch",
     "commitMessageAction": "lock file maintenance",
     "enabled": true,
-    "semanticCommitType": "build"
+    "semanticCommitType": "chore(deps)"
   },
   "packageRules": [
     {
