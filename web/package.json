@@ -29,7 +29,7 @@
     "@angular/platform-browser-dynamic": "19.2.10",
     "@angular/platform-server": "19.2.10",
     "@angular/router": "19.2.10",
-    "@angular/ssr": "19.2.11",
+    "@angular/ssr": "19.2.12",
     "@davidlj95/ngx-meta": "^19.0.0",
     "@jsverse/transloco": "7.6.1",
     "@jsverse/transloco-persist-lang": "7.0.2",
@@ -67,8 +67,8 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "19.2.11",
-    "@angular/cli": "19.2.11",
+    "@angular-devkit/build-angular": "19.2.12",
+    "@angular/cli": "19.2.12",
     "@angular/compiler-cli": "19.2.10",
     "@jsverse/transloco-keys-manager": "6.1.0",
     "@jsverse/transloco-optimize": "7.0.1",
