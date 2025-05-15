@@ -81,7 +81,7 @@
     "@types/node": "22.15.17",
     "autoprefixer": "10.4.21",
     "esbuild-visualizer": "^0.7.0",
-    "openapi-typescript": "7.6.1",
+    "openapi-typescript": "7.8.0",
     "postcss": "8.5.3",
     "tailwindcss": "4.1.6",
     "tailwindcss-motion": "^1.1.0",
