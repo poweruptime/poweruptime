@@ -9,15 +9,12 @@ import org.poweruptime.backend.core.SmallNanoId
 import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 
-/**
- * Base entity for a NotificationSenderData.
- */
-@Entity(name = "notification_sender_data")
+@Entity(name = NOTIFICATION_METHOD_DATA_TABLE_NAME)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "_type", discriminatorType = DiscriminatorType.STRING)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
-@JsonTypeIdResolver(NotificationSenderDataTypeResolver::class)
-abstract class NotificationSenderData(
+@JsonTypeIdResolver(NotificationMethodDataTypeResolver::class)
+abstract class NotificationMethodData(
     /**
      * This maps the discriminator column to a read-only property.
      * It's marked as insertable = false, updatable = false because the discriminator
@@ -26,7 +23,7 @@ abstract class NotificationSenderData(
     @Column(name = "_type", insertable = false, updatable = false)
     @Suppress("PropertyName", "ConstructorParameterNaming")
     @JsonProperty("_type")
-    open val _type: NotificationSenderType
+    open val _type: NotificationMethodDataType
 ) : ASoftDeleteEntity() {
     @Id
     @SmallNanoId
@@ -35,4 +32,4 @@ abstract class NotificationSenderData(
     override lateinit var id: String
 }
 
-const val NOTIFICATION_SENDER_DATA_TABLE_NAME = "notification_sender_data"
+const val NOTIFICATION_METHOD_DATA_TABLE_NAME = "notification_method_data"

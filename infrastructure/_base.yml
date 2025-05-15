@@ -57,7 +57,23 @@ services:
       - poweruptime-infrastructure
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 10s
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 60s
+
+  poweruptime-apprise:
+    container_name: poweruptime-apprise
+    image: ${APPRISE_IMAGE:?}
+    restart: unless-stopped
+    environment:
+      - APPRISE_STATEFUL_MODE=disabled
+      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT}
+    networks:
+      - poweruptime-infrastructure
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:8000/status']
+      interval: 30s
       timeout: 60s
       retries: 5
       start_period: 60s

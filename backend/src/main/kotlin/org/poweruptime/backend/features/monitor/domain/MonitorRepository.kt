@@ -10,6 +10,10 @@ import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
 interface MonitorRepository : ISoftDeleteRepository<Monitor>, JpaSpecificationExecutor<Monitor> {
+    @Transactional(readOnly = true)
+    @Query("select m from Monitor m join m.team t where m.deleted is null and t.deleted is null")
+    fun findAllNoneDeleted(): MutableList<Monitor>
+
     @Query(
         """
         select count(m) from Monitor m

@@ -53,7 +53,7 @@ class CheckResult(
     var message: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "checkResult")
-    var notification: List<Notification> = ArrayList(),
+    var notifications: List<Notification> = ArrayList(),
 ) : AEntity() {
     @Id
     @MaxNanoId

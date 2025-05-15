@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
-import org.poweruptime.backend.features.notification.notificationSenders.email.EmailNotificationSenderData
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -16,7 +16,7 @@ class NotificationTemplateTest(
         val template = notificationTemplateService.getRenderedNotification(
             ModelFactory.getTestNotification(
                 title = """ this is a "test" """,
-                sender = EmailNotificationSenderData(),
+                sender = EmailNotificationMethodData(),
             ),
         )
 

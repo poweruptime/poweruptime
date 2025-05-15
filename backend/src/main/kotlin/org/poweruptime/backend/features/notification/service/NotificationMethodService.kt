@@ -6,7 +6,7 @@ import jakarta.persistence.criteria.Root
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.notification.dto.*
 import org.poweruptime.backend.features.notification.model.NotificationMethod
@@ -18,24 +18,24 @@ import org.springframework.stereotype.Service
 @Service
 class NotificationMethodService(
     private val notificationMethodRepository: NotificationMethodRepository,
-    private val notificationSenderDataService: NotificationSenderDataService,
+    private val notificationMethodDataService: NotificationMethodDataService,
     private val teamService: TeamService,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
     fun create(dto: CreateNotificationMethodDto): NotificationMethod = save(
         NotificationMethod.fromDto(
             dto = dto,
             team = teamService.getByIdOrThrow(dto.teamId),
-            notificationSenderDataService.save(dto.sender),
+            notificationMethodDataService.save(dto.sender),
         ),
     )
 
     fun update(dto: UpdateNotificationMethodDto): NotificationMethod = getByIdOrThrow(dto.id).let {
-        val oldSenderId = it.sender.id
-        val newSender = notificationSenderDataService.save(dto.sender)
+        val oldSenderId = it.data.id
+        val newSender = notificationMethodDataService.save(dto.sender)
 
         val notificationMethod = notificationMethodRepository.saveAndFlush(it.update(dto, newSender))
 
-        notificationSenderDataService.deleteByIdOrThrow(oldSenderId)
+        notificationMethodDataService.deleteByIdOrThrow(oldSenderId)
 
         notificationMethod
     }
@@ -44,11 +44,11 @@ class NotificationMethodService(
         val notificationMethod = getByIdOrThrow(id)
         super.deleteByIdOrThrow(id)
 
-        notificationSenderDataService.deleteByIdOrThrow(notificationMethod.sender.id)
+        notificationMethodDataService.deleteByIdOrThrow(notificationMethod.data.id)
     }
 
     override fun undeleteById(id: String): NotificationMethod = super.undeleteById(id).let {
-        notificationSenderDataService.undeleteById(it.sender.id)
+        notificationMethodDataService.undeleteById(it.data.id)
         it
     }
 
@@ -56,7 +56,7 @@ class NotificationMethodService(
         pageable: Pageable,
         teamId: String,
         name: String?,
-        types: List<NotificationSenderType>?,
+        types: List<NotificationMethodDataType>?,
         useByDefault: Boolean?,
         deleted: Boolean = false,
     ): Page<NotificationMethod> = notificationMethodRepository.findAll(

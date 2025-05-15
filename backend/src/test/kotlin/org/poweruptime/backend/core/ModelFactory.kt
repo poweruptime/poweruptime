@@ -15,11 +15,11 @@ import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
-import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.systemNotification.dto.CreateSystemNotificationDto
 import org.poweruptime.backend.features.systemNotification.dto.UpdateSystemNotificationDto
 import org.poweruptime.backend.features.systemNotification.model.SystemNotificationType
@@ -86,20 +86,20 @@ object ModelFactory {
 
     fun getTestNotificationMethod(
         name: String = "Test",
-        sender: NotificationSenderData,
+        sender: NotificationMethodData,
     ) = NotificationMethod(
         name = name,
-        sender = sender,
+        data = sender,
         team = getTestTeam(),
         useByDefault = false,
     )
 
     fun getTestNotification(
-        sender: NotificationSenderData,
+        sender: NotificationMethodData,
         pickedUpAt: Instant? = Instant.now(),
         title: String = "Test Title",
         checkResult: CheckResult = getTestCheckResult(title = title)
-    ) = Notification(
+    ) = SubNotification(
         checkResult = checkResult,
         title = title,
         message = "Test Message",
@@ -193,7 +193,7 @@ object ModelFactory {
     )
 
     fun getCreateNotificationMethodDto(
-        sender: NotificationSenderData,
+        sender: NotificationMethodData,
         teamId: String = "4Lxhu5YKWPBr", // Team 1
     ) = CreateNotificationMethodDto(
         teamId = teamId,
@@ -206,7 +206,7 @@ object ModelFactory {
 
     fun getUpdateNotificationMethodDto(
         id: String,
-        sender: NotificationSenderData,
+        sender: NotificationMethodData,
         name: String? = null
     ) = UpdateNotificationMethodDto(
         id = id,

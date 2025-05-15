@@ -14,7 +14,7 @@ import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.service.NotificationService
 import org.springdoc.core.annotations.ParameterObject
@@ -37,7 +37,7 @@ class NotificationController(
     val permissionRepository: PermissionRepository
 ) {
     @Operation(
-        summary = "Get notificationSenders",
+        summary = "Get notifications",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
@@ -48,7 +48,7 @@ class NotificationController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("monitorId") monitorId: String?,
         @RequestParam("teamId") teamId: String?,
-        @RequestParam("methods") methods: List<NotificationSenderType>?,
+        @RequestParam("methods") methods: List<NotificationMethodDataType>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
     ): PaginatedResponse<NotificationResponse> {
         if (monitorId != null && teamId != null) {

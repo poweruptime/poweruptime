@@ -3,58 +3,28 @@ package org.poweruptime.backend.features.notification.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
-import jakarta.transaction.Transactional
+import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.Filter
 import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
-import org.poweruptime.backend.features.monitor.model.CheckResult
-import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
-import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
-import org.poweruptime.backend.features.notification.domain.NotificationRepository
-import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.domain.SubNotificationRepository
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class NotificationService(
-    private val notificationRepository: NotificationRepository,
-    private val subNotificationService: SubNotificationService,
-    private val checkResultLogEntryService: CheckResultLogEntryService,
-) : AEntityService<Notification>(notificationRepository) {
-    @Transactional
-    fun send(monitor: Monitor, checkResult: CheckResult): Notification {
-        val notification = save(Notification(checkResult))
+class SubNotificationService(
+    private val subNotificationRepository: SubNotificationRepository,
+    private val rabbitMQService: RabbitMQService,
+) : AEntityService<SubNotification>(subNotificationRepository) {
 
-        // Create and queue sub notifications for each enabled method
-        val subNotifications = monitor.enabledNotificationMethods.map { method ->
-            SubNotification(
-                notification = notification,
-                method = method,
-                title = checkResult.title
-                    ?: throw IllegalArgumentException("Title cannot be null at this point."),
-                message = checkResult.message,
-            )
-        }
-
-        subNotificationService.saveAll(subNotifications).forEach { subNotification ->
-            subNotificationService.queueNotification(subNotification.id)
-
-            checkResultLogEntryService.info(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResult = checkResult,
-                message = """Queued "${subNotification.method.name}" notification""",
-                properties = mapOf("subNotificationId" to subNotification.id),
-            )
-        }
-
-        return notification
+    fun queueNotification(notificationId: String) {
+        rabbitMQService.sendToProcessNotification(notificationId)
     }
 
     fun getAllPaginated(
@@ -64,8 +34,8 @@ class NotificationService(
         userId: String?,
         methods: List<NotificationMethodDataType>?,
         statuses: List<MonitorStatus>?,
-    ): Page<Notification> = notificationRepository.findAll(
-        { root: Root<Notification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
+    ): Page<SubNotification> = subNotificationRepository.findAll(
+        { root: Root<SubNotification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
             assert(
                 (userId !== null && teamId == null && monitorId == null) ||
                     (userId === null && teamId != null && monitorId == null) ||
@@ -90,7 +60,7 @@ class NotificationService(
                 criteriaBuilder.and(
                     *buildList {
                         statuses?.let { add(Filter("checkResult.status", it, FilterCompare.IN)) }
-                        methods?.let { add(Filter("subNotifications.method", it, FilterCompare.IN)) }
+                        methods?.let { add(Filter("method", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
                             add(Filter("checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
                         }
@@ -108,7 +78,7 @@ class NotificationService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("checkResult.status", "createdAt"),
+            listOf("checkResult.status", "method", "createdAt"),
         ),
     )
 }

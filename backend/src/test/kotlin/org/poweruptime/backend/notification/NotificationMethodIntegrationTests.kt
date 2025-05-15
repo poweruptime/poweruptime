@@ -9,9 +9,9 @@ import org.poweruptime.backend.core.*
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
-import org.poweruptime.backend.features.notification.notificationSenders.discord.DiscordNotificationSenderData
-import org.poweruptime.backend.features.notification.notificationSenders.email.EmailNotificationSenderData
-import org.poweruptime.backend.features.notification.notificationSenders.slack.SlackNotificationSenderData
+import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodData
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
+import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodData
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -21,16 +21,16 @@ class NotificationMethodIntegrationTests(
     @Autowired val mockMvc: MockMvc,
     @Autowired val instanceSettingService: InstanceSettingService
 ) : BaseTestWithReusingContainers() {
-    private val discordNotificationSenderData = DiscordNotificationSenderData(
+    private val discordNotificationSenderData = DiscordNotificationMethodData(
         url = "https://test.at",
     )
 
     private val notificationSender = listOf(
         discordNotificationSenderData,
-        SlackNotificationSenderData(
+        SlackNotificationMethodData(
             url = "https://test.at",
         ),
-        EmailNotificationSenderData(
+        EmailNotificationMethodData(
             setOf("test@test.at"),
             "mail.test.at",
             1234,

@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.notification.notificationSenders.email
+package org.poweruptime.backend.features.notification.notificationMethods.email
 
 import jakarta.persistence.Column
 import jakarta.persistence.DiscriminatorValue
@@ -7,14 +7,14 @@ import jakarta.validation.constraints.*
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
-import org.poweruptime.backend.features.notification.core.NOTIFICATION_SENDER_DATA_TABLE_NAME
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
-import org.poweruptime.backend.features.notification.core.NotificationSenderTypes
+import org.poweruptime.backend.features.notification.core.NOTIFICATION_METHOD_DATA_TABLE_NAME
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypes
 
-@Entity(name = "${NOTIFICATION_SENDER_DATA_TABLE_NAME}_${NotificationSenderTypes.EMAIL}")
-@DiscriminatorValue(NotificationSenderTypes.EMAIL)
-class EmailNotificationSenderData(
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodDataTypes.EMAIL}")
+@DiscriminatorValue(NotificationMethodDataTypes.EMAIL)
+class EmailNotificationMethodData(
     @Suppress("JpaAttributeTypeInspection") @Column(
         name = "mail_to",
         nullable = false,
@@ -72,7 +72,7 @@ class EmailNotificationSenderData(
         columnDefinition = "text[]",
     )
     val bcc: Set<String>? = null,
-) : NotificationSenderData(NotificationSenderType.EMAIL), EmailSender {
+) : NotificationMethodData(NotificationMethodDataType.EMAIL), EmailSender {
     // ObjectMapper needs an empty constructor
     constructor() : this(
         setOf(""),

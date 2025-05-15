@@ -4,7 +4,7 @@ import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.HostService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
-import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -21,13 +21,13 @@ class NotificationTemplateService(
     private val teamSettingService: TeamSettingService,
     private val hostService: HostService,
 ) {
-    fun getRenderedNotification(notification: Notification): NotificationTemplate {
-        val context = Context().applyContext(notification)
+    fun getRenderedNotification(subNotification: SubNotification): NotificationTemplate {
+        val context = Context().applyContext(subNotification)
         return NotificationTemplate(
-            title = (notification.method.titleTemplate ?: notification.method.sender._type.titleTemplate).render(
+            title = (subNotification.method.titleTemplate ?: subNotification.method.data._type.titleTemplate).render(
                 context,
             ),
-            body = (notification.method.bodyTemplate ?: notification.method.sender._type.bodyTemplate).render(
+            body = (subNotification.method.bodyTemplate ?: subNotification.method.data._type.bodyTemplate).render(
                 context,
             ),
         )
@@ -37,30 +37,31 @@ class NotificationTemplateService(
         .process(replaceCustomVariablesWithThymeleafVariables(context), context)
         .replaceThymeleafReplacementSquareBrackets()
 
-    private fun Context.applyContext(notification: Notification) = apply {
-        setVariable("monitorName", notification.checkResult.monitor.name)
+    private fun Context.applyContext(subNotification: SubNotification) = apply {
+        setVariable("monitorName", subNotification.notification.checkResult.monitor.name)
         setVariable(
             "status",
-            when (notification.checkResult.status) {
+            when (subNotification.notification.checkResult.status) {
                 MonitorStatus.UP -> """✅ UP"""
                 MonitorStatus.DOWN -> """🔴 DOWN"""
                 else -> throw InvalidAttributesException(
-                    "Check result status not allowed to be ${notification.checkResult.status}",
+                    "Check result status not allowed to be ${subNotification.notification.checkResult.status}",
                 )
             },
         )
-        setVariable("title", notification.title)
+        setVariable("title", subNotification.title)
         setVariable(
             "checkStartedAt",
-            notification.checkResult.pickedUpAt
-                ?.atZone(teamSettingService.getTimeZone(notification.method.team.id))
+            subNotification.notification.checkResult.pickedUpAt
+                ?.atZone(teamSettingService.getTimeZone(subNotification.method.team.id))
                 ?.format(DateTimeUtils.dateTimeFormatter),
         )
-        setVariable("pingMs", notification.checkResult.pingMs)
-        setVariable("message", notification.message)
+        setVariable("pingMs", subNotification.notification.checkResult.pingMs)
+        setVariable("message", subNotification.message)
         setVariable(
             "checkResultLink",
-            "${hostService.urlHost}/m/${notification.checkResult.monitor.id}/c/${notification.checkResult.id}/logs",
+            "${hostService.urlHost}/m/${subNotification.notification.checkResult.monitor.id}/c/${
+                subNotification.notification.checkResult.id}/logs",
         )
     }
 
@@ -68,7 +69,7 @@ class NotificationTemplateService(
         var template = replaceNoneThymeleafSquareBrackets()
 
         context.variableNames.forEach {
-            template = template.replace(":$it", "[[\${$it}]]")
+            template = template.replace("!$it", "[[\${$it}]]")
         }
 
         return template

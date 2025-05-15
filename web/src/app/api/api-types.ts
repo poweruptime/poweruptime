@@ -1173,7 +1173,7 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * Get notificationSenders
+     * Get notifications
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
     get: operations['getAll_8'];
@@ -1763,14 +1763,14 @@ export interface components {
       password: string;
       email: string;
     };
-    NotificationSenderData: {
+    NotificationMethodData: {
       /** @enum {string} */
       _type: 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     UpdateNotificationMethodDto: {
       id: string;
       name: string;
-      sender: components['schemas']['NotificationSenderData'];
+      sender: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
@@ -1780,7 +1780,7 @@ export interface components {
       name: string;
       /** Format: date-time */
       deleted?: string;
-      sender: components['schemas']['NotificationSenderData'];
+      sender: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
@@ -1841,14 +1841,14 @@ export interface components {
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };
+    NotificationMethodDataMinDto: {
+      /** @enum {string} */
+      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
+    };
     NotificationMethodMinResponse: {
       id: string;
       name: string;
-      sender: components['schemas']['NotificationSenderMinDto'];
-    };
-    NotificationSenderMinDto: {
-      /** @enum {string} */
-      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
+      sender: components['schemas']['NotificationMethodDataMinDto'];
     };
     PublicMonitorUptimeStatistics: {
       oneHour?: string;
@@ -1930,7 +1930,7 @@ export interface components {
     CreateNotificationMethodDto: {
       teamId: string;
       name: string;
-      sender: components['schemas']['NotificationSenderData'];
+      sender: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
@@ -2081,6 +2081,15 @@ export interface components {
       host: string;
       setup: boolean;
     };
+    AppriseNotificationRequest: {
+      urls: string[];
+      body: string;
+      title?: string;
+      /** @enum {string} */
+      type: 'info' | 'warning' | 'failure';
+      /** @enum {string} */
+      format: 'text' | 'markdown' | 'html';
+    };
     TempNotification: {
       id: string;
       url: string;
@@ -2088,8 +2097,9 @@ export interface components {
       createdAt: string;
       to: string;
       subject: string;
-      body: string;
+      body?: string;
       bodyHTML?: string;
+      appriseDto?: components['schemas']['AppriseNotificationRequest'];
     };
     PublicStatusPageGroupResponse: {
       id: string;
@@ -2155,14 +2165,8 @@ export interface components {
     NotificationResponse: {
       id: string;
       checkResult: components['schemas']['CheckResultMinResponse'];
-      title: string;
-      message?: string;
-      method: components['schemas']['NotificationMethodMinResponse'];
       /** Format: date-time */
       createdAt: string;
-      /** Format: date-time */
-      sentAt?: string;
-      error?: string;
       monitor: components['schemas']['MonitorMinResponse'];
     };
     PaginatedResponseNotificationResponse: {

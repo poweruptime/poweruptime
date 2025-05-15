@@ -39,7 +39,7 @@ export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
     label: 'notificationMethod.sender.SLACK',
     value: 'SLACK',
   },
-] satisfies {value: BackendType['NotificationSenderData']['_type']; label: string}[];
+] satisfies {value: BackendType['NotificationMethodData']['_type']; label: string}[];
 
 export type HttpMonitorDataMethod =
   | 'GET'

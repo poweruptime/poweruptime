@@ -1,8 +1,8 @@
 package org.poweruptime.backend.features.notification.domain
 
 import org.poweruptime.backend.core.domain.ISoftDeleteRepository
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.springframework.stereotype.Repository
 
 @Repository
-interface NotificationSenderDataRepository : ISoftDeleteRepository<NotificationSenderData>
+interface NotificationMethodDataRepository : ISoftDeleteRepository<NotificationMethodData>

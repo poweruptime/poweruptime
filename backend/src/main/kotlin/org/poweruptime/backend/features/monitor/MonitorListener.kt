@@ -8,6 +8,7 @@ import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
 import org.poweruptime.backend.features.monitor.dto.PushCheckResultDto
 import org.poweruptime.backend.features.monitor.dto.PushMonitorDto
+import org.poweruptime.backend.features.monitor.dto.PushNotificationDto
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.Monitor
@@ -18,7 +19,7 @@ import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryServi
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
-import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.service.NotificationService
 import org.poweruptime.backend.features.push.PushService
 import org.slf4j.LoggerFactory
@@ -287,33 +288,10 @@ class MonitorListener(
         }
 
         if (shouldSendNotification) {
-            sendNotifications(updatedMonitor, checkResult)
-        }
-    }
-
-    /**
-     * Sends notifications for the updated [monitor] and [checkResult].
-     */
-    private fun sendNotifications(monitor: Monitor, checkResult: CheckResult) {
-        // Create and queue notifications for each enabled method
-        val notifications = monitor.enabledNotificationMethods.map { method ->
-            Notification(
-                method = method,
-                checkResult = checkResult,
-                title = checkResult.title
-                    ?: throw IllegalArgumentException("Title cannot be null at this point."),
-                message = checkResult.message,
-            )
-        }
-
-        notificationService.saveAll(notifications).forEach {
-            notificationService.queueNotification(it.id)
-
-            checkResultLogEntryService.info(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResult = checkResult,
-                message = """Queued "${it.method.name}" notification""",
-                properties = mapOf("notificationId" to it.id),
+            val notification = notificationService.send(updatedMonitor, checkResult)
+            pushService.send(
+                notification.checkResult.monitor.team.id,
+                PushNotificationDto(notification = NotificationResponse(notification)),
             )
         }
     }

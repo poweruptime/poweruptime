@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.DatabindContext
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 
-class NotificationSenderDataTypeResolver : TypeIdResolverBase() {
-    private val notificationSenderDataTypeFactory = NotificationSenderDataTypeFactory()
+class NotificationMethodDataTypeResolver : TypeIdResolverBase() {
+    private val notificationMethodDataTypeFactory = NotificationMethodDataTypeFactory()
 
     private lateinit var superType: JavaType
 
@@ -19,12 +19,12 @@ class NotificationSenderDataTypeResolver : TypeIdResolverBase() {
     override fun typeFromId(context: DatabindContext, id: String): JavaType =
         context.constructSpecializedType(
             superType,
-            notificationSenderDataTypeFactory.toClass(id),
+            notificationMethodDataTypeFactory.toClass(id),
         )
 
     override fun idFromValue(value: Any?): String =
-        notificationSenderDataTypeFactory.toStringRepresentation(value?.javaClass)
+        notificationMethodDataTypeFactory.toStringRepresentation(value?.javaClass)
 
     override fun idFromValueAndType(value: Any?, suggestedType: Class<*>?): String =
-        notificationSenderDataTypeFactory.toStringRepresentation(value?.javaClass)
+        notificationMethodDataTypeFactory.toStringRepresentation(value?.javaClass)
 }

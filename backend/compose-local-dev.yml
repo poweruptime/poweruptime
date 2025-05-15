@@ -1,5 +1,3 @@
-version: '3.8'
-
 name: poweruptime-local-backend-dev
 
 services:
@@ -44,6 +42,25 @@ services:
       timeout: 30s
       retries: 3
 
+  apprise:
+    container_name: poweruptime-local-backend-dev-apprise
+    image: caronc/apprise:1.2.0
+    restart: unless-stopped
+    environment:
+      - APPRISE_STATEFUL_MODE=disabled
+      - APPRISE_WORKER_COUNT=1
+      - LOG_LEVEL=debug
+    ports:
+      - "8000:8000"
+    networks:
+      - poweruptime-local-backend-dev-network
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:8000/status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
 #  web:
 #    container_name: poweruptime-local-backend-dev-web
 #    restart: unless-stopped
@@ -60,4 +77,3 @@ networks:
 volumes:
   db:
   rabbit:
-

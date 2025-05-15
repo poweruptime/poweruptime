@@ -198,7 +198,7 @@ class MonitorService(
 
     fun ensureAllMonitorsInTeam(monitors: Collection<Monitor>, teamId: String) = monitors.all { it.team.id == teamId }
 
-    fun startAll(): List<Monitor> = getAll().map {
+    fun startAll(): List<Monitor> = monitorRepository.findAllNoneDeleted().map {
         it.apply {
             status = when (it.status) {
                 MonitorStatus.PENDING,

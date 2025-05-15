@@ -42,6 +42,22 @@ services:
     networks:
       - proxy
 
+  poweruptime-apprise:
+    image: ${APPRISE_IMAGE:?}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.poweruptime-apprise.rule: PathPrefix(`/apprise`)
+      traefik.http.middlewares.apprise-stripprefix.stripprefix.prefixes: /apprise
+      traefik.http.routers.poweruptime-apprise.middlewares: apprise-stripprefix@docker
+      traefik.http.routers.poweruptime-apprise.entrypoints: http
+      traefik.http.services.poweruptime-apprise.loadbalancer.server.port: 8000
+      traefik.docker.network: poweruptime-local_proxy
+    environment:
+      - APPRISE_STATEFUL_MODE=disabled
+      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT}
+    networks:
+      - proxy
+
   poweruptime-backend:
     labels:
       traefik.http.routers.poweruptime-backend.rule: PathPrefix(`/api`)

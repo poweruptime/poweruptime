@@ -40,8 +40,11 @@ dependencies {
     // HttpClient library
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4.4")
 
+    // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
     implementation("commons-codec:commons-codec:1.18.0")
+
+    implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")

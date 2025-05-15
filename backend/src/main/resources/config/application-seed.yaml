@@ -84,6 +84,8 @@ management:
 poweruptime:
   swagger: true
   host: localhost:4200
+  apprise:
+    url: http://localhost:8000
   mail:
     enabled: false
     security: NONE_STARTTLS

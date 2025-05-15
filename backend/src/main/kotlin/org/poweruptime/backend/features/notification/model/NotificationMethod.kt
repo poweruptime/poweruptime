@@ -10,7 +10,7 @@ import org.poweruptime.backend.core.models.EntityWithName
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.monitor.model.Monitor
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.team.model.Team
 
 @Entity
@@ -19,10 +19,10 @@ class NotificationMethod(
     @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
     override var name: String,
 
-    @JoinColumn(name = "notification_sender_data_id", nullable = false)
+    @JoinColumn(name = "notification_method_data_id", nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var sender: NotificationSenderData,
+    var data: NotificationMethodData,
 
     @JoinColumn(name = "team_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

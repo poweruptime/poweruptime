@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.notification.notificationSenders.discord
+package org.poweruptime.backend.features.notification.notificationMethods.discord
 
 import jakarta.persistence.Column
 import jakarta.persistence.DiscriminatorValue
@@ -7,14 +7,14 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.notification.core.NOTIFICATION_SENDER_DATA_TABLE_NAME
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
-import org.poweruptime.backend.features.notification.core.NotificationSenderTypes
+import org.poweruptime.backend.features.notification.core.NOTIFICATION_METHOD_DATA_TABLE_NAME
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypes
 
-@Entity(name = "${NOTIFICATION_SENDER_DATA_TABLE_NAME}_${NotificationSenderTypes.DISCORD}")
-@DiscriminatorValue(NotificationSenderTypes.DISCORD)
-class DiscordNotificationSenderData(
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodDataTypes.DISCORD}")
+@DiscriminatorValue(NotificationMethodDataTypes.DISCORD)
+class DiscordNotificationMethodData(
     @Column(name = "discord_url", length = Database.MAX_URL_LENGTH)
     @get:NotBlank
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
@@ -24,7 +24,7 @@ class DiscordNotificationSenderData(
     @Column(name = "discord_display_name", length = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
-) : NotificationSenderData(NotificationSenderType.DISCORD) {
+) : NotificationMethodData(NotificationMethodDataType.DISCORD) {
     // ObjectMapper needs an empty constructor
     constructor() : this("", null)
 }

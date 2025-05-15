@@ -1,6 +1,6 @@
 package org.poweruptime.backend.features.notification.dto
 
-import org.poweruptime.backend.features.notification.core.NotificationSenderData
+import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.team.model.Team
 import java.security.MessageDigest
@@ -19,10 +19,10 @@ fun String.nullIfNoDifference(defaultTemplate: String): String? =
 fun NotificationMethod.Companion.fromDto(
     dto: CreateNotificationMethodDto,
     team: Team,
-    attachedSender: NotificationSenderData
+    attachedSender: NotificationMethodData
 ): NotificationMethod = NotificationMethod(
     name = dto.name,
-    sender = attachedSender,
+    data = attachedSender,
     team = team,
     useByDefault = dto.useByDefault,
     titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate),
@@ -31,14 +31,14 @@ fun NotificationMethod.Companion.fromDto(
 
 fun NotificationMethod.update(
     dto: UpdateNotificationMethodDto,
-    attachedSender: NotificationSenderData
+    attachedSender: NotificationMethodData
 ): NotificationMethod {
     name = dto.name
-    sender = dto.sender
+    data = dto.sender
     useByDefault = dto.useByDefault
     titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate)
     bodyTemplate = dto.bodyTemplate?.nullIfNoDifference(dto.sender._type.bodyTemplate)
-    sender = attachedSender
+    data = attachedSender
 
     return this
 }

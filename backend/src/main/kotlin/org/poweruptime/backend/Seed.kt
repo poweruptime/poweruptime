@@ -11,9 +11,9 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.service.MonitorCheckerDataService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.model.NotificationMethod
-import org.poweruptime.backend.features.notification.notificationSenders.email.EmailNotificationSenderData
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
+import org.poweruptime.backend.features.notification.service.NotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
-import org.poweruptime.backend.features.notification.service.NotificationSenderDataService
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
@@ -29,7 +29,7 @@ class Seed(
     private val monitorService: MonitorService,
     private val monitorCheckerDataService: MonitorCheckerDataService,
     private val notificationMethodService: NotificationMethodService,
-    private val notificationSenderDataService: NotificationSenderDataService,
+    private val notificationMethodDataService: NotificationMethodDataService,
 ) {
     private val statusCodes = listOf(
         100, 101, 102, 103,
@@ -97,8 +97,8 @@ class Seed(
         val emailNotificationMethod = notificationMethodService.save(
             NotificationMethod(
                 name = "Test EMAIL",
-                sender = notificationSenderDataService.save(
-                    EmailNotificationSenderData(
+                data = notificationMethodDataService.save(
+                    EmailNotificationMethodData(
                         to = setOf("test@test.at"),
                         host = "test.at",
                         port = 1234,
@@ -116,8 +116,8 @@ class Seed(
             (0..200).map {
                 NotificationMethod(
                     name = "Z Autogeneriert $it",
-                    sender = notificationSenderDataService.save(
-                        EmailNotificationSenderData(
+                    data = notificationMethodDataService.save(
+                        EmailNotificationMethodData(
                             to = setOf("test@test.at"),
                             host = "test.at",
                             port = 1234,

@@ -126,7 +126,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
 
                 <pu-notification-method-edit-template
                   [label]="'notificationMethod.edit.body' | transloco"
-                  [markdown]="typeValue === 'DISCORD' || typeValue === 'SLACK'"
+                  html
                   formControlName="bodyTemplate" />
               </div>
             </mat-card-content>
@@ -186,7 +186,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
         Validators.maxLength(Database.MAX_NAME_LENGTH),
       ],
     ],
-    type: ['' as BackendType['NotificationSenderData']['_type'] | '', [Validators.required]],
+    type: ['' as BackendType['NotificationMethodData']['_type'] | '', [Validators.required]],
     titleTemplate: [undefined as string | undefined],
     bodyTemplate: [undefined as string | undefined],
     useByDefault: [false],
@@ -252,7 +252,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
     });
   }
 
-  private setFormCheckerType(type: BackendType['NotificationSenderData']['_type']) {
+  private setFormCheckerType(type: BackendType['NotificationMethodData']['_type']) {
     // @ts-expect-error Sender Form Control
     this.form.setControl(
       'sender',

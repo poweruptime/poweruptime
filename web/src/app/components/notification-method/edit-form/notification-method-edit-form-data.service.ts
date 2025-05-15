@@ -104,7 +104,7 @@ export const NotificationMethodEditFormDataService = createInjectable(
       emailDataFormGroup,
       discordDataFormGroup,
       slackDataFormGroup,
-      formSenderDataFactory: (type: BackendType['NotificationSenderData']['_type']) => {
+      formSenderDataFactory: (type: BackendType['NotificationMethodData']['_type']) => {
         switch (type) {
           case 'DISCORD':
             return discordDataFormGroup;

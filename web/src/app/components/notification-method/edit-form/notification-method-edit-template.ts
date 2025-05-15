@@ -17,49 +17,44 @@ import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
-import {MarkdownComponent} from 'ngx-markdown';
-
-import {MentionAutocompleteTrigger} from '@app/components';
+import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
+import {Editor} from '@app/components/editor';
 
 @Component({
   template: `
     <div class="flex flex-col">
-      <mat-form-field>
-        <mat-label>{{ label() }}</mat-label>
-        <textarea
-          class="flex"
-          [(mentionFilter)]="mentionFilter"
+      @if (html()) {
+        <pu-editor
           [(ngModel)]="value"
-          [matMentions]="auto"
-          [disabled]="isDisabled()"
-          style="width: 36rem"
-          mentionTriggerChar=":"
-          rows="3"
-          matInput
-          cdkTextareaAutosize
-          cdkAutosizeMinRows="3"></textarea>
-      </mat-form-field>
-      <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-        @for (option of filteredItems(); track option) {
-          <mat-option [value]="option">{{ option }}</mat-option>
-        }
-      </mat-autocomplete>
+          [placeholder]="label()"
+          [autocompleteVariables]="variables" />
+      } @else {
+        <mat-form-field>
+          <mat-label>{{ label() }}</mat-label>
+          <textarea
+            class="flex"
+            [(mentionFilter)]="mentionFilter"
+            [(ngModel)]="value"
+            [matMentions]="auto"
+            [disabled]="isDisabled()"
+            style="width: 36rem"
+            mentionTriggerChar=":"
+            rows="3"
+            matInput
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="3"></textarea>
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+          @for (option of filteredItems(); track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+        </mat-autocomplete>
+      }
 
-      <div
-        class="border-1 min-h-24 rounded-sm border border-dashed border-gray-400 p-4"
-        style="margin-top: -0.5rem">
-        @if (markdown()) {
-          <markdown class="preview" [data]="preview()" emoji />
-        } @else {
-          <div class="preview" [innerHTML]="preview()"></div>
-        }
+      <div class="border-1 mt-4 min-h-24 rounded-sm border border-dashed border-gray-400 p-4">
+        <pu-shadow-render [html]="preview()" />
       </div>
     </div>
-  `,
-  styles: `
-    .preview {
-      white-space: pre-wrap;
-    }
   `,
   selector: 'pu-notification-method-edit-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,15 +66,16 @@ import {MentionAutocompleteTrigger} from '@app/components';
     },
   ],
   imports: [
+    FormsModule,
     MatFormField,
     MatInput,
-    MatLabel,
-    CdkTextareaAutosize,
-    MentionAutocompleteTrigger,
-    MatAutocomplete,
     MatOption,
-    FormsModule,
-    MarkdownComponent,
+    MatLabel,
+    MatAutocomplete,
+    MentionAutocompleteTrigger,
+    CdkTextareaAutosize,
+    Editor,
+    ShadowRender,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -88,7 +84,7 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   private readonly document = inject(DOCUMENT);
   private readonly now = this.dateFormat.transform(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS z (Z)');
 
-  markdown = input(false, {transform: booleanAttribute});
+  html = input(false, {transform: booleanAttribute});
 
   label = input.required<string>();
 
@@ -96,22 +92,32 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   isDisabled = signal(false);
   onChange?: (it: string | null) => void;
 
+  variables = [
+    'monitorName',
+    'status',
+    'title',
+    'pingMs',
+    'checkStartedAt',
+    'message',
+    'checkResultLink',
+  ];
+
   mentionFilter = signal('');
   filteredItems = computed(() => {
     const filter = this.mentionFilter().trim().toLowerCase();
-    return variables.filter((it) => it.trim().toLowerCase().includes(filter)).sort();
+    return this.variables.filter((it) => it.trim().toLowerCase().includes(filter)).sort();
   });
 
   preview = computed(
     () =>
       this.value()
-        ?.replaceAll(':monitorName', 'First monitor')
-        .replaceAll(':status', '✅UP')
-        .replaceAll(':title', '200 - OK')
-        .replaceAll(':pingMs', '420')
-        .replaceAll(':checkStartedAt', this.now ?? '')
-        .replaceAll(':checkResultLink', `https://${this.document.location.host}/m/1234/c/5678/logs`)
-        .replaceAll(':message', 'Detailed message :)') ?? '',
+        ?.replaceAll('!monitorName', 'First monitor')
+        .replaceAll('!status', '✅UP')
+        .replaceAll('!title', '200 - OK')
+        .replaceAll('!pingMs', '420')
+        .replaceAll('!checkStartedAt', this.now ?? '')
+        .replaceAll('!checkResultLink', `https://${this.document.location.host}/m/1234/c/5678/logs`)
+        .replaceAll('!message', 'Detailed message :)') ?? '',
   );
 
   constructor() {
@@ -131,13 +137,3 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
     this.isDisabled.set(isDisabled);
   }
 }
-
-const variables = [
-  'monitorName',
-  'status',
-  'title',
-  'pingMs',
-  'checkStartedAt',
-  'message',
-  'checkResultLink',
-];
