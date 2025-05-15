@@ -100,11 +100,11 @@ importers:
         specifier: 19.3.3
         version: 19.3.3(@angular/cdk@19.2.16(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(@angular/material@19.2.16(7e1965b17b797e58b530b173cc0343e8))
       '@ngrx/operators':
-        specifier: 19.1.0
-        version: 19.1.0(rxjs@7.8.2)
+        specifier: 19.2.0
+        version: 19.2.0(rxjs@7.8.2)
       '@ngrx/signals':
-        specifier: 19.1.0
-        version: 19.1.0(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
+        specifier: 19.2.0
+        version: 19.2.0(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@ngx-dropzone/cdk':
         specifier: 19.2.1
         version: 19.2.1(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(rxjs@7.8.2)
@@ -1923,13 +1923,13 @@ packages:
       '@angular/core': ^19.0.0
       '@angular/forms': ^19.0.0
 
-  '@ngrx/operators@19.1.0':
-    resolution: {integrity: sha512-gpo69FnoAF69X68pk9eWFHB630xqerBYkF68wOFMciLOV2im3b/fAf+0sRvnQJmVtG/8jO0IPVdvLqa1TbWmPA==}
+  '@ngrx/operators@19.2.0':
+    resolution: {integrity: sha512-kv3hFlpWbZxfyILvQAJT2JNbsRGauUIj67U6zOUd8psD7qoJdtdUAZmr/LUgu/6/tweYDUj1mcQJfvaudik0ZQ==}
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ngrx/signals@19.1.0':
-    resolution: {integrity: sha512-v8sbb+Iox9kdIaKbFgt4Z1W+NxzIU4+g+6qQU6/c27UmtQXv0s1zUKKofPRK0qwkaZzNWkxNToxyoE285ukqcQ==}
+  '@ngrx/signals@19.2.0':
+    resolution: {integrity: sha512-7NMFZE5HU/bryU15vCA2aHDYa77Pb7nCit4UOcsk9WkCSWMwtyQ4/9eR6wSGdeX5xxDcFQy0IiZJ8wxYCxA5Eg==}
     peerDependencies:
       '@angular/core': ^19.0.0
       rxjs: ^6.5.3 || ^7.4.0
@@ -8023,12 +8023,12 @@ snapshots:
       '@angular/forms': 19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@ngrx/operators@19.1.0(rxjs@7.8.2)':
+  '@ngrx/operators@19.2.0(rxjs@7.8.2)':
     dependencies:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ngrx/signals@19.1.0(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)':
+  '@ngrx/signals@19.2.0(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 19.2.10(rxjs@7.8.2)(zone.js@0.15.0)
       tslib: 2.8.1
