@@ -52,7 +52,7 @@
     "dfx-openapi": "0.1.2",
     "dfx-qrcode": "^4.0.0",
     "emoji-toolkit": "^9.0.0",
-    "eventsource": "^3.0.5",
+    "eventsource": "^4.0.0",
     "express": "4.21.2",
     "http-proxy-middleware": "^3.0.5",
     "marked": "15.0.11",
