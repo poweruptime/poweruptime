@@ -121,6 +121,8 @@ class MonitorService(
         }
     }
 
+    fun getIdsByTeamId(teamId: String) = monitorRepository.findIdsByTeamId(teamId)
+
     fun getAllPaginated(
         pageable: Pageable,
         teamId: String? = null,

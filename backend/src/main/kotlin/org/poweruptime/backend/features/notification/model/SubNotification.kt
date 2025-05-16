@@ -13,7 +13,7 @@ import java.time.Instant
 @Table(name = "sub_notification")
 class SubNotification(
     @JoinColumn(name = "notification_id", nullable = false, referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @OnDelete(action = OnDeleteAction.CASCADE)
     val notification: Notification,
 

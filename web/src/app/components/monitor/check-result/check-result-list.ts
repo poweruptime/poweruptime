@@ -171,6 +171,10 @@ import {BackendType} from '../../../api';
     .mat-column-status {
       @apply w-32;
     }
+
+    .mat-column-actions {
+      @apply w-24;
+    }
   `,
   selector: 'pu-check-result-list',
   providers: [CheckResultsStore],

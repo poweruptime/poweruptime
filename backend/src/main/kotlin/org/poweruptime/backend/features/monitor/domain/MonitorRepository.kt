@@ -14,6 +14,9 @@ interface MonitorRepository : ISoftDeleteRepository<Monitor>, JpaSpecificationEx
     @Query("select m from Monitor m join m.team t where m.deleted is null and t.deleted is null")
     fun findAllNoneDeleted(): MutableList<Monitor>
 
+    @Query("select m.id from Monitor m join m.team t where m.deleted is null and m.team.id = :tId")
+    fun findIdsByTeamId(@Param("tId") teamId: String): List<String>
+
     @Query(
         """
         select count(m) from Monitor m

@@ -38,7 +38,7 @@ export const CheckResultLogEntriesStore = signalStore(
         .entities()
         .map(mapEntriesWithTime)
         .filter(
-          (it) => it.stage === 'NOTIFICATION' && it.properties?.['notificationId'] === undefined,
+          (it) => it.stage === 'NOTIFICATION' && it.properties?.['subNotificationId'] === undefined,
         ),
     ),
     notificationsGrouped: computed(() => {
@@ -48,17 +48,17 @@ export const CheckResultLogEntriesStore = signalStore(
         .filter((it) => it.stage === 'NOTIFICATION')
         .reduce(
           (acc, entity) => {
-            const notificationId = entity.properties?.['notificationId'];
+            const subNotificationId = entity.properties?.['subNotificationId'];
 
-            if (!notificationId) {
+            if (!subNotificationId) {
               return acc;
             }
 
-            if (!acc[notificationId]) {
-              acc[notificationId] = [];
+            if (!acc[subNotificationId]) {
+              acc[subNotificationId] = [];
             }
 
-            acc[notificationId].push(entity);
+            acc[subNotificationId].push(entity);
             return acc;
           },
           {} as Record<string, BackendType['CheckResultLogEntryResponse'][]>,

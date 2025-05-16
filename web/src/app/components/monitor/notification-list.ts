@@ -72,20 +72,6 @@ import {trackBy} from '@app/util';
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="method">
-                <th *matHeaderCellDef mat-header-cell>{{ 'general.method' | transloco }}</th>
-                <td *matCellDef="let element" mat-cell>
-                  {{ element.method.name }}
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="title">
-                <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
-                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                  {{ element.title }}
-                </td>
-              </ng-container>
-
               <ng-container matColumnDef="actions">
                 <th *matHeaderCellDef mat-header-cell></th>
                 <td *matCellDef="let element" mat-cell>
@@ -134,12 +120,8 @@ import {trackBy} from '@app/util';
     .mat-column-status {
       @apply w-32;
     }
-    .mat-column-method {
-      @apply w-52;
-    }
-
-    .mat-column-createdAt {
-      @apply w-52;
+    .mat-column-actions {
+      @apply w-24;
     }
   `,
   selector: 'pu-notification-list',
@@ -184,7 +166,7 @@ export class NotificationList {
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeMonitorColumn) => {
-        let it = ['status', 'createdAt', 'method', 'title', 'actions'];
+        let it = ['status', 'createdAt', 'actions'];
 
         if (includeMonitorColumn) {
           it = ['monitor', ...it];

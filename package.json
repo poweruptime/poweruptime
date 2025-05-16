@@ -26,6 +26,9 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "nx"
+    ],
+    "ignoredBuiltDependencies": [
+      "sharp"
     ]
   }
 }
