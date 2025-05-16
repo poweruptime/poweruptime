@@ -11,7 +11,6 @@ import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.toDeletedFilter
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.monitor.domain.MonitorRepository
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
