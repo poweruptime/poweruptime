@@ -7,18 +7,18 @@ import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorCheckerData
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
 import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.systemNotification.dto.CreateSystemNotificationDto
 import org.poweruptime.backend.features.systemNotification.dto.UpdateSystemNotificationDto
@@ -45,7 +45,7 @@ object ModelFactory {
     )
 
     fun getTestMonitor(
-        checker: MonitorCheckerData = PingMonitorCheckerData(
+        checker: MonitorData = PingMonitorData(
             "1.1.1.1",
             443,
         ),
@@ -64,7 +64,7 @@ object ModelFactory {
 
     fun getTestCheckResult(
         status: MonitorStatus = MonitorStatus.UP,
-        monitor: Monitor = getTestMonitor(HttpMonitorCheckerData()),
+        monitor: Monitor = getTestMonitor(HttpMonitorData()),
         previousStatus: MonitorStatus = status,
         pickedUpAt: Instant? = Instant.now(),
         checkedAt: Instant? = Instant.now(),
@@ -160,7 +160,7 @@ object ModelFactory {
         UpdateTeamUserDto(userId, role)
 
     fun getCreateMonitorDto(
-        checker: MonitorCheckerData,
+        checker: MonitorData,
         teamId: String = "4Lxhu5YKWPBr", // Team 1
     ) = CreateMonitorDto(
         teamId = teamId,
@@ -177,7 +177,7 @@ object ModelFactory {
 
     fun getUpdateMonitorDto(
         id: String,
-        checker: MonitorCheckerData,
+        checker: MonitorData,
         name: String? = null
     ) = UpdateMonitorDto(
         id = id,

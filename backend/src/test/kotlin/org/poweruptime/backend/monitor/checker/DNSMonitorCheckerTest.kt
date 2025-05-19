@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerDataType
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
 
 class DNSMonitorCheckerTest {
     private val dnsMonitorChecker = DnsMonitorChecker()
@@ -13,11 +13,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if simple A record works`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.A,
+                type = DnsMonitorDataType.A,
             ),
         ),
     ).let {
@@ -28,11 +28,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if simple CNAME record works`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
             ),
         ),
     ).let {
@@ -43,11 +43,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if fails simple CNAME record works`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground_not_exisiting.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
             ),
         ),
     ).let {
@@ -58,11 +58,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test not existing DNS server`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "223.545.122.123",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
             ),
         ),
     ).let {
@@ -73,11 +73,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if A records work`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.A,
+                type = DnsMonitorDataType.A,
                 matches = listOf(
                     "185.199.109.153",
                     "185.199.110.153",
@@ -94,11 +94,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if CNAME records work`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
                 matches = listOf("dafnik.github.io."),
             ),
         ),
@@ -110,11 +110,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if fail A records`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.A,
+                type = DnsMonitorDataType.A,
                 matches = listOf("1.2.3.4"),
             ),
         ),
@@ -126,11 +126,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if fail CNAME records`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
                 matches = listOf("something.github.io."),
             ),
         ),
@@ -142,11 +142,11 @@ class DNSMonitorCheckerTest {
     @Test
     fun `test if fail CNAME records with working and not working`(): Unit = dnsMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            DnsMonitorCheckerData(
+            DnsMonitorData(
                 host = "playground.dafnik.me",
                 server = "8.8.8.8",
                 port = 53,
-                type = DnsMonitorCheckerDataType.CNAME,
+                type = DnsMonitorDataType.CNAME,
                 matches = listOf(
                     "dafnik.github.io.",
                     "something.github.io.",

@@ -29,6 +29,7 @@
       "check": "Check",
       "expired": "The logs for this check have expired and are no longer available.",
       "showTimestamps": "Show Timestamp",
+      "startedAt": "Started at",
       "statusUpdate": "Status update"
     },
     "list": {
@@ -313,8 +314,12 @@
     "title": "Page not found"
   },
   "notification": {
+    "detail": {
+      "openCheckResult": "Open {{general.checkResult}}"
+    },
     "list": {
-      "openCheckResult": "Open the connected {{general.checkResult}}"
+      "openCheckResult": "Open the connected {{general.checkResult}}",
+      "view": "View {{general.notification}}"
     }
   },
   "notificationMethod": {

@@ -29,6 +29,7 @@ class SubNotificationService(
 
     fun getAllPaginated(
         pageable: Pageable,
+        notificationId: String?,
         monitorId: String?,
         teamId: String?,
         userId: String?,
@@ -37,18 +38,24 @@ class SubNotificationService(
     ): Page<SubNotification> = subNotificationRepository.findAll(
         { root: Root<SubNotification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
             assert(
-                (userId !== null && teamId == null && monitorId == null) ||
-                    (userId === null && teamId != null && monitorId == null) ||
-                    (userId === null && teamId == null && monitorId != null),
+                (userId !== null && teamId == null && monitorId == null && notificationId == null) ||
+                    (userId === null && teamId != null && monitorId == null && notificationId == null) ||
+                    (userId === null && teamId == null && monitorId != null && notificationId == null) ||
+                    (userId === null && teamId == null && monitorId == null && notificationId != null),
             )
 
             query?.distinct(true)
 
             val idPredicate = when {
-                teamId != null -> Filter("checkResult.monitor.team.id", teamId, FilterCompare.EQ)
-                monitorId != null -> Filter("checkResult.monitor.id", monitorId, FilterCompare.EQ)
-                userId != null -> Filter("checkResult.monitor.team.teamUsers.id.user.id", userId, FilterCompare.EQ)
-                else -> throw AssertionError("teamId or monitorId or userId needs to be provided")
+                notificationId != null -> Filter("notification.id", notificationId, FilterCompare.EQ)
+                teamId != null -> Filter("notification.checkResult.monitor.team.id", teamId, FilterCompare.EQ)
+                monitorId != null -> Filter("notification.checkResult.monitor.id", monitorId, FilterCompare.EQ)
+                userId != null -> Filter(
+                    "notification.checkResult.monitor.team.teamUsers.id.user.id",
+                    userId,
+                    FilterCompare.EQ,
+                )
+                else -> throw AssertionError("notificationId or teamId or monitorId or userId needs to be provided")
             }.toPredicate(root, criteriaBuilder)
 
             val filterPredicates = if (
@@ -59,10 +66,10 @@ class SubNotificationService(
             ) {
                 criteriaBuilder.and(
                     *buildList {
-                        statuses?.let { add(Filter("checkResult.status", it, FilterCompare.IN)) }
+                        statuses?.let { add(Filter("notification.checkResult.status", it, FilterCompare.IN)) }
                         methods?.let { add(Filter("method", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
-                            add(Filter("checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
+                            add(Filter("notification.checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
                         }
                     }.toPredicate(root, criteriaBuilder).toTypedArray(),
                 )
@@ -78,7 +85,7 @@ class SubNotificationService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("checkResult.status", "method", "createdAt"),
+            listOf("notification.checkResult.status", "method", "createdAt"),
         ),
     )
 }

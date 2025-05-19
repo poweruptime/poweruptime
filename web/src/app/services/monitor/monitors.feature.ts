@@ -20,7 +20,7 @@ import {
 } from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
-import {BackendType, injectAPI} from '@app/api';
+import {BackendType, MonitorDataType, injectAPI} from '@app/api';
 import {PushService} from '@app/services';
 import {
   PaginationDto,
@@ -38,7 +38,7 @@ import {
 export type MonitorSearchParams = {
   search: string | undefined;
   statuses: BackendType['MonitorResponse']['status'][] | undefined;
-  types: BackendType['MonitorCheckerData']['_type'][] | undefined;
+  types: BackendType['MonitorData']['_type'][] | undefined;
   tags: string[] | undefined;
 };
 
@@ -78,7 +78,7 @@ export function withMonitorsLoad() {
           teamId?: string;
           search?: string;
           statuses?: BackendType['MonitorResponse']['status'][];
-          types?: BackendType['MonitorCheckerData']['_type'][];
+          types?: MonitorDataType[];
           tags?: string[];
           deleted?: boolean;
         } & PaginationDto

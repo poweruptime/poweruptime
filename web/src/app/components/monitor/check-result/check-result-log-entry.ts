@@ -5,12 +5,17 @@ import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
-import {MonitorStatusColor} from '@app/directives';
+import {
+  MonitorStatusBackground,
+  MonitorStatusColor,
+  MonitorStatusTextBackground,
+} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 
 @Component({
   template: `
     @let _logEntry = logEntry();
+
     <div
       class="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-950">
       @if (_logEntry.level === 'ACTION') {
@@ -44,7 +49,13 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
   `,
   selector: 'pu-check-result-log-entry',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RelativeTimeWithTooltip, BiComponent, DatePipe, MonitorStatusColor],
+  imports: [
+    RelativeTimeWithTooltip,
+    BiComponent,
+    DatePipe,
+    MonitorStatusColor,
+    MonitorStatusTextBackground,
+  ],
 })
 export class CheckResultLogEntry {
   readonly logEntry = input.required<BackendType['CheckResultLogEntryResponse']>();

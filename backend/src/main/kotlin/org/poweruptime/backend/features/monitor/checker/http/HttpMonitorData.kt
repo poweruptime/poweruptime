@@ -15,12 +15,15 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.ListItemRegex
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.core.*
+import org.poweruptime.backend.features.monitor.model.MONITOR_CHECKER_DATA_TABLE_NAME
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 
-@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.HTTP}")
-@DiscriminatorValue(MonitorCheckerTypes.HTTP)
-class HttpMonitorCheckerData(
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorDataTypes.HTTP}")
+@DiscriminatorValue(MonitorDataTypes.HTTP)
+class HttpMonitorData(
     @Column(name = "http_url", length = Database.MAX_URL_LENGTH)
     @get:NotBlank
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
@@ -29,11 +32,11 @@ class HttpMonitorCheckerData(
 
     @Column(name = "http_method", length = 7)
     @get:NotNull
-    val method: HttpMonitorCheckerDataMethod,
+    val method: HttpMonitorDataMethod,
 
     @Column(name = "http_content_type", length = 4)
     @get:NotNull
-    val contentType: HttpMonitorCheckerDataContentType,
+    val contentType: HttpMonitorDataContentType,
 
     @Suppress("JpaAttributeTypeInspection")
     @Column(name = "http_allowed_status_code_ranges", columnDefinition = "text[]")
@@ -71,7 +74,7 @@ class HttpMonitorCheckerData(
     val searchTerm: String? = null,
 
     @Column(name = "http_auth_type", length = 5)
-    val authType: HttpMonitorCheckerDataAuthType? = null,
+    val authType: HttpMonitorDataAuthType? = null,
 
     @Column(name = "http_basic_auth_username", length = 512)
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
@@ -80,12 +83,12 @@ class HttpMonitorCheckerData(
     @Column(name = "http_basic_auth_password", length = 512)
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     val basicAuthDataPassword: String? = null,
-) : MonitorCheckerData(MonitorCheckerType.HTTP) {
+) : MonitorData(MonitorType.HTTP) {
     // ObjectMapper needs an empty constructor
     constructor() : this(
         "1.2.3.4",
-        HttpMonitorCheckerDataMethod.GET,
-        HttpMonitorCheckerDataContentType.JSON,
+        HttpMonitorDataMethod.GET,
+        HttpMonitorDataContentType.JSON,
         listOf(""),
         10,
         false,

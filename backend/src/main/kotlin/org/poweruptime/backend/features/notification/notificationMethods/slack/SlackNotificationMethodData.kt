@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.notification.core.NOTIFICATION_METHOD_DATA_TABLE_NAME
-import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypes
+import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
+import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
 @Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodDataTypes.SLACK}")
 @DiscriminatorValue(NotificationMethodDataTypes.SLACK)

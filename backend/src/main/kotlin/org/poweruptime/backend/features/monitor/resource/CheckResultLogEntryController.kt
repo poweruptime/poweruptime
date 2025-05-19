@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.monitor.dto.CheckResultLogEntryResponse
+import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -20,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -40,9 +42,11 @@ class CheckResultLogEntryController(
     fun getAll(
         @ParameterObject @PageableDefault pageable: Pageable,
         @PathVariable("checkResultId") checkResultId: String,
+        @RequestParam("stages") stage: List<CheckResultLogStage>? = null,
     ): PaginatedResponse<CheckResultLogEntryResponse> = checkResultLogEntryService.getAllPaginated(
         pageable = pageable,
         checkResultId = checkResultId,
+        stages = stage,
     ).toDto {
         CheckResultLogEntryResponse(it)
     }

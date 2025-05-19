@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.core.utils.DAYS_PER_YEAR
 import org.poweruptime.backend.core.utils.HOURS_PER_DAY
+import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.domain.CheckResultRepository
 import org.poweruptime.backend.features.monitor.domain.HistoricalDayUptimeRepository
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
@@ -23,7 +24,6 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

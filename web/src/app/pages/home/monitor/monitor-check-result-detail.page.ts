@@ -1,4 +1,4 @@
-import {KeyValuePipe} from '@angular/common';
+import {DatePipe, KeyValuePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatAnchor} from '@angular/material/button';
@@ -45,11 +45,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
           <mat-card appearance="outlined">
             <mat-card-content>
               <div class="flex gap-10 px-2">
-                <div class="flex flex-col gap-2">
-                  <h3 class="text-gray-400">{{ 'general.status' | transloco }}</h3>
-                  <span class="text-lg font-bold">{{ checkResult.status }}</span>
-                </div>
-
                 @if (checkResult.pingMs; as pingMs) {
                   <div class="flex flex-col gap-2">
                     <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>
@@ -66,6 +61,13 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                     </span>
                   </div>
                 }
+
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-gray-400">{{ 'checkResult.details.startedAt' | transloco }}</h3>
+                  <span class="text-lg font-bold">
+                    {{ checkResult.createdAt | date: 'HH:mm:ss YYYY.MM.dd' }}
+                  </span>
+                </div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -139,9 +141,17 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
               <mat-card-content>
                 <h3 class="mb-2 ps-2 text-lg">{{ 'general.notifications' | transloco }}</h3>
                 @for (logEntry of checkResultLogEntriesStore.notifications(); track logEntry.id) {
-                  <pu-check-result-log-entry
-                    [logEntry]="logEntry"
-                    [showTimestamps]="showTimestamps()" />
+                  @if (logEntry.properties?.['notificationId']; as notificationId) {
+                    <a [routerLink]="'../../../n/' + notificationId">
+                      <pu-check-result-log-entry
+                        [logEntry]="logEntry"
+                        [showTimestamps]="showTimestamps()" />
+                    </a>
+                  } @else {
+                    <pu-check-result-log-entry
+                      [logEntry]="logEntry"
+                      [showTimestamps]="showTimestamps()" />
+                  }
                 } @empty {
                   <pu-check-result-log-entry
                     [logEntry]="{
@@ -193,6 +203,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     CopyIconButton,
     RepeatPipe,
     TranslocoPipe,
+    DatePipe,
     MonitorStatus,
   ],
 })

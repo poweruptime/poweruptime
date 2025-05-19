@@ -1,7 +1,7 @@
 package org.poweruptime.backend.features.monitor.dto
 
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.tag.Tag
 import org.poweruptime.backend.features.team.model.Team
@@ -11,7 +11,7 @@ fun Monitor.Companion.fromDto(
     team: Team,
     notificationMethods: List<NotificationMethod>,
     tags: List<Tag>,
-    attachedChecker: MonitorCheckerData
+    attachedChecker: MonitorData
 ): Monitor = Monitor(
     name = it.name,
     description = it.description,
@@ -29,7 +29,7 @@ fun Monitor.update(
     it: UpdateMonitorDto,
     notificationMethods: List<NotificationMethod>,
     tags: List<Tag>,
-    attachedChecker: MonitorCheckerData
+    attachedChecker: MonitorData
 ): Monitor {
     name = it.name
     description = it.description

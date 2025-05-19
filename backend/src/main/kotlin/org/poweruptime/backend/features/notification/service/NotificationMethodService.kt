@@ -4,13 +4,14 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
 import org.poweruptime.backend.core.*
+import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.notification.dto.*
 import org.poweruptime.backend.features.notification.model.NotificationMethod
-import org.poweruptime.backend.features.team.service.TeamService
+import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -19,12 +20,12 @@ import org.springframework.stereotype.Service
 class NotificationMethodService(
     private val notificationMethodRepository: NotificationMethodRepository,
     private val notificationMethodDataService: NotificationMethodDataService,
-    private val teamService: TeamService,
+    private val teamRepository: TeamRepository,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
     fun create(dto: CreateNotificationMethodDto): NotificationMethod = save(
         NotificationMethod.fromDto(
             dto = dto,
-            team = teamService.getByIdOrThrow(dto.teamId),
+            team = teamRepository.findByIdOrThrow(dto.teamId),
             notificationMethodDataService.save(dto.sender),
         ),
     )

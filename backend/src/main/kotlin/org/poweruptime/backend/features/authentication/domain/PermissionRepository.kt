@@ -66,6 +66,21 @@ interface PermissionRepository : Repository<TeamUser, String> {
 
     @Query(
         """
+        select count(tu)>0 from Notification n
+        join n.checkResult cr
+        join cr.monitor m
+        join m.team t
+        join t.teamUsers tu
+        where tu.id.user.id = :uId and n.id = :nId
+        """,
+    )
+    fun isPartOfByNotificationId(
+        @Param("uId") userId: String,
+        @Param("nId") notificationId: String
+    ): Boolean
+
+    @Query(
+        """
         select count(tu)>0 from StatusPage sp
         join sp.team t
         join t.teamUsers tu
@@ -146,6 +161,21 @@ interface PermissionRepository : Repository<TeamUser, String> {
 
     @Query(
         """
+        select tu from Notification n
+        join n.checkResult cr
+        join cr.monitor m
+        join m.team t
+        join t.teamUsers tu
+        where tu.id.user.id = :uId and n.id = :nId
+        """,
+    )
+    fun findByNotificationId(
+        @Param("uId") userId: String,
+        @Param("nId") notificationId: String
+    ): TeamUser?
+
+    @Query(
+        """
         select tu from StatusPage sp
         join sp.team t
         join t.teamUsers tu
@@ -199,6 +229,12 @@ fun PermissionRepository.isPartOfByNotificationMethodIdAndRole(
     role: TeamRole
 ) = (findByNotificationMethodId(userId, notificationMethodId)?.role == role)
 
+fun PermissionRepository.isPartOfByNotificationIdAndRole(
+    userId: String,
+    notificationId: String,
+    role: TeamRole
+) = (findByNotificationId(userId, notificationId)?.role == role)
+
 fun PermissionRepository.isPartOfByStatusPageAndRole(
     userId: String,
     statusPageId: String,
@@ -233,6 +269,11 @@ fun PermissionRepository.isAdminOfByNotificationMethodId(
     userId: String,
     notificationMethodId: String
 ) = isPartOfByNotificationMethodIdAndRole(userId, notificationMethodId, TeamRole.ADMIN)
+
+fun PermissionRepository.isAdminOfByNotificationId(
+    userId: String,
+    notificationId: String
+) = isPartOfByNotificationIdAndRole(userId, notificationId, TeamRole.ADMIN)
 
 fun PermissionRepository.isAdminOfByStatusPageId(
     userId: String,

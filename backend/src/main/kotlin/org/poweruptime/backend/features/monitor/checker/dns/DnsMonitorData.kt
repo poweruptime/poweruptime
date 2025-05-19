@@ -5,11 +5,14 @@ import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.validation.constraints.*
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.core.*
+import org.poweruptime.backend.features.monitor.model.MONITOR_CHECKER_DATA_TABLE_NAME
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
+import org.poweruptime.backend.features.monitor.model.MonitorType
 
-@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.DNS}")
-@DiscriminatorValue(MonitorCheckerTypes.DNS)
-class DnsMonitorCheckerData(
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorDataTypes.DNS}")
+@DiscriminatorValue(MonitorDataTypes.DNS)
+class DnsMonitorData(
     // Domain max length is 253
     @Column(name = "dns_host", length = Database.MAX_DOMAIN_LENGTH)
     @get:NotBlank
@@ -37,7 +40,7 @@ class DnsMonitorCheckerData(
 
     @Column(name = "dns_type", length = 5)
     @get:NotNull
-    val type: DnsMonitorCheckerDataType,
+    val type: DnsMonitorDataType,
 
     @Suppress("JpaAttributeTypeInspection")
     @Column(
@@ -45,7 +48,7 @@ class DnsMonitorCheckerData(
         columnDefinition = "text[]",
     )
     val matches: List<String>? = null,
-) : MonitorCheckerData(MonitorCheckerType.DNS) {
+) : MonitorData(MonitorType.DNS) {
     // ObjectMapper needs an empty constructor
-    constructor() : this("1.2.3.4", "1.2.3.4", 1, DnsMonitorCheckerDataType.TXT, null)
+    constructor() : this("1.2.3.4", "1.2.3.4", 1, DnsMonitorDataType.TXT, null)
 }

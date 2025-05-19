@@ -9,7 +9,6 @@ import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.features.monitor.MonitorScheduler
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerType
 import org.poweruptime.backend.features.monitor.domain.MonitorRepository
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
@@ -18,6 +17,7 @@ import org.poweruptime.backend.features.monitor.dto.fromDto
 import org.poweruptime.backend.features.monitor.dto.update
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.domain.TeamRepository
@@ -30,7 +30,7 @@ class MonitorService(
     private val monitorRepository: MonitorRepository,
     private val teamRepository: TeamRepository,
     private val monitorScheduler: MonitorScheduler,
-    private val monitorCheckerDataService: MonitorCheckerDataService,
+    private val monitorDataService: MonitorDataService,
     private val notificationMethodService: NotificationMethodService,
     private val tagService: TagService,
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
@@ -49,7 +49,7 @@ class MonitorService(
                 team = team,
                 notificationMethods = notificationMethods,
                 tags = tagService.getByTeamIdAndNames(team, dto.tags),
-                attachedChecker = monitorCheckerDataService.save(dto.checker),
+                attachedChecker = monitorDataService.save(dto.checker),
             ),
         ).start()
     }
@@ -62,7 +62,7 @@ class MonitorService(
         )
 
         val oldCheckerId = it.checker.id
-        val newChecker = monitorCheckerDataService.save(dto.checker)
+        val newChecker = monitorDataService.save(dto.checker)
 
         val monitor = monitorRepository.saveAndFlush(
             it.update(
@@ -73,7 +73,7 @@ class MonitorService(
             ),
         ).stop().start()
 
-        monitorCheckerDataService.finalDeleteById(oldCheckerId)
+        monitorDataService.finalDeleteById(oldCheckerId)
 
         monitor
     }
@@ -89,11 +89,11 @@ class MonitorService(
         val monitor = getByIdOrThrow(id)
         super.deleteByIdOrThrow(id)
 
-        monitorCheckerDataService.deleteByIdOrThrow(monitor.checker.id)
+        monitorDataService.deleteByIdOrThrow(monitor.checker.id)
     }
 
     override fun undeleteById(id: String): Monitor = super.undeleteById(id).let {
-        monitorCheckerDataService.undeleteById(it.checker.id)
+        monitorDataService.undeleteById(it.checker.id)
         it.start()
         it
     }
@@ -131,7 +131,7 @@ class MonitorService(
         name: String? = null,
         enabledNotificationMethodIds: List<String>? = null,
         statuses: List<MonitorStatus>? = null,
-        types: List<MonitorCheckerType>? = null,
+        types: List<MonitorType>? = null,
         tags: List<String>? = null,
         usedInStatusPageGroupIds: List<String>? = null,
         deleted: Boolean = false

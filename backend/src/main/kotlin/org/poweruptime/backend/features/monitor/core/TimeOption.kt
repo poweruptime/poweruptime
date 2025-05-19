@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.model
+package org.poweruptime.backend.features.monitor.core
 
 enum class TimeOption(val hours: Long) {
     ONE_HOUR(1),

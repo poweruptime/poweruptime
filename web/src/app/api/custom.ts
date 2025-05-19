@@ -3,6 +3,8 @@ import type {components, operations} from './api-types';
 export type BackendType = components['schemas'];
 export type BackendOperation = operations;
 
+export type MonitorDataType = BackendType['MonitorData']['_type'];
+
 export const MONITOR_CHECKER_DATA_TYPES = [
   {
     label: 'monitor.checker.DNS',
@@ -24,7 +26,7 @@ export const MONITOR_CHECKER_DATA_TYPES = [
     label: 'monitor.checker.SSL_CERTIFICATE',
     value: 'SSL_CERTIFICATE',
   },
-] satisfies {value: BackendType['MonitorCheckerData']['_type']; label: string}[];
+] satisfies {value: MonitorDataType; label: string}[];
 
 export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
   {

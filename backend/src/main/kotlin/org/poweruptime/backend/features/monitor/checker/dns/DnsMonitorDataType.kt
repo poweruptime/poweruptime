@@ -2,7 +2,7 @@ package org.poweruptime.backend.features.monitor.checker.dns
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-enum class DnsMonitorCheckerDataType : ADatabaseEnumConvertable {
+enum class DnsMonitorDataType : ADatabaseEnumConvertable {
     A {
         override val code = "A"
     },

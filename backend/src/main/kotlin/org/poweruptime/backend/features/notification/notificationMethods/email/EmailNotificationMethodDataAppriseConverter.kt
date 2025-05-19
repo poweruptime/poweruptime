@@ -1,10 +1,10 @@
 package org.poweruptime.backend.features.notification.notificationMethods.email
 
 import org.poweruptime.backend.features.mail.EmailSecurity
-import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseDto
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
 class EmailNotificationMethodDataAppriseConverter(
     override val type: NotificationMethodDataType = NotificationMethodDataType.EMAIL,

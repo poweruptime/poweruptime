@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
 import java.time.Duration
 import java.time.Instant
 
@@ -14,7 +14,7 @@ class PingMonitorCheckerTest {
     @Test
     fun `test if simple works`(): Unit = pingMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            PingMonitorCheckerData(
+            PingMonitorData(
                 ip = "8.8.8.8",
                 port = 53,
             ),
@@ -29,7 +29,7 @@ class PingMonitorCheckerTest {
         val now = Instant.now()
         pingMonitorChecker.execute(
             ModelFactory.getTestMonitor(
-                PingMonitorCheckerData(
+                PingMonitorData(
                     ip = "8.8.8.8",
                     port = 1234,
                 ),
@@ -45,7 +45,7 @@ class PingMonitorCheckerTest {
     @Test
     fun `test if not existing fails`(): Unit = pingMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            PingMonitorCheckerData(
+            PingMonitorData(
                 ip = "10.0.30.123",
                 port = 80,
             ),

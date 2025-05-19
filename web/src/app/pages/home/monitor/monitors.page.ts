@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {MatAnchor, MatButton} from '@angular/material/button';
-import {MatChip, MatChipListbox, MatChipOption} from '@angular/material/chips';
+import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {BackendType} from '@app/api';
+import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {TeamSelect} from '@app/components/team-select';
 import {IsTeamAdmin} from '@app/directives';
@@ -87,7 +87,7 @@ import {arrayToParam, paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="content grow overflow-y-auto overflow-x-hidden pb-24 pe-2">
+      <div class="content grow overflow-y-auto overflow-x-hidden px-2 pb-24">
         <router-outlet />
       </div>
     </div>
@@ -139,7 +139,7 @@ export class MonitorsPage {
     stringify: arrayToParam(),
   });
   readonly typesFilter = linkedQueryParam('search.type', {
-    parse: paramToArray<BackendType['MonitorCheckerData']['_type']>(),
+    parse: paramToArray<MonitorDataType>(),
     stringify: arrayToParam(),
   });
   readonly tagsFilter = linkedQueryParam('search.tag', {

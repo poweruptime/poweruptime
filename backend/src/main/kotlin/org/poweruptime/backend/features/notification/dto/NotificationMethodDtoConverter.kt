@@ -1,7 +1,7 @@
 package org.poweruptime.backend.features.notification.dto
 
-import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.team.model.Team
 import java.security.MessageDigest
 

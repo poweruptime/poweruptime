@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.notification.core
+package org.poweruptime.backend.features.monitor.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -8,13 +8,17 @@ import jakarta.persistence.*
 import org.poweruptime.backend.core.SmallNanoId
 import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.features.monitor.core.MonitorDataTypeResolver
 
-@Entity(name = NOTIFICATION_METHOD_DATA_TABLE_NAME)
+/**
+ * Base entity for a MonitorCheckerData.
+ */
+@Entity(name = MONITOR_CHECKER_DATA_TABLE_NAME)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "_type", discriminatorType = DiscriminatorType.STRING)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
-@JsonTypeIdResolver(NotificationMethodDataTypeResolver::class)
-abstract class NotificationMethodData(
+@JsonTypeIdResolver(MonitorDataTypeResolver::class)
+abstract class MonitorData(
     /**
      * This maps the discriminator column to a read-only property.
      * It's marked as insertable = false, updatable = false because the discriminator
@@ -23,7 +27,7 @@ abstract class NotificationMethodData(
     @Column(name = "_type", insertable = false, updatable = false)
     @Suppress("PropertyName", "ConstructorParameterNaming")
     @JsonProperty("_type")
-    open val _type: NotificationMethodDataType
+    open val _type: MonitorType
 ) : ASoftDeleteEntity() {
     @Id
     @SmallNanoId
@@ -32,4 +36,4 @@ abstract class NotificationMethodData(
     override lateinit var id: String
 }
 
-const val NOTIFICATION_METHOD_DATA_TABLE_NAME = "notification_method_data"
+const val MONITOR_CHECKER_DATA_TABLE_NAME = "monitor_data"

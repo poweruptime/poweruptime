@@ -9,11 +9,14 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.core.*
+import org.poweruptime.backend.features.monitor.model.MONITOR_CHECKER_DATA_TABLE_NAME
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
+import org.poweruptime.backend.features.monitor.model.MonitorType
 
-@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorCheckerTypes.SSL_CERTIFICATE}")
-@DiscriminatorValue(MonitorCheckerTypes.SSL_CERTIFICATE)
-class SSLCertificateMonitorCheckerData(
+@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorDataTypes.SSL_CERTIFICATE}")
+@DiscriminatorValue(MonitorDataTypes.SSL_CERTIFICATE)
+class SSLCertificateMonitorData(
     @Column(name = "ssl_certificate_url", length = Database.MAX_URL_LENGTH)
     @get:NotBlank
     @get:Size(
@@ -26,7 +29,7 @@ class SSLCertificateMonitorCheckerData(
     @get:Min(Database.MIN_VALID_DAYS_LEFT)
     @get:Max(Database.MAX_VALID_DAYS_LEFT)
     val validDaysLeft: Long? = null,
-) : MonitorCheckerData(MonitorCheckerType.SSL_CERTIFICATE) {
+) : MonitorData(MonitorType.SSL_CERTIFICATE) {
     // ObjectMapper needs an empty constructor
     constructor() : this(
         "1.2.3.4",

@@ -2,6 +2,7 @@ package org.poweruptime.backend.features.monitor.checker.dns
 
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.slf4j.LoggerFactory
 import org.xbill.DNS.*
 import java.net.InetAddress
@@ -12,11 +13,11 @@ private const val DNS_ANSWER_SECTION = 1
 class DnsMonitorChecker : MonitorChecker {
     private val logger = LoggerFactory.getLogger(DnsMonitorChecker::class.java)
 
-    override val type = MonitorCheckerType.DNS
+    override val type = MonitorType.DNS
 
     @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
     override fun execute(monitor: Monitor): CheckResultDto {
-        val dnsMonitorCheckerData = monitor.checker as DnsMonitorCheckerData
+        val dnsMonitorCheckerData = monitor.checker as DnsMonitorData
 
         val result = MonitoringResultHandler()
         try {
@@ -80,7 +81,7 @@ class DnsMonitorChecker : MonitorChecker {
     private fun getDNSAnswerSection(
         resolver: Resolver,
         host: String,
-        type: DnsMonitorCheckerDataType
+        type: DnsMonitorDataType
     ): String = resolver.send(
         Message.newQuery(
             Record.newRecord(
@@ -91,23 +92,23 @@ class DnsMonitorChecker : MonitorChecker {
         ),
     ).sectionToString(DNS_ANSWER_SECTION).trimMargin()
 
-    private fun parseAnswerSection(answerSection: String, type: DnsMonitorCheckerDataType): List<String> =
+    private fun parseAnswerSection(answerSection: String, type: DnsMonitorDataType): List<String> =
         answerSection.lines()
             .filter { it.contains("IN\t${type.name}") }
             .map { it.split(type.name).last().trim() }
 }
 
-private fun DnsMonitorCheckerDataType.toRecordType() = when (this) {
-    DnsMonitorCheckerDataType.A -> Type.A
-    DnsMonitorCheckerDataType.AAAA -> Type.AAAA
-    DnsMonitorCheckerDataType.CAA -> Type.CAA
-    DnsMonitorCheckerDataType.CNAME -> Type.CNAME
-    DnsMonitorCheckerDataType.MX -> Type.MX
-    DnsMonitorCheckerDataType.NS -> Type.NS
-    DnsMonitorCheckerDataType.PTR -> Type.PTR
-    DnsMonitorCheckerDataType.SOA -> Type.PTR
-    DnsMonitorCheckerDataType.SRV -> Type.SRV
-    DnsMonitorCheckerDataType.TXT -> Type.TXT
+private fun DnsMonitorDataType.toRecordType() = when (this) {
+    DnsMonitorDataType.A -> Type.A
+    DnsMonitorDataType.AAAA -> Type.AAAA
+    DnsMonitorDataType.CAA -> Type.CAA
+    DnsMonitorDataType.CNAME -> Type.CNAME
+    DnsMonitorDataType.MX -> Type.MX
+    DnsMonitorDataType.NS -> Type.NS
+    DnsMonitorDataType.PTR -> Type.PTR
+    DnsMonitorDataType.SOA -> Type.PTR
+    DnsMonitorDataType.SRV -> Type.SRV
+    DnsMonitorDataType.TXT -> Type.TXT
 }
 
 private fun String.parseDnsHost() = if (endsWith(".")) this else "$this."

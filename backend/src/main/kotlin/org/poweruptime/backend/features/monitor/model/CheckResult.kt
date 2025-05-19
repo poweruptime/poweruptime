@@ -16,7 +16,7 @@ import java.time.Instant
 class CheckResult(
     /**
      * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see MonitorStatusDatabaseConverter
+     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
      */
     @ColumnDefault("'$MONITOR_STATUS_PENDING'")
     @Column(name = "status", nullable = false, length = 1)
@@ -32,7 +32,7 @@ class CheckResult(
 
     /**
      * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see MonitorStatusDatabaseConverter
+     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
      */
     @Column(name = "previous_status", nullable = true, length = 1)
     var previousStatus: MonitorStatus? = null,

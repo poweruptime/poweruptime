@@ -35,7 +35,7 @@ create table instance_setting
     value       varchar(60)                            not null
 );
 
-create table monitor_checker_data
+create table monitor_data
 (
     created_at timestamp with time zone default now() not null,
     deleted    timestamp with time zone,
@@ -46,22 +46,22 @@ create table monitor_checker_data
     _type      varchar(31)                            not null
 );
 
-create table monitor_checker_data_dns
+create table monitor_data_dns
 (
     dns_port    integer      not null
-        constraint monitor_checker_data_dns_dns_port_check
+        constraint monitor_data_dns_dns_port_check
             check ((dns_port <= 65535) AND (dns_port >= 1)),
     dns_type    varchar(5)   not null,
     id          varchar(12)  not null
         primary key
-        constraint fkp2cn82uphyttx7itapj5k0uvc
-            references monitor_checker_data,
+        constraint fk18tijgh1mpxqdd0w0n6oohb68
+            references monitor_data,
     dns_server  varchar(15)  not null,
     dns_host    varchar(253) not null,
     dns_matches text[]
 );
 
-create table monitor_checker_data_http
+create table monitor_data_http
 (
     http_certificate_expiry          boolean       not null,
     http_content_type                varchar(4)    not null,
@@ -69,15 +69,15 @@ create table monitor_checker_data_http
     http_auth_type                   varchar(5),
     http_method                      varchar(7)    not null,
     http_certificate_valid_days_left bigint
-        constraint monitor_checker_data_http_http_certificate_valid_days_lef_check
+        constraint monitor_data_http_http_certificate_valid_days_left_check
             check ((http_certificate_valid_days_left <= 3650) AND (http_certificate_valid_days_left >= 1)),
     http_max_redirects               bigint
-        constraint monitor_checker_data_http_http_max_redirects_check
+        constraint monitor_data_http_http_max_redirects_check
             check ((http_max_redirects <= 20) AND (http_max_redirects >= 1)),
     id                               varchar(12)   not null
         primary key
-        constraint fk3jcho78xid46flf824cn981l7
-            references monitor_checker_data,
+        constraint fk9prtnbpjkwgr5wxqgkyn1yflf
+            references monitor_data,
     http_basic_auth_password         varchar(512),
     http_basic_auth_username         varchar(512),
     http_url                         varchar(2048) not null,
@@ -86,36 +86,36 @@ create table monitor_checker_data_http
     http_allowed_status_code_ranges  text[]        not null
 );
 
-create table monitor_checker_data_ping
+create table monitor_data_ping
 (
     ping_port integer     not null
-        constraint monitor_checker_data_ping_ping_port_check
+        constraint monitor_data_ping_ping_port_check
             check ((ping_port <= 65535) AND (ping_port >= 1)),
     id        varchar(12) not null
         primary key
-        constraint fkc0sya6po9ek4pb58c71t9d7ir
-            references monitor_checker_data,
+        constraint fkntbraa0f1swb685qnvnp9l25d
+            references monitor_data,
     ping_ip   varchar(15) not null
 );
 
-create table monitor_checker_data_push
+create table monitor_data_push
 (
     id      varchar(12) not null
         primary key
-        constraint fkds3hqsb24pohqknqxr9hsuv6o
-            references monitor_checker_data,
+        constraint fk7u16851jqsfwgrefmho4djfrf
+            references monitor_data,
     push_id varchar(12) not null
 );
 
-create table monitor_checker_data_ssl_certificate
+create table monitor_data_ssl_certificate
 (
     ssl_certificate_valid_days_left bigint
-        constraint monitor_checker_data_ssl_cer_ssl_certificate_valid_days_l_check
+        constraint monitor_data_ssl_certificate_ssl_certificate_valid_days_l_check
             check ((ssl_certificate_valid_days_left <= 3650) AND (ssl_certificate_valid_days_left >= 1)),
     id                              varchar(12)   not null
         primary key
-        constraint fk80p26rbrcku8li0r8b2bbeaav
-            references monitor_checker_data,
+        constraint fk9nkss2wl59anfos2tcf9nurr6
+            references monitor_data,
     ssl_certificate_url             varchar(2048) not null
 );
 
@@ -133,7 +133,7 @@ create table monitor_push_entry
     message    varchar(4000)
 );
 
-create table notification_sender_data
+create table notification_method_data
 (
     created_at timestamp with time zone default now() not null,
     deleted    timestamp with time zone,
@@ -144,27 +144,27 @@ create table notification_sender_data
     _type      varchar(31)                            not null
 );
 
-create table notification_sender_data_discord
+create table notification_method_data_discord
 (
     id                   varchar(12)   not null
         primary key
-        constraint fk3um3aiqcc3wjtdcwtam2ayttg
-            references notification_sender_data,
+        constraint fkd9tseko3yyiahh0ugnv0m11ew
+            references notification_method_data,
     discord_display_name varchar(32),
     discord_url          varchar(2048) not null
 );
 
-create table notification_sender_data_email
+create table notification_method_data_email
 (
     mail_ignore_tls_errors boolean      not null,
     mail_port              integer      not null
-        constraint notification_sender_data_email_mail_port_check
+        constraint notification_method_data_email_mail_port_check
             check ((mail_port <= 65535) AND (mail_port >= 1)),
     mail_security          varchar(1)   not null,
     id                     varchar(12)  not null
         primary key
-        constraint fkq7lm3g53kgx2kdm51k9bpvktg
-            references notification_sender_data,
+        constraint fkjamqbi6j1ymq9yrhkl6gcayux
+            references notification_method_data,
     mail_host              varchar(253) not null,
     mail_password          varchar(512) not null,
     mail_username          varchar(512) not null,
@@ -173,12 +173,12 @@ create table notification_sender_data_email
     mail_to                text[]       not null
 );
 
-create table notification_sender_data_slack
+create table notification_method_data_slack
 (
     id                 varchar(12)   not null
         primary key
-        constraint fk2btfjks0gtw9c0xgy1aapa3sq
-            references notification_sender_data,
+        constraint fktrn1cmctev79t7w99r0pjc3ol
+            references notification_method_data,
     slack_display_name varchar(32),
     slack_url          varchar(2048) not null
 );
@@ -224,8 +224,8 @@ create table monitor
         primary key,
     monitor_checker_id    varchar(12)                            not null
         unique
-        constraint fk5ohxe2d9p1g23fynekb1fm7eb
-            references monitor_checker_data,
+        constraint fkm9dp0oquy4hdmcl6lcywvig9v
+            references monitor_data,
     team_id               varchar(12)                            not null
         constraint fkrluqncxivlvt0hoq2qx9th5j4
             references team
@@ -285,6 +285,21 @@ create table historical_day_uptime
     unique (date, monitor_id)
 );
 
+create table notification
+(
+    created_at      timestamp with time zone default now() not null,
+    updated_at      timestamp with time zone default now() not null,
+    version         bigint                   default 0     not null,
+    id              varchar(21)                            not null
+        primary key,
+    check_result_id varchar(25)                            not null
+        constraint fkjwvawbiyb7f0oju5bk0t6elnr
+            references check_result
+            on delete cascade,
+    title                  varchar(2000)                          not null,
+    message                varchar(4000)
+);
+
 create table notification_method
 (
     used_by_default             boolean                  default false not null,
@@ -294,10 +309,10 @@ create table notification_method
     version                     bigint                   default 0     not null,
     id                          varchar(12)                            not null
         primary key,
-    notification_sender_data_id varchar(12)                            not null
+    notification_method_data_id varchar(12)                            not null
         unique
-        constraint fkbnqra8mw4iv61o10qcn7kynlj
-            references notification_sender_data
+        constraint fkk45t238ha6osreq5n19oh3cvy
+            references notification_method_data
             on delete cascade,
     team_id                     varchar(12)                            not null
         constraint fk1g2dj2vpsy52maiyiyswejly4
@@ -316,28 +331,6 @@ create table monitor_notification_method
     notification_method_id varchar(12) not null
         constraint fkptg71on4kyg3kulgoh2wymsg5
             references notification_method
-);
-
-create table notification
-(
-    created_at             timestamp with time zone default now() not null,
-    picked_up_at           timestamp with time zone,
-    sent_at                timestamp with time zone,
-    updated_at             timestamp with time zone default now() not null,
-    version                bigint                   default 0     not null,
-    notification_method_id varchar(12)                            not null
-        constraint fk5w4ml1ltw07w2bvkbbiaqbofs
-            references notification_method
-            on delete cascade,
-    check_result_id        varchar(25)                            not null
-        constraint fkjwvawbiyb7f0oju5bk0t6elnr
-            references check_result
-            on delete cascade,
-    id                     varchar(25)                            not null
-        primary key,
-    title                  varchar(2000)                          not null,
-    error                  varchar(4000),
-    message                varchar(4000)
 );
 
 create table status_page
@@ -415,9 +408,31 @@ create table status_page_group_monitor
     unique (status_page_id, monitor_id)
 );
 
+create table sub_notification
+(
+    created_at             timestamp with time zone default now() not null,
+    picked_up_at           timestamp with time zone,
+    sent_at                timestamp with time zone,
+    updated_at             timestamp with time zone default now() not null,
+    version                bigint                   default 0     not null,
+    notification_method_id varchar(12)                            not null
+        constraint fkdryroyo6u45hxheq8cud54s6h
+            references notification_method
+            on delete cascade,
+    notification_id        varchar(21)                            not null
+        constraint fk8wfegwu73od3c3320oen1xwy8
+            references notification
+            on delete cascade,
+    id                     varchar(25)                            not null
+        primary key,
+    title                  varchar(2000)                          not null,
+    error                  varchar(4000),
+    message                varchar(4000)
+);
+
 create table tag
 (
-    variant  varchar(1) not null,
+    variant    varchar(1)                             not null,
     created_at timestamp with time zone default now() not null,
     deleted    timestamp with time zone,
     updated_at timestamp with time zone default now() not null,
@@ -470,9 +485,9 @@ create table "user"
         unique
         constraint fkeukpy99fybt6wyx9ojnau1nhb
             references team,
-    name                  varchar(70)              collate numeric       not null,
-    password_hash         varchar(68)                                    not null,
-    email                 varchar(255)                                   not null
+    password_hash         varchar(68)                            not null,
+    name                  varchar(70) collate numeric            not null,
+    email                 varchar(255)                           not null
         unique
 );
 
@@ -515,9 +530,9 @@ create table mfa_backup_code
     mfa_id     varchar(12)                            not null
         constraint fki960t04n7pkv6r44nhe0527vp
             references mfa,
-    code_hash       varchar(68)                            not null,
     id         varchar(25)                            not null
         primary key,
+    code_hash  varchar(68)                            not null,
     unique (mfa_id, code_hash)
 );
 

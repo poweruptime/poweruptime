@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
-import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat

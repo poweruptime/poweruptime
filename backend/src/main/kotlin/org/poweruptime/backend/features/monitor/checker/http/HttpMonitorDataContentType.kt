@@ -2,7 +2,7 @@ package org.poweruptime.backend.features.monitor.checker.http
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-enum class HttpMonitorCheckerDataContentType : ADatabaseEnumConvertable {
+enum class HttpMonitorDataContentType : ADatabaseEnumConvertable {
     JSON {
         override val code = "JSON"
     },

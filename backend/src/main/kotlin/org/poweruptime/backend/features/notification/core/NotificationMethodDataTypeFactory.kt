@@ -5,17 +5,17 @@ import org.poweruptime.backend.features.notification.notificationMethods.email.E
 import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodData
 
 class NotificationMethodDataTypeFactory {
-    private val sendersData = mapOf(
+    private val dataTypes = mapOf(
         NotificationMethodDataTypes.DISCORD to DiscordNotificationMethodData::class.java,
         NotificationMethodDataTypes.EMAIL to EmailNotificationMethodData::class.java,
         NotificationMethodDataTypes.SLACK to SlackNotificationMethodData::class.java,
     )
 
     fun toClass(monitorType: String): Class<*> =
-        sendersData[monitorType] ?: throw IllegalArgumentException("Unknown method data: $monitorType")
+        dataTypes[monitorType] ?: throw IllegalArgumentException("Unknown method data: $monitorType")
 
     fun toStringRepresentation(klass: Class<*>?): String = klass?.let { k ->
-        sendersData.entries.find { it.value == k }?.key
+        dataTypes.entries.find { it.value == k }?.key
             ?: throw IllegalArgumentException("Unknown method data class: ${k.name}")
     } ?: throw IllegalArgumentException("Class cannot be null")
 }

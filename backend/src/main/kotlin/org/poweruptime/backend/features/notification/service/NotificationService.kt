@@ -10,10 +10,8 @@ import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.model.CheckResult
-import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.domain.NotificationRepository
 import org.poweruptime.backend.features.notification.model.Notification
@@ -26,34 +24,28 @@ import org.springframework.stereotype.Service
 class NotificationService(
     private val notificationRepository: NotificationRepository,
     private val subNotificationService: SubNotificationService,
-    private val checkResultLogEntryService: CheckResultLogEntryService,
 ) : AEntityService<Notification>(notificationRepository) {
+
     @Transactional
     fun send(monitor: Monitor, checkResult: CheckResult): Notification {
-        val notification = save(Notification(checkResult))
+        val notification = repository.save(
+            Notification(
+                checkResult = checkResult,
+                title = checkResult.title!!,
+                message = checkResult.message,
+            ),
+        )
 
-        // Create and queue sub notifications for each enabled method
-        val subNotifications = monitor.enabledNotificationMethods.map { method ->
+        val subs = monitor.enabledNotificationMethods.map { method ->
             SubNotification(
                 notification = notification,
                 method = method,
-                title = checkResult.title
-                    ?: throw IllegalArgumentException("Title cannot be null at this point."),
+                title = checkResult.title!!,
                 message = checkResult.message,
             )
         }
 
-        subNotificationService.saveAll(subNotifications).forEach { subNotification ->
-            subNotificationService.queueNotification(subNotification.id)
-
-            checkResultLogEntryService.info(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResult = checkResult,
-                message = """Queued "${subNotification.method.name}" notification""",
-                properties = mapOf("subNotificationId" to subNotification.id),
-            )
-        }
-
+        notification.subNotifications = subNotificationService.saveAll(subs)
         return notification
     }
 
@@ -90,7 +82,7 @@ class NotificationService(
                 criteriaBuilder.and(
                     *buildList {
                         statuses?.let { add(Filter("checkResult.status", it, FilterCompare.IN)) }
-                        methods?.let { add(Filter("subNotifications.method", it, FilterCompare.IN)) }
+                        methods?.let { add(Filter("subNotifications.method.data._type", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
                             add(Filter("checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
                         }

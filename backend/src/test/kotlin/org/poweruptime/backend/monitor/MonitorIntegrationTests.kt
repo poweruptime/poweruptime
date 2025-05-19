@@ -9,14 +9,14 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerDataType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataContentType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataMethod
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataContentType
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataMethod
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorData
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
 import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,31 +27,31 @@ class MonitorIntegrationTests(
     @Autowired val mockMvc: MockMvc,
     @Autowired val instanceSettingService: InstanceSettingService
 ) : BaseTestWithReusingContainers() {
-    private val dnsMonitorCheckerData = DnsMonitorCheckerData(
+    private val dnsMonitorCheckerData = DnsMonitorData(
         host = "playground.dafnik.me",
         server = "9.9.9.9",
         port = 53,
-        type = DnsMonitorCheckerDataType.CNAME,
+        type = DnsMonitorDataType.CNAME,
         matches = listOf("dafnik.github.io."),
     )
 
     private val monitorCheckers = listOf(
         dnsMonitorCheckerData,
-        HttpMonitorCheckerData(
+        HttpMonitorData(
             url = "https://expired.badssl.com/",
-            method = HttpMonitorCheckerDataMethod.GET,
-            contentType = HttpMonitorCheckerDataContentType.JSON,
+            method = HttpMonitorDataMethod.GET,
+            contentType = HttpMonitorDataContentType.JSON,
             ignoreTLS = true,
             allowedStatusCodeRanges = listOf("200 - 299"),
         ),
-        PingMonitorCheckerData(
+        PingMonitorData(
             ip = "1.1.1.1",
             port = 80,
         ),
-        PushMonitorCheckerData(
+        PushMonitorData(
             pushId = RandomGenerator.nanoId(),
         ),
-        SSLCertificateMonitorCheckerData(
+        SSLCertificateMonitorData(
             url = "https://dafnik.me",
             validDaysLeft = 30,
         ),

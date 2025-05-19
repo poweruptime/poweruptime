@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.DatabindContext
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
 
-class MonitorCheckerDataTypeResolver : TypeIdResolverBase() {
-    private val monitorCheckerDataTypeFactory = MonitorCheckerDataTypeFactory()
+class MonitorDataTypeResolver : TypeIdResolverBase() {
+    private val monitorDataTypeFactory = MonitorDataTypeFactory()
 
     private lateinit var superType: JavaType
 
@@ -19,12 +19,12 @@ class MonitorCheckerDataTypeResolver : TypeIdResolverBase() {
     override fun typeFromId(context: DatabindContext, id: String): JavaType =
         context.constructSpecializedType(
             superType,
-            monitorCheckerDataTypeFactory.toClass(id),
+            monitorDataTypeFactory.toClass(id),
         )
 
     override fun idFromValue(value: Any?): String =
-        monitorCheckerDataTypeFactory.toStringRepresentation(value?.javaClass)
+        monitorDataTypeFactory.toStringRepresentation(value?.javaClass)
 
     override fun idFromValueAndType(value: Any?, suggestedType: Class<*>?): String =
-        monitorCheckerDataTypeFactory.toStringRepresentation(value?.javaClass)
+        monitorDataTypeFactory.toStringRepresentation(value?.javaClass)
 }

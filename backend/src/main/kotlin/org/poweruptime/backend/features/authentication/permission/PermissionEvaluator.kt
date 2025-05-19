@@ -92,6 +92,14 @@ class PermissionEvaluator(val permissionRepository: PermissionRepository) : Perm
             userId,
             targetEntityId,
         )
+        Permission.NotificationAdmin -> permissionRepository.isAdminOfByNotificationId(
+            userId,
+            targetEntityId,
+        )
+        Permission.NotificationMember -> permissionRepository.isPartOfByNotificationId(
+            userId,
+            targetEntityId,
+        )
         Permission.StatusPageAdmin -> permissionRepository.isAdminOfByStatusPageId(
             userId,
             targetEntityId,

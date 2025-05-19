@@ -97,7 +97,13 @@ export function authInterceptor(
                 );
                 toast.error(
                   'Something did not work out during the session refresh! On prod you would have been logged out and the window would have been force refreshed.',
-                  {duration: 20000},
+                  {
+                    duration: 20000,
+                    action: {
+                      label: 'Logout',
+                      onClick: () => authStore.logout(),
+                    },
+                  },
                 );
               }
 

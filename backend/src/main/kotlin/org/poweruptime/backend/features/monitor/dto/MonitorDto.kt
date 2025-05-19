@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.dto.NotificationMethodMinResponse
 import org.poweruptime.backend.features.tag.TagDto
@@ -135,7 +135,7 @@ data class MonitorMaxResponse(
     val retries: Long?,
     val resendAfter: Long?,
     val upsideDown: Boolean,
-    val checker: MonitorCheckerData,
+    val checker: MonitorData,
     val uptime: PublicMonitorUptimeStatistics,
 ) {
     constructor(
@@ -172,7 +172,7 @@ data class MonitorFullResponse(
     val retries: Long?,
     val resendAfter: Long?,
     val upsideDown: Boolean,
-    val checker: MonitorCheckerData,
+    val checker: MonitorData,
     val uptime: PublicMonitorUptimeStatistics,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
@@ -213,7 +213,7 @@ data class CreateMonitorDto(
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
-    @get:NotNull val checker: MonitorCheckerData,
+    @get:NotNull val checker: MonitorData,
     @get:NotNull val notificationMethodIds: List<String>,
     @get:NotNull val tags: List<TagDto>,
 )
@@ -229,7 +229,7 @@ data class UpdateMonitorDto(
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
-    @get:NotNull val checker: MonitorCheckerData,
+    @get:NotNull val checker: MonitorData,
     @get:NotNull val notificationMethodIds: List<String>,
     @get:NotNull val tags: List<TagDto>,
 )

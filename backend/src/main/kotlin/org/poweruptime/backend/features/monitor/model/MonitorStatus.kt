@@ -1,8 +1,6 @@
 package org.poweruptime.backend.features.monitor.model
 
-import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
-import org.poweruptime.backend.core.models.ADatabaseEnumConverter
 
 const val MONITOR_STATUS_UP = "U"
 const val MONITOR_STATUS_DOWN = "D"
@@ -26,9 +24,4 @@ enum class MonitorStatus : ADatabaseEnumConvertable {
     PAUSED {
         override val code = MONITOR_STATUS_PAUSED
     },
-}
-
-@Converter(autoApply = true)
-class MonitorStatusDatabaseConverter : ADatabaseEnumConverter<MonitorStatus>() {
-    override fun getKeys(): Array<MonitorStatus> = MonitorStatus.entries.toTypedArray()
 }

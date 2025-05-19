@@ -5,6 +5,7 @@ import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.domain.IPushMonitorCheckerEntryRepository
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,10 +17,10 @@ class PushMonitorChecker(
 ) : MonitorChecker {
     private val logger: Logger = LoggerFactory.getLogger(PushMonitorChecker::class.java)
 
-    override val type = MonitorCheckerType.PUSH
+    override val type = MonitorType.PUSH
 
     override fun execute(monitor: Monitor): CheckResultDto {
-        val pushMonitorCheckerData = monitor.checker as PushMonitorCheckerData
+        val pushMonitorCheckerData = monitor.checker as PushMonitorData
 
         logger.debug(
             """Checking for push request for monitor "{}" with id "{}", push id: "{}"""",

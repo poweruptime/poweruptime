@@ -17,12 +17,16 @@ data class NotificationMinResponse(
 data class NotificationResponse(
     val id: String,
     val checkResult: CheckResultMinResponse,
+    val title: String,
+    val message: String?,
     val createdAt: Instant,
     val monitor: MonitorMinResponse
 ) {
     constructor(it: Notification) : this(
         id = it.id,
         checkResult = CheckResultMinResponse(it.checkResult),
+        title = it.title,
+        message = it.message,
         createdAt = it.createdAt,
         monitor = MonitorMinResponse(it.checkResult.monitor),
     )

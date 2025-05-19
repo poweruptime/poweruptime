@@ -5,10 +5,10 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
+import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.monitor.service.calculateHistoricalUptime
 import org.poweruptime.backend.features.monitor.service.calculateUptimeFromCheckResults
 import java.math.BigDecimal

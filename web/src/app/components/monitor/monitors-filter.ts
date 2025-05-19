@@ -12,7 +12,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 
-import {BackendType} from '@app/api';
+import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
 
 @Component({
@@ -93,7 +93,7 @@ export class MonitorsFilter {
   form = this.fb.group({
     search: [''],
     statuses: this.fb.control<BackendType['MonitorResponse']['status'][]>([]),
-    types: this.fb.control<BackendType['MonitorCheckerData']['_type'][]>([]),
+    types: this.fb.control<MonitorDataType[]>([]),
     tags: this.fb.control<string[]>([]),
   });
 

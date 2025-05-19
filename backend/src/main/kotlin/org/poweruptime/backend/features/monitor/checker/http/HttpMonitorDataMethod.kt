@@ -2,7 +2,7 @@ package org.poweruptime.backend.features.monitor.checker.http
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-enum class HttpMonitorCheckerDataMethod : ADatabaseEnumConvertable {
+enum class HttpMonitorDataMethod : ADatabaseEnumConvertable {
     GET {
         override val code = "GET"
     },

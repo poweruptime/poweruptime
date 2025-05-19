@@ -10,7 +10,6 @@ import org.poweruptime.backend.core.models.EntityWithName
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.monitor.model.Monitor
-import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.team.model.Team
 
 @Entity

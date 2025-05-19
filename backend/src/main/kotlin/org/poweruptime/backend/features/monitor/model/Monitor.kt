@@ -8,7 +8,6 @@ import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.models.EntityWithName
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerData
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import org.poweruptime.backend.features.tag.Tag
@@ -33,7 +32,7 @@ class Monitor(
 
     @JoinColumn(name = "monitor_checker_id", nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
-    var checker: MonitorCheckerData,
+    var checker: MonitorData,
 
     @Column(name = "retries", nullable = true, columnDefinition = "bigint")
     var retries: Long? = null,
@@ -46,7 +45,7 @@ class Monitor(
 
     /**
      * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see MonitorStatusDatabaseConverter
+     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
      */
     @Column(name = "status", nullable = false, length = 1)
     var status: MonitorStatus = MonitorStatus.PENDING,
