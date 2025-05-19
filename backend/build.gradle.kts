@@ -45,6 +45,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.18.0")
 
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
+    implementation("org.jsoup:jsoup:1.20.1")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")

@@ -2,11 +2,11 @@ package org.poweruptime.backend.features.notification.notificationMethods.discor
 
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseDto
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
 class DiscordNotificationMethodDataAppriseConverter(
-    override val type: NotificationMethodDataType = NotificationMethodDataType.DISCORD,
+    override val type: NotificationMethodType = NotificationMethodType.DISCORD,
 ) : NotificationMethodDataAppriseConverter {
     override fun convert(
         notificationMethodData: NotificationMethodData,

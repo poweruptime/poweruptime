@@ -7,13 +7,13 @@ import jakarta.validation.constraints.*
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypes
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
+import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
-@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodDataTypes.EMAIL}")
-@DiscriminatorValue(NotificationMethodDataTypes.EMAIL)
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodTypes.EMAIL}")
+@DiscriminatorValue(NotificationMethodTypes.EMAIL)
 class EmailNotificationMethodData(
     @Suppress("JpaAttributeTypeInspection") @Column(
         name = "mail_to",
@@ -72,7 +72,7 @@ class EmailNotificationMethodData(
         columnDefinition = "text[]",
     )
     val bcc: Set<String>? = null,
-) : NotificationMethodData(NotificationMethodDataType.EMAIL), EmailSender {
+) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender {
     // ObjectMapper needs an empty constructor
     constructor() : this(
         setOf(""),

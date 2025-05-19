@@ -10,7 +10,7 @@ import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.SubNotificationRepository
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.springframework.data.domain.Page
@@ -33,7 +33,7 @@ class SubNotificationService(
         monitorId: String?,
         teamId: String?,
         userId: String?,
-        methods: List<NotificationMethodDataType>?,
+        methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
     ): Page<SubNotification> = subNotificationRepository.findAll(
         { root: Root<SubNotification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->

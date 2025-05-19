@@ -10,7 +10,7 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.*
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
@@ -52,7 +52,7 @@ class NotificationMethodController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String,
         @RequestParam("name") name: String?,
-        @RequestParam("types") types: List<NotificationMethodDataType>?,
+        @RequestParam("types") types: List<NotificationMethodType>?,
         @RequestParam("useByDefault") useByDefault: Boolean?,
         @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<NotificationMethodResponse> = notificationMethodService.getAllPaginated(

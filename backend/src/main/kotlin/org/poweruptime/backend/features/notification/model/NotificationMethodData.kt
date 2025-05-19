@@ -8,8 +8,8 @@ import jakarta.persistence.*
 import org.poweruptime.backend.core.SmallNanoId
 import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypeResolver
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 
 @Entity(name = NOTIFICATION_METHOD_DATA_TABLE_NAME)
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -25,7 +25,7 @@ abstract class NotificationMethodData(
     @Column(name = "_type", insertable = false, updatable = false)
     @Suppress("PropertyName", "ConstructorParameterNaming")
     @JsonProperty("_type")
-    open val _type: NotificationMethodDataType
+    open val _type: NotificationMethodType
 ) : ASoftDeleteEntity() {
     @Id
     @SmallNanoId

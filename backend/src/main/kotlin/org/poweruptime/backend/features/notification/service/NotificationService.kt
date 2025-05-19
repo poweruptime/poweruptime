@@ -12,7 +12,7 @@ import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.NotificationRepository
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.SubNotification
@@ -32,7 +32,6 @@ class NotificationService(
             Notification(
                 checkResult = checkResult,
                 title = checkResult.title!!,
-                message = checkResult.message,
             ),
         )
 
@@ -54,7 +53,7 @@ class NotificationService(
         monitorId: String?,
         teamId: String?,
         userId: String?,
-        methods: List<NotificationMethodDataType>?,
+        methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
     ): Page<Notification> = notificationRepository.findAll(
         { root: Root<Notification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->

@@ -15,7 +15,7 @@ import org.poweruptime.backend.features.authentication.permission.NOTIFICATION_M
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.service.NotificationService
 import org.springdoc.core.annotations.ParameterObject
@@ -51,7 +51,7 @@ class NotificationController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("monitorId") monitorId: String?,
         @RequestParam("teamId") teamId: String?,
-        @RequestParam("methods") methods: List<NotificationMethodDataType>?,
+        @RequestParam("methods") methods: List<NotificationMethodType>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
     ): PaginatedResponse<NotificationResponse> {
         if (monitorId != null && teamId != null) {

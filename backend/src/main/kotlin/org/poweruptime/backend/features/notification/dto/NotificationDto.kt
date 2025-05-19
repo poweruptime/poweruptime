@@ -18,7 +18,6 @@ data class NotificationResponse(
     val id: String,
     val checkResult: CheckResultMinResponse,
     val title: String,
-    val message: String?,
     val createdAt: Instant,
     val monitor: MonitorMinResponse
 ) {
@@ -26,7 +25,6 @@ data class NotificationResponse(
         id = it.id,
         checkResult = CheckResultMinResponse(it.checkResult),
         title = it.title,
-        message = it.message,
         createdAt = it.createdAt,
         monitor = MonitorMinResponse(it.checkResult.monitor),
     )

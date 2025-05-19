@@ -6,9 +6,9 @@ import org.poweruptime.backend.features.notification.notificationMethods.slack.S
 
 class NotificationMethodDataTypeFactory {
     private val dataTypes = mapOf(
-        NotificationMethodDataTypes.DISCORD to DiscordNotificationMethodData::class.java,
-        NotificationMethodDataTypes.EMAIL to EmailNotificationMethodData::class.java,
-        NotificationMethodDataTypes.SLACK to SlackNotificationMethodData::class.java,
+        NotificationMethodTypes.DISCORD to DiscordNotificationMethodData::class.java,
+        NotificationMethodTypes.EMAIL to EmailNotificationMethodData::class.java,
+        NotificationMethodTypes.SLACK to SlackNotificationMethodData::class.java,
     )
 
     fun toClass(monitorType: String): Class<*> =

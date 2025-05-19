@@ -7,13 +7,13 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataTypes
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
+import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
-@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodDataTypes.DISCORD}")
-@DiscriminatorValue(NotificationMethodDataTypes.DISCORD)
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodTypes.DISCORD}")
+@DiscriminatorValue(NotificationMethodTypes.DISCORD)
 class DiscordNotificationMethodData(
     @Column(name = "discord_url", length = Database.MAX_URL_LENGTH)
     @get:NotBlank
@@ -24,7 +24,7 @@ class DiscordNotificationMethodData(
     @Column(name = "discord_display_name", length = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
-) : NotificationMethodData(NotificationMethodDataType.DISCORD) {
+) : NotificationMethodData(NotificationMethodType.DISCORD) {
     // ObjectMapper needs an empty constructor
     constructor() : this("", null)
 }

@@ -7,7 +7,7 @@ import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.notification.dto.*
 import org.poweruptime.backend.features.notification.model.NotificationMethod
@@ -57,7 +57,7 @@ class NotificationMethodService(
         pageable: Pageable,
         teamId: String,
         name: String?,
-        types: List<NotificationMethodDataType>?,
+        types: List<NotificationMethodType>?,
         useByDefault: Boolean?,
         deleted: Boolean = false,
     ): Page<NotificationMethod> = notificationMethodRepository.findAll(

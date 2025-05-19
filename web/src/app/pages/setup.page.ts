@@ -48,6 +48,10 @@ import {SetupStore} from '../services';
                   </div>
                 }
 
+                <div puAlert type="INFO">
+                  Please use this step to verify your E-Mail environment variables.
+                </div>
+
                 <form class="grid gap-4" [formGroup]="testEmailForm" (ngSubmit)="submitTestEmail()">
                   <mat-form-field>
                     <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>

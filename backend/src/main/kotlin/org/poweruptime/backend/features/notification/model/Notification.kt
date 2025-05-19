@@ -20,10 +20,6 @@ class Notification(
     @Column(name = "title", nullable = false, length = Database.MAX_TITLE_LENGTH)
     var title: String,
 
-    // TODO: remove message
-    @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
-    var message: String? = null,
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "notification")
     var subNotifications: List<SubNotification> = ArrayList(),
 ) : AEntity() {

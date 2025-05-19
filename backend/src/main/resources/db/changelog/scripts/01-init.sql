@@ -296,8 +296,7 @@ create table notification
         constraint fkjwvawbiyb7f0oju5bk0t6elnr
             references check_result
             on delete cascade,
-    title                  varchar(2000)                          not null,
-    message                varchar(4000)
+    title                  varchar(2000)                          not null
 );
 
 create table notification_method

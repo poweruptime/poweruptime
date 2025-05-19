@@ -3,7 +3,7 @@ package org.poweruptime.backend.features.notification.core
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 
-enum class NotificationType(val value: String) {
+enum class AppriseNotificationType(val value: String) {
     INFO("info"),
     WARNING("warning"),
     FAILURE("failure");
@@ -14,7 +14,7 @@ enum class NotificationType(val value: String) {
     companion object {
         @JvmStatic
         @JsonCreator
-        fun fromValue(value: String): NotificationType =
+        fun fromValue(value: String): AppriseNotificationType =
             entries.firstOrNull { it.value == value }
                 ?: throw IllegalArgumentException(
                     "Unknown NotificationType: $value",
@@ -22,7 +22,7 @@ enum class NotificationType(val value: String) {
     }
 }
 
-enum class NotificationFormat(val value: String) {
+enum class AppriseNotificationFormat(val value: String) {
     TEXT("text"),
     MARKDOWN("markdown"),
     HTML("html");
@@ -33,7 +33,7 @@ enum class NotificationFormat(val value: String) {
     companion object {
         @JvmStatic
         @JsonCreator
-        fun fromValue(value: String): NotificationFormat =
+        fun fromValue(value: String): AppriseNotificationFormat =
             entries.firstOrNull { it.value == value }
                 ?: throw IllegalArgumentException(
                     "Unknown NotificationFormat: $value",
@@ -45,8 +45,8 @@ data class AppriseNotificationRequest(
     val urls: List<String>,
     val body: String,
     val title: String? = null,
-    val type: NotificationType = NotificationType.INFO,
-    val format: NotificationFormat = NotificationFormat.HTML,
+    val type: AppriseNotificationType = AppriseNotificationType.INFO,
+    val format: AppriseNotificationFormat = AppriseNotificationFormat.HTML,
 )
 
 data class NotificationMethodDataAppriseDto(

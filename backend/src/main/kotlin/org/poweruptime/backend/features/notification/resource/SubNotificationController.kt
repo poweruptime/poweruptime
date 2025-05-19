@@ -14,7 +14,7 @@ import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.springdoc.core.annotations.ParameterObject
@@ -49,7 +49,7 @@ class SubNotificationController(
         @RequestParam("notificationId") notificationId: String?,
         @RequestParam("monitorId") monitorId: String?,
         @RequestParam("teamId") teamId: String?,
-        @RequestParam("methods") methods: List<NotificationMethodDataType>?,
+        @RequestParam("methods") methods: List<NotificationMethodType>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
     ): PaginatedResponse<SubNotificationResponse> {
         if (monitorId != null && teamId != null) {

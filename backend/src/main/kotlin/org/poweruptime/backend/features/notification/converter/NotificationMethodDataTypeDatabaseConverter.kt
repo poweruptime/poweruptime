@@ -2,9 +2,9 @@ package org.poweruptime.backend.features.notification.converter
 
 import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConverter
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 
 @Converter(autoApply = true)
-class NotificationMethodDataTypeDatabaseConverter : ADatabaseEnumConverter<NotificationMethodDataType>() {
-    override fun getKeys(): Array<NotificationMethodDataType> = NotificationMethodDataType.entries.toTypedArray()
+class NotificationMethodDataTypeDatabaseConverter : ADatabaseEnumConverter<NotificationMethodType>() {
+    override fun getKeys(): Array<NotificationMethodType> = NotificationMethodType.entries.toTypedArray()
 }

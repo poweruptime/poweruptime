@@ -1,11 +1,9 @@
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatAnchor} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {
   MatAccordion,
-  MatExpansionModule,
   MatExpansionPanel,
   MatExpansionPanelDescription,
   MatExpansionPanelHeader,
@@ -15,10 +13,9 @@ import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
-import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {AlertDirective, CopyIconButton, ShadowRender} from '@app/components';
+import {AlertDirective, ShadowRender} from '@app/components';
 import {MonitorStatus} from '@app/components/monitor';
 import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
@@ -55,21 +52,12 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
           </a>
         </div>
 
-        @if (notification.message; as message) {
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <div class="flex items-start justify-between gap-2">
-                <span class="whitespace-pre-wrap">{{ message }}</span>
-                <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
-              </div>
-            </mat-card-content>
-          </mat-card>
-        }
+        <hr />
 
         <div class="grid gap-2">
-          <div class="flex justify-end">
+          <div class="flex items-center justify-between gap-4">
+            <h2 class="text-2xl">Notification Deliveries</h2>
             @let _expandAll = expandAll();
-
             <mat-chip-listbox (change)="expandAll.set(!_expandAll)">
               <mat-chip-option [selected]="_expandAll">
                 <bi name="arrows-expand" />
@@ -122,10 +110,7 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
     BiComponent,
     MatAnchor,
     RouterLink,
-    MatCard,
-    MatCardContent,
     FormsModule,
-    CopyIconButton,
     MonitorStatus,
     RelativeTimeWithTooltip,
     RelativeTimePipe,

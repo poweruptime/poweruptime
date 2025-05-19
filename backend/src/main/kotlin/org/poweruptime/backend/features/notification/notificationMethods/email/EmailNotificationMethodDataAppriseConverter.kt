@@ -3,23 +3,21 @@ package org.poweruptime.backend.features.notification.notificationMethods.email
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseDto
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
 class EmailNotificationMethodDataAppriseConverter(
-    override val type: NotificationMethodDataType = NotificationMethodDataType.EMAIL,
+    override val type: NotificationMethodType = NotificationMethodType.EMAIL,
 ) : NotificationMethodDataAppriseConverter {
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
         val data = notificationMethodData as EmailNotificationMethodData
 
-        val usernameSplit = data.username.split("@")
+        val usernameDomain = data.username.split("@").last()
 
         return NotificationMethodDataAppriseDto(
-            url = "mailto://${notificationMethodData.password}@${
-                usernameSplit.last()
-            }:${data.port}",
+            url = "mailto://${notificationMethodData.password}@$usernameDomain:${data.port}",
             extras = buildMap {
                 set("smtp", data.host)
                 set("user", data.username)

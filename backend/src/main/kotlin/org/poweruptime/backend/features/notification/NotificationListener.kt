@@ -12,12 +12,13 @@ import org.poweruptime.backend.features.monitor.dto.PushSubNotificationDto
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
+import org.poweruptime.backend.features.notification.core.AppriseNotificationFormat
 import org.poweruptime.backend.features.notification.core.AppriseNotificationRequest
-import org.poweruptime.backend.features.notification.core.NotificationFormat
+import org.poweruptime.backend.features.notification.core.AppriseNotificationType
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseDto
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataConverter
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataType
-import org.poweruptime.backend.features.notification.core.NotificationType
+import org.poweruptime.backend.features.notification.core.NotificationMethodTemplateType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 import org.poweruptime.backend.features.notification.model.SubNotification
@@ -53,75 +54,90 @@ class NotificationListener(
 ) {
     private val logger = LoggerFactory.getLogger(NotificationListener::class.java)
 
-    private val converter = FlexmarkHtmlConverter.builder(
+    private val htmlToMarkdownConverter = FlexmarkHtmlConverter.builder(
         MutableDataSet().apply {
             // Ensure hard line breaks become "\n" in Markdown
             set(HtmlRenderer.SOFT_BREAK, "\n")
         },
     ).build()
 
+    private val htmlToMrkdwnConverter = HtmlToMrkdwnConverter()
+
     /**
      * Consumer for "notification-queue"
      */
+    @Suppress("LongMethod")
     @RabbitListener(queues = [NOTIFICATION_QUEUE])
     fun notificationQueueConsumer(subNotificationId: String) {
         val subNotification = subNotificationService.getByIdOrThrow(subNotificationId)
 
-        assert(listOf(MonitorStatus.UP, MonitorStatus.DOWN).contains(subNotification.notification.checkResult.status))
-
-        subNotification.pickedUpAt = Instant.now()
-
-        logger.debug(
-            """Received notification "{}" of type "{}" for monitor "{}"""",
-            subNotification.id,
-            subNotification.method.data._type.name,
-            subNotification.notification.checkResult.monitor.name,
-        )
-
-        val isPickedUpTooLate = subNotification.pickedUpTooLate()
-
-        checkResultLogEntryService.action(
-            stage = CheckResultLogStage.NOTIFICATION,
-            checkResult = subNotification.notification.checkResult,
-            message = """"${subNotification.method.name}" picked up in time""",
-            properties = mapOf(
-                "result" to (!isPickedUpTooLate).toString(),
-                "time" to Duration.between(
-                    subNotification.createdAt,
-                    subNotification.pickedUpAt!!,
-                ).toMillis().toString(),
-                "subNotificationId" to subNotificationId,
-            ),
-        )
-
-        if (isPickedUpTooLate) {
-            logger.error(
-                """Notification "{}" was picked up too late""",
-                subNotification.id,
+        try {
+            assert(
+                listOf(
+                    MonitorStatus.UP,
+                    MonitorStatus.DOWN,
+                ).contains(subNotification.notification.checkResult.status),
             )
 
-            subNotification.error = "Notification picked up to late"
+            subNotification.pickedUpAt = Instant.now()
 
-            subNotificationService.save(subNotification)
+            logger.debug(
+                """Received notification "{}" of type "{}" for monitor "{}"""",
+                subNotification.id,
+                subNotification.method.data._type.name,
+                subNotification.notification.checkResult.monitor.name,
+            )
 
-            return
-        }
+            val isPickedUpTooLate = subNotification.pickedUpTooLate()
 
-        subNotificationService.save(send(subNotification)).let {
             checkResultLogEntryService.action(
                 stage = CheckResultLogStage.NOTIFICATION,
-                checkResult = it.notification.checkResult,
-                message = """"${subNotification.method.name}" sent""",
+                checkResult = subNotification.notification.checkResult,
+                message = """"${subNotification.method.name}" picked up in time""",
                 properties = mapOf(
-                    "result" to (it.error == null).toString(),
+                    "result" to (!isPickedUpTooLate).toString(),
+                    "time" to Duration.between(
+                        subNotification.createdAt,
+                        subNotification.pickedUpAt!!,
+                    ).toMillis().toString(),
                     "subNotificationId" to subNotificationId,
                 ),
             )
 
-            pushService.send(
-                it.method.team.id,
-                PushSubNotificationDto(subNotification = SubNotificationResponse(it)),
-            )
+            if (isPickedUpTooLate) {
+                logger.error(
+                    """Notification "{}" was picked up too late""",
+                    subNotification.id,
+                )
+
+                subNotification.error = "Notification picked up to late"
+
+                subNotificationService.save(subNotification)
+
+                return
+            }
+
+            subNotificationService.save(send(subNotification)).let {
+                checkResultLogEntryService.action(
+                    stage = CheckResultLogStage.NOTIFICATION,
+                    checkResult = it.notification.checkResult,
+                    message = """"${subNotification.method.name}" sent""",
+                    properties = mapOf(
+                        "result" to (it.error == null).toString(),
+                        "subNotificationId" to subNotificationId,
+                    ),
+                )
+
+                pushService.send(
+                    it.method.team.id,
+                    PushSubNotificationDto(subNotification = SubNotificationResponse(it)),
+                )
+            }
+        } catch (e: Throwable) {
+            subNotification.error = (e.message ?: e.cause?.message ?: "Unknown error")
+                .abbreviate(Database.MAX_MESSAGE_LENGTH)
+
+            subNotificationService.save(subNotification)
         }
     }
 
@@ -168,12 +184,17 @@ class NotificationListener(
     private fun getAppriseNotificationRequest(
         notificationMethodDataAppriseDto: NotificationMethodDataAppriseDto,
         notificationTemplate: NotificationTemplate,
-        notificationMethodDataType: NotificationMethodDataType,
+        notificationMethodType: NotificationMethodType,
         status: MonitorStatus
     ) = AppriseNotificationRequest(
         urls = listOf(
-            "${notificationMethodDataAppriseDto.url}?footer=false&image=no&format=${
-                if (notificationMethodDataType.markdown) NotificationFormat.MARKDOWN else NotificationFormat.HTML
+            "${notificationMethodDataAppriseDto.url}?footer=no&image=no&format=${
+                when (notificationMethodType.bodyType) {
+                    NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+                    NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+                    NotificationMethodTemplateType.MARKDOWN,
+                    NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
+                }
             }${
                 notificationMethodDataAppriseDto.extras
                     ?.map { (key, value) -> "$key=$value" }
@@ -182,23 +203,27 @@ class NotificationListener(
             }",
         ),
         title = notificationTemplate.title.emptyToNull(),
-        body = if (notificationMethodDataType.markdown) {
-            converter.convert(
-                notificationTemplate.body,
-            )
-        } else {
-            notificationTemplate.body
+        body = when (notificationMethodType.bodyType) {
+            NotificationMethodTemplateType.PLAIN -> notificationTemplate.body
+            NotificationMethodTemplateType.HTML -> notificationTemplate.body
+            NotificationMethodTemplateType.MARKDOWN -> htmlToMarkdownConverter.convert(notificationTemplate.body)
+            NotificationMethodTemplateType.MRKDWN -> htmlToMrkdwnConverter.convert(notificationTemplate.body)
         },
         type = when (status) {
-            MonitorStatus.UP -> NotificationType.INFO
-            MonitorStatus.DOWN -> NotificationType.FAILURE
+            MonitorStatus.UP -> AppriseNotificationType.INFO
+            MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
             MonitorStatus.PENDING,
             MonitorStatus.MAINTENANCE,
             MonitorStatus.PAUSED -> throw IllegalArgumentException(
                 "Status not allowed at this point: $status",
             )
         },
-        format = if (notificationMethodDataType.markdown) NotificationFormat.MARKDOWN else NotificationFormat.HTML,
+        format = when (notificationMethodType.bodyType) {
+            NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+            NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+            NotificationMethodTemplateType.MARKDOWN,
+            NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
+        },
     )
 
     private fun sendToApprise(statelessNotificationRequest: AppriseNotificationRequest) = try {
