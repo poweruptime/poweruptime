@@ -1,15 +1,15 @@
-package org.poweruptime.backend.features.notification
+package org.poweruptime.backend.features.notification.htmlConverter
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 
-class HtmlToMrkdwnConverter {
+class HtmlToMrkdwnConverter : HtmlConverter {
     /**
      * Converts HTML to Slack mrkdwn format
      */
-    fun convert(html: String): String {
+    override fun convert(html: String): String {
         // Clean up any unnecessary whitespace
         val cleanHtml = html.trim()
         if (cleanHtml.isEmpty()) {

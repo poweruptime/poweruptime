@@ -3,7 +3,7 @@ import {Directive, input} from '@angular/core';
 @Directive({
   selector: '[puAlert]',
   host: {
-    class: 'mb-4 rounded-lg p-4 text-sm dark:bg-gray-800',
+    class: 'rounded-lg p-4 text-sm dark:bg-gray-800',
     role: 'alert',
     '[class.bg-blue-100]': 'type() === "INFO"',
     '[class.text-blue-800]': 'type() === "INFO"',

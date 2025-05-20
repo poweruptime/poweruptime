@@ -17,20 +17,24 @@ import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
+import {TranslocoPipe} from '@jsverse/transloco';
+
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
 
+import {BackendType} from '../../../api';
+
 @Component({
   template: `
+    @let _label = label();
+    @let _html = html();
+
     <div class="flex flex-col">
-      @if (html()) {
-        <pu-editor
-          [(ngModel)]="value"
-          [placeholder]="label()"
-          [autocompleteVariables]="variables" />
+      @if (_html) {
+        <pu-editor [(ngModel)]="value" [placeholder]="_label" [autocompleteVariables]="variables" />
       } @else {
         <mat-form-field>
-          <mat-label>{{ label() }}</mat-label>
+          <mat-label>{{ _label }}</mat-label>
           <textarea
             class="flex"
             [(mentionFilter)]="mentionFilter"
@@ -38,7 +42,7 @@ import {Editor} from '@app/components/editor';
             [matMentions]="auto"
             [disabled]="isDisabled()"
             style="width: 36rem"
-            mentionTriggerChar=":"
+            mentionTriggerChar="!"
             rows="3"
             matInput
             cdkTextareaAutosize
@@ -51,7 +55,15 @@ import {Editor} from '@app/components/editor';
         </mat-autocomplete>
       }
 
-      <div class="border-1 mt-4 min-h-24 rounded-sm border border-dashed border-gray-400 p-4">
+      <div
+        class="border-1 dark:bg-bg-dark relative mt-4 min-h-24 rounded-sm border border-dashed border-gray-500 bg-white"
+        [class.px-4]="_html"
+        [class.p-4]="!_html">
+        <span
+          class="dark:bg-bg-dark absolute -top-2 left-4 rounded-xl bg-white px-1 text-xs text-gray-500 dark:text-gray-400">
+          {{ 'general.preview' | transloco }}
+        </span>
+
         <pu-shadow-render [html]="preview()" />
       </div>
     </div>
@@ -76,6 +88,7 @@ import {Editor} from '@app/components/editor';
     CdkTextareaAutosize,
     Editor,
     ShadowRender,
+    TranslocoPipe,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -84,9 +97,8 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   private readonly document = inject(DOCUMENT);
   private readonly now = this.dateFormat.transform(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS z (Z)');
 
-  html = input(false, {transform: booleanAttribute});
-
   label = input.required<string>();
+  html = input(false, {transform: booleanAttribute});
 
   value = signal<string | null>('');
   isDisabled = signal(false);

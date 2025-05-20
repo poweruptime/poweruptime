@@ -12,8 +12,10 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
-@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodTypes.DISCORD}")
-@DiscriminatorValue(NotificationMethodTypes.DISCORD)
+private const val TYPE = NotificationMethodTypes.DISCORD
+
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_$TYPE")
+@DiscriminatorValue(TYPE)
 class DiscordNotificationMethodData(
     @Column(name = "discord_url", length = Database.MAX_URL_LENGTH)
     @get:NotBlank

@@ -144,6 +144,18 @@ create table notification_method_data
     _type      varchar(31)                            not null
 );
 
+create table notification_method_data_apprise
+(
+    id              varchar(12)   not null
+        primary key
+        constraint fkd9tseko8yyiaih0ugnv0m11ew
+            references notification_method_data,
+    apprise_url     varchar(2048) not null
+);
+
+ALTER TABLE notification_method_data_apprise
+    ADD CONSTRAINT FK_NOTIFICATION_METHOD_DATA_APPRISE_ON_ID FOREIGN KEY (id) REFERENCES notification_method_data (id);
+
 create table notification_method_data_discord
 (
     id                   varchar(12)   not null

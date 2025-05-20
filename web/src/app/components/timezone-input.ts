@@ -26,7 +26,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 @Component({
   template: `
-    <mat-form-field>
+    <mat-form-field class="w-full">
       <mat-label>{{ 'general.timezone' | transloco }}</mat-label>
       <mat-select [(ngModel)]="value">
         <mat-option class="pt-1">

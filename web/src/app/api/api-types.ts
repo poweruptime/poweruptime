@@ -1249,6 +1249,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/notification-method/template/{type}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get notification method template settings
+     * @description <b>Required auth:</b> ROLE_USER
+     */
+    get: operations['getTemplate'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/monitor/{id}': {
     parameters: {
       query?: never;
@@ -1805,7 +1825,7 @@ export interface components {
     };
     NotificationMethodData: {
       /** @enum {string} */
-      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
+      _type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     UpdateNotificationMethodDto: {
       id: string;
@@ -1883,7 +1903,7 @@ export interface components {
     };
     NotificationMethodDataMinDto: {
       /** @enum {string} */
-      _type: 'DISCORD' | 'EMAIL' | 'SLACK';
+      _type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     NotificationMethodMinResponse: {
       id: string;
@@ -2226,7 +2246,6 @@ export interface components {
       id: string;
       checkResult: components['schemas']['CheckResultMinResponse'];
       title: string;
-      message?: string;
       /** Format: date-time */
       createdAt: string;
       monitor: components['schemas']['MonitorMinResponse'];
@@ -2244,6 +2263,15 @@ export interface components {
       /** Format: int32 */
       numberOfPages: number;
       data: components['schemas']['NotificationMethodResponse'][];
+    };
+    NotificationMethodTemplateResponse: {
+      /** @enum {string} */
+      type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
+      titleTemplate: string;
+      bodyTemplate: string;
+      /** @enum {string} */
+      bodyType: 'PLAIN' | 'HTML' | 'MARKDOWN' | 'MRKDWN';
+      features?: 'TITLE'[];
     };
     MonitorResponse: {
       name: string;
@@ -2897,7 +2925,7 @@ export interface operations {
         sort?: string[];
         teamId: string;
         name?: string;
-        types?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
+        types?: ('APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK')[];
         useByDefault?: boolean;
         deleted?: boolean;
       };
@@ -3760,7 +3788,7 @@ export interface operations {
         notificationId?: string;
         monitorId?: string;
         teamId?: string;
-        methods?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
+        methods?: ('APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK')[];
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
       };
       header?: never;
@@ -4291,7 +4319,7 @@ export interface operations {
         sort?: string[];
         monitorId?: string;
         teamId?: string;
-        methods?: ('DISCORD' | 'EMAIL' | 'SLACK')[];
+        methods?: ('APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK')[];
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
       };
       header?: never;
@@ -4372,6 +4400,28 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NotificationMethodTemplateResponse'];
+        };
       };
     };
   };

@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.notification.converter
+package org.poweruptime.backend.features.notification
 
 import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConverter

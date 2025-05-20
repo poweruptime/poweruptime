@@ -12,8 +12,10 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
-@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${NotificationMethodTypes.EMAIL}")
-@DiscriminatorValue(NotificationMethodTypes.EMAIL)
+private const val TYPE = NotificationMethodTypes.EMAIL
+
+@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_$TYPE")
+@DiscriminatorValue(TYPE)
 class EmailNotificationMethodData(
     @Suppress("JpaAttributeTypeInspection") @Column(
         name = "mail_to",

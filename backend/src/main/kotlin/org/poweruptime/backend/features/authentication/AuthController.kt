@@ -211,6 +211,7 @@ class AuthController(
 
         passwordResetTokenService.validateToken(user.id, request.resetToken) ?: throw UnauthorizedException()
 
+        user.forcePasswordChange = false
         authService.updateCredentials(user, request.newPassword)
     }
 }

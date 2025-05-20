@@ -3,28 +3,31 @@ package org.poweruptime.backend.features.notification.core
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
 object NotificationMethodTypes {
+    const val APPRISE = "APPRISE"
     const val DISCORD = "DISCORD"
     const val EMAIL = "EMAIL"
     const val SLACK = "SLACK"
 }
 
 enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethodTemplate {
-//    APPRISE {
-//        override val code = NotificationMethodTypes.SLACK
-//        override val bodyType = NotificationMethodTemplateType.PLAIN
-//        override val features: List<NotificationMethodTemplateFeatures>? = listOf(NotificationMethodTemplateFeatures.TITLE)
-//        override val titleTemplate = ""
-//        override val bodyTemplate = """
-//        |!status: !monitorName - !title
-//        |Service Name
-//        |!monitorName
-//        |Ping
-//        |!pingMsms
-//        |Check started at
-//        |!checkStartedAt
-//        |Link to detailed information: !checkResultLink.
-//        """.trimMargin()
-//    },
+    APPRISE {
+        override val code = NotificationMethodTypes.APPRISE
+        override val bodyType = NotificationMethodTemplateType.PLAIN
+        override val features: List<NotificationMethodTemplateFeatures>? = listOf(
+            NotificationMethodTemplateFeatures.TITLE,
+        )
+        override val titleTemplate = ""
+        override val bodyTemplate = """
+        |!status: !monitorName - !title
+        |Service Name
+        |!monitorName
+        |Ping
+        |!pingMsms
+        |Check started at
+        |!checkStartedAt
+        |Link to detailed information: !checkResultLink.
+        """.trimMargin()
+    },
     DISCORD {
         override val code = NotificationMethodTypes.DISCORD
         override val bodyType = NotificationMethodTemplateType.MARKDOWN

@@ -12,8 +12,12 @@ import {setError, setFulfilled, setPending, withRequestStatus} from '@app/servic
 
 export const NotificationMethodEditStore = signalStore(
   withRequestStatus(),
-  withState<{notificationMethod: BackendType['NotificationMethodResponse'] | undefined}>({
+  withState<{
+    notificationMethod: BackendType['NotificationMethodResponse'] | undefined;
+    template: BackendType['NotificationMethodTemplateResponse'] | undefined;
+  }>({
     notificationMethod: undefined,
+    template: undefined,
   }),
   withMethods(
     (store, router = inject(Router), relativeTo = inject(ActivatedRoute), api = injectAPI()) => ({
@@ -21,7 +25,12 @@ export const NotificationMethodEditStore = signalStore(
         pipe(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({notificationMethod: undefined}))),
+          tap(() =>
+            patchState(store, setPending(), () => ({
+              notificationMethod: undefined,
+              template: undefined,
+            })),
+          ),
           switchMap((id) =>
             api
               .get('/v1/notification-method/{id}', {
@@ -33,8 +42,23 @@ export const NotificationMethodEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (notificationMethod) =>
-                    patchState(store, () => ({notificationMethod}), setFulfilled()),
+                  next: (notificationMethod) => patchState(store, () => ({notificationMethod})),
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
+          ),
+          switchMap(({sender}) =>
+            api
+              .get('/v1/notification-method/template/{type}', {
+                params: {
+                  path: {
+                    type: sender._type,
+                  },
+                },
+              })
+              .pipe(
+                tapResponse({
+                  next: (template) => patchState(store, () => ({template}), setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),

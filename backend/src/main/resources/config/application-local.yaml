@@ -91,7 +91,7 @@ poweruptime:
     security: NONE_STARTTLS
     ignore-tls-errors: false # greenmail does not support STARTTLS
   notification-temp:
-    enabled: false
+    enabled: true
   storage:
     directory: storage
   keys:
