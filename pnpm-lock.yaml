@@ -9,10 +9,10 @@ importers:
   .:
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
-        specifier: ^5.2.2
+        specifier: 5.2.2
         version: 5.2.2(prettier@3.5.3)
       git-cliff:
-        specifier: ^2.8.0
+        specifier: 2.8.0
         version: 2.8.0
       prettier:
         specifier: 3.5.3
@@ -21,7 +21,7 @@ importers:
         specifier: 1.0.0
         version: 1.0.0(prettier@3.5.3)
       prettier-plugin-sort-json:
-        specifier: ^4.1.1
+        specifier: 4.1.1
         version: 4.1.1(prettier@3.5.3)
       prettier-plugin-tailwindcss:
         specifier: 0.6.11
@@ -88,7 +88,7 @@ importers:
         specifier: 19.2.12
         version: 19.2.12(e61dde47ae02beef3d7b5d2869051da1)
       '@davidlj95/ngx-meta':
-        specifier: ^19.0.0
+        specifier: 19.0.0
         version: 19.0.0(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/router@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))
       '@jsverse/transloco':
         specifier: 7.6.1
@@ -112,7 +112,7 @@ importers:
         specifier: 19.2.1
         version: 19.2.1(34742ee928973e9358094a67eceb76ad)
       '@ngxpert/input-otp':
-        specifier: ^1.0.3
+        specifier: 1.0.3
         version: 1.0.3(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))
       '@std/fmt':
         specifier: npm:@jsr/std__fmt@1.0.8
@@ -121,19 +121,19 @@ importers:
         specifier: 22.0.0
         version: 22.0.0(6f996e0c44f943293b5b580d21fee0de)
       '@tailwindcss/postcss':
-        specifier: ^4.1.1
+        specifier: 4.1.6
         version: 4.1.6
       '@tinymce/tinymce-angular':
-        specifier: ^8.0.1
+        specifier: 8.0.1
         version: 8.0.1(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(rxjs@7.8.2)
       canvas-confetti:
-        specifier: ^1.9.3
+        specifier: 1.9.3
         version: 1.9.3
       d3-shape:
         specifier: 3.2.0
         version: 3.2.0
       date-fns:
-        specifier: ^4.1.0
+        specifier: 4.1.0
         version: 4.1.0
       dfts-helper:
         specifier: 1.2.0
@@ -148,19 +148,19 @@ importers:
         specifier: 0.1.2
         version: 0.1.2(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
       dfx-qrcode:
-        specifier: ^4.0.0
+        specifier: 4.0.0
         version: 4.0.0(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))
       emoji-toolkit:
-        specifier: ^9.0.0
+        specifier: 9.0.1
         version: 9.0.1
       eventsource:
-        specifier: ^4.0.0
+        specifier: 4.0.0
         version: 4.0.0
       express:
         specifier: 4.21.2
         version: 4.21.2
       http-proxy-middleware:
-        specifier: ^3.0.5
+        specifier: 3.0.5
         version: 3.0.5
       marked:
         specifier: 15.0.11
@@ -172,13 +172,13 @@ importers:
         specifier: 19.1.1
         version: 19.1.1(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.10(@angular/animations@19.2.10(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0)))(marked@15.0.11)(rxjs@7.8.2)(zone.js@0.15.0)
       ngx-mat-select-search:
-        specifier: ^8.0.0
+        specifier: 8.0.1
         version: 8.0.1(@angular/material@19.2.16(7e1965b17b797e58b530b173cc0343e8))
       ngx-sonner:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@19.2.10(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))
       ngx-transloco-markup:
-        specifier: ^6.0.2
+        specifier: 6.0.2
         version: 6.0.2(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(@jsverse/transloco@7.6.1(@angular/core@19.2.10(rxjs@7.8.2)(zone.js@0.15.0))(typescript@5.8.3))(rxjs@7.8.2)
       ngxtension:
         specifier: 5.0.0
@@ -187,7 +187,7 @@ importers:
         specifier: 7.8.2
         version: 7.8.2
       tinymce:
-        specifier: ^7.8.0
+        specifier: 7.8.0
         version: 7.8.0
       tslib:
         specifier: 2.8.1
@@ -209,16 +209,16 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@jsverse/transloco-utils':
-        specifier: ^7.0.2
+        specifier: 7.0.2
         version: 7.0.2(typescript@5.8.3)
       '@jsverse/transloco-validator':
         specifier: 7.0.1
         version: 7.0.1
       '@tailwindcss/typography':
-        specifier: ^0.5.16
+        specifier: 0.5.16
         version: 0.5.16(tailwindcss@4.1.6)
       '@types/canvas-confetti':
-        specifier: ^1.9.0
+        specifier: 1.9.0
         version: 1.9.0
       '@types/d3-shape':
         specifier: 3.1.7
@@ -236,10 +236,10 @@ importers:
         specifier: 10.4.21
         version: 10.4.21(postcss@8.5.3)
       esbuild-visualizer:
-        specifier: ^0.7.0
+        specifier: 0.7.0
         version: 0.7.0
       eslint:
-        specifier: ^9.26.0
+        specifier: 9.27.0
         version: 9.27.0(jiti@2.4.2)
       openapi-typescript:
         specifier: 7.8.0
@@ -251,7 +251,7 @@ importers:
         specifier: 4.1.6
         version: 4.1.6
       tailwindcss-motion:
-        specifier: ^1.1.0
+        specifier: 1.1.0
         version: 1.1.0(tailwindcss@4.1.6)
       typescript:
         specifier: 5.8.3
