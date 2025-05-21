@@ -34,8 +34,8 @@ Commands:
   version          Show current version
 
 Options:
-  --local          Use local compose files (local environment)
   --dry-run        Print commands without executing
+  --local          Use local compose files (local environment)
   -h, --help       Show this help
 EOF
 }

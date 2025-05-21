@@ -37,6 +37,9 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    openssl rand -base64 64 | tr -dc A-Za-z0-9 | head -c 60 ; echo
    ```
 
+   > [!NOTE]  
+   > The `DATABASE_PASSWORD` is also used for encrypting your database backups.
+
 5. Make sure no other services listen on port `80` and `443`.
 6. Start the stack
    ```shell
