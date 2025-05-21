@@ -62,7 +62,11 @@ import {Editor} from '@app/components/editor';
           {{ 'general.preview' | transloco }}
         </span>
 
-        <pu-shadow-render [html]="preview()" />
+        @if (_html) {
+          <pu-shadow-render [html]="preview()" />
+        } @else {
+          <div class="whitespace-pre-wrap">{{ preview() }}</div>
+        }
       </div>
     </div>
   `,

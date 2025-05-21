@@ -17,6 +17,7 @@ import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
+import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.SubNotification
@@ -95,12 +96,22 @@ object ModelFactory {
     )
 
     fun getTestNotification(
+        title: String = "Test Title",
+        checkResult: CheckResult = getTestCheckResult(title = title)
+    ) = Notification(
+        checkResult = checkResult,
+        title = title,
+    ).apply {
+        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+    }
+
+    fun getTestSubNotification(
+        notification: Notification,
         sender: NotificationMethodData,
         pickedUpAt: Instant? = Instant.now(),
         title: String = "Test Title",
-        checkResult: CheckResult = getTestCheckResult(title = title)
     ) = SubNotification(
-        checkResult = checkResult,
+        notification = notification,
         title = title,
         message = "Test Message",
         method = getTestNotificationMethod(sender = sender),

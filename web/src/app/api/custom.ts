@@ -30,6 +30,10 @@ export const MONITOR_CHECKER_DATA_TYPES = [
 
 export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
   {
+    label: 'notificationMethod.sender.APPRISE',
+    value: 'APPRISE',
+  },
+  {
     label: 'notificationMethod.sender.DISCORD',
     value: 'DISCORD',
   },

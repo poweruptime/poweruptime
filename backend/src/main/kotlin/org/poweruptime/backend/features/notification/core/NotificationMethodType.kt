@@ -19,12 +19,16 @@ enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethod
         override val titleTemplate = ""
         override val bodyTemplate = """
         |!status: !monitorName - !title
+        |
         |Service Name
         |!monitorName
+        |
         |Ping
         |!pingMsms
+        |
         |Check started at
         |!checkStartedAt
+        |
         |Link to detailed information: !checkResultLink.
         """.trimMargin()
     },

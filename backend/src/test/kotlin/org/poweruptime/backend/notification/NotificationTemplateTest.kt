@@ -14,16 +14,16 @@ class NotificationTemplateTest(
     @Test
     fun `test email template`() {
         val template = notificationTemplateService.getRenderedNotification(
-            ModelFactory.getTestNotification(
+            ModelFactory.getTestSubNotification(
+                notification = ModelFactory.getTestNotification(),
                 title = """ this is a "test" """,
                 sender = EmailNotificationMethodData(),
             ),
         )
 
-        Assertions.assertThat(template.title).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
-        Assertions.assertThat(template.body.lines().first()).isEqualTo("""[Test] [✅ UP]  this is a "test" """)
-        Assertions.assertThat(template.body.lines()[1]).isEqualTo("""Ping: 1000ms""")
-        Assertions.assertThat(template.body.lines().last()).isEqualTo("""Test Message""")
+        Assertions.assertThat(template.title).isEqualTo("""✅ UP: Test -  this is a "test" """)
+        Assertions.assertThat(template.body.lines().first()).isEqualTo("""<p><strong>Service Name</strong></p>""")
+        Assertions.assertThat(template.body.lines()[1]).isEqualTo("""<p>Test</p>""")
 
         println("""Title: "${template.title}" """)
         println("""Body: "${template.body}" """)

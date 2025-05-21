@@ -378,6 +378,7 @@
       "selected": "Selected {{general.notificationMethods}}"
     },
     "sender": {
+      "APPRISE": "Apprise",
       "DISCORD": "Discord",
       "EMAIL": "{{general.email}}",
       "SLACK": "Slack"
