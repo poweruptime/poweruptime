@@ -30,7 +30,9 @@ import {MonitorStatusBackground} from '@app/directives';
           [class.w-2]="_size === 2"
           [monitor-status-background]="_checkResult.status"
           [mtxTooltip]="checkResultsTooltip"
-          stopPropagation></a>
+          stopPropagation>
+          <span class="sr-only">{{ _checkResult.status }}</span>
+        </a>
 
         <ng-template #checkResultsTooltip>
           <div class="flex flex-col">

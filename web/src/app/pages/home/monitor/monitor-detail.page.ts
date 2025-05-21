@@ -60,6 +60,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <button
                 class="secondary-button"
                 (click)="monitorActionStore.start(monitor.id)"
+                type="button"
                 mat-flat-button>
                 <bi name="play-btn" />
                 {{ 'general.start' | transloco }}
@@ -68,6 +69,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <button
                 class="secondary-button"
                 (click)="monitorActionStore.pause(monitor.id)"
+                type="button"
                 mat-flat-button>
                 <bi name="pause-btn" />
                 {{ 'general.pause' | transloco }}
@@ -83,6 +85,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             <button
               class="error-button"
               (click)="monitorActionStore.delete(monitor.id)"
+              type="button"
               mat-flat-button>
               <bi name="trash" />
               {{ 'general.delete' | transloco }}
@@ -93,8 +96,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         @if (monitor.description; as description) {
           @let _cutDescription = cutDescription();
 
+          <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
           <pre
             class="whitespace-pre-wrap"
+            (keydown)="cutDescription.set(!_cutDescription)"
             (click)="
               cutDescription.set(!_cutDescription)
             ">@if (cutDescription()) {{{ description | s_cut: 300 : '....' }} } @else {{{ description }}}</pre>

@@ -34,7 +34,7 @@ import {BackendImage} from './backend-image';
         @if (fileToShow(); as fileToShow) {
           <mat-chip-row>
             {{ fileToShow.name }}
-            <button (click)="remove()" matChipRemove>
+            <button (click)="remove()" matChipRemove type="button">
               <bi name="x-circle" />
             </button>
           </mat-chip-row>

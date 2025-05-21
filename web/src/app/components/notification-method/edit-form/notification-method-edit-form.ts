@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/divider';
@@ -8,7 +8,7 @@ import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
-import {filter, map} from 'rxjs';
+import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -19,7 +19,6 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 
 import {NotificationMethodTemplateStore} from '../../../services';
-import {AlertDirective} from '../../alert.directive';
 import {Placeholder} from '../../placeholder';
 import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';

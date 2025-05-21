@@ -1,14 +1,11 @@
-import {inject} from '@angular/core';
-
 import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {removeAllEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {PushService} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 export const SubNotificationsStore = signalStore(
@@ -50,11 +47,11 @@ export const SubNotificationsStore = signalStore(
       ),
     ),
   })),
-  withHooks({
-    onInit(store, pushService = inject(PushService)) {
-      // pushService.notifications$
-      //   .pipe(takeUntilDestroyed())
-      //   .subscribe((it) => store.addNotification(it));
-    },
-  }),
+  // withHooks({
+  //   onInit(store, pushService = inject(PushService)) {
+  //     pushService.notifications$
+  //       .pipe(takeUntilDestroyed())
+  //       .subscribe((it) => store.addNotification(it));
+  //   },
+  // }),
 );

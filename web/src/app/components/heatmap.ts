@@ -79,10 +79,12 @@ import {BackendType} from '../api';
                 <div
                   class="heatmap-legend-text flex h-3 w-12 items-center justify-between whitespace-nowrap">
                   @let number = i + '0' | heatmapDotNumber;
+                  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
                   <div
                     class="heatmap-dot"
                     [class.scale-125]="_selected === number"
                     [style.background-color]="number | heatmapDotBackground"
+                    (keydown)="_selected === number ? selected.set(null) : selected.set(number)"
                     (click)="
                       _selected === number ? selected.set(null) : selected.set(number)
                     "></div>

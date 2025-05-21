@@ -30,7 +30,7 @@ import {TeamSelect} from './team-select';
       <div class="flex flex-col gap-3 px-2 py-2">
         <div class="px-4">
           <pu-team-select [teamId]="teamId()" (teamIdSelected)="navigateToTeamDashboard($event)">
-            <button class="w-full" mat-stroked-button>
+            <button class="w-full" type="button" mat-stroked-button>
               <span>
                 @if (teamId()) {
                   @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
@@ -79,6 +79,7 @@ import {TeamSelect} from './team-select';
                   <button
                     class="close-button"
                     (click)="$event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)"
+                    type="button"
                     mat-icon-button
                     stopPropagation>
                     <bi name="x" />
@@ -154,23 +155,23 @@ import {TeamSelect} from './team-select';
             }
           </div>
           <mat-menu #menu="matMenu" yPosition="above" xPosition="before">
-            <button (click)="authStore.logout()" mat-menu-item>
+            <button (click)="authStore.logout()" type="button" mat-menu-item>
               <bi name="box-arrow-left" />
               {{ 'general.logout' | transloco }}
             </button>
-            <button (click)="openAbout()" mat-menu-item>
+            <button (click)="openAbout()" type="button" mat-menu-item>
               <bi name="info-circle" />
               {{ 'general.about' | transloco }}
             </button>
-            <button [matMenuTriggerFor]="themeMenu" mat-menu-item>
+            <button [matMenuTriggerFor]="themeMenu" type="button" mat-menu-item>
               <bi name="paint-bucket" />
               {{ 'general.theme' | transloco }}
             </button>
-            <button [matMenuTriggerFor]="languageMenu" mat-menu-item>
+            <button [matMenuTriggerFor]="languageMenu" type="button" mat-menu-item>
               <bi name="translate" />
               {{ 'general.language' | transloco }}
             </button>
-            <button mat-menu-item routerLink="/profile/overview">
+            <button type="button" mat-menu-item routerLink="/profile/overview">
               <bi name="gear" />
               {{ 'profile.settings' | transloco }}
             </button>
@@ -179,7 +180,10 @@ import {TeamSelect} from './team-select';
           @let selectedTheme = themeService.selectedTheme();
           <mat-menu #themeMenu="matMenu" yPosition="above">
             @for (theme of themeOptions; track theme.value) {
-              <button (click)="themeService.selectedTheme.set(theme.value)" mat-menu-item>
+              <button
+                (click)="themeService.selectedTheme.set(theme.value)"
+                type="button"
+                mat-menu-item>
                 <div class="inline-flex items-center gap-2">
                   <bi
                     [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'"
@@ -196,7 +200,7 @@ import {TeamSelect} from './team-select';
           <mat-menu #languageMenu="matMenu" yPosition="above">
             @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
               @let lang = $any(language);
-              <button (click)="translocoService.setActiveLang(lang.id)" mat-menu-item>
+              <button (click)="translocoService.setActiveLang(lang.id)" type="button" mat-menu-item>
                 <div class="inline-flex items-center gap-2">
                   <bi
                     [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'"
@@ -280,7 +284,7 @@ export class Nav {
 
   navigateToTeamDashboard(newTeamId: string) {
     const current = this.router.url; // e.g. "/org/5/t/123/dashboard"
-    const teamSegmentRe = /t\/[^\/;?]+/;
+    const teamSegmentRe = /t\/[^/;?]+/;
 
     if (teamSegmentRe.test(current)) {
       // replace "t/{oldId}" with "t/{newTeamId}"

@@ -25,6 +25,7 @@ import {trackBy} from '@app/util';
     <button
       [disabled]="!notificationMethodsStore.hasValue() || notificationMethodsStore.isPending()"
       (click)="notificationMethodsStore.restoreSelection()"
+      type="button"
       mat-flat-button>
       <bi name="arrow-counterclockwise" />
       {{ 'general.restore' | transloco }}

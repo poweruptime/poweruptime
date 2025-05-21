@@ -33,7 +33,7 @@ import {arrayToParam, paramToArray} from '@app/util';
               <pu-team-select
                 (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])"
                 adminOnly>
-                <button mat-flat-button>{{ 'monitor.new' | transloco }}</button>
+                <button mat-flat-button type="button">{{ 'monitor.new' | transloco }}</button>
               </pu-team-select>
             }
           </div>

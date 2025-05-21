@@ -40,6 +40,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
               class="flex items-center"
               [attr.aria-label]="'general.clear' | transloco"
               (click)="searchFilter.set('')"
+              type="button"
               matSuffix
               mat-icon-button>
               <bi name="x-lg" aria-hidden="true" />
@@ -144,6 +145,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 [matTooltip]="'notificationMethod.list.delete' | transloco"
                 [attr.aria-label]="'notificationMethod.list.delete' | transloco"
                 (click)="notificationMethodsStore.delete(element.id)"
+                type="button"
                 mat-icon-button
                 stopPropagation>
                 <bi name="trash-fill" />

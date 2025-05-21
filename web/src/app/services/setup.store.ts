@@ -11,7 +11,9 @@ import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
 
-type SetupStoreState = {state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted'};
+interface SetupStoreState {
+  state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted';
+}
 
 export const SetupStore = signalStore(
   {providedIn: 'root'},

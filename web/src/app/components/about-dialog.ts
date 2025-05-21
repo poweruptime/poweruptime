@@ -36,6 +36,7 @@ interface BackendEntry {
         <button
           [loading]="changelogStore.isPending()"
           (click)="changelogStore.load(undefined)"
+          type="button"
           mat-stroked-button>
           Show Changelog
         </button>
@@ -96,7 +97,7 @@ interface BackendEntry {
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
+      <button type="button" mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
     </mat-dialog-actions>
   `,
   selector: 'pu-about-dialog',

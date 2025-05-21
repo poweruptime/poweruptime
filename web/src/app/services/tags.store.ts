@@ -1,4 +1,4 @@
-import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';

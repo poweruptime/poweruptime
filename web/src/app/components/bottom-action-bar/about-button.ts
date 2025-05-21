@@ -8,7 +8,7 @@ import {AboutDialog} from '@app/components/about-dialog';
 
 @Component({
   template: `
-    <button (click)="openAbout()" mat-mini-fab>
+    <button (click)="openAbout()" type="button" mat-mini-fab>
       <bi name="info-circle" size="20" />
     </button>
   `,

@@ -106,6 +106,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
               {{ match }}
               <button
                 [attr.aria-label]="'monitor.edit.dns.matches.remove' | transloco: {match}"
+                type="button"
                 matChipRemove>
                 <bi name="x" />
               </button>

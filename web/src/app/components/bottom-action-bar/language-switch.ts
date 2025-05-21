@@ -7,14 +7,14 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 @Component({
   template: `
-    <button [matMenuTriggerFor]="languageMenu" mat-mini-fab>
+    <button [matMenuTriggerFor]="languageMenu" type="button" mat-mini-fab>
       <bi name="translate" size="20" />
     </button>
     @let selectedLang = translocoService.getActiveLang();
     <mat-menu #languageMenu="matMenu" yPosition="above">
       @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
         @let lang = $any(language);
-        <button (click)="translocoService.setActiveLang(lang.id)" mat-menu-item>
+        <button (click)="translocoService.setActiveLang(lang.id)" type="button" mat-menu-item>
           <div class="inline-flex items-center gap-2">
             <bi [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'" size="16" />
             <span>{{ lang.label }}</span>

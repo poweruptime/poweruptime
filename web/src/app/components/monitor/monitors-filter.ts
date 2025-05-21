@@ -27,6 +27,7 @@ import {MonitorSearchParams} from '@app/services';
             class="flex items-center"
             [attr.aria-label]="'general.clear' | transloco"
             (click)="form.controls.search.setValue('')"
+            type="button"
             matSuffix
             mat-icon-button>
             <bi name="x-lg" aria-hidden="true" />

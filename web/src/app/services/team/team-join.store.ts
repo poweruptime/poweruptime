@@ -38,7 +38,7 @@ export const TeamJoinStore = signalStore(
 
                 void router.navigate(['/', 't', team.id, 'm']);
               },
-              error: (error: any) => {
+              error: (error) => {
                 patchState(store, setError(error), setFulfilled());
 
                 toast.error(`Invalid token.`);

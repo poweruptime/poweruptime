@@ -14,20 +14,22 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      '@angular-eslint/directive-selector': [
+      '@angular-eslint/directive-selector': ['off'],
+      '@angular-eslint/component-selector': ['off'],
+      '@angular-eslint/no-input-rename': ['off'],
+      '@angular-eslint/component-class-suffix': ['off'],
+      '@angular-eslint/directive-class-suffix': ['off'],
+      '@typescript-eslint/consistent-indexed-object-style': ['off'],
+      '@typescript-eslint/no-explicit-any': ['off'],
+      '@typescript-eslint/no-extra-non-null-assertion': ['off'],
+      '@typescript-eslint/no-require-imports': ['off'],
+      '@typescript-eslint/no-empty-function': ['warn'],
+      '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
     },
@@ -35,6 +37,8 @@ module.exports = tseslint.config(
   {
     files: ['**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/template/button-has-type': ['error'],
+    },
   },
 );

@@ -25,6 +25,7 @@ import {trackBy} from '@app/util';
     <button
       [disabled]="!monitorsStore.hasValue() || monitorsStore.isPending()"
       (click)="monitorsStore.restoreSelection()"
+      type="button"
       mat-flat-button>
       <bi name="arrow-counterclockwise" />
       {{ 'general.restore' | transloco }}

@@ -22,8 +22,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
 
-import {BackendType} from '../../../api';
-
 @Component({
   template: `
     @let _label = label();

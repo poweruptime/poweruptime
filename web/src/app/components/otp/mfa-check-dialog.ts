@@ -82,7 +82,9 @@ import {FakeDash, Slot} from './slot';
       </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-      <button (click)="dialogRef.close()" mat-button>{{ 'general.cancel' | transloco }}</button>
+      <button (click)="dialogRef.close()" type="button" mat-button>
+        {{ 'general.cancel' | transloco }}
+      </button>
       <button [disabled]="!confirmFormGroupValid()" mat-button type="submit" form="mfa-form">
         {{ 'general.confirm' | transloco }}
       </button>

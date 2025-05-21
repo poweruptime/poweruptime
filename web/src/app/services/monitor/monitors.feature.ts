@@ -35,12 +35,12 @@ import {
   withSelection,
 } from '@app/services/store-features';
 
-export type MonitorSearchParams = {
+export interface MonitorSearchParams {
   search: string | undefined;
   statuses: BackendType['MonitorResponse']['status'][] | undefined;
   types: BackendType['MonitorData']['_type'][] | undefined;
   tags: string[] | undefined;
-};
+}
 
 export function withMonitorsLoad() {
   return signalStoreFeature(

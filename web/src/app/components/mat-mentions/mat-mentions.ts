@@ -138,14 +138,14 @@ export class MentionAutocompleteTrigger
   private _previousValue?: string | number;
   private _valueOnAttach?: string | number;
   private _valueOnLastKeydown?: string;
-  private _overlayAttached: boolean = false;
+  private _overlayAttached = false;
   private _manuallyFloatingLabel = false;
   private _trackedModal: Element | null = null;
   private _cleanupWindowBlur?: () => void;
 
   /** Whether the autocomplete is disabled. */
   @Input('matAutocompleteDisabled')
-  autocompleteDisabled: boolean = false;
+  autocompleteDisabled = false;
 
   /** The autocomplete panel to be attached to this trigger. */
   @Input('matMentions') autocomplete!: MatAutocomplete;
@@ -162,20 +162,20 @@ export class MentionAutocompleteTrigger
   /**
    * `autocomplete` attribute to apply on the underlying input (e.g. "off").
    */
-  @Input() autocompleteAttribute: string = 'off';
+  @Input() autocompleteAttribute = 'off';
 
   /**
    * Single mention trigger character; defaults to `@`.
    * When typed, we’ll start showing the autocomplete panel if possible.
    */
-  @Input() mentionTriggerChar: string = '@';
+  @Input() mentionTriggerChar = '@';
 
   mentionFilter = model<string>('');
 
   /** Tracks whether we are currently "in" a mention. */
   private _mentionActive = false;
   /** Position in text where user typed the trigger char. */
-  private _mentionStartPos: number = -1;
+  private _mentionStartPos = -1;
 
   constructor() {
     // all injections are handled above
@@ -225,10 +225,12 @@ export class MentionAutocompleteTrigger
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   registerOnChange(fn: (value: any) => {}): void {
     this._onChange = fn;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   registerOnTouched(fn: () => {}): void {
     this._onTouched = fn;
   }

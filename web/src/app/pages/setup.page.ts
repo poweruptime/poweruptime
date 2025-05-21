@@ -83,7 +83,7 @@ import {SetupStore} from '../services';
                 </form>
 
                 @if (setupStore.error()) {
-                  <button (click)="setupStore.setState('setup')" mat-stroked-button>
+                  <button (click)="setupStore.setState('setup')" type="button" mat-stroked-button>
                     {{ 'auth.setup.continueAnyway' | transloco }}
                     <bi class="ml-2" name="arrow-right" />
                   </button>
@@ -152,6 +152,7 @@ import {SetupStore} from '../services';
                     <button
                       class="w-full"
                       (click)="setupStore.setState('setup')"
+                      type="button"
                       mat-stroked-button>
                       {{ 'auth.setup.continueAnyway' | transloco }}
                       <bi class="ml-2" name="arrow-right" />

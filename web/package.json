@@ -10,11 +10,11 @@
     "build:stats": "ng build --configuration docker --verbose --stats-json",
     "analyze": "esbuild-visualizer --metadata ./dist/poweruptime-web/stats.json",
     "test": "ng test",
+    "lint": "ng lint",
     "api": "openapi-typescript http://localhost:8080/api/swagger/docs-json -o src/app/api/api-types.ts && prettier --write src/app/api/api-types.ts",
     "i18n:optimize": "transloco-optimize dist/poweruptime-web/browser/assets/i18n",
     "i18n:extract": "transloco-keys-manager extract",
-    "i18n:find": "transloco-keys-manager find",
-    "lint": "ng lint"
+    "i18n:find": "transloco-keys-manager find"
   },
   "private": true,
   "dependencies": {
