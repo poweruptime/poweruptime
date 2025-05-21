@@ -1,5 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "packageManager": "pnpm",
+    "schematicCollections": ["angular-eslint"]
+  },
   "newProjectRoot": "projects",
   "projects": {
     "poweruptime-web": {
@@ -40,7 +44,11 @@
                 "input": "node_modules/dfx-bootstrap-icons/icons",
                 "output": "/assets/icons"
               },
-              {"glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/"}
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              }
             ],
             "browser": "src/main.ts",
             "index": "src/index.html",
@@ -57,6 +65,12 @@
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
