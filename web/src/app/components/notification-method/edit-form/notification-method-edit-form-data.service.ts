@@ -15,6 +15,39 @@ export const NotificationMethodEditFormDataService = createInjectable(
   () => {
     const fb = inject(NonNullableFormBuilder);
 
+    const appriseDataFormGroup = fb.group({
+      ...baseCheckerProperties,
+      url: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(Database.URL_REGEX),
+          Validators.minLength(Database.MIN_URL_LENGTH),
+          Validators.maxLength(Database.MAX_URL_LENGTH),
+        ],
+      ],
+    });
+
+    const discordDataFormGroup = fb.group({
+      ...baseCheckerProperties,
+      url: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(Database.URL_REGEX),
+          Validators.minLength(Database.MIN_URL_LENGTH),
+          Validators.maxLength(Database.MAX_URL_LENGTH),
+        ],
+      ],
+      displayName: [
+        undefined as string | undefined,
+        [
+          Validators.minLength(Database.MIN_DISPLAY_NAME_LENGTH),
+          Validators.maxLength(Database.MAX_DISPLAY_NAME_LENGTH),
+        ],
+      ],
+    });
+
     const emailDataFormGroup = fb.group({
       ...baseCheckerProperties,
       to: new FormControl<string[] | null>(null, [
@@ -60,26 +93,6 @@ export const NotificationMethodEditFormDataService = createInjectable(
       ]),
     });
 
-    const discordDataFormGroup = fb.group({
-      ...baseCheckerProperties,
-      url: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(Database.URL_REGEX),
-          Validators.minLength(Database.MIN_URL_LENGTH),
-          Validators.maxLength(Database.MAX_URL_LENGTH),
-        ],
-      ],
-      displayName: [
-        undefined as string | undefined,
-        [
-          Validators.minLength(Database.MIN_DISPLAY_NAME_LENGTH),
-          Validators.maxLength(Database.MAX_DISPLAY_NAME_LENGTH),
-        ],
-      ],
-    });
-
     const slackDataFormGroup = fb.group({
       ...baseCheckerProperties,
       url: [
@@ -101,11 +114,14 @@ export const NotificationMethodEditFormDataService = createInjectable(
     });
 
     return {
-      emailDataFormGroup,
+      appriseDataFormGroup,
       discordDataFormGroup,
+      emailDataFormGroup,
       slackDataFormGroup,
       formSenderDataFactory: (type: BackendType['NotificationMethodData']['_type']) => {
         switch (type) {
+          case 'APPRISE':
+            return appriseDataFormGroup;
           case 'DISCORD':
             return discordDataFormGroup;
           case 'EMAIL':

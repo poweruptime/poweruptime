@@ -5,11 +5,7 @@ import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
-import {
-  MonitorStatusBackground,
-  MonitorStatusColor,
-  MonitorStatusTextBackground,
-} from '@app/directives';
+import {MonitorStatusColor} from '@app/directives';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 
 @Component({
@@ -49,13 +45,7 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
   `,
   selector: 'pu-check-result-log-entry',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    RelativeTimeWithTooltip,
-    BiComponent,
-    DatePipe,
-    MonitorStatusColor,
-    MonitorStatusTextBackground,
-  ],
+  imports: [RelativeTimeWithTooltip, BiComponent, DatePipe, MonitorStatusColor],
 })
 export class CheckResultLogEntry {
   readonly logEntry = input.required<BackendType['CheckResultLogEntryResponse']>();

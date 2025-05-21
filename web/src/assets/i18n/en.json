@@ -325,6 +325,10 @@
   },
   "notificationMethod": {
     "edit": {
+      "apprise": {
+        "url": "Apprise {{general.url}}",
+        "urlHelp": "Find more information [link:webhookHelpUrl]here[/link]."
+      },
       "body": "Body template",
       "discord": {
         "displayName": "Display name",
