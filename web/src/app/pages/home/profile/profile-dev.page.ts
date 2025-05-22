@@ -3,7 +3,7 @@ import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {RouterLink} from '@angular/router';
 
-import {AuthStore} from '@app/services';
+import {AuthStore, ChangelogStore} from '@app/services';
 
 @Component({
   template: `
@@ -98,6 +98,22 @@ import {AuthStore} from '@app/services';
           </mat-card-content>
         </mat-card>
       </div>
+      <div>
+        <mat-card appearance="outlined">
+          <mat-card-content>
+            <div class="flex flex-col gap-4">
+              <h2 class="text-xl">Changelog</h2>
+              <button
+                class="secondary-button"
+                (click)="setOldVersion()"
+                type="button"
+                mat-stroked-button>
+                Set old version into storage
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   `,
   selector: 'pu-profile-dev-page',
@@ -106,6 +122,11 @@ import {AuthStore} from '@app/services';
 })
 export class ProfileDevPage {
   private readonly authStore = inject(AuthStore);
+  private readonly changelogStore = inject(ChangelogStore);
+
+  setOldVersion() {
+    this.changelogStore.lastVersion.set('0.0.1');
+  }
 
   setInvalidAccessToken(): void {
     this.authStore.setTokens({
