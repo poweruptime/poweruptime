@@ -23,29 +23,29 @@ import {RequestStatusState} from './request-status.feature';
 
 type EntityKey<EntityType> = keyof EntityType | 'actions' | string;
 
-type TableState<EntityType> = {
+interface TableState<EntityType> {
   columnsToDisplay: EntityKey<EntityType>[];
   totalElements: number;
   page: number;
   size: number;
   sortBy: string;
   sortDirection: SortDirection;
-};
-type withTableOptions<EntityType> = {
+}
+interface withTableOptions<EntityType> {
   columnsToDisplay: EntityKey<EntityType>[];
   defaultSortBy: string;
   defaultSortDirection?: SortDirection;
   defaultPageSize?: number;
   paramPrefix?: string;
-};
+}
 
 const lumber = loggerOf('withPaginatedTable');
 
-export type PaginationDto = {
+export interface PaginationDto {
   page: number;
   size: number;
   sort: string[];
-};
+}
 
 export function withPaginatedTable<EntityType>({
   columnsToDisplay,

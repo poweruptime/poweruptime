@@ -62,8 +62,8 @@ INSERT INTO system_notification (id, title, description, active, type, starts, e
 -- Monitors
 
 -- SSL Certificate
-INSERT INTO monitor_checker_data (id, _type) VALUES ('BbTCKAKofbF1', 'SSL_CERTIFICATE');
-INSERT INTO monitor_checker_data_ssl_certificate (id, ssl_certificate_url, ssl_certificate_valid_days_left)
+INSERT INTO monitor_data (id, _type) VALUES ('BbTCKAKofbF1', 'SSL_CERTIFICATE');
+INSERT INTO monitor_data_ssl_certificate (id, ssl_certificate_url, ssl_certificate_valid_days_left)
 VALUES ('BbTCKAKofbF1', 'https://dafnik.me', 30);
 
 INSERT INTO monitor (id, monitor_checker_id, team_id, name, test_interval_seconds, status, upside_down, retries,
@@ -71,8 +71,8 @@ INSERT INTO monitor (id, monitor_checker_id, team_id, name, test_interval_second
 VALUES ('k6A6bEK7C9pC', 'BbTCKAKofbF1', '4Lxhu5YKWPBr', 'Test SSL Certificate', 120, 'U', false, 0, 'Test');
 
 -- HTTP
-INSERT INTO monitor_checker_data (id, _type) VALUES ('sPDD36R7KTgs', 'HTTP');
-INSERT INTO monitor_checker_data_http (id, http_url, http_content_type, http_ignore_tls, http_method, http_allowed_status_code_ranges, http_certificate_expiry)
+INSERT INTO monitor_data (id, _type) VALUES ('sPDD36R7KTgs', 'HTTP');
+INSERT INTO monitor_data_http (id, http_url, http_content_type, http_ignore_tls, http_method, http_allowed_status_code_ranges, http_certificate_expiry)
 VALUES ('sPDD36R7KTgs', 'https://expired.badssl.com/', 'JSON', true, 'GET', ARRAY['200-299'], false);
 
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
@@ -81,8 +81,8 @@ VALUES ('U', false, '2025-01-04 13:56:03.955130 +00:00', null, null, 0, 120, '20
         '6XSKoPbRhSsb', 'sPDD36R7KTgs', '4Lxhu5YKWPBr', 'Test HTTP', 'Test');
 
 -- DNS CNAME Matches
-INSERT INTO monitor_checker_data (id, _type) VALUES ('wPz3rDrwsFSk', 'DNS');
-INSERT INTO monitor_checker_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
+INSERT INTO monitor_data (id, _type) VALUES ('wPz3rDrwsFSk', 'DNS');
+INSERT INTO monitor_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
 VALUES ('wPz3rDrwsFSk', '9.9.9.9', 'playground.dafnik.me', '{dafnik.github.io.}', 53, 'CNAME');
 
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
@@ -91,8 +91,8 @@ VALUES ('U', false, '2025-01-04 13:56:03.975070 +00:00', null, null, 2, 60, '202
         'rKALbBX37kWr', 'wPz3rDrwsFSk', '4Lxhu5YKWPBr', 'Test playground CNAME DNS', 'Test');
 
 -- DNS Exists Team 2
-INSERT INTO monitor_checker_data (id, _type) VALUES ('5PkEZTcxCt9f', 'DNS');
-INSERT INTO monitor_checker_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
+INSERT INTO monitor_data (id, _type) VALUES ('5PkEZTcxCt9f', 'DNS');
+INSERT INTO monitor_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
 VALUES ('5PkEZTcxCt9f', '9.9.9.9', 'playground.dafnik.me', null, 53, 'A');
 
 INSERT INTO monitor (status, upside_down, created_at, deleted, resend_after, retries, test_interval_seconds, updated_at,
@@ -102,19 +102,19 @@ VALUES ('U', false, '2025-01-04 13:56:03.979055 +00:00', null, null, 2, 60, '202
 
 -- Notification Methods
 -- E-Mail
-INSERT INTO notification_sender_data (id, _type) VALUES ('mWj79S7CpUyM', 'EMAIL');
-INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+INSERT INTO notification_method_data (id, _type) VALUES ('mWj79S7CpUyM', 'EMAIL');
+INSERT INTO notification_method_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
 VALUES (false, 1234, 'S', 'mWj79S7CpUyM', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('UoKSMt62oFcX', 'mWj79S7CpUyM', '4Lxhu5YKWPBr', 'Test E-Mail');
+INSERT INTO notification_method (id, notification_method_data_id, team_id, name) VALUES ('UoKSMt62oFcX', 'mWj79S7CpUyM', '4Lxhu5YKWPBr', 'Test E-Mail');
 
 -- E-Mail
-INSERT INTO notification_sender_data (id, _type) VALUES ('F9MeayHjjpB3', 'EMAIL');
-INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+INSERT INTO notification_method_data (id, _type) VALUES ('F9MeayHjjpB3', 'EMAIL');
+INSERT INTO notification_method_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
 VALUES (false, 1234, 'S', 'F9MeayHjjpB3', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('gs7jTakASRSp', 'F9MeayHjjpB3', '4Lxhu5YKWPBr', 'Test E-Mail 2');
+INSERT INTO notification_method (id, notification_method_data_id, team_id, name) VALUES ('gs7jTakASRSp', 'F9MeayHjjpB3', '4Lxhu5YKWPBr', 'Test E-Mail 2');
 
 -- E-Mail
-INSERT INTO notification_sender_data (id, _type) VALUES ('xStfmBA6wH4C', 'EMAIL');
-INSERT INTO notification_sender_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
+INSERT INTO notification_method_data (id, _type) VALUES ('xStfmBA6wH4C', 'EMAIL');
+INSERT INTO notification_method_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
 VALUES (false, 1234, 'S', 'xStfmBA6wH4C', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, notification_sender_data_id, team_id, name) VALUES ('TPAbk1uHLp7p', 'xStfmBA6wH4C', '4Lxhu5YKWPBr', 'Test E-Mail 2');
+INSERT INTO notification_method (id, notification_method_data_id, team_id, name) VALUES ('TPAbk1uHLp7p', 'xStfmBA6wH4C', '4Lxhu5YKWPBr', 'Test E-Mail 2');

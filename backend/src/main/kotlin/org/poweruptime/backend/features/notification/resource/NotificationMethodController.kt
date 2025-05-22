@@ -7,16 +7,19 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.SYSTEM_ROLE_USER
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.*
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
+import org.poweruptime.backend.features.notification.dto.NotificationMethodTemplateResponse
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -41,6 +44,15 @@ class NotificationMethodController(
     )
 
     @Operation(
+        summary = "Get notification method template settings",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_USER",
+    )
+    @GetMapping("/template/{type}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getTemplate(@PathVariable type: NotificationMethodType) = NotificationMethodTemplateResponse(type)
+
+    @Operation(
         summary = "Get notification methods",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
@@ -52,7 +64,7 @@ class NotificationMethodController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String,
         @RequestParam("name") name: String?,
-        @RequestParam("types") types: List<NotificationSenderType>?,
+        @RequestParam("types") types: List<NotificationMethodType>?,
         @RequestParam("useByDefault") useByDefault: Boolean?,
         @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<NotificationMethodResponse> = notificationMethodService.getAllPaginated(

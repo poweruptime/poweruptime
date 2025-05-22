@@ -160,7 +160,7 @@ export const MonitorEditFormDataService = createInjectable(
       pingDataFormGroup,
       pushDataFormGroup,
       sslCertificateDataFormGroup,
-      formCheckerFactory: (type: BackendType['MonitorCheckerData']['_type']) => {
+      formCheckerFactory: (type: BackendType['MonitorData']['_type']) => {
         switch (type) {
           case 'DNS':
             return dnsDataFormGroup;

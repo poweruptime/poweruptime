@@ -29,6 +29,7 @@
       "check": "Check",
       "expired": "The logs for this check have expired and are no longer available.",
       "showTimestamps": "Show Timestamp",
+      "startedAt": "Started at",
       "statusUpdate": "Status update"
     },
     "list": {
@@ -190,6 +191,7 @@
     "tags": "Tags",
     "team": "Team",
     "teams": "Teams",
+    "template": "Template",
     "theme": "Theme",
     "time": "Time",
     "timezone": "Timezone",
@@ -313,12 +315,20 @@
     "title": "Page not found"
   },
   "notification": {
+    "detail": {
+      "openCheckResult": "Open {{general.checkResult}}"
+    },
     "list": {
-      "openCheckResult": "Open the connected {{general.checkResult}}"
+      "openCheckResult": "Open the connected {{general.checkResult}}",
+      "view": "View {{general.notification}}"
     }
   },
   "notificationMethod": {
     "edit": {
+      "apprise": {
+        "url": "Apprise {{general.url}}",
+        "urlHelp": "Find more information [link:webhookHelpUrl]here[/link]."
+      },
       "body": "Body template",
       "discord": {
         "displayName": "Display name",
@@ -368,6 +378,7 @@
       "selected": "Selected {{general.notificationMethods}}"
     },
     "sender": {
+      "APPRISE": "Apprise",
       "DISCORD": "Discord",
       "EMAIL": "{{general.email}}",
       "SLACK": "Slack"

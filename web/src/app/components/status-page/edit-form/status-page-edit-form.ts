@@ -126,6 +126,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       [attr.aria-label]="
                         'statusPage.edit.domainNames.remove' | transloco: {domainName}
                       "
+                      type="button"
                       matChipRemove>
                       <bi name="x-circle" aria-hidden="true" />
                     </button>
@@ -456,7 +457,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   }
 
   onGroupDrop(event: CdkDragDrop<BackendType['StatusPageGroupResponse'][]>) {
-    let items = this.form.controls.groups.controls;
+    const items = this.form.controls.groups.controls;
     moveItemInArray(items, event.previousIndex, event.currentIndex);
   }
 

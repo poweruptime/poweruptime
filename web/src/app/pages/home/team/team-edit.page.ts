@@ -22,10 +22,12 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
             <mat-card-header>
               <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
             </mat-card-header>
-            <mat-card-content>
-              <div class="pt-4">
-                <pu-team-edit-form [team]="team" (submitUpdate)="teamEditStore.update($event)" />
-              </div>
+            <mat-card-content class="h-full">
+              <div class="h-4"></div>
+              <pu-team-edit-form
+                class="grid h-full"
+                [team]="team"
+                (submitUpdate)="teamEditStore.update($event)" />
             </mat-card-content>
           </mat-card>
 
@@ -35,12 +37,11 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
             </mat-card-header>
             <mat-card-content>
               @if (teamSettingsStore.settings(); as settings) {
-                <div class="pt-4">
-                  <pu-team-settings
-                    [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
-                    [settings]="settings"
-                    (submitCreate)="teamSettingsStore.setTimezone($event.timezone)" />
-                </div>
+                <div class="h-4"></div>
+                <pu-team-settings
+                  [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
+                  [settings]="settings"
+                  (submitCreate)="teamSettingsStore.setTimezone($event.timezone)" />
               }
             </mat-card-content>
           </mat-card>
@@ -52,7 +53,8 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
                   <mat-card-title>{{ 'general.users' | transloco }}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div class="flex flex-col gap-2 pt-4">
+                  <div class="h-4"></div>
+                  <div class="flex flex-col gap-2">
                     <div>
                       <a mat-flat-button routerLink="../invite">
                         {{ 'general.invite' | transloco }}
@@ -69,9 +71,8 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
                   <mat-card-title>{{ 'team.edit.openInvites' | transloco }}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div class="pt-4">
-                    <pu-team-invites-list [teamId]="teamId" />
-                  </div>
+                  <div class="h-4"></div>
+                  <pu-team-invites-list [teamId]="teamId" />
                 </mat-card-content>
               </mat-card>
             }

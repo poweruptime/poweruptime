@@ -8,7 +8,7 @@ import org.poweruptime.backend.core.MaxNanoId
 import org.poweruptime.backend.core.models.AEntity
 import org.poweruptime.backend.core.utils.*
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorStatusDatabaseConverter
+import org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
 
 @Entity
 @Table(name = "monitor_push_entry")

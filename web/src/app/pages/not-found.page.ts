@@ -25,7 +25,7 @@ import {BottomActionBar} from '@app/components';
             <bi class="me-2" name="house" />
             {{ 'notFound.home' | transloco }}
           </a>
-          <button (click)="goBack()" mat-flat-button>
+          <button (click)="goBack()" type="button" mat-flat-button>
             <bi class="me-2" name="arrow-left" />
             {{ 'notFound.back' | transloco }}
           </button>

@@ -10,9 +10,10 @@ import org.apache.hc.core5.util.Timeout
 import org.poweruptime.backend.configuration.puRestTemplate
 import org.poweruptime.backend.core.utils.addBasicAuthString
 import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,13 +35,13 @@ class HttpMonitorChecker(
 ) : MonitorChecker {
     private val logger: Logger = LoggerFactory.getLogger(HttpMonitorChecker::class.java)
 
-    override val type = MonitorCheckerType.HTTP
+    override val type = MonitorType.HTTP
 
     @Suppress("ReturnCount")
     override fun execute(monitor: Monitor): CheckResultDto {
-        val httpMonitorCheckerData = monitor.checker as HttpMonitorCheckerData
+        val httpMonitorCheckerData = monitor.checker as HttpMonitorData
         if (httpMonitorCheckerData.certificateExpiry) {
-            monitor.checker = SSLCertificateMonitorCheckerData(
+            monitor.checker = SSLCertificateMonitorData(
                 url = httpMonitorCheckerData.url,
                 validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
             )
@@ -96,7 +97,7 @@ class HttpMonitorChecker(
     )
 
     @Suppress("LongMethod")
-    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorCheckerData): HttpResponse {
+    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorData): HttpResponse {
         val requestConfig = RequestConfig.custom().apply {
             if (httpMonitorCheckerData.maxRedirects == null) {
                 setRedirectsEnabled(false)
@@ -139,9 +140,9 @@ class HttpMonitorChecker(
             headers.add(
                 "Content-Type",
                 when (httpMonitorCheckerData.contentType) {
-                    HttpMonitorCheckerDataContentType.HTML -> "text/html"
-                    HttpMonitorCheckerDataContentType.JSON -> "application/json"
-                    HttpMonitorCheckerDataContentType.XML -> "application/xml"
+                    HttpMonitorDataContentType.HTML -> "text/html"
+                    HttpMonitorDataContentType.JSON -> "application/json"
+                    HttpMonitorDataContentType.XML -> "application/xml"
                 },
             )
 
@@ -203,14 +204,14 @@ class HttpMonitorChecker(
         }
     }
 
-    private fun HttpMonitorCheckerDataMethod.toHttpMethod() = when (this) {
-        HttpMonitorCheckerDataMethod.GET -> HttpMethod.GET
-        HttpMonitorCheckerDataMethod.POST -> HttpMethod.POST
-        HttpMonitorCheckerDataMethod.PUT -> HttpMethod.PUT
-        HttpMonitorCheckerDataMethod.PATCH -> HttpMethod.PATCH
-        HttpMonitorCheckerDataMethod.DELETE -> HttpMethod.DELETE
-        HttpMonitorCheckerDataMethod.HEAD -> HttpMethod.HEAD
-        HttpMonitorCheckerDataMethod.OPTIONS -> HttpMethod.OPTIONS
+    private fun HttpMonitorDataMethod.toHttpMethod() = when (this) {
+        HttpMonitorDataMethod.GET -> HttpMethod.GET
+        HttpMonitorDataMethod.POST -> HttpMethod.POST
+        HttpMonitorDataMethod.PUT -> HttpMethod.PUT
+        HttpMonitorDataMethod.PATCH -> HttpMethod.PATCH
+        HttpMonitorDataMethod.DELETE -> HttpMethod.DELETE
+        HttpMonitorDataMethod.HEAD -> HttpMethod.HEAD
+        HttpMonitorDataMethod.OPTIONS -> HttpMethod.OPTIONS
     }
 //    private fun getTLSIgnoringRequestFactory2() = HttpComponentsClientHttpRequestFactory(
 //        HttpClientBuilder.create()

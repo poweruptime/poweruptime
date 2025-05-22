@@ -40,3 +40,17 @@ jobs:
 
       - name: Build
         run: pnpm web:build:docker
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dafnik/setup-node-pnpm@v4
+        with:
+          install-ignore-scripts: true
+
+      - name: Lint check
+        run: pnpm web:lint

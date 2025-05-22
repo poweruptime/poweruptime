@@ -11,12 +11,25 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
 
 1. Clone the [docker-compose repository](https://github.com/poweruptime/docker-compose).
    ```shell
-   git clone https://github.com/poweruptime/docker-compose.git poweruptime && cd ./poweruptime
+   git clone https://github.com/poweruptime/docker-compose.git poweruptime && cd ./poweruptime && chmod +x ./pu
    ```
-2. Checkout specific version (or just stay on main, which is the latest release)
+2. **(Optional)** Checkout specific version (or just stay on main, which is the latest release)
    ```shell
-   git checkout vX.X.X
+   git checkout X.X.X
    ```
+   ```shell
+   git checkout beta
+   ```
+
+### Automatic
+
+3. Setup
+   ```shell
+   ./pu setup
+   ```
+
+### Manual
+
 3. Copy `.env.exmaple` to `.env`
    ```shell
    cp .env.example .env
@@ -37,16 +50,25 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    openssl rand -base64 64 | tr -dc A-Za-z0-9 | head -c 60 ; echo
    ```
 
+   > [!NOTE]  
+   > The `DATABASE_PASSWORD` is also used for encrypting your database backups.
+
 5. Make sure no other services listen on port `80` and `443`.
 6. Start the stack
    ```shell
-   ./start.sh
+   ./pu start
    ```
 
 ### Stop the stack
 
 ```shell
-./stop.sh
+./pu stop
+```
+
+### Update the stack
+
+```shell
+./pu update
 ```
 
 ## Environment variables

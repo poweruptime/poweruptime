@@ -18,7 +18,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
-import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES} from '@app/api';
+import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
@@ -340,7 +340,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
       ],
     ],
     description: [undefined as string | undefined],
-    type: ['' as BackendType['MonitorCheckerData']['_type'] | '', [Validators.required]],
+    type: ['' as MonitorDataType | '', [Validators.required]],
     testIntervalUnit: ['minutes' as TestIntervalUnits, [Validators.required]],
     testInterval: [
       1,
@@ -447,7 +447,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     };
   }
 
-  private setFormCheckerType(type: BackendType['MonitorCheckerData']['_type']) {
+  private setFormCheckerType(type: BackendType['MonitorData']['_type']) {
     // @ts-expect-error Checker Form Control
     this.form.setControl('checker', this.monitorEditFormDataService.formCheckerFactory(type));
 

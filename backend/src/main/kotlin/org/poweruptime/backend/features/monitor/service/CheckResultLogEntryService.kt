@@ -64,11 +64,19 @@ class CheckResultLogEntryService(
     fun getAllPaginated(
         pageable: Pageable,
         checkResultId: String,
+        stages: List<CheckResultLogStage>? = null,
     ): Page<CheckResultLogEntry> = checkResultLogEntryRepository.findAll(
         { root: Root<CheckResultLogEntry>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
             query?.distinct(true)
 
-            Filter("checkResult.id", checkResultId, FilterCompare.EQ).toPredicate(root, criteriaBuilder)
+            criteriaBuilder.and(
+                *buildList {
+                    add(Filter("checkResult.id", checkResultId, FilterCompare.EQ))
+                    stages?.let {
+                        add(Filter("stage", it, FilterCompare.IN))
+                    }
+                }.toPredicate(root, criteriaBuilder).toTypedArray(),
+            )
         },
         PageableValidator.validateSort(
             pageable,

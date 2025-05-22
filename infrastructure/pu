@@ -2,11 +2,22 @@
 set -euo pipefail
 trap 'echo "ERROR"' ERR
 
-source .env
+check_requirements() {
+  local missing=()
+  local cmd
+  for cmd in docker gpg git openssl lsof sudo sed cp rm mkdir ls grep cut tr date tee source cat; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      missing+=("$cmd")
+    fi
+  done
 
-: "${DATABASE_USER:?DATABASE_USER must be set in .env}"
-: "${DATABASE_PASSWORD:?DATABASE_PASSWORD must be set in .env}"
-: "${DATABASE_NAME:?DATABASE_NAME must be set in .env}"
+  if [ "${#missing[@]}" -gt 0 ]; then
+    echo "Error: Missing required commands: ${missing[*]}" >&2
+    exit 1
+  fi
+}
+
+check_requirements
 
 LOCAL=false
 DRY_RUN=false
@@ -20,22 +31,23 @@ Usage: $0 [--local] [--dry-run] <command> [target] [extra]
 Commands:
   up               Deploy the stack (incl. pull)
   down             Stop & remove the stack
-  start            Alias for up
-  stop             Alias for down
   restart          Restart the stack
   pull             Pull images per versions.env
+  update           Checkout, backup DB & redeploy stack
+  setup            Initial project setup
+  start            Alias for up
+  stop             Alias for down
   backup           Create DB backup
   backup-prune     Prune all but latest 5 backups
   backup-verify    Verify encrypted DB backup
   backup-extract   Extract encrypted DB backup
   backup-import    Import encrypted DB backup (DANGEROUS)
-  update           Checkout, backup DB & redeploy stack
   config           Print combined compose config
   version          Show current version
 
 Options:
+  --dryRun        Print commands without executing
   --local          Use local compose files (local environment)
-  --dry-run        Print commands without executing
   -h, --help       Show this help
 EOF
 }
@@ -55,7 +67,7 @@ parse_args() {
         usage
         exit 0
         ;;
-      up|down|start|stop|restart|pull|backup|backup-prune|config|version)
+      up|down|start|stop|restart|pull|backup|backup-prune|config|version|setup)
         CMD="$1"
         shift
         ;;
@@ -148,9 +160,69 @@ confirm() {
   done
 }
 
+prompt_for_editor() {
+  local possible=(nano vim vi emacs code subl gedit)
+  local installed=()
+  for cmd in "${possible[@]}"; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+      installed+=("$cmd")
+    fi
+  done
+
+  if (( ${#installed[@]} == 0 )); then
+    PS3="No editors detected. Please type your editor command: "
+    select _ in other; do
+      read -r -p "Editor command: " cmd
+      echo "$cmd"
+      return
+    done
+  fi
+
+  PS3="No default editor set. Please select one: "
+  local options=("${installed[@]}" other)
+  select opt in "${options[@]}"; do
+    if [[ " ${installed[*]} " == *" $opt "* ]]; then
+      echo "$opt"
+      return
+    elif [[ $opt == other ]]; then
+      read -r -p "Enter the editor command (with flags): " cmd
+      echo "$cmd"
+      return
+    else
+      echo "Invalid selection." >&2
+    fi
+  done
+}
+
+get_editor() {
+  # note the :- expansions to avoid nounset errors
+  if [[ -n "${VISUAL:-}" ]]; then
+    echo "${VISUAL}"
+  elif [[ -n "${EDITOR:-}" ]]; then
+    echo "${EDITOR}"
+  else
+    prompt_for_editor
+  fi
+}
+
 ts()  { date +%Y%m%d%H%M%S; }
 log() { printf '%s: %s\n' "$(ts)" "$*"; }
 err() { printf '%s: ERROR: %s\n' "$(ts)" "$*" >&2; }
+
+source_env() {
+  if [ ! -f .env ]; then
+    err ".env file not found."; exit 1
+  fi
+
+  # Load environment variables
+  # shellcheck source=/dev/null
+  source .env
+
+  # Validate required vars
+  : "${DATABASE_USER:?Error: DATABASE_USER must be set in .env}"
+  : "${DATABASE_PASSWORD:?Error: DATABASE_PASSWORD must be set in .env}"
+  : "${DATABASE_NAME:?Error: DATABASE_NAME must be set in .env}"
+}
 
 do_pull() {
   docker_login
@@ -292,7 +364,7 @@ do_update() {
     local branch
     branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$branch" != "$TARGET" ]]; then
-      err "On '$branch', need '$TARGET'"
+      err "You are on '$branch', but '$TARGET' is needed"
       exit 1
     fi
     run_cmd git pull
@@ -317,22 +389,102 @@ do_update() {
   log "Update finished"
 }
 
+do_setup() {
+  if [[ "$DRY_RUN" != true && -f .env ]]; then
+    echo "Setup already completed (.env exists). Exiting."
+    exit 1
+  fi
+
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "dryRun mode: skipping .env existence check"
+  fi
+
+  echo "Copying .env.example to .env..."
+  run_cmd cp .env.example .env
+
+  if confirm "Generate DATABASE_PASSWORD & RABBIT_PASSWORD now?"; then
+    echo "Generating secrets..."
+    DB_PASS=$(openssl rand -base64 64 \
+      | tr -dc A-Za-z0-9 \
+      | head -c60)
+    RB_PASS=$(openssl rand -base64 64 \
+      | tr -dc A-Za-z0-9 \
+      | head -c60)
+
+    if grep -q '^DATABASE_PASSWORD=' .env; then
+      if $DRY_RUN; then
+        echo -e "+ sed -i.bak\n\
++  -e 's|^DATABASE_PASSWORD=.*|DATABASE_PASSWORD=\"$DB_PASS\"|'\n\
++  -e 's|^RABBIT_PASSWORD=.*|RABBIT_PASSWORD=\"$RB_PASS\"|'\n\
++  .env"
+      else
+        sed -i.bak \
+          -e "s|^DATABASE_PASSWORD=.*|DATABASE_PASSWORD=\"$DB_PASS\"|" \
+          -e "s|^RABBIT_PASSWORD=.*|RABBIT_PASSWORD=\"$RB_PASS\"|" \
+          .env
+      fi
+
+      run_cmd rm .env.bak
+      echo "Replaced DATABASE_PASSWORD & RABBIT_PASSWORD in .env."
+    else
+      if $DRY_RUN; then
+        echo "+ echo 'DATABASE_PASSWORD=$DB_PASS' >>.env"
+        echo "+ echo 'RABBIT_PASSWORD=$RB_PASS' >>.env"
+      else
+        {
+          echo "DATABASE_PASSWORD=$DB_PASS"
+          echo "RABBIT_PASSWORD=$RB_PASS"
+        } >>.env
+      fi
+
+      echo "Appended DATABASE_PASSWORD & RABBIT_PASSWORD to .env."
+    fi
+  else
+    echo "Skipping secret generation. Remember to set them in .env."
+  fi
+
+  if confirm "Check if ports 80/443 are in use?"; then
+    for port in 80 443; do
+      if sudo lsof -iTCP:"$port" -sTCP:LISTEN -t >/dev/null; then
+        echo "Error: port $port is already in use. Please free it and retry."
+        exit 1
+      fi
+    done
+    echo "Ports 80 and 443 are free."
+  else
+    echo "Skipping port checks."
+  fi
+
+  # 5) Let user fill out the rest
+  echo "Please fill out the remaining .env variables:"
+  editor=$(get_editor)
+  if $DRY_RUN; then
+    echo "+ $editor .env"
+  else
+    $editor .env
+  fi
+
+  echo "Setup complete. Start the stack with './pu start'"
+}
+
+
 main() {
   parse_args "$@"
   setup_compose_args
   case "$CMD" in
-    up|start)           do_up               ;;
-    down|stop)          do_down             ;;
-    pull)               do_pull             ;;
-    restart)            do_restart          ;;
-    backup)             do_backup           ;;
-    backup-prune)       do_backup_prune     ;;
-    backup-verify)      do_backup_verify    ;;
-    backup-extract)     do_backup_extract   ;;
-    backup-import)      do_backup_import    ;;
-    update)             do_update           ;;
-    config)             do_config           ;;
-    version)            do_version          ;;
+    up|start)           do_up                             ;;
+    down|stop)          do_down                           ;;
+    pull)               do_pull                           ;;
+    restart)            do_restart                        ;;
+    update)             do_update                         ;;
+    setup)              do_setup                          ;;
+    backup)             source_env && do_backup           ;;
+    backup-prune)       source_env && do_backup_prune     ;;
+    backup-verify)      source_env && do_backup_verify    ;;
+    backup-extract)     source_env && do_backup_extract   ;;
+    backup-import)      source_env && do_backup_import    ;;
+    config)             do_config                         ;;
+    version)            do_version                        ;;
   esac
 }
 

@@ -11,4 +11,9 @@ export const ROUTES: Routes = [
     loadComponent: () =>
       import('./monitor-check-result-detail.page').then((c) => c.MonitorCheckResultDetailPage),
   },
+  {
+    path: 'n/:notificationId',
+    loadComponent: () =>
+      import('./monitor-notification-detail.page').then((c) => c.MonitorNotificationDetailPage),
+  },
 ];

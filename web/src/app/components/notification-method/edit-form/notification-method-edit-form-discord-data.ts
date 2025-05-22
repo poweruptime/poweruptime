@@ -31,7 +31,6 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           }
         </mat-form-field>
 
-        <small>{{ '' | transloco }}</small>
         <small>
           <transloco
             [params]="{

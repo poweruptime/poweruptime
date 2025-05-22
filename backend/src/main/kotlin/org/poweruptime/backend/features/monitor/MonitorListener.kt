@@ -4,22 +4,25 @@ import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_QUEUE
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
 import org.poweruptime.backend.features.monitor.core.MonitorCheckerFactory
+import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
 import org.poweruptime.backend.features.monitor.dto.PushCheckResultDto
 import org.poweruptime.backend.features.monitor.dto.PushMonitorDto
+import org.poweruptime.backend.features.monitor.dto.PushNotificationDto
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.TimeOption
 import org.poweruptime.backend.features.monitor.resource.LAST_CHECK_RESULTS_COUNT
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
+import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.service.NotificationService
+import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -42,6 +45,7 @@ class MonitorListener(
     private val monitorService: MonitorService,
     private val monitorCheckerFactory: MonitorCheckerFactory,
     private val notificationService: NotificationService,
+    private val subNotificationService: SubNotificationService,
     private val pushService: PushService,
 ) {
     private val logger = LoggerFactory.getLogger(MonitorListener::class.java)
@@ -247,20 +251,39 @@ class MonitorListener(
     )
 
     /**
-     * Decides if and sends a UP or DOWN notification. It also checks for resend logic.
+     * Decides if and sends a UP or DOWN notification. Also checks for resend logic.
      */
     private fun sendUpOrDownNotifications(
         oldStatus: MonitorStatus,
         updatedMonitor: Monitor,
         checkResult: CheckResult
     ) {
-        val shouldSendNotification = when {
+        fun sendNotification(): Notification {
+            val notification = notificationService.send(updatedMonitor, checkResult)
+            notification.subNotifications.forEach { subNotification ->
+                subNotificationService.queueNotification(subNotification.id)
+
+                checkResultLogEntryService.info(
+                    stage = CheckResultLogStage.NOTIFICATION,
+                    checkResult = checkResult,
+                    message = """Queued "${subNotification.method.name}" notification""",
+                    properties = mapOf("subNotificationId" to subNotification.id),
+                )
+            }
+            pushService.send(
+                notification.checkResult.monitor.team.id,
+                PushNotificationDto(notification = NotificationResponse(notification)),
+            )
+
+            return notification
+        }
+
+        when {
             updatedMonitor.isFirstUpResultAfterBoot(oldStatus) -> {
                 logNoNotificationNeeded(
                     checkResult,
                     reason = "First up result after server start, not queuing notifications",
                 )
-                false
             }
             // Monitor has resending enabled, the status is the same as before and DOWN
             updatedMonitor.resendAfter != null &&
@@ -268,12 +291,14 @@ class MonitorListener(
                 updatedMonitor.status == MonitorStatus.DOWN -> {
                 logMonitorHasResendingEnabled(checkResult, updatedMonitor.resendAfter!!)
                 val resendNotification = shouldResendNotification(updatedMonitor, checkResult)
-                logResendDownNotification(checkResult, resendNotification)
-                resendNotification
+
+                val notification = if (resendNotification) sendNotification() else null
+
+                logResendDownNotification(checkResult, resendNotification, notification)
             }
             oldStatus != updatedMonitor.status -> {
-                logSendNormalNotification(checkResult, updatedMonitor, oldStatus)
-                true
+                val notification = sendNotification()
+                logSendNormalNotification(checkResult, updatedMonitor, oldStatus, notification)
             }
             else -> {
                 // Duplicate status without resending
@@ -282,39 +307,7 @@ class MonitorListener(
                     checkResult,
                     reason = "Duplicate status, not queuing notifications",
                 )
-                false
             }
-        }
-
-        if (shouldSendNotification) {
-            sendNotifications(updatedMonitor, checkResult)
-        }
-    }
-
-    /**
-     * Sends notifications for the updated [monitor] and [checkResult].
-     */
-    private fun sendNotifications(monitor: Monitor, checkResult: CheckResult) {
-        // Create and queue notifications for each enabled method
-        val notifications = monitor.enabledNotificationMethods.map { method ->
-            Notification(
-                method = method,
-                checkResult = checkResult,
-                title = checkResult.title
-                    ?: throw IllegalArgumentException("Title cannot be null at this point."),
-                message = checkResult.message,
-            )
-        }
-
-        notificationService.saveAll(notifications).forEach {
-            notificationService.queueNotification(it.id)
-
-            checkResultLogEntryService.info(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResult = checkResult,
-                message = """Queued "${it.method.name}" notification""",
-                properties = mapOf("notificationId" to it.id),
-            )
         }
     }
 
@@ -414,24 +407,35 @@ class MonitorListener(
         )
     }
 
-    private fun logResendDownNotification(checkResult: CheckResult, resendNotification: Boolean) {
+    private fun logResendDownNotification(
+        checkResult: CheckResult,
+        resendNotification: Boolean,
+        notification: Notification?
+    ) {
         checkResultLogEntryService.action(
             stage = CheckResultLogStage.NOTIFICATION,
             checkResult = checkResult,
             message = "Re-queuing DOWN notifications",
-            properties = mapOf("result" to resendNotification.toString()),
+            properties = buildMap {
+                set("result", resendNotification.toString())
+                if (notification != null) {
+                    set("notificationId", notification.id)
+                }
+            },
         )
     }
 
     private fun logSendNormalNotification(
         checkResult: CheckResult,
         updatedMonitor: Monitor,
-        oldStatus: MonitorStatus
+        oldStatus: MonitorStatus,
+        notification: Notification
     ) {
         checkResultLogEntryService.action(
             stage = CheckResultLogStage.NOTIFICATION,
             checkResult = checkResult,
             message = "Queuing ${updatedMonitor.status.name.uppercase()} notifications",
+            properties = mapOf("notificationId" to notification.id),
         )
         logger.info(
             """Monitor "{}", new status: "{}", previous status: "{}", sending normal notifications""",

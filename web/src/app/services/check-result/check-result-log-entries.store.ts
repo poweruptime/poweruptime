@@ -1,10 +1,10 @@
 import {computed} from '@angular/core';
 
-import {debounceTime, distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
+import {distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods} from '@ngrx/signals';
-import {removeAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -38,7 +38,7 @@ export const CheckResultLogEntriesStore = signalStore(
         .entities()
         .map(mapEntriesWithTime)
         .filter(
-          (it) => it.stage === 'NOTIFICATION' && it.properties?.['notificationId'] === undefined,
+          (it) => it.stage === 'NOTIFICATION' && it.properties?.['subNotificationId'] === undefined,
         ),
     ),
     notificationsGrouped: computed(() => {
@@ -48,17 +48,17 @@ export const CheckResultLogEntriesStore = signalStore(
         .filter((it) => it.stage === 'NOTIFICATION')
         .reduce(
           (acc, entity) => {
-            const notificationId = entity.properties?.['notificationId'];
+            const subNotificationId = entity.properties?.['subNotificationId'];
 
-            if (!notificationId) {
+            if (!subNotificationId) {
               return acc;
             }
 
-            if (!acc[notificationId]) {
-              acc[notificationId] = [];
+            if (!acc[subNotificationId]) {
+              acc[subNotificationId] = [];
             }
 
-            acc[notificationId].push(entity);
+            acc[subNotificationId].push(entity);
             return acc;
           },
           {} as Record<string, BackendType['CheckResultLogEntryResponse'][]>,
@@ -77,7 +77,6 @@ export const CheckResultLogEntriesStore = signalStore(
         filter((it): it is string => !!it),
         distinctUntilChanged(),
         tap(() => patchState(store, setPending(), removeAllEntities())),
-        debounceTime(275),
         switchMap((checkResultId) =>
           api
             .get('/v1/check-result/{checkResultId}/log', {
@@ -95,12 +94,7 @@ export const CheckResultLogEntriesStore = signalStore(
             .pipe(
               tapResponse({
                 next: (response) =>
-                  patchState(
-                    store,
-                    removeAllEntities(),
-                    setEntities(response.data),
-                    setFulfilled(),
-                  ),
+                  patchState(store, setAllEntities(response.data), setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

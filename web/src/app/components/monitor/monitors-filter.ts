@@ -12,7 +12,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxAutofocus} from 'dfx-helper';
 
-import {BackendType} from '@app/api';
+import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
 
 @Component({
@@ -27,6 +27,7 @@ import {MonitorSearchParams} from '@app/services';
             class="flex items-center"
             [attr.aria-label]="'general.clear' | transloco"
             (click)="form.controls.search.setValue('')"
+            type="button"
             matSuffix
             mat-icon-button>
             <bi name="x-lg" aria-hidden="true" />
@@ -93,7 +94,7 @@ export class MonitorsFilter {
   form = this.fb.group({
     search: [''],
     statuses: this.fb.control<BackendType['MonitorResponse']['status'][]>([]),
-    types: this.fb.control<BackendType['MonitorCheckerData']['_type'][]>([]),
+    types: this.fb.control<MonitorDataType[]>([]),
     tags: this.fb.control<string[]>([]),
   });
 

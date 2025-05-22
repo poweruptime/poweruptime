@@ -15,6 +15,8 @@ object Config {
     const val MAIL_SECURITY = "\${poweruptime.mail.security}"
     const val MAIL_IGNORE_TLS_ERRORS = "\${poweruptime.mail.ignore-tls-errors}"
 
+    const val APPRISE_URL = "\${poweruptime.apprise.url}"
+
     const val STORAGE_DIRECTORY = "\${poweruptime.storage.directory}"
 
     const val KEY_DIRECTORY = "\${poweruptime.keys.directory}"

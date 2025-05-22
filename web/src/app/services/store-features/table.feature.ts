@@ -11,20 +11,20 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {withRequestStatus} from './request-status.feature';
 
-type TableState = {
+interface TableState {
   columnsToDisplay: string[];
   sort: MatSort | undefined;
   paginator: MatPaginator | undefined;
   filter: string | undefined;
-};
+}
 
 type SortingDataAccessorsMap<EntityType> = (it: EntityType) => string | number;
 type SortingDataAccessors<EntityType> = Record<string, SortingDataAccessorsMap<EntityType>>;
 
-type withTableOptions<EntityType> = {
+interface withTableOptions<EntityType> {
   columnsToDisplay: string[];
   sortingDataAccessors?: SortingDataAccessors<EntityType>;
-};
+}
 
 export function withTable<EntityType>({
   columnsToDisplay,

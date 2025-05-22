@@ -13,12 +13,17 @@ import {AuthStore} from '@app/services';
           <mat-card-content>
             <div class="flex flex-col gap-4">
               <h2 class="text-xl">Auth</h2>
-              <button class="secondary-button" (click)="setInvalidAccessToken()" mat-stroked-button>
+              <button
+                class="secondary-button"
+                (click)="setInvalidAccessToken()"
+                type="button"
+                mat-stroked-button>
                 Access token invalidate
               </button>
               <button
                 class="secondary-button"
                 (click)="setInvalidRefreshToken()"
+                type="button"
                 mat-stroked-button>
                 Refresh token invalidate
               </button>

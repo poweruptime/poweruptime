@@ -20,8 +20,5 @@ interface PushMonitorCheckerEntryRepository : Repository<PushMonitorCheckerEntry
 }
 
 interface IPushMonitorCheckerEntryRepository {
-    fun getLatestByPushIdAndBetweenNowAndThen(
-        @Param("pushId") pushId: String,
-        @Param("then") then: Instant
-    ): PushMonitorCheckerEntry?
+    fun getLatestByPushIdAndBetweenNowAndThen(pushId: String, then: Instant): PushMonitorCheckerEntry?
 }

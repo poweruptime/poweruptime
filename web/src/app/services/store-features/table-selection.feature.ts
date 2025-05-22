@@ -11,12 +11,12 @@ import {
 import {EntityState} from '@ngrx/signals/entities';
 import {IHasID} from 'dfts-helper';
 
-type TableWithSelectionState<EntityType> = {
+interface TableWithSelectionState<EntityType> {
   selection: EntityType[];
-};
-type withSelectionTableOptions<EntityType extends IHasID<EntityType['id']>> = {
+}
+interface withSelectionTableOptions<EntityType extends IHasID<EntityType['id']>> {
   find?: (o: EntityType) => EntityType['id'];
-};
+}
 
 export function withSelection<EntityType extends IHasID<EntityType['id']>>({
   find = (it) => it.id,

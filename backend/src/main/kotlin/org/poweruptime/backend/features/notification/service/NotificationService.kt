@@ -3,16 +3,19 @@ package org.poweruptime.backend.features.notification.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
-import org.poweruptime.backend.amqp.RabbitMQService
+import jakarta.transaction.Transactional
 import org.poweruptime.backend.core.Filter
 import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.core.toPredicate
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationSenderType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.NotificationRepository
 import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -20,11 +23,29 @@ import org.springframework.stereotype.Service
 @Service
 class NotificationService(
     private val notificationRepository: NotificationRepository,
-    private val rabbitMQService: RabbitMQService,
+    private val subNotificationService: SubNotificationService,
 ) : AEntityService<Notification>(notificationRepository) {
 
-    fun queueNotification(notificationId: String) {
-        rabbitMQService.sendToProcessNotification(notificationId)
+    @Transactional
+    fun send(monitor: Monitor, checkResult: CheckResult): Notification {
+        val notification = repository.save(
+            Notification(
+                checkResult = checkResult,
+                title = checkResult.title!!,
+            ),
+        )
+
+        val subs = monitor.enabledNotificationMethods.map { method ->
+            SubNotification(
+                notification = notification,
+                method = method,
+                title = checkResult.title!!,
+                message = checkResult.message,
+            )
+        }
+
+        notification.subNotifications = subNotificationService.saveAll(subs)
+        return notification
     }
 
     fun getAllPaginated(
@@ -32,7 +53,7 @@ class NotificationService(
         monitorId: String?,
         teamId: String?,
         userId: String?,
-        methods: List<NotificationSenderType>?,
+        methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
     ): Page<Notification> = notificationRepository.findAll(
         { root: Root<Notification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
@@ -60,7 +81,7 @@ class NotificationService(
                 criteriaBuilder.and(
                     *buildList {
                         statuses?.let { add(Filter("checkResult.status", it, FilterCompare.IN)) }
-                        methods?.let { add(Filter("method", it, FilterCompare.IN)) }
+                        methods?.let { add(Filter("subNotifications.method.data._type", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
                             add(Filter("checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
                         }
@@ -78,7 +99,7 @@ class NotificationService(
         },
         PageableValidator.validateSort(
             pageable,
-            listOf("checkResult.status", "method", "createdAt"),
+            listOf("checkResult.status", "createdAt"),
         ),
     )
 }

@@ -37,10 +37,10 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType} from '@app/api';
 
-type DragEventType = {
+interface DragEventType {
   monitorId: string;
   monitorIds: WritableSignal<string[]>;
-};
+}
 
 @Component({
   template: `
@@ -109,6 +109,7 @@ type DragEventType = {
                     <button
                       [disabled]="_isDisabled"
                       (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
+                      type="button"
                       mat-icon-button>
                       <bi name="trash-fill" />
                     </button>

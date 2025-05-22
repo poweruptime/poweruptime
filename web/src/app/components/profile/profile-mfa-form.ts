@@ -96,7 +96,11 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
               </div>
             </input-otp>
 
-            <button class="w-full max-w-72" [disabled]="!confirmFormGroupValid()" mat-flat-button>
+            <button
+              class="w-full max-w-72"
+              [disabled]="!confirmFormGroupValid()"
+              type="submit"
+              mat-flat-button>
               {{ 'general.confirm' | transloco }}
             </button>
           </form>
@@ -126,7 +130,7 @@ import {MFAEditStore} from '@app/services/profile/mfa-edit.store';
               {{ 'mfa.alreadyShown' | transloco }}
             </div>
           }
-          <button class="w-full" (click)="mfaEditStore.delete()" mat-flat-button>
+          <button class="w-full" (click)="mfaEditStore.delete()" type="button" mat-flat-button>
             {{ 'general.disable' | transloco }}
           </button>
         </div>

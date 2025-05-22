@@ -171,6 +171,14 @@ import {BackendType} from '../../../api';
     .mat-column-status {
       @apply w-32;
     }
+
+    .mat-column-createdAt {
+      @apply w-32;
+    }
+
+    .mat-column-actions {
+      @apply w-24;
+    }
   `,
   selector: 'pu-check-result-list',
   providers: [CheckResultsStore],
@@ -211,7 +219,7 @@ export class CheckResultList {
     parse: paramToBoolean(),
   });
 
-  statuses = linkedQueryParam('search.status', {
+  statuses = linkedQueryParam('checks.status', {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
     stringify: arrayToParam(),
   });

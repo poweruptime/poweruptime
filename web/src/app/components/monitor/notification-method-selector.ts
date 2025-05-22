@@ -39,6 +39,7 @@ import {BackendType} from '@app/api';
               [attr.aria-label]="
                 'notificationMethod.selector.remove' | transloco: notificationMethod
               "
+              type="button"
               matChipRemove
               stopPropagation>
               <bi name="x-circle" aria-hidden="true" />

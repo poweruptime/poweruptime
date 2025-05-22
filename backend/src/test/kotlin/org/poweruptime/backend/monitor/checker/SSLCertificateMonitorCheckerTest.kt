@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -17,7 +17,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if simple works`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://playground.dafnik.me",
                 validDaysLeft = 30,
             ),
@@ -30,7 +30,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if simple without validDaysLeft works`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(url = "https://playground.dafnik.me"),
+            SSLCertificateMonitorData(url = "https://playground.dafnik.me"),
         ),
     ).let {
         assertThat(it.isUp).isTrue()
@@ -40,7 +40,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if simple fails with wrong validDaysLeft`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://playground.dafnik.me",
                 validDaysLeft = 600,
             ),
@@ -53,7 +53,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if not existing fails`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://not-exisiting.dafnik.me",
             ),
         ),
@@ -65,7 +65,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if expired fails`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://expired.badssl.com/",
             ),
         ),
@@ -76,7 +76,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if wrong host fails`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://wrong.host.badssl.com/",
                 validDaysLeft = 30,
             ),
@@ -89,7 +89,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if self signed fails`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://self-signed.badssl.com/",
                 validDaysLeft = 0,
             ),
@@ -114,7 +114,7 @@ class SSLCertificateMonitorCheckerTest(
     @Test
     fun `test if untrusted-root fails`(): Unit = sslCertificateMonitorChecker.execute(
         ModelFactory.getTestMonitor(
-            SSLCertificateMonitorCheckerData(
+            SSLCertificateMonitorData(
                 url = "https://untrusted-root.badssl.com/",
             ),
         ),

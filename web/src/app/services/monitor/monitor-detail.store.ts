@@ -26,7 +26,7 @@ export const MonitorDetailStore = signalStore(
   withComputed(({monitor}) => ({
     uptimeResults: computed(() => (monitor() ? mapUptime(monitor()!.uptime) : [])),
   })),
-  withMethods((store, api = injectAPI()) => ({
+  withMethods((store) => ({
     updateMonitor(monitor: BackendType['MonitorMaxResponse']) {
       if (store.monitor()?.id === monitor.id) {
         patchState(store, () => ({monitor}));

@@ -3,7 +3,7 @@ import {NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -45,6 +45,7 @@ import {environment} from '../../../environments/environment';
                     [matTooltip]="'nav.toggle' | transloco"
                     [attr.aria-label]="'nav.toggle' | transloco"
                     (click)="drawer.toggle()"
+                    type="button"
                     mat-icon-button>
                     <bi name="list" size="24" />
                   </button>
@@ -110,6 +111,7 @@ import {environment} from '../../../environments/environment';
     MatToolbar,
     RouterLink,
     NgOptimizedImage,
+    MatButton,
   ],
 })
 export class HomeLayout {

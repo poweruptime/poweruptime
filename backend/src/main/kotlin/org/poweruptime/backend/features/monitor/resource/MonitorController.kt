@@ -16,11 +16,11 @@ import org.poweruptime.backend.features.authentication.domain.isPartOfByStatusPa
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.AuthService
-import org.poweruptime.backend.features.monitor.core.MonitorCheckerType
+import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.*
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.TimeOption
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
@@ -71,7 +71,7 @@ class MonitorController(
         @RequestParam("name") name: String?,
         @RequestParam("enabledNotificationMethodIds") enabledNotificationMethodIds: Set<String>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
-        @RequestParam("types") types: List<MonitorCheckerType>?,
+        @RequestParam("types") types: List<MonitorType>?,
         @RequestParam("tags") tags: List<String>?,
         @RequestParam("usedInStatusPageGroupIds") usedInStatusPageGroupIds: Set<String>?,
         @RequestParam("deleted") deleted: Boolean = false

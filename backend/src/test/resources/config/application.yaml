@@ -9,6 +9,7 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+    banner-mode: off
 
   sql:
     init:
@@ -76,6 +77,8 @@ management:
       enabled: false
 
 poweruptime:
+  apprise:
+    url: http://localhost:8000
   mail:
     enabled: false
     security: NONE_STARTTLS

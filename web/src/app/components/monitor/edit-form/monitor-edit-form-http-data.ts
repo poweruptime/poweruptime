@@ -91,6 +91,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                   'monitor.edit.http.allowedStatusCodeRanges.remove'
                     | transloco: {email: statusCodeRange}
                 "
+                type="button"
                 matChipRemove>
                 <bi name="x-circle" aria-hidden="true" />
               </button>

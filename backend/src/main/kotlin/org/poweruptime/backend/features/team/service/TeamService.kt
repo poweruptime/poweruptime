@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.toDeletedFilter
 import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service
 class TeamService(
     private val teamRepository: TeamRepository,
     private val teamUserRepository: TeamUserRepository,
+    private val monitorService: MonitorService,
 ) : ASoftDeleteEntityService<Team>(teamRepository) {
 
     fun create(it: CreateTeamDto, creator: User? = null): Team {
@@ -81,6 +83,8 @@ class TeamService(
         if (team.personalUser != null) {
             throw BadRequestException("Can't delete personal team")
         }
+
+        monitorService.getIdsByTeamId(id).forEach { monitorService.deleteByIdOrThrow(it) }
 
         super.deleteByIdOrThrow(id)
     }

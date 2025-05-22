@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/divider';
@@ -18,6 +18,9 @@ import {BackendType, Database, NOTIFICATION_METHOD_SENDER_DATA_TYPES} from '@app
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 
+import {NotificationMethodTemplateStore} from '../../../services';
+import {Placeholder} from '../../placeholder';
+import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditFormDiscordData} from './notification-method-edit-form-discord-data';
 import {NotificationMethodEditFormEmailData} from './notification-method-edit-form-email-data';
@@ -32,7 +35,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      @let typeValue = form.controls.type.getRawValue();
+      @let _typeValue = typeValue();
 
       <div class="grid-cols-6">
         <div class="grid gap-2">
@@ -77,29 +80,35 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
           <mat-card class="col-span-6 mt-8" appearance="outlined">
             <mat-card-header>
               <mat-card-title>
-                @if (typeValue !== '') {
-                  {{ typeValue | notificationSenderDataValueLabel | transloco }} -
+                @if (_typeValue !== '') {
+                  {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
                 }
                 {{ 'general.data' | transloco }}
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="h-4"></div>
-              @if (typeValue !== '') {
-                @defer (when typeValue === 'DISCORD') {
-                  @if (typeValue === 'DISCORD') {
+              @if (_typeValue !== '') {
+                @defer (when _typeValue === 'APPRISE') {
+                  @if (_typeValue === 'APPRISE') {
+                    <pu-notification-method-edit-form-apprise-data />
+                  }
+                }
+
+                @defer (when _typeValue === 'DISCORD') {
+                  @if (_typeValue === 'DISCORD') {
                     <pu-notification-method-edit-form-discord-data />
                   }
                 }
 
-                @defer (when typeValue === 'EMAIL') {
-                  @if (typeValue === 'EMAIL') {
+                @defer (when _typeValue === 'EMAIL') {
+                  @if (_typeValue === 'EMAIL') {
                     <pu-notification-method-edit-form-email-data />
                   }
                 }
 
-                @defer (when typeValue === 'SLACK') {
-                  @if (typeValue === 'SLACK') {
+                @defer (when _typeValue === 'SLACK') {
+                  @if (_typeValue === 'SLACK') {
                     <pu-notification-method-edit-form-slack-data />
                   }
                 }
@@ -111,36 +120,65 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         </div>
       </div>
 
-      @if (!isCreating()) {
-        <div>
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <div class="flex flex-col gap-10">
-                @if (typeValue !== 'DISCORD' && typeValue !== 'SLACK') {
+      <div>
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>
+              <h3 class="text-2xl">{{ 'general.template' | transloco }}</h3>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-4"></div>
+            <div class="flex flex-col gap-10">
+              @if (_typeValue === '') {
+                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
+              }
+              @if (notificationMethodTemplateStore.isPending()) {
+                <pu-placeholder class="h-48 w-full" />
+                <pu-placeholder class="h-24 w-full" />
+                <pu-placeholder class="h-48 w-full" />
+                <pu-placeholder class="h-24 w-full" />
+              } @else {
+                @let _isCreating = isCreating();
+                @if (notificationMethodTemplateStore.template(); as template) {
+                  @if (template.features?.includes('TITLE')) {
+                    <pu-notification-method-edit-template
+                      [label]="'notificationMethod.edit.titleTemplate' | transloco"
+                      [showReset]="!_isCreating"
+                      [disableReset]="
+                        form.controls.titleTemplate.getRawValue() === template.titleTemplate
+                      "
+                      (resetClick)="resetTitleTemplate(template.titleTemplate)"
+                      formControlName="titleTemplate" />
+
+                    <mat-divider />
+                  }
+
+                  @let _html =
+                    template.bodyType === 'HTML' ||
+                    template.bodyType === 'MARKDOWN' ||
+                    template.bodyType === 'MRKDWN';
                   <pu-notification-method-edit-template
-                    [label]="'notificationMethod.edit.titleTemplate' | transloco"
-                    formControlName="titleTemplate" />
-
-                  <mat-divider />
+                    [html]="_html"
+                    [label]="'notificationMethod.edit.body' | transloco"
+                    [showReset]="!_isCreating"
+                    [disableReset]="
+                      form.controls.bodyTemplate.getRawValue() === template.bodyTemplate
+                    "
+                    (resetClick)="resetBodyTemplate(template.bodyTemplate)"
+                    formControlName="bodyTemplate" />
                 }
-
-                <pu-notification-method-edit-template
-                  [label]="'notificationMethod.edit.body' | transloco"
-                  [markdown]="typeValue === 'DISCORD' || typeValue === 'SLACK'"
-                  formControlName="bodyTemplate" />
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      } @else {
-        <div class="flex grow"></div>
-      }
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
       <pu-save-button [valid]="isValid()" />
     </form>
   `,
   selector: 'pu-notification-method-edit-form',
-  providers: [NotificationMethodEditFormDataService],
+  providers: [NotificationMethodEditFormDataService, NotificationMethodTemplateStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
@@ -165,6 +203,8 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     NgxMatSelectSearchModule,
     BiComponent,
     NotificationMethodEditFormSlackData,
+    Placeholder,
+    NotificationMethodEditFormAppriseData,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -174,6 +214,8 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
   private readonly notificationMethodFormDataService = inject(
     NotificationMethodEditFormDataService,
   );
+
+  readonly notificationMethodTemplateStore = inject(NotificationMethodTemplateStore);
 
   override form = this.fb.nonNullable.group({
     id: [undefined as string | undefined],
@@ -186,7 +228,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
         Validators.maxLength(Database.MAX_NAME_LENGTH),
       ],
     ],
-    type: ['' as BackendType['NotificationSenderData']['_type'] | '', [Validators.required]],
+    type: ['' as BackendType['NotificationMethodData']['_type'] | '', [Validators.required]],
     titleTemplate: [undefined as string | undefined],
     bodyTemplate: [undefined as string | undefined],
     useByDefault: [false],
@@ -242,17 +284,46 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
     );
   });
 
+  readonly typeValue = toSignal(this.form.controls.type.valueChanges, {
+    initialValue: this.form.controls.type.getRawValue(),
+  });
+
   constructor() {
     super();
 
-    this.form.controls.type.valueChanges.pipe(takeUntilDestroyed()).subscribe((it) => {
+    effect(() => {
+      const it = this.typeValue();
       if (it !== '') {
         this.setFormCheckerType(it);
       }
     });
+
+    this.notificationMethodTemplateStore.loadByType(this.typeValue);
+
+    effect(() => {
+      const template = this.notificationMethodTemplateStore.template();
+      if (this.isCreating() && template) {
+        this.form.patchValue({
+          titleTemplate: template.titleTemplate,
+          bodyTemplate: template.bodyTemplate,
+        });
+      }
+    });
   }
 
-  private setFormCheckerType(type: BackendType['NotificationSenderData']['_type']) {
+  resetTitleTemplate(titleTemplate: string) {
+    this.form.patchValue({
+      titleTemplate,
+    });
+  }
+
+  resetBodyTemplate(bodyTemplate: string) {
+    this.form.patchValue({
+      bodyTemplate,
+    });
+  }
+
+  private setFormCheckerType(type: BackendType['NotificationMethodData']['_type']) {
     // @ts-expect-error Sender Form Control
     this.form.setControl(
       'sender',

@@ -48,6 +48,10 @@ import {SetupStore} from '../services';
                   </div>
                 }
 
+                <div puAlert type="INFO">
+                  Please use this step to verify your E-Mail environment variables.
+                </div>
+
                 <form class="grid gap-4" [formGroup]="testEmailForm" (ngSubmit)="submitTestEmail()">
                   <mat-form-field>
                     <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
@@ -79,7 +83,7 @@ import {SetupStore} from '../services';
                 </form>
 
                 @if (setupStore.error()) {
-                  <button (click)="setupStore.setState('setup')" mat-stroked-button>
+                  <button (click)="setupStore.setState('setup')" type="button" mat-stroked-button>
                     {{ 'auth.setup.continueAnyway' | transloco }}
                     <bi class="ml-2" name="arrow-right" />
                   </button>
@@ -148,6 +152,7 @@ import {SetupStore} from '../services';
                     <button
                       class="w-full"
                       (click)="setupStore.setState('setup')"
+                      type="button"
                       mat-stroked-button>
                       {{ 'auth.setup.continueAnyway' | transloco }}
                       <bi class="ml-2" name="arrow-right" />

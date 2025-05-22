@@ -30,9 +30,9 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
-type SelectedTeamState = {
+interface SelectedTeamState {
   selectedTeam: BackendType['TeamMaxResponse'] | undefined;
-};
+}
 
 export const SelectedTeamStore = signalStore(
   {providedIn: 'root'},
@@ -77,7 +77,7 @@ export const SelectedTeamStore = signalStore(
           const newTeam = store.onceSelectedTeams()[0];
 
           const current = router.url; // e.g. "/org/5/t/123/dashboard"
-          const teamSegmentRe = /t\/[^\/;?]+/;
+          const teamSegmentRe = /t\/[^/;?]+/;
 
           let routerPromise: Promise<unknown>;
 

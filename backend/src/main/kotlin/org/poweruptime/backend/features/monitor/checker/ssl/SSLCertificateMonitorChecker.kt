@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.monitor.checker.ssl
 import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import java.io.IOException
 import java.net.URL
@@ -22,11 +23,11 @@ import javax.net.ssl.HttpsURLConnection
 class SSLCertificateMonitorChecker(
     private val teamSettingService: TeamSettingService
 ) : MonitorChecker {
-    override val type = MonitorCheckerType.SSL_CERTIFICATE
+    override val type = MonitorType.SSL_CERTIFICATE
 
     @Suppress("ReturnCount")
     override fun execute(monitor: Monitor): CheckResultDto {
-        val sslData = monitor.checker as SSLCertificateMonitorCheckerData
+        val sslData = monitor.checker as SSLCertificateMonitorData
         val result = MonitoringResultHandler()
         val now = Instant.now()
 

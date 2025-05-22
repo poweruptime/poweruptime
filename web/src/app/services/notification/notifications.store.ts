@@ -30,7 +30,7 @@ export const NotificationsStore = signalStore(
   withEntities<BackendType['NotificationResponse']>(),
   withPaginatedTable<BackendType['NotificationResponse']>({
     paramPrefix: 'notifi.',
-    columnsToDisplay: ['status', 'createdAt', 'method', 'title', 'actions'],
+    columnsToDisplay: ['status', 'title', 'createdAt', 'actions'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',
   }),
@@ -50,8 +50,10 @@ export const NotificationsStore = signalStore(
     },
     load: rxMethod<
       {
-        teamId: string | undefined;
-        monitorId: string | undefined;
+        teamId?: string;
+        monitorId?: string;
+        methods?: BackendType['NotificationMethodData']['_type'][];
+        statuses?: BackendType['MonitorResponse']['status'][];
       } & PaginationDto
     >(
       pipe(

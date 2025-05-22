@@ -12,6 +12,9 @@ const val CHECK_RESULT_MEMBER = "CHECK_RESULT_MEMBER"
 const val NOTIFICATION_METHOD_ADMIN = "NOTIFICATION_METHOD_ADMIN"
 const val NOTIFICATION_METHOD_MEMBER = "NOTIFICATION_METHOD_MEMBER"
 
+const val NOTIFICATION_ADMIN = "NOTIFICATION_ADMIN"
+const val NOTIFICATION_MEMBER = "NOTIFICATION_MEMBER"
+
 const val STATUS_PAGE_ADMIN = "STATUS_PAGE_ADMIN"
 const val STATUS_PAGE_MEMBER = "STATUS_PAGE_MEMBER"
 
@@ -38,6 +41,10 @@ enum class Permission(val permissionName: String) {
     // Notification method
     NotificationMethodAdmin(NOTIFICATION_METHOD_ADMIN),
     NotificationMethodMember(NOTIFICATION_METHOD_MEMBER),
+
+    // Notification
+    NotificationAdmin(NOTIFICATION_ADMIN),
+    NotificationMember(NOTIFICATION_MEMBER),
 
     // Status page
     StatusPageAdmin(STATUS_PAGE_ADMIN),

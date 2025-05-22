@@ -8,13 +8,13 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
 
 @Component({
   template: `
-    <button [matMenuTriggerFor]="menu" mat-mini-fab>
+    <button [matMenuTriggerFor]="menu" type="button" mat-mini-fab>
       <bi name="paint-bucket" size="20" />
     </button>
     @let selectedTheme = themeService.selectedTheme();
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {
-        <button (click)="themeService.selectedTheme.set(theme.value)" mat-menu-item>
+        <button (click)="themeService.selectedTheme.set(theme.value)" type="button" mat-menu-item>
           <div class="inline-flex items-center gap-2">
             <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" size="16" />
             <span>{{ theme.viewValue }}</span>

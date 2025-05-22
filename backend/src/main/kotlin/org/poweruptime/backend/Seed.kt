@@ -1,19 +1,19 @@
 package org.poweruptime.backend
 
 import org.poweruptime.backend.features.mail.EmailSecurity
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorCheckerDataType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerData
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataContentType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorCheckerDataMethod
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorCheckerData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataContentType
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataMethod
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
 import org.poweruptime.backend.features.monitor.model.Monitor
-import org.poweruptime.backend.features.monitor.service.MonitorCheckerDataService
+import org.poweruptime.backend.features.monitor.service.MonitorDataService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.model.NotificationMethod
-import org.poweruptime.backend.features.notification.notificationSenders.email.EmailNotificationSenderData
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
+import org.poweruptime.backend.features.notification.service.NotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
-import org.poweruptime.backend.features.notification.service.NotificationSenderDataService
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
@@ -27,9 +27,9 @@ import kotlin.system.exitProcess
 class Seed(
     private val teamService: TeamService,
     private val monitorService: MonitorService,
-    private val monitorCheckerDataService: MonitorCheckerDataService,
+    private val monitorDataService: MonitorDataService,
     private val notificationMethodService: NotificationMethodService,
-    private val notificationSenderDataService: NotificationSenderDataService,
+    private val notificationMethodDataService: NotificationMethodDataService,
 ) {
     private val statusCodes = listOf(
         100, 101, 102, 103,
@@ -53,11 +53,11 @@ class Seed(
                 Monitor(
                     team = httpTestTeam,
                     name = "HTTP Status $statusCode",
-                    checker = monitorCheckerDataService.save(
-                        HttpMonitorCheckerData(
+                    checker = monitorDataService.save(
+                        HttpMonitorData(
                             url = "https://httpstat.us/$statusCode",
-                            method = HttpMonitorCheckerDataMethod.GET,
-                            contentType = HttpMonitorCheckerDataContentType.JSON,
+                            method = HttpMonitorDataMethod.GET,
+                            contentType = HttpMonitorDataContentType.JSON,
                             allowedStatusCodeRanges = listOf("$statusCode - $statusCode"),
                         ),
                     ),
@@ -72,11 +72,11 @@ class Seed(
                 team = httpTestTeam,
                 name = "BadSSL Expired Test",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    HttpMonitorCheckerData(
+                checker = monitorDataService.save(
+                    HttpMonitorData(
                         url = "https://expired.badssl.com/",
-                        method = HttpMonitorCheckerDataMethod.GET,
-                        contentType = HttpMonitorCheckerDataContentType.JSON,
+                        method = HttpMonitorDataMethod.GET,
+                        contentType = HttpMonitorDataContentType.JSON,
                         allowedStatusCodeRanges = listOf("200 - 299"),
                         ignoreTLS = true,
                     ),
@@ -97,8 +97,8 @@ class Seed(
         val emailNotificationMethod = notificationMethodService.save(
             NotificationMethod(
                 name = "Test EMAIL",
-                sender = notificationSenderDataService.save(
-                    EmailNotificationSenderData(
+                data = notificationMethodDataService.save(
+                    EmailNotificationMethodData(
                         to = setOf("test@test.at"),
                         host = "test.at",
                         port = 1234,
@@ -116,8 +116,8 @@ class Seed(
             (0..200).map {
                 NotificationMethod(
                     name = "Z Autogeneriert $it",
-                    sender = notificationSenderDataService.save(
-                        EmailNotificationSenderData(
+                    data = notificationMethodDataService.save(
+                        EmailNotificationMethodData(
                             to = setOf("test@test.at"),
                             host = "test.at",
                             port = 1234,
@@ -137,11 +137,11 @@ class Seed(
                 team = testTeam,
                 name = "Test HTTP",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    HttpMonitorCheckerData(
+                checker = monitorDataService.save(
+                    HttpMonitorData(
                         url = "https://dafnik.me",
-                        method = HttpMonitorCheckerDataMethod.GET,
-                        contentType = HttpMonitorCheckerDataContentType.JSON,
+                        method = HttpMonitorDataMethod.GET,
+                        contentType = HttpMonitorDataContentType.JSON,
                         allowedStatusCodeRanges = listOf("200 - 299"),
                         maxRedirects = 10,
                     ),
@@ -158,8 +158,8 @@ class Seed(
                 team = testTeam,
                 name = "Test SSL Certificate",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    SSLCertificateMonitorCheckerData(
+                checker = monitorDataService.save(
+                    SSLCertificateMonitorData(
                         url = "https://dafnik.me",
                         validDaysLeft = 30,
                     ),
@@ -175,12 +175,12 @@ class Seed(
                 team = testTeam,
                 name = "Test playground DNS",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    DnsMonitorCheckerData(
+                checker = monitorDataService.save(
+                    DnsMonitorData(
                         host = "playground.dafnik.me",
                         server = "9.9.9.9",
                         port = 53,
-                        type = DnsMonitorCheckerDataType.A,
+                        type = DnsMonitorDataType.A,
                         matches = listOf(
                             "185.199.109.153",
                             "185.199.110.153",
@@ -199,12 +199,12 @@ class Seed(
                 team = testTeam,
                 name = "Test playground CNAME DNS",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    DnsMonitorCheckerData(
+                checker = monitorDataService.save(
+                    DnsMonitorData(
                         host = "playground.dafnik.me",
                         server = "9.9.9.9",
                         port = 53,
-                        type = DnsMonitorCheckerDataType.CNAME,
+                        type = DnsMonitorDataType.CNAME,
                         matches = listOf("dafnik.github.io."),
                     ),
                 ),
@@ -219,12 +219,12 @@ class Seed(
                 team = testTeam,
                 name = "Test playground A DNS null matches",
                 description = "Test",
-                checker = monitorCheckerDataService.save(
-                    DnsMonitorCheckerData(
+                checker = monitorDataService.save(
+                    DnsMonitorData(
                         host = "playground.dafnik.me",
                         server = "9.9.9.9",
                         port = 53,
-                        type = DnsMonitorCheckerDataType.A,
+                        type = DnsMonitorDataType.A,
                         matches = null,
                     ),
                 ),

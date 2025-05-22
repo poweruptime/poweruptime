@@ -1,8 +1,8 @@
 import {AbstractControl, ValidatorFn} from '@angular/forms';
 
-export const notEqual = (val: any): ValidatorFn => {
+export const notEqual = (val: unknown): ValidatorFn => {
   return (control: AbstractControl): {[key: string]: boolean} => {
-    let v: any = control.value;
+    const v: unknown = control.value;
 
     return val !== v ? {} : {notEqual: true};
   };

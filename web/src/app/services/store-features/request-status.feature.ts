@@ -7,7 +7,9 @@ export type RequestStatus =
   | 'pending'
   | 'fulfilled'
   | {codeName?: string; httpCode: number; message?: string};
-export type RequestStatusState = {requestStatus: RequestStatus};
+export interface RequestStatusState {
+  requestStatus: RequestStatus;
+}
 
 export function withRequestStatus() {
   return signalStoreFeature(

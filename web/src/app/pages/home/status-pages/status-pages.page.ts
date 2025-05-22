@@ -36,6 +36,7 @@ import {trackBy} from '@app/util';
               class="flex items-center"
               [attr.aria-label]="'general.clear' | transloco"
               (click)="searchFilter.set('')"
+              type="button"
               matSuffix
               mat-icon-button>
               <bi name="x-lg" aria-hidden="true" />
@@ -94,6 +95,7 @@ import {trackBy} from '@app/util';
               [matTooltip]="'statusPage.list.delete' | transloco"
               [attr.aria-label]="'statusPage.list.delete' | transloco"
               (click)="statusPagesStore.delete(element.id)"
+              type="button"
               mat-icon-button
               stopPropagation>
               <bi name="trash-fill" />

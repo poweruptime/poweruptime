@@ -4,9 +4,8 @@
   "scripts": {
     "web:build": "pnpm -C web build",
     "web:build:docker": "pnpm -C web build:docker",
-    "web:start": "pnpm -C web start",
-    "web:start:ssr": "pnpm -C web start:ssr",
     "web:api": "pnpm -C web api",
+    "web:lint": "pnpm -C web lint",
     "emails:start": "pnpm -C emails start",
     "emails:export": "pnpm -C emails export",
     "format:check": "prettier --check .",
@@ -15,17 +14,20 @@
   "packageManager": "pnpm@10.11.0",
   "private": true,
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "git-cliff": "^2.8.0",
+    "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "git-cliff": "2.8.0",
     "prettier": "3.5.3",
     "prettier-plugin-organize-attributes": "1.0.0",
-    "prettier-plugin-sort-json": "^4.1.1",
+    "prettier-plugin-sort-json": "4.1.1",
     "prettier-plugin-tailwindcss": "0.6.11"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
       "nx"
+    ],
+    "ignoredBuiltDependencies": [
+      "sharp"
     ]
   }
 }

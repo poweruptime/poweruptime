@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.tempNotification
 
 import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.features.notification.core.AppriseNotificationRequest
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -10,8 +11,9 @@ data class TempNotification(
     val createdAt: Instant = Instant.now(),
     val to: String,
     val subject: String,
-    val body: String,
+    val body: String? = null,
     val bodyHTML: String? = null,
+    val appriseDto: AppriseNotificationRequest? = null
 )
 
 @Service

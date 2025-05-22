@@ -11,6 +11,7 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
 @Component({
   template: `
     @let _logEntry = logEntry();
+
     <div
       class="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-950">
       @if (_logEntry.level === 'ACTION') {

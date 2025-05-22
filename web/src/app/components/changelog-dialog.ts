@@ -16,7 +16,7 @@ import {MarkdownComponent} from 'ngx-markdown';
       <markdown class="prose dark:prose-invert" [data]="data.changelog" emoji />
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
+      <button type="button" mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
     </mat-dialog-actions>
   `,
   styles: ``,

@@ -8,8 +8,8 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.monitor.checker.push.PushMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerData
 import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorData
 import org.poweruptime.backend.features.monitor.domain.IPushMonitorCheckerEntryRepository
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.team.service.TeamSettingService
@@ -53,7 +53,7 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId)),
+            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
         ).let {
             assertThat(it.isUp).isTrue()
             assertThat(it.title).isEqualTo("OK")
@@ -68,7 +68,7 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId)),
+            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
         ).let {
             assertThat(it.isUp).isFalse()
             assertThat(it.title).isEqualTo("Error")
@@ -77,7 +77,7 @@ class PushMonitorCheckerTest(
 
     @Test
     fun `test if at time border works`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
@@ -92,7 +92,7 @@ class PushMonitorCheckerTest(
 
     @Test
     fun `test if at time border works with down`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
@@ -106,7 +106,7 @@ class PushMonitorCheckerTest(
 
     @Test
     fun `test if at time border fails`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
@@ -130,7 +130,7 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId)),
+            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
         ).let {
             assertThat(it.isUp).isTrue()
             assertThat(it.title).isEqualTo("OK")
@@ -148,7 +148,7 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorCheckerData(pushId = pushId)),
+            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
         ).let {
             assertThat(it.isUp).isFalse()
             assertThat(it.title).isEqualTo("Error")

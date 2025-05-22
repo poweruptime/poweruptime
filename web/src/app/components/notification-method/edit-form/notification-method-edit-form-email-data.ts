@@ -31,6 +31,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.to.remove' | transloco: {email}"
+                type="button"
                 matChipRemove>
                 <bi name="x-circle" aria-hidden="true" />
               </button>
@@ -137,6 +138,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.cc.remove' | transloco: {email}"
+                type="button"
                 matChipRemove>
                 <bi name="x-circle" aria-hidden="true" />
               </button>
@@ -168,6 +170,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.bcc.remove' | transloco: {email}"
+                type="button"
                 matChipRemove>
                 <bi name="x-circle" aria-hidden="true" />
               </button>
