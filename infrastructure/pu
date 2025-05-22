@@ -127,14 +127,6 @@ run_cmd() {
   fi
 }
 
-docker_login() {
-  if $DRY_RUN; then
-    echo '+ docker login ghcr.io'
-  else
-    docker login ghcr.io
-  fi
-}
-
 docker_compose() {
   if $DRY_RUN; then
     echo "+ docker compose ${COMPOSE_ARGS[*]} $*"
@@ -225,12 +217,10 @@ source_env() {
 }
 
 do_pull() {
-  docker_login
   docker_compose pull
 }
 
 do_up() {
-  docker_login
   docker_compose pull
   docker_compose up -d
   if ! $DRY_RUN; then

@@ -80,7 +80,7 @@ services:
 
   poweruptime-backend:
     container_name: poweruptime-backend
-    image: ghcr.io/poweruptime/backend:${POWERUPTIME_VERSION:?}
+    image: dafnik/poweruptime-backend:${POWERUPTIME_VERSION:?}
     restart: unless-stopped
     depends_on:
       poweruptime-rabbitmq:
@@ -100,7 +100,7 @@ services:
 
   poweruptime-web:
     container_name: poweruptime-web
-    image: ghcr.io/poweruptime/web:${POWERUPTIME_VERSION:?}
+    image: dafnik/poweruptime-web:${POWERUPTIME_VERSION:?}
     restart: unless-stopped
     labels:
       traefik.enable: true
