@@ -124,7 +124,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         <mat-card appearance="outlined">
           <mat-card-header>
             <mat-card-title>
-              {{ 'general.template' | transloco }}
+              <h3 class="text-2xl">{{ 'general.template' | transloco }}</h3>
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
@@ -139,10 +139,16 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                 <pu-placeholder class="h-48 w-full" />
                 <pu-placeholder class="h-24 w-full" />
               } @else {
+                @let _isCreating = isCreating();
                 @if (notificationMethodTemplateStore.template(); as template) {
                   @if (template.features?.includes('TITLE')) {
                     <pu-notification-method-edit-template
                       [label]="'notificationMethod.edit.titleTemplate' | transloco"
+                      [showReset]="!_isCreating"
+                      [disableReset]="
+                        form.controls.titleTemplate.getRawValue() === template.titleTemplate
+                      "
+                      (resetClick)="resetTitleTemplate(template.titleTemplate)"
                       formControlName="titleTemplate" />
 
                     <mat-divider />
@@ -155,6 +161,11 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                   <pu-notification-method-edit-template
                     [html]="_html"
                     [label]="'notificationMethod.edit.body' | transloco"
+                    [showReset]="!_isCreating"
+                    [disableReset]="
+                      form.controls.bodyTemplate.getRawValue() === template.bodyTemplate
+                    "
+                    (resetClick)="resetBodyTemplate(template.bodyTemplate)"
                     formControlName="bodyTemplate" />
                 }
               }

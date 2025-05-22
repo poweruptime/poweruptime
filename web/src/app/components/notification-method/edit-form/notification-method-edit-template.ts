@@ -10,14 +10,17 @@ import {
   forwardRef,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
+import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
@@ -51,6 +54,18 @@ import {Editor} from '@app/components/editor';
             <mat-option [value]="option">{{ option }}</mat-option>
           }
         </mat-autocomplete>
+      }
+      @if (showReset()) {
+        <div class="flex justify-end" [class.pt-2]="_html">
+          <button
+            [disabled]="disableReset()"
+            (click)="resetClick.emit()"
+            type="button"
+            mat-stroked-button>
+            <bi name="arrow-counterclockwise" />
+            Reset
+          </button>
+        </div>
       }
 
       <div
@@ -91,6 +106,8 @@ import {Editor} from '@app/components/editor';
     Editor,
     ShadowRender,
     TranslocoPipe,
+    MatButton,
+    BiComponent,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -101,6 +118,10 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
 
   label = input.required<string>();
   html = input(false, {transform: booleanAttribute});
+
+  showReset = input(false, {transform: booleanAttribute});
+  disableReset = input(false, {transform: booleanAttribute});
+  resetClick = output();
 
   value = signal<string | null>('');
   isDisabled = signal(false);
