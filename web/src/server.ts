@@ -17,8 +17,8 @@ export async function app() {
   const server = fastify();
 
   server.register(fastifyProxy, {
-    upstream: `${environment.backendHost}/api`, // e.g. "http://localhost:3000"
-    prefix: '/api', // incoming requests under /api/*
+    upstream: `${environment.backendHost}/api`,
+    prefix: '/api',
     http2: false,
   });
 
