@@ -5,73 +5,59 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 
-import express from 'express';
-import {createProxyMiddleware} from 'http-proxy-middleware';
+import fastifyProxy from '@fastify/http-proxy';
+import fastifyStatic from '@fastify/static';
+import fastify from 'fastify';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {environment} from './environments/environment';
 
-const serverDistFolder = dirname(fileURLToPath(import.meta.url));
-const browserDistFolder = resolve(serverDistFolder, '../browser');
+export async function app() {
+  const server = fastify();
 
-const app = express();
-const angularApp = new AngularNodeAppEngine();
-
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/**', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
-
-/**
- * Serve static files from /browser
- */
-app.use(
-  express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: false,
-    redirect: false,
-  }),
-);
-
-app.use(
-  '/api',
-  createProxyMiddleware({
-    target: environment.backendHost,
-    changeOrigin: true,
-    pathRewrite: {'': '/api'},
-  }),
-);
-
-/**
- * Handle all other requests by rendering the Angular application.
- */
-app.use('/**', (req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-    .catch(next);
-});
-
-/**
- * Start the server if this module is the main entry point.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
-if (isMainModule(import.meta.url)) {
-  const port = process.env['PORT'] || 80;
-  app.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`, environment);
+  server.register(fastifyProxy, {
+    upstream: `${environment.backendHost}/api`, // e.g. "http://localhost:3000"
+    prefix: '/api', // incoming requests under /api/*
+    http2: false,
   });
+
+  const serverDistFolder = dirname(fileURLToPath(import.meta.url));
+  const browserDistFolder = resolve(serverDistFolder, '../browser');
+  server.register(fastifyStatic, {
+    root: browserDistFolder,
+    wildcard: false,
+  });
+
+  server.get('*', async (req, reply) => {
+    try {
+      const engine = new AngularNodeAppEngine();
+      const response = await engine.handle(req.raw, {server: 'fastify'});
+      if (response) {
+        await writeResponseToNodeResponse(response, reply.raw);
+      } else {
+        reply.callNotFound();
+      }
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+
+  return server;
 }
 
-/**
- * The request handler used by the Angular CLI (dev-server and during build).
- */
-export const reqHandler = createNodeRequestHandler(app);
+if (isMainModule(import.meta.url)) {
+  (async () => {
+    const server = await app();
+    const port = +(process.env['PORT'] || 4000);
+    await server.listen({port});
+    server.log.info(`Listening on http://localhost:${port}`);
+  })();
+}
+
+// For serverless / cloud-function usage
+export const reqHandler = createNodeRequestHandler(async (req, res) => {
+  const server = await app();
+  await server.ready();
+  server.server.emit('request', req, res);
+});

@@ -3,7 +3,7 @@ import {NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -111,7 +111,6 @@ import {environment} from '../../../environments/environment';
     MatToolbar,
     RouterLink,
     NgOptimizedImage,
-    MatButton,
   ],
 })
 export class HomeLayout {
