@@ -16,6 +16,7 @@ import org.poweruptime.backend.features.notification.model.SubNotification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class SubNotificationService(
@@ -88,4 +89,11 @@ class SubNotificationService(
             listOf("notification.checkResult.status", "method", "createdAt"),
         ),
     )
+
+    fun deleteByTeamIdAndOlderThan(teamId: String, than: Instant) = subNotificationRepository.findByTeamIdAndOlderThan(
+        teamId,
+        than,
+    ).apply {
+        deleteAll(this)
+    }
 }

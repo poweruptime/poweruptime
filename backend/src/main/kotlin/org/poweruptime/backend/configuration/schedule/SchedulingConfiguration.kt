@@ -3,6 +3,8 @@ package org.poweruptime.backend.configuration.schedule
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.notification.service.NotificationService
+import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
@@ -16,11 +18,13 @@ import java.time.Instant
 @Configuration
 @EnableScheduling
 class SchedulingConfiguration(
+    private val teamService: TeamService,
+    private val teamSettingService: TeamSettingService,
     private val tempNotificationService: TempNotificationService,
     private val checkResultService: CheckResultService,
     private val checkResultLogEntryService: CheckResultLogEntryService,
-    private val teamService: TeamService,
-    private val teamSettingService: TeamSettingService,
+    private val notificationService: NotificationService,
+    private val subNotificationService: SubNotificationService,
 ) {
     val logger: Logger = LoggerFactory.getLogger(SchedulingConfiguration::class.java)
 
@@ -30,13 +34,21 @@ class SchedulingConfiguration(
     fun cleanup() {
         teamService.getAll().forEach { team ->
             val checkResultRetentionPeriodInDays = teamSettingService.getCheckResultRetentionPeriodInDays(team.id)
-            val checkResultDateInThePast = Instant.now().minusSeconds(
+            val checkResultDateInPast = Instant.now().minusSeconds(
                 SECONDS_PER_DAY * checkResultRetentionPeriodInDays.toLong(),
             )
             logger.info(
-                """Removing check results of team "${team.name}" (${team.id}) older than $checkResultDateInThePast""",
+                """Removing subNotifications of team "${team.name}" (${team.id}) older than $checkResultDateInPast""",
             )
-            checkResultService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInThePast)
+            subNotificationService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
+            logger.info(
+                """Removing notifications of team "${team.name}" (${team.id}) older than $checkResultDateInPast""",
+            )
+            notificationService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
+            logger.info(
+                """Removing check results of team "${team.name}" (${team.id}) older than $checkResultDateInPast""",
+            )
+            checkResultService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
 
             val checkResultLogRetentionPeriodInDays = teamSettingService.getCheckResultLogRetentionPeriodInDays(team.id)
             val checkResultLogDateInThePast = Instant.now().minusSeconds(
