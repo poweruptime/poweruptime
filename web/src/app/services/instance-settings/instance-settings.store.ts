@@ -43,6 +43,33 @@ export const InstanceSettingsStore = signalStore(
         ),
       ),
     ),
+    setSupportLookup: rxMethod<string | null | undefined>(
+      pipe(
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api.put('/v1/instance-settings/supportLookup', {body: {value: value ?? undefined}}).pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setShowSupportBadge: rxMethod<boolean | null>(
+      pipe(
+        filter((it): it is boolean => it !== null),
+        tap(() => patchState(store, setPending())),
+        switchMap((value) =>
+          api.put('/v1/instance-settings/showSupportBadge', {body: {value}}).pipe(
+            tapResponse({
+              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
     setTimezone: rxMethod<string | null>(
       pipe(
         filter((it): it is string => !!it),

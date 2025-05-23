@@ -52,8 +52,8 @@ class CheckResult(
     @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
     var message: String? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "checkResult")
-    var notifications: List<Notification> = ArrayList(),
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "checkResult")
+    var notification: Notification? = null,
 ) : AEntity() {
     @Id
     @MaxNanoId

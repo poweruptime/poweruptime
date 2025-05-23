@@ -18,7 +18,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
       </mat-card-header>
       <mat-card-content>
         <form id="retention-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-          <div class="mt-6 flex gap-4">
+          <div class="mt-6 flex flex-wrap gap-4">
             <mat-form-field>
               <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
               <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
@@ -62,7 +62,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             </mat-form-field>
           </div>
 
-          <pu-save-button [valid]="isValid()" />
+          <pu-save-button [valid]="isValid()" form="retention-form" />
         </form>
       </mat-card-content>
     </mat-card>

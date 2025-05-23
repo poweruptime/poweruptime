@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
+import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,6 +18,7 @@ import java.time.Instant
 class SecureDefaultController(
     private val infoService: InfoService,
     private val userService: UserService,
+    private val instanceSettingService: InstanceSettingService
 ) {
     @Operation(
         summary = "Get info",
@@ -38,9 +40,11 @@ class SecureDefaultController(
         version = infoService.version,
         serverTime = infoService.getTime(),
         serverStartTime = InfoService.startTime,
-        buildTime = infoService.buildTime,
         host = infoService.host,
         setup = userService.isSetup(),
+        serverSetupTime = instanceSettingService.getServerSetupTime(),
+        supportsSince = instanceSettingService.getSupportsSince(),
+        showSupportBadge = instanceSettingService.getShowSupportBadge(),
     )
 }
 
@@ -50,6 +54,7 @@ class SecureDefaultController(
 class DefaultController(
     private val infoService: InfoService,
     private val userService: UserService,
+    private val instanceSettingService: InstanceSettingService
 ) {
     @GetMapping
     fun api() = "Running ${infoService.name}! ( ͡° ͜ʖ ͡°) <br> Version: ${infoService.version}"
@@ -63,9 +68,11 @@ class DefaultController(
         version = infoService.version,
         serverTime = infoService.getTime(),
         serverStartTime = InfoService.startTime,
-        buildTime = infoService.buildTime,
         host = infoService.host,
         setup = userService.isSetup(),
+        serverSetupTime = instanceSettingService.getServerSetupTime(),
+        supportsSince = instanceSettingService.getSupportsSince(),
+        showSupportBadge = instanceSettingService.getShowSupportBadge(),
     )
 }
 
@@ -74,7 +81,9 @@ data class JsonInfoResponse(
     val version: String,
     val serverTime: Instant,
     val serverStartTime: Instant,
-    val buildTime: Instant,
+    val serverSetupTime: Instant,
+    val supportsSince: Instant?,
+    val showSupportBadge: Boolean,
     val host: String,
     val setup: Boolean,
 )

@@ -83,6 +83,7 @@
 * feat: remove dev proxy
 
 * feat: reset template
+
 - Replace express with fastify by @Dafnik ([6692d0d](https://github.com/poweruptime/poweruptime/commit/6692d0de71801a38e3cdd819adb305ebfb70df99))
 - Replace express with fastify by @Dafnik ([f82d195](https://github.com/poweruptime/poweruptime/commit/f82d195ac54c07f40c89f771e16321bf63f6a4fd))
 - Add set old changelog button by @Dafnik ([f7f6421](https://github.com/poweruptime/poweruptime/commit/f7f6421927cb19b7213d27e78e0bc64d129b9193))
@@ -192,9 +193,6 @@
 - Lock file maintenance (#161) by @renovate[bot] ([5ab60cb](https://github.com/poweruptime/poweruptime/commit/5ab60cb6312fd85268369ac5d1a6b933d5e2fbfc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Lock file maintenance (#162) by @renovate[bot] ([e7847b1](https://github.com/poweruptime/poweruptime/commit/e7847b1cc1c3f1c752dca7899e7afaaff1430ce9)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 
-
-
-
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743093279751...0.2.0-beta-1747925021
 
 ## 0.0.9-beta-1743093279751 - 2025-03-27
@@ -202,9 +200,6 @@
 ### <!-- 3 -->📚 Documentation
 
 - Update README.md by @Dafnik ([be4c987](https://github.com/poweruptime/poweruptime/commit/be4c987aa957086c5950d845a8b29f4035f65786))
-
-
-
 
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743089696479...0.0.9-beta-1743093279751
 
@@ -214,9 +209,6 @@
 
 - Fix release tag by @Dafnik ([c8ba8b4](https://github.com/poweruptime/poweruptime/commit/c8ba8b48cd7426752127538b379d89c38b3156fa))
 
-
-
-
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743089330987...0.0.9-beta-1743089696479
 
 ## 0.0.9-beta-1743089330987 - 2025-03-27
@@ -224,9 +216,6 @@
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Fix formatting by @Dafnik ([4e9ebdd](https://github.com/poweruptime/poweruptime/commit/4e9ebdd9df40e51dc6cd52d077f4437de1332296))
-
-
-
 
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743089226770...0.0.9-beta-1743089330987
 
@@ -253,7 +242,7 @@
 ### <!-- 2 -->🚜 Refactor
 
 - Use date-fns by @Dafnik ([fb22200](https://github.com/poweruptime/poweruptime/commit/fb22200407098fede0e6d977e75e0acf3090ddaf))
-- Remove _remote.yml by @Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
+- Remove \_remote.yml by @Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
 
 ### <!-- 3 -->📚 Documentation
 
@@ -273,9 +262,6 @@
 - Use ssh deploy key by @Dafnik ([17f8aae](https://github.com/poweruptime/poweruptime/commit/17f8aaec7356dc7c1ff32b60a0ba53ac6a8644e4))
 - Version infra mirror by @Dafnik ([66e3fb7](https://github.com/poweruptime/poweruptime/commit/66e3fb79e0939e7c72d409d8a466147ebafb9bef))
 - Fix formatting by @Dafnik ([5f6056b](https://github.com/poweruptime/poweruptime/commit/5f6056bb6cda3483ef91967f2dd1001b65acf988))
-
-
-
 
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.4-beta-1726575462741...0.0.9-beta-1743089226770
 
@@ -421,8 +407,3 @@
 - Update dependency typescript to v5.8.2 by @renovate[bot] ([c0478d1](https://github.com/poweruptime/poweruptime/commit/c0478d170e1cb5de2e4411c51e0f7c4e338dc1f8))
 - Update plugin io.gitlab.arturbosch.detekt to v1.23.8 by @renovate[bot] ([f323b86](https://github.com/poweruptime/poweruptime/commit/f323b8617d7583d1040c5e12f6f9bbf38e601a08))
 - Change provideServerRoutes function by @Dafnik ([2c822ff](https://github.com/poweruptime/poweruptime/commit/2c822ff8895550e8aee923360d037290f9ee9a2b))
-
-
-
-
-

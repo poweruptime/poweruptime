@@ -22,12 +22,9 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
             <mat-card-header>
               <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
             </mat-card-header>
-            <mat-card-content class="h-full">
+            <mat-card-content>
               <div class="h-4"></div>
-              <pu-team-edit-form
-                class="grid h-full"
-                [team]="team"
-                (submitUpdate)="teamEditStore.update($event)" />
+              <pu-team-edit-form [team]="team" (submitUpdate)="teamEditStore.update($event)" />
             </mat-card-content>
           </mat-card>
 

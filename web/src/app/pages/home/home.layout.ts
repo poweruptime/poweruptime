@@ -16,9 +16,11 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
+import {JsonService} from '@app/services/json.service';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
 import {environment} from '../../../environments/environment';
+import {SupporterBadge} from '../../components/supporter-badge';
 
 @Component({
   selector: 'home-layout',
@@ -59,6 +61,13 @@ import {environment} from '../../../environments/environment';
                     height="48" />
                   <span class="mb-1">poweruptime</span>
                 </a>
+              </div>
+              <div>
+                @if (jsonService.json(); as json) {
+                  <pu-supporter-badge
+                    [hide]="!json.showSupportBadge"
+                    [supportsSince]="json.supportsSince" />
+                }
               </div>
             </div>
           </mat-toolbar>
@@ -111,11 +120,13 @@ import {environment} from '../../../environments/environment';
     MatToolbar,
     RouterLink,
     NgOptimizedImage,
+    SupporterBadge,
   ],
 })
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
+  readonly jsonService = inject(JsonService);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {

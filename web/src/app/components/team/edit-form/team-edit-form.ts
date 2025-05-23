@@ -13,23 +13,21 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     @let valid = isValid();
 
     <form class="grid" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <div>
-        <mat-form-field class="w-full">
-          <mat-label>{{ 'general.name' | transloco }}</mat-label>
-          <input matInput formControlName="name" />
+      <mat-form-field>
+        <mat-label>{{ 'general.name' | transloco }}</mat-label>
+        <input matInput formControlName="name" />
 
-          @let nameErrors = form.controls.name.errors;
-          @if (nameErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (nameErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-          }
-          @if (nameErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-        </mat-form-field>
-      </div>
+        @let nameErrors = form.controls.name.errors;
+        @if (nameErrors?.['required']) {
+          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        }
+        @if (nameErrors?.['minlength']; as minlength) {
+          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        }
+        @if (nameErrors?.['maxlength']; as maxlength) {
+          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+        }
+      </mat-form-field>
 
       <pu-save-button [valid]="valid" />
     </form>

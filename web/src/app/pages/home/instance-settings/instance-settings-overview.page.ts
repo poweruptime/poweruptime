@@ -5,6 +5,7 @@ import {
   InstanceSettingsGeneralForm,
   InstanceSettingsPermissionsForm,
   InstanceSettingsRetentionForm,
+  InstanceSettingsSponsorshipForm,
 } from '@app/components/instance-settings';
 import {
   InstanceAvailableTimezonesStore,
@@ -15,8 +16,8 @@ import {
 @Component({
   template: `
     @if (instanceSettingsStore.settings(); as settings) {
-      <div class="grid md:grid-cols-6">
-        <div class="col-span-3 flex w-full flex-col gap-4 xl:col-span-2">
+      <div class="grid gap-4 md:grid-cols-6">
+        <div class="col-span-1 flex w-full flex-col gap-4 md:col-span-3 xl:col-span-2">
           <pu-instance-settings-general-form
             [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
             [settings]="settings"
@@ -30,6 +31,11 @@ import {
             [settings]="settings"
             (submitCreate)="submitRetentionForm($event)" />
         </div>
+        <div class="col-span-1 flex w-full flex-col gap-4 md:col-span-3 xl:col-span-2">
+          <pu-instance-settings-sponsorship-form
+            [settings]="settings"
+            (submitCreate)="submitSponsorshipForm($event)" />
+        </div>
       </div>
     }
   `,
@@ -39,6 +45,7 @@ import {
     InstanceSettingsGeneralForm,
     InstanceSettingsRetentionForm,
     InstanceSettingsPermissionsForm,
+    InstanceSettingsSponsorshipForm,
   ],
 })
 export class InstanceSettingsOverviewPage {
@@ -66,5 +73,10 @@ export class InstanceSettingsOverviewPage {
     this.instanceSettingsStore.setCheckResultLogRetentionPeriodInDays(
       it.checkResultLogRetentionPeriodInDays,
     );
+  }
+
+  submitSponsorshipForm(it: BackendType['InstanceSettingsResponse']) {
+    this.instanceSettingsStore.setSupportLookup(it.supportLookup);
+    this.instanceSettingsStore.setShowSupportBadge(it.showSupportBadge);
   }
 }

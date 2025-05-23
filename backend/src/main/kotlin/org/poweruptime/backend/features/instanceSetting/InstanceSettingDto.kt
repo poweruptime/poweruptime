@@ -10,6 +10,10 @@ data class SettingStringSetDto(
     @get:NotNull val value: String,
 )
 
+data class SettingNullableStringSetDto(
+    val value: String?,
+)
+
 data class SettingIntSetDto(
     @get:NotNull val value: Int
 )
@@ -19,6 +23,8 @@ data class InstanceAvailableTimezonesResponse(
 )
 
 data class InstanceSettingsResponse(
+    val supportLookup: String?,
+    val showSupportBadge: Boolean,
     val timezone: String,
     val isUserAllowedToCreateTeams: Boolean,
     val checkResultRetentionPeriodInDays: Int,

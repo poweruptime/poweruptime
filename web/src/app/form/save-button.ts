@@ -6,19 +6,17 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
 @Component({
   template: `
-    <div class="flex content-end">
-      <button
-        class="flex items-center"
-        [disabled]="!valid()"
-        [attr.form]="form()"
-        mat-fab
-        extended
-        type="submit">
-        <bi name="save" />
-        <!-- t(general.save) -->
-        <span class="ms-2 text-lg">{{ text() ?? ('general.save' | transloco) }}</span>
-      </button>
-    </div>
+    <button
+      class="flex min-w-28 items-center"
+      [disabled]="!valid()"
+      [attr.form]="form()"
+      mat-fab
+      extended
+      type="submit">
+      <bi name="save" />
+      <!-- t(general.save) -->
+      <span class="ms-2 text-lg">{{ text() ?? ('general.save' | transloco) }}</span>
+    </button>
   `,
   selector: 'pu-save-button',
   standalone: true,

@@ -371,6 +371,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/instance-settings/supportLookup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set support lookup instance setting
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    put: operations['setSupportLookup'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/instance-settings/showSupportBadge': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set showSupportBadge instance setting
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    put: operations['setShowSupportBadge'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/instance-settings/isUserAllowedToCreateTeams': {
     parameters: {
       query?: never;
@@ -1929,12 +1969,17 @@ export interface components {
       name: string;
     };
     InstanceSettingsResponse: {
+      supportLookup?: string;
+      showSupportBadge: boolean;
       timezone: string;
       isUserAllowedToCreateTeams: boolean;
       /** Format: int32 */
       checkResultRetentionPeriodInDays: number;
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
+    };
+    SettingNullableStringSetDto: {
+      value?: string;
     };
     SettingBooleanSetDto: {
       value: boolean;
@@ -2157,7 +2202,10 @@ export interface components {
       /** Format: date-time */
       serverStartTime: string;
       /** Format: date-time */
-      buildTime: string;
+      serverSetupTime: string;
+      /** Format: date-time */
+      supportsSince?: string;
+      showSupportBadge: boolean;
       host: string;
       setup: boolean;
     };
@@ -3153,6 +3201,54 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['SettingStringSetDto'];
+      };
+    };
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InstanceSettingsResponse'];
+        };
+      };
+    };
+  };
+  setSupportLookup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettingNullableStringSetDto'];
+      };
+    };
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InstanceSettingsResponse'];
+        };
+      };
+    };
+  };
+  setShowSupportBadge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettingBooleanSetDto'];
       };
     };
     responses: {
