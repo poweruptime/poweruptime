@@ -2,6 +2,7 @@ import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  booleanAttribute,
   computed,
   inject,
   input,
@@ -11,6 +12,7 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
+import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatTooltip} from '@angular/material/tooltip';
 
@@ -18,11 +20,10 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendType} from '@app/api';
+import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 
 import {JsonService} from '../../services/json.service';
-import {AlertDirective} from '../alert.directive';
 import {SupporterBadge} from '../supporter-badge';
 
 @Component({
@@ -34,7 +35,9 @@ import {SupporterBadge} from '../supporter-badge';
             {{ 'general.sponsorship' | transloco }}
           </h3>
           @if (jsonService.json()?.serverSetupTime; as serverSetupTime) {
-            <span [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.YYYY')">
+            <span
+              class="text-gray-600 dark:text-gray-300"
+              [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.YYYY')">
               Running poweruptime for {{ usingPoweruptimeFor() }}
             </span>
           }
@@ -42,10 +45,14 @@ import {SupporterBadge} from '../supporter-badge';
       </mat-card-header>
       <mat-card-content>
         <div class="mb-6 mt-6 flex flex-col gap-2">
+          @if (isLoading()) {
+            <mat-progress-bar mode="indeterminate" />
+          }
           @if (jsonService.json()?.supportsSince; as supportsSince) {
             <p class="text-center">
               <b class="text-xl">
                 Thank's for your support
+                <i>{{ settings()?.supportLookup }}</i>
                 <span class="motion-preset-pulse-sm">❤️</span>
               </b>
             </p>
@@ -53,8 +60,8 @@ import {SupporterBadge} from '../supporter-badge';
               <pu-supporter-badge [supportsSince]="supportsSince" />
             </div>
           } @else {
-            <p><b>Hi! Please consider supporting poweruptime through GitHub Sponsors.</b></p>
-            <p><b>It really helps a lot. ❤️</b></p>
+            <h2 class="text-center text-3xl">We ❤️ our Supporters</h2>
+            <p><b>Please consider supporting poweruptime through GitHub Sponsors.</b></p>
           }
           <b class="flex items-center justify-center gap-2 underline">
             <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
@@ -74,16 +81,19 @@ import {SupporterBadge} from '../supporter-badge';
             [class.blur-lg]="!_sponsorLookupEnabled"
             [class.pointer-events-none]="!_sponsorLookupEnabled">
             <form
-              class="mt-6 flex min-h-96 flex-col gap-4"
+              class="mt-6 flex min-h-60 flex-col gap-4"
               id="sponsorship-form"
               #formRef
               [formGroup]="form"
               (ngSubmit)="submit()">
               <mat-form-field>
-                <mat-label>{{ 'general.name' | transloco }}</mat-label>
+                <mat-label>{{ 'instanceSettings.sponsorship.githubHandle' | transloco }}</mat-label>
                 <input matInput formControlName="supportLookup" />
 
                 @let supportLookup = form.controls.supportLookup.errors;
+                @if (supportLookup?.['minlength']; as minlength) {
+                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                }
                 @if (supportLookup?.['maxlength']; as maxlength) {
                   <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
                 }
@@ -93,11 +103,22 @@ import {SupporterBadge} from '../supporter-badge';
                 {{ 'instanceSettings.sponsorship.showBadge' | transloco }}
               </mat-slide-toggle>
 
-              <div class="flex flex-col gap-4 sm:flex-row">
+              <div class="mt-auto flex items-center justify-between gap-4">
                 <pu-save-button [valid]="isValid()" form="sponsorship-form" />
-                <span puAlert type="INFO">
-                  Leave the GitHub username field empty, to disable any sponsorship lookup.
-                </span>
+
+                <button
+                  class="error-button"
+                  (click)="
+                    submitCreate.emit({
+                      showSupportBadge: form.controls.showSupportBadge.getRawValue(),
+                      supportLookup: undefined,
+                    })
+                  "
+                  type="button"
+                  mat-flat-button>
+                  <bi name="x-circle-fill" />
+                  <span class="text-lg">{{ 'general.reset' | transloco }}</span>
+                </button>
               </div>
             </form>
           </div>
@@ -114,13 +135,6 @@ import {SupporterBadge} from '../supporter-badge';
                 <ul class="list-disc">
                   <li>{{ 'instanceSettings.sponsorship.warning.3' | transloco }}</li>
                   <li>{{ 'instanceSettings.sponsorship.warning.4' | transloco }}</li>
-                </ul>
-                <div class="mt-4">
-                  <i>{{ 'instanceSettings.sponsorship.warning.5' | transloco }}</i>
-                </div>
-                <ul class="list-disc">
-                  <li>{{ 'instanceSettings.sponsorship.warning.6' | transloco }}</li>
-                  <li>{{ 'instanceSettings.sponsorship.warning.7' | transloco }}</li>
                 </ul>
               </div>
               <button (click)="sponsorLookupEnabled.set(true)" type="button" mat-flat-button>
@@ -148,27 +162,30 @@ import {SupporterBadge} from '../supporter-badge';
     MatFormField,
     MatInput,
     MatLabel,
-    AlertDirective,
     MatTooltip,
     DatePipe,
     BiComponent,
     SupporterBadge,
+    MatProgressBar,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormComponent<
-  BackendType['InstanceSettingsResponse'],
-  BackendType['InstanceSettingsResponse']
+  BackendType['InstanceSettingSupportDto'],
+  BackendType['InstanceSettingSupportDto']
 > {
   readonly jsonService = inject(JsonService);
 
   override form = this.fb.nonNullable.group({
-    supportLookup: [null as string | null, [Validators.maxLength(60)]],
+    supportLookup: [
+      null as string | null,
+      [
+        Validators.minLength(Database.MIN_SUPPORT_LOOKUP_LENGTH),
+        Validators.maxLength(Database.MAX_SUPPORT_LOOKUP_LENGTH),
+      ],
+    ],
     showSupportBadge: [false, [Validators.required]],
   });
-
-  sponsorLookupEnabled = linkedSignal(computed(() => !!this.settings().supportLookup));
-  readonly isValid = injectIsValid(this.form);
 
   settings = input.required({
     transform: (it: BackendType['InstanceSettingsResponse']) => {
@@ -176,6 +193,11 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
       return it;
     },
   });
+
+  isLoading = input(false, {transform: booleanAttribute});
+
+  readonly sponsorLookupEnabled = linkedSignal(computed(() => !!this.settings().supportLookup));
+  readonly isValid = injectIsValid(this.form);
 
   readonly usingPoweruptimeFor = computed(() => {
     const serverSetupTime = this.jsonService.json()?.serverSetupTime;

@@ -97,6 +97,9 @@ export class Database {
   static readonly MIN_URL_LENGTH: number = 1;
   static readonly MAX_URL_LENGTH: number = 2048;
 
+  static readonly MIN_SUPPORT_LOOKUP_LENGTH: number = 1;
+  static readonly MAX_SUPPORT_LOOKUP_LENGTH: number = 39;
+
   static readonly MAX_BASIC_AUTH_LENGTH: number = 512;
 
   static readonly MIN_VALID_DAYS_LEFT: number = 1;

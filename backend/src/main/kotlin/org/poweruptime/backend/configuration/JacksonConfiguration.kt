@@ -1,18 +1,39 @@
 package org.poweruptime.backend.configuration
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer
 import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
+private val blankStringToNullDeserializerModule = SimpleModule().apply {
+    addDeserializer(
+        String::class.java,
+        object : StdDeserializer<String>(String::class.java) {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext
+            ): String? {
+                val result = StringDeserializer.instance.deserialize(p, ctxt)
+                return if (result.isNullOrBlank()) null else result
+            }
+        },
+    )
+}
+
 val puObjectMapper: JsonMapper = jacksonMapperBuilder()
     .addModule(JavaTimeModule())
+    .addModule(blankStringToNullDeserializerModule)
     .serializationInclusion(JsonInclude.Include.ALWAYS)
     // Write instants as string
     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)

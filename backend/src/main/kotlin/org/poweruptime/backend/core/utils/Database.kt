@@ -28,6 +28,9 @@ object Database {
     const val MIN_URL_LENGTH = 1
     const val MAX_URL_LENGTH = 2048
 
+    const val MIN_SUPPORT_LOOKUP_LENGTH = 1
+    const val MAX_SUPPORT_LOOKUP_LENGTH = 39
+
     const val MIN_PUSH_ID_LENGTH = NANO_ID_SMALL_LENGTH
     const val MAX_PUSH_ID_LENGTH = NANO_ID_SMALL_LENGTH
 

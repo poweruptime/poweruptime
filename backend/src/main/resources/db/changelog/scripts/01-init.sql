@@ -394,7 +394,7 @@ create table status_page_group
             on delete cascade,
     id             varchar(21)                            not null
         primary key,
-    name           varchar(70)         collate numeric    not null,
+    name           varchar(70)         collate numeric,
     description    text
 );
 

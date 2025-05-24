@@ -28,44 +28,32 @@ class InstanceSettingService(
         value.toString(),
     )
 
-    private var serverSetupTime: Instant? = null
-    fun getServerSetupTime(): Instant {
-        if (serverSetupTime != null) {
-            return serverSetupTime!!
+    val serverSetupTime: Instant by lazy {
+        val raw = getValueByKey(SettingKey.SERVER_SETUP_TIME).let { stored ->
+            if (stored == SettingKey.SERVER_SETUP_TIME.default) {
+                setValueByKey(
+                    SettingKey.SERVER_SETUP_TIME,
+                    Instant.now().toString(),
+                ).value
+            } else {
+                stored
+            }
         }
-
-        var value = getValueByKey(SettingKey.SERVER_SETUP_TIME)
-        if (value == SettingKey.SERVER_SETUP_TIME.default) {
-            value = setValueByKey(SettingKey.SERVER_SETUP_TIME, Instant.now().toString()).value
-        }
-
-        serverSetupTime = Instant.parse(value)
-
-        return serverSetupTime!!
+        Instant.parse(raw)
     }
 
     fun getSupportLookup(): String? = getValueByKey(
         SettingKey.SUPPORT_LOOKUP,
-    ).let {
-        if (it == "null") null else it
-    }
+    ).takeUnless { it == "null" }
 
     fun setSupportLookup(value: String?) = setValueByKey(
         SettingKey.SUPPORT_LOOKUP,
         value ?: "null",
     )
 
-    fun getSupportsSince(): Instant? {
-        val value = getValueByKey(
-            SettingKey.SUPPORTS_SINCE,
-        )
-
-        if (value == "null") {
-            return null
-        }
-
-        return Instant.parse(value)
-    }
+    fun getSupportsSince(): Instant? = getValueByKey(
+        SettingKey.SUPPORTS_SINCE,
+    ).takeUnless { it == "null" }?.let { Instant.parse(it) }
 
     fun setSupportSince(value: Instant?) = setValueByKey(
         SettingKey.SUPPORTS_SINCE,

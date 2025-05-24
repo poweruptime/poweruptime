@@ -68,41 +68,30 @@ class InstanceSettingController(
     }
 
     @Operation(
-        summary = "Set support lookup instance setting",
+        summary = "Set support instance setting",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("supportLookup")
+    @PutMapping("support")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setSupportLookup(
-        @RequestBody @Valid dto: SettingNullableStringSetDto
-    ): InstanceSettingsResponse {
-        instanceSettingService.setSupportLookup(dto.value)
+    fun setSupport(
+        @RequestBody @Valid dto: InstanceSettingSupportDto
+    ): InstanceSupportSettingsResponse {
+        instanceSettingService.setSupportLookup(dto.supportLookup)
+        instanceSettingService.setShowSupportBadge(dto.showSupportBadge)
 
-        if (dto.value.isNullOrBlank()) {
+        val check = if (dto.supportLookup.isNullOrBlank()) {
             instanceSettingService.setSupportSince(null)
+            false
         } else {
-            supporterService.check()
+            supporterService.check(dto.supportLookup)
         }
 
-        return getSettings()
-    }
-
-    @Operation(
-        summary = "Set showSupportBadge instance setting",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("showSupportBadge")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setShowSupportBadge(
-        @RequestBody @Valid dto: SettingBooleanSetDto
-    ): InstanceSettingsResponse {
-        instanceSettingService.setShowSupportBadge(dto.value)
-
-        return getSettings()
+        return InstanceSupportSettingsResponse(
+            check,
+            getSettings(),
+        )
     }
 
     @Operation(
@@ -122,33 +111,18 @@ class InstanceSettingController(
     }
 
     @Operation(
-        summary = "Set checkResultRetentionPeriodInDays instance setting",
+        summary = "Set retention instance setting",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("checkResultRetentionPeriodInDays")
+    @PutMapping("retention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setCheckResultRetentionPeriodInDays(
-        @RequestBody @Valid dto: SettingIntSetDto
+    fun setRetention(
+        @RequestBody @Valid dto: InstanceSettingRetentionDto
     ): InstanceSettingsResponse {
-        instanceSettingService.setCheckResultRetentionPeriodInDays(dto.value)
-
-        return getSettings()
-    }
-
-    @Operation(
-        summary = "Set checkResultLogRetentionPeriodInDays instance setting",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("checkResultLogRetentionPeriodInDays")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setCheckResultLogRetentionPeriodInDays(
-        @RequestBody @Valid dto: SettingIntSetDto
-    ): InstanceSettingsResponse {
-        instanceSettingService.setCheckResultLogRetentionPeriodInDays(dto.value)
+        instanceSettingService.setCheckResultRetentionPeriodInDays(dto.checkResultRetentionPeriodInDays)
+        instanceSettingService.setCheckResultLogRetentionPeriodInDays(dto.checkResultLogRetentionPeriodInDays)
 
         return getSettings()
     }

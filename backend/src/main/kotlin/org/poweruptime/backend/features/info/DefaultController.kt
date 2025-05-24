@@ -42,7 +42,7 @@ class SecureDefaultController(
         serverStartTime = InfoService.startTime,
         host = infoService.host,
         setup = userService.isSetup(),
-        serverSetupTime = instanceSettingService.getServerSetupTime(),
+        serverSetupTime = instanceSettingService.serverSetupTime,
         supportsSince = instanceSettingService.getSupportsSince(),
         showSupportBadge = instanceSettingService.getShowSupportBadge(),
     )
@@ -70,7 +70,7 @@ class DefaultController(
         serverStartTime = InfoService.startTime,
         host = infoService.host,
         setup = userService.isSetup(),
-        serverSetupTime = instanceSettingService.getServerSetupTime(),
+        serverSetupTime = instanceSettingService.serverSetupTime,
         supportsSince = instanceSettingService.getSupportsSince(),
         showSupportBadge = instanceSettingService.getShowSupportBadge(),
     )

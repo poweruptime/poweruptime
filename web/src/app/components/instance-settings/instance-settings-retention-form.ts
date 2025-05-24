@@ -86,8 +86,8 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstanceSettingsRetentionForm extends AbstractModelEditFormComponent<
-  BackendType['InstanceSettingsResponse'],
-  BackendType['InstanceSettingsResponse']
+  BackendType['InstanceSettingRetentionDto'],
+  BackendType['InstanceSettingRetentionDto']
 > {
   override form = this.fb.nonNullable.group({
     checkResultRetentionPeriodInDays: [

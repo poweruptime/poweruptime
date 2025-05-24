@@ -1,11 +1,18 @@
+import {inject} from '@angular/core';
+
 import {filter, pipe, switchMap, tap} from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import confetti from 'canvas-confetti';
+import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
+
+import {JsonService} from '../json.service';
 
 export const InstanceSettingsStore = signalStore(
   {providedIn: 'root'},
@@ -15,7 +22,7 @@ export const InstanceSettingsStore = signalStore(
   }>({
     settings: undefined,
   }),
-  withMethods((store, api = injectAPI()) => ({
+  withMethods((store, api = injectAPI(), jsonService = inject(JsonService)) => ({
     load: rxMethod<void>(
       pipe(
         tap(() => patchState(store, setPending())),
@@ -43,27 +50,31 @@ export const InstanceSettingsStore = signalStore(
         ),
       ),
     ),
-    setSupportLookup: rxMethod<string | null | undefined>(
+    setSupport: rxMethod<BackendType['InstanceSettingSupportDto']>(
       pipe(
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api.put('/v1/instance-settings/supportLookup', {body: {value: value ?? undefined}}).pipe(
+        switchMap((body) =>
+          api.put('/v1/instance-settings/support', {body}).pipe(
             tapResponse({
-              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
-              error: (error) => patchState(store, setError(error)),
-            }),
-          ),
-        ),
-      ),
-    ),
-    setShowSupportBadge: rxMethod<boolean | null>(
-      pipe(
-        filter((it): it is boolean => it !== null),
-        tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api.put('/v1/instance-settings/showSupportBadge', {body: {value}}).pipe(
-            tapResponse({
-              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              next: (response) => {
+                if (store.settings()?.supportLookup !== body.supportLookup) {
+                  if (response.check) {
+                    toast.success(translate('GitHub Sponsorship detected. Thank you very much!'));
+
+                    confetti({
+                      particleCount: 100,
+                      spread: 160,
+                      origin: {y: 0.6},
+                    });
+                    setTimeout(() => confetti.reset(), 3000);
+                  } else if ((body.supportLookup?.length ?? 0) > 0) {
+                    toast.error(translate('GitHub Sponsorship check failed.'));
+                  }
+                }
+
+                patchState(store, () => ({settings: response.instanceSettings}), setFulfilled());
+                jsonService.refresh();
+              },
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -84,33 +95,16 @@ export const InstanceSettingsStore = signalStore(
         ),
       ),
     ),
-    setCheckResultRetentionPeriodInDays: rxMethod<number | null>(
+    setRetention: rxMethod<BackendType['InstanceSettingRetentionDto']>(
       pipe(
-        filter((it): it is number => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api.put('/v1/instance-settings/checkResultRetentionPeriodInDays', {body: {value}}).pipe(
+        switchMap((body) =>
+          api.put('/v1/instance-settings/retention', {body}).pipe(
             tapResponse({
               next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
-        ),
-      ),
-    ),
-    setCheckResultLogRetentionPeriodInDays: rxMethod<number | null>(
-      pipe(
-        filter((it): it is number => !!it),
-        tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api
-            .put('/v1/instance-settings/checkResultLogRetentionPeriodInDays', {body: {value}})
-            .pipe(
-              tapResponse({
-                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
         ),
       ),
     ),

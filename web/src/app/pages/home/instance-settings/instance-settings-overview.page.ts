@@ -33,6 +33,7 @@ import {
         </div>
         <div class="col-span-1 flex w-full flex-col gap-4 md:col-span-3 xl:col-span-2">
           <pu-instance-settings-sponsorship-form
+            [isLoading]="instanceSettingsStore.isPending()"
             [settings]="settings"
             (submitCreate)="submitSponsorshipForm($event)" />
         </div>
@@ -66,17 +67,11 @@ export class InstanceSettingsOverviewPage {
     this.instanceSettingsStore.setIsUserAllowedToCreateTeams(it.isUserAllowedToCreateTeams);
   }
 
-  submitRetentionForm(it: BackendType['InstanceSettingsResponse']) {
-    this.instanceSettingsStore.setCheckResultRetentionPeriodInDays(
-      it.checkResultRetentionPeriodInDays,
-    );
-    this.instanceSettingsStore.setCheckResultLogRetentionPeriodInDays(
-      it.checkResultLogRetentionPeriodInDays,
-    );
+  submitRetentionForm(it: BackendType['InstanceSettingRetentionDto']) {
+    this.instanceSettingsStore.setRetention(it);
   }
 
-  submitSponsorshipForm(it: BackendType['InstanceSettingsResponse']) {
-    this.instanceSettingsStore.setSupportLookup(it.supportLookup);
-    this.instanceSettingsStore.setShowSupportBadge(it.showSupportBadge);
+  submitSponsorshipForm(it: BackendType['InstanceSettingSupportDto']) {
+    this.instanceSettingsStore.setSupport(it);
   }
 }

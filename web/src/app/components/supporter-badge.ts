@@ -1,15 +1,22 @@
 import {ChangeDetectionStrategy, Component, booleanAttribute, computed, input} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatTooltip} from '@angular/material/tooltip';
 
+import {Subject, throttleTime} from 'rxjs';
+
 import {format} from '@std/fmt/duration';
+import confetti from 'canvas-confetti';
+import {n_generate_float, n_generate_int} from 'dfts-helper';
 
 @Component({
   template: `
     @if (supportDuration(); as supportDuration) {
       @if (!hide()) {
-        <div
+        <button
           class="rainbow-border glow inline-block rounded-lg p-1 hover:cursor-pointer"
-          [matTooltip]="'Supports poweruptime for atleast ' + supportDuration">
+          [matTooltip]="'Supports poweruptime for atleast ' + supportDuration"
+          (click)="confetti.next(true)"
+          type="button">
           <div
             class="flex items-center gap-2 rounded bg-gray-900 px-2 py-1.5 font-semibold text-white">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
@@ -20,7 +27,7 @@ import {format} from '@std/fmt/duration';
             </svg>
             <span class="hidden sm:inline">Supporter</span>
           </div>
-        </div>
+        </button>
       }
     }
   `,
@@ -75,4 +82,16 @@ export class SupporterBadge {
     const duration = new Date().getTime() - new Date(supportsSince).getTime();
     return format(duration, {ignoreZero: true, style: 'full'}).split(',')[0];
   });
+
+  readonly confetti = new Subject<boolean>();
+
+  constructor() {
+    this.confetti.pipe(takeUntilDestroyed(), throttleTime(1000)).subscribe(() => {
+      confetti({
+        particleCount: n_generate_int(100, 200),
+        spread: n_generate_int(160, 260),
+        origin: {y: n_generate_float(0.25, 0.5, 2)},
+      });
+    });
+  }
 }

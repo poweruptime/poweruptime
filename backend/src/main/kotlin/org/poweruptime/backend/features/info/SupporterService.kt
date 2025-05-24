@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.info
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -9,52 +10,59 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.time.Instant
 
+const val TEST_HANDLE = "Test1234"
+
 @Service
 class SupporterService(
     private val restTemplate: RestTemplate,
     private val objectMapper: ObjectMapper,
     private val instanceSettingService: InstanceSettingService,
 ) {
-    private val logger = LoggerFactory.getLogger(SupporterService::class.java)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Suppress("ReturnCount")
-    fun check() {
-        val githubHandle = instanceSettingService.getSupportLookup()
-
-        if (githubHandle.isNullOrBlank()) return
-
-        val response = try {
-            restTemplate.exchange(
-                "https://sponsors.trnck.dev/sponsors/dafnik",
-                HttpMethod.GET,
-                HttpEntity(""),
-                String::class.java,
-            )
-        } catch (e: Throwable) {
-            logger.error("Could not load GitHub sponsors.", e)
-            return
-        }
-
-        val body = response.body
-        if (body.isNullOrBlank()) return
+    fun check(
+        githubHandle: String? = instanceSettingService.getSupportLookup()
+    ): Boolean {
+        val handle = githubHandle?.takeIf { it.isNotBlank() } ?: return false
 
         val sponsorsResponse = try {
-            objectMapper.readValue(body, GitHubSponsorsResponse::class.java)
+            fetchSponsors()
         } catch (e: Exception) {
-            logger.error("Failed to parse GitHubSponsorsResponse", e)
-            return
+            logger.error("Could not load or parse GitHub sponsors", e)
+            return false
         }
 
-        val isSupporter = githubHandle == "Test1234" || sponsorsResponse.sponsors.any { it.handle == githubHandle }
-        val supportsSince = instanceSettingService.getSupportsSince()
+        val isSupporter = isSupporter(handle, sponsorsResponse.sponsors)
+        updateSupportSince(isSupporter)
+        return isSupporter
+    }
 
-        if (isSupporter && supportsSince == null) {
-            instanceSettingService.setSupportSince(Instant.now())
-            return
-        }
+    private fun fetchSponsors(): GitHubSponsorsResponse {
+        val response = restTemplate.exchange(
+            "https://sponsors.trnck.dev/sponsors/dafnik",
+            HttpMethod.GET,
+            HttpEntity.EMPTY,
+            String::class.java,
+        )
+        val body = response.body
+            .takeUnless { it.isNullOrBlank() }
+            ?: throw NotFoundException("Empty sponsors response")
+        return objectMapper.readValue(body, GitHubSponsorsResponse::class.java)
+    }
 
-        if (!isSupporter && supportsSince != null) {
-            instanceSettingService.setSupportSince(null)
+    private fun isSupporter(
+        handle: String,
+        sponsors: List<GitHubSponsorDto>
+    ) = handle == TEST_HANDLE || sponsors.any { it.handle == handle }
+
+    private fun updateSupportSince(isSupporter: Boolean) {
+        val since = instanceSettingService.getSupportsSince()
+        when {
+            isSupporter && since == null ->
+                instanceSettingService.setSupportSince(Instant.now())
+
+            !isSupporter && since != null ->
+                instanceSettingService.setSupportSince(null)
         }
     }
 }
@@ -62,7 +70,7 @@ class SupporterService(
 data class GitHubSponsorDto(
     val handle: String,
     val avatar: String,
-    val profile: String,
+    val profile: String
 )
 
 data class GitHubSponsorsResponse(

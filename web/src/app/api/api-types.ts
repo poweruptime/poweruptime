@@ -371,7 +371,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/instance-settings/supportLookup': {
+  '/v1/instance-settings/support': {
     parameters: {
       query?: never;
       header?: never;
@@ -380,10 +380,10 @@ export interface paths {
     };
     get?: never;
     /**
-     * Set support lookup instance setting
+     * Set support instance setting
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    put: operations['setSupportLookup'];
+    put: operations['setSupport'];
     post?: never;
     delete?: never;
     options?: never;
@@ -391,7 +391,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/instance-settings/showSupportBadge': {
+  '/v1/instance-settings/retention': {
     parameters: {
       query?: never;
       header?: never;
@@ -400,10 +400,10 @@ export interface paths {
     };
     get?: never;
     /**
-     * Set showSupportBadge instance setting
+     * Set retention instance setting
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    put: operations['setShowSupportBadge'];
+    put: operations['setRetention'];
     post?: never;
     delete?: never;
     options?: never;
@@ -424,46 +424,6 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
     put: operations['setIsUserAllowedToCreateTeams'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/instance-settings/checkResultRetentionPeriodInDays': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Set checkResultRetentionPeriodInDays instance setting
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    put: operations['setCheckResultRetentionPeriodInDays_1'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/instance-settings/checkResultLogRetentionPeriodInDays': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Set checkResultLogRetentionPeriodInDays instance setting
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    put: operations['setCheckResultLogRetentionPeriodInDays_1'];
     post?: never;
     delete?: never;
     options?: never;
@@ -1978,8 +1938,19 @@ export interface components {
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
     };
-    SettingNullableStringSetDto: {
-      value?: string;
+    InstanceSettingSupportDto: {
+      supportLookup?: string;
+      showSupportBadge: boolean;
+    };
+    InstanceSupportSettingsResponse: {
+      check: boolean;
+      instanceSettings: components['schemas']['InstanceSettingsResponse'];
+    };
+    InstanceSettingRetentionDto: {
+      /** Format: int32 */
+      checkResultRetentionPeriodInDays: number;
+      /** Format: int32 */
+      checkResultLogRetentionPeriodInDays: number;
     };
     SettingBooleanSetDto: {
       value: boolean;
@@ -3215,7 +3186,7 @@ export interface operations {
       };
     };
   };
-  setSupportLookup: {
+  setSupport: {
     parameters: {
       query?: never;
       header?: never;
@@ -3224,7 +3195,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingNullableStringSetDto'];
+        'application/json': components['schemas']['InstanceSettingSupportDto'];
       };
     };
     responses: {
@@ -3234,12 +3205,12 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['InstanceSettingsResponse'];
+          '*/*': components['schemas']['InstanceSupportSettingsResponse'];
         };
       };
     };
   };
-  setShowSupportBadge: {
+  setRetention: {
     parameters: {
       query?: never;
       header?: never;
@@ -3248,7 +3219,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingBooleanSetDto'];
+        'application/json': components['schemas']['InstanceSettingRetentionDto'];
       };
     };
     responses: {
@@ -3273,54 +3244,6 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['SettingBooleanSetDto'];
-      };
-    };
-    responses: {
-      /** @description Accepted */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['InstanceSettingsResponse'];
-        };
-      };
-    };
-  };
-  setCheckResultRetentionPeriodInDays_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SettingIntSetDto'];
-      };
-    };
-    responses: {
-      /** @description Accepted */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['InstanceSettingsResponse'];
-        };
-      };
-    };
-  };
-  setCheckResultLogRetentionPeriodInDays_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SettingIntSetDto'];
       };
     };
     responses: {

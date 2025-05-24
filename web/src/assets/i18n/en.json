@@ -170,6 +170,7 @@
     "profile": "Profile",
     "recycleBin": "Recycle Bin",
     "redirecting": "Redirecting...",
+    "reset": "Reset",
     "restore": "Restore",
     "restoreSuccess": "Successfully restored item(s).",
     "role": "Role",
@@ -220,15 +221,13 @@
       "title": "Individual check & log retention"
     },
     "sponsorship": {
+      "githubHandle": "GitHub Username",
       "showBadge": "Show Supporter Badge",
       "warning": {
         "1": "Before you enable the “Sponsorship” feature, please read the following:",
         "2": "What happens when you enable it",
         "3": "Your server will contact a third-party API to retrieve your GitHub Sponsors status.",
-        "4": "In doing so, the third-party service will see and may log your server’s public IP address.",
-        "5": "What this means for you",
-        "6": "The API provider could use that IP address to identify or analyze your hosting environment.",
-        "7": "If you’d prefer not to share your server’s network address with an external service, do not enable this feature."
+        "4": "In doing so, the third-party service will see and may log your server’s public IP address."
       }
     },
     "timezone": "{{general.instance}} {{general.timezone}}"
