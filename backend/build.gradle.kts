@@ -92,7 +92,7 @@ dependencies {
 
     testImplementation("com.icegreen:greenmail-junit5:2.1.3")
 
-    testImplementation("software.xdev.mockserver:client:1.0.16")
+    testImplementation("software.xdev.mockserver:client:1.0.17")
     testImplementation("software.xdev.mockserver:testcontainers:1.0.16")
 }
 
