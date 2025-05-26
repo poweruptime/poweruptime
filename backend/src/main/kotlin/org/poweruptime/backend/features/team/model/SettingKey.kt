@@ -38,6 +38,14 @@ enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
         override val code = "UA"
         override val default = false.toString()
     },
+    VERSION_CHECK_ENABLED {
+        override val code = "VC"
+        override val default: String = false.toString()
+    },
+    VERSION_CHECK_ADMIN_MAIL_ENABLED {
+        override val code = "VM"
+        override val default: String = false.toString()
+    },
 }
 
 @Converter(autoApply = true)

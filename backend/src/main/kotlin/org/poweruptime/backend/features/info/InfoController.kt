@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1/info")
 @Tag(name = "Info API")
 class InfoController(
-    private val infoService: InfoService
+    private val infoService: InfoService,
 ) {
     @Operation(
         summary = "Get admin environment info",
@@ -24,7 +24,7 @@ class InfoController(
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/environment")
-    fun adminInfo() = AdminInfoResponse(
+    fun adminInfo(): AdminInfoResponse = AdminInfoResponse(
         mapOf(
             "javaRuntimeVersion" to infoService.javaRuntimeVersion,
             "osName" to infoService.osName,

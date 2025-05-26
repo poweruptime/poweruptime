@@ -27,6 +27,8 @@ data class InstanceSettingsResponse(
     val isUserAllowedToCreateTeams: Boolean,
     val checkResultRetentionPeriodInDays: Int,
     val checkResultLogRetentionPeriodInDays: Int,
+    val versionCheckEnabled: Boolean,
+    val versionCheckAdminMailEnabled: Boolean,
 )
 
 data class InstanceSupportSettingsResponse(
@@ -43,4 +45,13 @@ data class InstanceSettingSupportDto(
 data class InstanceSettingRetentionDto(
     @get:NotNull val checkResultRetentionPeriodInDays: Int,
     @get:NotNull val checkResultLogRetentionPeriodInDays: Int
+)
+
+data class InstanceSettingVersionCheckDto(
+    @get:NotNull val versionCheckEnabled: Boolean,
+    @get:NotNull val versionCheckAdminMailEnabled: Boolean,
+)
+
+data class VersionCheckResponse(
+    val nextVersion: String?
 )

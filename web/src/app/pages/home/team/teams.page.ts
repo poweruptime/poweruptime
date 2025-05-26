@@ -92,8 +92,6 @@ export class TeamsPage {
   readonly searchControl = new FormControl<string>('');
 
   constructor() {
-    this.instanceSettingsStore.load();
-
     this.selectedTeamStore.setSearch(this.searchControl.valueChanges);
 
     this.selectedTeamStore.loadAvailableTeams(

@@ -345,7 +345,7 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
       statusPage.groups.forEach((group) => {
         this.form.controls.groups.push(
           this.fb.group({
-            name: [group.name, [Validators.maxLength(Database.MAX_NAME_LENGTH)]],
+            name: [group.name ?? null, [Validators.maxLength(Database.MAX_NAME_LENGTH)]],
             description: [group.description],
             monitorIds: [group.monitors.map((it) => it.monitor.id)],
           }),

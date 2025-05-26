@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.ZoneId
 
+@Suppress("TooManyFunctions")
 @Service
 class InstanceSettingService(
     private val instanceSettingRepository: InstanceSettingRepository,
@@ -84,6 +85,24 @@ class InstanceSettingService(
 
     fun setUserAllowedToCreateTeams(value: Boolean) = setValueByKey(
         SettingKey.USERS_ALLOWED_TO_CREATE_TEAMS,
+        value.toString(),
+    )
+
+    fun getVersionCheckEnabled(): Boolean = getValueByKey(
+        SettingKey.VERSION_CHECK_ENABLED,
+    ).toBoolean()
+
+    fun setVersionCheckEnabled(value: Boolean) = setValueByKey(
+        SettingKey.VERSION_CHECK_ENABLED,
+        value.toString(),
+    )
+
+    fun getVersionCheckAdminMailEnabled(): Boolean = getValueByKey(
+        SettingKey.VERSION_CHECK_ADMIN_MAIL_ENABLED,
+    ).toBoolean()
+
+    fun setVersionCheckAdminMailEnabled(value: Boolean) = setValueByKey(
+        SettingKey.VERSION_CHECK_ADMIN_MAIL_ENABLED,
         value.toString(),
     )
 

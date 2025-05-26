@@ -9,6 +9,7 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
+import org.poweruptime.backend.features.info.GitHubVersionChecker
 import org.poweruptime.backend.features.info.SupporterService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -21,6 +22,7 @@ import java.time.ZoneId
 class InstanceSettingController(
     private val instanceSettingService: InstanceSettingService,
     private val supporterService: SupporterService,
+    private val versionChecker: GitHubVersionChecker,
 ) {
     @Operation(
         summary = "Get instance settings",
@@ -36,6 +38,8 @@ class InstanceSettingController(
         checkResultRetentionPeriodInDays = instanceSettingService.getCheckResultRetentionPeriodInDays(),
         checkResultLogRetentionPeriodInDays = instanceSettingService.getCheckResultLogRetentionPeriodInDays(),
         showSupportBadge = instanceSettingService.getShowSupportBadge(),
+        versionCheckEnabled = instanceSettingService.getVersionCheckEnabled(),
+        versionCheckAdminMailEnabled = instanceSettingService.getVersionCheckAdminMailEnabled(),
     )
 
     @Operation(
@@ -126,4 +130,32 @@ class InstanceSettingController(
 
         return getSettings()
     }
+
+    @Operation(
+        summary = "Set version check instance setting",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("versionCheck")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    fun setVersionCheck(
+        @RequestBody @Valid dto: InstanceSettingVersionCheckDto
+    ): InstanceSettingsResponse {
+        instanceSettingService.setVersionCheckEnabled(dto.versionCheckEnabled)
+        instanceSettingService.setVersionCheckAdminMailEnabled(dto.versionCheckAdminMailEnabled)
+
+        return getSettings()
+    }
+
+    @Operation(
+        summary = "Get latest version",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("versionCheck")
+    fun versionCheck(): VersionCheckResponse = VersionCheckResponse(
+        versionChecker.checkForLatestVersion(),
+    )
 }

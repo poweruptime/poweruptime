@@ -6,11 +6,13 @@ import {
   InstanceSettingsPermissionsForm,
   InstanceSettingsRetentionForm,
   InstanceSettingsSponsorshipForm,
+  InstanceSettingsVersionCheckForm,
 } from '@app/components/instance-settings';
 import {
   InstanceAvailableTimezonesStore,
   InstanceSettingsStore,
-  SelectedTeamStore,
+  InstanceSettingsSupportStore,
+  InstanceSettingsVersionCheckStore,
 } from '@app/services';
 
 @Component({
@@ -23,17 +25,21 @@ import {
             [settings]="settings"
             (submitCreate)="submitGeneralForm($event)" />
 
-          <pu-instance-settings-permissions-form
+          <pu-instance-settings-version-check-form
+            [isLoading]="instanceSettingsVersionCheckStore.isPending()"
             [settings]="settings"
-            (submitCreate)="submitPermissionsForm($event)" />
+            (onSubmit)="submitVersionCheck($event)" />
 
           <pu-instance-settings-retention-form
             [settings]="settings"
             (submitCreate)="submitRetentionForm($event)" />
         </div>
         <div class="col-span-1 flex w-full flex-col gap-4 md:col-span-3 xl:col-span-2">
+          <pu-instance-settings-permissions-form
+            [settings]="settings"
+            (submitCreate)="submitPermissionsForm($event)" />
           <pu-instance-settings-sponsorship-form
-            [isLoading]="instanceSettingsStore.isPending()"
+            [isLoading]="instanceSettingsSupportStore.isPending()"
             [settings]="settings"
             (submitCreate)="submitSponsorshipForm($event)" />
         </div>
@@ -47,16 +53,17 @@ import {
     InstanceSettingsRetentionForm,
     InstanceSettingsPermissionsForm,
     InstanceSettingsSponsorshipForm,
+    InstanceSettingsVersionCheckForm,
   ],
 })
 export class InstanceSettingsOverviewPage {
-  readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly instanceSettingsStore = inject(InstanceSettingsStore);
+  readonly instanceSettingsSupportStore = inject(InstanceSettingsSupportStore);
+  readonly instanceSettingsVersionCheckStore = inject(InstanceSettingsVersionCheckStore);
   readonly instanceAvailableTimezonesStore = inject(InstanceAvailableTimezonesStore);
 
   constructor() {
     this.instanceAvailableTimezonesStore.load();
-    this.instanceSettingsStore.load(this.selectedTeamStore.selectedTeamId);
   }
 
   submitGeneralForm(it: BackendType['InstanceSettingsResponse']) {
@@ -72,6 +79,10 @@ export class InstanceSettingsOverviewPage {
   }
 
   submitSponsorshipForm(it: BackendType['InstanceSettingSupportDto']) {
-    this.instanceSettingsStore.setSupport(it);
+    this.instanceSettingsSupportStore.setSupport(it);
+  }
+
+  submitVersionCheck(it: BackendType['InstanceSettingVersionCheckDto']) {
+    this.instanceSettingsVersionCheckStore.setVersionCheck(it);
   }
 }

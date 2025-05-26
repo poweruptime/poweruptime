@@ -351,6 +351,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/instance-settings/versionCheck': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get latest version
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    get: operations['versionCheck'];
+    /**
+     * Set version check instance setting
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    put: operations['setVersionCheck'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/instance-settings/timezone': {
     parameters: {
       query?: never;
@@ -1765,7 +1789,7 @@ export interface components {
       ends?: string;
     };
     StatusPageGroupDto: {
-      name: string;
+      name?: string;
       monitorIds: string[];
       description?: string;
     };
@@ -1797,7 +1821,7 @@ export interface components {
     };
     StatusPageGroupResponse: {
       id: string;
-      name: string;
+      name?: string;
       description?: string;
       /** Format: int32 */
       position?: number;
@@ -1928,6 +1952,10 @@ export interface components {
       id: string;
       name: string;
     };
+    InstanceSettingVersionCheckDto: {
+      versionCheckEnabled: boolean;
+      versionCheckAdminMailEnabled: boolean;
+    };
     InstanceSettingsResponse: {
       supportLookup?: string;
       showSupportBadge: boolean;
@@ -1937,6 +1965,8 @@ export interface components {
       checkResultRetentionPeriodInDays: number;
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
+      versionCheckEnabled: boolean;
+      versionCheckAdminMailEnabled: boolean;
     };
     InstanceSettingSupportDto: {
       supportLookup?: string;
@@ -2202,7 +2232,7 @@ export interface components {
     };
     PublicStatusPageGroupResponse: {
       id: string;
-      name: string;
+      name?: string;
       description?: string;
     };
     PublicStatusPageResponse: {
@@ -2332,6 +2362,9 @@ export interface components {
       upsideDown: boolean;
       checker: components['schemas']['MonitorData'];
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
+    };
+    VersionCheckResponse: {
+      nextVersion?: string;
     };
     InstanceAvailableTimezonesResponse: {
       availableTimezones: string[];
@@ -3158,6 +3191,50 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['MonitorFullResponse'];
+        };
+      };
+    };
+  };
+  versionCheck: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['VersionCheckResponse'];
+        };
+      };
+    };
+  };
+  setVersionCheck: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InstanceSettingVersionCheckDto'];
+      };
+    };
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InstanceSettingsResponse'];
         };
       };
     };

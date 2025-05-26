@@ -48,12 +48,17 @@ import {ThemeService} from '../services/theme.service';
     '[class.dark:!bg-yellow-950]': 'variant() === "YELLOW"',
     '[class.dark:text-yellow-300]': 'variant() === "YELLOW"',
     '[class.dark:ring-yellow-300/20]': 'variant() === "YELLOW"',
+
+    '[class.text-neutral-900]': 'variant() === "GHOST"',
+    '[class.ring-neutral-600/10]': 'variant() === "GHOST"',
+    '[class.dark:text-neutral-100]': 'variant() === "GHOST"',
+    '[class.dark:ring-neutral-300/20]': 'variant() === "GHOST"',
   },
 })
 export class Tag {
   private readonly themeService = inject(ThemeService);
 
-  variant = input.required<BackendType['TagDto']['variant']>({
+  variant = input.required<BackendType['TagDto']['variant'] | 'GHOST'>({
     alias: 'pu-tag',
   });
   clickable = input(false, {transform: booleanAttribute});
@@ -61,6 +66,8 @@ export class Tag {
   matChipLabelTextColor = computed(() => {
     const theme = this.themeService.currentTheme();
     switch (this.variant()) {
+      case 'GHOST':
+        return getColorByTheme(theme, 'oklch(14.5% 0 0)', 'oklch(97% 0 0)');
       case 'RED':
         return getColorByTheme(theme, 'oklch(50.5% 0.213 27.518)', 'oklch(80.8% 0.114 19.571)');
       case 'BLUE':
@@ -77,6 +84,8 @@ export class Tag {
   matChipOutlineColor = computed(() => {
     const theme = this.themeService.currentTheme();
     switch (this.variant()) {
+      case 'GHOST':
+        return getColorByTheme(theme, 'oklch(14.5% 0 0)', 'oklch(97% 0 0)');
       case 'RED':
         return getColorByTheme(theme, 'oklch(57.7% 0.245 27.325)', 'oklch(80.8% 0.114 19.571)');
       case 'BLUE':

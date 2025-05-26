@@ -230,7 +230,17 @@
         "4": "In doing so, the third-party service will see and may log your server’s public IP address."
       }
     },
-    "timezone": "{{general.instance}} {{general.timezone}}"
+    "timezone": "{{general.instance}} {{general.timezone}}",
+    "versionCheck": {
+      "adminMail": "Admin Info E-Mail",
+      "title": "Version Check",
+      "warning": {
+        "1": "Before you enable the “Version Check” feature, please read the following:",
+        "2": "What happens when you enable it",
+        "3": "Your server will contact a third-party API to retrieve the latest version.",
+        "4": "In doing so, the third-party service will see and may log your server’s public IP address."
+      }
+    }
   },
   "mfa": {
     "alreadyShown": "{{mfa.backupCodes}} already shown.",
