@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.info
+package org.poweruptime.backend.features.info.supporter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.poweruptime.backend.core.exceptions.NotFoundException
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.time.Instant
 
-const val TEST_HANDLE = "Test1234"
-
 @Service
 class SupporterService(
     private val restTemplate: RestTemplate,
@@ -19,6 +17,8 @@ class SupporterService(
     private val instanceSettingService: InstanceSettingService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private val testHandle = "Test1234"
 
     fun check(
         githubHandle: String? = instanceSettingService.getSupportLookup()
@@ -53,7 +53,7 @@ class SupporterService(
     private fun isSupporter(
         handle: String,
         sponsors: List<GitHubSponsorDto>
-    ) = handle == TEST_HANDLE || sponsors.any { it.handle == handle }
+    ) = handle == testHandle || sponsors.any { it.handle == handle }
 
     private fun updateSupportSince(isSupporter: Boolean) {
         val since = instanceSettingService.getSupportsSince()
@@ -66,13 +66,3 @@ class SupporterService(
         }
     }
 }
-
-data class GitHubSponsorDto(
-    val handle: String,
-    val avatar: String,
-    val profile: String
-)
-
-data class GitHubSponsorsResponse(
-    val sponsors: List<GitHubSponsorDto>
-)

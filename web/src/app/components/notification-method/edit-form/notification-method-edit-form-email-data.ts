@@ -1,12 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
@@ -14,6 +8,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
+
+import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 
@@ -27,7 +23,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           [attr.aria-label]="'notificationMethod.edit.email.to.enter' | transloco"
           formControlName="to">
           @for (email of emailDataFormGroup.controls.to.getRawValue(); track email) {
-            <mat-chip-row (removed)="remove(emailDataFormGroup.controls.to, email)">
+            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.to, email)">
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.to.remove' | transloco: {email}"
@@ -41,7 +37,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         <input
           [matChipInputFor]="toGrid"
           [placeholder]="'notificationMethod.edit.email.to.new' | transloco"
-          (matChipInputTokenEnd)="add(emailDataFormGroup.controls.to, $event)" />
+          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.to, $event)" />
 
         @let toErrors = emailDataFormGroup.controls.to.errors;
         @if (toErrors?.['required']) {
@@ -134,7 +130,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           [attr.aria-label]="'notificationMethod.edit.email.cc.enter' | transloco"
           formControlName="cc">
           @for (email of emailDataFormGroup.controls.cc.getRawValue(); track email) {
-            <mat-chip-row (removed)="remove(emailDataFormGroup.controls.cc, email)">
+            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.cc, email)">
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.cc.remove' | transloco: {email}"
@@ -148,7 +144,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         <input
           [matChipInputFor]="ccGrid"
           [placeholder]="'notificationMethod.edit.email.cc.new' | transloco"
-          (matChipInputTokenEnd)="add(emailDataFormGroup.controls.cc, $event)" />
+          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.cc, $event)" />
 
         @let ccErrors = emailDataFormGroup.controls.cc.errors;
         @if (ccErrors?.['minLengthArrayItem']; as minlength) {
@@ -166,7 +162,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           [attr.aria-label]="'notificationMethod.edit.email.bcc.enter' | transloco"
           formControlName="bcc">
           @for (email of emailDataFormGroup.controls.bcc.getRawValue(); track email) {
-            <mat-chip-row (removed)="remove(emailDataFormGroup.controls.bcc, email)">
+            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.bcc, email)">
               {{ email }}
               <button
                 [attr.aria-label]="'notificationMethod.edit.email.bcc.remove' | transloco: {email}"
@@ -180,7 +176,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         <input
           [matChipInputFor]="bccGrid"
           [placeholder]="'notificationMethod.edit.email.bcc.new' | transloco"
-          (matChipInputTokenEnd)="add(emailDataFormGroup.controls.bcc, $event)" />
+          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.bcc, $event)" />
 
         @let bccErrors = emailDataFormGroup.controls.bcc.errors;
         @if (bccErrors?.['minLengthArrayItem']; as minlength) {
@@ -214,31 +210,6 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 export class NotificationMethodEditFormEmailData {
   emailDataFormGroup = inject(NotificationMethodEditFormDataService).emailDataFormGroup;
 
-  remove(control: FormControl<string[] | null>, keyword: string) {
-    const values = control.value;
-
-    if (!values) {
-      return;
-    }
-
-    const index = values.indexOf(keyword);
-    if (index < 0) {
-      return;
-    }
-
-    values.splice(index, 1);
-    control.setValue([...values]);
-  }
-
-  add(control: FormControl<string[] | null>, event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our keyword
-    if (value) {
-      control.setValue([...(control.value ?? []), value]);
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-  }
+  protected readonly chipInputAdd = chipInputAdd;
+  protected readonly chipInputRemove = chipInputRemove;
 }

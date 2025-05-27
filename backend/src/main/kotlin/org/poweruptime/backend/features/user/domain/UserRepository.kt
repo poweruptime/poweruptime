@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.user.domain
 
+import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -10,6 +11,8 @@ interface UserRepository : org.poweruptime.backend.core.domain.Repository<User>,
     fun findUserByEmail(email: String): User?
 
     fun findUserById(id: String): User?
+
+    fun findUsersByRole(role: SystemRole): List<User>
 
     @Query("select count(u) = 0 from User u")
     fun isSetup(): Boolean

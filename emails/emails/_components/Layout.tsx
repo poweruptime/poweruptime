@@ -36,5 +36,7 @@ export default function (props: PropsWithChildren & {disableLogo?: boolean}) {
 
 export const CALL_TO_ACTION =
   'bg-black dark:bg-white rounded text-white dark:text-black text-[12px] font-semibold no-underline text-center px-5 py-3 cursor-pointer';
+export const SECONDARY_BUTTON =
+  'border border-solid border-black dark:border-white rounded text-black dark:text-white text-[12px] font-medium no-underline text-center px-5 py-3 cursor-pointer';
 export const FOOTER_TEXT = 'text-[#666666] dark:text-[#BBBBBB] text-[12px] leading-[24px]';
 export const FOOTER_INTENDED_RECIPIENT = 'text-black dark:text-white';

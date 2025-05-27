@@ -46,6 +46,10 @@ enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
         override val code = "VM"
         override val default: String = false.toString()
     },
+    VERSION_CHECK_ADMIN_MAIL_TO {
+        override val code = "VT"
+        override val default: String = "null"
+    },
 }
 
 @Converter(autoApply = true)

@@ -19,12 +19,12 @@ export const InstanceSettingsVersionCheckStore = signalStore(
   }),
   withMethods(
     (store, api = injectAPI(), instanceSettingsStore = inject(InstanceSettingsStore)) => ({
-      makeVersionCheck: rxMethod<boolean>(
+      makeVersionCheck: rxMethod<{versionCheckEnabled: boolean; skipCache?: boolean}>(
         pipe(
-          filter((it) => it),
+          filter((it) => it.versionCheckEnabled),
           tap(() => patchState(store, setPending())),
-          switchMap(() =>
-            api.get('/v1/instance-settings/versionCheck').pipe(
+          switchMap(({skipCache}) =>
+            api.get('/v1/instance-settings/versionCheck', {params: {query: {skipCache}}}).pipe(
               tapResponse({
                 next: (versionCheck) => patchState(store, setFulfilled(), () => ({versionCheck})),
                 error: (error) => patchState(store, setError(error)),

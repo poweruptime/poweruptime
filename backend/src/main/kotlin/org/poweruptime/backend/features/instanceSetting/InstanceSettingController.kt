@@ -9,8 +9,8 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
-import org.poweruptime.backend.features.info.GitHubVersionChecker
-import org.poweruptime.backend.features.info.SupporterService
+import org.poweruptime.backend.features.info.supporter.SupporterService
+import org.poweruptime.backend.features.info.versionChecker.VersionChecker
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -22,7 +22,7 @@ import java.time.ZoneId
 class InstanceSettingController(
     private val instanceSettingService: InstanceSettingService,
     private val supporterService: SupporterService,
-    private val versionChecker: GitHubVersionChecker,
+    private val versionChecker: VersionChecker,
 ) {
     @Operation(
         summary = "Get instance settings",
@@ -40,6 +40,7 @@ class InstanceSettingController(
         showSupportBadge = instanceSettingService.getShowSupportBadge(),
         versionCheckEnabled = instanceSettingService.getVersionCheckEnabled(),
         versionCheckAdminMailEnabled = instanceSettingService.getVersionCheckAdminMailEnabled(),
+        versionCheckAdminMailTo = instanceSettingService.getVersionCheckAdminMailTo(),
     )
 
     @Operation(
@@ -144,6 +145,7 @@ class InstanceSettingController(
     ): InstanceSettingsResponse {
         instanceSettingService.setVersionCheckEnabled(dto.versionCheckEnabled)
         instanceSettingService.setVersionCheckAdminMailEnabled(dto.versionCheckAdminMailEnabled)
+        instanceSettingService.setVersionCheckAdminMailTo(dto.versionCheckAdminMailTo)
 
         return getSettings()
     }
@@ -155,7 +157,9 @@ class InstanceSettingController(
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("versionCheck")
-    fun versionCheck(): VersionCheckResponse = VersionCheckResponse(
-        versionChecker.checkForLatestVersion(),
+    fun versionCheck(
+        @RequestParam("skipCache") skipCache: Boolean = false
+    ): VersionCheckResponse = VersionCheckResponse(
+        versionChecker.checkForLatestVersion(skipCache),
     )
 }

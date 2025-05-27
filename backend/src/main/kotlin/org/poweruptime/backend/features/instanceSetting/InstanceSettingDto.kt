@@ -29,6 +29,7 @@ data class InstanceSettingsResponse(
     val checkResultLogRetentionPeriodInDays: Int,
     val versionCheckEnabled: Boolean,
     val versionCheckAdminMailEnabled: Boolean,
+    val versionCheckAdminMailTo: List<String>?,
 )
 
 data class InstanceSupportSettingsResponse(
@@ -50,8 +51,10 @@ data class InstanceSettingRetentionDto(
 data class InstanceSettingVersionCheckDto(
     @get:NotNull val versionCheckEnabled: Boolean,
     @get:NotNull val versionCheckAdminMailEnabled: Boolean,
+    @get:Size(min = Database.MIN_VERSION_CHECK_ADMIN_MAILS, max = Database.MAX_VERSION_CHECK_ADMIN_MAILS)
+    val versionCheckAdminMailTo: Set<String>?,
 )
 
 data class VersionCheckResponse(
-    val nextVersion: String?
+    val latestVersion: String?
 )

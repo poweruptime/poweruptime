@@ -12,7 +12,7 @@ import {toast} from 'ngx-sonner';
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
-import {JsonService} from '../json.service';
+import {JsonStore} from '../json.store';
 import {InstanceSettingsStore} from './instance-settings.store';
 
 export const InstanceSettingsSupportStore = signalStore(
@@ -22,7 +22,7 @@ export const InstanceSettingsSupportStore = signalStore(
     (
       store,
       api = injectAPI(),
-      jsonService = inject(JsonService),
+      jsonStore = inject(JsonStore),
       instanceSettingsStore = inject(InstanceSettingsStore),
     ) => ({
       setSupport: rxMethod<BackendType['InstanceSettingSupportDto']>(
@@ -49,7 +49,7 @@ export const InstanceSettingsSupportStore = signalStore(
 
                   instanceSettingsStore.setSettings(response.instanceSettings);
                   patchState(store, setFulfilled());
-                  jsonService.refresh();
+                  jsonStore.refresh();
                 },
                 error: (error) => patchState(store, setError(error)),
               }),

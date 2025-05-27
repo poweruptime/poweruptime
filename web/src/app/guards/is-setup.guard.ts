@@ -3,7 +3,7 @@ import {CanActivateFn, Router} from '@angular/router';
 
 import {catchError, map, of, take, tap} from 'rxjs';
 
-import {JsonService} from '@app/services/json.service';
+import {JsonStore} from '@app/services';
 
 export const isSetupGuard: CanActivateFn = (route) => {
   if (
@@ -14,7 +14,7 @@ export const isSetupGuard: CanActivateFn = (route) => {
   }
 
   const router = inject(Router);
-  const json$ = inject(JsonService).json$;
+  const json$ = inject(JsonStore).json$;
 
   return json$.pipe(
     take(1),

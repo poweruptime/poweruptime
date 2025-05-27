@@ -1955,6 +1955,7 @@ export interface components {
     InstanceSettingVersionCheckDto: {
       versionCheckEnabled: boolean;
       versionCheckAdminMailEnabled: boolean;
+      versionCheckAdminMailTo?: string[];
     };
     InstanceSettingsResponse: {
       supportLookup?: string;
@@ -1967,6 +1968,7 @@ export interface components {
       checkResultLogRetentionPeriodInDays: number;
       versionCheckEnabled: boolean;
       versionCheckAdminMailEnabled: boolean;
+      versionCheckAdminMailTo?: string[];
     };
     InstanceSettingSupportDto: {
       supportLookup?: string;
@@ -2364,7 +2366,7 @@ export interface components {
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
     };
     VersionCheckResponse: {
-      nextVersion?: string;
+      latestVersion?: string;
     };
     InstanceAvailableTimezonesResponse: {
       availableTimezones: string[];
@@ -3197,7 +3199,9 @@ export interface operations {
   };
   versionCheck: {
     parameters: {
-      query?: never;
+      query?: {
+        skipCache?: boolean;
+      };
       header?: never;
       path?: never;
       cookie?: never;

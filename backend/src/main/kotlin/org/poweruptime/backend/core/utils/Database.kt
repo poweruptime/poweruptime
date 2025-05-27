@@ -20,6 +20,8 @@ object Database {
 
     const val MIN_PASSWORD_LENGTH = 6
 
+    const val MAX_INSTANCE_SETTING_LENGTH = 2048
+
     const val MIN_SLUG_LENGTH = 1
     const val MAX_SLUG_LENGTH = 255
 
@@ -27,6 +29,9 @@ object Database {
 
     const val MIN_URL_LENGTH = 1
     const val MAX_URL_LENGTH = 2048
+
+    const val MIN_VERSION_CHECK_ADMIN_MAILS = 1
+    const val MAX_VERSION_CHECK_ADMIN_MAILS = 7
 
     const val MIN_SUPPORT_LOOKUP_LENGTH = 1
     const val MAX_SUPPORT_LOOKUP_LENGTH = 39

@@ -25,14 +25,14 @@ import {
             [settings]="settings"
             (submitCreate)="submitGeneralForm($event)" />
 
-          <pu-instance-settings-version-check-form
-            [isLoading]="instanceSettingsVersionCheckStore.isPending()"
-            [settings]="settings"
-            (onSubmit)="submitVersionCheck($event)" />
-
           <pu-instance-settings-retention-form
             [settings]="settings"
             (submitCreate)="submitRetentionForm($event)" />
+
+          <pu-instance-settings-version-check-form
+            [isLoading]="instanceSettingsVersionCheckStore.isPending()"
+            [settings]="settings"
+            (submitSettings)="submitVersionCheck($event)" />
         </div>
         <div class="col-span-1 flex w-full flex-col gap-4 md:col-span-3 xl:col-span-2">
           <pu-instance-settings-permissions-form

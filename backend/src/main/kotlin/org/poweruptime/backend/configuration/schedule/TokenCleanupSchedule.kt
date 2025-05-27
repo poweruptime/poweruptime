@@ -38,7 +38,7 @@ class TokenCleanupSchedule(
             )
         }
 
-        val date1DayAgo = Instant.now().minusSeconds(60 * 60 * 24 * 1) // 1 day
+        val date1DayAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 1) // 1 day
         logger.info("Removing reset password token older than $date1DayAgo")
         for (resetToken in passwordResetTokenService.clearOlderThan(date1DayAgo)) {
             logger.info(

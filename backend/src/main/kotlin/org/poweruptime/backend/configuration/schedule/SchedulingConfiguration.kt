@@ -1,7 +1,8 @@
 package org.poweruptime.backend.configuration.schedule
 
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
-import org.poweruptime.backend.features.info.SupporterService
+import org.poweruptime.backend.features.info.supporter.SupporterService
+import org.poweruptime.backend.features.info.versionChecker.VersionChecker
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.notification.service.NotificationService
@@ -27,6 +28,7 @@ class SchedulingConfiguration(
     private val notificationService: NotificationService,
     private val subNotificationService: SubNotificationService,
     private val supporterService: SupporterService,
+    private val versionChecker: VersionChecker,
 ) {
     val logger: Logger = LoggerFactory.getLogger(SchedulingConfiguration::class.java)
 
@@ -62,9 +64,10 @@ class SchedulingConfiguration(
                 """.trimMargin(),
             )
             checkResultLogEntryService.deleteByTeamIdAndOlderThan(team.id, checkResultLogDateInThePast)
-
-            logger.info("""Checking instance support state {}""", supporterService.check())
         }
+
+        logger.info("""Checking instance support state {}""", supporterService.check())
+        logger.info("""Checking version {}""", versionChecker.checkAndSendNewVersionMail())
     }
 
     // Runs 1 hour after instance start every 1 hour

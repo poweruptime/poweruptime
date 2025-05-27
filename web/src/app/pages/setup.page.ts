@@ -49,6 +49,7 @@ import {SetupStore} from '../services';
                 }
 
                 <div puAlert type="INFO">
+                  <strong>Info!</strong>
                   Please use this step to verify your E-Mail environment variables.
                 </div>
 
@@ -83,8 +84,11 @@ import {SetupStore} from '../services';
                 </form>
 
                 @if (setupStore.error()) {
-                  <button (click)="setupStore.setState('setup')" type="button" mat-stroked-button>
-                    {{ 'auth.setup.continueAnyway' | transloco }}
+                  <button
+                    (click)="setupStore.setState('confirmTestEmail')"
+                    type="button"
+                    mat-stroked-button>
+                    {{ 'auth.setup.skip' | transloco }}
                     <bi class="ml-2" name="arrow-right" />
                   </button>
                 }
@@ -144,19 +148,29 @@ import {SetupStore} from '../services';
                     [disabled]="!isConfirmEmailFormValid()"
                     mat-flat-button
                     type="submit">
-                    <bi class="mr-2" name="envelope-plus" />
+                    <bi class="mr-2" name="send-check" />
                     {{ 'Verify code' | transloco }}
                   </button>
 
                   @if (setupStore.error()) {
-                    <button
-                      class="w-full"
-                      (click)="setupStore.setState('setup')"
-                      type="button"
-                      mat-stroked-button>
-                      {{ 'auth.setup.continueAnyway' | transloco }}
-                      <bi class="ml-2" name="arrow-right" />
-                    </button>
+                    <div class="flex w-full gap-4">
+                      <button
+                        class="w-full"
+                        (click)="submitTestEmail()"
+                        mat-stroked-button
+                        type="button">
+                        <bi class="mr-2" name="envelope-plus" />
+                        {{ 'auth.setup.resendTest' | transloco }}
+                      </button>
+                      <button
+                        class="error-button w-full"
+                        (click)="setupStore.setState('setup')"
+                        type="button"
+                        mat-button>
+                        {{ 'auth.setup.skip' | transloco }}
+                        <bi class="ml-2" name="arrow-right" />
+                      </button>
+                    </div>
                   }
                 </form>
               }
@@ -335,6 +349,7 @@ export class SetupPage {
           email,
         });
         this.setupStore.setState('confirmTestEmail');
+        this.submitConfirmEmail();
       }
     });
   }

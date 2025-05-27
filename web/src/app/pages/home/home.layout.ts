@@ -16,7 +16,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
-import {JsonService} from '@app/services/json.service';
+import {JsonStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
 
 import {environment} from '../../../environments/environment';
@@ -63,7 +63,7 @@ import {SupporterBadge} from '../../components/supporter-badge';
                 </a>
               </div>
               <div>
-                @if (jsonService.json(); as json) {
+                @if (jsonStore.json(); as json) {
                   <pu-supporter-badge
                     [hide]="!json.showSupportBadge"
                     [supportsSince]="json.supportsSince" />
@@ -126,7 +126,7 @@ import {SupporterBadge} from '../../components/supporter-badge';
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly jsonService = inject(JsonService);
+  readonly jsonStore = inject(JsonStore);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {

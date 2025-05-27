@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.info
+package org.poweruptime.backend.features.info.changelog
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement

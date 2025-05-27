@@ -1,0 +1,4 @@
+Hi! poweruptime version [(${latestVersion})] is available.
+
+Check the dashboard: "[(${urlHost})]/settings/overview"
+View the changelog: "https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md"

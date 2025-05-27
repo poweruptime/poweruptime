@@ -10,12 +10,13 @@
     "requestPasswordReset": "Request password reset",
     "resetPassword": "Reset password",
     "setup": {
-      "continueAnyway": "Continue anyway",
       "description": "Your Admin-Account data",
       "info1": "An invitation will be sent to the specified email address.",
       "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]",
+      "resendTest": "Resend Test E-Mail",
       "sendInvitation": "Send invitation E-Mail",
       "sendTest": "Send Test E-Mail",
+      "skip": "Skip",
       "title": "First-time Setup"
     },
     "stayLoggedIn": "Stay logged in"
@@ -232,7 +233,17 @@
     },
     "timezone": "{{general.instance}} {{general.timezone}}",
     "versionCheck": {
-      "adminMail": "Admin Info E-Mail",
+      "adminMail": {
+        "everyone": "Send to all Admins",
+        "title": "Mail Notifications",
+        "to": {
+          "enter": "Enter{{general.emailAddress}}",
+          "label": "Mail Recipients",
+          "new": "New {{general.emailAddress}}",
+          "remove": "Remove {{emailAddress}}"
+        }
+      },
+      "currentVersion": "Current version",
       "title": "Version Check",
       "warning": {
         "1": "Before you enable the “Version Check” feature, please read the following:",

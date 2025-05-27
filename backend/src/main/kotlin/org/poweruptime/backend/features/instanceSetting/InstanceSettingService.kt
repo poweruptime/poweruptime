@@ -106,6 +106,15 @@ class InstanceSettingService(
         value.toString(),
     )
 
+    fun getVersionCheckAdminMailTo(): List<String>? = getValueByKey(
+        SettingKey.VERSION_CHECK_ADMIN_MAIL_TO,
+    ).takeUnless { it == "null" }?.split(",")
+
+    fun setVersionCheckAdminMailTo(value: Set<String>?) = setValueByKey(
+        SettingKey.VERSION_CHECK_ADMIN_MAIL_TO,
+        value?.joinToString(",") { it.trim() } ?: "null",
+    )
+
     private fun setValueByKey(
         key: SettingKey,
         value: String

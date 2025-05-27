@@ -32,7 +32,18 @@ create table instance_setting
     version     bigint                   default 0     not null,
     id          varchar(12)                            not null
         primary key,
-    value       varchar(60)                            not null
+    value       varchar(2048)                          not null
+);
+
+create table version_check_mail
+(
+    created_at  timestamp with time zone default now() not null,
+    updated_at  timestamp with time zone default now() not null,
+    version     bigint                   default 0     not null,
+    id          varchar(12)                            not null
+        primary key,
+    pu_version varchar(21)                             not null
+        unique
 );
 
 create table monitor_data

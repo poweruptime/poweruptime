@@ -4,12 +4,12 @@ import {CanActivateFn, Router} from '@angular/router';
 
 import {catchError, map, of, take, tap} from 'rxjs';
 
-import {JsonService} from '@app/services/json.service';
+import {JsonStore} from '@app/services';
 
 export const statusPageGuard: CanActivateFn = () => {
   const router = inject(Router);
   const localHost = inject(DOCUMENT).location.host;
-  const json$ = inject(JsonService).json$;
+  const json$ = inject(JsonStore).json$;
 
   return json$.pipe(
     take(1),

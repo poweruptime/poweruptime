@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.info
+package org.poweruptime.backend.features.info.changelog
 
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.exceptions.NotFoundException

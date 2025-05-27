@@ -75,3 +75,7 @@
 .tox-promotion-link {
   display: none !important;
 }
+
+pu-copy-icon-button {
+  height: 36px;
+}

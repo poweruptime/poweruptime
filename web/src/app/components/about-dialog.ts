@@ -13,8 +13,7 @@ import {MatButtonLoading} from '@ng-matero/extensions/button';
 
 import * as licensesJson from '../../assets/licenses.json';
 import {environment} from '../../environments/environment';
-import {ChangelogStore} from '../services';
-import {JsonService} from '../services/json.service';
+import {ChangelogStore, JsonStore} from '../services';
 import {BACKEND_API_URL} from '../util';
 
 interface BackendEntry {
@@ -55,7 +54,7 @@ interface BackendEntry {
           .
         </p>
 
-        @if (jsonService.json(); as json) {
+        @if (jsonStore.json(); as json) {
           @if (json.supportsSince) {
             <p>
               This server supports the development of poweruptime.
@@ -128,7 +127,7 @@ interface BackendEntry {
   ],
 })
 export class AboutDialog {
-  readonly jsonService = inject(JsonService);
+  readonly jsonStore = inject(JsonStore);
   readonly changelogStore = inject(ChangelogStore);
 
   version = environment.version;

@@ -12,7 +12,6 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
-import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatTooltip} from '@angular/material/tooltip';
 
@@ -22,19 +21,21 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {JsonStore} from '@app/services';
 
-import {JsonService} from '../../services/json.service';
 import {SupporterBadge} from '../supporter-badge';
+import {TableLoadingBar} from '../table-loading-bar';
 
 @Component({
   template: `
+    @let json = jsonStore.json();
     <mat-card appearance="outlined">
       <mat-card-header>
         <div class="flex w-full items-center justify-between gap-2">
           <h3 class="text-xl">
             {{ 'general.sponsorship' | transloco }}
           </h3>
-          @if (jsonService.json()?.serverSetupTime; as serverSetupTime) {
+          @if (json?.serverSetupTime; as serverSetupTime) {
             <span
               class="text-gray-600 dark:text-gray-300"
               [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.YYYY')">
@@ -44,15 +45,13 @@ import {SupporterBadge} from '../supporter-badge';
         </div>
       </mat-card-header>
       <mat-card-content>
-        <div class="mb-6 mt-6 flex flex-col gap-2">
-          @if (isLoading()) {
-            <mat-progress-bar mode="indeterminate" />
-          }
-          @if (jsonService.json()?.supportsSince; as supportsSince) {
+        <div class="mb-6 mt-2 flex flex-col gap-2">
+          <pu-table-loading-bar [loading]="isLoading()" />
+          @if (json?.supportsSince; as supportsSince) {
             <p class="text-center">
               <b class="text-xl">
                 Thank's for your support
-                <i>{{ settings()?.supportLookup }}</i>
+                <i>{{ settings().supportLookup }}</i>
                 <span class="motion-preset-pulse-sm">❤️</span>
               </b>
             </p>
@@ -74,12 +73,12 @@ import {SupporterBadge} from '../supporter-badge';
         <hr />
 
         @let _sponsorLookupEnabled = sponsorLookupEnabled();
-        <div class="relative rounded shadow">
+        <div class="relative rounded">
           <div
             class="transition-all duration-100"
-            [class.filter]="!_sponsorLookupEnabled"
             [class.blur-lg]="!_sponsorLookupEnabled"
-            [class.pointer-events-none]="!_sponsorLookupEnabled">
+            [class.pointer-events-none]="!_sponsorLookupEnabled"
+            [class.saturate-50]="!_sponsorLookupEnabled">
             <form
               class="mt-6 flex min-h-60 flex-col gap-4"
               id="sponsorship-form"
@@ -112,12 +111,13 @@ import {SupporterBadge} from '../supporter-badge';
                     submitCreate.emit({
                       showSupportBadge: form.controls.showSupportBadge.getRawValue(),
                       supportLookup: undefined,
-                    })
+                    });
+                    sponsorLookupEnabled.set(false)
                   "
                   type="button"
                   mat-flat-button>
                   <bi name="x-circle-fill" />
-                  <span class="text-lg">{{ 'general.reset' | transloco }}</span>
+                  <span class="text-lg">{{ 'general.disable' | transloco }}</span>
                 </button>
               </div>
             </form>
@@ -166,7 +166,7 @@ import {SupporterBadge} from '../supporter-badge';
     DatePipe,
     BiComponent,
     SupporterBadge,
-    MatProgressBar,
+    TableLoadingBar,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -174,7 +174,7 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
   BackendType['InstanceSettingSupportDto'],
   BackendType['InstanceSettingSupportDto']
 > {
-  readonly jsonService = inject(JsonService);
+  readonly jsonStore = inject(JsonStore);
 
   override form = this.fb.nonNullable.group({
     supportLookup: [
@@ -200,7 +200,7 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
   readonly isValid = injectIsValid(this.form);
 
   readonly usingPoweruptimeFor = computed(() => {
-    const serverSetupTime = this.jsonService.json()?.serverSetupTime;
+    const serverSetupTime = this.jsonStore.json()?.serverSetupTime;
     if (!serverSetupTime) {
       return undefined;
     }
