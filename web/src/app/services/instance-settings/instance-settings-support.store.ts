@@ -34,7 +34,7 @@ export const InstanceSettingsSupportStore = signalStore(
                 next: (response) => {
                   if (instanceSettingsStore.settings()?.supportLookup !== body.supportLookup) {
                     if (response.check) {
-                      toast.success(translate('GitHub Sponsorship detected. Thank you very much!'));
+                      toast.success(translate('instanceSettings.sponsorship.success'));
 
                       confetti({
                         particleCount: 100,
@@ -43,7 +43,7 @@ export const InstanceSettingsSupportStore = signalStore(
                       });
                       setTimeout(() => confetti.reset(), 3000);
                     } else if ((body.supportLookup?.length ?? 0) > 0) {
-                      toast.error(translate('GitHub Sponsorship check failed.'));
+                      toast.error(translate('instanceSettings.sponsorship.failed'));
                     }
                   }
 

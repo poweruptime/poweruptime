@@ -1,105 +1,124 @@
 {
   "auth": {
     "changePassword": "Passwort ändern",
+    "forgotPassword": {
+      "mailSent": "Passwort-Reset-E-Mail an Ihre {{general.emailAddress}} gesendet.",
+      "success": "Passwort erfolgreich zurückgesetzt. Bitte melden Sie sich jetzt an.",
+      "title": "Passwort vergessen?"
+    },
     "invalidCredentials": "Ungültige Anmeldedaten.",
     "login": "Anmelden",
     "newPassword": "Neues {{general.password}}",
-    "newPasswordConfirm": "Neues {{general.password}} bestätigen",
+    "newPasswordConfirm": "Neues {{general.password}} zur Bestätigung",
     "oldPassword": "Altes {{general.password}}",
+    "requestPasswordReset": "Passwort zurücksetzen anfordern",
+    "resetPassword": "Passwort zurücksetzen",
+    "setup": {
+      "confirmEmail": {
+        "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+        "resend": "Test-E-Mail erneut senden",
+        "success": "E-Mail-Funktionalität erfolgreich verifiziert. Bitte schließen Sie die Einrichtung ab.",
+        "verify": "Code verifizieren"
+      },
+      "description": "Ihre Admin-Kontodaten",
+      "sendInvitation": "Einladungs-E-Mail senden",
+      "setupCompleted": {
+        "info1": "Eine Einladung wird an die angegebene E-Mail-Adresse gesendet.",
+        "info2": "Falls (aus irgendeinem Grund) die Verbindung zum E-Mail-Server fehlschlägt, fordern Sie ein neues Passwort an, indem Sie Ihr Passwort [link:forgotPasswordUrl]zurücksetzen[/link]."
+      },
+      "skip": "Überspringen",
+      "success": "Ihr erstes Admin-Konto wurde erfolgreich eingerichtet. Bitte überprüfen Sie Ihren E-Mail-Posteingang.",
+      "testEmail": {
+        "failed": "E-Mail-Versand fehlgeschlagen. Bitte beheben Sie Ihre E-Mail-Umgebungsvariablen.",
+        "info": "Bitte verwenden Sie diesen Schritt, um Ihre E-Mail-Umgebungsvariablen zu überprüfen.",
+        "send": "Test-E-Mail senden",
+        "success": "Test-E-Mail erfolgreich gesendet. Bitte überprüfen Sie Ihren Posteingang."
+      },
+      "title": "Ersteinrichtung"
+    },
     "stayLoggedIn": "Angemeldet bleiben"
   },
   "backendOffline": {
-    "description": "Es scheint, dass das Backend offline ist. Versuche es in ein paar Minuten erneut.",
+    "description": "Es scheint, als wäre das Backend offline. Versuchen Sie es in ein paar Minuten erneut.",
     "title": "{{general.error}}!"
   },
   "checkResult": {
     "details": {
-      "check": "Überprüfung",
-      "expired": "Die Protokolle für diese Überprüfung sind abgelaufen und nicht mehr verfügbar.",
-      "showTimestamps": "Zeitanzeige",
+      "check": "Prüfung",
+      "expired": "Die Protokolle für diese Prüfung sind abgelaufen und nicht mehr verfügbar.",
+      "showTimestamps": "Zeitstempel anzeigen",
+      "startedAt": "Gestartet am",
       "statusUpdate": "Statusaktualisierung"
     },
     "list": {
       "action": {
-        "view": "Überprüfung anzeigen"
+        "view": "Prüfung anzeigen"
       },
-      "title": "Überprüfungen"
+      "title": "Prüfungen"
     }
   },
   "cmdk": {
     "groups": {
-      "general": {
-        "input": "Was brauchst du?"
-      },
       "monitor": {
-        "create": "Neuen {{general.monitor}} erstellen",
-        "input": "{{general.search}} nach einem {{general.monitor}}",
-        "search": "{{general.search}} {{general.monitors}}..."
+        "create": "Neuen {{general.monitor}} erstellen"
       },
       "notificationMethod": {
-        "create": "Neue {{general.notificationMethod}} erstellen",
-        "input": "{{general.search}} nach einer {{general.notificationMethod}}",
-        "search": "{{general.search}} {{general.notificationMethods}}..."
+        "create": "Neue {{general.notificationMethod}} erstellen"
       },
       "statusPage": {
-        "create": "Neue {{general.statusPage}} erstellen",
-        "input": "{{general.search}} nach einer {{general.statusPage}}",
-        "search": "{{general.search}} {{general.statusPages}}..."
+        "create": "Neue {{general.statusPage}} erstellen"
       },
       "team": {
         "create": "Neues {{general.team}} erstellen",
-        "input": "{{general.search}} nach einem {{general.team}}",
         "search": "{{general.search}} {{general.teams}}..."
-      },
-      "theme": {
-        "input": "Wähle ein Theme",
-        "switch": "{{general.theme}} wechseln"
       }
-    },
-    "results": {
-      "empty": "Keine Ergebnisse gefunden."
-    },
-    "toggle": "Aktionsmenü umschalten"
+    }
   },
   "form": {
     "passwordShow": {
-      "hide": "{{general.password}} Text ausblenden",
-      "show": "{{general.password}} Text anzeigen"
+      "hide": "{{general.password}}-Text ausblenden",
+      "show": "{{general.password}}-Text anzeigen"
     },
     "validation": {
-      "domain": "Gib eine gültige Domain ein",
-      "email": "Gib eine gültige {{general.emailAddress}} ein",
+      "domain": "Geben Sie eine gültige Domain ein",
+      "email": "Geben Sie eine gültige {{general.emailAddress}} ein",
       "file": "Ungültiges Dateiformat.",
       "integer": "Nur ganze Zahlen sind erlaubt",
-      "ipv4": "Gib eine gültige IPV4-Adresse ein",
-      "max": "Gib einen Wert von maximal {{max}} ein",
-      "maxlength": "Gib maximal {{requiredLength}} Zeichen ein",
-      "min": "Gib einen Wert von mindestens {{min}} ein",
-      "minlength": "Gib mindestens {{requiredLength}} Zeichen ein",
+      "ipv4": "Geben Sie eine gültige IPV4-Adresse ein",
+      "max": "Geben Sie einen Wert von höchstens {{max}} ein",
+      "maxlength": "Geben Sie nicht mehr als {{requiredLength}} Zeichen ein",
+      "min": "Geben Sie einen Wert von mindestens {{min}} ein",
+      "minlength": "Geben Sie mindestens {{requiredLength}} Zeichen ein",
       "passwordMismatch": "{{general.password}} stimmt nicht überein",
       "required": "Dieses Feld ist erforderlich",
-      "slug": "Gib einen gültigen Slug ein. (a-z,0-9,-)",
-      "url": "Gib eine gültige URL ein"
+      "slug": "Geben Sie einen gültigen Slug ein. (a-z,0-9,-)",
+      "url": "Geben Sie eine gültige URL ein"
     }
   },
   "general": {
     "about": "Über",
     "activated": "Aktiviert",
     "admin": "Admin",
-    "at": "Um",
-    "body": "Nachricht",
+    "body": "Inhalt",
     "cancel": "Abbrechen",
-    "clear": "Leeren",
+    "checkResult": "Prüfungsergebnis",
+    "checkResults": "Prüfungsergebnisse",
+    "clear": "Löschen",
     "close": "Schließen",
     "confirm": "Bestätigen",
     "confirmDelete": "Löschung bestätigen?",
-    "contentType": "Content-Type",
+    "confirmRestore": {
+      "description": "Diese Aktion ist nicht leicht rückgängig zu machen.",
+      "title": "Wiederherstellung bestätigen?"
+    },
+    "contentType": "Inhaltstyp",
     "copied": "Kopiert!",
     "copy": "Kopieren",
     "createdAt": "Erstellt am",
     "data": "Daten",
     "date": "Datum",
     "delete": "Löschen",
+    "deleted": "Gelöscht",
     "description": "Beschreibung",
     "disable": "Deaktivieren",
     "domainName": "Domainname",
@@ -107,6 +126,7 @@
     "edit": "Bearbeiten",
     "email": "E-Mail",
     "emailAddress": "E-Mail-Adresse",
+    "enable": "Aktivieren",
     "end": "Ende",
     "error": "Fehler",
     "footer": "Fußzeile",
@@ -114,13 +134,14 @@
     "group": "Gruppe",
     "host": "Host",
     "hours": "Stunden",
+    "info": "Info",
     "instance": "Instanz",
     "invite": "Einladen",
     "invites": "Einladungen",
     "ipAddress": "IP-Adresse",
     "language": "Sprache",
     "latest": "Neueste",
-    "loading": "Laden...",
+    "loading": "Lädt...",
     "logout": "Abmelden",
     "logs": "Protokolle",
     "maintenance": "Wartung",
@@ -135,22 +156,25 @@
     "notificationMethod": "Benachrichtigungsmethode",
     "notificationMethods": "Benachrichtigungsmethoden",
     "notifications": "Benachrichtigungen",
-    "now": "Jetzt",
     "open": "Öffnen",
     "overview": "Übersicht",
     "password": "Passwort",
-    "pause": "Pause",
+    "pause": "Pausieren",
     "permissions": "Berechtigungen",
     "personal": "Persönlich",
     "ping": "Ping",
     "port": "Port",
     "precision": "Genauigkeit",
+    "preview": "Vorschau",
     "profile": "Profil",
-    "redirecting": "Weiterleiten...",
+    "recycleBin": "Papierkorb",
+    "redirecting": "Weiterleitung...",
+    "restore": "Wiederherstellen",
+    "restoreSuccess": "Element(e) erfolgreich wiederhergestellt.",
     "role": "Rolle",
     "save": "Speichern",
     "search": "Suchen",
-    "secret": "Geheim",
+    "secret": "Geheimnis",
     "security": "Sicherheit",
     "server": "Server",
     "sessions": "Sitzungen",
@@ -158,23 +182,26 @@
     "setup": "Einrichtung",
     "showDuplicates": "Duplikate anzeigen",
     "slug": "Slug",
+    "sponsorship": "Sponsoring",
     "start": "Start",
     "startEnd": "{{general.start}} - {{general.end}}",
     "status": "Status",
     "statusPage": "Statusseite",
     "statusPages": "Statusseiten",
     "systemAdmin": "System-{{general.admin}}",
+    "tags": "Tags",
     "team": "Team",
     "teams": "Teams",
-    "theme": "Theme",
+    "template": "Vorlage",
+    "theme": "Thema",
     "time": "Zeit",
     "timezone": "Zeitzone",
     "title": "Titel",
-    "to": "An",
+    "to": "Bis",
     "totalDuration": "Gesamtdauer",
     "type": "Typ",
     "url": "URL",
-    "user ": "Benutzer",
+    "user": "Benutzer",
     "username": "Benutzername",
     "users": "Benutzer",
     "xHours": "{{value}} {{general.hours}}",
@@ -182,16 +209,47 @@
   },
   "instanceSettings": {
     "editUser": "{{name}} bearbeiten",
-    "inviteUser": "{{general.invite}} {{general.user}}",
+    "inviteUser": "{{general.user}} einladen",
     "permissions": {
       "allowUsersToCreateTeams": "Benutzern erlauben, Teams zu erstellen"
     },
     "retention": {
-      "checkResult": "Aufbewahrung von Überprüfungsergebnissen",
-      "logs": "Aufbewahrung von Protokollen",
-      "title": "Individuelle Aufbewahrung von Überprüfungen & Protokollen"
+      "checkResult": "Prüfungsergebnis-Aufbewahrung",
+      "logs": "Protokoll-Aufbewahrung",
+      "title": "Individuelle Prüfungs- & Protokollaufbewahrung"
     },
-    "timezone": "{{general.instance}} {{general.timezone}}"
+    "sponsorship": {
+      "failed": "GitHub-Sponsoring-Überprüfung fehlgeschlagen.",
+      "githubHandle": "GitHub-Benutzername",
+      "showBadge": "Supporter-Badge anzeigen",
+      "success": "GitHub-Sponsoring erkannt. Vielen Dank!",
+      "warning": {
+        "1": "Bitte lesen Sie Folgendes, bevor Sie die „Sponsoring“-Funktion aktivieren:",
+        "2": "Was passiert, wenn Sie sie aktivieren",
+        "3": "Ihr Server kontaktiert eine Drittanbieter-API, um Ihren GitHub-Sponsor-Status abzurufen.",
+        "4": "Dabei sieht und protokolliert der Drittanbieter möglicherweise die öffentliche IP-Adresse Ihres Servers."
+      }
+    },
+    "versionCheck": {
+      "adminMail": {
+        "everyone": "An alle Admins senden",
+        "title": "E-Mail-Benachrichtigungen",
+        "to": {
+          "enter": "{{general.emailAddress}} eingeben",
+          "label": "E-Mail-Empfänger",
+          "new": "Neue {{general.emailAddress}}",
+          "remove": "{{emailAddress}} entfernen"
+        }
+      },
+      "currentVersion": "Aktuelle Version",
+      "title": "Versionsprüfung",
+      "warning": {
+        "1": "Bitte lesen Sie Folgendes, bevor Sie die „Versionsprüfung“-Funktion aktivieren:",
+        "2": "Was passiert, wenn Sie sie aktivieren",
+        "3": "Ihr Server kontaktiert eine Drittanbieter-API, um die neueste Version abzurufen.",
+        "4": "Dabei sieht und protokolliert der Drittanbieter möglicherweise die öffentliche IP-Adresse Ihres Servers."
+      }
+    }
   },
   "mfa": {
     "alreadyShown": "{{mfa.backupCodes}} bereits angezeigt.",
@@ -206,14 +264,22 @@
     "mfa": "Multi-Faktor-Authentifizierung"
   },
   "monitor": {
+    "checker": {
+      "DNS": "DNS",
+      "HTTP": "HTTP",
+      "PING": "Ping (Port)",
+      "PUSH": "Push",
+      "SSL_CERTIFICATE": "SSL-Zertifikat"
+    },
     "details": {
-      "check": "Überprüfe alle {{testIntervalDuration}}",
+      "check": "Prüfe alle {{testIntervalDuration}}",
+      "openPublic": "Öffentliche {{general.monitor}}-Seite öffnen",
       "pingChart": {
         "endDate": "{{general.end}} {{general.date}}",
-        "exceedsMaxWindow": "Das ausgewählte Fenster darf 1 Monat nicht überschreiten",
+        "exceedsMaxWindow": "Das ausgewählte Zeitfenster darf 1 Monat nicht überschreiten",
         "startDate": "{{general.start}} {{general.date}}"
       },
-      "resendAfter": "Benachrichtigung nach {{resendAfter}}x Down-Checks erneut senden",
+      "resendAfter": "Benachrichtigung nach {{resendAfter}}x Ausfall erneut senden",
       "retries": "{{retries}}x Wiederholungen"
     },
     "edit": {
@@ -227,26 +293,41 @@
       },
       "edit": "{{name}} bearbeiten",
       "http": {
+        "allowedStatusCodeRanges": {
+          "enter": "Statuscode-Bereich eingeben",
+          "inputRegexError": "Bitte folgendes Muster verwenden: 'XXX - YYY'",
+          "inputStartBiggerThenEndError": "Der zweite Statuscode muss größer als der erste sein",
+          "new": "Neuer Statuscode-Bereich",
+          "rangeIncorrectError": "Statuscodes müssen im Bereich 100 - 599 liegen",
+          "remove": "Statuscode-Bereich entfernen",
+          "title": "Erlaubter Statuscode-Bereich"
+        },
         "authType": "Auth-Typ",
+        "certificateExpiry": "Zertifikatsablauf-Benachrichtigung",
         "ignoreTLS": "TLS ignorieren",
+        "maxRedirects": {
+          "hint": "Leer lassen, um Weiterleitung zu deaktivieren.",
+          "label": "Max-Weiterleitungen"
+        },
         "searchTerm": "{{general.search}}-Begriff"
       },
       "interval": "Intervall in {{unit}}",
       "pushUrl": "Push-{{general.url}}",
       "resendAfter": "Benachrichtigungen erneut senden nach",
       "retries": "Wiederholungen",
-      "selectTypeToContinue": "Bitte wähle einen Typ aus, um fortzufahren",
+      "selectTypeToContinue": "Bitte wählen Sie einen Typ, um fortzufahren",
       "ssl": {
-        "validDaysLeft": "Minimale Gültigkeitstage"
+        "validDaysLeft": "Mindestens gültige Tage"
       },
-      "upsideDown": "Auf den Kopf gestellt"
+      "upsideDown": "Umgekehrt"
     },
-    "empty": "Erstelle deinen ersten Monitor",
-    "oneDayUptime": "Eintägige Betriebszeit",
+    "empty": "Erstellen Sie Ihren ersten Monitor",
+    "new": "Neuer {{general.monitor}}",
+    "oneDayUptime": "Ein-Tages-Verfügbarkeit",
     "status": {
-      "down": "Down",
+      "down": "Ausfall",
       "paused": "Pausiert",
-      "up": "Up"
+      "up": "Online"
     }
   },
   "nav": {
@@ -255,45 +336,63 @@
     "personalDashboard": "Persönliches {{nav.dashboard}}",
     "teamSelect": {
       "personal": "Persönliches Konto",
-      "select": "Wähle ein {{general.team}}"
+      "select": "Wählen Sie ein {{general.team}}"
     },
-    "toggle": "Seiten-Navigation umschalten"
+    "toggle": "Seitenmenü umschalten"
   },
   "notFound": {
     "back": "Zurück",
-    "description": "Entschuldigung, wir konnten die gesuchte Seite nicht finden. Sie wurde möglicherweise verschoben, gelöscht oder existierte nie.",
+    "description": "Entschuldigung, wir konnten die gesuchte Seite nicht finden. Sie wurde möglicherweise verschoben, gelöscht oder hat nie existiert.",
     "home": "Zurück zur Startseite",
     "title": "Seite nicht gefunden"
   },
+  "notification": {
+    "detail": {
+      "openCheckResult": "{{general.checkResult}} öffnen"
+    },
+    "list": {
+      "openCheckResult": "Das verbundene {{general.checkResult}} öffnen",
+      "view": "{{general.notification}} anzeigen"
+    }
+  },
   "notificationMethod": {
     "edit": {
-      "body": "Nachrichten-Vorlage",
+      "apprise": {
+        "url": "Apprise-{{general.url}}",
+        "urlHelp": "Weitere Informationen finden Sie [link:webhookHelpUrl]hier[/link]."
+      },
+      "body": "Vorlage für den Inhalt",
       "discord": {
         "displayName": "Anzeigename",
-        "url": "Discord Webhook {{general.url}}",
-        "urlHelp": "Du erhältst diese, indem du zu Servereinstellungen -> Integrationen -> Webhooks anzeigen -> Neuer Webhook gehst"
+        "url": "Discord Webhook-{{general.url}}",
+        "urlHelp": "Weitere Informationen finden Sie [link:webhookHelpUrl]hier[/link]. Alternativ finden Sie dies unter Servereinstellungen -> Integrationen -> Webhooks anzeigen -> Neuer Webhook"
       },
       "edit": "{{name}} bearbeiten",
       "email": {
         "bcc": {
-          "enter": "Gib eine BCC-{{general.emailAddress}} ein",
+          "enter": "BCC-{{general.emailAddress}} eingeben",
           "new": "Neue BCC-{{general.emailAddress}}",
           "remove": "BCC {{emailAddress}} entfernen"
         },
         "cc": {
-          "enter": "Gib eine CC-{{general.emailAddress}} ein",
+          "enter": "CC-{{general.emailAddress}} eingeben",
           "new": "Neue CC-{{general.emailAddress}}",
           "remove": "CC {{emailAddress}} entfernen"
         },
         "ignoreTLSErrors": "TLS-Fehler ignorieren",
         "to": {
-          "enter": "Gib eine {{general.emailAddress}} ein",
+          "enter": "{{general.emailAddress}} eingeben",
           "new": "Neue {{general.emailAddress}}",
           "remove": "{{emailAddress}} entfernen"
         }
       },
-      "selectTypeToContinue": "Bitte wähle einen Typ aus, um fortzufahren",
-      "titleTemplate": "Titelvorlage",
+      "selectTypeToContinue": "Bitte wählen Sie einen Typ, um fortzufahren",
+      "slack": {
+        "displayName": "Autorenname",
+        "url": "Slack Webhook-{{general.url}}",
+        "urlHelp": "Weitere Informationen finden Sie [link:webhookHelpUrl]hier[/link]."
+      },
+      "titleTemplate": "Vorlage für den Titel",
       "useByDefault": "Standardmäßig verwenden"
     },
     "list": {
@@ -305,9 +404,16 @@
       }
     },
     "selector": {
-      "add": "{{general.notificationMethods}} hinzufügen",
+      "add": "Hinzufügen...",
       "list": "{{general.notificationMethods}}-Liste",
-      "remove": "{{name}} entfernen"
+      "remove": "{{name}} entfernen",
+      "selected": "Ausgewählte {{general.notificationMethods}}"
+    },
+    "sender": {
+      "APPRISE": "Apprise",
+      "DISCORD": "Discord",
+      "EMAIL": "{{general.email}}",
+      "SLACK": "Slack"
     }
   },
   "profile": {
@@ -327,7 +433,7 @@
     "sessions": {
       "lastUsed": "Zuletzt verwendet"
     },
-    "settings": "{{general.profile}} {{general.settings}}"
+    "settings": "{{general.profile}}-{{general.settings}}"
   },
   "refreshIn": {
     "lastUpdate": "Letzte Aktualisierung: {{value}}",
@@ -336,7 +442,7 @@
   "statusPage": {
     "edit": {
       "domainNames": {
-        "enter": "Gib einen {{general.domainName}} ein",
+        "enter": "{{general.domainName}} eingeben",
         "inUse": "Folgende Domainnamen sind bereits vergeben: \"{{domainNames}}\"",
         "new": "Neuer {{general.domainName}}",
         "remove": "{{domainName}} entfernen"
@@ -344,16 +450,16 @@
       "edit": "{{name}} bearbeiten",
       "group": {
         "add": "{{general.group}} hinzufügen",
-        "minOne": "Füge mindestens eine {{general.group}} hinzu."
+        "minOne": "Fügen Sie mindestens eine {{general.group}} hinzu."
       },
-      "image": "Ziehe ein Bild hierher",
+      "image": "Bild ablegen",
       "monitors": {
         "add": "{{general.monitor}} hinzufügen...",
         "empty": "Noch keine {{general.monitors}} hinzugefügt.",
         "hide": "Monitore in Gruppen ausblenden",
         "search": {
           "noFound": "Keine {{general.monitors}} gefunden.",
-          "noLeft": "Keine {{general.monitors}} übrig."
+          "noLeft": "Keine {{general.monitors}} mehr übrig."
         },
         "show": "{{general.monitors}} in Gruppen anzeigen"
       },
@@ -362,26 +468,34 @@
     "list": {
       "delete": "Die {{general.statusPage}} löschen",
       "edit": "Die {{general.statusPage}} bearbeiten",
-      "preview": "Die {{general.statusPage}} in der Vorschau anzeigen"
+      "preview": "Die {{general.statusPage}} anzeigen"
     },
     "public": {
-      "issues": "Bei einigen Diensten treten Probleme auf.",
+      "issues": "Einige Dienste haben Probleme.",
       "notFound": "404 - Statusseite nicht gefunden",
-      "operational": "Alle Dienste betriebsbereit."
+      "operational": "Alle Dienste funktionieren einwandfrei."
+    }
+  },
+  "tag": {
+    "selector": {
+      "add": "Hinzufügen...",
+      "list": "{{general.tags}}-Liste",
+      "remove": "{{name}} entfernen",
+      "selected": "Ausgewählte {{general.tags}}"
     }
   },
   "team": {
     "counts": {
-      "down": "Down-{{general.monitors}}",
+      "down": "Ausgefallene {{general.monitors}}",
       "maintenance": "{{general.monitors}} in Wartung",
       "paused": "Pausierte {{general.monitors}}",
-      "up": "Up-{{general.monitors}}"
+      "up": "Online {{general.monitors}}"
     },
     "edit": {
       "edit": "{{name}} bearbeiten",
       "openInvites": "{{general.open}} {{general.invites}}"
     },
-    "invite": "Lade ein neues Mitglied ein",
+    "invite": "Neues Mitglied {{general.invite}}",
     "monitors": "{{monitorCount}} Monitor(e)",
     "settings": {
       "invitedAt": "Eingeladen am",

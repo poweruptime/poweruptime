@@ -31,7 +31,7 @@ export const SetupStore = signalStore(
             tapResponse({
               next: () => {
                 patchState(store, setFulfilled(), () => ({state: 'confirmTestEmail' as const}));
-                toast.success(translate('Successfully sent test E-Mail. Please check your inbox.'));
+                toast.success(translate('auth.setup.testEmail.success'));
               },
               error: (error) => patchState(store, setError(error)),
             }),
@@ -47,11 +47,7 @@ export const SetupStore = signalStore(
             tapResponse({
               next: () => {
                 patchState(store, setFulfilled(), () => ({state: 'setup' as const}));
-                toast.success(
-                  translate(
-                    'Successfully verified E-Mail functionality. Please complete your setup.',
-                  ),
-                );
+                toast.success(translate('auth.setup.confirmEmail.success'));
               },
               error: (error) => patchState(store, setError(error)),
             }),
@@ -67,11 +63,7 @@ export const SetupStore = signalStore(
             tapResponse({
               next: () => {
                 patchState(store, setFulfilled(), () => ({state: 'setupCompleted' as const}));
-                toast.success(
-                  translate(
-                    'Successfully setup your first admin account. Please check your E-Mail inbox.',
-                  ),
-                );
+                toast.success(translate('auth.setup.success'));
 
                 confetti({
                   particleCount: 100,

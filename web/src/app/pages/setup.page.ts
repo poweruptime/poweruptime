@@ -43,14 +43,12 @@ import {SetupStore} from '../services';
             @switch (setupStore.state()) {
               @case ('setupTestEmail') {
                 @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {
-                  <div puAlert type="WARN">
-                    Email sending failed. Please fix your E-Mail environment variables.
-                  </div>
+                  <div puAlert type="WARN">{{ 'auth.setup.testEmail.failed' | transloco }}</div>
                 }
 
                 <div puAlert type="INFO">
-                  <strong>Info!</strong>
-                  Please use this step to verify your E-Mail environment variables.
+                  <strong>{{ 'general.info' | transloco }}!</strong>
+                  {{ 'auth.setup.testEmail.info' | transloco }}
                 </div>
 
                 <form class="grid gap-4" [formGroup]="testEmailForm" (ngSubmit)="submitTestEmail()">
@@ -79,7 +77,7 @@ import {SetupStore} from '../services';
 
                   <button [disabled]="!isTestEmailFormValid()" mat-flat-button type="submit">
                     <bi class="mr-2" name="envelope-plus" />
-                    {{ 'auth.setup.sendTest' | transloco }}
+                    {{ 'auth.setup.testEmail.send' | transloco }}
                   </button>
                 </form>
 
@@ -95,7 +93,9 @@ import {SetupStore} from '../services';
               }
               @case ('confirmTestEmail') {
                 @if (setupStore.error()?.codeName === 'INVALID_CODE') {
-                  <div puAlert type="WARN">Invalid code. Try again.</div>
+                  <div puAlert type="WARN">
+                    {{ 'auth.setup.confirmEmail.invalidCode' | transloco }}
+                  </div>
                 }
 
                 <form
@@ -149,7 +149,7 @@ import {SetupStore} from '../services';
                     mat-flat-button
                     type="submit">
                     <bi class="mr-2" name="send-check" />
-                    {{ 'Verify code' | transloco }}
+                    {{ 'auth.setup.confirmEmail.verify' | transloco }}
                   </button>
 
                   @if (setupStore.error()) {
@@ -160,7 +160,7 @@ import {SetupStore} from '../services';
                         mat-stroked-button
                         type="button">
                         <bi class="mr-2" name="envelope-plus" />
-                        {{ 'auth.setup.resendTest' | transloco }}
+                        {{ 'auth.setup.confirmEmail.resend' | transloco }}
                       </button>
                       <button
                         class="error-button w-full"
@@ -232,12 +232,13 @@ import {SetupStore} from '../services';
                 </div>
 
                 <div puAlert type="INFO">
-                  <b>{{ 'auth.setup.info1' | transloco }}</b>
+                  <b>{{ 'auth.setup.setupCompleted.info1' | transloco }}</b>
                   <br />
                   <br />
+                  <!-- t(auth.setup.setupCompleted.info2) -->
                   <transloco
                     [params]="{forgotPasswordUrl: '/auth/forgot-password'}"
-                    key="auth.setup.info2" />
+                    key="auth.setup.setupCompleted.info2" />
                 </div>
               }
             }

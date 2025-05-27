@@ -32,6 +32,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </mat-form-field>
 
         <small>
+          <!-- t(notificationMethod.edit.slack.urlHelp) -->
           <transloco
             [params]="{webhookHelpUrl: 'https://api.slack.com/messaging/webhooks'}"
             key="notificationMethod.edit.slack.urlHelp" />

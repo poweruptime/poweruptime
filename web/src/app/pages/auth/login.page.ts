@@ -64,7 +64,7 @@ import {AuthStore} from '@app/services';
                 {{ 'auth.stayLoggedIn' | transloco }}
               </mat-slide-toggle>
               <a mat-stroked-button routerLink="/auth/forgot-password">
-                {{ 'auth.forgotPassword' | transloco }}
+                {{ 'auth.forgotPassword.title' | transloco }}
               </a>
             </div>
 

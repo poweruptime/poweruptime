@@ -39,6 +39,11 @@ import {environment} from '../../../../environments/environment';
   ],
 })
 export class ProfileLayout {
+  /**
+   * t(general.overview)
+   * t(general.security)
+   * t(profile.devThings)
+   */
   readonly routes = [
     {path: 'overview', text: 'general.overview'},
     {path: 'security', text: 'general.security'},

@@ -157,7 +157,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                           {{ email }}
                           <button
                             [attr.aria-label]="
-                              'instanceSettings.versionCheck.adminMailTo.remove'
+                              'instanceSettings.versionCheck.adminMail.to.remove'
                                 | transloco: {email}
                             "
                             type="button"

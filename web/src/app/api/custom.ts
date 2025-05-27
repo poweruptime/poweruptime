@@ -5,6 +5,13 @@ export type BackendOperation = operations;
 
 export type MonitorDataType = BackendType['MonitorData']['_type'];
 
+/**
+ * t(monitor.checker.DNS)
+ * t(monitor.checker.HTTP)
+ * t(monitor.checker.PING)
+ * t(monitor.checker.PUSH)
+ * t(monitor.checker.SSL_CERTIFICATE)
+ */
 export const MONITOR_CHECKER_DATA_TYPES = [
   {
     label: 'monitor.checker.DNS',
@@ -28,6 +35,12 @@ export const MONITOR_CHECKER_DATA_TYPES = [
   },
 ] satisfies {value: MonitorDataType; label: string}[];
 
+/**
+ * t(notificationMethod.sender.APPRISE)
+ * t(notificationMethod.sender.DISCORD)
+ * t(notificationMethod.sender.EMAIL)
+ * t(notificationMethod.sender.SLACK)
+ */
 export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
   {
     label: 'notificationMethod.sender.APPRISE',

@@ -122,8 +122,8 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         @if (allowedStatusCodeRangeErrors?.['required']) {
           <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
         }
-        @if (allowedStatusCodeRangeErrors?.['patternArrayItem']; as patternArrayItem) {
-          <mat-error>{{ 'form.validation.patternArrayItem' | transloco }}</mat-error>
+        @if (allowedStatusCodeRangeErrors?.['patternArrayItem']) {
+          {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}
         }
         @if (allowedStatusCodeRangeErrors?.['minLengthArrayItem']; as minlength) {
           <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>

@@ -32,6 +32,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </mat-form-field>
 
         <small>
+          <!-- t(notificationMethod.edit.discord.urlHelp) -->
           <transloco
             [params]="{
               webhookHelpUrl:

@@ -1,7 +1,11 @@
 {
   "auth": {
     "changePassword": "Change password",
-    "forgotPassword": "Forgot password?",
+    "forgotPassword": {
+      "mailSent": "Sent password reset email to your {{general.emailAddress}}.",
+      "success": "Password reset successful. Please login now.",
+      "title": "Forgot password?"
+    },
     "invalidCredentials": "Invalid credentials.",
     "login": "Login",
     "newPassword": "New {{general.password}}",
@@ -10,13 +14,26 @@
     "requestPasswordReset": "Request password reset",
     "resetPassword": "Reset password",
     "setup": {
+      "confirmEmail": {
+        "invalidCode": "Invalid code. Try again.",
+        "resend": "Resend Test E-Mail",
+        "success": "Successfully verified E-Mail functionality. Please complete your setup.",
+        "verify": "Verify Code"
+      },
       "description": "Your Admin-Account data",
-      "info1": "An invitation will be sent to the specified email address.",
-      "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]",
-      "resendTest": "Resend Test E-Mail",
       "sendInvitation": "Send invitation E-Mail",
-      "sendTest": "Send Test E-Mail",
+      "setupCompleted": {
+        "info1": "An invitation will be sent to the specified email address.",
+        "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]"
+      },
       "skip": "Skip",
+      "success": "Successfully setup your first admin account. Please check your E-Mail inbox.",
+      "testEmail": {
+        "failed": "Email sending failed. Please fix your E-Mail environment variables.",
+        "info": "Please use this step to verify your E-Mail environment variables.",
+        "send": "Send Test E-Mail",
+        "success": "Successfully sent test E-Mail. Please check your inbox."
+      },
       "title": "First-time Setup"
     },
     "stayLoggedIn": "Stay logged in"
@@ -42,38 +59,20 @@
   },
   "cmdk": {
     "groups": {
-      "general": {
-        "input": "What do you need?"
-      },
       "monitor": {
-        "create": "Create new {{general.monitor}}",
-        "input": "{{general.search}} for a {{general.monitor}}",
-        "search": "{{general.search}} {{general.monitors}}..."
+        "create": "Create new {{general.monitor}}"
       },
       "notificationMethod": {
-        "create": "Create new {{general.notificationMethod}}",
-        "input": "{{general.search}} for a {{general.notificationMethod}}",
-        "search": "{{general.search}} {{general.notificationMethods}}..."
+        "create": "Create new {{general.notificationMethod}}"
       },
       "statusPage": {
-        "create": "Create new {{general.statusPage}}",
-        "input": "{{general.search}} for a {{general.statusPage}}",
-        "search": "{{general.search}} {{general.statusPages}}..."
+        "create": "Create new {{general.statusPage}}"
       },
       "team": {
         "create": "Create new {{general.team}}",
-        "input": "{{general.search}} for a {{general.team}}",
         "search": "{{general.search}} {{general.teams}}..."
-      },
-      "theme": {
-        "input": "Select a theme",
-        "switch": "Switch {{general.theme}}"
       }
-    },
-    "results": {
-      "empty": "No results found."
-    },
-    "toggle": "Toggle action menu"
+    }
   },
   "form": {
     "passwordShow": {
@@ -100,7 +99,6 @@
     "about": "About",
     "activated": "Activated",
     "admin": "Admin",
-    "at": "At",
     "body": "Body",
     "cancel": "Cancel",
     "checkResult": "Check result",
@@ -136,6 +134,7 @@
     "group": "Group",
     "host": "Host",
     "hours": "Hours",
+    "info": "Info",
     "instance": "Instance",
     "invite": "Invite",
     "invites": "Invites",
@@ -157,7 +156,6 @@
     "notificationMethod": "Notification method",
     "notificationMethods": "Notification methods",
     "notifications": "Notifications",
-    "now": "Now",
     "open": "Open",
     "overview": "Overview",
     "password": "Password",
@@ -171,7 +169,6 @@
     "profile": "Profile",
     "recycleBin": "Recycle Bin",
     "redirecting": "Redirecting...",
-    "reset": "Reset",
     "restore": "Restore",
     "restoreSuccess": "Successfully restored item(s).",
     "role": "Role",
@@ -204,7 +201,7 @@
     "totalDuration": "Total Duration",
     "type": "Type",
     "url": "URL",
-    "user ": "User",
+    "user": "User",
     "username": "Username",
     "users": "Users",
     "xHours": "{{value}} {{general.hours}}",
@@ -222,8 +219,10 @@
       "title": "Individual check & log retention"
     },
     "sponsorship": {
+      "failed": "GitHub Sponsorship check failed.",
       "githubHandle": "GitHub Username",
       "showBadge": "Show Supporter Badge",
+      "success": "GitHub Sponsorship detected. Thank you very much!",
       "warning": {
         "1": "Before you enable the “Sponsorship” feature, please read the following:",
         "2": "What happens when you enable it",
@@ -231,7 +230,6 @@
         "4": "In doing so, the third-party service will see and may log your server’s public IP address."
       }
     },
-    "timezone": "{{general.instance}} {{general.timezone}}",
     "versionCheck": {
       "adminMail": {
         "everyone": "Send to all Admins",

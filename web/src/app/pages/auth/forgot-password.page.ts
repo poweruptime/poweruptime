@@ -21,7 +21,7 @@ import {ForgotPasswordStore} from '@app/services';
         <mat-card-header>
           <mat-card-title>
             <strong>poweruptime</strong>
-            | {{ 'auth.forgotPassword' | transloco }}
+            | {{ 'auth.forgotPassword.title' | transloco }}
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>

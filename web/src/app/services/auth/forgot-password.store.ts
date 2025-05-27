@@ -19,7 +19,7 @@ export const ForgotPasswordStore = signalStore(
         api.post('/v1/auth/resetPassword', {body}).pipe(
           tapResponse({
             next: () => {
-              toast.success(translate('Sent password reset email to your email address.'));
+              toast.success(translate('auth.forgotPassword.mailSent'));
               void router.navigate(['', 'auth', 'login']);
             },
             error: () => {},
@@ -32,7 +32,7 @@ export const ForgotPasswordStore = signalStore(
         api.post('/v1/auth/resetPassword/update', {body}).pipe(
           tapResponse({
             next: () => {
-              toast.success(translate('Password reset successful. Please login now.'));
+              toast.success(translate('auth.forgotPassword.success'));
               void router.navigate(['', 'auth', 'login']);
             },
             error: () => {},
