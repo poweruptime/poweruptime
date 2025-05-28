@@ -1,9 +1,9 @@
 package org.poweruptime.backend.features.monitor.checker.dns
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.slf4j.LoggerFactory
 import org.xbill.DNS.*
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -11,7 +11,7 @@ import java.net.InetSocketAddress
 private const val DNS_ANSWER_SECTION = 1
 
 class DnsMonitorChecker : MonitorChecker {
-    private val logger = LoggerFactory.getLogger(DnsMonitorChecker::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     override val type = MonitorType.DNS
 
@@ -28,20 +28,15 @@ class DnsMonitorChecker : MonitorChecker {
                 )
             }
 
-            logger.debug(
-                """Sending dns request for monitor "{}" with id "{}", host: "{]", type: "{}",
-                |dns server: "{}", checking for matches {}
-                """.trimMargin(),
-                monitor.name,
-                monitor.id,
-                dnsMonitorCheckerData.host,
-                type,
-                dnsMonitorCheckerData.matches != null,
-            )
+            logger.debug {
+                "Sending dns request for monitor '${monitor.name}' with id '${monitor.id}', " +
+                    "host: '${dnsMonitorCheckerData.host}', type: '$type', " +
+                    "checking for matches: '${dnsMonitorCheckerData.matches != null}'"
+            }
 
             val answerSection = getDNSAnswerSection(resolver, dnsMonitorCheckerData.host, dnsMonitorCheckerData.type)
 
-            logger.debug("""Monitor "{}", dns response "{}" """, monitor.id, answerSection)
+            logger.debug { "Monitor '${monitor.id}', dns response '$answerSection'" }
 
             if (dnsMonitorCheckerData.matches == null) {
                 return if (answerSection.isEmpty()) {
@@ -53,7 +48,7 @@ class DnsMonitorChecker : MonitorChecker {
 
             val answers = parseAnswerSection(answerSection, dnsMonitorCheckerData.type)
 
-            logger.info("""Mapped answers "{}"""", answers.joinToString())
+            logger.info { "Mapped answers '${answers.joinToString()}'" }
 
             if (answers.isEmpty()) {
                 return result.error("DNS record(s) not found")
@@ -73,7 +68,7 @@ class DnsMonitorChecker : MonitorChecker {
             }
 
             return result.success("DNS record(s) found", answers.joinToString("\n"))
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             return result.error("DNS server unreachable")
         }
     }

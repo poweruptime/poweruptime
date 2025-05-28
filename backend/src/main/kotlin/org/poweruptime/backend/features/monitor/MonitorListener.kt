@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_QUEUE
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
@@ -24,7 +25,6 @@ import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.service.NotificationService
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
-import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -48,7 +48,7 @@ class MonitorListener(
     private val subNotificationService: SubNotificationService,
     private val pushService: PushService,
 ) {
-    private val logger = LoggerFactory.getLogger(MonitorListener::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     /**
      * Receives messages from "monitor-queue" and processes [CheckResult] by ID.
@@ -58,11 +58,7 @@ class MonitorListener(
         val checkResult = checkResultService.getByIdOrThrow(monitorCheckId)
         val monitor = checkResult.monitor
 
-        logger.debug(
-            """Received monitor check "{}" of monitor "{}".""",
-            checkResult.id,
-            monitor.name,
-        )
+        logger.debug { "Received monitor check '${checkResult.id}' of monitor '${monitor.name}'" }
 
         // Perform the actual check and persist the updated CheckResult
         val updatedCheck = processCheckResult(checkResult)
@@ -125,7 +121,7 @@ class MonitorListener(
         if (isPickedUpTooLate) {
             handleLatePickup()
 
-            logger.error("""Monitor check "{}" was picked up too late.""", id)
+            logger.error { "Monitor check '$id' was picked up too late" }
 
             return@apply
         }
@@ -173,10 +169,7 @@ class MonitorListener(
      * Send a push notification for the new check result.
      */
     private fun sendNewCheckResultPush(monitor: Monitor, updatedCheck: CheckResult) {
-        logger.info(
-            """Send push new check result for team "{}"""",
-            monitor.team.id,
-        )
+        logger.info { "Send push new check result for team '${monitor.team.id}'" }
         pushService.send(
             monitor.team.id,
             PushCheckResultDto(checkResult = CheckResultResponse(updatedCheck)),
@@ -197,12 +190,10 @@ class MonitorListener(
                 val updatedMonitor = if (successfulUpdatedMonitor) {
                     monitorService.getByIdOrThrow(monitor.id)
                 } else {
-                    logger.warn(
-                        """Monitor "{}", was updated after receiving it for processing.
-                          |Could not persist to db. Continuing with not-persisted monitor
-                        """.trimMargin(),
-                        monitor.name,
-                    )
+                    logger.warn {
+                        "Monitor '${monitor.name}', was updated after receiving it for processing. " +
+                            "Could not persist to db. Continuing with not-persisted monitor"
+                    }
                     monitor
                 }
 
@@ -215,11 +206,9 @@ class MonitorListener(
                 updatedMonitor
             }
             else -> {
-                logger.info(
-                    """Monitor "{}", new status: "{}", not processing status change.""",
-                    monitor.name,
-                    updatedCheck.status,
-                )
+                logger.info {
+                    "Monitor '${monitor.name}', new status: '${updatedCheck.status}', not processing status change"
+                }
 
                 monitor
             }
@@ -231,10 +220,7 @@ class MonitorListener(
      */
     private fun sendStatusChangePushIfNeeded(oldStatus: MonitorStatus, updatedMonitor: Monitor) {
         if (oldStatus != updatedMonitor.status) {
-            logger.debug(
-                """Send push status change for team "{}"""",
-                updatedMonitor.team.id,
-            )
+            logger.debug { "Send push status change for team '${updatedMonitor.team.id}'" }
 
             pushService.send(
                 updatedMonitor.team.id,
@@ -437,12 +423,10 @@ class MonitorListener(
             message = "Queuing ${updatedMonitor.status.name.uppercase()} notifications",
             properties = mapOf("notificationId" to notification.id),
         )
-        logger.info(
-            """Monitor "{}", new status: "{}", previous status: "{}", sending normal notifications""",
-            updatedMonitor.name,
-            updatedMonitor.status,
-            oldStatus,
-        )
+        logger.info {
+            "Monitor '${updatedMonitor.name}', new status: '${updatedMonitor.status}', " +
+                "previous status: '$oldStatus', sending normal notifications"
+        }
     }
 }
 

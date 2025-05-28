@@ -1,12 +1,12 @@
 package org.poweruptime.backend.features.info.versionChecker
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.emails.NewVersionEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
 import org.poweruptime.backend.features.user.domain.UserRepository
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -25,20 +25,20 @@ class VersionChecker(
     private val instanceSettingService: InstanceSettingService,
     private val systemEmailService: SystemEmailService,
 ) {
-    private val logger = LoggerFactory.getLogger(VersionChecker::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     fun checkAndSendNewVersionMail() {
-        logger.debug("Starting send new version mail")
+        logger.debug { "Starting send new version mail" }
         val latestVersion = checkForLatestVersion(true)
 
         if (latestVersion == null) {
-            logger.debug("No newer version available")
+            logger.debug { "No newer version available" }
             return
         }
 
         val existingVersionCheckMail = versionCheckMailRepository.findByVersion(latestVersion)
         if (existingVersionCheckMail != null) {
-            logger.debug("New version available but email already sent")
+            logger.debug { "New version available but email already sent" }
             return
         }
 
@@ -47,7 +47,7 @@ class VersionChecker(
                 ?: userRepository.findUsersByRole(SystemRole.ADMIN).map { it.email }
 
         if (to.isEmpty()) {
-            logger.error("New version available but no recipients found.")
+            logger.error { "New version available but no recipients found." }
             return
         }
 
@@ -60,15 +60,15 @@ class VersionChecker(
     private val cacheExpirationMinutes = 30L
 
     fun checkForLatestVersion(skipCache: Boolean = false): String? {
-        logger.debug("Starting version check (skipCache: {})", skipCache)
+        logger.debug { "Starting version check (skipCache: $skipCache)" }
 
         if (!instanceSettingService.getVersionCheckEnabled()) {
-            logger.debug("Version checking is disabled in instance settings")
+            logger.debug { "Version checking is disabled in instance settings" }
             return null
         }
 
         val currentVersion = infoService.version
-        logger.debug("Current version: {}", currentVersion)
+        logger.debug { "Current version: $currentVersion" }
 
         val now = Instant.now()
 
@@ -77,39 +77,34 @@ class VersionChecker(
             cachedResult?.let { cached ->
                 val cacheAge = Duration.between(cached.timestamp, now)
                 if (cacheAge.toMinutes() < cacheExpirationMinutes) {
-                    logger.info(
-                        "Using cached version check result (age: {} minutes)",
-                        cacheAge.toMinutes(),
-                    )
+                    logger.info { "Using cached version check result (age: ${cacheAge.toMinutes()} minutes)" }
                     return cached.result
                 }
-                logger.debug(
-                    "Cache expired (age: {} minutes, max: {} minutes)",
-                    cacheAge.toMinutes(),
-                    cacheExpirationMinutes,
-                )
-            } ?: logger.debug("No cached result available")
+                logger.debug {
+                    "Cache expired (age: ${cacheAge.toMinutes()} minutes, max: $cacheExpirationMinutes minutes)"
+                }
+            } ?: logger.debug { "No cached result available" }
         } else {
-            logger.debug("Skipping cache as requested")
+            logger.debug { "Skipping cache as requested" }
         }
 
         // Cache miss or expired - fetch new result
-        logger.info("Fetching latest version from GitHub")
+        logger.info { "Fetching latest version from GitHub" }
         val result = try {
             fetchLatestVersion(currentVersion)
         } catch (e: Exception) {
-            logger.error("Failed to fetch latest version from GitHub", e)
+            logger.error { "Failed to fetch latest version from GitHub, ex: $e" }
             return null
         }
 
         // Store in cache
         cachedResult = CachedVersionResult(result, now)
-        logger.debug("Cached new version check result")
+        logger.debug { "Cached new version check result" }
 
         return result?.also {
-            logger.info("New version available: {}", it)
+            logger.info { "New version available: $it" }
         } ?: run {
-            logger.info("No newer version available")
+            logger.info { "No newer version available" }
             null
         }
     }
@@ -118,15 +113,14 @@ class VersionChecker(
     private fun fetchLatestVersion(currentVersion: String): String? {
         val currentVersionInfo = parseVersion(currentVersion)
         if (currentVersionInfo == null) {
-            logger.warn("Could not parse current version: {}", currentVersion)
+            logger.warn { "Could not parse current version: $currentVersion" }
             return null
         }
 
         val isBetaChannel = currentVersionInfo.isBeta
-        logger.debug(
-            "Checking for updates on {} channel",
-            if (isBetaChannel) "beta" else "stable",
-        )
+        logger.debug {
+            "Checking for updates on ${if (isBetaChannel) "beta" else "stable"} channel"
+        }
 
         var url: String? = "https://api.github.com/repos/poweruptime/poweruptime/tags"
         var latestVersion: VersionInfo? = null
@@ -134,24 +128,24 @@ class VersionChecker(
 
         while (url != null) {
             pageCount++
-            logger.debug("Fetching GitHub tags page {} from: {}", pageCount, url)
+            logger.debug { "Fetching GitHub tags page $pageCount from: $url" }
 
             val response = try {
                 makeRequest(url)
             } catch (e: Exception) {
-                logger.error("Failed to fetch GitHub tags from URL: {}", url, e)
+                logger.error { "Failed to fetch GitHub tags from URL: $url, ex: $e" }
                 break
             }
 
             val tags = response.body ?: emptyArray()
-            logger.debug("Retrieved {} tags from page {}", tags.size, pageCount)
+            logger.debug { "Retrieved ${tags.size} tags from page $pageCount" }
 
             // Filter and parse versions based on channel
             val validVersions = tags
                 .mapNotNull { tag ->
                     parseVersion(tag.name).also { version ->
                         if (version == null) {
-                            logger.debug("Could not parse version tag: {}", tag.name)
+                            logger.debug { "Could not parse version tag: ${tag.name}" }
                         }
                     }
                 }
@@ -159,49 +153,44 @@ class VersionChecker(
                 .sorted()
                 .reversed() // Get latest first
 
-            logger.debug(
-                "Found {} valid {} versions on page {}",
-                validVersions.size,
-                if (isBetaChannel) "beta" else "stable",
-                pageCount,
-            )
+            logger.debug {
+                "Found ${validVersions.size} valid ${if (isBetaChannel) "beta" else "stable"} versions " +
+                    "on page $pageCount"
+            }
 
             if (validVersions.isNotEmpty()) {
                 latestVersion = validVersions.first()
-                logger.debug("Latest version found: {}", latestVersion.originalVersion)
+                logger.debug { "Latest version found: ${latestVersion.originalVersion}" }
                 break
             }
 
             // Check for next page
             url = extractNextPageUrl(response.headers)
             if (url != null) {
-                logger.debug("Found next page URL, continuing pagination")
+                logger.debug { "Found next page URL, continuing pagination" }
             } else {
-                logger.debug("No more pages available")
+                logger.debug { "No more pages available" }
             }
         }
 
-        logger.info("Completed GitHub API search after {} pages", pageCount)
+        logger.info { "Completed GitHub API search after $pageCount pages" }
 
         return when {
             latestVersion == null -> {
-                logger.warn("No valid versions found on GitHub")
+                logger.warn { "No valid versions found on GitHub" }
                 null
             }
             latestVersion > currentVersionInfo -> {
-                logger.info(
-                    "Newer version available: {} > {}",
-                    latestVersion.originalVersion,
-                    currentVersionInfo.originalVersion,
-                )
+                logger.info {
+                    "Newer version available: ${latestVersion.originalVersion} > ${currentVersionInfo.originalVersion}"
+                }
                 latestVersion.originalVersion
             }
             else -> {
-                logger.debug(
-                    "Current version is up to date: {} >= {}",
-                    currentVersionInfo.originalVersion,
-                    latestVersion.originalVersion,
-                )
+                logger.debug {
+                    "Current version is up to date: ${currentVersionInfo.originalVersion} >= " +
+                        latestVersion.originalVersion
+                }
                 null
             }
         }
@@ -215,18 +204,16 @@ class VersionChecker(
 
         val entity = HttpEntity<String>(headers)
 
-        logger.debug("Making GitHub API request to: {}", url)
+        logger.debug { "Making GitHub API request to: $url" }
         return restTemplate.exchange(
             url,
             HttpMethod.GET,
             entity,
             Array<GitHubTag>::class.java,
         ).also { response ->
-            logger.debug(
-                "GitHub API response: status={}, body_size={}",
-                response.statusCode,
-                response.body?.size ?: 0,
-            )
+            logger.debug {
+                "GitHub API response: status=${response.statusCode}, body_size=${response.body?.size ?: 0}"
+            }
         }
     }
 
@@ -242,12 +229,12 @@ class VersionChecker(
                 urlMatch?.groupValues?.get(1)
             }
             ?.also { nextUrl ->
-                logger.debug("Extracted next page URL: {}", nextUrl)
+                logger.debug { "Extracted next page URL: $nextUrl" }
             }
     }
 
     private fun parseVersion(versionString: String): VersionInfo? {
-        logger.debug("Parsing version string: {}", versionString)
+        logger.debug { "Parsing version string: $versionString" }
 
         return when {
             // Beta version pattern: x.y.z-beta-n
@@ -255,7 +242,7 @@ class VersionChecker(
                 val betaRegex = Regex("""^(\d+)\.(\d+)\.(\d+)-beta-(\d+)$""")
                 val match = betaRegex.find(versionString)
                 if (match == null) {
-                    logger.debug("Version string does not match beta pattern: {}", versionString)
+                    logger.debug { "Version string does not match beta pattern: $versionString" }
                     return null
                 }
                 val (major, minor, patch, betaNum) = match.destructured
@@ -267,13 +254,9 @@ class VersionChecker(
                     betaNumber = betaNum.toLong(),
                     originalVersion = versionString,
                 ).also {
-                    logger.debug(
-                        "Parsed beta version: {}.{}.{}-beta-{}",
-                        it.major,
-                        it.minor,
-                        it.patch,
-                        it.betaNumber,
-                    )
+                    logger.debug {
+                        "Parsed beta version: ${it.major}.${it.minor}.${it.patch}-beta-${it.betaNumber}"
+                    }
                 }
             }
             // Normal version pattern: x.y.z
@@ -281,7 +264,9 @@ class VersionChecker(
                 val normalRegex = Regex("""^(\d+)\.(\d+)\.(\d+)$""")
                 val match = normalRegex.find(versionString)
                 if (match == null) {
-                    logger.debug("Version string does not match normal pattern: {}", versionString)
+                    logger.debug {
+                        "Version string does not match normal pattern: $versionString"
+                    }
                     return null
                 }
                 val (major, minor, patch) = match.destructured
@@ -292,12 +277,7 @@ class VersionChecker(
                     patch = patch.toInt(),
                     originalVersion = versionString,
                 ).also {
-                    logger.debug(
-                        "Parsed stable version: {}.{}.{}",
-                        it.major,
-                        it.minor,
-                        it.patch,
-                    )
+                    logger.debug { "Parsed stable version: ${it.major}.${it.minor}.${it.patch}" }
                 }
             }
         }
@@ -305,7 +285,7 @@ class VersionChecker(
 
     // Optional: Method to clear cache manually if needed
     fun clearCache() {
-        logger.info("Clearing version check cache")
+        logger.info { "Clearing version check cache" }
         cachedResult = null
     }
 }

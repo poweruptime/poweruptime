@@ -1,17 +1,16 @@
 package org.poweruptime.backend.features.mail.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.mail.internet.MimeMessage
 import org.poweruptime.backend.features.mail.EmailDto
-import org.poweruptime.backend.features.mail.EmailListener
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
-import org.slf4j.LoggerFactory
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.mail.javamail.MimeMessageHelper
 
 class SendEmailService {
-    private val logger = LoggerFactory.getLogger(EmailListener::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     private fun getJavaMailSender(emailSenderDto: EmailSender): JavaMailSender = JavaMailSenderImpl().apply {
         host = emailSenderDto.host
@@ -72,15 +71,14 @@ class SendEmailService {
 
             mailSender.send(mimeMessage)
 
-            logger.info(
-                """Email "{}" from "{}:{}" sent to "{}" """,
-                emailDto.subject,
-                emailSenderDto.host,
-                emailSenderDto.port,
-                emailDto.to,
-            )
+            logger.info {
+                "Email '${emailDto.subject}' from '${emailSenderDto.host}:${emailSenderDto.port}' sent to "
+                "'${emailDto.to}'"
+            }
         } catch (e: Throwable) {
-            logger.error("Could not send email to '${emailDto.to}', subject: '${emailDto.subject}'", e)
+            logger.error {
+                "Could not send email to '${emailDto.to}', subject: '${emailDto.subject}'"
+            }
             throw e
         }
     }

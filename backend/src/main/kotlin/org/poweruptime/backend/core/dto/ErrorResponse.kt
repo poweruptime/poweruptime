@@ -1,11 +1,13 @@
 package org.poweruptime.backend.core.dto
 
-data class ErrorResponse(
+data class ErrorPayload(
+    val message: String,
+    val code: Int,
+    val codeName: String
+)
+data class ValidationErrorPayload(
     val message: String,
     val code: Int,
     val codeName: String,
-) {
-    override fun toString(): String {
-        return """{"message": "$message", "code": $code, "code_name": "$codeName"}""".trimIndent()
-    }
-}
+    val violations: List<String>
+)

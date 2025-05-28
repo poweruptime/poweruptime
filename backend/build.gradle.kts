@@ -18,6 +18,9 @@ springBoot {
 }
 
 dependencies {
+    // Logging
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+
     // Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3")
@@ -44,7 +47,9 @@ dependencies {
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
     implementation("commons-codec:commons-codec:1.18.0")
 
+    // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
+    // HTML to Mrkdown (Slack) Converter
     implementation("org.jsoup:jsoup:1.20.1")
 
     // Kotlin stuff

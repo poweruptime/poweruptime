@@ -1,8 +1,8 @@
 package org.poweruptime.backend.features.fileUpload
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.Config
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
@@ -22,7 +22,7 @@ class FileService(
     @Value(Config.STORAGE_DIRECTORY) private val directoryPath: String,
 ) {
     private val rootLocation = Path.of(directoryPath)
-    private val logger = LoggerFactory.getLogger(FileService::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     fun store(uploadFile: MultipartFile): File {
         isAllowedToUpload(uploadFile)
@@ -50,7 +50,7 @@ class FileService(
                 )
             }
         } catch (e: IOException) {
-            logger.debug("Could not save file", e)
+            logger.debug { "Could not save file: $e" }
             throw BadRequestException()
         }
 
@@ -93,7 +93,9 @@ class FileService(
 
                 Files.deleteIfExists(filePath)
             } catch (e: IOException) {
-                logger.warn("Failed to delete file from disk: ${file.fileId}", e)
+                logger.warn {
+                    "Failed to delete file from disk: ${file.fileId}, ex: $e"
+                }
             }
         }
 
@@ -116,13 +118,10 @@ class FileService(
                     )
                 }
 
-                logger.info(
-                    "Removed file '{}'",
-                    filePath,
-                )
+                logger.info { "Removed file '$filePath'" }
                 Files.deleteIfExists(filePath)
             } catch (e: IOException) {
-                logger.warn("Failed to delete file from disk (no DB entry): $filePath", e)
+                logger.warn { "Failed to delete file from disk (no DB entry): $filePath, ex: $e" }
             }
         }
 
@@ -151,7 +150,7 @@ class FileService(
         when (file.contentType) {
             "image/jpeg", "image/png", "image/webp", "image/avif" -> {}
             else -> {
-                logger.debug("""File type "${file.contentType}" is not allowed.""")
+                logger.debug { "File type '${file.contentType}' is not allowed." }
                 throw BadRequestException("""File type "${file.contentType}" is not allowed.""")
             }
         }

@@ -1,13 +1,12 @@
 package org.poweruptime.backend
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
@@ -23,7 +22,7 @@ class StartupApplicationListener(
     @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
 ) : ApplicationListener<ContextRefreshedEvent> {
 
-    private val log: Logger = LoggerFactory.getLogger(StartupApplicationListener::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     @Suppress("MaxLineLength", "LongMethod")
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
@@ -34,7 +33,7 @@ class StartupApplicationListener(
     }
 
     private fun setupTempNotification() {
-        log.info("Temp tempNotification enabled: $tempNotificationsEnabled")
+        logger.info { "Temp tempNotification enabled: $tempNotificationsEnabled" }
         if (tempNotificationsEnabled) {
             addTempNotification()
         }

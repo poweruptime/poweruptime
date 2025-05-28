@@ -1,9 +1,9 @@
 package org.poweruptime.backend.features.info.supporter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
@@ -16,7 +16,7 @@ class SupporterService(
     private val objectMapper: ObjectMapper,
     private val instanceSettingService: InstanceSettingService,
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private final val logger = KotlinLogging.logger {}
 
     private val testHandle = "Test1234"
 
@@ -28,7 +28,7 @@ class SupporterService(
         val sponsorsResponse = try {
             fetchSponsors()
         } catch (e: Exception) {
-            logger.error("Could not load or parse GitHub sponsors", e)
+            logger.error { "Could not load or parse GitHub sponsors, ex: $e" }
             return false
         }
 

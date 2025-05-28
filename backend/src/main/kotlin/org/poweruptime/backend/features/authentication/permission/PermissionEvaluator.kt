@@ -1,9 +1,8 @@
 package org.poweruptime.backend.features.authentication.permission
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.features.authentication.domain.*
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
@@ -11,7 +10,7 @@ import java.io.Serializable
 
 @Component
 class PermissionEvaluator(val permissionRepository: PermissionRepository) : PermissionEvaluator {
-    private final val logger: Logger = getLogger(PermissionEvaluator::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     override fun hasPermission(
         authentication: Authentication,
@@ -23,16 +22,14 @@ class PermissionEvaluator(val permissionRepository: PermissionRepository) : Perm
         }
 
         if (permissionName !is String || targetEntityId !is String) {
-            logger.warn(
-                "Error permission no string or targetEntityId no long: {}, targetEntityId: {}",
-                permissionName,
-                targetEntityId,
-            )
+            logger.warn {
+                "Error permission no string or targetEntityId no long: $permissionName, targetEntityId: $targetEntityId"
+            }
             return false
         }
 
         val parsedPermission = Permission.entries.find { it.permissionName == permissionName } ?: run {
-            logger.error("Error unknown permission: {}", permissionName)
+            logger.error { "Error unknown permission: $permissionName" }
 
             return false
         }
@@ -40,13 +37,9 @@ class PermissionEvaluator(val permissionRepository: PermissionRepository) : Perm
         val userId = authentication.name
 
         return checkPermission(parsedPermission, userId, targetEntityId).apply {
-            logger.debug(
-                "Checker: '{}' user: '{}' value: '{}' result: {}",
-                permissionName,
-                userId,
-                targetEntityId,
-                this,
-            )
+            logger.debug {
+                "Checker: '$permissionName' user: '$userId' value: '$targetEntityId' result: $this"
+            }
         }
     }
 

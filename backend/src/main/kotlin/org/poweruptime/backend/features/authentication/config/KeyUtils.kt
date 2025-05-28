@@ -1,7 +1,7 @@
 package org.poweruptime.backend.features.authentication.config
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.*
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
@@ -52,7 +52,7 @@ class KeyUtils(
     val userRefreshTokenPrivateKey: RSAPrivateKey
         get() = refreshTokenKeyPair.private as RSAPrivateKey
 
-    private val log = LoggerFactory.getLogger(KeyUtils::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     private val accessTokenKeyPair: KeyPair by lazy {
         getKeyPair(absoluteAccessTokenPublicKeyPath, absoluteAccessTokenPrivateKeyPath)
@@ -68,7 +68,7 @@ class KeyUtils(
         val privateKeyFile = File(privateKeyPath)
 
         if (publicKeyFile.exists() && privateKeyFile.exists()) {
-            log.info("loading keys from file: {}, {}", publicKeyPath, privateKeyPath)
+            logger.info { "loading keys from file: '$publicKeyPath', '$privateKeyPath'" }
 
             val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
 
@@ -91,7 +91,7 @@ class KeyUtils(
         Files.createDirectories(Paths.get(directoryPath))
 
         try {
-            log.info("Generating new public and private keys: {}, {}", publicKeyPath, privateKeyPath)
+            logger.info { "Generating new public and private keys: '$publicKeyPath', '$privateKeyPath'" }
 
             val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
             keyPairGenerator.initialize(KEY_SIZE)

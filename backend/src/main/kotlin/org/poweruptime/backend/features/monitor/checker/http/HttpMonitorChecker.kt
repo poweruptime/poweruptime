@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor.checker.http
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.hc.client5.http.config.RequestConfig
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder
@@ -15,8 +16,6 @@ import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -33,7 +32,7 @@ import java.time.Duration
 class HttpMonitorChecker(
     private val teamSettingService: TeamSettingService
 ) : MonitorChecker {
-    private val logger: Logger = LoggerFactory.getLogger(HttpMonitorChecker::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     override val type = MonitorType.HTTP
 
@@ -53,12 +52,10 @@ class HttpMonitorChecker(
             }
         }
 
-        logger.debug(
-            """Sending http request for monitor "{}" with id "{}", url: "{}"""",
-            monitor.name,
-            monitor.id,
-            httpMonitorCheckerData.url,
-        )
+        logger.debug {
+            "Sending http request for monitor '${monitor.name}' with id '${monitor.id}', " +
+                "url: '{httpMonitorCheckerData.url}'"
+        }
 
         val result = MonitoringResultHandler()
 
@@ -173,7 +170,7 @@ class HttpMonitorChecker(
                 HttpStatus.valueOf(
                     response.statusCode.value(),
                 )
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 HttpStatus.valueOf(200)
             }
 

@@ -1,15 +1,14 @@
 package org.poweruptime.backend.features.mail.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.*
 import org.poweruptime.backend.features.mail.Email
 import org.poweruptime.backend.features.mail.EmailDto
-import org.poweruptime.backend.features.mail.EmailListener
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSenderDto
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -27,7 +26,7 @@ class SystemEmailService(
     private val emailTemplateService: EmailTemplateService,
     private val rabbitMQService: RabbitMQService
 ) {
-    private val logger = LoggerFactory.getLogger(EmailListener::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     private val systemSendEmailService = SendEmailService()
     private val systemEmailSenderDto = EmailSenderDto(
@@ -40,7 +39,7 @@ class SystemEmailService(
     )
 
     fun sendEmail(dto: EmailDto) {
-        logger.info("Received email to process; to '${dto.to}', subject: '${dto.subject}'")
+        logger.info { "Received email to process; to '${dto.to}', subject: '${dto.subject}'" }
 
         if (tempNotificationsEnabled) {
             tempNotificationService.addNotification(
@@ -52,11 +51,11 @@ class SystemEmailService(
                 ),
             )
 
-            logger.debug("Saved email to temporary notification; to '{}', subject: '{}'", dto.to, dto.subject)
+            logger.debug { "Saved email to temporary notification; to '${dto.to}', subject: '${dto.subject}'" }
         }
 
         if (!mailEnabled) {
-            logger.warn("System Email sending disabled")
+            logger.warn { "System Email sending disabled" }
             return
         }
 
@@ -71,7 +70,7 @@ class SystemEmailService(
     )
 
     fun queueEmail(email: Email) {
-        logger.debug("Queued system email '{}', subject: '{}'", email.to, email.subject)
+        logger.debug { "Queued system email '${email.to}', subject: '${email.subject}'" }
 
         rabbitMQService.sendToSendSystemEmail(
             EmailDto(

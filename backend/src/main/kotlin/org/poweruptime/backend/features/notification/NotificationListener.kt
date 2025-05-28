@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.notification
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_QUEUE
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
@@ -11,7 +12,6 @@ import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
-import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -26,7 +26,7 @@ class NotificationListener(
     private val pushService: PushService,
     private val appriseSender: AppriseSender,
 ) {
-    private val logger = LoggerFactory.getLogger(NotificationListener::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     /**
      * Consumer for "notification-queue"
@@ -46,12 +46,11 @@ class NotificationListener(
 
             subNotification.pickedUpAt = Instant.now()
 
-            logger.debug(
-                """Received notification "{}" of type "{}" for monitor "{}"""",
-                subNotification.id,
-                subNotification.method.data._type.name,
-                subNotification.notification.checkResult.monitor.name,
-            )
+            logger.debug {
+                "Received notification '${subNotification.id}' of type " +
+                    "'${subNotification.method.data._type.name}' for monitor " +
+                    "'${subNotification.notification.checkResult.monitor.name}'"
+            }
 
             val isPickedUpTooLate = subNotification.pickedUpTooLate()
 
@@ -70,10 +69,9 @@ class NotificationListener(
             )
 
             if (isPickedUpTooLate) {
-                logger.error(
-                    """Notification "{}" was picked up too late""",
-                    subNotification.id,
-                )
+                logger.error {
+                    "Notification '${subNotification.id}' was picked up too late"
+                }
 
                 subNotification.error = "Notification picked up to late"
 

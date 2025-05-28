@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.monitor.model.CheckResult
@@ -8,7 +9,6 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
-import org.slf4j.LoggerFactory
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -24,7 +24,7 @@ class MonitorScheduler(
     private val checkResultLogEntryService: CheckResultLogEntryService,
     private val rabbitMQService: RabbitMQService,
 ) {
-    private final val logger = LoggerFactory.getLogger(MonitorScheduler::class.java)
+    private final val logger = KotlinLogging.logger {}
 
     private val schedules = mutableMapOf<String, ScheduledFuture<*>>()
 
@@ -43,13 +43,10 @@ class MonitorScheduler(
 
         val startAt = Instant.now().plusMillis(startDelay)
 
-        logger.info(
-            """Started monitor "{}" with id "{}" at rate of "{}s" with a delay of "{}ms" """,
-            monitor.name,
-            monitor.id,
-            monitor.testIntervalSeconds,
-            startDelay,
-        )
+        logger.info {
+            "Started monitor '${monitor.name}' with id '${monitor.id}' at rate of " +
+                "'${monitor.testIntervalSeconds}s' with a delay of '${startDelay}ms' "
+        }
 
         schedules[monitor.id] = taskScheduler.scheduleAtFixedRate(
             {
@@ -58,10 +55,9 @@ class MonitorScheduler(
                         monitor = monitor,
                     ),
                 )
-                logger.debug(
-                    """Queuing monitor "{}" with id "{}" for run "{}"""",
-                    monitor.name, monitor.id, checkResult.id,
-                )
+                logger.debug {
+                    "Queuing monitor '${monitor.name}' with id '${monitor.id}' for run '${checkResult.id}'"
+                }
                 rabbitMQService.sendToProcessMonitor(checkResult.id)
                 checkResultLogEntryService.info(CheckResultLogStage.SETUP, checkResult, "Queued for processing")
             },
@@ -72,6 +68,6 @@ class MonitorScheduler(
 
     fun stop(monitorId: String) = schedules[monitorId]?.let {
         it.cancel(true)
-        logger.info("""Stopped monitor "{}"""", monitorId)
+        logger.info { "Stopped monitor '$monitorId'" }
     }
 }
