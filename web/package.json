@@ -36,7 +36,7 @@
     "@fastify/static": "8.2.0",
     "@jsverse/transloco": "7.6.1",
     "@jsverse/transloco-persist-lang": "7.0.2",
-    "@ng-matero/extensions": "19.3.3",
+    "@ng-matero/extensions": "19.4.0",
     "@ngrx/operators": "19.2.0",
     "@ngrx/signals": "19.2.0",
     "@ngx-dropzone/cdk": "19.2.1",
