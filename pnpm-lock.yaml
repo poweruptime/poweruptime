@@ -175,8 +175,8 @@ importers:
         specifier: 19.1.1
         version: 19.1.1(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.14(@angular/animations@19.2.14(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0)))(marked@15.0.12)(rxjs@7.8.2)(zone.js@0.15.0)
       ngx-mat-select-search:
-        specifier: 8.0.1
-        version: 8.0.1(@angular/material@19.2.18(cb8df96ebd2d066df6ff996ce523f6b4))
+        specifier: 8.0.2
+        version: 8.0.2(@angular/material@19.2.18(cb8df96ebd2d066df6ff996ce523f6b4))
       ngx-sonner:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@19.2.14(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.14(rxjs@7.8.2)(zone.js@0.15.0))
@@ -5144,8 +5144,8 @@ packages:
       rxjs: ^6.5.3 || ^7.4.0
       zone.js: ~0.15.0
 
-  ngx-mat-select-search@8.0.1:
-    resolution: {integrity: sha512-IiCKMcqOMQo28r7NKZZpyN5ZbmFecy8DMuFv0WMSNST7d4pVcNnzbYQwJRLxSZZH8ij5l5Afvl33fTw6wmhEYg==}
+  ngx-mat-select-search@8.0.2:
+    resolution: {integrity: sha512-Ke8wpcgrhgJeC2d1Qqc4Hec57OrqGVJURw5OW55xVgGIbgT+mqVIm6wiOOTwBSnwskb4x4v59zbtC+VGoyYIsA==}
     peerDependencies:
       '@angular/material': ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
 
@@ -12007,7 +12007,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ngx-mat-select-search@8.0.1(@angular/material@19.2.18(cb8df96ebd2d066df6ff996ce523f6b4)):
+  ngx-mat-select-search@8.0.2(@angular/material@19.2.18(cb8df96ebd2d066df6ff996ce523f6b4)):
     dependencies:
       '@angular/material': 19.2.18(cb8df96ebd2d066df6ff996ce523f6b4)
       tslib: 2.8.1
