@@ -44,7 +44,7 @@
     "@ngxpert/input-otp": "1.0.3",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
     "@swimlane/ngx-charts": "22.0.0",
-    "@tailwindcss/postcss": "4.1.6",
+    "@tailwindcss/postcss": "4.1.8",
     "@tinymce/tinymce-angular": "8.0.1",
     "canvas-confetti": "1.9.3",
     "d3-shape": "3.2.0",
@@ -86,7 +86,7 @@
     "eslint": "9.27.0",
     "openapi-typescript": "7.8.0",
     "postcss": "8.5.3",
-    "tailwindcss": "4.1.6",
+    "tailwindcss": "4.1.8",
     "tailwindcss-motion": "1.1.0",
     "typescript": "5.8.3",
     "typescript-eslint": "8.32.0"
