@@ -54,7 +54,7 @@ dependencies {
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:4.32.0")
-    runtimeOnly("org.postgresql:postgresql:42.7.5")
+    runtimeOnly("org.postgresql:postgresql:42.7.6")
     // Postgres Arrays
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.10")
 
