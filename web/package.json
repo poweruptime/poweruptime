@@ -79,7 +79,7 @@
     "@tailwindcss/typography": "0.5.16",
     "@types/canvas-confetti": "1.9.0",
     "@types/d3-shape": "3.1.7",
-    "@types/node": "22.15.18",
+    "@types/node": "22.15.29",
     "angular-eslint": "19.6.0",
     "autoprefixer": "10.4.21",
     "esbuild-visualizer": "0.7.0",
