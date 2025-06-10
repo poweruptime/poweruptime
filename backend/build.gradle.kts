@@ -19,7 +19,7 @@ springBoot {
 
 dependencies {
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
     // Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
