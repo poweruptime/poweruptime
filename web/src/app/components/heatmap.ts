@@ -39,7 +39,7 @@ import {BackendType} from '../api';
               <div
                 class="heatmap-dot hover:scale-125"
                 [class.animate-pulse]="
-                  (day.date | date: 'YYYY-MM-dd') === (currentDate() | date: 'YYYY-MM-dd')
+                  (day.date | date: 'yyyy-MM-dd') === (currentDate() | date: 'yyyy-MM-dd')
                 "
                 [style.background-color]="number | heatmapDotBackground"
                 [mtxTooltip]="heatmapDotTooltip"
@@ -53,7 +53,7 @@ import {BackendType} from '../api';
 
             <ng-template #heatmapDotTooltip>
               <div class="flex flex-col">
-                <span>{{ day.date | date: 'E, dd.MM.YYYY' }}</span>
+                <span>{{ day.date | date: 'E, dd.MM.yyyy' }}</span>
                 <span class="font-bold">{{ day.value }}</span>
               </div>
             </ng-template>
@@ -65,7 +65,7 @@ import {BackendType} from '../api';
               class="absolute left-0"
               [style.bottom]="_firstWeekNotFull ? '-1.68rem' : '-0.75rem'">
               <span class="text-xxs whitespace-nowrap">
-                {{ xAxis | date: 'MMM, YY' : 'en-US' }}
+                {{ xAxis | date: 'MMM, yy' : 'en-US' }}
               </span>
             </span>
           }

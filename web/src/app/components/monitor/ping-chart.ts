@@ -22,14 +22,14 @@ import Chart, {TooltipItem} from 'chart.js/auto';
       @let _chart = chart();
       <span>
         @if (_chart.data[0]; as entry) {
-          {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
+          {{ entry.name | date: 'yyyy.MM.dd HH:mm' }}
         } @else {
           ERROR
         }
       </span>
       <span>
         @if (_chart.data[_chart.data.length - 1]; as entry) {
-          {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
+          {{ entry.name | date: 'yyyy.MM.dd HH:mm' }}
         } @else {
           ERROR
         }

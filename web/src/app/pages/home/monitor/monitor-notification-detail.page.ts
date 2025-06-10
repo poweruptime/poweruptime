@@ -39,7 +39,7 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
         <div class="flex items-center gap-4">
           <span class="flex items-center gap-2 text-sm">
             <bi name="clock" />
-            <pu-relative-time [value]="notification.createdAt" format="YYYY.MM.dd HH:mm:ss" />
+            <pu-relative-time [value]="notification.createdAt" format="yyyy.MM.dd HH:mm:ss" />
           </span>
 
           <a

@@ -1,8 +1,9 @@
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
-import {DOCUMENT, DatePipe} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DOCUMENT,
   LOCALE_ID,
   booleanAttribute,
   computed,

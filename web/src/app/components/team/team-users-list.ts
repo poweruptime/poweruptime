@@ -65,7 +65,7 @@ import {TeamUsersStore} from '@app/services';
           {{ 'team.settings.joinedAt' | transloco }}
         </th>
         <td *matCellDef="let element" mat-cell>
-          <pu-relative-time [value]="element.invitedAt" format="YYYY.MM.dd HH:mm:ss" />
+          <pu-relative-time [value]="element.invitedAt" format="yyyy.MM.dd HH:mm:ss" />
         </td>
       </ng-container>
 

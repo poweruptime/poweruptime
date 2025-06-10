@@ -38,7 +38,7 @@ import {TableLoadingBar} from '../table-loading-bar';
           @if (json?.serverSetupTime; as serverSetupTime) {
             <span
               class="text-gray-600 dark:text-gray-300"
-              [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.YYYY')">
+              [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.yyyy')">
               Running poweruptime for {{ usingPoweruptimeFor() }}
             </span>
           }

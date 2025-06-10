@@ -1,5 +1,4 @@
-import {DOCUMENT} from '@angular/common';
-import {inject} from '@angular/core';
+import {DOCUMENT, inject} from '@angular/core';
 import {CanActivateFn, Router} from '@angular/router';
 
 import {catchError, map, of, take, tap} from 'rxjs';

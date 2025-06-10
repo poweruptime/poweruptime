@@ -1,5 +1,5 @@
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {PLATFORM_ID, effect, inject, linkedSignal, signal} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {DOCUMENT, PLATFORM_ID, effect, inject, linkedSignal, signal} from '@angular/core';
 
 import {BiName} from 'dfx-bootstrap-icons';
 import {injectWindow} from 'dfx-helper';

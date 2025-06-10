@@ -71,7 +71,7 @@ import {trackBy} from '@app/util';
                 {{ 'profile.sessions.lastUsed' | transloco }}
               </th>
               <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                {{ element.updatedAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+                {{ element.updatedAt | date: 'yyyy.MM.dd HH:mm:ss' }}
               </td>
             </ng-container>
 
@@ -80,7 +80,7 @@ import {trackBy} from '@app/util';
                 {{ 'general.createdAt' | transloco }}
               </th>
               <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                {{ element.createdAt | date: 'YYYY.MM.dd HH:mm:ss' }}
+                {{ element.createdAt | date: 'yyyy.MM.dd HH:mm:ss' }}
               </td>
             </ng-container>
 
