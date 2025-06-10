@@ -66,7 +66,9 @@ class SchedulingConfiguration(
         logger.info {
             "Checking instance support state ${supporterService.check()}"
         }
-        logger.info("""Checking version {}""", versionChecker.checkAndSendNewVersionMail())
+        logger.info {
+            "Checking version ${versionChecker.checkAndSendNewVersionMail()}"
+        }
     }
 
     // Runs 1 hour after instance start every 1 hour

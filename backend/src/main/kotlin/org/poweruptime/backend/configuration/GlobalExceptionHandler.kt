@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -41,18 +42,37 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @Suppress("UnusedParameter")
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(
+        ex: BadCredentialsException,
+        request: WebRequest
+    ): ResponseEntity<ErrorPayload> {
+        val payload = ErrorPayload(
+            message = ex.message ?: ex.cause?.message ?: "Bad credentials",
+            code = HttpStatus.UNAUTHORIZED.value(),
+            codeName = "BAD_CREDENTIALS",
+        )
+        return buildResponse(ex, HttpStatus.UNAUTHORIZED, payload, request)
+    }
+
+    @Suppress("UnusedParameter")
     @ExceptionHandler(CredentialsExpiredException::class)
     fun handleCredentialsExpired(
         ex: CredentialsExpiredException,
         request: WebRequest
     ): ResponseEntity<ErrorPayload> {
-        val httpEx = PasswordChangeRequiredException()
+        val passwordChangeRequiredException = PasswordChangeRequiredException()
         val payload = ErrorPayload(
-            message = httpEx.message,
-            code = httpEx.httpCode,
-            codeName = httpEx.codeName,
+            message = passwordChangeRequiredException.message,
+            code = passwordChangeRequiredException.httpCode,
+            codeName = passwordChangeRequiredException.codeName,
         )
-        return buildResponse(httpEx, httpEx.httpStatus, payload, request)
+        return buildResponse(
+            passwordChangeRequiredException,
+            passwordChangeRequiredException.httpStatus,
+            payload,
+            request,
+        )
     }
 
     @ExceptionHandler(InvocationTargetException::class)

@@ -1,6 +1,6 @@
 package org.poweruptime.backend
 
-import org.poweruptime.backend.configuration.HttpExceptionHandler
+import org.poweruptime.backend.configuration.GlobalExceptionHandler
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
@@ -14,7 +14,7 @@ import java.util.*
 @EntityScan("org.poweruptime.backend.*")
 @EnableJpaRepositories("org.poweruptime.backend.*")
 @EnableRetry
-@Import(HttpExceptionHandler::class)
+@Import(GlobalExceptionHandler::class)
 class MonolithApplication {
     companion object {
         @JvmStatic
