@@ -7,9 +7,7 @@
       "customType": "regex",
       "datasourceTemplate": "docker",
       "managerFilePatterns": ["/^infrastructure/versions\\.env$/"],
-      "matchStrings": [
-        "IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"
-      ]
+      "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
     }
   ],
   "extends": [
@@ -35,10 +33,7 @@
     },
     {
       "groupName": "spring boot",
-      "matchDepNames": [
-        "org.springframework.boot",
-        "org.springframework.boot:**"
-      ]
+      "matchDepNames": ["org.springframework.boot", "org.springframework.boot:**"]
     },
     {
       "groupName": "Kotlin dependencies",
