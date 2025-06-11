@@ -49,9 +49,9 @@ export async function app() {
 if (isMainModule(import.meta.url)) {
   (async () => {
     const server = await app();
-    const port = +(process.env['PORT'] || 4000);
+    const port = +(process.env['PORT'] || 4200);
     await server.listen({port});
-    server.log.info(`Listening on http://localhost:${port}`);
+    console.log(`Listening on http://localhost:${port}`);
   })();
 }
 

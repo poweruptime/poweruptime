@@ -61,15 +61,15 @@ services:
       retries: 3
       start_period: 5s
 
-#  web:
-#    container_name: poweruptime-local-backend-dev-web
-#    restart: unless-stopped
-#    build:
-#      context: ../web
-#    ports:
-#      - "4210:4200"
-#    networks:
-#      - poweruptime-local-backend-dev-network
+  web:
+    container_name: poweruptime-local-backend-dev-web
+    restart: unless-stopped
+    build:
+      context: ../web
+    ports:
+      - "4210:4200"
+    networks:
+      - poweruptime-local-backend-dev-network
 
 networks:
   poweruptime-local-backend-dev-network:

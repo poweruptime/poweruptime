@@ -1,11 +1,11 @@
 services:
-  backend:
+  poweruptime-backend:
     container_name: poweruptime-backend-dev-backend
     restart: unless-stopped
     build:
       context: .
     ports:
-      - "80:80"
+      - "8080:8080"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -14,7 +14,7 @@ services:
     volumes:
       - backend:/var/lib/poweruptime
     environment:
-      - POWERUPTIME_HOST=localhost:4000
+      - POWERUPTIME_HOST=localhost:8080
       - DATABASE_HOST=poweruptime-local-backend-dev-db
       - DATABASE_PASSWORD=poweruptime
       - RABBIT_HOST=poweruptime-local-backend-dev-rabbit
@@ -22,6 +22,10 @@ services:
       - SWAGGER_ENABLED=true
       - TEMP_NOTIFICATIONS_ENABLED=true
       - MAIL_ENABLED=false
+      - MAIL_HOST=abc.xyz
+      - MAIL_PORT=1234
+      - MAIL_USERNAME=test
+      - MAIL_PASSWORD=test
     networks:
       - poweruptime-local-backend-dev-network
     # No healthcheck possible as the container is distroless and therfore has no bash nor other tools to make requests
