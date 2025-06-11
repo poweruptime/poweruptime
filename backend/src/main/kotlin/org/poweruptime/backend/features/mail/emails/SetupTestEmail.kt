@@ -11,7 +11,7 @@ data class SetupTestEmail(
 ) : Email {
     override val to = setOf(inviteeEmail)
 
-    override val subject = "Sign up to poweruptime"
+    override val subject = "Setup test email"
 
     override val context = Context().apply {
         setVariable("inviteeEmail", inviteeEmail)
