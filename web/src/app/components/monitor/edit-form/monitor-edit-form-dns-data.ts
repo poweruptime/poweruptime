@@ -145,10 +145,10 @@ export class MonitorEditFormDnsData {
     const value = (event.value || '').trim();
 
     // Add our keyword
-    if (value) {
-      const matches = this.dnsDataFormGroup.controls.matches.getRawValue();
+    if (value.length > 0) {
+      const matches = this.dnsDataFormGroup.controls.matches.getRawValue() ?? [];
 
-      matches?.push(value);
+      matches.push(value);
 
       this.dnsDataFormGroup.controls.matches.setValue(matches);
     }
@@ -158,10 +158,10 @@ export class MonitorEditFormDnsData {
   }
 
   removeDNSMatch(match: string) {
-    const matches = this.dnsDataFormGroup.controls.matches.getRawValue();
-    const index = matches?.findIndex((it) => it === match);
+    const matches = this.dnsDataFormGroup.controls.matches.getRawValue() ?? [];
+    const index = matches.findIndex((it) => match.includes(it));
 
-    if (index && index !== -1) {
+    if (index !== -1) {
       matches!.splice(index, 1);
     }
 
