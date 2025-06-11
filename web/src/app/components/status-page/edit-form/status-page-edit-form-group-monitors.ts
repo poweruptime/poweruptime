@@ -250,8 +250,10 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
   onDelete(monitorId: string): void {
     this.monitorIds.update((monitorIds) => {
       const index = monitorIds.findIndex((it) => it === monitorId);
-      monitorIds.splice(index, 1);
-      return monitorIds;
+      if (index !== -1) {
+        monitorIds.splice(index, 1);
+      }
+      return [...monitorIds];
     });
   }
 
