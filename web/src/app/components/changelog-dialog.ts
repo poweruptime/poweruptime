@@ -8,12 +8,11 @@ import {
 } from '@angular/material/dialog';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {MarkdownComponent} from 'ngx-markdown';
 
 @Component({
   template: `
     <mat-dialog-content>
-      <markdown class="prose dark:prose-invert" [data]="data.changelog" emoji />
+      <div class="prose dark:prose-invert" [innerHTML]="data.changelog"></div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button type="button" mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
@@ -22,14 +21,7 @@ import {MarkdownComponent} from 'ngx-markdown';
   styles: ``,
   selector: 'pu-changelog-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatDialogContent,
-    MatDialogActions,
-    MatButton,
-    MatDialogClose,
-    TranslocoPipe,
-    MarkdownComponent,
-  ],
+  imports: [MatDialogContent, MatDialogActions, MatButton, MatDialogClose, TranslocoPipe],
 })
 export class ChangelogDialog {
   data = inject(MAT_DIALOG_DATA) as {changelog: string};

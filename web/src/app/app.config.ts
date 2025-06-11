@@ -24,8 +24,6 @@ import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-pe
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
-import {MarkedOptions} from 'marked';
-import {MARKED_OPTIONS, MarkedRenderer, provideMarkdown} from 'ngx-markdown';
 import {
   BoldTextTranspiler,
   ItalicTextTranspiler,
@@ -53,21 +51,6 @@ const MY_DATE_FNS_FORMATS: MatDateFormats = {
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'yyyy',
   },
-};
-
-const markedOptionsFactory = (): MarkedOptions => {
-  const renderer = new MarkedRenderer();
-
-  renderer.link = ({href, text}): string => {
-    return `<a target="_blank" href="${href}">${text}</a>`;
-  };
-
-  return {
-    renderer: renderer,
-    gfm: true,
-    breaks: true,
-    pedantic: false,
-  };
 };
 
 export const appConfig: ApplicationConfig = {
@@ -126,6 +109,5 @@ export const appConfig: ApplicationConfig = {
     provideNgxMetaCore(),
     provideNgxMetaStandard(),
     provideNgxMetaOpenGraph(),
-    provideMarkdown({markedOptions: {provide: MARKED_OPTIONS, useFactory: markedOptionsFactory}}),
   ],
 };
