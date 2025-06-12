@@ -127,7 +127,7 @@ abstract class TotalCoverageTask : DefaultTask() {
 }
 
 tasks.register("releaseBeta") {
-    val versionParam = nullOrParameter(project.properties["version"].toString())
+    val versionParam = project.properties["version"].toString().nullOrParameter()
 
     doLast {
         val version = getNewBetaVersion(versionParam)
@@ -139,9 +139,16 @@ tasks.register("releaseBeta") {
         setPowerUpTimeVersion(tagName)
 
         exec {
-            // Use bash -c to execute it
-            commandLine("bash", "-c", """'git-cliff --count-tags "beta" --output "./changelogs/CHANGELOG-beta.md" --tag "$tagName"'""")
-            commandLine("bash", "-c", """'pnpm exec prettier --write ./changelogs/CHANGELOG-beta.md'""")
+            commandLine(
+                "git-cliff",
+                "--count-tags", "beta",
+                "--output", "./changelogs/CHANGELOG-beta.md",
+                "--tag", tagName
+            )
+        }
+
+        exec {
+            commandLine("pnpm", "exec", "prettier", "--write", "./changelogs/CHANGELOG-beta.md")
         }
 
         // Commit changes
@@ -156,18 +163,24 @@ tasks.register("releaseBeta") {
 }
 
 tasks.register("releaseProd") {
-    val versionParam = nullOrParameter(project.properties["version"].toString())
+    val versionParam = project.properties["version"].toString().nullOrParameter()
 
     doLast {
         val version = getNewProdVersion(versionParam)
 
-        // Set POWERUPTIME_VERSION in .versions file
         setPowerUpTimeVersion(version.toString())
 
         exec {
-            // Use bash -c to execute it
-            commandLine("bash", "-c", """'git-cliff --ignore-tags "beta" --output "./changelogs/CHANGELOG.md" --tag "$version"'""")
-            commandLine("bash", "-c", """'pnpm exec prettier --write ./changelogs/CHANGELOG.md'""")
+            commandLine(
+                "git-cliff",
+                "--ignore-tags", "beta",
+                "--output", "./changelogs/CHANGELOG.md",
+                "--tag", version
+            )
+        }
+
+        exec {
+            commandLine("pnpm", "exec", "prettier", "--write", "./changelogs/CHANGELOG.md")
         }
 
         // Commit changes
@@ -350,10 +363,10 @@ data class VersionNumber(
     }
 }
 
-fun nullOrParameter(parameter: String): String? {
-    return if (parameter == "unspecified") {
+fun String.nullOrParameter(): String? {
+    return if (this == "unspecified") {
         null
     } else {
-        parameter
+       this
     }
 }
