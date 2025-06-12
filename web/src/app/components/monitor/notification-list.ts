@@ -183,14 +183,10 @@ import {BackendType} from '../../api';
     .mat-column-monitor {
       @apply w-64;
     }
+
     .mat-column-status {
       @apply w-32;
     }
-
-    .mat-column-createdAt {
-      @apply w-32;
-    }
-
     .mat-column-actions {
       @apply w-24;
     }
