@@ -25,12 +25,12 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
 
 @Component({
   template: `
-    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+    <div class="flex flex-col items-end justify-between gap-2 pt-1 md:flex-row md:items-center">
       <a *isTeamAdmin mat-flat-button routerLink="new">
         {{ 'cmdk.groups.notificationMethod.create' | transloco }}
       </a>
 
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-col items-end gap-2 md:flex-row md:items-center">
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.search' | transloco }}</mat-label>
           <bi name="search" matIconPrefix />

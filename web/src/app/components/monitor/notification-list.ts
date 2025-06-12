@@ -39,10 +39,10 @@ import {BackendType} from '../../api';
     <div class="flex flex-col gap-4">
       <mat-card appearance="outlined">
         <mat-card-content>
-          <div class="flex justify-between">
+          <div class="flex flex-wrap justify-between">
             <h2 class="text-xl">Notifications</h2>
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center justify-end gap-2">
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>{{ 'general.status' | transloco }}</mat-label>
                 <bi name="arrow-down-up" matIconPrefix />

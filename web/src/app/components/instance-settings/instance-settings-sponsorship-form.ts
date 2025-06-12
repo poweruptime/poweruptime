@@ -31,7 +31,7 @@ import {TableLoadingBar} from '../table-loading-bar';
     @let json = jsonStore.json();
     <mat-card appearance="outlined">
       <mat-card-header>
-        <div class="flex w-full items-center justify-between gap-2">
+        <div class="flex w-full flex-wrap items-center justify-between gap-2">
           <h3 class="text-xl">
             {{ 'general.sponsorship' | transloco }}
           </h3>

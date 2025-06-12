@@ -72,6 +72,19 @@
   @apply w-32;
 }
 
+.mat-column-actions {
+  @apply whitespace-nowrap;
+}
+
+.mat-column-actions > * {
+  @apply mr-2;
+}
+
+/* kill the extra margin on the last child */
+.mat-column-actions > *:last-child {
+  @apply mr-0;
+}
+
 .mat-column-deleted {
   @apply w-52;
 }
