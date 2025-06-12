@@ -54,7 +54,7 @@ services:
       traefik.docker.network: poweruptime-local_proxy
     environment:
       - APPRISE_STATEFUL_MODE=disabled
-      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT}
+      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT:-2}
     networks:
       - proxy
 

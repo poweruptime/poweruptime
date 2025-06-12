@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
     environment:
       - APPRISE_STATEFUL_MODE=disabled
-      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT}
+      - APPRISE_WORKER_COUNT=${APPRISE_WORKER_COUNT:-2}
     networks:
       - poweruptime-infrastructure
     healthcheck:
