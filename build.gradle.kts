@@ -140,8 +140,8 @@ tasks.register("releaseBeta") {
 
         exec {
             // Use bash -c to execute it
-            commandLine("bash", "-c", """git-cliff --count-tags "beta" --output ./changelogs/CHANGELOG-beta.md --tag "$tagName" """)
-            commandLine("bash", "-c", """pnpm exec prettier --write ./changelogs/CHANGELOG-beta.md""")
+            commandLine("bash", "-c", """'git-cliff --count-tags "beta" --output "./changelogs/CHANGELOG-beta.md" --tag "$tagName"'""")
+            commandLine("bash", "-c", """'pnpm exec prettier --write ./changelogs/CHANGELOG-beta.md'""")
         }
 
         // Commit changes
@@ -166,8 +166,8 @@ tasks.register("releaseProd") {
 
         exec {
             // Use bash -c to execute it
-            commandLine("bash", "-c", """git-cliff --ignore-tags "beta" --output ./changelogs/CHANGELOG.md --tag "$version" """)
-            commandLine("bash", "-c", """pnpm exec prettier --write ./changelogs/CHANGELOG.md""")
+            commandLine("bash", "-c", """'git-cliff --ignore-tags "beta" --output "./changelogs/CHANGELOG.md" --tag "$version"'""")
+            commandLine("bash", "-c", """'pnpm exec prettier --write ./changelogs/CHANGELOG.md'""")
         }
 
         // Commit changes
