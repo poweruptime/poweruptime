@@ -47,6 +47,7 @@
     "@tailwindcss/postcss": "4.1.8",
     "@tinymce/tinymce-angular": "8.0.1",
     "canvas-confetti": "1.9.3",
+    "chart.js": "^4.4.9",
     "d3-shape": "3.2.0",
     "date-fns": "4.1.0",
     "dfts-helper": "1.2.0",

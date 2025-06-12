@@ -1,46 +1,34 @@
 import {DatePipe} from '@angular/common';
-import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  LOCALE_ID,
+  afterNextRender,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 
 import {AreaChartModule} from '@swimlane/ngx-charts';
-import * as shape from 'd3-shape';
+import Chart, {TooltipItem} from 'chart.js/auto';
 
 @Component({
   template: `
-    @let _chart = chart();
-
-    <div class="pr-8">
-      <ngx-charts-area-chart
-        [scheme]="'cool'"
-        [xAxisLabel]="'Time'"
-        [curve]="curve"
-        [animations]="false"
-        [showXAxisLabel]="true"
-        [yAxis]="true"
-        [yAxisLabel]="'Ping (ms)'"
-        [showYAxisLabel]="true"
-        [yScaleMax]="_chart.highestValue"
-        [yScaleMin]="_chart.smallestValue"
-        [results]="_chart.data">
-        <ng-template #tooltipTemplate let-model="model">
-          <div class="flex flex-col p-2 pt-3">
-            <span class="text-md">
-              {{ model.name | date: 'YYYY.MM.dd HH:mm:ss' }}
-            </span>
-            <span class="text-lg">{{ model.value }}ms</span>
-          </div>
-        </ng-template>
-      </ngx-charts-area-chart>
+    <div class="relative w-full">
+      <canvas class="w-full" #chartView></canvas>
     </div>
-    <div class="flex justify-between pr-4" style="padding-left: 5.5rem">
+    <div class="flex justify-between px-3">
+      @let _chart = chart();
       <span>
-        @if (_chart.data[0].series[0]; as entry) {
+        @if (_chart.data[0]; as entry) {
           {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
         } @else {
           ERROR
         }
       </span>
       <span>
-        @if (_chart.data[0].series[_chart.data[0].series.length - 1]; as entry) {
+        @if (_chart.data[_chart.data.length - 1]; as entry) {
           {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
         } @else {
           ERROR
@@ -53,11 +41,81 @@ import * as shape from 'd3-shape';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PingChart {
-  readonly curve = shape.curveLinear;
+  private readonly locale = inject(LOCALE_ID);
+  private readonly dateFormat = new DatePipe(this.locale);
 
   chart = input.required<{
-    data: {name: string; series: {name: string; value: number}[]}[];
+    data: {name: string; value: number}[];
     smallestValue: number;
     highestValue: number;
   }>();
+
+  chartCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('chartView');
+
+  constructor() {
+    afterNextRender(() => {
+      const chart = this.chart();
+      new Chart(this.chartCanvas().nativeElement, {
+        type: 'line',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+            x: {
+              ticks: {
+                display: false,
+              },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              min: chart.smallestValue,
+              max: chart.highestValue,
+              title: {
+                display: true,
+                text: 'Ping (ms)',
+              },
+              grid: {
+                display: true,
+                drawTicks: true,
+                color: 'oklch(70.7% 0.022 261.325)',
+                lineWidth: 1,
+              },
+            },
+          },
+          parsing: {
+            xAxisKey: 'name',
+            yAxisKey: 'value',
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                title(_: TooltipItem<'line'>[]): string | string[] | void {
+                  return '';
+                },
+                label: (tooltipItem: TooltipItem<'line'>): string => {
+                  return `${tooltipItem.formattedValue}ms - ${this.dateFormat.transform(tooltipItem.label, 'YYYY.MM.dd HH:mm:ss')}`;
+                },
+              },
+            },
+          },
+        },
+        data: {
+          datasets: [
+            {
+              fill: 'start',
+              data: chart.data,
+            },
+          ],
+        },
+      });
+    });
+  }
 }

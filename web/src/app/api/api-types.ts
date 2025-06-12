@@ -2438,16 +2438,12 @@ export interface components {
       /** Format: int64 */
       value: number;
     };
-    PingTimelineDataResponse: {
-      name: string;
-      series: components['schemas']['PingTimelineDataEntryResponse'][];
-    };
     PingTimelineResponse: {
       /** Format: int64 */
       smallestValue: number;
       /** Format: int64 */
       highestValue: number;
-      data: components['schemas']['PingTimelineDataResponse'][];
+      data: components['schemas']['PingTimelineDataEntryResponse'][];
     };
   };
   responses: never;

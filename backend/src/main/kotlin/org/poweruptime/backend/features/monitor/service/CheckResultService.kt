@@ -17,7 +17,6 @@ import org.poweruptime.backend.features.monitor.domain.HistoricalDayUptimeReposi
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
 import org.poweruptime.backend.features.monitor.dto.PingTimelineDataEntryResponse
-import org.poweruptime.backend.features.monitor.dto.PingTimelineDataResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorUptimeStatistics
 import org.poweruptime.backend.features.monitor.model.CheckResult
@@ -407,7 +406,7 @@ fun buildPingTimelineResponse(
     return PingTimelineResponse(
         highestValue = highestValue + 50,
         smallestValue = if (smallestValue - 50 >= 0) smallestValue - 50 else 0,
-        data = listOf(PingTimelineDataResponse(name = "Ping", series = entries)),
+        data = entries,
     )
 }
 

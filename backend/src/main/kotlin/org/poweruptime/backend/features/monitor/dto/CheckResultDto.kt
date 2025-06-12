@@ -57,12 +57,7 @@ data class DayUptimeStatistic(
 data class PingTimelineResponse(
     val smallestValue: Long = 0,
     val highestValue: Long = 0,
-    val data: List<PingTimelineDataResponse>
-)
-
-data class PingTimelineDataResponse(
-    val name: String,
-    val series: List<PingTimelineDataEntryResponse> = listOf(),
+    val data: List<PingTimelineDataEntryResponse> = listOf(),
 )
 
 data class PingTimelineDataEntryResponse(
