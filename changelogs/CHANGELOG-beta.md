@@ -1,5 +1,148 @@
 # Changelog
 
+## 0.2.4-beta-1749720011 - 2025-06-12
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Layout for mobile devices by @Dafnik ([5b2220c](https://github.com/poweruptime/poweruptime/commit/5b2220cf617273f75449a578e0c7773bf10a61dc))
+- Styles by @Dafnik ([51395ce](https://github.com/poweruptime/poweruptime/commit/51395ce777cc480a9f79012f55dcaf510f1e3ec6))
+- Render root page on server by @Dafnik ([2ec529e](https://github.com/poweruptime/poweruptime/commit/2ec529e5566049996da3f1a1bed53b66f5b94ce8))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.3 by @Dafnik ([7a692d4](https://github.com/poweruptime/poweruptime/commit/7a692d40c5083b3ee4e397fb27f6613abd381770))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.3-beta-1749716466...0.2.4-beta-1749720011
+
+## 0.2.3-beta-1749716466 - 2025-06-12
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- APPRISE_URL default value by @Dafnik ([113c9df](https://github.com/poweruptime/poweruptime/commit/113c9df6810a7421c28a96b3a108163b8da634ce))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.3-beta-1749716466 by @Dafnik ([c96b821](https://github.com/poweruptime/poweruptime/commit/c96b821b2a3eaf3c02d8a6890c66d0e8772f0e21))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.3-beta-1749716076...0.2.3-beta-1749716466
+
+## 0.2.3-beta-1749716076 - 2025-06-12
+
+### <!-- 0 -->🚀 Features
+
+- Increase createdAt size by @Dafnik ([85c00e9](https://github.com/poweruptime/poweruptime/commit/85c00e9e4bcbedaf894db031f596631e3f05a80c))
+- Add LOG_LEVEL environment variable by @Dafnik ([1fd0000](https://github.com/poweruptime/poweruptime/commit/1fd00006969b941c0c8d0afffd03af275914d58c))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Dns matches not removable by @Dafnik ([9b14ebc](https://github.com/poweruptime/poweruptime/commit/9b14ebc7a6eeb2d57757a09d1117a44f92c69c41))
+- Rename setup test mail subject by @Dafnik ([b842e80](https://github.com/poweruptime/poweruptime/commit/b842e80c929da751bd1bf2e3f46605261f3ebb0a))
+- Status page monitor not removed in UI by @Dafnik ([1d66382](https://github.com/poweruptime/poweruptime/commit/1d66382c7a18d93f47b249f6aebcd5b566791bbc))
+- Add default APPRISE_WORKER_COUNT to silence warning by @Dafnik ([dfb0cde](https://github.com/poweruptime/poweruptime/commit/dfb0cde34e54a56b6ce57d2e59c7959178ead5f5))
+- Rename Show Changelog to only Changelog by @Dafnik ([4dd3e0d](https://github.com/poweruptime/poweruptime/commit/4dd3e0da56de9877c5e7805aa81e134ce4adc66d))
+
+### <!-- 2 -->🚜 Refactor
+
+- Add logging to AppriseSender by @Dafnik ([99e9191](https://github.com/poweruptime/poweruptime/commit/99e9191ecdbe5c802f2a5e1c9c4e8ce7aa16d005))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.2 by @Dafnik ([0dfc5c5](https://github.com/poweruptime/poweruptime/commit/0dfc5c549f6733b20803c441a76f6efa4b82e782))
+- Update postgres (#199) by @renovate[bot] ([04b49a6](https://github.com/poweruptime/poweruptime/commit/04b49a6ef42d9dad4a06e73cef0322e9891b5946)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Set POWERUPTIME_VERSION to 0.2.3-beta-1749714382 by @Dafnik ([8db5ebb](https://github.com/poweruptime/poweruptime/commit/8db5ebbd01208e9f83817e030a4acc3e995c1d80))
+- Set POWERUPTIME_VERSION to 0.2.3-beta-1749716076 by @Dafnik ([40f02c1](https://github.com/poweruptime/poweruptime/commit/40f02c1e80bea2360e8bb54b77f1d0fc61fe78f5))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749644582...0.2.3-beta-1749716076
+
+## 0.2.2-beta-1749644582 - 2025-06-11
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.2-beta-1749644582 by @Dafnik ([6804648](https://github.com/poweruptime/poweruptime/commit/6804648dd9bcac15ddf0ea9f8a6ee35f5dd72327))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749644217...0.2.2-beta-1749644582
+
+## 0.2.2-beta-1749644217 - 2025-06-11
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.2-beta-1749644217 by @Dafnik ([19ed14f](https://github.com/poweruptime/poweruptime/commit/19ed14f55ee50db8ddc6b750193700b224b4c7dc))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749642872...0.2.2-beta-1749644217
+
+## 0.2.2-beta-1749642872 - 2025-06-11
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.2.2-beta-1749642872 by @Dafnik ([7201dea](https://github.com/poweruptime/poweruptime/commit/7201dea62f6f491ac69cb0fa6b8b697fbe05a65d))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.1-beta-1749642330...0.2.2-beta-1749642872
+
+## 0.2.1-beta-1749642330 - 2025-06-11
+
+### <!-- 0 -->🚀 Features
+
+- Add notification cleanup by @Dafnik ([db9f3bd](https://github.com/poweruptime/poweruptime/commit/db9f3bd245f555035e7c416441107c5c9cb0d238))
+- Add supporter badge by @Dafnik ([e165923](https://github.com/poweruptime/poweruptime/commit/e165923e09f0e041d0f646c209ef4d3b6dc4a71c))
+- Add supporter badge by @Dafnik ([250fdd5](https://github.com/poweruptime/poweruptime/commit/250fdd5da47eb5ea889eed17a395346bd60e8dcb))
+- Version check by @Dafnik ([d5af26e](https://github.com/poweruptime/poweruptime/commit/d5af26ecece08f432e5c18fd59b50ba4565dba55))
+- Migrate to docker hub registry by @Dafnik ([dc32aa5](https://github.com/poweruptime/poweruptime/commit/dc32aa57cb05e3de778ab8d28af36a6336efb449))
+- New version mail by @Dafnik ([b831734](https://github.com/poweruptime/poweruptime/commit/b8317346ebea8efd1b1fbcf9a2d8e458fbfb9071))
+- Update translations by @Dafnik ([2149d3f](https://github.com/poweruptime/poweruptime/commit/2149d3fd19c54c1d7edb1ec612df1673c1e22ca1))
+- Apprise integration tests by @Dafnik ([54ba8e7](https://github.com/poweruptime/poweruptime/commit/54ba8e7dd4c68ba1f8ec984b48eb0bf2a4b75d6e))
+- Render changelog markdown on server by @Dafnik ([ae18076](https://github.com/poweruptime/poweruptime/commit/ae180768412faebab6a24c4d20865e941d5824c7))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Format CHANGELOG file after generating it by @Dafnik ([5d64bca](https://github.com/poweruptime/poweruptime/commit/5d64bca187bf1eb6840d18718d9eb0322dc250c3))
+- Global exception handler issues and kotlin compiler warning by @Dafnik ([6b9d868](https://github.com/poweruptime/poweruptime/commit/6b9d8688fd5f7e5484820d20170d888e8f4e0429))
+- Web port by @Dafnik ([4032407](https://github.com/poweruptime/poweruptime/commit/4032407d8cf4ba0f894a0d9889b0c3da75b70de2))
+
+### <!-- 2 -->🚜 Refactor
+
+- Kotlin logger by @Dafnik ([a5491e4](https://github.com/poweruptime/poweruptime/commit/a5491e4179052395af281084f76c51f053c834a5))
+- Global exception handler by @Dafnik ([7f0824d](https://github.com/poweruptime/poweruptime/commit/7f0824dc8fc40125777aa8c48ab1e0c3613fac79))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Update angular monorepo (#164) by @renovate[bot] ([e89d876](https://github.com/poweruptime/poweruptime/commit/e89d8767b007c01d28d265f7785dc7c9f48c23ae)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.liquibase:liquibase-core to v4.32.0 (#166) by @renovate[bot] ([7eefdb9](https://github.com/poweruptime/poweruptime/commit/7eefdb95c3c6812586c07684dbead292dbe4b277)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency software.xdev.mockserver:client to v1.0.17 (#167) by @renovate[bot] ([4ae705f](https://github.com/poweruptime/poweruptime/commit/4ae705ff183a9189e345758a12a00dc5a66c600b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency marked to v15.0.12 (#165) by @renovate[bot] ([dbb8a73](https://github.com/poweruptime/poweruptime/commit/dbb8a7371b483b31561ddd85740f064e34aeadb2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency software.xdev.mockserver:testcontainers to v1.0.17 (#168) by @renovate[bot] ([a123b34](https://github.com/poweruptime/poweruptime/commit/a123b3473013ff117e8964bf088e4a1f3cea964d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency react-email to v4.0.15 (#170) by @renovate[bot] ([0c2f9a2](https://github.com/poweruptime/poweruptime/commit/0c2f9a2dd49961fd6c944c26305d0825966157f8)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.springframework.retry:spring-retry to v2.0.12 (#169) by @renovate[bot] ([90db495](https://github.com/poweruptime/poweruptime/commit/90db49551fae449aa80c853b4e0ec7c866da7c6a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angular monorepo to v19.2.14 (#174) by @renovate[bot] ([5ffd384](https://github.com/poweruptime/poweruptime/commit/5ffd3842e7449d9d072cc338023a3e46511350ae)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency gradle to v8.14.1 (#176) by @renovate[bot] ([3fb6335](https://github.com/poweruptime/poweruptime/commit/3fb6335efd6c7381327c0eed2c24b2a2312a6715)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update testcontainers to v1.21.1 (#181) by @renovate[bot] ([0adf605](https://github.com/poweruptime/poweruptime/commit/0adf605e9812dbeeefa78a18a90fe8e6e7f92215)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.postgresql:postgresql to v42.7.6 (#177) by @renovate[bot] ([73d6368](https://github.com/poweruptime/poweruptime/commit/73d636884744abc4d73b773ea31151ee46b5ae5b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update plugin com.gradle.develocity to v4.0.2 (#178) by @renovate[bot] ([12d3f2f](https://github.com/poweruptime/poweruptime/commit/12d3f2fcf0902f40f087d6ac3953618860041723)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angularmaterial monorepo to v19.2.18 (#175) by @renovate[bot] ([4a11551](https://github.com/poweruptime/poweruptime/commit/4a11551e7989bd39f8aba42d6ea503cc3b6a1b71)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Generate new license report (#179) by @github-actions[bot] ([dfb30a3](https://github.com/poweruptime/poweruptime/commit/dfb30a350f39d72cca2cdd71630c4d9ba5e43a36)), Co-authored-by:Dafnik <16242839+Dafnik@users.noreply.github.com>
+- Update dependency ngx-mat-select-search to v8.0.2 (#182) by @renovate[bot] ([1f60f08](https://github.com/poweruptime/poweruptime/commit/1f60f08a3b768bea607c0bda0ec4a2dd2705a023)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.springframework.cloud:spring-cloud-dependencies to v2025 (#190) by @renovate[bot] ([7f5da99](https://github.com/poweruptime/poweruptime/commit/7f5da99638d0923e91e625a6e0aa5e12c42dbcea)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update tailwindcss monorepo to v4.1.8 (#180) by @renovate[bot] ([186497b](https://github.com/poweruptime/poweruptime/commit/186497b6c1f840b24028df6f6e82479a7ff0bfb2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.apache.httpcomponents.client5:httpclient5 to v5.5 (#187) by @renovate[bot] ([02cecea](https://github.com/poweruptime/poweruptime/commit/02cecea68623b7f8f9f78d5f63b6bcea631b2386)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency tinymce to v7.9.1 (#188) by @renovate[bot] ([af6db7b](https://github.com/poweruptime/poweruptime/commit/af6db7bfa1d7607bbec74a0bbb4c7235b8b15372)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency angular-eslint to v19.6.0 (#186) by @renovate[bot] ([5fc74e2](https://github.com/poweruptime/poweruptime/commit/5fc74e2c6521c6f7b144f3bb71aee62b688ea1a9)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Lock file maintenance (#172) by @renovate[bot] ([1131b57](https://github.com/poweruptime/poweruptime/commit/1131b57799bcdbfd8c5d70490d184b3d4a91c434)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency typescript-eslint to v8.33.0 (#189) by @renovate[bot] ([dbba1a0](https://github.com/poweruptime/poweruptime/commit/dbba1a0c80997c60db9d79df07dc31be9d93a98f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @ng-matero/extensions to v19.4.0 (#185) by @renovate[bot] ([a3d91e3](https://github.com/poweruptime/poweruptime/commit/a3d91e3eb7593f4be656f4f5bdd085e2e4e0f769)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency postcss to v8.5.4 (#183) by @renovate[bot] ([d579b47](https://github.com/poweruptime/poweruptime/commit/d579b47e957bcc2b53e36b97b5d8bbe09a5b20cf)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update typescript types (#184) by @renovate[bot] ([84a8d54](https://github.com/poweruptime/poweruptime/commit/84a8d542da25e350618d7b0e83f61bd10552dbc5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Lock file maintenance (#194) by @renovate[bot] ([b86ce8c](https://github.com/poweruptime/poweruptime/commit/b86ce8ce1c1dbac142e6bc7410454423486a1546)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Fix format by @Dafnik ([d8eafe8](https://github.com/poweruptime/poweruptime/commit/d8eafe87e19138c6d375f63556a82220f836a905))
+- Update dependency org.springdoc:springdoc-openapi-starter-webmvc-ui to v2.8.9 (#195) by @renovate[bot] ([befb934](https://github.com/poweruptime/poweruptime/commit/befb9341b83dceed4d496808e93fb77e89a0e3ac)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update plugin org.springframework.boot to v3.5.0 (#171) by @renovate[bot] ([ddb0564](https://github.com/poweruptime/poweruptime/commit/ddb05642644f3ffafd1e7bb6b75673233940c76c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency io.github.oshai:kotlin-logging-jvm to v7.0.7 (#197) by @renovate[bot] ([1203106](https://github.com/poweruptime/poweruptime/commit/1203106a609596083581b64153c81fb18009210b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency gradle to v8.14.2 (#196) by @renovate[bot] ([f211ad0](https://github.com/poweruptime/poweruptime/commit/f211ad0f6a8540c176494493138bf7f6ed9e5150)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update rabbitmq docker tag to v4.1.1 (#198) by @renovate[bot] ([4b30d3d](https://github.com/poweruptime/poweruptime/commit/4b30d3d18c4c61aeb135e4857f4daab1bf8ecfeb)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Set POWERUPTIME_VERSION to 0.2.0 by @Dafnik ([32738fd](https://github.com/poweruptime/poweruptime/commit/32738fd586c28ccf82a4a3365e5f4f56a859b058))
+- Set POWERUPTIME_VERSION to 0.2.1 by @Dafnik ([c3e0438](https://github.com/poweruptime/poweruptime/commit/c3e043810bc032be1729ec69e2bfe546461d4f69))
+- Set POWERUPTIME_VERSION to 0.2.1-beta-1749642330 by @Dafnik ([0ae498f](https://github.com/poweruptime/poweruptime/commit/0ae498f5f8b54c43aabca6a83fdbba61c80331c4))
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.0-beta-1747925021...0.2.1-beta-1749642330
+
 ## 0.2.0-beta-1747925021 - 2025-05-22
 
 ### <!-- 0 -->🚀 Features
@@ -192,6 +335,7 @@
 - Try to fix renovate to use chore semantic commit type by @Dafnik ([3b5dcb3](https://github.com/poweruptime/poweruptime/commit/3b5dcb39e2d60fe0cd7461e4c7e1c4d4ab57b980))
 - Lock file maintenance (#161) by @renovate[bot] ([5ab60cb](https://github.com/poweruptime/poweruptime/commit/5ab60cb6312fd85268369ac5d1a6b933d5e2fbfc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Lock file maintenance (#162) by @renovate[bot] ([e7847b1](https://github.com/poweruptime/poweruptime/commit/e7847b1cc1c3f1c752dca7899e7afaaff1430ce9)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Set POWERUPTIME_VERSION to 0.2.0-beta-1747925021 by @Dafnik ([4595f4d](https://github.com/poweruptime/poweruptime/commit/4595f4ded4ac7a3b06a1d64730b9cfde1d264c72))
 
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743093279751...0.2.0-beta-1747925021
 
