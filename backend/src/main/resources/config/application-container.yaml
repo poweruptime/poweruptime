@@ -80,7 +80,7 @@ poweruptime:
   swagger: ${SWAGGER_ENABLED:false}
   host: ${POWERUPTIME_HOST}
   apprise:
-    url: ${POWERUPTIME_APPRISE_URL:"http://poweruptime-apprise:8000"}
+    url: ${POWERUPTIME_APPRISE_URL:http://poweruptime-apprise:8000}
   mail:
     enabled: ${MAIL_ENABLED:true}
     security: ${MAIL_SECURITY:NONE_STARTTLS}
