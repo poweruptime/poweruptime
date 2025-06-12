@@ -68,6 +68,10 @@
   @apply w-28;
 }
 
+.mat-column-createdAt {
+  @apply w-32;
+}
+
 .mat-column-deleted {
   @apply w-52;
 }

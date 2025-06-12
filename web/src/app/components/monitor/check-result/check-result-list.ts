@@ -172,10 +172,6 @@ import {BackendType} from '../../../api';
       @apply w-32;
     }
 
-    .mat-column-createdAt {
-      @apply w-32;
-    }
-
     .mat-column-actions {
       @apply w-24;
     }
