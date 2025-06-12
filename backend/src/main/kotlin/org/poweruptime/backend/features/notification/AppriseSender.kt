@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.notification
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
@@ -28,90 +29,112 @@ import java.time.Instant
 
 @Service
 class AppriseSender(
-    @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
-    @Value(Config.APPRISE_URL) private val appriseUrl: String,
+    @Value(Config.NOTIFICATION_TEMP_ENABLED)
+    private val tempNotificationsEnabled: Boolean = false,
+
+    @Value(Config.APPRISE_URL)
+    private val appriseUrl: String,
+
     private val restTemplate: RestTemplate,
     private val notificationTemplateService: NotificationTemplateService,
     private val tempNotificationService: TempNotificationService,
 ) {
-    private val notificationMethodDataConverterFactory = NotificationMethodDataConverterFactory()
-    private val htmlConverterFactory = HtmlConverterFactory()
+    private final val logger = KotlinLogging.logger {}
+    private final val notificationMethodDataConverterFactory = NotificationMethodDataConverterFactory()
+    private final val htmlConverterFactory = HtmlConverterFactory()
 
     fun send(subNotification: SubNotification): SubNotification {
-        val notificationTemplate = notificationTemplateService.getRenderedNotification(subNotification)
+        logger.info {
+            "Starting send() for SubNotification(id=${subNotification.id}, type=${subNotification.method.data._type})"
+        }
+
+        val notificationTemplate =
+            notificationTemplateService.getRenderedNotification(subNotification)
+        logger.debug {
+            "Rendered template: title='${notificationTemplate.title}', " +
+                "body='${notificationTemplate.body.take(100)}...'"
+        }
+
         subNotification.title = notificationTemplate.title
         subNotification.message = notificationTemplate.body
 
-        val notificationMethodDataAppriseConverter = notificationMethodDataConverterFactory.getConverter(
-            subNotification,
-        )
+        val converter =
+            notificationMethodDataConverterFactory.getConverter(subNotification)
+        val appriseDto = converter.convert(subNotification.method.data)
 
-        val statelessNotificationRequest = getAppriseNotificationRequest(
-            notificationMethodDataAppriseConverter.convert(subNotification.method.data),
+        val request = getAppriseNotificationRequest(
+            appriseDto,
             notificationTemplate,
             subNotification.method.data._type,
             subNotification.notification.checkResult.status,
         )
+        logger.debug {
+            "Built AppriseNotificationRequest: $request"
+        }
 
         if (tempNotificationsEnabled) {
+            logger.info { "Temp notifications enabled, storing temp notification" }
             tempNotificationService.addNotification(
                 TempNotification(
                     to = subNotification.method.data._type.name,
                     subject = notificationTemplate.title,
                     bodyHTML = notificationTemplate.body,
-                    appriseDto = statelessNotificationRequest,
+                    appriseDto = request,
                 ),
             )
-
             subNotification.sentAt = Instant.now()
-
+            logger.info { "Temp notification saved, returning without calling Apprise" }
             return subNotification
         }
 
-        val result = sendToApprise(statelessNotificationRequest)
-
-        if (result != null) {
-            subNotification.error = result.abbreviate(Database.MAX_MESSAGE_LENGTH)
+        val errorMessage = sendToApprise(request)
+        if (errorMessage != null) {
+            logger.error { "Error sending to Apprise: $errorMessage" }
+            subNotification.error = errorMessage.abbreviate(Database.MAX_MESSAGE_LENGTH)
         } else {
             subNotification.sentAt = Instant.now()
+            logger.info { "Notification sent successfully at ${subNotification.sentAt}" }
         }
 
         return subNotification
     }
 
     private fun getAppriseNotificationRequest(
-        notificationMethodDataAppriseDto: NotificationMethodDataAppriseDto,
-        notificationTemplate: NotificationTemplate,
-        notificationMethodType: NotificationMethodType,
+        dto: NotificationMethodDataAppriseDto,
+        tpl: NotificationTemplate,
+        type: NotificationMethodType,
         status: MonitorStatus
     ) = AppriseNotificationRequest(
         urls = listOf(
-            "${notificationMethodDataAppriseDto.url}?footer=no&image=no&format=${
-                when (notificationMethodType.bodyType) {
-                    NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
-                    NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
-                    NotificationMethodTemplateType.MARKDOWN,
-                    NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
-                }
-            }${
-                notificationMethodDataAppriseDto.extras
-                    ?.map { (key, value) -> "$key=$value" }
+            buildString {
+                append(dto.url)
+                append("?footer=no&image=no&format=")
+                append(
+                    when (type.bodyType) {
+                        NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+                        NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+                        NotificationMethodTemplateType.MARKDOWN,
+                        NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
+                    },
+                )
+                dto.extras
+                    ?.map { (k, v) -> "$k=$v" }
                     ?.joinToString("&", "&")
-                    ?: ""
-            }",
+                    ?.let { append(it) }
+            },
         ),
-        title = notificationTemplate.title.emptyToNull(),
-        body = htmlConverterFactory.getConverter(notificationMethodType.bodyType).convert(notificationTemplate.body),
+        title = tpl.title.emptyToNull(),
+        body = htmlConverterFactory
+            .getConverter(type.bodyType)
+            .convert(tpl.body),
         type = when (status) {
             MonitorStatus.UP -> AppriseNotificationType.INFO
             MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
-            MonitorStatus.PENDING,
-            MonitorStatus.MAINTENANCE,
-            MonitorStatus.PAUSED -> throw IllegalArgumentException(
+            else -> throw IllegalArgumentException(
                 "Status not allowed at this point: $status",
             )
         },
-        format = when (notificationMethodType.bodyType) {
+        format = when (type.bodyType) {
             NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
             NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
             NotificationMethodTemplateType.MARKDOWN,
@@ -119,12 +142,15 @@ class AppriseSender(
         },
     )
 
-    private fun sendToApprise(statelessNotificationRequest: AppriseNotificationRequest) = try {
+    private fun sendToApprise(
+        request: AppriseNotificationRequest
+    ): String? = try {
+        logger.info { "Posting to Apprise URL: '$appriseUrl/notify' " }
         restTemplate.exchange(
             "$appriseUrl/notify",
             HttpMethod.POST,
             HttpEntity(
-                statelessNotificationRequest,
+                request,
                 HttpHeaders().apply {
                     add("Accept", "*/*")
                     add("Content-Type", "application/json")
@@ -134,6 +160,7 @@ class AppriseSender(
         )
         null
     } catch (e: Throwable) {
+        logger.error { "Exception while calling Apprise, $e" }
         e.message ?: "Unknown error"
     }
 }
