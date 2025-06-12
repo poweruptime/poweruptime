@@ -128,6 +128,7 @@ These configuration values only effect the System E-Mail service.
 | `PUSH_ENABLED`               | Whether push notifications are enabled.                           | `true`        | x        |
 | `TEMP_NOTIFICATIONS_ENABLED` | Whether temporary notifications are enabled for testing purposes. | `false`       | x        |
 | `SWAGGER_ENABLED`            | Whether the Swagger/OpenAPI documentation interface is enabled.   | `false`       | x        |
+| `LOG_LEVEL`                  | Log Level of application                                          | `ERROR`       | x        |
 
 ## Good to know
 
