@@ -38,7 +38,7 @@ interface BackendEntry {
           (click)="changelogStore.load(undefined)"
           type="button"
           mat-stroked-button>
-          Show Changelog
+          Changelog
         </button>
       </div>
       <div class="grid gap-4 py-4">
