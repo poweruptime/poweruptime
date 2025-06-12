@@ -14,7 +14,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
   template: `
     <div class="flex flex-col gap-4">
       @if (publicMonitorDetailStore.monitor(); as monitor) {
-        <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
           <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
 
           <pu-monitor-status [status]="monitor.status" />
