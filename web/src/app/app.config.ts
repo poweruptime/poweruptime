@@ -3,7 +3,7 @@ import {
   ApplicationConfig,
   LOCALE_ID,
   isDevMode,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
 import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
@@ -55,7 +55,7 @@ const MY_DATE_FNS_FORMATS: MatDateFormats = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideRouter(
       ROUTES,
       withComponentInputBinding(),

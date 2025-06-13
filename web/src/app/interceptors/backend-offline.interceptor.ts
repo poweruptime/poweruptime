@@ -34,6 +34,7 @@ export function backendOfflineInterceptor(
         if (error instanceof HttpErrorResponse) {
           switch (error.status) {
             case 0:
+            case 500:
             case 501:
             case 502:
               backendOfflineService.set(true);

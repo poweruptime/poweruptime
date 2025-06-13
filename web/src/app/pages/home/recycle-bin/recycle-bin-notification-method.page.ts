@@ -72,7 +72,7 @@ import {trackBy} from '@app/util';
             {{ 'general.deleted' | transloco }}
           </th>
           <td *matCellDef="let element" mat-cell>
-            <pu-relative-time [value]="element.deleted" format="YYYY.MM.dd HH:mm:ss" />
+            <pu-relative-time [value]="element.deleted" format="yyyy.MM.dd HH:mm:ss" />
           </td>
         </ng-container>
 

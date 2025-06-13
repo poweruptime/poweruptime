@@ -10,26 +10,25 @@ import {
   viewChild,
 } from '@angular/core';
 
-import {AreaChartModule} from '@swimlane/ngx-charts';
 import Chart, {TooltipItem} from 'chart.js/auto';
 
 @Component({
   template: `
-    <div class="relative w-full">
+    <div class="relative h-96 w-full">
       <canvas class="w-full" #chartView></canvas>
     </div>
     <div class="flex justify-between px-3">
       @let _chart = chart();
       <span>
         @if (_chart.data[0]; as entry) {
-          {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
+          {{ entry.name | date: 'yyyy.MM.dd HH:mm' }}
         } @else {
           ERROR
         }
       </span>
       <span>
         @if (_chart.data[_chart.data.length - 1]; as entry) {
-          {{ entry.name | date: 'YYYY.MM.dd HH:mm' }}
+          {{ entry.name | date: 'yyyy.MM.dd HH:mm' }}
         } @else {
           ERROR
         }
@@ -37,7 +36,7 @@ import Chart, {TooltipItem} from 'chart.js/auto';
     </div>
   `,
   selector: 'pu-ping-chart',
-  imports: [AreaChartModule, DatePipe],
+  imports: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PingChart {
@@ -58,6 +57,8 @@ export class PingChart {
       new Chart(this.chartCanvas().nativeElement, {
         type: 'line',
         options: {
+          backgroundColor: 'rgba(16, 185, 129, 0.2)', // emerald-500 @ 20% alpha
+          borderColor: 'rgba(16, 185, 129, 1)',
           responsive: true,
           maintainAspectRatio: false,
           interaction: {
@@ -101,7 +102,7 @@ export class PingChart {
                   return '';
                 },
                 label: (tooltipItem: TooltipItem<'line'>): string => {
-                  return `${tooltipItem.formattedValue}ms - ${this.dateFormat.transform(tooltipItem.label, 'YYYY.MM.dd HH:mm:ss')}`;
+                  return `${tooltipItem.formattedValue}ms - ${this.dateFormat.transform(tooltipItem.label, 'yyyy.MM.dd HH:mm:ss')}`;
                 },
               },
             },

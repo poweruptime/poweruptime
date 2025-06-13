@@ -11,10 +11,10 @@ import {
 } from '@angular/cdk/overlay';
 import {_getEventTarget} from '@angular/cdk/platform';
 import {TemplatePortal} from '@angular/cdk/portal';
-import {DOCUMENT} from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
+  DOCUMENT,
   Directive,
   ElementRef,
   EnvironmentInjector,

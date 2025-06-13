@@ -55,17 +55,22 @@ export const mapUptime = (uptime: BackendType['MonitorMaxResponse']['uptime']) =
 
 export const calculatePingChart = (checkResults: BackendType['CheckResultMinResponse'][]) => {
   const data = checkResults.map((cr) => ({name: cr.createdAt, value: cr.pingMs ?? 0})).reverse();
-  const values = data.map((it) => it.value).filter((it) => it !== 0);
+
+  const values = data.map((d) => d.value).filter((v) => v !== 0);
+
   const smallest = Math.min(...values);
   const biggest = Math.max(...values);
 
-  // Sort lists by name if needed, as merging unique items might change the order
+  // Sort by timestamp
   data.sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
+
+  const smallestValue = Math.max(Math.floor(smallest / 50) * 50, 0);
+  const highestValue = Math.ceil(biggest / 50) * 50;
 
   return {
     data,
-    smallestValue: smallest - 50 >= 0 ? smallest - 50 : 0,
-    highestValue: biggest + 50,
+    smallestValue,
+    highestValue,
   };
 };
 

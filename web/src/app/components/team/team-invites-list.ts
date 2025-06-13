@@ -59,7 +59,7 @@ import {trackBy} from '@app/util';
           {{ 'team.settings.invitedAt' | transloco }}
         </th>
         <td *matCellDef="let element" mat-cell>
-          <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
+          <pu-relative-time [value]="element.createdAt" format="yyyy.MM.dd HH:mm:ss" />
         </td>
       </ng-container>
 

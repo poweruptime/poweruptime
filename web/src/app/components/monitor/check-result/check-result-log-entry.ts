@@ -38,7 +38,7 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
           <pu-relative-time
             class="text-sm tabular-nums text-gray-400"
             [value]="_logEntry.createdAt"
-            format="YYYY.MM.dd HH:mm:ss" />
+            format="yyyy.MM.dd HH:mm:ss" />
         }
       </div>
     </div>

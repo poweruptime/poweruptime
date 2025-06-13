@@ -11,7 +11,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
   template: `
     <div class="flex flex-col items-center py-4">
       <span>
-        {{ 'refreshIn.lastUpdate' | transloco: {value: now | date: 'YYYY.MM.dd HH:mm:ss'} }}
+        {{ 'refreshIn.lastUpdate' | transloco: {value: now | date: 'yyyy.MM.dd HH:mm:ss'} }}
       </span>
       <span>{{ 'refreshIn.refreshIn' | transloco: {value: countdown()} }}</span>
     </div>

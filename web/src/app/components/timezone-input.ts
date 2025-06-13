@@ -44,7 +44,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
     <div>
       <span>{{ 'general.time' | transloco }}:</span>
-      {{ nowInTimezone() | date: 'YYYY.MM.dd HH:mm:ss' }}
+      {{ nowInTimezone() | date: 'yyyy.MM.dd HH:mm:ss' }}
     </div>
   `,
   providers: [

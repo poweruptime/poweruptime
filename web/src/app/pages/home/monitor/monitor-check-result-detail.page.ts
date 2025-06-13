@@ -65,7 +65,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                 <div class="flex flex-col gap-2">
                   <h3 class="text-gray-400">{{ 'checkResult.details.startedAt' | transloco }}</h3>
                   <span class="text-lg font-bold">
-                    {{ checkResult.createdAt | date: 'HH:mm:ss YYYY.MM.dd' }}
+                    {{ checkResult.createdAt | date: 'HH:mm:ss yyyy.MM.dd' }}
                   </span>
                 </div>
               </div>

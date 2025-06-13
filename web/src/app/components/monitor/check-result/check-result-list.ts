@@ -102,7 +102,7 @@ import {BackendType} from '../../../api';
                   {{ 'general.createdAt' | transloco }}
                 </th>
                 <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                  <pu-relative-time [value]="element.createdAt" format="YYYY.MM.dd HH:mm:ss" />
+                  <pu-relative-time [value]="element.createdAt" format="yyyy.MM.dd HH:mm:ss" />
                 </td>
               </ng-container>
 

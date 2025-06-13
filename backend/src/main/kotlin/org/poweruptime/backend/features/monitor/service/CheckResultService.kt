@@ -403,9 +403,14 @@ fun buildPingTimelineResponse(
         smallestValue = 0L
     }
 
+// Round down to nearest multiple of 50, but never below 0
+    val smallestRounded = maxOf((smallestValue / 50) * 50, 0)
+    // Round up to nearest multiple of 50
+    val highestRounded = ((highestValue + 49) / 50) * 50
+
     return PingTimelineResponse(
-        highestValue = highestValue + 50,
-        smallestValue = if (smallestValue - 50 >= 0) smallestValue - 50 else 0,
+        highestValue = highestRounded,
+        smallestValue = smallestRounded,
         data = entries,
     )
 }
