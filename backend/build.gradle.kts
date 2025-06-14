@@ -22,9 +22,9 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
     // Jackson
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.18.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.1")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.19.1")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
