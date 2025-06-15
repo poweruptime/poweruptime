@@ -8,9 +8,9 @@
     "export": "email export --outDir ../backend/src/main/resources/templates/html"
   },
   "dependencies": {
-    "@react-email/components": "0.0.41",
+    "@react-email/components": "0.0.42",
     "react": "19.1.0",
-    "react-email": "4.0.15"
+    "react-email": "4.0.16"
   },
   "devDependencies": {
     "@types/react": "19.1.6",
