@@ -57,7 +57,7 @@
     "dfx-qrcode": "20.0.0",
     "emoji-toolkit": "9.0.1",
     "eventsource": "4.0.0",
-    "fastify": "5.3.3",
+    "fastify": "5.4.0",
     "nanoid": "5.1.5",
     "ngx-mat-select-search": "8.0.2",
     "ngx-sonner": "3.1.0",
