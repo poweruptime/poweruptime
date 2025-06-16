@@ -1,5 +1,5 @@
 import {Component, computed, input} from '@angular/core';
-import {MatIconAnchor} from '@angular/material/button';
+import {MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
@@ -46,11 +46,15 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
   template: `
     @let _team = team();
     <a [routerLink]="_team.id">
-      <div class="flex h-[230px] flex-col rounded-xl transition duration-200 hover:scale-105">
+      <div class="group flex h-[230px] flex-col rounded-xl">
         <div
-          class="h-40 w-full rounded-t-xl"
-          [style.background-image]="backgroundPattern()"
-          [style.background-color]="'#dfdbe5'"></div>
+          class="relative h-40 w-full overflow-hidden rounded-t-xl"
+          [style.background-color]="'#dfdbe5'">
+          <div
+            class="absolute inset-0 transition-transform duration-200 group-hover:scale-110"
+            [style.background-image]="backgroundPattern()"
+            [style.background-position]="'center'"></div>
+        </div>
         <div class="rounded-b-xl border-b border-l border-r px-4 pb-4">
           <div class="mt-3 flex items-center justify-between">
             <div class="inline-flex items-center gap-2">
@@ -88,6 +92,7 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
     MatTooltip,
     TeamCardMonitorCount,
     TranslocoPipe,
+    MatIconButton,
   ],
 })
 export class TeamCard {
