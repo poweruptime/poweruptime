@@ -139,11 +139,17 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           }
         </div>
 
-        <mat-chip-set aria-label="Monitor information">
-          <mat-chip>
-            {{ monitor.checker._type | monitorCheckerDataValueLabel | transloco }}
-            {{ 'general.monitor' | transloco }}
-          </mat-chip>
+        <div class="flex flex-wrap gap-3">
+          <a
+            class="hover:cursor-pointer"
+            [routerLink]="[]"
+            [queryParams]="{'search.show': true, 'search.type': monitor.checker._type}"
+            queryParamsHandling="merge">
+            <mat-chip>
+              {{ monitor.checker._type | monitorCheckerDataValueLabel | transloco }}
+              {{ 'general.monitor' | transloco }}
+            </mat-chip>
+          </a>
 
           @if (monitor.retries; as retries) {
             <mat-chip class="flex items-center">
@@ -166,14 +172,16 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           }
 
           @for (notificationMethod of monitor.notificationMethods; track notificationMethod.id) {
-            <a [routerLink]="'../../notification-methods/' + notificationMethod.id">
+            <a
+              class="hover:cursor-pointer"
+              [routerLink]="'../../notification-methods/' + notificationMethod.id">
               <mat-chip class="flex items-center">
                 <bi class="mr-1" name="bell" />
                 {{ notificationMethod.name }}
               </mat-chip>
             </a>
           }
-        </mat-chip-set>
+        </div>
 
         @if (monitor.tags.length > 0) {
           <div class="flex flex-wrap gap-2">
