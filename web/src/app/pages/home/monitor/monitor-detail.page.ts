@@ -21,7 +21,7 @@ import {
   PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
-import {IsTeamAdmin} from '@app/directives';
+import {IsTeamAdmin, Tag} from '@app/directives';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {
   CheckResultsPingStore,
@@ -105,7 +105,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             ">@if (cutDescription()) {{{ description | s_cut: 300 : '....' }} } @else {{{ description }}}</pre>
         }
 
-        <div>
+        <div class="flex flex-wrap gap-4">
           @switch (monitor.checker._type) {
             @case ('HTTP') {
               <a
@@ -139,7 +139,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           }
         </div>
 
-        <mat-chip-set aria-label="Dog selection">
+        <mat-chip-set aria-label="Monitor information">
           <mat-chip>
             {{ monitor.checker._type | monitorCheckerDataValueLabel | transloco }}
             {{ 'general.monitor' | transloco }}
@@ -164,7 +164,32 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               {{ 'monitor.edit.upsideDown' | transloco }}
             </mat-chip>
           }
+
+          @for (notificationMethod of monitor.notificationMethods; track notificationMethod.id) {
+            <a [routerLink]="'../../notification-methods/' + notificationMethod.id">
+              <mat-chip class="flex items-center">
+                <bi class="mr-1" name="bell" />
+                {{ notificationMethod.name }}
+              </mat-chip>
+            </a>
+          }
         </mat-chip-set>
+
+        @if (monitor.tags.length > 0) {
+          <div class="flex flex-wrap gap-2">
+            @for (tag of monitor.tags; track tag.name) {
+              <span
+                class="whitespace-nowrap text-xs"
+                [pu-tag]="tag.variant"
+                [routerLink]="[]"
+                [queryParams]="{'search.show': true, 'search.tag': tag.name}"
+                clickable
+                queryParamsHandling="merge">
+                {{ tag.name }}
+              </span>
+            }
+          </div>
+        }
       } @else {
         <pu-monitor-header-placeholder />
       }
@@ -279,6 +304,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MonitorCheckerDataValueLabelPipe,
     MatTooltip,
     IsTeamAdmin,
+    Tag,
   ],
 })
 export class MonitorDetailPage {
