@@ -12,8 +12,8 @@ importers:
         specifier: 5.2.2
         version: 5.2.2(prettier@3.5.3)
       git-cliff:
-        specifier: 2.8.0
-        version: 2.8.0
+        specifier: 2.9.1
+        version: 2.9.1
       prettier:
         specifier: 3.5.3
         version: 3.5.3
@@ -2993,38 +2993,38 @@ packages:
     resolution: {integrity: sha512-eFmhDi2xQ+2reMRY2AbJ2oa10uFOl1oyGbAKdCZiNOk94NJHi7aN0OBELSC9v35ZAPQdr+uRBi93/Gu4SlBdrA==}
     engines: {node: '>=18'}
 
-  git-cliff-darwin-arm64@2.8.0:
-    resolution: {integrity: sha512-rurUV2d1Z2n+c2+wUrO0gZaFb3c1G+ej0bPfKTPfde/CblxiysMkh+4dz23NrVbc8IlS5rSYv/JFGVaVSBNJRw==}
+  git-cliff-darwin-arm64@2.9.1:
+    resolution: {integrity: sha512-e/n/1N68lNx3MrVhmj8Ttgey/8d3UcRhkEOnEI769DUcZVUKy3D/Kz6ZGIMKvDpCmQ40WkEcOhprV+GpLrncnA==}
     cpu: [arm64]
     os: [darwin]
 
-  git-cliff-darwin-x64@2.8.0:
-    resolution: {integrity: sha512-Wtj+FGWZBWmeYUAGlkfz7QPz4+VVxxDPMhQ/7iwKVA3iryIX0slGfzYpqMurEFnTAMr0r+4IU3Q4O/ib7iUscg==}
+  git-cliff-darwin-x64@2.9.1:
+    resolution: {integrity: sha512-sKf3wd+VBVXNmm3iMA6eThTz0AOkN7mRavStUJ+z5bSyZMrvgVXlj+GUImOuhPUsZd9qdE9wO7q+N10hCaCv8w==}
     cpu: [x64]
     os: [darwin]
 
-  git-cliff-linux-arm64@2.8.0:
-    resolution: {integrity: sha512-k4RdfMdORXyefznWlQb+7wDgo7XgQF9qg8hJC34bwyJK2sODirrGau3uTx1/9Fi37g+pAOM7wM+LYppHCTZ2bQ==}
+  git-cliff-linux-arm64@2.9.1:
+    resolution: {integrity: sha512-VkHX6gIoTxCzG8Pxu3um98Ip2RCY7bbmlDpC8odx1rFK1J8bzu9hzIDfdSWy47yaVJnG47ACLVFsip5qSxRhGA==}
     cpu: [arm64]
     os: [linux]
 
-  git-cliff-linux-x64@2.8.0:
-    resolution: {integrity: sha512-FcWX4GHgodYrQlZR03fzooanStgR03JNWvyaMQB1asplQ18nlziK2UyA+PESCIxOQmeLXauqoCApfzmdtp5myg==}
+  git-cliff-linux-x64@2.9.1:
+    resolution: {integrity: sha512-fEvgOdO9PJNXiQh+MC9WxZ+Hjwc1Hv5yP0JGZZB3ucLn1r7ZWPbngzM/2VoYGDgTkhpo6cHYrs/jl7R5fnBnGA==}
     cpu: [x64]
     os: [linux]
 
-  git-cliff-windows-arm64@2.8.0:
-    resolution: {integrity: sha512-GJSrqmBVTbMtBJI3/YCDxLviZZDgYgnKqYgquBk2u2AELAnnuWFnVFQ7ZEBUqgFF2UJu9EdV2Nv6MV8d/wnP0g==}
+  git-cliff-windows-arm64@2.9.1:
+    resolution: {integrity: sha512-zqCzo5VHFGc3f/dCHMAR1m1UWgMcU7lIy/YvoTJqp8h2q9debmnKe29bR9HvQUq3Q7VDOHL+aiRayxqZytMnCg==}
     cpu: [arm64]
     os: [win32]
 
-  git-cliff-windows-x64@2.8.0:
-    resolution: {integrity: sha512-8jl0YMXPYjUmVygUEeQ4wf1zte3Rv8LPq1sIklUKl80XE4g2Gm/8EIWbKpUPLQH6IncRwepY6VuMgpVpPXbwNw==}
+  git-cliff-windows-x64@2.9.1:
+    resolution: {integrity: sha512-I+kAYLzmSQQ757Nxz+WnX9Ivcl9yfpkiULzrHywU95kUeH0SA07A74lcwjCIv0i4eujj0oCX2Ke5c/V4igPv2A==}
     cpu: [x64]
     os: [win32]
 
-  git-cliff@2.8.0:
-    resolution: {integrity: sha512-iKF5QTXAb9+iVvmu5HpnMPWYw7fs74xkpAaRbSf29+dZaMTTNRIUST/y+Ir2S1bDUWWJNjXlwT9ZT62JuYLQnA==}
+  git-cliff@2.9.1:
+    resolution: {integrity: sha512-jELmNuu5oolmxmpZ4tZVPeyT4Cjx0ZXZb1mqEcE+ZaLdCECguNtRMcbbAiNMlMn6DlMalJpFiNChQvEHx2idQw==}
     engines: {node: '>=18.19 || >=20.6 || >=21'}
     hasBin: true
 
@@ -7485,34 +7485,34 @@ snapshots:
       readable-stream: 4.7.0
       safe-buffer: 5.2.1
 
-  git-cliff-darwin-arm64@2.8.0:
+  git-cliff-darwin-arm64@2.9.1:
     optional: true
 
-  git-cliff-darwin-x64@2.8.0:
+  git-cliff-darwin-x64@2.9.1:
     optional: true
 
-  git-cliff-linux-arm64@2.8.0:
+  git-cliff-linux-arm64@2.9.1:
     optional: true
 
-  git-cliff-linux-x64@2.8.0:
+  git-cliff-linux-x64@2.9.1:
     optional: true
 
-  git-cliff-windows-arm64@2.8.0:
+  git-cliff-windows-arm64@2.9.1:
     optional: true
 
-  git-cliff-windows-x64@2.8.0:
+  git-cliff-windows-x64@2.9.1:
     optional: true
 
-  git-cliff@2.8.0:
+  git-cliff@2.9.1:
     dependencies:
       execa: 8.0.1
     optionalDependencies:
-      git-cliff-darwin-arm64: 2.8.0
-      git-cliff-darwin-x64: 2.8.0
-      git-cliff-linux-arm64: 2.8.0
-      git-cliff-linux-x64: 2.8.0
-      git-cliff-windows-arm64: 2.8.0
-      git-cliff-windows-x64: 2.8.0
+      git-cliff-darwin-arm64: 2.9.1
+      git-cliff-darwin-x64: 2.9.1
+      git-cliff-linux-arm64: 2.9.1
+      git-cliff-linux-x64: 2.9.1
+      git-cliff-windows-arm64: 2.9.1
+      git-cliff-windows-x64: 2.9.1
 
   glob-parent@5.1.2:
     dependencies:
