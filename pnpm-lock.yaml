@@ -103,8 +103,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(@jsverse/transloco@7.6.1(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(typescript@5.8.3))
       '@ng-matero/extensions':
-        specifier: 20.0.0
-        version: 20.0.0(1c9894be87d03349c17c0bcadac4d6fd)
+        specifier: 20.0.2
+        version: 20.0.2(1c9894be87d03349c17c0bcadac4d6fd)
       '@ngrx/operators':
         specifier: 19.2.1
         version: 19.2.1(rxjs@7.8.2)
@@ -1406,8 +1406,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ng-matero/extensions@20.0.0':
-    resolution: {integrity: sha512-dcELnaJq+8VHf54941vrbq30lmjTBKSkrYbxPn8YGXgo1i2hbadT9bkNtrSpPY07Y4OxVAyKNen7lm69FC42Og==}
+  '@ng-matero/extensions@20.0.2':
+    resolution: {integrity: sha512-We55USAAR8GL0LDngBNcziAp3qn8ufWFZTsY+D3XKhe1e/+A7jEBFQWmPg8QIQQ3sVCmcuBAuulnqwZ2j4ZGGw==}
     peerDependencies:
       '@angular/cdk': '>=20.0.0'
       '@angular/common': '>=20.0.0'
@@ -5859,7 +5859,7 @@ snapshots:
   '@next/swc-win32-x64-msvc@15.3.3':
     optional: true
 
-  '@ng-matero/extensions@20.0.0(1c9894be87d03349c17c0bcadac4d6fd)':
+  '@ng-matero/extensions@20.0.2(1c9894be87d03349c17c0bcadac4d6fd)':
     dependencies:
       '@angular/cdk': 20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
       '@angular/common': 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
