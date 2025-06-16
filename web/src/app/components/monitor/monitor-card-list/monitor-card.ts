@@ -45,7 +45,7 @@ import {UptimeTimeline} from '../uptime-timeline';
               style="max-width: 19.25rem; padding: 5px">
               @for (tag of _monitor.tags; track tag.name) {
                 <span
-                  class="text-xs"
+                  class="whitespace-nowrap text-xs"
                   [pu-tag]="tag.variant"
                   [routerLink]="[]"
                   [queryParams]="{'search.show': true, 'search.tag': tag.name}"
