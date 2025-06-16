@@ -65,6 +65,7 @@ data class UpdateNotificationMethodDto(
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
     @get:NotNull val sender: NotificationMethodData,
     @get:NotNull val useByDefault: Boolean,
+    val testSend: Boolean = false,
     val titleTemplate: String?,
     val bodyTemplate: String?,
 )
@@ -74,6 +75,7 @@ data class CreateNotificationMethodDto(
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
     @get:NotNull val sender: NotificationMethodData,
     @get:NotNull val useByDefault: Boolean,
+    val testSend: Boolean = false,
     val titleTemplate: String?,
     val bodyTemplate: String?,
 )

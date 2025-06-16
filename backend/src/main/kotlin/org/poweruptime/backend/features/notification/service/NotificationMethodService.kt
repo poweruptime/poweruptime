@@ -7,28 +7,46 @@ import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.notification.AppriseSender
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.notification.dto.*
+import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.team.domain.TeamRepository
+import org.poweruptime.backend.features.team.model.Team
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class NotificationMethodService(
     private val notificationMethodRepository: NotificationMethodRepository,
     private val notificationMethodDataService: NotificationMethodDataService,
     private val teamRepository: TeamRepository,
+    private val appriseSender: AppriseSender,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
+
     fun create(dto: CreateNotificationMethodDto): NotificationMethod = save(
         NotificationMethod.fromDto(
             dto = dto,
             team = teamRepository.findByIdOrThrow(dto.teamId),
             notificationMethodDataService.save(dto.sender),
         ),
-    )
+    ).apply {
+        if (dto.testSend) {
+            appriseSender.send(this.getTestSubNotification())
+        }
+    }
 
     fun update(dto: UpdateNotificationMethodDto): NotificationMethod = getByIdOrThrow(dto.id).let {
         val oldSenderId = it.data.id
@@ -37,6 +55,10 @@ class NotificationMethodService(
         val notificationMethod = notificationMethodRepository.saveAndFlush(it.update(dto, newSender))
 
         notificationMethodDataService.deleteByIdOrThrow(oldSenderId)
+
+        if (dto.testSend) {
+            appriseSender.send(notificationMethod.getTestSubNotification())
+        }
 
         notificationMethod
     }
@@ -87,4 +109,53 @@ class NotificationMethodService(
 
     fun ensureAllNotificationMethodsInTeam(notificationMethods: List<NotificationMethod>, teamId: String) =
         notificationMethods.all { it.team.id == teamId }
+
+    private fun NotificationMethod.getTestSubNotification(): SubNotification {
+        val title = "Notification method test"
+        val body = "Detailed message :)"
+        val status = MonitorStatus.MAINTENANCE
+        val teamName = "Demo Team"
+        val monitorName = "Demo Monitor"
+        return SubNotification(
+            method = this,
+            title = title,
+            message = body,
+            pickedUpAt = Instant.now(),
+            notification = Notification(
+                title = title,
+                checkResult = CheckResult(
+                    status = status,
+                    previousStatus = status,
+                    pickedUpAt = Instant.now(),
+                    checkedAt = Instant.now(),
+                    pingMs = 420,
+                    title = title,
+                    message = body,
+                    monitor = Monitor(
+                        name = monitorName,
+                        testIntervalSeconds = 30,
+                        retries = 3,
+                        upsideDown = false,
+                        checker = PingMonitorData(
+                            "1.1.1.1",
+                            443,
+                        ),
+                        team = Team(
+                            name = teamName,
+                        ).apply {
+                            id = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH)
+                        },
+                    ).apply {
+                        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+                    },
+                ).apply {
+                    id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+                },
+            ).apply {
+                id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+            },
+        ).apply {
+            id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+        }
+    }
 }

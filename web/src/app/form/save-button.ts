@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {MatFabButton} from '@angular/material/button';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
+import {BiComponent, BiName, provideBi, withSize} from 'dfx-bootstrap-icons';
 
 @Component({
   template: `
@@ -10,10 +10,11 @@ import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
       class="flex min-w-28 items-center"
       [disabled]="!valid()"
       [attr.form]="form()"
+      [type]="type()"
+      (click)="buttonClick.emit()"
       mat-fab
-      extended
-      type="submit">
-      <bi name="save" />
+      extended>
+      <bi [name]="icon()" />
       <!-- t(general.save) -->
       <span class="ms-2 text-lg">{{ text() ?? ('general.save' | transloco) }}</span>
     </button>
@@ -28,4 +29,8 @@ export class SaveButton {
   valid = input(false);
   text = input<string>();
   form = input('form');
+  type = input('submit');
+  icon = input<BiName>('save');
+
+  buttonClick = output();
 }

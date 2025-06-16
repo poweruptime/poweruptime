@@ -59,7 +59,7 @@ class AppriseSender(
         subNotification.message = notificationTemplate.body
 
         val converter =
-            notificationMethodDataConverterFactory.getConverter(subNotification)
+            notificationMethodDataConverterFactory.getConverter(subNotification.method.data._type)
         val appriseDto = converter.convert(subNotification.method.data)
 
         val request = getAppriseNotificationRequest(
@@ -99,7 +99,7 @@ class AppriseSender(
         return subNotification
     }
 
-    private fun getAppriseNotificationRequest(
+    fun getAppriseNotificationRequest(
         dto: NotificationMethodDataAppriseDto,
         tpl: NotificationTemplate,
         type: NotificationMethodType,
@@ -142,7 +142,7 @@ class AppriseSender(
         },
     )
 
-    private fun sendToApprise(
+    fun sendToApprise(
         request: AppriseNotificationRequest
     ): String? = try {
         logger.info { "Posting to Apprise URL: '$appriseUrl/notify' " }

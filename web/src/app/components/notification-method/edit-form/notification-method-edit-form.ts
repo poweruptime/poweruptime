@@ -174,7 +174,15 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         </mat-card>
       </div>
 
-      <pu-save-button [valid]="isValid()" />
+      <div class="flex gap-4">
+        <pu-save-button [valid]="isValid()" />
+        <pu-save-button
+          [valid]="isValid()"
+          (buttonClick)="form.controls.testSend.patchValue(true)"
+          text="Save (and test)"
+          type="button"
+          icon="send-check" />
+      </div>
     </form>
   `,
   selector: 'pu-notification-method-edit-form',
@@ -232,6 +240,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
     titleTemplate: [undefined as string | undefined],
     bodyTemplate: [undefined as string | undefined],
     useByDefault: [false],
+    testSend: [false],
   });
 
   isValid = injectIsValid(this.form);

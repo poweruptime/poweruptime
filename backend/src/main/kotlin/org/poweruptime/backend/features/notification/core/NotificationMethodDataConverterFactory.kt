@@ -1,6 +1,5 @@
 package org.poweruptime.backend.features.notification.core
 
-import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.notificationMethods.apprise.AppriseNotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodDataAppriseConverter
@@ -14,6 +13,6 @@ class NotificationMethodDataConverterFactory {
         SlackNotificationMethodDataAppriseConverter(),
     ).associateBy { it.type }
 
-    fun getConverter(subNotification: SubNotification): NotificationMethodDataAppriseConverter = converters[subNotification.method.data._type]
-        ?: throw IllegalArgumentException("Unknown notification method data: ${subNotification.method.data._type}")
+    fun getConverter(notificationMethodType: NotificationMethodType): NotificationMethodDataAppriseConverter = converters[notificationMethodType]
+        ?: throw IllegalArgumentException("Unknown notification method data: $notificationMethodType")
 }

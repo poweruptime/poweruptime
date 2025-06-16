@@ -1,7 +1,9 @@
 package org.poweruptime.backend.features.team.service
 
+import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.poweruptime.backend.features.team.domain.TeamSettingRepository
 import org.poweruptime.backend.features.team.model.SettingKey
 import org.poweruptime.backend.features.team.model.TeamSetting
@@ -12,7 +14,7 @@ import java.time.ZoneId
 class TeamSettingService(
     private val teamSettingRepository: TeamSettingRepository,
     private val instanceSettingService: InstanceSettingService,
-    private val teamService: TeamService,
+    private val teamRepository: TeamRepository,
 ) : AEntityService<TeamSetting>(
     teamSettingRepository,
 ) {
@@ -64,7 +66,7 @@ class TeamSettingService(
         } ?: TeamSetting(
             key = key,
             value = value,
-            team = teamService.getByIdOrThrow(teamId),
+            team = teamRepository.findByIdOrThrow(teamId),
         )
 
         return teamSettingRepository.save(teamSetting)
