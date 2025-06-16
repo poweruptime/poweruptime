@@ -162,8 +162,7 @@ export class TagSelector implements ControlValueAccessor {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
-    if (value) {
+    if (value && this.value()?.find((it) => it.name === value) === undefined) {
       this.value.update((selectedTags) => [
         ...(selectedTags ?? []),
         {

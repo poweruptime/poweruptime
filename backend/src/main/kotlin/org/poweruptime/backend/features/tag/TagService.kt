@@ -20,8 +20,10 @@ class TagService(
 ) : ASoftDeleteEntityService<Tag>(tagRepository) {
     fun getByTeamIdAndNames(
         team: Team,
-        tags: List<TagDto>
+        unsafeTags: List<TagDto>
     ): List<Tag> {
+        val tags = unsafeTags.distinctBy { it.name }
+
         // 1) fetch all existing tags for this team & name set
         val existingByName = tagRepository
             .findByTeamIdAndNames(

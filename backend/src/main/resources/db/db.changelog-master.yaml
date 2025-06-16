@@ -10,3 +10,11 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 2
+      author: Dafnik
+      changes:
+        - addUniqueConstraint:
+            tableName: tag
+            columnNames: team_id, name
+            constraintName: tag_team_id_name_key
