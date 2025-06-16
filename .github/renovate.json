@@ -114,6 +114,10 @@
       "extends": ["monorepo:angular-cli"],
       "groupName": "angular monorepo",
       "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+    },
+    {
+      "groupName": "Lint packages",
+      "matchPackageNames": ["/lint/"]
     }
   ],
   "prHourlyLimit": 5,
