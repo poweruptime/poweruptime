@@ -32,7 +32,7 @@
     "@angular/router": "20.0.3",
     "@angular/ssr": "20.0.2",
     "@davidlj95/ngx-meta": "20.0.0",
-    "@fastify/http-proxy": "11.1.2",
+    "@fastify/http-proxy": "11.2.0",
     "@fastify/static": "8.2.0",
     "@jsverse/transloco": "7.6.1",
     "@jsverse/transloco-persist-lang": "7.0.2",
