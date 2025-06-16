@@ -75,7 +75,7 @@ import {SupporterBadge} from '../../components/supporter-badge';
           <main class="main w-full overflow-y-scroll px-2 pb-2">
             @defer (when backendOfflineService.isOffline()) {
               @if (backendOfflineService.isOffline()) {
-                <pu-backend-offline-alert class="mb-2" />
+                <pu-backend-offline-alert class="mb-4" />
               }
             }
 
