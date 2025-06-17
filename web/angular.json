@@ -54,7 +54,6 @@
             "index": "src/index.html",
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",
-            "scripts": ["node_modules/emoji-toolkit/lib/js/joypixels.min.js"],
             "server": "src/main.server.ts",
             "ssr": {
               "entry": "src/server.ts"
