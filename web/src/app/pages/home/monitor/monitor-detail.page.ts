@@ -174,7 +174,9 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           @for (notificationMethod of monitor.notificationMethods; track notificationMethod.id) {
             <a
               class="hover:cursor-pointer"
-              [routerLink]="'../../notification-methods/' + notificationMethod.id">
+              [routerLink]="
+                '/t/' + monitor.team.id + '/notification-methods/' + notificationMethod.id
+              ">
               <mat-chip class="flex items-center">
                 <bi class="mr-1" name="bell" />
                 {{ notificationMethod.name }}

@@ -12,9 +12,11 @@ import {
 
 import Chart, {TooltipItem} from 'chart.js/auto';
 
+import {ThemeService} from '../../services/theme.service';
+
 @Component({
   template: `
-    <div class="relative h-96 w-full">
+    <div class="relative h-80 w-full">
       <canvas class="w-full" #chartView></canvas>
     </div>
     <div class="flex justify-between px-3">
@@ -42,6 +44,7 @@ import Chart, {TooltipItem} from 'chart.js/auto';
 export class PingChart {
   private readonly locale = inject(LOCALE_ID);
   private readonly dateFormat = new DatePipe(this.locale);
+  private readonly themeService = inject(ThemeService);
 
   chart = input.required<{
     data: {name: string; value: number}[];
@@ -83,7 +86,10 @@ export class PingChart {
               grid: {
                 display: true,
                 drawTicks: true,
-                color: 'oklch(70.7% 0.022 261.325)',
+                color:
+                  this.themeService.currentTheme() === 'dark'
+                    ? 'oklch(27.8% 0.033 256.848)'
+                    : 'oklch(92.8% 0.006 264.531)',
                 lineWidth: 1,
               },
             },
