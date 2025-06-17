@@ -9,7 +9,7 @@ import {BackendOfflineService} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex h-screen flex-col items-center justify-center px-4 pt-4">
-      <main style="min-width: 30rem; max-width: 30rem">
+      <main class="w-full max-w-[30rem]">
         @defer (when backendOfflineService.isOffline()) {
           @if (backendOfflineService.isOffline()) {
             <pu-backend-offline-alert />

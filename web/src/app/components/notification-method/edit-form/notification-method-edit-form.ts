@@ -47,9 +47,9 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
       @let _typeValue = typeValue();
 
       <div class="grid-cols-6">
-        <div class="grid gap-8">
-          <div class="grid gap-2">
-            <mat-form-field class="col-span-4">
+        <div class="flex flex-col gap-8">
+          <div class="grid grid-cols-12 gap-2">
+            <mat-form-field class="col-span-8 md:col-span-6">
               <mat-label>{{ 'general.name' | transloco }}</mat-label>
               <input matInput formControlName="name" />
 
@@ -65,7 +65,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
               }
             </mat-form-field>
 
-            <mat-form-field class="md:col-span-2">
+            <mat-form-field class="col-span-4 md:col-span-3">
               <mat-label>{{ 'general.type' | transloco }}</mat-label>
               <mat-select formControlName="type">
                 <mat-option class="pt-1">

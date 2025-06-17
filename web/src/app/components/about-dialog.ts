@@ -1,3 +1,4 @@
+import {httpResource} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, computed, inject, resource} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatDialogActions, MatDialogClose, MatDialogContent} from '@angular/material/dialog';
@@ -68,7 +69,7 @@ interface BackendEntry {
 
         <h3 class="text-xl">Licenses ❤️</h3>
 
-        <mat-accordion multi>
+        <mat-accordion class="max-w-80" multi>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>Web</mat-panel-title>
@@ -132,12 +133,7 @@ export class AboutDialog {
 
   version = environment.version;
 
-  feLicenses$ = resource({
-    loader: () =>
-      fetch('/assets/licenses.json')
-        .then((res) => res.json())
-        .then((json) => json as typeof licensesJson),
-  });
+  feLicenses$ = httpResource<typeof licensesJson>(() => '/assets/licenses.json');
 
   feLicenses = computed(
     () =>
