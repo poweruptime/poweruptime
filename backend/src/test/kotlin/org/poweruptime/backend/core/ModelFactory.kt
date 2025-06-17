@@ -213,7 +213,7 @@ object ModelFactory {
         useByDefault = false,
         titleTemplate = null,
         bodyTemplate = null,
-        monitorIds = listOf()
+        monitorIds = listOf(),
     )
 
     fun getUpdateNotificationMethodDto(
@@ -227,7 +227,7 @@ object ModelFactory {
         useByDefault = false,
         titleTemplate = null,
         bodyTemplate = null,
-        monitorIds = listOf()
+        monitorIds = listOf(),
     )
 
     fun getTestSetupDto() = SetupDto(

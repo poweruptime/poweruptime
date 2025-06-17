@@ -466,7 +466,7 @@ main() {
     down|stop)          do_down                           ;;
     pull)               do_pull                           ;;
     restart)            do_restart                        ;;
-    update)             do_update                         ;;
+    update)             source_env && do_update           ;;
     setup)              do_setup                          ;;
     backup)             source_env && do_backup           ;;
     backup-prune)       source_env && do_backup_prune     ;;
