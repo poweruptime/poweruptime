@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.3.0 - 2025-06-17
+
+### <!-- 0 -->🚀 Features
+
+- Angular 20 update (#200) by @Dominik ([c13a291](https://github.com/poweruptime/poweruptime/commit/c13a2915c6c46d5999d3bffa8d38539dc7d32170))
+- Show notification methods and tags on monitor detail page by @Dafnik ([1756c72](https://github.com/poweruptime/poweruptime/commit/1756c72d35e662655c591f2c26b0054ba6d0ad42))
+- Add notification method test functionality by @Dafnik ([1e2edc2](https://github.com/poweruptime/poweruptime/commit/1e2edc26668c9714ae1bc6739bb96c3f6df155cf))
+- Search by monitor type on detail page chip click by @Dafnik ([3ebfccf](https://github.com/poweruptime/poweruptime/commit/3ebfccf9b3ecbc9c71269659979a26b3cd10836e))
+- Set monitors from notification methods by @Dafnik ([6140f17](https://github.com/poweruptime/poweruptime/commit/6140f1758d43019485612c1f9595538352c8de3d))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Disallow duplicate tags in team by @Dafnik ([1aa6e64](https://github.com/poweruptime/poweruptime/commit/1aa6e64b38a6c9c9c041668cd8a14bc077d6e8f6))
+- Whitespace wrap in tags by @Dafnik ([ab9845a](https://github.com/poweruptime/poweruptime/commit/ab9845a714363f602c09d67d1aecbbd26eeb6c0c))
+- Try to increase margin of offline alert by @Dafnik ([ce95da6](https://github.com/poweruptime/poweruptime/commit/ce95da69359bd5f475bea2731e4ee1b975b706df))
+- Monitor detail page notification method badge link by @Dafnik ([be81c92](https://github.com/poweruptime/poweruptime/commit/be81c92e4c264b14bb02e5932a5c117bfc011ed8))
+
+### <!-- 2 -->🚜 Refactor
+
+- Replace ngx-charts with chart.js by @Dafnik ([0e6c453](https://github.com/poweruptime/poweruptime/commit/0e6c453b543f06bfe0bb67fc3cfee8db2252125b))
+- Team card hover effect by @Dafnik ([5a0a9f2](https://github.com/poweruptime/poweruptime/commit/5a0a9f216c2489b13fb72adf3110e28ce4ed5269))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Update jackson dependencies to v2.19.1 (#132) by @renovate[bot] ([46b3e2f](https://github.com/poweruptime/poweruptime/commit/46b3e2fecd083367339d593bbccae6756facecc6)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angular monorepo (#201) by @renovate[bot] ([262b282](https://github.com/poweruptime/poweruptime/commit/262b282d401449f852b8e15734156ba24f5f8d56)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency io.hypersistence:hypersistence-utils-hibernate-63 to v3.10.1 (#203) by @renovate[bot] ([7031f7c](https://github.com/poweruptime/poweruptime/commit/7031f7c97edd8dec6f620ede165856afb373b6e7)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency prettier-plugin-tailwindcss to v0.6.12 (#205) by @renovate[bot] ([bbaa475](https://github.com/poweruptime/poweruptime/commit/bbaa475d163b4b37d74d01831d34cf60529ca3a4)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency tailwindcss-motion to v1.1.1 (#206) by @renovate[bot] ([7dd4bf6](https://github.com/poweruptime/poweruptime/commit/7dd4bf66c9fb33ff90b4b16daf2e5dd3023b9f2b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update react email (#207) by @renovate[bot] ([60a7136](https://github.com/poweruptime/poweruptime/commit/60a71365e9a15aa5d7c7027716c23b6164f0a9cc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency angular-eslint to v19.8.0 (#210) by @renovate[bot] ([70cae7d](https://github.com/poweruptime/poweruptime/commit/70cae7d841d02a9814fed87f8ecf69b7d8a4bb5b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angularmaterial monorepo to v20.0.3 (#202) by @renovate[bot] ([74dda86](https://github.com/poweruptime/poweruptime/commit/74dda8676dcde605e9e9e6099af451b3970bf429)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency postcss to v8.5.5 (#204) by @renovate[bot] ([3ecaadc](https://github.com/poweruptime/poweruptime/commit/3ecaadc7c77aea4f23e9d37e2120363ed3eab946)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update tailwindcss monorepo to v4.1.10 (#208) by @renovate[bot] ([fe85cfb](https://github.com/poweruptime/poweruptime/commit/fe85cfb4b16922211d54aaea8f272e73d7417ebf)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @fastify/http-proxy to v11.2.0 (#211) by @renovate[bot] ([86f75b2](https://github.com/poweruptime/poweruptime/commit/86f75b29743f6da8c52e2c140db86780df7fbc3b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency fastify to v5.4.0 (#212) by @renovate[bot] ([5c9ab2d](https://github.com/poweruptime/poweruptime/commit/5c9ab2dc67d9daea5536c563dfc5dcfbef743ca5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update pnpm to v10.12.1 (#214) by @renovate[bot] ([0f28b2f](https://github.com/poweruptime/poweruptime/commit/0f28b2fadeb75882b2b029c8fe4f2e9a2b261883)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency git-cliff to v2.9.1 (#213) by @renovate[bot] ([18722f6](https://github.com/poweruptime/poweruptime/commit/18722f61b8eaf0bcf4c68eeb3a3f1d0050a26673)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update typescript types (#209) by @renovate[bot] ([b16db48](https://github.com/poweruptime/poweruptime/commit/b16db48b786bb9baa3ea53722981bb7453bf5f94)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @ng-matero/extensions to v20.0.2 (#215) by @renovate[bot] ([80bb535](https://github.com/poweruptime/poweruptime/commit/80bb5353fd1298dbc7ece3eb71e2213738daf70f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+
+**Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.4...0.3.0
+
 ## 0.2.4 - 2025-06-12
 
 ### <!-- 1 -->🐛 Bug Fixes
@@ -11,6 +54,7 @@
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Set POWERUPTIME_VERSION to 0.2.4-beta-1749720011 by @Dafnik ([68b6767](https://github.com/poweruptime/poweruptime/commit/68b6767b7a611e36c29ebcc593d3838bdaceea8e))
+- Set POWERUPTIME_VERSION to 0.2.4 by @Dafnik ([816ddb8](https://github.com/poweruptime/poweruptime/commit/816ddb895ef82c2576b984dfe9814ae00ca0b734))
 
 **Full Changelog**: https://github.com/poweruptime/poweruptime/compare/0.2.3...0.2.4
 
