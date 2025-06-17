@@ -10,7 +10,9 @@ import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
+import org.poweruptime.backend.features.monitor.domain.MonitorRepository
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -33,6 +35,7 @@ class NotificationMethodService(
     private val notificationMethodRepository: NotificationMethodRepository,
     private val notificationMethodDataService: NotificationMethodDataService,
     private val teamRepository: TeamRepository,
+    private val monitorRepository: MonitorRepository,
     private val appriseSender: AppriseSender,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
 
@@ -40,7 +43,10 @@ class NotificationMethodService(
         NotificationMethod.fromDto(
             dto = dto,
             team = teamRepository.findByIdOrThrow(dto.teamId),
-            notificationMethodDataService.save(dto.sender),
+            attachedSender = notificationMethodDataService.save(dto.sender),
+            monitors = monitorRepository.findByIdOrThrow(
+                dto.monitorIds,
+            ).ensureAllInTeam(dto.teamId) { monitor -> monitor.team.id },
         ),
     ).apply {
         if (dto.testSend) {
@@ -52,7 +58,15 @@ class NotificationMethodService(
         val oldSenderId = it.data.id
         val newSender = notificationMethodDataService.save(dto.sender)
 
-        val notificationMethod = notificationMethodRepository.saveAndFlush(it.update(dto, newSender))
+        val notificationMethod = notificationMethodRepository.saveAndFlush(
+            it.update(
+                dto,
+                attachedSender = newSender,
+                monitors = monitorRepository.findByIdOrThrow(
+                    dto.monitorIds,
+                ).ensureAllInTeam(it.team.id) { monitor -> monitor.team.id },
+            ),
+        )
 
         notificationMethodDataService.deleteByIdOrThrow(oldSenderId)
 
@@ -106,9 +120,6 @@ class NotificationMethodService(
             listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
         ),
     )
-
-    fun ensureAllNotificationMethodsInTeam(notificationMethods: List<NotificationMethod>, teamId: String) =
-        notificationMethods.all { it.team.id == teamId }
 
     private fun NotificationMethod.getTestSubNotification(): SubNotification {
         val title = "Notification method test"

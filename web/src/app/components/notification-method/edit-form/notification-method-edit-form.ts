@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component, computed, effect, inject, input} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
@@ -20,6 +28,7 @@ import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 
 import {NotificationMethodTemplateStore} from '../../../services';
 import {Placeholder} from '../../placeholder';
+import {MonitorSelector} from '../monitor-selector';
 import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditFormDiscordData} from './notification-method-edit-form-discord-data';
@@ -38,46 +47,48 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
       @let _typeValue = typeValue();
 
       <div class="grid-cols-6">
-        <div class="grid gap-2">
-          <mat-form-field class="col-span-4">
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
+        <div class="grid gap-8">
+          <div class="grid gap-2">
+            <mat-form-field class="col-span-4">
+              <mat-label>{{ 'general.name' | transloco }}</mat-label>
+              <input matInput formControlName="name" />
 
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field class="md:col-span-2">
-            <mat-label>{{ 'general.type' | transloco }}</mat-label>
-            <mat-select formControlName="type">
-              <mat-option class="pt-1">
-                <ngx-mat-select-search [formControl]="typeFilterControl">
-                  <bi name="x-lg" ngxMatSelectSearchClear />
-                </ngx-mat-select-search>
-              </mat-option>
-              @for (type of filteredTypes(); track type.value) {
-                <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
+              @let nameErrors = form.controls.name.errors;
+              @if (nameErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
               }
-            </mat-select>
-            @let typeErrors = form.controls.type.errors;
-            @if (typeErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+              @if (nameErrors?.['minlength']; as minlength) {
+                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+              }
+              @if (nameErrors?.['maxlength']; as maxlength) {
+                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              }
+            </mat-form-field>
 
-          <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
-            {{ 'notificationMethod.edit.useByDefault' | transloco }}
-          </mat-slide-toggle>
+            <mat-form-field class="md:col-span-2">
+              <mat-label>{{ 'general.type' | transloco }}</mat-label>
+              <mat-select formControlName="type">
+                <mat-option class="pt-1">
+                  <ngx-mat-select-search [formControl]="typeFilterControl">
+                    <bi name="x-lg" ngxMatSelectSearchClear />
+                  </ngx-mat-select-search>
+                </mat-option>
+                @for (type of filteredTypes(); track type.value) {
+                  <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
+                }
+              </mat-select>
+              @let typeErrors = form.controls.type.errors;
+              @if (typeErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+            </mat-form-field>
 
-          <mat-card class="col-span-6 mt-8" appearance="outlined">
+            <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
+              {{ 'notificationMethod.edit.useByDefault' | transloco }}
+            </mat-slide-toggle>
+          </div>
+
+          <mat-card class="col-span-6" appearance="outlined">
             <mat-card-header>
               <mat-card-title>
                 @if (_typeValue !== '') {
@@ -115,6 +126,22 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
               } @else {
                 <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
               }
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="col-span-6" appearance="outlined">
+            <mat-card-content>
+              <div class="h-4"></div>
+              <pu-monitor-selector
+                [(searchMonitor)]="searchMonitors"
+                [monitors]="allMonitors()"
+                [isPending]="isMonitorsSearchPending()"
+                formControlName="monitors" />
+
+              <!--              <a mat-button routerLink="../../../notification-methods/new" target="_blank">-->
+              <!--                {{ 'cmdk.groups.notificationMethod.create' | transloco }}-->
+              <!--                <bi class="ms-1" name="box-arrow-up-right" />-->
+              <!--              </a>-->
             </mat-card-content>
           </mat-card>
         </div>
@@ -213,6 +240,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     NotificationMethodEditFormSlackData,
     Placeholder,
     NotificationMethodEditFormAppriseData,
+    MonitorSelector,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -240,6 +268,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
     titleTemplate: [undefined as string | undefined],
     bodyTemplate: [undefined as string | undefined],
     useByDefault: [false],
+    monitors: [[] as BackendType['MonitorMinResponse'][]],
     testSend: [false],
   });
 
@@ -281,6 +310,10 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
     },
   });
 
+  readonly allMonitors = input.required<BackendType['MonitorMinResponse'][]>();
+  readonly isMonitorsSearchPending = input.required<boolean>();
+  searchMonitors = model('');
+
   readonly typeFilterControl = new FormControl<string>('');
   readonly typeFilter = toSignal(this.typeFilterControl.valueChanges.pipe(map((it) => it ?? '')), {
     initialValue: '',
@@ -318,6 +351,13 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
         });
       }
     });
+  }
+
+  override overrideRawValue(value: ReturnType<typeof this.form.getRawValue>): unknown {
+    return {
+      ...value,
+      monitorIds: value.monitors.map((it) => it.id),
+    };
   }
 
   resetTitleTemplate(titleTemplate: string) {

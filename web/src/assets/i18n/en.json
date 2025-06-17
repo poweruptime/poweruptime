@@ -324,6 +324,12 @@
     "empty": "Create your first monitor",
     "new": "New {{general.monitor}}",
     "oneDayUptime": "One-day uptime",
+    "selector": {
+      "add": "Add...",
+      "list": "{{general.monitors}} list",
+      "remove": "remove {{name}}",
+      "selected": "Selected {{general.monitors}}"
+    },
     "status": {
       "down": "Down",
       "paused": "Paused",

@@ -324,6 +324,12 @@
     "empty": "Erstellen Sie Ihren ersten Monitor",
     "new": "Neuer {{general.monitor}}",
     "oneDayUptime": "Ein-Tages-Verfügbarkeit",
+    "selector": {
+      "add": "Hinzufügen...",
+      "list": "{{general.monitors}}-Liste",
+      "remove": "{{name}} entfernen",
+      "selected": "Ausgewählte {{general.monitors}}"
+    },
     "status": {
       "down": "Ausfall",
       "paused": "Pausiert",

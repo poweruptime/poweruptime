@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.domain.PermissionRepository
+import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.authentication.domain.isPartOfByNotificationMethodIds
 import org.poweruptime.backend.features.authentication.domain.isPartOfByStatusPageGroupIds
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
@@ -94,13 +95,7 @@ class MonitorController(
             tags = tags,
             enabledNotificationMethodIds = enabledNotificationMethodIds?.apply {
                 if (teamId != null) {
-                    if (!notificationMethodService.ensureAllNotificationMethodsInTeam(
-                            notificationMethodService.getById(this),
-                            teamId,
-                        )
-                    ) {
-                        throw ForbiddenException("Can only check for notification methods in same team")
-                    }
+                    notificationMethodService.getById(this).ensureAllInTeam(teamId) { it.team.id }
                 } else {
                     permissionRepository.isPartOfByNotificationMethodIds(user.id, this)
                 }

@@ -1856,6 +1856,8 @@ export interface components {
       name: string;
       sender: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
+      monitorIds: string[];
+      testSend: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
     };
@@ -1868,6 +1870,7 @@ export interface components {
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
+      monitors: components['schemas']['MonitorMinResponse'][];
     };
     MonitorData: {
       /** @enum {string} */
@@ -2040,6 +2043,8 @@ export interface components {
       name: string;
       sender: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
+      monitorIds: string[];
+      testSend: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
     };

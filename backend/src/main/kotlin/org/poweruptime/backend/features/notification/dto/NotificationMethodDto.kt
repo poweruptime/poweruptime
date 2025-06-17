@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.monitor.dto.MonitorMinResponse
 import org.poweruptime.backend.features.notification.core.NotificationMethodTemplate
 import org.poweruptime.backend.features.notification.core.NotificationMethodTemplateFeatures
 import org.poweruptime.backend.features.notification.core.NotificationMethodTemplateType
@@ -48,6 +49,7 @@ data class NotificationMethodResponse(
     val useByDefault: Boolean,
     val titleTemplate: String?,
     val bodyTemplate: String?,
+    val monitors: List<MonitorMinResponse>
 ) {
     constructor(it: NotificationMethod) : this(
         id = it.id,
@@ -57,6 +59,7 @@ data class NotificationMethodResponse(
         useByDefault = it.useByDefault,
         titleTemplate = it.titleTemplate ?: it.data._type.titleTemplate,
         bodyTemplate = it.bodyTemplate ?: it.data._type.bodyTemplate,
+        monitors = it.usedByMonitors.map { MonitorMinResponse(it) },
     )
 }
 
@@ -65,6 +68,7 @@ data class UpdateNotificationMethodDto(
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
     @get:NotNull val sender: NotificationMethodData,
     @get:NotNull val useByDefault: Boolean,
+    @get:NotNull val monitorIds: List<String>,
     val testSend: Boolean = false,
     val titleTemplate: String?,
     val bodyTemplate: String?,
@@ -75,6 +79,7 @@ data class CreateNotificationMethodDto(
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
     @get:NotNull val sender: NotificationMethodData,
     @get:NotNull val useByDefault: Boolean,
+    @get:NotNull val monitorIds: List<String>,
     val testSend: Boolean = false,
     val titleTemplate: String?,
     val bodyTemplate: String?,

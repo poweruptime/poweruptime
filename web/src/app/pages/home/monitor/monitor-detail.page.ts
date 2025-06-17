@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
-import {MatChip, MatChipSet} from '@angular/material/chips';
+import {MatChip} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
@@ -292,7 +292,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
   imports: [
     MatCard,
     MatCardContent,
-    MatChipSet,
     MatChip,
     BiComponent,
     MonitorStatus,

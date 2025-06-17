@@ -8,6 +8,7 @@ import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
+import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.MonitorScheduler
 import org.poweruptime.backend.features.monitor.domain.MonitorRepository
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
@@ -18,7 +19,7 @@ import org.poweruptime.backend.features.monitor.dto.update
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.poweruptime.backend.features.notification.service.NotificationMethodService
+import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.springframework.data.domain.Page
@@ -31,23 +32,19 @@ class MonitorService(
     private val teamRepository: TeamRepository,
     private val monitorScheduler: MonitorScheduler,
     private val monitorDataService: MonitorDataService,
-    private val notificationMethodService: NotificationMethodService,
+    private val notificationMethodRepository: NotificationMethodRepository,
     private val tagService: TagService,
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
     fun create(dto: CreateMonitorDto): Monitor {
-        val notificationMethods = notificationMethodService.getByIdOrThrow(dto.notificationMethodIds)
-        notificationMethodService.ensureAllNotificationMethodsInTeam(
-            teamId = dto.teamId,
-            notificationMethods = notificationMethods,
-        )
-
         val team = teamRepository.findByIdOrThrow(dto.teamId)
 
         return save(
             Monitor.fromDto(
                 it = dto,
                 team = team,
-                notificationMethods = notificationMethods,
+                notificationMethods = notificationMethodRepository.findByIdOrThrow(
+                    dto.notificationMethodIds,
+                ).ensureAllInTeam(dto.teamId) { notificationMethod -> notificationMethod.team.id },
                 tags = tagService.getByTeamIdAndNames(team, dto.tags),
                 attachedChecker = monitorDataService.save(dto.checker),
             ),
@@ -55,19 +52,15 @@ class MonitorService(
     }
 
     fun update(dto: UpdateMonitorDto): Monitor = getByIdOrThrow(dto.id).let {
-        val notificationMethods = notificationMethodService.getByIdOrThrow(dto.notificationMethodIds)
-        notificationMethodService.ensureAllNotificationMethodsInTeam(
-            teamId = it.team.id,
-            notificationMethods = notificationMethods,
-        )
-
         val oldCheckerId = it.checker.id
         val newChecker = monitorDataService.save(dto.checker)
 
         val monitor = monitorRepository.saveAndFlush(
             it.update(
                 it = dto,
-                notificationMethods = notificationMethods,
+                notificationMethods = notificationMethodRepository.findByIdOrThrow(
+                    dto.notificationMethodIds,
+                ).ensureAllInTeam(it.team.id) { notificationMethod -> notificationMethod.team.id },
                 tags = tagService.getByTeamIdAndNames(it.team, dto.tags),
                 attachedChecker = newChecker,
             ),

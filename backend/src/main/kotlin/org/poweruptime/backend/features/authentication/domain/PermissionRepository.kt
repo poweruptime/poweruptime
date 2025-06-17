@@ -307,3 +307,11 @@ fun User.throwIfNotPartOf(checker: (user: User) -> Boolean) {
         throw ForbiddenException()
     }
 }
+
+fun <T> List<T>.ensureAllInTeam(teamId: String, getTeamId: (it: T) -> String): List<T> {
+    if (!this.all { getTeamId(it) == teamId }) {
+        throw ForbiddenException("Tried to use entities mixed by team.")
+    }
+
+    return this
+}

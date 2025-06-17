@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.notification.dto
 
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.team.model.Team
@@ -19,7 +20,8 @@ fun String.nullIfNoDifference(defaultTemplate: String): String? =
 fun NotificationMethod.Companion.fromDto(
     dto: CreateNotificationMethodDto,
     team: Team,
-    attachedSender: NotificationMethodData
+    attachedSender: NotificationMethodData,
+    monitors: List<Monitor>,
 ): NotificationMethod = NotificationMethod(
     name = dto.name,
     data = attachedSender,
@@ -27,11 +29,13 @@ fun NotificationMethod.Companion.fromDto(
     useByDefault = dto.useByDefault,
     titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate),
     bodyTemplate = dto.bodyTemplate?.nullIfNoDifference(dto.sender._type.bodyTemplate),
+    usedByMonitors = monitors,
 )
 
 fun NotificationMethod.update(
     dto: UpdateNotificationMethodDto,
-    attachedSender: NotificationMethodData
+    attachedSender: NotificationMethodData,
+    monitors: List<Monitor>,
 ): NotificationMethod {
     name = dto.name
     data = dto.sender
@@ -39,6 +43,7 @@ fun NotificationMethod.update(
     titleTemplate = dto.titleTemplate?.nullIfNoDifference(dto.sender._type.titleTemplate)
     bodyTemplate = dto.bodyTemplate?.nullIfNoDifference(dto.sender._type.bodyTemplate)
     data = attachedSender
+    usedByMonitors = monitors
 
     return this
 }

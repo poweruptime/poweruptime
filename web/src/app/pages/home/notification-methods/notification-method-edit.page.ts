@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
 import {Placeholder} from '@app/components';
 import {NotificationMethodEditForm} from '@app/components/notification-method';
-import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
+import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
 
 @Component({
   template: `
@@ -31,6 +31,8 @@ import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
             [notificationMethod]="notificationMethodEditStore.notificationMethod()"
             [selectedTeamId]="selectedTeamStore.selectedTeamId()"
             [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
+            [allMonitors]="monitorsStore.entities()"
+            [isMonitorsSearchPending]="monitorsStore.isPending()"
             (submitCreate)="notificationMethodEditStore.create($event)"
             (submitUpdate)="notificationMethodEditStore.update($event)" />
         } @else {
@@ -40,23 +42,38 @@ import {NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
         <pu-notification-method-edit-form
           [notificationMethod]="undefined"
           [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+          [allMonitors]="monitorsStore.entities()"
+          [isMonitorsSearchPending]="monitorsStore.isPending()"
           (submitCreate)="notificationMethodEditStore.create($event)"
           (submitUpdate)="notificationMethodEditStore.update($event)" />
       }
     </div>
   `,
   selector: 'pu-notification-method-edit-page',
-  providers: [NotificationMethodEditStore],
+  providers: [NotificationMethodEditStore, MonitorsSearchStore],
   imports: [NotificationMethodEditForm, Placeholder, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodEditPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly notificationMethodEditStore = inject(NotificationMethodEditStore);
+  readonly monitorsStore = inject(MonitorsSearchStore);
 
   readonly notificationMethodId = input<string>();
 
+  searchMonitor = signal('');
+
   constructor() {
     this.notificationMethodEditStore.loadById(this.notificationMethodId);
+
+    this.monitorsStore.load(
+      computed(() => ({
+        teamId: this.selectedTeamStore.selectedTeamId(),
+        search: this.searchMonitor(),
+        page: 0,
+        size: 40,
+        sort: ['name,ASC,ignorecase'],
+      })),
+    );
   }
 }
