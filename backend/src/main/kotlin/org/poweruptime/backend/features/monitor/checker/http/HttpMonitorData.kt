@@ -52,7 +52,7 @@ class HttpMonitorData(
     @Column(name = "http_max_redirects", columnDefinition = "bigint")
     @get:Min(Database.MIN_REDIRECTS)
     @get:Max(Database.MAX_REDIRECTS)
-    var maxRedirects: Long? = null,
+    val maxRedirects: Long? = null,
 
     @Column(name = "http_ignore_tls", columnDefinition = "boolean")
     @get:NotNull
@@ -107,6 +107,22 @@ class HttpMonitorData(
 
         parts[0].toInt()..parts[1].toInt()
     }
+
+    override fun clone() = HttpMonitorData(
+        url,
+        method,
+        contentType,
+        allowedStatusCodeRanges,
+        maxRedirects,
+        ignoreTLS,
+        certificateExpiry,
+        certificateValidDaysLeft,
+        body,
+        searchTerm,
+        authType,
+        basicAuthDataUsername,
+        basicAuthDataPassword,
+    )
 }
 
 @Target(

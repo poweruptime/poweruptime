@@ -263,6 +263,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/notification-method/{id}/clone': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Clone a notification method with connected monitors and tags
+     * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_ADMIN
+     */
+    put: operations['clone'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/monitor': {
     parameters: {
       query?: never;
@@ -344,6 +364,26 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
      */
     put: operations['maintenance'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/monitor/{id}/clone': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Clone a monitor with notification methods and tags
+     * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
+     */
+    put: operations['clone_1'];
     post?: never;
     delete?: never;
     options?: never;
@@ -1872,6 +1912,9 @@ export interface components {
       bodyTemplate?: string;
       monitors: components['schemas']['MonitorMinResponse'][];
     };
+    CloneDto: {
+      teamId?: string;
+    };
     MonitorData: {
       /** @enum {string} */
       _type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
@@ -3049,6 +3092,32 @@ export interface operations {
       };
     };
   };
+  clone: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CloneDto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NotificationMethodResponse'];
+        };
+      };
+    };
+  };
   getAll_5: {
     parameters: {
       query?: {
@@ -3186,6 +3255,32 @@ export interface operations {
       cookie?: never;
     };
     requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MonitorFullResponse'];
+        };
+      };
+    };
+  };
+  clone_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CloneDto'];
+      };
+    };
     responses: {
       /** @description OK */
       200: {

@@ -19,4 +19,6 @@ class PushMonitorData(
 ) : MonitorData(MonitorType.PUSH) {
     // ObjectMapper needs an empty constructor
     constructor() : this("ID")
+
+    override fun clone() = PushMonitorData(pushId)
 }

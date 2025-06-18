@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
@@ -132,7 +132,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell></th>
           <td *matCellDef="let element" mat-cell>
-            <div class="flex gap-2" *isTeamAdmin>
+            <ng-container *isTeamAdmin>
               <a
                 [routerLink]="element.id"
                 [matTooltip]="'notificationMethod.list.edit' | transloco"
@@ -142,6 +142,15 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 <bi name="pencil-square" />
               </a>
               <button
+                [matTooltip]="'notificationMethod.list.clone' | transloco"
+                [attr.aria-label]="'notificationMethod.list.clone' | transloco"
+                (click)="notificationMethodsStore.clone({id: element.id})"
+                type="button"
+                mat-icon-button
+                stopPropagation>
+                <bi name="copy" />
+              </button>
+              <button
                 [matTooltip]="'notificationMethod.list.delete' | transloco"
                 [attr.aria-label]="'notificationMethod.list.delete' | transloco"
                 (click)="notificationMethodsStore.delete(element.id)"
@@ -150,7 +159,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 stopPropagation>
                 <bi name="trash-fill" />
               </button>
-            </div>
+            </ng-container>
           </td>
         </ng-container>
 
@@ -199,7 +208,6 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
     MatTableModule,
     MatSortModule,
     MatPaginator,
-    MatAnchor,
     MatIconButton,
     MatPrefix,
     MatSuffix,
@@ -208,7 +216,6 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
     MatSelect,
     MatInput,
     MatTooltip,
-    MatIconAnchor,
     MatFormField,
     MatSlideToggle,
     StopPropagationDirective,
@@ -219,6 +226,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
     TableLoadingBar,
     BooleanEmojiPipe,
     NotificationSenderDataValueLabelPipe,
+    MatButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

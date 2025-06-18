@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
@@ -147,6 +148,17 @@ class MonitorController(
     @ResponseStatus(HttpStatus.OK)
     fun update(@RequestBody @Valid dto: UpdateMonitorDto): MonitorFullResponse =
         monitorService.update(dto).toFullResponse()
+
+    @Operation(
+        summary = "Clone a monitor with notification methods and tags",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $MONITOR_ADMIN",
+    )
+    @PreAuthorize("hasPermission(#id, '$MONITOR_ADMIN')")
+    @PutMapping("/{id}/clone")
+    @ResponseStatus(HttpStatus.OK)
+    fun clone(@PathVariable("id") id: String, @RequestBody @Valid cloneDto: CloneDto): MonitorFullResponse =
+        monitorService.clone(monitorService.getByIdOrThrow(id), cloneDto.teamId).toFullResponse()
 
     @Operation(
         summary = "Delete monitor",

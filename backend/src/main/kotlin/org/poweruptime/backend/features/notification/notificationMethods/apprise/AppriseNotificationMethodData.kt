@@ -25,4 +25,6 @@ class AppriseNotificationMethodData(
 ) : NotificationMethodData(NotificationMethodType.APPRISE) {
     // ObjectMapper needs an empty constructor
     constructor() : this("")
+
+    override fun clone() = AppriseNotificationMethodData(url)
 }

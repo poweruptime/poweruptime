@@ -51,4 +51,12 @@ class DnsMonitorData(
 ) : MonitorData(MonitorType.DNS) {
     // ObjectMapper needs an empty constructor
     constructor() : this("1.2.3.4", "1.2.3.4", 1, DnsMonitorDataType.TXT, null)
+
+    override fun clone() = DnsMonitorData(
+        host,
+        server,
+        port,
+        type,
+        matches,
+    )
 }

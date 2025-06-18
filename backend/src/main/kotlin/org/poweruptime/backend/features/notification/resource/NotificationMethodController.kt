@@ -8,6 +8,7 @@ import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.SYSTEM_ROLE_USER
+import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.*
@@ -19,7 +20,6 @@ import org.poweruptime.backend.features.notification.dto.UpdateNotificationMetho
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -99,6 +99,22 @@ class NotificationMethodController(
     @ResponseStatus(HttpStatus.OK)
     fun update(@RequestBody @Valid dto: UpdateNotificationMethodDto): NotificationMethodResponse =
         NotificationMethodResponse(notificationMethodService.update(dto))
+
+    @Operation(
+        summary = "Clone a notification method with connected monitors and tags",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $NOTIFICATION_METHOD_ADMIN",
+    )
+    @PreAuthorize("hasPermission(#id, '$NOTIFICATION_METHOD_ADMIN')")
+    @PutMapping("/{id}/clone")
+    @ResponseStatus(HttpStatus.OK)
+    fun clone(@PathVariable("id") id: String, @RequestBody @Valid cloneDto: CloneDto): NotificationMethodResponse =
+        NotificationMethodResponse(
+            notificationMethodService.clone(
+                notificationMethodService.getByIdOrThrow(id),
+                cloneDto.teamId,
+            ),
+        )
 
     @Operation(
         summary = "Delete notification method",

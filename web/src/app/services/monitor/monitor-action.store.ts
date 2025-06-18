@@ -154,6 +154,23 @@ export const MonitorActionStore = signalStore(
             ),
           ),
         ),
+        clone: rxMethod<{id: string; teamId?: string}>(
+          switchMap(({id, teamId}) =>
+            api.put('/v1/monitor/{id}/clone', {params: {path: {id}}, body: {teamId}}).pipe(
+              tapResponse({
+                next: (it) => {
+                  patchState(store, setFulfilled());
+                  if (!teamId) {
+                    monitorsStore?.addMonitor(it);
+                  }
+
+                  toast.success(translate('monitor.cloneSuccess'));
+                },
+                error: (error) => patchState(store, setError(error)),
+              }),
+            ),
+          ),
+        ),
       };
     },
   ),

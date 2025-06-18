@@ -29,4 +29,6 @@ class SlackNotificationMethodData(
 ) : NotificationMethodData(NotificationMethodType.SLACK) {
     // ObjectMapper needs an empty constructor
     constructor() : this("", null)
+
+    override fun clone() = SlackNotificationMethodData(url)
 }

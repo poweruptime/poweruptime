@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatAnchor, MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 
@@ -82,14 +83,23 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <bi name="pencil-square" />
               {{ 'general.edit' | transloco }}
             </a>
-            <button
-              class="error-button"
-              (click)="monitorActionStore.delete(monitor.id)"
-              type="button"
-              mat-flat-button>
-              <bi name="trash" />
-              {{ 'general.delete' | transloco }}
+            <button [matMenuTriggerFor]="menu" type="button" mat-icon-button>
+              <span class="hidden">{{ 'general.menu' | transloco }}</span>
+              <bi name="three-dots-vertical" />
             </button>
+            <mat-menu #menu="matMenu">
+              <button
+                (click)="monitorActionStore.clone({id: monitor.id})"
+                type="button"
+                mat-menu-item>
+                <bi name="copy" />
+                {{ 'general.copy' | transloco }}
+              </button>
+              <button (click)="monitorActionStore.delete(monitor.id)" type="button" mat-menu-item>
+                <bi name="trash" />
+                {{ 'general.delete' | transloco }}
+              </button>
+            </mat-menu>
           </div>
         </div>
 
@@ -314,6 +324,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatTooltip,
     IsTeamAdmin,
     Tag,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+    MatIconButton,
   ],
 })
 export class MonitorDetailPage {

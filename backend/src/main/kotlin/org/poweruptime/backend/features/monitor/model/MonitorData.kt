@@ -34,6 +34,8 @@ abstract class MonitorData(
     @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
     @JsonIgnore
     override lateinit var id: String
+
+    abstract fun clone(): MonitorData
 }
 
 const val MONITOR_CHECKER_DATA_TABLE_NAME = "monitor_data"

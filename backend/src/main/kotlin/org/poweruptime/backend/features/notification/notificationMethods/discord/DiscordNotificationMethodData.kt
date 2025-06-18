@@ -29,4 +29,6 @@ class DiscordNotificationMethodData(
 ) : NotificationMethodData(NotificationMethodType.DISCORD) {
     // ObjectMapper needs an empty constructor
     constructor() : this("", null)
+
+    override fun clone() = DiscordNotificationMethodData(url)
 }

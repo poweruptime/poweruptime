@@ -32,6 +32,8 @@ abstract class NotificationMethodData(
     @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
     @JsonIgnore
     override lateinit var id: String
+
+    abstract fun clone(): NotificationMethodData
 }
 
 const val NOTIFICATION_METHOD_DATA_TABLE_NAME = "notification_method_data"

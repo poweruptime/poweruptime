@@ -26,4 +26,9 @@ class PingMonitorData(
 ) : MonitorData(MonitorType.PING) {
     // ObjectMapper needs an empty constructor
     constructor() : this("1.2.3.4", 42069)
+
+    override fun clone() = PingMonitorData(
+        ip,
+        port,
+    )
 }

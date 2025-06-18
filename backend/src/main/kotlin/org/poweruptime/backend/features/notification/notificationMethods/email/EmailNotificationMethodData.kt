@@ -85,4 +85,16 @@ class EmailNotificationMethodData(
         EmailSecurity.NONE_STARTTLS,
         false,
     )
+
+    override fun clone() = EmailNotificationMethodData(
+        to,
+        host,
+        port,
+        username,
+        password,
+        security,
+        ignoreTLSErrors,
+        cc,
+        bcc,
+    )
 }

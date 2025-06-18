@@ -47,6 +47,29 @@ export const NotificationMethodsStore = signalStore(
         ),
       ),
     ),
+    clone: rxMethod<{id: string; teamId?: string}>(
+      switchMap(({id, teamId}) =>
+        api.put('/v1/notification-method/{id}/clone', {params: {path: {id}}, body: {teamId}}).pipe(
+          tapResponse({
+            next: () => {
+              patchState(store, setFulfilled());
+              if (!teamId) {
+                store.load({
+                  ...store.pageable(),
+                  teamId: store.teamId(),
+                  search: store.search(),
+                  types: store.types(),
+                  useByDefault: store.useByDefault(),
+                });
+              }
+
+              toast.success(translate('notificationMethod.list.cloneSuccess'));
+            },
+            error: (error) => patchState(store, setError(error)),
+          }),
+        ),
+      ),
+    ),
     delete: rxMethod<string>(
       switchMap((id) =>
         confirmDialog$(translate('general.confirmDelete')).pipe(
@@ -57,7 +80,15 @@ export const NotificationMethodsStore = signalStore(
                 next: () => {
                   patchState(store, setFulfilled(), removeEntity(id));
 
-                  toast.success('Successfully deleted notification method.', {
+                  store.load({
+                    ...store.pageable(),
+                    teamId: store.teamId(),
+                    search: store.search(),
+                    types: store.types(),
+                    useByDefault: store.useByDefault(),
+                  });
+
+                  toast.success(translate('notificationMethod.list.deleteSuccess'), {
                     action: {
                       label: 'Undo',
                       onClick: () =>
@@ -74,7 +105,12 @@ export const NotificationMethodsStore = signalStore(
                                   useByDefault: store.useByDefault(),
                                 });
 
-                                toast.success(`Successfully restored ${notificationMethod.name}.`);
+                                toast.success(
+                                  translate(
+                                    'notificationMethod.list.restoreSuccess',
+                                    notificationMethod,
+                                  ),
+                                );
                               },
                               error: (error) => patchState(store, setError(error)),
                             }),

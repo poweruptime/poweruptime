@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.notification.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
+import jakarta.transaction.Transactional
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
@@ -22,6 +23,7 @@ import org.poweruptime.backend.features.notification.domain.NotificationMethodRe
 import org.poweruptime.backend.features.notification.dto.*
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.poweruptime.backend.features.team.model.Team
@@ -39,6 +41,7 @@ class NotificationMethodService(
     private val appriseSender: AppriseSender,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
 
+    @Transactional
     fun create(dto: CreateNotificationMethodDto): NotificationMethod = save(
         NotificationMethod.fromDto(
             dto = dto,
@@ -54,6 +57,7 @@ class NotificationMethodService(
         }
     }
 
+    @Transactional
     fun update(dto: UpdateNotificationMethodDto): NotificationMethod = getByIdOrThrow(dto.id).let {
         val oldSenderId = it.data.id
         val newSender = notificationMethodDataService.save(dto.sender)
@@ -76,6 +80,14 @@ class NotificationMethodService(
 
         notificationMethod
     }
+
+    @Transactional
+    fun clone(notificationMethod: NotificationMethod, teamId: String? = null): NotificationMethod = save(
+        notificationMethod.clone(
+            attachedData = notificationMethodDataService.save(notificationMethod.data.clone()),
+            team = teamId?.let { teamRepository.findByIdOrThrow(it) },
+        ),
+    )
 
     override fun deleteByIdOrThrow(id: String) {
         val notificationMethod = getByIdOrThrow(id)
@@ -120,44 +132,42 @@ class NotificationMethodService(
             listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
         ),
     )
+}
 
-    private fun NotificationMethod.getTestSubNotification(): SubNotification {
-        val title = "Notification method test"
-        val body = "Detailed message :)"
-        val status = MonitorStatus.MAINTENANCE
-        val teamName = "Demo Team"
-        val monitorName = "Demo Monitor"
-        return SubNotification(
-            method = this,
+private fun NotificationMethod.getTestSubNotification(): SubNotification {
+    val title = "Notification method test"
+    val body = "Detailed message :)"
+    val status = MonitorStatus.MAINTENANCE
+    val teamName = "Demo Team"
+    val monitorName = "Demo Monitor"
+    return SubNotification(
+        method = this,
+        title = title,
+        message = body,
+        pickedUpAt = Instant.now(),
+        notification = Notification(
             title = title,
-            message = body,
-            pickedUpAt = Instant.now(),
-            notification = Notification(
+            checkResult = CheckResult(
+                status = status,
+                previousStatus = status,
+                pickedUpAt = Instant.now(),
+                checkedAt = Instant.now(),
+                pingMs = 420,
                 title = title,
-                checkResult = CheckResult(
-                    status = status,
-                    previousStatus = status,
-                    pickedUpAt = Instant.now(),
-                    checkedAt = Instant.now(),
-                    pingMs = 420,
-                    title = title,
-                    message = body,
-                    monitor = Monitor(
-                        name = monitorName,
-                        testIntervalSeconds = 30,
-                        retries = 3,
-                        upsideDown = false,
-                        checker = PingMonitorData(
-                            "1.1.1.1",
-                            443,
-                        ),
-                        team = Team(
-                            name = teamName,
-                        ).apply {
-                            id = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH)
-                        },
+                message = body,
+                monitor = Monitor(
+                    name = monitorName,
+                    testIntervalSeconds = 30,
+                    retries = 3,
+                    upsideDown = false,
+                    checker = PingMonitorData(
+                        "1.1.1.1",
+                        443,
+                    ),
+                    team = Team(
+                        name = teamName,
                     ).apply {
-                        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
+                        id = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH)
                     },
                 ).apply {
                     id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
@@ -167,6 +177,21 @@ class NotificationMethodService(
             },
         ).apply {
             id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-        }
+        },
+    ).apply {
+        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
     }
 }
+
+private fun NotificationMethod.clone(
+    attachedData: NotificationMethodData,
+    team: Team?,
+) = NotificationMethod(
+    name = """$name (Copy)""",
+    data = attachedData,
+    team = team ?: this.team,
+    useByDefault = useByDefault,
+    titleTemplate = titleTemplate,
+    bodyTemplate = bodyTemplate,
+    usedByMonitors = if (team == null) usedByMonitors else listOf(),
+)

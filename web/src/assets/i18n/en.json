@@ -146,6 +146,7 @@
     "logs": "Logs",
     "maintenance": "Maintenance",
     "member": "Member",
+    "menu": "Menu",
     "method": "Method",
     "minutes": "Minutes",
     "monitor": "Monitor",
@@ -271,6 +272,7 @@
       "PUSH": "Push",
       "SSL_CERTIFICATE": "SSL Certificate"
     },
+    "cloneSuccess": "Successfully cloned the {{general.monitor}}",
     "details": {
       "check": "Check every {{testIntervalDuration}}",
       "openPublic": "Open public {{general.monitor}} page",
@@ -402,12 +404,16 @@
       "useByDefault": "Use by default"
     },
     "list": {
+      "clone": "Clone the {{general.notificationMethod}}",
+      "cloneSuccess": "Successfully cloned the {{general.notificationMethod}}.",
       "delete": "Delete the {{general.notificationMethod}}",
+      "deleteSuccess": "Successfully deleted the {{general.notificationMethod}}.",
       "edit": "Edit the {{general.notificationMethod}}",
       "email": {
         "recipient": "Recipient: ",
         "via": " via "
-      }
+      },
+      "restoreSuccess": "Successfully restored {{name}}."
     },
     "selector": {
       "add": "Add...",

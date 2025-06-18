@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.monitor.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
+import jakarta.transaction.Transactional
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
@@ -17,11 +18,13 @@ import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.fromDto
 import org.poweruptime.backend.features.monitor.dto.update
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
 import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.domain.TeamRepository
+import org.poweruptime.backend.features.team.model.Team
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -35,6 +38,7 @@ class MonitorService(
     private val notificationMethodRepository: NotificationMethodRepository,
     private val tagService: TagService,
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
+    @Transactional
     fun create(dto: CreateMonitorDto): Monitor {
         val team = teamRepository.findByIdOrThrow(dto.teamId)
 
@@ -51,6 +55,7 @@ class MonitorService(
         ).start()
     }
 
+    @Transactional
     fun update(dto: UpdateMonitorDto): Monitor = getByIdOrThrow(dto.id).let {
         val oldCheckerId = it.checker.id
         val newChecker = monitorDataService.save(dto.checker)
@@ -70,6 +75,14 @@ class MonitorService(
 
         monitor
     }
+
+    @Transactional
+    fun clone(monitor: Monitor, teamId: String? = null): Monitor = save(
+        monitor.clone(
+            attachedCheckerData = monitorDataService.save(monitor.checker.clone()),
+            team = teamId?.let { teamRepository.findByIdOrThrow(it) },
+        ),
+    ).start()
 
     fun updateStatus(monitorId: String, status: MonitorStatus): Int = monitorRepository.updateStatus(monitorId, status)
 
@@ -236,3 +249,19 @@ class MonitorService(
         pausedCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.PAUSED),
     )
 }
+
+private fun Monitor.clone(
+    attachedCheckerData: MonitorData,
+    team: Team?
+) = Monitor(
+    name = """$name (Copy)""",
+    testIntervalSeconds = testIntervalSeconds,
+    upsideDown = upsideDown,
+    team = team ?: this.team,
+    checker = attachedCheckerData,
+    retries = retries,
+    resendAfter = resendAfter,
+    description = description,
+    enabledNotificationMethods = if (team == null) enabledNotificationMethods else listOf(),
+    selectedTags = if (team == null) selectedTags else listOf(),
+)

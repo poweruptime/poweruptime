@@ -35,4 +35,9 @@ class SSLCertificateMonitorData(
         "1.2.3.4",
         null,
     )
+
+    override fun clone() = SSLCertificateMonitorData(
+        url,
+        validDaysLeft,
+    )
 }
