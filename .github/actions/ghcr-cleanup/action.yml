@@ -1,0 +1,122 @@
+name: 'GHCR ⟶ cleanup untagged (sha256:…) images'
+description: >
+  For a given repo and comma-separated list of container package
+  names, list (dry-run) or delete all versions with no tags.
+inputs:
+  dryrun:
+    description: 'Only list (true) or delete (false) untagged versions'
+    required: false
+    default: 'true'
+  repository:
+    description: >
+      The target GitHub repo in owner/name form.
+      Defaults to the workflow's own repository.
+    required: false
+    default: ''
+  packages:
+    description: >
+      Comma-separated list (no spaces) of GHCR container package
+      names to clean up.
+    required: true
+  github-token:
+    description: 'GitHub token with packages:write permission'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Install jq
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y jq
+      shell: bash
+
+    - name: Cleanup untagged GHCR images
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -euo pipefail
+
+        DRYRUN="${{ inputs.dryrun }}"
+        REPO_INPUT="${{ inputs.repository }}"
+        PKG_LIST="${{ inputs.packages }}"
+
+        # Use github.repository if repository input is empty
+        if [[ -z "$REPO_INPUT" ]]; then
+          REPO_INPUT="${{ github.repository }}"
+        fi
+
+        if [[ -z "$PKG_LIST" ]]; then
+          echo "ERROR: 'packages' input must be non-empty" >&2
+          exit 1
+        fi
+
+        # split owner/repo
+        OWNER="${REPO_INPUT%%/*}"
+        REPO="${REPO_INPUT##*/}"
+
+        # find authenticated user login
+        AUTH_USER=$(curl -sSL \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/user | jq -r .login)
+
+        if [[ "$OWNER" == "$AUTH_USER" ]]; then
+          BASE_LIST="https://api.github.com/user/packages"
+          BASE_PATH="/user/packages/container"
+        else
+          BASE_LIST="https://api.github.com/orgs/$OWNER/packages"
+          BASE_PATH="/orgs/$OWNER/packages/container"
+        fi
+
+        echo "→ Targeting packages in $OWNER ($BASE_LIST)"
+        IFS=',' read -r -a WANT_PKGS <<< "$PKG_LIST"
+
+        for pkg_name in "${WANT_PKGS[@]}"; do
+          echo "• Looking up package '$pkg_name'…"
+          # list all container packages and filter by name
+          pkg_ids=$(curl -sSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$BASE_LIST?package_type=container&per_page=100" \
+            | jq -r --arg N "$pkg_name" \
+                '.[] | select(.name==$N) | .id')
+
+          if [[ -z "$pkg_ids" ]]; then
+            echo "  -- no package named '$pkg_name' found, skipping"
+            continue
+          fi
+
+          for pkg_id in $pkg_ids; do
+            echo "  ↳ Package ID $pkg_id"
+            VERS_URL="https://api.github.com${BASE_PATH}/$pkg_id/versions?per_page=100"
+            version_ids=$(curl -sSL \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "$VERS_URL" \
+              | jq -r '.[] | select(.metadata.container.tags|length==0) | .id')
+
+            if [[ -z "$version_ids" ]]; then
+              echo "    -- no untagged (sha256:…) versions"
+              continue
+            fi
+
+            for vid in $version_ids; do
+              if [[ "$DRYRUN" == "true" ]]; then
+                echo "    [DRY-RUN] would delete version $vid"
+              else
+                echo "    deleting version $vid…"
+                DEL_URL="https://api.github.com${BASE_PATH}/$pkg_id/versions/$vid"
+                curl -sSL -X DELETE \
+                  -H "Authorization: Bearer $GITHUB_TOKEN" \
+                  -H "Accept: application/vnd.github+json" \
+                  "$DEL_URL"
+              fi
+            done
+          done
+        done
+
+        if [[ "$DRYRUN" == "true" ]]; then
+          echo "✅ Dry-run complete; no deletions performed."
+        else
+          echo "✅ Cleanup complete."
+        fi
