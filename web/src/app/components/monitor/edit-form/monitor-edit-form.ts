@@ -3,7 +3,7 @@ import {LowerCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input, model} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatAnchor} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -273,7 +273,6 @@ import {
     MatCardContent,
     MatCardTitle,
     MatCardHeader,
-    MatAnchor,
     CdkTextareaAutosize,
     TranslocoPipe,
     NgxMatSelectSearchModule,
@@ -287,6 +286,7 @@ import {
     MonitorEditFormPushData,
     MonitorCheckerDataValueLabelPipe,
     TagSelector,
+    MatButton,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

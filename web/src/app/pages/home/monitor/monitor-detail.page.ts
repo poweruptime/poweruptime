@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
-import {MatAnchor, MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -315,7 +315,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     NotificationList,
     MatButton,
     RouterLink,
-    MatAnchor,
     DfxCutPipe,
     Placeholder,
     TranslocoPipe,

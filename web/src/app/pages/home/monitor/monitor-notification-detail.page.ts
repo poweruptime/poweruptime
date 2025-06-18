@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {
   MatAccordion,
@@ -17,10 +17,9 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {AlertDirective, ShadowRender} from '@app/components';
 import {MonitorStatus} from '@app/components/monitor';
+import {Tag} from '@app/directives';
+import {RelativeTimePipe, RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
-
-import {Tag} from '../../../directives';
-import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
 
 @Component({
   template: `
@@ -75,7 +74,7 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
                       <div></div>
 
                       <span>
-                        @if (subNotification.error; as error) {
+                        @if (subNotification.error) {
                           <span pu-tag="RED">Error</span>
                         } @else {
                           Sent {{ subNotification.sentAt | relativeTime }}
@@ -108,7 +107,6 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BiComponent,
-    MatAnchor,
     RouterLink,
     FormsModule,
     MonitorStatus,
@@ -125,6 +123,7 @@ import {RelativeTimePipe, RelativeTimeWithTooltip} from '../../../pipes';
     ShadowRender,
     Tag,
     AlertDirective,
+    MatButton,
   ],
 })
 export class MonitorNotificationDetailPage {
@@ -132,8 +131,6 @@ export class MonitorNotificationDetailPage {
   readonly subNotificationsStore = inject(SubNotificationsStore);
 
   readonly notificationId = input<string>();
-
-  readonly accordion = viewChild(MatAccordion);
 
   readonly expandAll = linkedQueryParam('expand', {
     parse: paramToBoolean({defaultValue: false}),

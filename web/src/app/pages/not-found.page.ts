@@ -1,6 +1,6 @@
 import {Location} from '@angular/common';
 import {Component, inject} from '@angular/core';
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -37,7 +37,7 @@ import {BottomActionBar} from '@app/components';
   `,
   selector: 'not-found-page',
   standalone: true,
-  imports: [RouterLink, BiComponent, MatButton, MatAnchor, TranslocoPipe, BottomActionBar],
+  imports: [RouterLink, BiComponent, MatButton, TranslocoPipe, BottomActionBar],
 })
 export class NotFoundPage {
   private readonly location = inject(Location);

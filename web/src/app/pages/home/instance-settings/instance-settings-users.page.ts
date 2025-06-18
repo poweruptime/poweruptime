@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
-import {MatAnchor, MatIconAnchor} from '@angular/material/button';
+import {MatButton, MatIconAnchor} from '@angular/material/button';
 import {MatChip} from '@angular/material/chips';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -116,8 +116,8 @@ import {trackBy} from '@app/util';
     RouterLink,
     StopPropagationDirective,
     MatIconAnchor,
-    MatAnchor,
     TranslocoPipe,
+    MatButton,
   ],
 })
 export class InstanceSettingsUsersPage {

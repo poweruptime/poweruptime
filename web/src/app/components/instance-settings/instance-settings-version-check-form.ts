@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
@@ -266,7 +266,6 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatError,
     MatLabel,
     MatButton,
-    MatAnchor,
     TranslocoPipe,
     BiComponent,
     Tag,

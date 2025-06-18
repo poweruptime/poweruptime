@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {MatAnchor} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {RouterLink} from '@angular/router';
 
@@ -97,7 +97,6 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
     TeamSettings,
     TeamUsersList,
     RouterLink,
-    MatAnchor,
     Placeholder,
     MatCard,
     MatCardContent,
@@ -105,6 +104,7 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
     MatCardTitle,
     TeamInvitesList,
     TranslocoPipe,
+    MatButton,
   ],
   providers: [TeamEditStore, TeamSettingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,

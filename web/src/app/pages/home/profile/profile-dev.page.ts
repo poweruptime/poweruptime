@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {RouterLink} from '@angular/router';
 
@@ -118,7 +118,7 @@ import {AuthStore, ChangelogStore} from '@app/services';
   `,
   selector: 'pu-profile-dev-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCard, MatCardContent, MatButton, MatAnchor, RouterLink],
+  imports: [MatCard, MatCardContent, MatButton, RouterLink],
 })
 export class ProfileDevPage {
   private readonly authStore = inject(AuthStore);

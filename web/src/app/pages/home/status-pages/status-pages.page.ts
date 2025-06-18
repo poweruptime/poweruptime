@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor, MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
@@ -129,7 +129,6 @@ import {trackBy} from '@app/util';
   imports: [
     RouterLink,
     FormsModule,
-    MatAnchor,
     MatTableModule,
     MatSortModule,
     MatPaginator,
@@ -139,13 +138,13 @@ import {trackBy} from '@app/util';
     MatPrefix,
     MatSuffix,
     MatIconButton,
-    MatIconAnchor,
     MatTooltip,
     StopPropagationDirective,
     BiComponent,
     TranslocoPipe,
     TableLoadingBar,
     IsTeamAdmin,
+    MatButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

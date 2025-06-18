@@ -1,7 +1,7 @@
 import {DatePipe, KeyValuePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatAnchor} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {RouterLink} from '@angular/router';
@@ -191,7 +191,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BiComponent,
-    MatAnchor,
     RouterLink,
     MatCard,
     MatCardContent,
@@ -205,6 +204,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     TranslocoPipe,
     DatePipe,
     MonitorStatus,
+    MatButton,
   ],
 })
 export class MonitorCheckResultDetailPage {
@@ -213,7 +213,7 @@ export class MonitorCheckResultDetailPage {
 
   readonly checkResultId = input<string>();
 
-  readonly showTimestamps = injectLocalStorage('pu_cr_show_timestamps', {defaultValue: false});
+  showTimestamps = injectLocalStorage('pu_cr_show_timestamps', {defaultValue: false});
 
   constructor() {
     this.checkResultDetailStore.loadById(this.checkResultId);
