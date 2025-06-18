@@ -7,10 +7,10 @@ import java.time.Instant
 group = "org.poweruptime.backend"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -60,7 +60,7 @@ allprojects {
             sarif.required = true
         }
         finalizedBy(detektReportMergeSarif)
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     detektReportMergeSarif {
         input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
