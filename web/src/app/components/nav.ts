@@ -201,12 +201,8 @@ import {TeamSelect} from './team-select';
             @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
               @let lang = $any(language);
               <button (click)="translocoService.setActiveLang(lang.id)" type="button" mat-menu-item>
-                <div class="inline-flex items-center gap-2">
-                  <bi
-                    [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'"
-                    size="16" />
-                  <span>{{ lang.label }}</span>
-                </div>
+                <bi [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'" />
+                <span>{{ lang.label }}</span>
               </button>
             }
           </mat-menu>

@@ -15,12 +15,10 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {
         <button (click)="themeService.selectedTheme.set(theme.value)" type="button" mat-menu-item>
-          <div class="inline-flex items-center gap-2">
-            <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" size="16" />
-            <span>{{ theme.viewValue }}</span>
+          <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" />
+          <span>{{ theme.viewValue }}</span>
 
-            <bi [name]="theme.icon" />
-          </div>
+          <bi [name]="theme.icon" />
         </button>
       }
     </mat-menu>

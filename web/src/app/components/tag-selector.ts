@@ -55,14 +55,10 @@ import {Tag} from '../directives';
           <mat-menu #menu="matMenu">
             @for (tagVariant of tagVariants; track tagVariant) {
               <button (click)="updateTagVariant(tag, tagVariant)" mat-menu-item type="button">
-                <div class="inline-flex items-center gap-2">
-                  <bi
-                    [name]="tag.variant === tagVariant ? 'check-circle-fill' : 'circle'"
-                    size="16" />
-                  <span>
-                    {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
-                  </span>
-                </div>
+                <bi [name]="tag.variant === tagVariant ? 'check-circle-fill' : 'circle'" />
+                <span>
+                  {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
+                </span>
               </button>
             }
           </mat-menu>
