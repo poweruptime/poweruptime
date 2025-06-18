@@ -28,7 +28,12 @@ services:
       - MAIL_PASSWORD=test
     networks:
       - poweruptime-local-backend-dev-network
-    # No healthcheck possible as the container is distroless and therfore has no bash nor other tools to make requests
+    healthcheck:
+      test: ['CMD', 'java', 'HealthCheck.java']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   db:

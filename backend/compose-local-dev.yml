@@ -18,9 +18,9 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
       interval: 30s
-      timeout: 60s
+      timeout: 10s
       retries: 5
-      start_period: 80s
+      start_period: 60s
 
   rabbitmq:
     container_name: poweruptime-local-backend-dev-rabbit
@@ -39,8 +39,9 @@ services:
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
-      timeout: 30s
-      retries: 3
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   apprise:
     container_name: poweruptime-local-backend-dev-apprise
@@ -58,8 +59,8 @@ services:
       test: [ "CMD", "curl", "--fail", "http://localhost:8000/status" ]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 5s
+      retries: 5
+      start_period: 60s
 
   web:
     container_name: poweruptime-local-backend-dev-web
@@ -70,6 +71,12 @@ services:
       - "4210:4200"
     networks:
       - poweruptime-local-backend-dev-network
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://localhost:4200']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 networks:
   poweruptime-local-backend-dev-network:

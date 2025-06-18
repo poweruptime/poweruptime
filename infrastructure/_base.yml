@@ -40,7 +40,7 @@ services:
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
       interval: 30s
-      timeout: 60s
+      timeout: 10s
       retries: 5
       start_period: 60s
 
@@ -58,7 +58,7 @@ services:
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
-      timeout: 60s
+      timeout: 10s
       retries: 5
       start_period: 60s
 
@@ -74,7 +74,7 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:8000/status']
       interval: 30s
-      timeout: 60s
+      timeout: 10s
       retries: 5
       start_period: 60s
 
@@ -97,6 +97,12 @@ services:
     networks:
       - poweruptime-infrastructure
       - proxy
+    healthcheck:
+      test: ['CMD', 'java', 'HealthCheck.java']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   poweruptime-web:
     container_name: poweruptime-web
@@ -109,6 +115,12 @@ services:
     networks:
       - poweruptime-infrastructure
       - proxy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://localhost:4200']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   poweruptime-db-data:
