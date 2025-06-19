@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /api
 
+  tomcat:
+    threads:
+      max: 4
+
 spring:
   application:
     name: poweruptime-backend
@@ -78,6 +82,10 @@ logging:
 #    org.hibernate: ERROR
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, liquibase, metrics, scheduledtasks
   health:
     mail:
       enabled: false

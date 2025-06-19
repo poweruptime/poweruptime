@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /api
 
+  tomcat:
+    threads:
+      max: 4
+
 spring:
   application:
     name: poweruptime-backend
@@ -28,6 +32,7 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
+        generate_statistics: false
         jdbc:
           lob:
             non_contextual_creation: true
@@ -78,6 +83,10 @@ logging:
 #    org.hibernate: ERROR
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, liquibase, metrics, scheduledtasks
   health:
     mail:
       enabled: false

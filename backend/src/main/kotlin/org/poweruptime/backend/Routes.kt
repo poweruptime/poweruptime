@@ -1,8 +1,8 @@
 package org.poweruptime.backend
 
 object Routes {
+    private const val ACTUATOR = "/actuator/**"
     private const val PUBLIC = "/v1/public/**"
-
     private const val USER_AUTH = "/v1/auth/**"
 
     val ipRateLimited = buildList {
@@ -25,5 +25,6 @@ object Routes {
         addAll(SWAGGER)
         add(USER_AUTH)
         add(PUBLIC)
+        add(ACTUATOR)
     }
 }
