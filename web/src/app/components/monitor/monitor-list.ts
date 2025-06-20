@@ -6,13 +6,14 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatIconAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 

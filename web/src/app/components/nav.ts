@@ -1,12 +1,14 @@
-import {BreakpointObserver} from '@angular/cdk/layout';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
+
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
-import {Router, RouterLink, RouterLinkActive} from '@angular/router';
+
+import {BreakpointObserver} from '@angular/cdk/layout';
 
 import {map} from 'rxjs';
 

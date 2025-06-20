@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, booleanAttribute, computed, input} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {Subject, throttleTime} from 'rxjs';

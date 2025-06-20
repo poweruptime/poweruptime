@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({

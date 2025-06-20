@@ -1,16 +1,3 @@
-import {addAriaReferencedId, removeAriaReferencedId} from '@angular/cdk/a11y';
-import {Directionality} from '@angular/cdk/bidi';
-import {DOWN_ARROW, ENTER, ESCAPE, TAB, UP_ARROW, hasModifierKey} from '@angular/cdk/keycodes';
-import {
-  ConnectedPosition,
-  FlexibleConnectedPositionStrategy,
-  Overlay,
-  OverlayConfig,
-  OverlayRef,
-  PositionStrategy,
-} from '@angular/cdk/overlay';
-import {_getEventTarget} from '@angular/cdk/platform';
-import {TemplatePortal} from '@angular/cdk/portal';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -31,6 +18,7 @@ import {
   model,
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+
 import {
   MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
   MatAutocomplete,
@@ -43,6 +31,20 @@ import {
   _getOptionScrollPosition,
 } from '@angular/material/core';
 import {MAT_FORM_FIELD, MatFormField} from '@angular/material/form-field';
+
+import {addAriaReferencedId, removeAriaReferencedId} from '@angular/cdk/a11y';
+import {Directionality} from '@angular/cdk/bidi';
+import {DOWN_ARROW, ENTER, ESCAPE, TAB, UP_ARROW, hasModifierKey} from '@angular/cdk/keycodes';
+import {
+  ConnectedPosition,
+  FlexibleConnectedPositionStrategy,
+  Overlay,
+  OverlayConfig,
+  OverlayRef,
+  PositionStrategy,
+} from '@angular/cdk/overlay';
+import {_getEventTarget} from '@angular/cdk/platform';
+import {TemplatePortal} from '@angular/cdk/portal';
 
 import {
   EMPTY,

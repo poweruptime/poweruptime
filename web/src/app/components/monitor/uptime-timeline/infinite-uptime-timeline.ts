@@ -1,4 +1,3 @@
-import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,6 +7,8 @@ import {
   viewChild,
 } from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
+
+import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling';
 
 import {Subject, throttleTime} from 'rxjs';
 

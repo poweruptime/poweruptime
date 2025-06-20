@@ -1,8 +1,9 @@
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {LowerCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input, model} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
@@ -10,7 +11,8 @@ import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {RouterLink} from '@angular/router';
+
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {distinctUntilChanged, map} from 'rxjs';
 

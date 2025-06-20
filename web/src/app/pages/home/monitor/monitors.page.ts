@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
+
 import {MatButton} from '@angular/material/button';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

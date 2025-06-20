@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
-import {MatCard} from '@angular/material/card';
 import {RouterLink, RouterLinkActive} from '@angular/router';
+
+import {MatCard} from '@angular/material/card';
 
 import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 

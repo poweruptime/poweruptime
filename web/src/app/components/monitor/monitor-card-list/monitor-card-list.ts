@@ -1,10 +1,11 @@
+import {ChangeDetectionStrategy, Component, input, viewChild} from '@angular/core';
+import {outputFromObservable} from '@angular/core/rxjs-interop';
+
 import {
   CdkFixedSizeVirtualScroll,
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
-import {ChangeDetectionStrategy, Component, input, viewChild} from '@angular/core';
-import {outputFromObservable} from '@angular/core/rxjs-interop';
 
 import {Subject, throttleTime} from 'rxjs';
 

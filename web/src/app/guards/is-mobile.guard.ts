@@ -1,6 +1,7 @@
-import {BreakpointObserver} from '@angular/cdk/layout';
 import {inject} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from '@angular/router';
+
+import {BreakpointObserver} from '@angular/cdk/layout';
 
 import {map} from 'rxjs';
 

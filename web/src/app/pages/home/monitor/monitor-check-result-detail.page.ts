@@ -1,10 +1,11 @@
 import {DatePipe, KeyValuePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';

@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';

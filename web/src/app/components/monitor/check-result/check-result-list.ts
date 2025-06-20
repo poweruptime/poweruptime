@@ -8,6 +8,8 @@ import {
   viewChild,
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+
 import {MatIconAnchor} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -18,7 +20,6 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 

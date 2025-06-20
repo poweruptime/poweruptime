@@ -8,6 +8,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+
 import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';

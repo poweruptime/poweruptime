@@ -1,7 +1,8 @@
 import {Location} from '@angular/common';
 import {Component, inject} from '@angular/core';
-import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
+
+import {MatButton} from '@angular/material/button';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

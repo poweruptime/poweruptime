@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
+
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 
 import {TranslocoPipe} from '@jsverse/transloco';

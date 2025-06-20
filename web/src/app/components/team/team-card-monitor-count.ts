@@ -1,4 +1,5 @@
 import {Component, input} from '@angular/core';
+
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';

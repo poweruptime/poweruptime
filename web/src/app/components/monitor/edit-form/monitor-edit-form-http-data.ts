@@ -1,7 +1,7 @@
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {ChangeDetectionStrategy, Component, computed, inject, model, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
@@ -18,6 +18,8 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatHint, MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
+
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {filter} from 'rxjs';
 

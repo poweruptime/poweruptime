@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatButton, MatIconAnchor} from '@angular/material/button';
 import {MatChip} from '@angular/material/chips';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

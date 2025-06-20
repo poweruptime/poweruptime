@@ -1,13 +1,15 @@
-import {BreakpointObserver} from '@angular/cdk/layout';
 import {NgOptimizedImage} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
+import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
+
 import {MatIconButton} from '@angular/material/button';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatTooltip} from '@angular/material/tooltip';
-import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
+
+import {BreakpointObserver} from '@angular/cdk/layout';
 
 import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 

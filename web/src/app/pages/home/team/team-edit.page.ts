@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 

@@ -1,4 +1,3 @@
-import {ScrollingModule} from '@angular/cdk/scrolling';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,6 +5,8 @@ import {
   booleanAttribute,
   input,
 } from '@angular/core';
+
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 import {BackendType} from '@app/api';
 

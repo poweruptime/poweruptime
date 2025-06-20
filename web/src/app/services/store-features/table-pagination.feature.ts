@@ -1,8 +1,9 @@
 import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActivatedRoute, Router} from '@angular/router';
+
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, SortDirection} from '@angular/material/sort';
-import {ActivatedRoute, Router} from '@angular/router';
 
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs';
 

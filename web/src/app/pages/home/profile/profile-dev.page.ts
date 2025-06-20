@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
-import {RouterLink} from '@angular/router';
 
 import {AuthStore, ChangelogStore} from '@app/services';
 

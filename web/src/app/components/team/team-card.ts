@@ -1,8 +1,9 @@
 import {Component, computed, input} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
 import {MatIconAnchor, MatIconButton} from '@angular/material/button';
 import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {a_hashFrom} from 'dfts-helper';

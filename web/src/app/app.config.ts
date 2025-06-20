@@ -6,8 +6,6 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
-import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {
   provideClientHydration,
   withEventReplay,
@@ -15,6 +13,9 @@ import {
 } from '@angular/platform-browser';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
+
+import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';

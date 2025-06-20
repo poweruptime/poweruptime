@@ -1,4 +1,3 @@
-import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
+
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
@@ -27,6 +27,8 @@ import {
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatProgressBar} from '@angular/material/progress-bar';
+
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';

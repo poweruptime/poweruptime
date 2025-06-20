@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+
 import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {ProfileEmailEditForm} from '@app/components/profile';

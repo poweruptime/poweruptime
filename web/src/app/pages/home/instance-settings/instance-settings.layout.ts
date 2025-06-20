@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+
+import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 

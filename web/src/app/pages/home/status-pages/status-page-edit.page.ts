@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+
 import {MatTab, MatTabContent, MatTabGroup} from '@angular/material/tabs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
