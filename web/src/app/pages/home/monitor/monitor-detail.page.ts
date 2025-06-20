@@ -240,12 +240,14 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         <mat-card appearance="outlined">
           <mat-card-content>
             <div
-              class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
               @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
                 <div
-                  class="flex flex-col items-center justify-center rounded-md bg-gray-200 p-4 transition duration-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
-                  <span class="text-center text-2xl">{{ uptimeResult.value }}</span>
-                  <span class="text-center text-lg">{{ uptimeResult.name }}</span>
+                  class="flex flex-col items-center justify-center rounded-lg border-2 border-gray-200 p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-900">
+                  <span class="text-center text-lg font-semibold">{{ uptimeResult.value }}</span>
+                  <span class="text-center text-gray-600 dark:text-gray-300">
+                    {{ uptimeResult.name }}
+                  </span>
                 </div>
               }
             </div>
