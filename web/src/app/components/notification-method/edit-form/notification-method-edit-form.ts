@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Pipe,
+  PipeTransform,
   computed,
   effect,
   inject,
@@ -19,14 +21,15 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {typeOfArrayElement} from 'dfts-helper';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, NOTIFICATION_METHOD_SENDER_DATA_TYPES} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
+import {NotificationMethodTemplateStore} from '@app/services';
 
-import {NotificationMethodTemplateStore} from '../../../services';
 import {Placeholder} from '../../placeholder';
 import {MonitorSelector} from '../monitor-selector';
 import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
@@ -35,6 +38,21 @@ import {NotificationMethodEditFormDiscordData} from './notification-method-edit-
 import {NotificationMethodEditFormEmailData} from './notification-method-edit-form-email-data';
 import {NotificationMethodEditFormSlackData} from './notification-method-edit-form-slack-data';
 import {NotificationMethodEditTemplate} from './notification-method-edit-template';
+
+type TemplateFeatures = NonNullable<BackendType['NotificationMethodTemplateResponse']['features']>;
+
+@Pipe({
+  name: 'hasTemplateFeatureEnabled',
+  pure: true,
+})
+class HasTemplateFeatureEnabled implements PipeTransform {
+  transform(
+    features: TemplateFeatures | undefined,
+    feature: typeOfArrayElement<TemplateFeatures>,
+  ): boolean {
+    return features?.includes(feature) ?? false;
+  }
+}
 
 @Component({
   template: `
@@ -137,11 +155,6 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                 [monitors]="allMonitors()"
                 [isPending]="isMonitorsSearchPending()"
                 formControlName="monitors" />
-
-              <!--              <a mat-button routerLink="../../../notification-methods/new" target="_blank">-->
-              <!--                {{ 'cmdk.groups.notificationMethod.create' | transloco }}-->
-              <!--                <bi class="ms-1" name="box-arrow-up-right" />-->
-              <!--              </a>-->
             </mat-card-content>
           </mat-card>
         </div>
@@ -168,14 +181,14 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
               } @else {
                 @let _isCreating = isCreating();
                 @if (notificationMethodTemplateStore.template(); as template) {
-                  @if (template.features?.includes('TITLE')) {
+                  @if (template.features | hasTemplateFeatureEnabled: 'TITLE') {
                     <pu-notification-method-edit-template
                       [label]="'notificationMethod.edit.titleTemplate' | transloco"
                       [showReset]="!_isCreating"
                       [disableReset]="
                         form.controls.titleTemplate.getRawValue() === template.titleTemplate
                       "
-                      (resetClick)="resetTitleTemplate(template.titleTemplate)"
+                      (resetClick)="form.patchValue({titleTemplate: template.titleTemplate})"
                       formControlName="titleTemplate" />
 
                     <mat-divider />
@@ -192,7 +205,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
                     [disableReset]="
                       form.controls.bodyTemplate.getRawValue() === template.bodyTemplate
                     "
-                    (resetClick)="resetBodyTemplate(template.bodyTemplate)"
+                    (resetClick)="form.patchValue({bodyTemplate: template.bodyTemplate})"
                     formControlName="bodyTemplate" />
                 }
               }
@@ -245,6 +258,7 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
     Placeholder,
     NotificationMethodEditFormAppriseData,
     MonitorSelector,
+    HasTemplateFeatureEnabled,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -362,18 +376,6 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
       ...value,
       monitorIds: value.monitors.map((it) => it.id),
     };
-  }
-
-  resetTitleTemplate(titleTemplate: string) {
-    this.form.patchValue({
-      titleTemplate,
-    });
-  }
-
-  resetBodyTemplate(bodyTemplate: string) {
-    this.form.patchValue({
-      bodyTemplate,
-    });
   }
 
   private setFormCheckerType(type: BackendType['NotificationMethodData']['_type']) {
