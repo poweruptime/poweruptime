@@ -138,6 +138,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
             "Handled ${ex.javaClass.simpleName} → $status at ${servletReq.servletPath}?${servletReq.queryString}: " +
                 "${ex.message}"
         }
+        puLogger.debug(ex) {
+            "Exception:"
+        }
         return ResponseEntity.status(status).body(body)
     }
 }

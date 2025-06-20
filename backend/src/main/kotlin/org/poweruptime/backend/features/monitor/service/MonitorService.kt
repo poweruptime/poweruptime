@@ -3,7 +3,6 @@ package org.poweruptime.backend.features.monitor.service
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
-import jakarta.transaction.Transactional
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.dto.PageableValidator
@@ -38,7 +37,6 @@ class MonitorService(
     private val notificationMethodRepository: NotificationMethodRepository,
     private val tagService: TagService,
 ) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
-    @Transactional
     fun create(dto: CreateMonitorDto): Monitor {
         val team = teamRepository.findByIdOrThrow(dto.teamId)
 
@@ -55,7 +53,6 @@ class MonitorService(
         ).start()
     }
 
-    @Transactional
     fun update(dto: UpdateMonitorDto): Monitor = getByIdOrThrow(dto.id).let {
         val oldCheckerId = it.checker.id
         val newChecker = monitorDataService.save(dto.checker)
@@ -76,7 +73,6 @@ class MonitorService(
         monitor
     }
 
-    @Transactional
     fun clone(monitor: Monitor, teamId: String? = null): Monitor = save(
         monitor.clone(
             attachedCheckerData = monitorDataService.save(monitor.checker.clone()),

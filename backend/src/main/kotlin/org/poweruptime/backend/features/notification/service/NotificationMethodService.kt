@@ -41,7 +41,6 @@ class NotificationMethodService(
     private val appriseSender: AppriseSender,
 ) : ASoftDeleteEntityService<NotificationMethod>(notificationMethodRepository) {
 
-    @Transactional
     fun create(dto: CreateNotificationMethodDto): NotificationMethod = save(
         NotificationMethod.fromDto(
             dto = dto,
@@ -57,7 +56,6 @@ class NotificationMethodService(
         }
     }
 
-    @Transactional
     fun update(dto: UpdateNotificationMethodDto): NotificationMethod = getByIdOrThrow(dto.id).let {
         val oldSenderId = it.data.id
         val newSender = notificationMethodDataService.save(dto.sender)
@@ -137,7 +135,7 @@ class NotificationMethodService(
 private fun NotificationMethod.getTestSubNotification(): SubNotification {
     val title = "Notification method test"
     val body = "Detailed message :)"
-    val status = MonitorStatus.MAINTENANCE
+    val status = MonitorStatus.UP
     val teamName = "Demo Team"
     val monitorName = "Demo Monitor"
     return SubNotification(

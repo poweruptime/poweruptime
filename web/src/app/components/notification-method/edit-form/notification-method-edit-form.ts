@@ -205,7 +205,11 @@ import {NotificationMethodEditTemplate} from './notification-method-edit-templat
         <pu-save-button [valid]="isValid()" />
         <pu-save-button
           [valid]="isValid()"
-          (buttonClick)="form.controls.testSend.patchValue(true)"
+          (buttonClick)="
+            form.controls.testSend.patchValue(true);
+            submit();
+            form.controls.testSend.patchValue(false)
+          "
           text="Save (and test)"
           type="button"
           icon="send-check" />
