@@ -18,3 +18,11 @@ databaseChangeLog:
             tableName: tag
             columnNames: team_id, name
             constraintName: tag_team_id_name_key
+  - changeSet:
+      id: 3
+      author: Dafnik
+      changes:
+        - addUniqueConstraint:
+            tableName: notification
+            columnNames: check_result_id
+            constraintName: notification_check_result_id_key
