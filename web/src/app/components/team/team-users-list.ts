@@ -117,10 +117,6 @@ import {TeamUsersStore} from '@app/services';
       @apply w-64;
     }
 
-    .mat-column-createdAt {
-      @apply w-48;
-    }
-
     .mat-column-actions {
       @apply w-16;
     }

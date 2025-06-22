@@ -101,10 +101,6 @@ import {trackBy} from '@app/util';
       @apply w-64;
     }
 
-    .mat-column-createdAt {
-      @apply w-48;
-    }
-
     .mat-column-actions {
       @apply w-16;
     }

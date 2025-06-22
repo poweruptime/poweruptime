@@ -69,7 +69,7 @@
 }
 
 .mat-column-createdAt {
-  @apply w-32;
+  @apply w-37;
 }
 
 .mat-column-actions {

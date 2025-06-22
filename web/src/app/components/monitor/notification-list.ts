@@ -184,7 +184,6 @@ import {BackendType} from '../../api';
     .mat-column-monitor {
       @apply w-64;
     }
-
     .mat-column-status {
       @apply w-32;
     }
