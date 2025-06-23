@@ -6,6 +6,10 @@
 
 - Performance improvements by Dafnik ([8189c51](https://github.com/poweruptime/poweruptime/commit/8189c5189523f8bcaa309d33dab7b55c11eb2c37))
 
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1750687541 by Dafnik ([8dfe562](https://github.com/poweruptime/poweruptime/commit/8dfe562d160da2e184095fc30e4e8c3864dcfec9))
+
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750679987...0.4.0-beta-1750687541)
 
 ## 0.4.0-beta-1750679987 - 2025-06-23
