@@ -2377,6 +2377,7 @@ export interface components {
       id: string;
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
+      team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
       tags: components['schemas']['TagDto'][];
