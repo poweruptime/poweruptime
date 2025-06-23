@@ -1,10 +1,23 @@
 # Changelog
 
+## 0.4.0-beta-1750694580 - 2025-06-23
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Disable backend and web health check by Dafnik ([da23d26](https://github.com/poweruptime/poweruptime/commit/da23d2612055dda81e6167b42ca66ed9b7cad058))
+- Add team to MonitorDto by Dafnik ([48f1ad8](https://github.com/poweruptime/poweruptime/commit/48f1ad8c4f654cbb558b0f8fa0308f18d5e03659))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750690322...0.4.0-beta-1750694580)
+
 ## 0.4.0-beta-1750690322 - 2025-06-23
 
 ### <!-- 1 -->🐛 Bug Fixes
 
 - Casing by Dafnik ([98fdccf](https://github.com/poweruptime/poweruptime/commit/98fdccf8b5b0a9a4888feda657bb27b11237c4fb))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1750690322 by Dafnik ([07472ad](https://github.com/poweruptime/poweruptime/commit/07472ade47336002228928a7476cc6eb0b615e45))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750688139...0.4.0-beta-1750690322)
 
