@@ -55,19 +55,24 @@ class PublicStatusPageController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @PathVariable("slug") statusPageSlug: String,
         @RequestParam("usedInStatusPageGroupIds") usedInStatusPageGroupIds: Set<String>?,
-    ): PaginatedResponse<PublicMonitorMinResponse> =
-        monitorService.getAllPaginated(
+    ): PaginatedResponse<PublicMonitorMinResponse> {
+        val monitors = monitorService.getAllPaginated(
             pageable = pageable,
             statusPageSlug = statusPageSlug,
             usedInStatusPageGroupIds = usedInStatusPageGroupIds?.toList(),
-        ).toDto {
+        )
+
+        val checkResultsPerMonitor = checkResultService.getLastByMonitorIds(monitors.toList().map { it.id }, 35)
+
+        return monitors.toDto {
             PublicMonitorMinResponse(
                 monitor = it,
                 oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
                     it.id,
                     TimeOption.ONE_DAY,
                 ).myFormat(),
-                lastCheckResults = checkResultService.getLastByMonitorId(it.id, 35),
+                lastCheckResults = checkResultsPerMonitor[it.id] ?: emptyList(),
             )
         }
+    }
 }

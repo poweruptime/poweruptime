@@ -20,6 +20,30 @@ interface CheckResultRepository : Repository<CheckResult>, JpaSpecificationExecu
     fun findLastByMonitorId(@Param("monitorId") monitorId: String, @Param("limit") limit: Int): List<CheckResult>
 
     @Query(
+        value = """
+      SELECT *
+      FROM (
+        SELECT
+          cr.*,
+          ROW_NUMBER() OVER (
+            PARTITION BY cr.monitor_id
+            ORDER BY cr.created_at DESC
+          ) AS rn
+        FROM check_result cr
+        WHERE
+          cr.monitor_id  IN (:monitorIds)
+          AND cr.picked_up_at IS NOT NULL
+      ) sub
+      WHERE sub.rn <= :limit
+    """,
+        nativeQuery = true,
+    )
+    fun findLastByMonitorIds(
+        @Param("monitorIds") monitorIds: List<String>,
+        @Param("limit") limit: Int
+    ): List<CheckResult>
+
+    @Query(
         """
     SELECT cr FROM CheckResult cr
     WHERE cr.pickedUpAt >= :start

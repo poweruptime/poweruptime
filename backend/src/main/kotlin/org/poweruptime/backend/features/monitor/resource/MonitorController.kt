@@ -86,7 +86,7 @@ class MonitorController(
             }
         }
 
-        return monitorService.getAllPaginated(
+        val monitors = monitorService.getAllPaginated(
             pageable = pageable,
             teamId = teamId,
             userId = if (teamId == null) user.id else null,
@@ -115,10 +115,18 @@ class MonitorController(
                 }
             }?.toList(),
             deleted = deleted,
-        ).toDto {
+        )
+        val checkResultsPerMonitor = checkResultService.getLastByMonitorIds(
+            monitors.toList().map {
+                it.id
+            },
+            LAST_CHECK_RESULTS_COUNT,
+        )
+
+        return monitors.toDto {
             MonitorResponse(
                 it,
-                lastCheckResults = checkResultService.getLastByMonitorId(it.id, LAST_CHECK_RESULTS_COUNT),
+                lastCheckResults = checkResultsPerMonitor[it.id] ?: emptyList(),
                 oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
                     it.id,
                     TimeOption.ONE_DAY,

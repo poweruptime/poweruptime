@@ -55,8 +55,11 @@ class CheckResultService(
     private val historicalDayUptimeRepository: HistoricalDayUptimeRepository,
     private val checkResultRepository: CheckResultRepository
 ) : AEntityService<CheckResult>(checkResultRepository) {
-    fun getLastByMonitorId(monitorId: String, limit: Int) =
+    fun getLastByMonitorId(monitorId: String, limit: Int): List<CheckResult> =
         checkResultRepository.findLastByMonitorId(monitorId, limit)
+
+    fun getLastByMonitorIds(monitorIds: List<String>, limit: Int): Map<String, List<CheckResult>> =
+        checkResultRepository.findLastByMonitorIds(monitorIds, limit).groupBy { it.monitor.id }
 
     fun deleteByTeamIdAndOlderThan(teamId: String, than: Instant) = checkResultRepository.findByTeamIdAndOlderThan(
         teamId,
