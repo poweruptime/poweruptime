@@ -1,3 +1,4 @@
+import com.github.gradle.node.pnpm.task.PnpmInstallTask
 import com.github.gradle.node.pnpm.task.PnpmTask
 import com.github.jk1.license.filter.DependencyFilter
 import com.github.jk1.license.filter.LicenseBundleNormalizer
@@ -141,11 +142,15 @@ node {
     nodeProjectDir = rootDir.resolve(".")
 }
 
+val emailPnpmInstall = tasks.register<PnpmInstallTask>("emailPnpmInstall") {
+    args.set(listOf("--ignore-scripts", "--filter", "emails"))
+}
+
 val exportEmails = tasks.register<PnpmTask>("exportEmails") {
     inputs.dir(rootDir.resolve("emails/emails"))
     inputs.files(rootDir.resolve("package.json"), rootDir.resolve("pnpm-lock.yaml"))
     outputs.dir(projectDir.resolve("src/main/resources/templates/html"))
-    dependsOn("pnpmInstall")
+    dependsOn(emailPnpmInstall)
     pnpmCommand.addAll("run", "emails:export")
 }
 
