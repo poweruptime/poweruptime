@@ -38,7 +38,7 @@ class NotificationMethod(
     @Column(name = "body_template", nullable = true, columnDefinition = "text")
     var bodyTemplate: String? = null,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "monitor_notification_method",
         joinColumns = [JoinColumn(name = "notification_method_id", referencedColumnName = "id")],

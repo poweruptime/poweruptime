@@ -1,7 +1,7 @@
 import {inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {filter, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
@@ -56,7 +56,9 @@ export const MonitorsDashboardStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe(() => store.update());
+      pushService.monitorStatusChange$
+        .pipe(takeUntilDestroyed(), debounceTime(5000))
+        .subscribe(() => store.update());
     },
   }),
 );

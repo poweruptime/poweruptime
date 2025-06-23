@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.monitor.model
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import org.hibernate.annotations.SQLRestriction
 import org.poweruptime.backend.core.SmallNanoId
 import org.poweruptime.backend.core.models.ASoftDeleteEntity
 import org.poweruptime.backend.core.models.EntityWithName
@@ -54,6 +55,7 @@ class Monitor(
     var checkResults: List<CheckResult> = ArrayList(),
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @SQLRestriction("deleted IS null")
     @JoinTable(
         name = "monitor_notification_method",
         joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],

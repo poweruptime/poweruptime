@@ -182,7 +182,11 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             </mat-chip>
           }
 
-          @for (notificationMethod of monitor.notificationMethods; track notificationMethod.id) {
+          @let maxNotificationMethods = 6;
+          @for (
+            notificationMethod of monitor.notificationMethods.slice(0, maxNotificationMethods);
+            track notificationMethod.id
+          ) {
             <a
               class="hover:cursor-pointer"
               [routerLink]="
@@ -193,6 +197,12 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                 {{ notificationMethod.name }}
               </mat-chip>
             </a>
+          }
+          @if (monitor.notificationMethods.length > maxNotificationMethods) {
+            <mat-chip class="flex items-center">
+              <bi class="mr-1" name="bell" />
+              And more...
+            </mat-chip>
           }
         </div>
 

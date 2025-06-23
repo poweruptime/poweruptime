@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -39,6 +40,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#id, '$NOTIFICATION_METHOD_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = true)
     fun get(@PathVariable id: String) = NotificationMethodResponse(
         notificationMethodService.getByIdOrThrow(id),
     )
@@ -60,6 +62,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#teamId, '$TEAM_MEMBER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = true)
     fun getAll(
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String,
@@ -86,6 +89,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#dto.teamId, '$TEAM_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     fun create(@RequestBody @Valid dto: CreateNotificationMethodDto): NotificationMethodResponse =
         NotificationMethodResponse(notificationMethodService.create(dto))
 
@@ -97,6 +101,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#dto.id, '$NOTIFICATION_METHOD_ADMIN')")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     fun update(@RequestBody @Valid dto: UpdateNotificationMethodDto): NotificationMethodResponse =
         NotificationMethodResponse(notificationMethodService.update(dto))
 
@@ -108,6 +113,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#id, '$NOTIFICATION_METHOD_ADMIN')")
     @PutMapping("/{id}/clone")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     fun clone(@PathVariable("id") id: String, @RequestBody @Valid cloneDto: CloneDto): NotificationMethodResponse =
         NotificationMethodResponse(
             notificationMethodService.clone(
@@ -134,6 +140,7 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#id, '$NOTIFICATION_METHOD_ADMIN')")
     @DeleteMapping("/{id}/undo")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     fun undelete(@PathVariable("id") id: String): NotificationMethodResponse =
         NotificationMethodResponse(notificationMethodService.undeleteById(id))
 }

@@ -130,6 +130,25 @@ class NotificationMethodService(
             listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
         ),
     )
+
+    private fun NotificationMethod.clone(
+        attachedData: NotificationMethodData,
+        team: Team?,
+    ) = NotificationMethod(
+        name = """$name (Copy)""",
+        data = attachedData,
+        team = team ?: this.team,
+        useByDefault = useByDefault,
+        titleTemplate = titleTemplate,
+        bodyTemplate = bodyTemplate,
+        usedByMonitors = if (team == null && usedByMonitors.isNotEmpty()) {
+            monitorRepository.findAllById(
+                usedByMonitors.map { it.id },
+            )
+        } else {
+            listOf()
+        },
+    )
 }
 
 private fun NotificationMethod.getTestSubNotification(): SubNotification {
@@ -180,16 +199,3 @@ private fun NotificationMethod.getTestSubNotification(): SubNotification {
         id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
     }
 }
-
-private fun NotificationMethod.clone(
-    attachedData: NotificationMethodData,
-    team: Team?,
-) = NotificationMethod(
-    name = """$name (Copy)""",
-    data = attachedData,
-    team = team ?: this.team,
-    useByDefault = useByDefault,
-    titleTemplate = titleTemplate,
-    bodyTemplate = bodyTemplate,
-    usedByMonitors = if (team == null) usedByMonitors else listOf(),
-)

@@ -244,20 +244,28 @@ class MonitorService(
         maintenanceCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.MAINTENANCE),
         pausedCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.PAUSED),
     )
-}
 
-private fun Monitor.clone(
-    attachedCheckerData: MonitorData,
-    team: Team?
-) = Monitor(
-    name = """$name (Copy)""",
-    testIntervalSeconds = testIntervalSeconds,
-    upsideDown = upsideDown,
-    team = team ?: this.team,
-    checker = attachedCheckerData,
-    retries = retries,
-    resendAfter = resendAfter,
-    description = description,
-    enabledNotificationMethods = if (team == null) enabledNotificationMethods else listOf(),
-    selectedTags = if (team == null) selectedTags else listOf(),
-)
+    private fun Monitor.clone(
+        attachedCheckerData: MonitorData,
+        team: Team?
+    ) = Monitor(
+        name = """$name (Copy)""",
+        testIntervalSeconds = testIntervalSeconds,
+        upsideDown = upsideDown,
+        team = team ?: this.team,
+        checker = attachedCheckerData,
+        retries = retries,
+        resendAfter = resendAfter,
+        description = description,
+        enabledNotificationMethods = if (team == null && enabledNotificationMethods.isNotEmpty()) {
+            notificationMethodRepository.findAllById(
+                enabledNotificationMethods.map {
+                    it.id
+                },
+            )
+        } else {
+            listOf()
+        },
+        selectedTags = if (team == null) selectedTags else listOf(),
+    )
+}

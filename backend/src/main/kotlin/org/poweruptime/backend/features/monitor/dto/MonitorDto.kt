@@ -98,10 +98,8 @@ data class MonitorResponse(
     val name: String,
     val id: String,
     val status: MonitorStatus,
-    val team: TeamMinResponse,
     val deleted: Instant?,
     val tags: List<TagDto>,
-    val notificationMethods: List<NotificationMethodMinResponse>,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
 ) {
@@ -113,10 +111,8 @@ data class MonitorResponse(
         name = it.name,
         id = it.id,
         status = it.status,
-        team = TeamMinResponse(it.team),
         deleted = it.deleted,
         tags = it.selectedTags.map { TagDto(it) },
-        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,
     )
