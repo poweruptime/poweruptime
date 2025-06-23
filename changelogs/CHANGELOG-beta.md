@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-beta-1750687541 - 2025-06-23
+
+### <!-- 2 -->🚜 Refactor
+
+- Performance improvements by Dafnik ([8189c51](https://github.com/poweruptime/poweruptime/commit/8189c5189523f8bcaa309d33dab7b55c11eb2c37))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750679987...0.4.0-beta-1750687541)
+
 ## 0.4.0-beta-1750679987 - 2025-06-23
 
 ### <!-- 0 -->🚀 Features
@@ -68,6 +76,7 @@
 - Update to JDK 21 by Dafnik ([d520de2](https://github.com/poweruptime/poweruptime/commit/d520de23b92fa647608412e1a5848e1bad4c3cd1))
 - Lock file maintenance (#216) by renovate[bot] ([f81a167](https://github.com/poweruptime/poweruptime/commit/f81a1671caf191935276e1811b3c8b7c8e6a5ef7)), Co-authored-by:Dafnik <git@dafnik.me>, Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Add spring boot actuator endpoints by Dafnik ([de2a16d](https://github.com/poweruptime/poweruptime/commit/de2a16dae7c48edd29d67fd4a0905c68d95270a1))
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1750679987 by Dafnik ([3e1aee2](https://github.com/poweruptime/poweruptime/commit/3e1aee2598067d32b41b33c9da3d31ecd27d2a79))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.4-beta-1749720011...0.4.0-beta-1750679987)
 
