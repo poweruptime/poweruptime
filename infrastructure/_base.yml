@@ -97,12 +97,12 @@ services:
     networks:
       - poweruptime-infrastructure
       - proxy
-    healthcheck:
-      test: ['CMD', 'java', 'HealthCheck.java']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+  #    healthcheck:
+  #      test: ['CMD', 'java', 'HealthCheck.java']
+  #      interval: 30s
+  #      timeout: 10s
+  #      retries: 5
+  #      start_period: 60s
 
   poweruptime-web:
     container_name: poweruptime-web
@@ -115,12 +115,12 @@ services:
     networks:
       - poweruptime-infrastructure
       - proxy
-    healthcheck:
-      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://localhost:4200']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+#    healthcheck:
+#      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://localhost:4200']
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 60s
 
 volumes:
   poweruptime-db-data:
