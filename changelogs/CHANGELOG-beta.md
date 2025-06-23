@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0-beta-1750690322 - 2025-06-23
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Casing by Dafnik ([98fdccf](https://github.com/poweruptime/poweruptime/commit/98fdccf8b5b0a9a4888feda657bb27b11237c4fb))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750688139...0.4.0-beta-1750690322)
+
+## 0.4.0-beta-1750688139 - 2025-06-23
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1750688139 by Dafnik ([53e66ca](https://github.com/poweruptime/poweruptime/commit/53e66cad914cbfe89cbf9fb4282dc8e2285e82a1))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750687541...0.4.0-beta-1750688139)
+
 ## 0.4.0-beta-1750687541 - 2025-06-23
 
 ### <!-- 2 -->🚜 Refactor
