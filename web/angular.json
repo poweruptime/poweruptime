@@ -17,6 +17,18 @@
               "sourceMap": true
             },
             "docker": {
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                },
+                {
+                  "maximumError": "10kb",
+                  "maximumWarning": "6kb",
+                  "type": "anyComponentStyle"
+                }
+              ],
               "extractLicenses": true,
               "fileReplacements": [
                 {
