@@ -51,7 +51,7 @@ dependencies {
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     // HTML to Mrkdown (Slack) Converter
-    implementation("org.jsoup:jsoup:1.20.1")
+    implementation("org.jsoup:jsoup:1.21.1")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
