@@ -12,9 +12,13 @@ import {AuthStore, getSessionInformation} from '@app/services';
 import {environment} from '../../environments/environment';
 
 /**
+ * Intercept this requests
+ */
+const includePaths = ['/api'];
+/**
  * Don't intercept this requests
  */
-const paths = ['/auth', 'public', 'assets'];
+const ignorePaths = ['/auth', '/public'];
 
 let isRefreshing = false;
 const nextAccessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<
@@ -29,17 +33,14 @@ export function authInterceptor(
   const api = injectAPI();
   const lumber = loggerOf('authInterceptor');
 
-  let toIntercept = true;
-  for (const path of paths) {
-    if (request.url.includes(path)) {
-      toIntercept = false;
-      break;
-    }
-  }
-
-  if (!toIntercept) {
+  if (!includePaths.some((p) => request.url.includes(p))) {
     return next(request);
   }
+
+  if (ignorePaths.some((p) => request.url.includes(p))) {
+    return next(request);
+  }
+
   request = addToken(request, authStore.accessToken());
 
   return next(request).pipe(
