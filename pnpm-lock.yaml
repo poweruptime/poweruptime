@@ -112,11 +112,11 @@ importers:
         specifier: 19.2.1
         version: 19.2.1(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@ngx-dropzone/cdk':
-        specifier: 19.2.1
-        version: 19.2.1(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 20.0.0
+        version: 20.0.0(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
       '@ngx-dropzone/material':
-        specifier: 19.2.1
-        version: 19.2.1(b89c45946bb6cb41193d2fac8d9fb631)
+        specifier: 20.0.0
+        version: 20.0.0(2776d323dd7e572db4c9ed2ad9726a49)
       '@ngxpert/input-otp':
         specifier: 1.0.3
         version: 1.0.3(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))
@@ -1422,21 +1422,21 @@ packages:
       rxjs:
         optional: true
 
-  '@ngx-dropzone/cdk@19.2.1':
-    resolution: {integrity: sha512-lgT/f9lcWcdauqqZxhRtFdacea2YD8dhIjV90wMdmbgBktlTwk7kifNIbC33exoi3+2UhSXe5NIMvAD9gtXvng==}
+  '@ngx-dropzone/cdk@20.0.0':
+    resolution: {integrity: sha512-uI+Y77vs3UXeaQrWsnPjM3hO5WJ9aMPs7kGA4qhfad+8ja6YbEXAgybyPHkx9oTp58aTJps8vURiibgUE5kAkQ==}
     peerDependencies:
-      '@angular/common': ^19.0.0
-      '@angular/core': ^19.0.0
-      '@angular/forms': ^19.0.0
+      '@angular/common': ^20.0.0
+      '@angular/core': ^20.0.0
+      '@angular/forms': ^20.0.0
       rxjs: ^7.4.0
 
-  '@ngx-dropzone/material@19.2.1':
-    resolution: {integrity: sha512-jSweTg01IVLpOcPsP9kkLQDpNbRL+n+H9b8pRW91dmwN44q4WNkn8Xo7/a0wfRPNDnEhQhqlrxdvHhEjD28fww==}
+  '@ngx-dropzone/material@20.0.0':
+    resolution: {integrity: sha512-5Lg5cGhzZR2bpxnrW21cbm5mViGq4j5pUsr6Es9owUFW6NVbsOqaFz06OMRf6+YkPlOBD0buF/VHaggnPtSZaQ==}
     peerDependencies:
-      '@angular/common': ^19.0.0
-      '@angular/core': ^19.0.0
-      '@angular/forms': ^19.0.0
-      '@ngx-dropzone/cdk': ^19.0.0
+      '@angular/common': ^20.0.0
+      '@angular/core': ^20.0.0
+      '@angular/forms': ^20.0.0
+      '@ngx-dropzone/cdk': ^20.0.0
       rxjs: ^7.4.0
 
   '@ngxpert/input-otp@1.0.3':
@@ -5802,7 +5802,7 @@ snapshots:
     optionalDependencies:
       rxjs: 7.8.2
 
-  '@ngx-dropzone/cdk@19.2.1(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngx-dropzone/cdk@20.0.0(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)
@@ -5810,12 +5810,12 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ngx-dropzone/material@19.2.1(b89c45946bb6cb41193d2fac8d9fb631)':
+  '@ngx-dropzone/material@20.0.0(2776d323dd7e572db4c9ed2ad9726a49)':
     dependencies:
       '@angular/common': 20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)
       '@angular/forms': 20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@ngx-dropzone/cdk': 19.2.1(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
+      '@ngx-dropzone/cdk': 20.0.0(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/forms@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(@angular/platform-browser@20.0.4(@angular/animations@20.0.4(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(@angular/common@20.0.4(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.4(@angular/compiler@20.0.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs: 7.8.2
       tslib: 2.8.1
 
