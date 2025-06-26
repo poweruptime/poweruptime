@@ -42,7 +42,7 @@ export const ChangelogStore = signalStore(
               responseType: 'text',
               params: {
                 ...(version ? {version} : {}),
-                beta: !environment.production,
+                beta: !environment.production || environment.version.includes('beta'),
               } satisfies BackendOperation['getChangelog']['parameters']['query'],
             })
             .pipe(
