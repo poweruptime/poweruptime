@@ -41,6 +41,7 @@ import {
 } from '@app/services/custom-link-renderer.service';
 
 import {ROUTES} from './pages/pages.routes';
+import {provideTransferableLocalStorageImpl} from './util/transferable-localstorage';
 
 const MY_DATE_FNS_FORMATS: MatDateFormats = {
   parse: {
@@ -62,6 +63,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withRouterConfig({paramsInheritanceStrategy: 'always'}),
     ),
+    provideTransferableLocalStorageImpl(),
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideHttpClient(
       withFetch(),

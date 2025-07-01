@@ -14,6 +14,7 @@ enum class SystemRole : ADatabaseEnumConvertable {
     };
 
     val grantedAuthority = SimpleGrantedAuthority("ROLE_$name")
+    val grantedAuthorities = listOf(grantedAuthority)
 }
 
 @Converter(autoApply = true)

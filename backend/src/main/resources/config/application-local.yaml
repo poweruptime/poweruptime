@@ -65,6 +65,22 @@ spring:
     username: test@test.at
     password: test
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: EMPTY
+            client-secret: EMPTY
+            scope:
+              - openid
+              - profile
+              - email
+
 springdoc:
   api-docs:
     enabled: true

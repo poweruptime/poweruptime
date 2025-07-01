@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Base32
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.springframework.http.HttpHeaders
 import java.util.Base64
+import java.util.Locale.getDefault
 
 fun String?.emptyToNull(): String? = if (isNullOrEmpty()) null else this
 
@@ -23,6 +24,16 @@ fun String.lowercaseExceptFirstLetter(): String {
 
     // Keep the first character as it is, lowercase the rest
     return this[0] + this.substring(1).lowercase()
+}
+
+fun String.capitalize() = this.replaceFirstChar {
+    if (it.isLowerCase()) {
+        it.titlecase(
+            getDefault(),
+        )
+    } else {
+        it.toString()
+    }
 }
 
 fun HttpHeaders.addBasicAuthString(username: String, password: String) = apply {

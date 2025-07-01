@@ -45,12 +45,17 @@ class UserService(
 
     fun getByEmail(email: String): User? = userRepository.findUserByEmail(email)
 
-    fun create(dto: CreateUserDto, inviter: User? = null): User {
+    fun create(dto: CreateUserDto, inviter: User? = null, forcePasswordChange: Boolean = true): User {
         val onetimePassword = dto.password ?: RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
 
         val team = teamService.create(CreateTeamDto(dto.name))
 
-        val user = User.fromDto(dto, passwordEncoder.encode(onetimePassword), team)
+        val user = User.fromDto(
+            createDto = dto,
+            passwordHash = passwordEncoder.encode(onetimePassword),
+            personalTeam = team,
+            forcePasswordChange = forcePasswordChange,
+        )
 
         if (dto.sendInvitation) {
             systemEmailService.queueEmail(

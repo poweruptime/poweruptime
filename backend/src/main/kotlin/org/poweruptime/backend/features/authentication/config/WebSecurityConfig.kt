@@ -3,9 +3,11 @@ package org.poweruptime.backend.features.authentication.config
 import org.poweruptime.backend.Routes
 import org.poweruptime.backend.features.authentication.permission.PermissionEvaluator
 import org.poweruptime.backend.features.authentication.service.AuthDetailsService
+import org.poweruptime.backend.features.authentication.service.OAuth2LoginSuccessHandler
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
@@ -24,14 +26,31 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 @EnableMethodSecurity
 @EnableWebSecurity
 class WebSecurityConfig(
-    val authDetailsService: AuthDetailsService,
-    @Qualifier(AuthUtils.JWT_ACCESS_TOKEN_DECODER) val accessTokenDecoder: JwtDecoder,
+    private val oauth2LoginSuccessHandler: OAuth2LoginSuccessHandler,
+    private val authDetailsService: AuthDetailsService,
+    @param:Qualifier(AuthUtils.JWT_ACCESS_TOKEN_DECODER) private val accessTokenDecoder: JwtDecoder,
 ) {
-
-    /**
-     * SecurityFilterChain for user authentication
-     */
     @Bean
+    @Order(1)
+    fun oauth2LoginFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http {
+            securityMatcher("/oauth2/**", "/login/**")
+            csrf { disable() }
+            cors { }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+
+            authorizeHttpRequests { authorize(anyRequest, permitAll) }
+
+            oauth2Login {
+                authenticationSuccessHandler = oauth2LoginSuccessHandler
+            }
+        }
+        return http.build()
+    }
+
+    // 2) Your existing resource-server chain
+    @Bean
+    @Order(2)
     fun filterChainUser(http: HttpSecurity): SecurityFilterChain {
         http {
             cors { }
@@ -78,6 +97,7 @@ class WebSecurityConfig(
     @Bean
     fun methodSecurityExpressionHandler(permissionEvaluator: PermissionEvaluator): MethodSecurityExpressionHandler {
         val handler = DefaultMethodSecurityExpressionHandler()
+        @Suppress("UsePropertyAccessSyntax")
         handler.setPermissionEvaluator(permissionEvaluator)
         return handler
     }

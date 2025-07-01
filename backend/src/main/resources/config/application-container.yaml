@@ -58,6 +58,38 @@ spring:
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH2_GOOGLE_CLIENT_ID:EMPTY}
+            client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET:EMPTY}
+            redirect-uri: ${OAUTH2_GOOGLE_REDIRECT_URI:${POWERUPTIME_HOST}/api/login/oauth2/code/google}
+            scope:
+              - openid
+              - email
+              - profile
+
+          keycloak:
+            client-id: ${OAUTH2_KEYCLOAK_CLIENT_ID:EMPTY}
+            client-secret: ${OAUTH2_KEYCLOAK_CLIENT_SECRET:EMPTY}
+            provider: keycloak
+            authorization-grant-type: authorization_code
+            redirect-uri: ${OAUTH2_KEYCLOAK_REDIRECT_URI:${POWERUPTIME_HOST}/api/login/oauth2/code/keycloak}
+            scope:
+              - openid
+              - email
+              - profile
+
+        provider:
+          keycloak:
+            issuer-uri: ${OAUTH2_KEYCLOAK_ISSUER_URI:EMPTY}
+
 springdoc:
   api-docs:
     enabled: ${SWAGGER_ENABLED:false}

@@ -9,6 +9,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    path: 'auth/oauth2/**',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'auth/**',
     renderMode: RenderMode.Server,
   },

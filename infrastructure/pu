@@ -35,15 +35,15 @@ Commands:
   pull             Pull images per versions.env
   update           Checkout, backup DB & redeploy stack
   setup            Initial project setup
+  backup           Create DB backup
+  config           Print combined compose config
+  version          Show current version
   start            Alias for up
   stop             Alias for down
-  backup           Create DB backup
   backup-prune     Prune all but latest 5 backups
   backup-verify    Verify encrypted DB backup
   backup-extract   Extract encrypted DB backup
   backup-import    Import encrypted DB backup (DANGEROUS)
-  config           Print combined compose config
-  version          Show current version
 
 Options:
   --dryRun        Print commands without executing
