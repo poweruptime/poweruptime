@@ -1,105 +1,105 @@
 [
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/animations"
   },
   {
     "author": "n/a",
-    "installedVersion": "19.2.16",
+    "installedVersion": "20.0.3",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/cdk"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/common"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/compiler"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/core"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/forms"
   },
   {
     "author": "n/a",
-    "installedVersion": "19.2.16",
+    "installedVersion": "20.0.3",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material"
   },
   {
     "author": "n/a",
-    "installedVersion": "19.2.16",
+    "installedVersion": "20.0.3",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material-date-fns-adapter"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser-dynamic"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-server"
   },
   {
     "author": "angular",
-    "installedVersion": "19.2.11",
+    "installedVersion": "20.0.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/router"
   },
   {
     "author": "n/a",
-    "installedVersion": "19.2.13",
+    "installedVersion": "20.0.3",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular-cli.git",
     "name": "@angular/ssr"
   },
   {
     "author": "David LJ https://davidlj95.com",
-    "installedVersion": "19.0.0",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/davidlj95/ngx.git",
     "name": "@davidlj95/ngx-meta"
   },
   {
     "author": "Matteo Collina <hello@matteocollina.com>",
-    "installedVersion": "11.1.2",
+    "installedVersion": "11.2.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/fastify/fastify-http-proxy.git",
     "name": "@fastify/http-proxy"
@@ -127,35 +127,35 @@
   },
   {
     "author": "nzbin<nzb329@163.com>",
-    "installedVersion": "19.3.3",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/ng-matero/extensions.git",
     "name": "@ng-matero/extensions"
   },
   {
     "author": "NgRx",
-    "installedVersion": "19.2.0",
+    "installedVersion": "19.2.1",
     "licenseType": "MIT",
     "link": "git+https://github.com/ngrx/platform.git",
     "name": "@ngrx/operators"
   },
   {
     "author": "NgRx",
-    "installedVersion": "19.2.0",
+    "installedVersion": "19.2.1",
     "licenseType": "MIT",
     "link": "git+https://github.com/ngrx/platform.git",
     "name": "@ngrx/signals"
   },
   {
     "author": "hackingharold hackingharold@mailbox.org",
-    "installedVersion": "19.2.1",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/hackingharold/ngx-dropzone.git",
     "name": "@ngx-dropzone/cdk"
   },
   {
     "author": "hackingharold hackingharold@mailbox.org",
-    "installedVersion": "19.2.1",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/hackingharold/ngx-dropzone.git",
     "name": "@ngx-dropzone/material"
@@ -175,25 +175,25 @@
     "name": "@jsr/std__fmt"
   },
   {
-    "author": "Swimlane",
-    "installedVersion": "22.0.0",
-    "licenseType": "MIT",
-    "link": "git+https://github.com/swimlane/ngx-charts.git",
-    "name": "@swimlane/ngx-charts"
-  },
-  {
     "author": "n/a",
-    "installedVersion": "4.1.6",
+    "installedVersion": "4.1.10",
     "licenseType": "MIT",
     "link": "git+https://github.com/tailwindlabs/tailwindcss.git",
     "name": "@tailwindcss/postcss"
   },
   {
     "author": "Ephox Corporation DBA Tiny Technologies, Inc.",
-    "installedVersion": "8.0.1",
+    "installedVersion": "9.0.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/tinymce/tinymce-angular.git",
     "name": "@tinymce/tinymce-angular"
+  },
+  {
+    "author": "mdo",
+    "installedVersion": "1.13.1",
+    "licenseType": "MIT",
+    "link": "git+https://github.com/twbs/icons.git",
+    "name": "bootstrap-icons"
   },
   {
     "author": "Kiril Vatev <vatev.1@gmail.com>",
@@ -203,11 +203,11 @@
     "name": "canvas-confetti"
   },
   {
-    "author": "Mike Bostock http://bost.ocks.org/mike",
-    "installedVersion": "3.2.0",
-    "licenseType": "ISC",
-    "link": "git+https://github.com/d3/d3-shape.git",
-    "name": "d3-shape"
+    "author": "n/a",
+    "installedVersion": "4.5.0",
+    "licenseType": "MIT",
+    "link": "git+https://github.com/chartjs/Chart.js.git",
+    "name": "chart.js"
   },
   {
     "author": "n/a",
@@ -218,45 +218,38 @@
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "1.2.0",
+    "installedVersion": "2.0.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/Dafnik/dfts-common.git",
     "name": "dfts-helper"
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "3.0.1",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-bootstrap-icons"
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "9.0.1",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-helper"
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "0.1.2",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-openapi"
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "4.0.0",
+    "installedVersion": "20.0.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-qrcode"
-  },
-  {
-    "author": "JoyPixels <support@joypixels.com> (https://www.joypixels.com)",
-    "installedVersion": "9.0.1",
-    "licenseType": "MIT",
-    "link": "git+https://github.com/joypixels/emoji-toolkit.git",
-    "name": "emoji-toolkit"
   },
   {
     "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
@@ -267,17 +260,10 @@
   },
   {
     "author": "Matteo Collina <hello@matteocollina.com>",
-    "installedVersion": "5.3.3",
+    "installedVersion": "5.4.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/fastify/fastify.git",
     "name": "fastify"
-  },
-  {
-    "author": "Christopher Jeffrey",
-    "installedVersion": "15.0.12",
-    "licenseType": "MIT",
-    "link": "git://github.com/markedjs/marked.git",
-    "name": "marked"
   },
   {
     "author": "Andrey Sitnik <andrey@sitnik.ru>",
@@ -287,15 +273,8 @@
     "name": "nanoid"
   },
   {
-    "author": "Jean-Francois Cere jfcere@hotmail.com",
-    "installedVersion": "19.1.1",
-    "licenseType": "MIT",
-    "link": "git+https://github.com/jfcere/ngx-markdown.git",
-    "name": "ngx-markdown"
-  },
-  {
     "author": "Esteban Gehring, Bithost GmbH",
-    "installedVersion": "8.0.1",
+    "installedVersion": "8.0.2",
     "licenseType": "MIT",
     "link": "git+https://github.com/bithost-gmbh/ngx-mat-select-search.git",
     "name": "ngx-mat-select-search"
@@ -316,7 +295,7 @@
   },
   {
     "author": "n/a",
-    "installedVersion": "5.0.0",
+    "installedVersion": "5.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/ngxtension/ngxtension-platform.git",
     "name": "ngxtension"
@@ -330,7 +309,7 @@
   },
   {
     "author": "Ephox Corporation DBA Tiny Technologies, Inc",
-    "installedVersion": "7.8.0",
+    "installedVersion": "7.9.1",
     "licenseType": "GPL-2.0-or-later",
     "link": "git+https://github.com/tinymce/tinymce.git",
     "name": "tinymce"
