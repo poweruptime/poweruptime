@@ -24,40 +24,47 @@ class OAuth2ClientRegistrationsConfig(
         val registrations = props.registration
             .filter { (_, registration) -> registration.clientId != "EMPTY" && registration.clientSecret != "EMPTY" }
             .mapNotNull { (registrationId, registration) ->
-                when (registrationId) {
-                    "google" ->
-                        CommonOAuth2Provider.GOOGLE
-                            .getBuilder(registrationId)
-                            .clientId(registration.clientId!!)
-                            .clientSecret(registration.clientSecret!!)
-                            .scope(*registration.scope.toTypedArray())
-                            .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
-                            .build()
-
-                    else -> {
-                        // treat as a “custom” OIDC provider (Keycloak, etc.)
-                        val provider = props.provider[registrationId]
-                        if (provider?.issuerUri.isNullOrBlank()) {
-                            // no issuerUri → skip
-                            null
-                        } else {
-                            ClientRegistration
-                                .withRegistrationId(registrationId)
+                try {
+                    when (registrationId) {
+                        "google" ->
+                            CommonOAuth2Provider.GOOGLE
+                                .getBuilder(registrationId)
                                 .clientId(registration.clientId!!)
                                 .clientSecret(registration.clientSecret!!)
-                                .authorizationGrantType(AuthorizationGrantType(registration.authorizationGrantType))
-                                .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
-                                .clientName(registration.clientName ?: registrationId.capitalize())
                                 .scope(*registration.scope.toTypedArray())
-                                .authorizationUri(provider.authorizationUri)
-                                .issuerUri(provider.issuerUri)
-                                .jwkSetUri(provider.jwkSetUri)
-                                .tokenUri(provider.tokenUri)
-                                .userInfoUri(provider.userInfoUri)
-                                .userNameAttributeName(provider.userNameAttribute ?: "sub")
+                                .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
                                 .build()
+
+                        else -> {
+                            // treat as a “custom” OIDC provider (Keycloak, etc.)
+                            val provider = props.provider[registrationId]
+                            if (provider?.issuerUri.isNullOrBlank()) {
+                                // no issuerUri → skip
+                                null
+                            } else {
+                                ClientRegistration
+                                    .withRegistrationId(registrationId)
+                                    .clientId(registration.clientId!!)
+                                    .clientSecret(registration.clientSecret!!)
+                                    .authorizationGrantType(AuthorizationGrantType(registration.authorizationGrantType))
+                                    .redirectUri(
+                                        registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
+                                    )
+                                    .clientName(registration.clientName ?: registrationId.capitalize())
+                                    .scope(*registration.scope.toTypedArray())
+                                    .authorizationUri(provider.authorizationUri)
+                                    .issuerUri(provider.issuerUri)
+                                    .jwkSetUri(provider.jwkSetUri)
+                                    .tokenUri(provider.tokenUri)
+                                    .userInfoUri(provider.userInfoUri)
+                                    .userNameAttributeName(provider.userNameAttribute ?: "sub")
+                                    .build()
+                            }
                         }
                     }
+                } catch (e: Exception) {
+                    log.error(e) { "Failed to register client $registrationId" }
+                    null
                 }
             }
 
