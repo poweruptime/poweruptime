@@ -47,14 +47,14 @@ class OAuth2ClientRegistrationsConfig(
                                 .clientSecret(registration.clientSecret!!)
                                 .authorizationGrantType(AuthorizationGrantType(registration.authorizationGrantType))
                                 .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
+                                .clientName(registration.clientName ?: registrationId.capitalize())
                                 .scope(*registration.scope.toTypedArray())
+                                .authorizationUri(provider.authorizationUri)
                                 .issuerUri(provider.issuerUri)
                                 .jwkSetUri(provider.jwkSetUri)
+                                .tokenUri(provider.tokenUri)
                                 .userInfoUri(provider.userInfoUri)
                                 .userNameAttributeName(provider.userNameAttribute ?: "sub")
-                                .clientName(
-                                    registration.clientName ?: registrationId.capitalize(),
-                                )
                                 .build()
                         }
                     }

@@ -88,7 +88,12 @@ spring:
 
         provider:
           keycloak:
+            authorization-uri: ${OAUTH2_KEYCLOAK_AUTHORIZATION_URI:EMPTY}
             issuer-uri: ${OAUTH2_KEYCLOAK_ISSUER_URI:EMPTY}
+            jwk-set-uri: ${OAUTH2_KEYCLOAK_JWK_SET_URI:EMPTY}
+            token-uri: ${OAUTH2_KEYCLOAK_TOKEN_URI:EMPTY}
+            user-info-uri: ${OAUTH2_KEYCLOAK_USER_INFO_URI:EMPTY}
+            user-name-attribute: ${OAUTH2_KEYCLOAK_USER_NAME_ATTRIBUTE:sub}
 
 springdoc:
   api-docs:
