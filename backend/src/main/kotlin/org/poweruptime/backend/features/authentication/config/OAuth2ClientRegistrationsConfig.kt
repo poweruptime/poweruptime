@@ -21,52 +21,7 @@ class OAuth2ClientRegistrationsConfig(
 
     @Bean
     fun clientRegistrationRepository(): ClientRegistrationRepository {
-        val registrations = props.registration
-            .filter { (_, registration) -> registration.clientId != "EMPTY" && registration.clientSecret != "EMPTY" }
-            .mapNotNull { (registrationId, registration) ->
-                try {
-                    when (registrationId) {
-                        "google" ->
-                            CommonOAuth2Provider.GOOGLE
-                                .getBuilder(registrationId)
-                                .clientId(registration.clientId!!)
-                                .clientSecret(registration.clientSecret!!)
-                                .scope(*registration.scope.toTypedArray())
-                                .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
-                                .build()
-
-                        else -> {
-                            // treat as a “custom” OIDC provider (Keycloak, etc.)
-                            val provider = props.provider[registrationId]
-                            if (provider?.issuerUri.isNullOrBlank()) {
-                                // no issuerUri → skip
-                                null
-                            } else {
-                                ClientRegistration
-                                    .withRegistrationId(registrationId)
-                                    .clientId(registration.clientId!!)
-                                    .clientSecret(registration.clientSecret!!)
-                                    .authorizationGrantType(AuthorizationGrantType(registration.authorizationGrantType))
-                                    .redirectUri(
-                                        registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
-                                    )
-                                    .clientName(registration.clientName ?: registrationId.capitalize())
-                                    .scope(*registration.scope.toTypedArray())
-                                    .authorizationUri(provider.authorizationUri)
-                                    .issuerUri(provider.issuerUri)
-                                    .jwkSetUri(provider.jwkSetUri)
-                                    .tokenUri(provider.tokenUri)
-                                    .userInfoUri(provider.userInfoUri)
-                                    .userNameAttributeName(provider.userNameAttribute ?: "sub")
-                                    .build()
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    log.error(e) { "Failed to register client $registrationId" }
-                    null
-                }
-            }
+        val registrations = loadClientRegistrations()
 
         registrations.forEach {
             log.info { "registering OAuth2 client '${it.registrationId}' (${it.clientId})" }
@@ -80,7 +35,63 @@ class OAuth2ClientRegistrationsConfig(
             )
         }
     }
+
+    fun loadClientRegistrations(): List<ClientRegistration> = props.registration
+        .filter { (_, registration) ->
+            !registration.clientId.isNullBlankOrEmpty() && !registration.clientSecret.isNullBlankOrEmpty()
+        }.mapNotNull { (registrationId, registration) ->
+            try {
+                when (registrationId) {
+                    "google" ->
+                        CommonOAuth2Provider.GOOGLE
+                            .getBuilder(registrationId)
+                            .clientId(registration.clientId!!)
+                            .clientSecret(registration.clientSecret!!)
+                            .scope(*registration.scope.toTypedArray())
+                            .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
+                            .build()
+
+                    else -> props.provider[registrationId]?.let {
+                        if (
+                            it.authorizationUri.isNullBlankOrEmpty() ||
+                            it.issuerUri.isNullBlankOrEmpty() ||
+                            it.jwkSetUri.isNullBlankOrEmpty() ||
+                            it.tokenUri.isNullBlankOrEmpty() ||
+                            it.userInfoUri.isNullBlankOrEmpty() ||
+                            it.userNameAttribute.isNullBlankOrEmpty()
+                        ) {
+                            null
+                        }
+
+                        ClientRegistration
+                            .withRegistrationId(registrationId)
+                            .clientId(registration.clientId!!)
+                            .clientSecret(registration.clientSecret!!)
+                            .authorizationGrantType(
+                                AuthorizationGrantType(registration.authorizationGrantType),
+                            )
+                            .redirectUri(
+                                registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
+                            )
+                            .clientName(registration.clientName ?: registrationId.capitalize())
+                            .scope(*registration.scope.toTypedArray())
+                            .authorizationUri(it.authorizationUri)
+                            .issuerUri(it.issuerUri)
+                            .jwkSetUri(it.jwkSetUri)
+                            .tokenUri(it.tokenUri)
+                            .userInfoUri(it.userInfoUri)
+                            .userNameAttributeName(it.userNameAttribute ?: "sub")
+                            .build()
+                    }
+                }
+            } catch (e: Exception) {
+                log.error(e) { "Failed to register client $registrationId" }
+                null
+            }
+        }
 }
+
+private fun String?.isNullBlankOrEmpty() = this.isNullOrBlank() || this == "EMPTY"
 
 class EmptyClientRegistrationRepository(
     registrations: List<ClientRegistration> = emptyList()
