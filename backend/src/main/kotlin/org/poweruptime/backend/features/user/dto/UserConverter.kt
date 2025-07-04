@@ -3,16 +3,20 @@ package org.poweruptime.backend.features.user.dto
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.team.model.Team
 
-fun User.Companion.fromDto(createDto: CreateUserDto, passwordHash: String, personalTeam: Team) =
-    User(
-        name = createDto.name,
-        email = createDto.email,
-        passwordHash = passwordHash,
-        activated = createDto.activated,
-        role = createDto.role,
-        forcePasswordChange = true,
-        personalTeam = personalTeam,
-    )
+fun User.Companion.fromDto(
+    createDto: CreateUserDto,
+    passwordHash: String,
+    personalTeam: Team,
+    forcePasswordChange: Boolean = true
+) = User(
+    name = createDto.name,
+    email = createDto.email,
+    passwordHash = passwordHash,
+    activated = createDto.activated,
+    role = createDto.role,
+    forcePasswordChange = forcePasswordChange,
+    personalTeam = personalTeam,
+)
 
 fun User.update(dto: UpdateUserDto, newPasswordHash: String? = null): User {
     name = dto.name

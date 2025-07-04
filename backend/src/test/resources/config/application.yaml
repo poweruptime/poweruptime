@@ -58,6 +58,10 @@ spring:
     username: poweruptime
     password: poweruptime
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+
 springdoc:
   api-docs:
     enabled: true

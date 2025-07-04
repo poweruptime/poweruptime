@@ -9,12 +9,12 @@
 - Multiple Users / Team(s) management
 - Easy setup
 - Fast & SEO friendly
-- Notifications via E-Mail, Discord, Slack
+- Notifications via E-Mail, Discord, Slack & Apprise
 - 30-second intervals
 - [Multi Languages](https://github.com/poweruptime/poweruptime/tree/main/web/src/assets/i18n)
 - Multiple status pages with specific domain name support
 - Detailed monitor analysis
-- 2FA support
+- 2FA & OAuth2 support
 
 ## How to install
 

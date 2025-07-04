@@ -28,8 +28,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/v1/auth")
 @Tag(name = "Authentication API")
 class AuthController(
-    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider,
-    @Qualifier(AuthUtils.REFRESH_TOKEN_AUTH_PROVIDER) private val refreshTokenAuthProvider: JwtAuthenticationProvider,
+    @param:Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider,
+    @param:Qualifier(AuthUtils.REFRESH_TOKEN_AUTH_PROVIDER) private val refreshTokenAuthProvider:
+    JwtAuthenticationProvider,
     private val accessTokenService: AccessTokenGenerationService,
     private val sessionService: SessionService,
     private val authService: AuthService,
@@ -63,7 +64,6 @@ class AuthController(
 
         val sessionToken = sessionService.createSessionIfNeeded(
             stayLoggedIn = request.stayLoggedIn,
-            authentication = authentication,
             sessionInformation = request.sessionInformation,
             user = user,
         )
@@ -98,7 +98,6 @@ class AuthController(
         )
 
         val sessionToken = sessionService.refreshSession(
-            authentication = authentication,
             token = request.refreshToken,
             description = request.sessionInformation,
         )
@@ -174,7 +173,6 @@ class AuthController(
 
         val sessionToken = sessionService.createSessionIfNeeded(
             stayLoggedIn = request.stayLoggedIn,
-            authentication = authentication,
             sessionInformation = request.sessionInformation,
             user = user,
         )

@@ -29,7 +29,7 @@ class AuthService(
 
         override fun isEnabled(): Boolean = user.activated
 
-        override fun getAuthorities(): Collection<GrantedAuthority> = listOf(user.role.grantedAuthority)
+        override fun getAuthorities(): Collection<GrantedAuthority> = user.role.grantedAuthorities
 
         override fun getPassword(): String = user.passwordHash
     }

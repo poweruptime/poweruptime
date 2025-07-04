@@ -8,7 +8,7 @@ import {ProfileEditStore, ProfileStore} from '@app/services';
 @Component({
   template: `
     <div class="flex flex-col gap-4">
-      <div class="grid md:grid-cols-3">
+      <div class="grid md:grid-cols-2 xl:grid-cols-3">
         <div>
           <mat-card appearance="outlined">
             <mat-card-content>

@@ -65,6 +65,43 @@ spring:
     username: test@test.at
     password: test
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: EMPTY
+            client-secret: EMPTY
+            redirect-uri: http://localhost:8080/api/login/oauth2/code/google
+            scope:
+              - openid
+              - profile
+              - email
+
+#          keycloak:
+#            client-id: keycloakId
+#            client-secret: keycloakSecret
+#            provider: keycloak
+#            authorization-grant-type: authorization_code
+#            redirect-uri: http://localhost:8080/api/login/oauth2/code/google
+#            scope:
+#              - openid
+#              - email
+#              - profile
+#
+#        provider:
+#          keycloak:
+#            authorization-uri: http://keycloak.io/realm/auth
+#            issuer-uri: http://keycloak.io/realm/auth
+#            jwk-set-uri: http://keycloak.io/realm/auth
+#            token-uri: http://keycloak.io/realm/auth
+#            user-info-uri: http://keycloak.io/realm/auth
+#            user-name-attribute: sub
+
 springdoc:
   api-docs:
     enabled: true

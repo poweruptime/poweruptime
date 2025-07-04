@@ -7,12 +7,12 @@ export const isLoggedIn: CanActivateFn = (
   _: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ) => {
-  const authService = inject(AuthStore);
+  const authStore = inject(AuthStore);
 
-  if (authService.isLoggedIn()) {
+  if (authStore.isLoggedIn()) {
     return true;
   } else {
-    authService.setRedirectUrl(state.url);
+    authStore.setRedirectUrl(state.url);
 
     return inject(Router).parseUrl('/auth/login');
   }

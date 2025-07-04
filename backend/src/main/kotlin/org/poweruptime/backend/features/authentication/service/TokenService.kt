@@ -14,47 +14,33 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
-/**
- * UserAccessTokenService creates a TokenService for creating JWT access tokens
- * @see TokenGenerationService
- * @since 2.0.0
- */
 @Service
 class AccessTokenGenerationService(
     @Qualifier(AuthUtils.JWT_ACCESS_TOKEN_ENCODER) accessTokenEncoder: JwtEncoder
 ) : TokenGenerationService(accessTokenEncoder, 60.minutes)
 
-/**
- * UserRefreshTokenService creates a TokenService for creating JWT refresh tokens
- * @see TokenGenerationService
- * @since 2.0.0
- */
 @Service
 class RefreshTokenGenerationService(
     @Qualifier(AuthUtils.JWT_REFRESH_TOKEN_ENCODER) refreshTokenEncoder: JwtEncoder
 ) : TokenGenerationService(refreshTokenEncoder, 30.days)
 
-/**
- * TokenService is responsible for creating JWT tokens based on the authentication
- * This class must be subclassed to be used
- *
- * @author Alexander Kauer
- * @since 2.0.0
- */
 abstract class TokenGenerationService(
     private val jwtEncoder: JwtEncoder,
-    private val validDuration: Duration
+    val validDuration: Duration
 ) {
-    fun createToken(authentication: Authentication): String {
+    fun createToken(authentication: Authentication) =
+        createToken(authentication.name, authentication.authorities)
+
+    fun createToken(userId: String, authorities: Collection<GrantedAuthority>): String {
         val now = Instant.now()
         val expirationTime = now.plusSeconds(validDuration.inWholeSeconds)
 
         val claims = JwtClaimsSet.builder()
-            .issuer("self")
+            .issuer("poweruptime")
             .issuedAt(now)
             .expiresAt(expirationTime)
-            .subject(authentication.name)
-            .claim("scope", createScope(authentication))
+            .subject(userId)
+            .claim("scope", createScope(authorities))
             .build()
 
         return jwtEncoder.encode(
@@ -62,8 +48,8 @@ abstract class TokenGenerationService(
         ).tokenValue
     }
 
-    private fun createScope(authentication: Authentication): String {
-        return authentication.authorities.stream()
+    private fun createScope(authorities: Collection<GrantedAuthority>): String {
+        return authorities.stream()
             .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.joining(" "))
     }

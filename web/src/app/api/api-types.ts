@@ -2259,6 +2259,11 @@ export interface components {
       showSupportBadge: boolean;
       host: string;
       setup: boolean;
+      enabledOAuth2Providers: components['schemas']['OAuth2ProviderResponse'][];
+    };
+    OAuth2ProviderResponse: {
+      registrationId: string;
+      clientName: string;
     };
     AppriseNotificationRequest: {
       urls: string[];

@@ -113,6 +113,30 @@ These configuration values only effect the System E-Mail service.
 | `MAIL_SECURITY`          | The type of security to use for email communication. (`NONE_STARTTLS`, `TLS`) | `NONE_STARTTLS` | x        |
 | `MAIL_IGNORE_TLS_ERRORS` | Whether to ignore TLS errors when connecting to the mail server.              | `false`         | x        |
 
+### OAuth2
+
+#### Google
+
+| Name                          | Description                                                    | Default value                                     | Required |
+| ----------------------------- | -------------------------------------------------------------- | ------------------------------------------------- | -------- |
+| `OAUTH2_GOOGLE_CLIENT_ID`     | Your Google OAuth2 Client ID from the Google Cloud Console     |                                                   |          |
+| `OAUTH2_GOOGLE_CLIENT_SECRET` | Your Google OAuth2 Client Secret                               |                                                   |          |
+| `OAUTH2_GOOGLE_REDIRECT_URI`  | Callback URI registered in Google (where Google will redirect) | `{POWERUPTIME_HOST}/api/login/oauth2/code/google` |          |
+
+#### Keycloak
+
+| Name                                      | Description                                                                                                                                                   | Default value                                       | Required |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | -------- |
+| `OAUTH2_KEYCLOAK_CLIENT_ID`               | Your Keycloak Client ID (as configured in the realm’s Clients)                                                                                                |                                                     |          |
+| `OAUTH2_KEYCLOAK_CLIENT_SECRET`           | Your Keycloak Client secret                                                                                                                                   |                                                     |          |
+| `OAUTH2_KEYCLOAK_REDIRECT_URI`            | The callback URI you registered in Keycloak for this application                                                                                              | `{POWERUPTIME_HOST}/api/login/oauth2/code/keycloak` |          |
+| `OAUTH2_KEYCLOAK_AUTHORIZATION_URI`       | Used by your application to initiate the OAuth 2.0/OpenID Connect authorization code flow (e.g. `https://<host>/realms/<realm>/protocol/openid-connect/auth`) |                                                     |          |
+| `OAUTH2_KEYCLOAK_ISSUER_URI`              | The issuer URI of your Keycloak realm (e.g. `https://<host>/realms/<realm>`)                                                                                  |                                                     |          |
+| `OAUTH2_KEYCLOAK_JWK_SET_URI`             | The URL where Keycloak publishes its JSON Web Key Set (e.g. `https://<host>/realms/<realms>/protocol/openid-connect/certs`)                                   |                                                     |          |
+| `OAUTH2_KEYCLOAK_TOKEN_URI`               | The endpoint in Keycloak’s OAuth 2.0 token service (e.g. `https://<host>/realms/<realm>/protocol/openid-connect/token`)                                       |                                                     |          |
+| `OAUTH2_KEYCLOAK_USER_INFO_URI`           | The OpenID Connect UserInfo endpoint URL (e.g. `https://<host>/realms/<realm>/protocol/openid-connect/userinfo`)                                              |                                                     |          |
+| `OAUTH2_KEYCLOAK_USER_NAME_ATTRIBUTE_URI` | The JWT claim or UserInfo field to treat as the principal’s username in your application                                                                      | `sub`                                               |          |
+
 ### Rate Limiting
 
 | Name                             | Description                                                         | Default value | Required |
@@ -135,7 +159,11 @@ These configuration values only effect the System E-Mail service.
 ### Get merged docker compose config
 
 ```shell
-docker compose -f _base.yml -f local.yml --env-file local.env config
+docker compose -f _base.yml -f local.yml --env-file .env config
+```
+
+```shell
+./pu config
 ```
 
 Will print the merged config of [\_base.yml](_base.yml) and [local.yml](local.yml) file to
@@ -150,7 +178,7 @@ Go to the [versions.env](versions.env) file, and change the version you need.
 Simply use the IntelliJ `Local` run configuration or run the following command to start the whole stack locally:
 
 ```shell
-bash start.local.sh
+./pu up --local
 ```
 
 - Web interface: [http://localhost/](http://localhost/)

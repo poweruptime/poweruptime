@@ -25,6 +25,14 @@ export const ROUTES: Routes = [
         path: 'forgot-password',
         loadComponent: () => import('./forgot-password.page').then((c) => c.ForgotPasswordPage),
       },
+      {
+        path: 'oauth2/callback',
+        loadComponent: () => import('./oauth2-callback.page').then((c) => c.OAuth2CallbackPage),
+      },
+      {
+        path: '**',
+        redirectTo: 'login',
+      },
     ],
   },
 ];

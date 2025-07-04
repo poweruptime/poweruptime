@@ -10,6 +10,7 @@
     "login": "Login",
     "newPassword": "New {{general.password}}",
     "newPasswordConfirm": "New {{general.password}} to confirm",
+    "oauth2Login": "Or login with",
     "oldPassword": "Old {{general.password}}",
     "requestPasswordReset": "Request password reset",
     "resetPassword": "Reset password",

@@ -8,7 +8,7 @@ import {AuthStore, ChangelogStore} from '@app/services';
 
 @Component({
   template: `
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       <div>
         <mat-card appearance="outlined">
           <mat-card-content>

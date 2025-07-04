@@ -1,24 +1,20 @@
-import {isPlatformBrowser} from '@angular/common';
-import {PLATFORM_ID, inject} from '@angular/core';
+import {inject, linkedSignal} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {switchMap} from 'rxjs';
+import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withMethods, withProps, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {i_complete, s_fromStorage, st_removeAll, st_set} from 'dfts-helper';
+import {i_complete, st_removeAll} from 'dfts-helper';
 import {injectWindow} from 'dfx-helper';
-import {createInjectionToken} from 'ngxtension/create-injection-token';
+import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendType, injectAPI} from '../../api';
 
 interface AuthState {
-  error: 'INVALID_CREDENTIALS' | 'PASSWORDS_IDENTICAL' | 'NONE';
-  isLoggedIn: boolean;
-  accessToken: string | undefined;
-  refreshToken: string | undefined;
   redirectUrl: string | undefined;
+  error: 'INVALID_CREDENTIALS' | 'PASSWORDS_IDENTICAL' | 'NONE';
   enteredPassword: string | undefined;
 }
 
@@ -30,41 +26,36 @@ export function getSessionInformation(): string {
   return `${browser.name} - ${browser.majorVersion}; OS: ${browser.os}; Phone: ${browser.mobile}`;
 }
 
-const [injectInitialAuthState] = createInjectionToken((): AuthState => {
-  const _isPlatformBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-
-  const accessToken = _isPlatformBrowser ? s_fromStorage(localStorageAccessTokenKey) : undefined;
-
-  return {
-    error: 'NONE' as const,
-    isLoggedIn: !!accessToken,
-    accessToken,
-    refreshToken: _isPlatformBrowser ? s_fromStorage(localStorageRefreshTokenKey) : undefined,
+const logoutState = () =>
+  ({
     redirectUrl: undefined,
+    error: 'NONE' as const,
     enteredPassword: undefined,
-  };
-});
-
-const logoutState = () => ({
-  isLoggedIn: false,
-  error: 'NONE' as const,
-  accessToken: undefined,
-  refreshToken: undefined,
-  enteredPassword: undefined,
-});
+  }) satisfies AuthState;
 
 export const AuthStore = signalStore(
   {providedIn: 'root'},
-  withState(() => injectInitialAuthState()),
+  withState<AuthState>({
+    error: 'NONE' as const,
+    redirectUrl: undefined,
+    enteredPassword: undefined,
+  }),
+  withProps(() => {
+    const accessToken = injectLocalStorage<string>(localStorageAccessTokenKey);
+    const refreshToken = injectLocalStorage<string>(localStorageRefreshTokenKey);
+    return {
+      refreshToken,
+      accessToken,
+      isLoggedIn: linkedSignal(() => !!refreshToken() || !!accessToken()),
+    };
+  }),
   withMethods((store, api = injectAPI(), router = inject(Router), window = injectWindow()) => ({
     setRedirectUrl(redirectUrl: string): void {
       patchState(store, () => ({redirectUrl}));
     },
     setTokens({accessToken, refreshToken}: {accessToken: string; refreshToken?: string}): void {
-      patchState(store, () => ({accessToken, refreshToken}));
-
-      st_set(localStorageAccessTokenKey, accessToken);
-      st_set(localStorageRefreshTokenKey, refreshToken);
+      store.accessToken.set(accessToken);
+      store.refreshToken.set(refreshToken);
     },
     logout(): void {
       patchState(store, logoutState);
@@ -72,6 +63,21 @@ export const AuthStore = signalStore(
       st_removeAll();
       window?.location.reload();
     },
+    oauth2Login: rxMethod<{accessToken?: string; refreshToken?: string}>(
+      pipe(
+        filter((tokens) => !!tokens.accessToken && !!tokens.refreshToken),
+        tap(({accessToken, refreshToken}) => {
+          patchState(store, () => ({
+            error: 'NONE' as const,
+          }));
+
+          store.accessToken.set(accessToken);
+          store.refreshToken.set(refreshToken);
+
+          void router.navigateByUrl(store.redirectUrl() ?? '/');
+        }),
+      ),
+    ),
     login: rxMethod<Omit<BackendType['LoginDto'], 'sessionInformation'>>(
       switchMap((body) =>
         api
@@ -83,16 +89,13 @@ export const AuthStore = signalStore(
           })
           .pipe(
             tapResponse({
-              next: (response) => {
+              next: ({accessToken, refreshToken}) => {
                 patchState(store, () => ({
                   error: 'NONE' as const,
-                  isLoggedIn: true,
-                  accessToken: response.accessToken,
-                  refreshToken: response.refreshToken,
                 }));
 
-                st_set(localStorageAccessTokenKey, response.accessToken);
-                st_set(localStorageRefreshTokenKey, response.refreshToken);
+                store.accessToken.set(accessToken);
+                store.refreshToken.set(refreshToken);
 
                 void router.navigateByUrl(store.redirectUrl() ?? '/');
               },
@@ -134,16 +137,13 @@ export const AuthStore = signalStore(
           })
           .pipe(
             tapResponse({
-              next: (response) => {
+              next: ({accessToken, refreshToken}) => {
                 patchState(store, () => ({
                   error: 'NONE' as const,
-                  isLoggedIn: true,
-                  accessToken: response.accessToken,
-                  refreshToken: response.refreshToken,
                 }));
 
-                st_set(localStorageAccessTokenKey, response.accessToken);
-                st_set(localStorageRefreshTokenKey, response.refreshToken);
+                store.accessToken.set(accessToken);
+                store.refreshToken.set(refreshToken);
 
                 void router.navigateByUrl(store.redirectUrl() ?? '/');
               },
@@ -171,36 +171,6 @@ export const AuthStore = signalStore(
                 patchState(store, () => ({
                   error: 'INVALID_CREDENTIALS' as const,
                 }));
-              },
-            }),
-          ),
-      ),
-    ),
-    refresh: rxMethod<Omit<BackendType['RefreshJwtWithSessionTokenDto'], 'sessionInformation'>>(
-      switchMap(() =>
-        api
-          .post('/v1/auth/refresh', {
-            body: {
-              refreshToken: store.refreshToken()!!,
-              sessionInformation: getSessionInformation(),
-            },
-          })
-          .pipe(
-            tapResponse({
-              next: (response) => {
-                patchState(store, () => ({
-                  accessToken: response.accessToken,
-                  refreshToken: response.refreshToken,
-                }));
-
-                st_set(localStorageAccessTokenKey, response.accessToken);
-                st_set(localStorageRefreshTokenKey, response.refreshToken);
-              },
-              error: () => {
-                patchState(store, logoutState);
-
-                st_removeAll();
-                void router.navigate(['', 'auth', 'login']);
               },
             }),
           ),
