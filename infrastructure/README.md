@@ -2,10 +2,13 @@
 
 Docker Compose configuration for running [poweruptime](https://github.com/poweruptime/poweruptime).
 
-|                           **Container Registries**                           |
-| :--------------------------------------------------------------------------: |
-|     [Web](https://github.com/poweruptime/poweruptime/pkgs/container/web)     |
-| [Backend](https://github.com/poweruptime/poweruptime/pkgs/container/backend) |
+## Table of contents
+
+1. [How to Install](#how-to-install)
+2. [Commands](#commands)
+3. [OAuth2 Guide](#oauth2-guide)
+4. [Environment variables](#environment-variables)
+5. [Other stuff](#good-to-know)
 
 ## How to install
 
@@ -59,17 +62,61 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    ./pu start
    ```
 
-### Stop the stack
+### Commands
+
+#### Start the stack
+
+```shell
+./pu start
+```
+
+#### Stop the stack
 
 ```shell
 ./pu stop
 ```
 
-### Update the stack
+#### Update the stack
 
 ```shell
 ./pu update
 ```
+
+## OAuth2 Guide
+
+Enabling OAuth2 lets any user registered with your Identity Provider (IdP) log in (or create an account) on your poweruptime instance.
+
+Accounts are matched by E-Mail address: if an OAuth2 user’s E-Mail matches an existing account, they simply log into that account.
+
+1. User Uniqueness
+   - Identification is by E-Mail address only.
+   - No duplicate accounts: the same E-Mail always maps to one user.
+
+2. Feature Parity
+   - Users who sign up or log in via OAuth2 have exactly the same capabilities as those who register via the dashboard:
+   - Deactivate/reactivate accounts
+   - Set up MFA (note:
+     - OAuth2 login skips MFA,
+     - but MFA still applies when logging in with E-Mail & password)
+   - Reset password
+   - Change password (the initial password for an OAuth2-only user is randomly generated behind the scenes)
+   - Join teams
+   - Be granted admin rights
+
+3. Limitations
+   - With OAuth2 enabled, users cannot change their E-Mail address (this restriction applies instance-wide to all users).
+
+All other user-management operations work exactly the same, regardless of how the account was created.
+
+### Google
+
+Take a look at what [environment variables need to set](#google-1).
+Please note that you have to fill in all variables without a default value.
+
+### Keycloak (or any other OAuth2 Provider)
+
+Take a look at what [environment variables need to set](#keycloak-or-any-other-oauth2-provider-1).
+Please note that you have to fill in all variables without a default value.
 
 ## Environment variables
 
@@ -123,7 +170,7 @@ These configuration values only effect the System E-Mail service.
 | `OAUTH2_GOOGLE_CLIENT_SECRET` | Your Google OAuth2 Client Secret                               |                                                   |          |
 | `OAUTH2_GOOGLE_REDIRECT_URI`  | Callback URI registered in Google (where Google will redirect) | `{POWERUPTIME_HOST}/api/login/oauth2/code/google` |          |
 
-#### Keycloak
+#### Keycloak (or any other OAuth2 Provider)
 
 | Name                                      | Description                                                                                                                                                   | Default value                                       | Required |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | -------- |
@@ -156,6 +203,11 @@ These configuration values only effect the System E-Mail service.
 
 ## Good to know
 
+|                           **Container Registries**                           |
+| :--------------------------------------------------------------------------: |
+|     [Web](https://github.com/poweruptime/poweruptime/pkgs/container/web)     |
+| [Backend](https://github.com/poweruptime/poweruptime/pkgs/container/backend) |
+
 ### Get merged docker compose config
 
 ```shell
@@ -173,7 +225,7 @@ standard out.
 
 Go to the [versions.env](versions.env) file, and change the version you need.
 
-## Running locally
+### Running locally
 
 Simply use the IntelliJ `Local` run configuration or run the following command to start the whole stack locally:
 

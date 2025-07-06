@@ -34,7 +34,7 @@ pnpm web:build && ./gradlew backend:build -x test -Pversion=local && docker comp
 
 #### E-Mails
 
-Learn more about adding E-Mails [here](./emails/README.md).
+Learn more about adding E-Mails [here](../emails/README.md).
 
 ### Web
 

@@ -20,38 +20,19 @@
 
 Checkout our [docker compose instructions](./infrastructure/README.md).
 
-They boils down to:
-
 1. Clone the [docker-compose repository](https://github.com/poweruptime/docker-compose).
    ```shell
-   git clone https://github.com/poweruptime/docker-compose.git poweruptime && cd ./poweruptime
+   git clone https://github.com/poweruptime/docker-compose.git poweruptime && cd ./poweruptime && chmod +x ./pu
    ```
-2. Checkout specific version (or just stay on main, which is the latest release)
+2. Setup
    ```shell
-   git checkout vX.X.X
+   ./pu setup
    ```
-3. Copy `.env.exmaple` to `.env`
+3. Make sure no other services listen on port `80` and `443`.
+4. Start the stack
    ```shell
-   cp .env.example .env
+   ./pu start
    ```
-4. Fill out the necessary .env variables.
-   ```shell
-   nano .env
-   ```
-   ```shell
-   vim .env
-   ```
-5. Make sure no other servives listen on port `80` and `443`.
-6. Start the stack
-   ```shell
-   ./start.sh
-   ```
-
-### Stop the stack
-
-```shell
-./stop.sh
-```
 
 ## How to update
 
@@ -59,7 +40,7 @@ Read more [here](./infrastructure/README.md).
 
 ## Contributing
 
-Take a look at the [starter guide](./CONTRIBUTING.md).
+Take a look at the [starter guide](.github/CONTRIBUTING.md).
 
 ## Motivation
 
@@ -67,4 +48,3 @@ Take a look at the [starter guide](./CONTRIBUTING.md).
 - Always wanted to share my uptime monitoring instance with friends (so they can track their own services).
 - Wanted to build something with [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
 - Wanted to try out a mono-repo with modern Angular and Kotlin Spring Boot.
-- Needed a project to take my mind of work.
