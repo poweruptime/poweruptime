@@ -72,12 +72,12 @@ import {TableLoadingBar} from '../table-loading-bar';
                   <b>New version available</b>
                 </div>
                 <div class="inline-flex items-center gap-4">
-                  <span pu-tag="GHOST">
+                  <span class="break-keep" pu-tag="GHOST">
                     {{ currentVersion }}
                   </span>
                   <bi name="arrow-right" />
 
-                  <span pu-tag="BLUE">
+                  <span class="break-keep" pu-tag="BLUE">
                     {{ latestVersion }}
                   </span>
                 </div>
