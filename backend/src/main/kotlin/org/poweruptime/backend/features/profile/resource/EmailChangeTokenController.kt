@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.exceptions.ForbiddenException
+import org.poweruptime.backend.core.exceptions.ServiceUnavailableException
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
+import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.profile.dto.UpdateEmailDto
 import org.poweruptime.backend.features.profile.service.EmailChangeTokenService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -34,7 +36,8 @@ class EmailChangeTokenController(
     private val authService: AuthService,
     private val mfaService: MFAService,
     private val emailChangeTokenService: EmailChangeTokenService,
-    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider
+    private val infoService: InfoService,
+    @param:Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider
 ) {
     @Operation(
         summary = "Request email update of authenticated user",
@@ -47,6 +50,10 @@ class EmailChangeTokenController(
         authentication: Authentication,
         @RequestBody @Valid dto: UpdateEmailDto
     ) {
+        if (infoService.oAuth2Enabled) {
+            throw ServiceUnavailableException("E-mail change disabled because of OAuth2 being enabled")
+        }
+
         // Reauthenticate user
         try {
             authenticationProvider.authenticate(
