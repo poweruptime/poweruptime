@@ -49,6 +49,16 @@ class OAuth2LoginSuccessHandler(
             forcePasswordChange = false,
         )
 
+        if (!user.activated) {
+            val redirectUri = UriComponentsBuilder
+                .fromUriString("${hostService.urlHost}/auth/oauth2/callback")
+                .queryParam("error", URLEncoder.encode("not_activated", "UTF-8"))
+                .build()
+                .toUriString()
+
+            response.sendRedirect(redirectUri)
+        }
+
         val sessionToken = sessionService.createSessionForOAuth2(
             sessionInformation = "OAuth2 session by ${oauthUser.attributes["iss"] ?: "unknown issuer"}",
             user = user,
