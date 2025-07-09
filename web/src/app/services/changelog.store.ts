@@ -12,8 +12,8 @@ import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {ChangelogDialog} from '@app/components';
 import {BACKEND_API_URL} from '@app/util';
+import {environment} from '@app/util';
 
-import {environment} from '../../environments/environment';
 import {BackendOperation} from '../api';
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
 
@@ -42,7 +42,7 @@ export const ChangelogStore = signalStore(
               responseType: 'text',
               params: {
                 ...(version ? {version} : {}),
-                beta: !environment.production || environment.version.includes('beta'),
+                beta: environment.isBetaOrDevChannel,
               } satisfies BackendOperation['getChangelog']['parameters']['query'],
             })
             .pipe(

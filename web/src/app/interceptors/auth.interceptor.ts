@@ -8,8 +8,7 @@ import {toast} from 'ngx-sonner';
 
 import {injectAPI} from '@app/api';
 import {AuthStore, getSessionInformation} from '@app/services';
-
-import {environment} from '../../environments/environment';
+import {environment} from '@app/util';
 
 /**
  * Intercept this requests
@@ -89,7 +88,7 @@ export function authInterceptor(
             }),
             catchError(() => {
               lumber.error('handle401Error', 'Could not refresh access token with refresh token');
-              if (environment.production) {
+              if (environment.channel === 'production') {
                 authStore.logout();
               } else {
                 lumber.error(

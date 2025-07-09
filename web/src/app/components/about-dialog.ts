@@ -13,8 +13,9 @@ import {
 import {TranslocoPipe} from '@jsverse/transloco';
 import {MatButtonLoading} from '@ng-matero/extensions/button';
 
+import {environment} from '@app/util';
+
 import * as licensesJson from '../../assets/licenses.json';
-import {environment} from '../../environments/environment';
 import {ChangelogStore, JsonStore} from '../services';
 import {BACKEND_API_URL} from '../util';
 

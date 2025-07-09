@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 
-import {environment} from '../../../../environments/environment';
+import {environment} from '@app/util';
 
 export const ROUTES: Routes = [
   {
@@ -17,7 +17,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'dev',
-        canActivate: [() => !environment.production],
+        canActivate: [() => environment.channel === 'dev'],
         loadComponent: () => import('./profile-dev.page').then((c) => c.ProfileDevPage),
       },
       {

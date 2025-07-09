@@ -11,7 +11,7 @@ import fastify from 'fastify';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {environment} from './environments/environment';
+import {environment} from '@app/util';
 
 export async function app() {
   const server = fastify();

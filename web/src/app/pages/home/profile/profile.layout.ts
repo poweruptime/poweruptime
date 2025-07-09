@@ -5,7 +5,7 @@ import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {environment} from '../../../../environments/environment';
+import {environment} from '@app/util';
 
 @Component({
   template: `
@@ -48,6 +48,6 @@ export class ProfileLayout {
   readonly routes = [
     {path: 'overview', text: 'general.overview'},
     {path: 'security', text: 'general.security'},
-    ...(environment.production ? [] : [{path: 'dev', text: 'profile.devThings'}]),
+    ...(environment.channel === 'dev' ? [{path: 'dev', text: 'profile.devThings'}] : []),
   ];
 }

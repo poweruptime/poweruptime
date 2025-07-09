@@ -1,3 +1,5 @@
+import {DatePipe} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,6 +9,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 import {MatButton} from '@angular/material/button';
 import {
@@ -17,14 +20,19 @@ import {
   MatCardTitle,
 } from '@angular/material/card';
 
+import {map} from 'rxjs';
+
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
-import {InfoStore} from '@app/services';
+import {InfoStore, JsonStore} from '@app/services';
+import {environment} from '@app/util';
+
+import {LiquibaseActuatorResponse} from '../../../api';
 
 @Directive({
   selector: '[puStatusBadge]',
   host: {
-    class: 'rounded-md px-2 py-1 text-xs font-medium',
+    class: 'rounded-md px-2 py-1 text-xs font-medium inline-flex items-center gap-1',
     '[class.bg-black]': 'isEnabled()',
     '[class.dark:bg-white]': 'isEnabled()',
     '[class.text-white]': 'isEnabled()',
@@ -114,12 +122,12 @@ class StatusText implements PipeTransform {
               <div class="mb-2 flex items-center gap-2">
                 <bi name="server" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  Network and service settings
+                  Network and service
                 </h3>
               </div>
             </mat-card-title>
             <mat-card-subtitle>
-              <p class="text-sm">Runtime and operating system details</p>
+              <p class="text-sm">Network and service settings</p>
             </mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
@@ -130,12 +138,14 @@ class StatusText implements PipeTransform {
                   {{ info.host }}
                 </span>
               </div>
-              <div class="flex items-center justify-between py-2">
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Port</span>
-                <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.port }}
-                </span>
-              </div>
+              @if (environment.isBetaOrDevChannel) {
+                <div class="flex items-center justify-between py-2">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Port</span>
+                  <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
+                    {{ info.port }}
+                  </span>
+                </div>
+              }
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Log Level</span>
                 <span
@@ -145,10 +155,18 @@ class StatusText implements PipeTransform {
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Swagger API
+                  Service started
                 </span>
-                <span [puStatusBadge]="info.swaggerEnabled">
-                  {{ info.swaggerEnabled | statusText }}
+                <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
+                  {{ json()?.serverStartTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Server time
+                </span>
+                <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
+                  {{ json()?.serverTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
                 </span>
               </div>
             </div>
@@ -221,11 +239,37 @@ class StatusText implements PipeTransform {
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Swagger API Docs
+                </span>
+                @if (info.swaggerEnabled === 'true') {
+                  <a [puStatusBadge]="info.swaggerEnabled" href="/api/swagger/docs" target="_blank">
+                    {{ info.swaggerEnabled | statusText }}
+                    <bi size="12" name="box-arrow-up-right" />
+                  </a>
+                } @else {
+                  <span [puStatusBadge]="info.swaggerEnabled">
+                    {{ info.swaggerEnabled | statusText }}
+                  </span>
+                }
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Temporary Notifications
                 </span>
-                <span [puStatusBadge]="info.tempNotificationsEnabled">
-                  {{ info.tempNotificationsEnabled | statusText }}
-                </span>
+
+                @if (info.tempNotificationsEnabled === 'true') {
+                  <a
+                    [puStatusBadge]="info.tempNotificationsEnabled"
+                    href="/api/v1/public/temp-notification"
+                    target="_blank">
+                    {{ info.tempNotificationsEnabled | statusText }}
+                    <bi size="12" name="box-arrow-up-right" />
+                  </a>
+                } @else {
+                  <span [puStatusBadge]="info.tempNotificationsEnabled">
+                    {{ info.tempNotificationsEnabled | statusText }}
+                  </span>
+                }
               </div>
             </div>
           </mat-card-content>
@@ -257,7 +301,7 @@ class StatusText implements PipeTransform {
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Duration</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.rateLimitDurationInSeconds }} s
+                  {{ info.rateLimitDurationInSeconds }}s
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
@@ -356,8 +400,20 @@ class StatusText implements PipeTransform {
     MatCardTitle,
     MatCardSubtitle,
     MatCardContent,
+    DatePipe,
   ],
 })
 export class InstanceSettingsInfoPage {
-  info = inject(InfoStore).environment;
+  protected readonly environment = environment;
+  private readonly httpClient = inject(HttpClient);
+
+  readonly info = inject(InfoStore).environment;
+  readonly json = inject(JsonStore).json;
+
+  changeSets = toSignal(
+    this.httpClient
+      .get<LiquibaseActuatorResponse>('/api/actuator/liquibase')
+      .pipe(map((it) => it.contexts['poweruptime-backend'].liquibaseBeans.liquibase.changeSets)),
+    {initialValue: []},
+  );
 }

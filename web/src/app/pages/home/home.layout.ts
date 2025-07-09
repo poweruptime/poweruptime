@@ -20,8 +20,8 @@ import {BackendOfflineAlert, Nav} from '@app/components';
 import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
 import {JsonStore} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
+import {environment} from '@app/util';
 
-import {environment} from '../../../environments/environment';
 import {SupporterBadge} from '../../components/supporter-badge';
 
 @Component({
