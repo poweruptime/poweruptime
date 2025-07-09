@@ -1,5 +1,4 @@
 import {DatePipe} from '@angular/common';
-import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,7 +8,6 @@ import {
   inject,
   input,
 } from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 import {MatButton} from '@angular/material/button';
 import {
@@ -20,14 +18,10 @@ import {
   MatCardTitle,
 } from '@angular/material/card';
 
-import {map} from 'rxjs';
-
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
 import {InfoStore, JsonStore} from '@app/services';
 import {environment} from '@app/util';
-
-import {LiquibaseActuatorResponse} from '../../../api';
 
 @Directive({
   selector: '[puStatusBadge]',
@@ -405,15 +399,7 @@ class StatusText implements PipeTransform {
 })
 export class InstanceSettingsInfoPage {
   protected readonly environment = environment;
-  private readonly httpClient = inject(HttpClient);
 
   readonly info = inject(InfoStore).environment;
   readonly json = inject(JsonStore).json;
-
-  changeSets = toSignal(
-    this.httpClient
-      .get<LiquibaseActuatorResponse>('/api/actuator/liquibase')
-      .pipe(map((it) => it.contexts['poweruptime-backend'].liquibaseBeans.liquibase.changeSets)),
-    {initialValue: []},
-  );
 }

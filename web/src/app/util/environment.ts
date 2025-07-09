@@ -12,7 +12,7 @@ function getChannel() {
   return 'dev';
 }
 
-let channel: ReturnType<typeof getChannel> = getChannel();
+const channel: ReturnType<typeof getChannel> = getChannel();
 
 export const environment: {
   channel: typeof channel;
