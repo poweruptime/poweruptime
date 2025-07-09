@@ -18,8 +18,7 @@ import {StopPropagationDirective} from 'dfx-helper';
 
 import {IsSystemAdmin} from '@app/directives';
 import {IsTeamAdmin} from '@app/directives';
-import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
-import {ThemeService, themeOptions} from '@app/services/theme.service';
+import {AuthStore, ProfileStore, SelectedTeamStore, ThemeStore, themeOptions} from '@app/services';
 import {isMobileBreakpoints} from '@app/services/util';
 
 import {AboutDialog} from './about-dialog';
@@ -182,10 +181,7 @@ import {TeamSelect} from './team-select';
           @let selectedTheme = themeService.selectedTheme();
           <mat-menu #themeMenu="matMenu" yPosition="above">
             @for (theme of themeOptions; track theme.value) {
-              <button
-                (click)="themeService.selectedTheme.set(theme.value)"
-                type="button"
-                mat-menu-item>
+              <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
                 <div class="inline-flex items-center gap-2">
                   <bi
                     [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'"
@@ -257,7 +253,7 @@ export class Nav {
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly profileStore = inject(ProfileStore);
   readonly authStore = inject(AuthStore);
-  readonly themeService = inject(ThemeService);
+  readonly themeService = inject(ThemeStore);
   readonly dialog = inject(MatDialog);
   readonly translocoService = inject(TranslocoService);
   readonly router = inject(Router);

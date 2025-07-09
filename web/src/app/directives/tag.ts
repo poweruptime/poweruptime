@@ -1,7 +1,8 @@
 import {Directive, booleanAttribute, computed, inject, input} from '@angular/core';
 
+import {ThemeStore} from '@app/services';
+
 import {BackendType} from '../api';
-import {ThemeService} from '../services/theme.service';
 
 @Directive({
   standalone: true,
@@ -56,7 +57,7 @@ import {ThemeService} from '../services/theme.service';
   },
 })
 export class Tag {
-  private readonly themeService = inject(ThemeService);
+  private readonly themeService = inject(ThemeStore);
 
   variant = input.required<BackendType['TagDto']['variant'] | 'GHOST'>({
     alias: 'pu-tag',

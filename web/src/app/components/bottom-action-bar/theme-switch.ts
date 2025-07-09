@@ -5,7 +5,7 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {ThemeService, themeOptions} from '@app/services/theme.service';
+import {ThemeStore, themeOptions} from '@app/services';
 
 @Component({
   template: `
@@ -15,7 +15,7 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
     @let selectedTheme = themeService.selectedTheme();
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {
-        <button (click)="themeService.selectedTheme.set(theme.value)" type="button" mat-menu-item>
+        <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
           <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" />
           <span>{{ theme.viewValue }}</span>
 
@@ -30,5 +30,5 @@ import {ThemeService, themeOptions} from '@app/services/theme.service';
 })
 export class OutsideThemeSwitch {
   readonly themeOptions = themeOptions;
-  readonly themeService = inject(ThemeService);
+  readonly themeService = inject(ThemeStore);
 }

@@ -12,7 +12,7 @@ import {
 
 import Chart, {TooltipItem} from 'chart.js/auto';
 
-import {ThemeService} from '../../services/theme.service';
+import {ThemeStore} from '@app/services';
 
 @Component({
   template: `
@@ -44,7 +44,7 @@ import {ThemeService} from '../../services/theme.service';
 export class PingChart {
   private readonly locale = inject(LOCALE_ID);
   private readonly dateFormat = new DatePipe(this.locale);
-  private readonly themeService = inject(ThemeService);
+  private readonly themeService = inject(ThemeStore);
 
   chart = input.required<{
     data: {name: string; value: number}[];

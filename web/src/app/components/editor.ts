@@ -12,7 +12,7 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
 
-import {ThemeService} from '../services/theme.service';
+import {ThemeStore} from '@app/services';
 
 @Component({
   selector: 'pu-editor',
@@ -31,7 +31,7 @@ import {ThemeService} from '../services/theme.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Editor implements ControlValueAccessor {
-  private themeService = inject(ThemeService);
+  private themeService = inject(ThemeStore);
 
   placeholder = input<string>('');
   autocompleteVariables = input<string[]>();
