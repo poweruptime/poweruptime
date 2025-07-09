@@ -110,12 +110,14 @@ All other user-management operations work exactly the same, regardless of how th
 
 ### Google
 
-Take a look at what [environment variables need to set](#google-1).
+Take a look at what [environment variables need to be set](#google-1) and checkout [Google's OAuth2 docs](https://developers.google.com/identity/protocols/oauth2).
+
 Please note that you have to fill in all variables without a default value.
 
 ### Keycloak (or any other OAuth2 Provider)
 
-Take a look at what [environment variables need to set](#keycloak-or-any-other-oauth2-provider-1).
+Take a look at what [environment variables need to be set](#keycloak-or-any-other-oauth2-provider-1) and checkout [Keycloak's OAuth2 docs](https://www.keycloak.org/docs/latest/server_admin/index.html).
+
 Please note that you have to fill in all variables without a default value.
 
 ## Environment variables

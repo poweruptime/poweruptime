@@ -16,7 +16,7 @@ class CacheConfig {
     @Bean
     fun cacheManager(): CacheManager {
         val caffeineCache = Caffeine.newBuilder()
-            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .expireAfterWrite(2, TimeUnit.MINUTES)
             .build<Any, Any>()
 
         val manager = SimpleCacheManager()

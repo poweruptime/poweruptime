@@ -45,5 +45,6 @@ export class InstanceSettingsLayout {
     {path: 'overview', text: 'general.overview'},
     {path: 'users', text: 'general.users'},
     {path: 'teams', text: 'general.teams'},
+    {path: 'info', text: 'instanceSettings.info'},
   ];
 }

@@ -211,6 +211,7 @@
   },
   "instanceSettings": {
     "editUser": "Edit {{name}}",
+    "info": "{{general.instance}} {{general.info}}",
     "inviteUser": "{{general.invite}} {{general.user}}",
     "permissions": {
       "allowUsersToCreateTeams": "Allow users to create teams"

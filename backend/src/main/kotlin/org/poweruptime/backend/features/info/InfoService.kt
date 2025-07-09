@@ -3,7 +3,6 @@ package org.poweruptime.backend.features.info
 import org.poweruptime.backend.configuration.JSON_INFO_CACHE_KEY
 import org.poweruptime.backend.features.authentication.service.OAuth2ClientRegistrationService
 import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
-import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.boot.info.BuildProperties
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.env.Environment
@@ -13,27 +12,39 @@ import java.time.Instant
 
 @Service
 class InfoService(
-    environment: Environment,
     buildProperties: BuildProperties,
-    private val userService: UserService,
-    private val instanceSettingService: InstanceSettingService,
     oAuth2ClientRegistrationService: OAuth2ClientRegistrationService,
+    private val environment: Environment,
+    private val instanceSettingService: InstanceSettingService,
 ) {
     val name: String = buildProperties.name
     val version: String = buildProperties.version
     val buildTime: Instant = buildProperties.time
 
-    val javaRuntimeVersion = environment.getProperty("java.version")
-    val osName = environment.getProperty("os.name")
-    val osArch = environment.getProperty("os.arch")
-    val osVersion = environment.getProperty("os.version")
-    val host = environment.getProperty("poweruptime.host")!!
-    val port = environment.getProperty("server.port")
-    val swaggerEnabled = environment.getProperty("swagger.enabled")
-    val tempNotificationsEnabled = environment.getProperty("poweruptime.notification-temp.enabled")
-    val rateLimitEnabled = environment.getProperty("poweruptime.rate-limit.enabled")
-    val rateLimitDurationInSeconds = environment.getProperty("poweruptime.rate-limit.duration-in-seconds")
-    val rateLimitTries = environment.getProperty("poweruptime.rate-limit.tries")
+    val javaRuntimeVersion = getEnvProperty("java.version")
+
+    val osName = getEnvProperty("os.name")
+    val osArch = getEnvProperty("os.arch")
+    val osVersion = getEnvProperty("os.version")
+
+    val port = getEnvProperty("server.port")
+
+    val swaggerEnabled = getEnvProperty("springdoc.api-docs.enabled")
+
+    val mailEnabled = getEnvProperty("poweruptime.mail.enabled")
+    val mailHost = getEnvProperty("spring.mail.host")
+    val mailPort = getEnvProperty("spring.mail.port")
+
+    val logLevel = getEnvProperty("logging.level.org.poweruptime")
+
+    val host = getEnvProperty("poweruptime.host")
+
+    val pushEnabled = getEnvProperty("poweruptime.push.enabled")
+    val tempNotificationsEnabled = getEnvProperty("poweruptime.notification-temp.enabled")
+
+    val rateLimitEnabled = getEnvProperty("poweruptime.rate-limit.enabled")
+    val rateLimitDurationInSeconds = getEnvProperty("poweruptime.rate-limit.duration-in-seconds")
+    val rateLimitTries = getEnvProperty("poweruptime.rate-limit.tries")
 
     val enabledOAuth2Providers = oAuth2ClientRegistrationService.getProviders().map { OAuth2ProviderResponse(it) }
     val oAuth2Enabled = enabledOAuth2Providers.isNotEmpty()
@@ -45,6 +56,8 @@ class InfoService(
         val startTime: Instant = Instant.now()
     }
 
+    private fun getEnvProperty(name: String): String = environment.getProperty(name)!!
+
     @Cacheable(value = [JSON_INFO_CACHE_KEY], key = "#secure")
     fun getJsonInfo(secure: Boolean = false) = JsonInfoResponse(
         info = "Running ${if (secure) "SECURE " else ""}$name! ( ͡° ͜ʖ ͡°)",
@@ -54,7 +67,6 @@ class InfoService(
         host = host,
         enabledOAuth2Providers = enabledOAuth2Providers,
         serverSetupTime = serverSetupTime,
-        setup = userService.isSetup(),
         supportsSince = instanceSettingService.getSupportsSince(),
         showSupportBadge = instanceSettingService.getShowSupportBadge(),
     )
@@ -68,7 +80,6 @@ data class JsonInfoResponse(
     val host: String,
     val enabledOAuth2Providers: List<OAuth2ProviderResponse>,
     val serverSetupTime: Instant,
-    val setup: Boolean,
     val supportsSince: Instant?,
     val showSupportBadge: Boolean,
 )

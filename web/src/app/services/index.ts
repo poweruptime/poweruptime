@@ -12,6 +12,7 @@ export * from './backend-offline.service';
 export * from './changelog.store';
 export * from './email-change.store';
 export * from './info.store';
+export * from './is-setup.store';
 export * from './json.store';
 export * from './push.service';
 export * from './setup.store';

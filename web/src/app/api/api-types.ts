@@ -972,7 +972,24 @@ export interface paths {
       cookie?: never;
     };
     /** Get json info */
-    get: operations['jsonSecure'];
+    get: operations['json'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/secure/is-setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get setup info */
+    get: operations['isSetup'];
     put?: never;
     post?: never;
     delete?: never;
@@ -988,6 +1005,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** Get info */
     get: operations['api'];
     put?: never;
     post?: never;
@@ -1155,7 +1173,25 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['json'];
+    /** Get json info */
+    get: operations['json_1'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/is-setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get setup info */
+    get: operations['isSetup_1'];
     put?: never;
     post?: never;
     delete?: never;
@@ -2252,14 +2288,13 @@ export interface components {
       serverTime: string;
       /** Format: date-time */
       serverStartTime: string;
+      host: string;
+      enabledOAuth2Providers: components['schemas']['OAuth2ProviderResponse'][];
       /** Format: date-time */
       serverSetupTime: string;
       /** Format: date-time */
       supportsSince?: string;
       showSupportBadge: boolean;
-      host: string;
-      setup: boolean;
-      enabledOAuth2Providers: components['schemas']['OAuth2ProviderResponse'][];
     };
     OAuth2ProviderResponse: {
       registrationId: string;
@@ -2424,9 +2459,28 @@ export interface components {
       availableTimezones: string[];
     };
     AdminInfoResponse: {
-      infos: {
-        [key: string]: string;
-      };
+      javaRuntimeVersion: string;
+      osName: string;
+      osArch: string;
+      osVersion: string;
+      host: string;
+      port: string;
+      swaggerEnabled: string;
+      mailEnabled: string;
+      mailHost: string;
+      mailPort: string;
+      logLevel: string;
+      pushEnabled: string;
+      tempNotificationsEnabled: string;
+      rateLimitEnabled: string;
+      rateLimitDurationInSeconds: string;
+      rateLimitTries: string;
+      oauth2Providers: components['schemas']['OAuth2ProviderInfoResponse'][];
+    };
+    OAuth2ProviderInfoResponse: {
+      registrationId: string;
+      clientName: string;
+      clientId: string;
     };
     DeadLetterResponse: {
       id: string;
@@ -4134,7 +4188,7 @@ export interface operations {
       };
     };
   };
-  jsonSecure: {
+  json: {
     parameters: {
       query?: never;
       header?: never;
@@ -4150,6 +4204,26 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['JsonInfoResponse'];
+        };
+      };
+    };
+  };
+  isSetup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
         };
       };
     };
@@ -4379,7 +4453,7 @@ export interface operations {
       };
     };
   };
-  json: {
+  json_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4395,6 +4469,26 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['JsonInfoResponse'];
+        };
+      };
+    };
+  };
+  isSetup_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
         };
       };
     };

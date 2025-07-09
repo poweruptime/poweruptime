@@ -3,7 +3,7 @@ import {CanActivateFn, Router} from '@angular/router';
 
 import {catchError, map, of, take} from 'rxjs';
 
-import {JsonStore} from '@app/services';
+import {IsSetupStore} from '@app/services';
 
 export const isNotSetupGuard: CanActivateFn = (route) => {
   if (
@@ -14,11 +14,10 @@ export const isNotSetupGuard: CanActivateFn = (route) => {
   }
 
   const router = inject(Router);
-  const json$ = inject(JsonStore).json$;
+  const isSetup$ = inject(IsSetupStore).isSetup$;
 
-  return json$.pipe(
+  return isSetup$.pipe(
     take(1),
-    map(({setup}) => setup),
     map((isSetup) => !isSetup || router.parseUrl('/setup')),
     catchError(() => of(true)),
   );

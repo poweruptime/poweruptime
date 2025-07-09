@@ -11,6 +11,11 @@ export const ROUTES: Routes = [
           import('./instance-settings-overview.page').then((c) => c.InstanceSettingsOverviewPage),
       },
       {
+        path: 'info',
+        loadComponent: () =>
+          import('./instance-settings-info.page').then((c) => c.InstanceSettingsInfoPage),
+      },
+      {
         path: 'users',
         children: [
           {
