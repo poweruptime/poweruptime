@@ -3,21 +3,18 @@ import {environment as injectedEnvironment} from '../../environments/environment
 function getChannel() {
   if (injectedEnvironment.production) {
     if (injectedEnvironment.version.includes('beta')) {
-      return 'beta';
+      return 'beta' as const;
     }
 
-    return 'production';
+    return 'production' as const;
   }
 
-  return 'dev';
+  return 'dev' as const;
 }
 
-const channel: ReturnType<typeof getChannel> = getChannel();
+const channel = getChannel();
 
-export const environment: {
-  channel: typeof channel;
-  isBetaOrDevChannel: boolean;
-} & typeof injectedEnvironment = {
+export const environment = {
   ...injectedEnvironment,
   channel,
   isBetaOrDevChannel: channel !== 'production',
