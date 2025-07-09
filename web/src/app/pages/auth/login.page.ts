@@ -74,41 +74,43 @@ import {AuthStore, JsonStore} from '@app/services';
               {{ 'auth.login' | transloco }}
             </button>
 
-            <div class="mt-6 flex flex-col gap-4">
-              <div class="flex items-center gap-4">
-                <hr class="w-full" />
-                <span class="whitespace-nowrap">{{ 'auth.oauth2Login' | transloco }}</span>
-                <hr class="w-full" />
-              </div>
+            @if (enabledOAuth2Providers().length > 0) {
+              <div class="mt-6 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                  <hr class="w-full" />
+                  <span class="whitespace-nowrap">{{ 'auth.oauth2Login' | transloco }}</span>
+                  <hr class="w-full" />
+                </div>
 
-              <div class="grid gap-4 sm:grid-cols-2">
-                @for (provider of enabledOAuth2Providers(); track provider.registrationId) {
-                  <a
-                    [href]="'/api/oauth2/authorization/' + provider.registrationId"
-                    mat-stroked-button>
-                    <div class="inline-flex items-center gap-2">
-                      @switch (provider.registrationId) {
-                        @case ('google') {
-                          <bi name="google" />
+                <div class="grid gap-4 sm:grid-cols-2">
+                  @for (provider of enabledOAuth2Providers(); track provider.registrationId) {
+                    <a
+                      [href]="'/api/oauth2/authorization/' + provider.registrationId"
+                      mat-stroked-button>
+                      <div class="inline-flex items-center gap-2">
+                        @switch (provider.registrationId) {
+                          @case ('google') {
+                            <bi name="google" />
+                          }
+                          @case ('keycloak') {
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24">
+                              <path
+                                fill="currentColor"
+                                d="m18.742 1.182l-12.493.002C4.155 4.784 2.079 8.393 0 12.002c2.071 3.612 4.162 7.214 6.252 10.816l12.49-.004l3.089-5.404h2.158v-.002H24L23.996 6.59h-2.168zM8.327 4.792h2.081l1.04 1.8l-3.12 5.413l3.117 5.403l-1.035 1.81H8.327a2048 2048 0 0 0-4.168-7.204zm6.241 0l2.086.003q2.088 3.608 4.166 7.222l-4.167 7.2h-2.08c-.382-.562-1.038-1.808-1.038-1.808l3.123-5.405l-3.124-5.413z" />
+                            </svg>
+                          }
                         }
-                        @case ('keycloak') {
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24">
-                            <path
-                              fill="currentColor"
-                              d="m18.742 1.182l-12.493.002C4.155 4.784 2.079 8.393 0 12.002c2.071 3.612 4.162 7.214 6.252 10.816l12.49-.004l3.089-5.404h2.158v-.002H24L23.996 6.59h-2.168zM8.327 4.792h2.081l1.04 1.8l-3.12 5.413l3.117 5.403l-1.035 1.81H8.327a2048 2048 0 0 0-4.168-7.204zm6.241 0l2.086.003q2.088 3.608 4.166 7.222l-4.167 7.2h-2.08c-.382-.562-1.038-1.808-1.038-1.808l3.123-5.405l-3.124-5.413z" />
-                          </svg>
-                        }
-                      }
-                      {{ provider.clientName }}
-                    </div>
-                  </a>
-                }
+                        {{ provider.clientName }}
+                      </div>
+                    </a>
+                  }
+                </div>
               </div>
-            </div>
+            }
           </form>
         </mat-card-content>
       </mat-card>
