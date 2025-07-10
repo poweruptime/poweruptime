@@ -15,8 +15,9 @@
 - Multiple status pages with specific domain name support
 - Detailed monitor analysis
 - 2FA & OAuth2 support
-- | ![Team dashboard](./.github/screenshots/team_dashboard.webp) | ![Monitor info](./.github/screenshots/monitor_info.webp) | ![Notification method edit](./.github/screenshots/notification_method_edit.webp) |
-  | :----------------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------------------------------: |
+
+| ![Team dashboard](./.github/screenshots/team_dashboard.webp) | ![Monitor info](./.github/screenshots/monitor_info.webp) | ![Notification method edit](./.github/screenshots/notification_method_edit.webp) |
+| :----------------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------------------------------: |
 
 ## How to install
 
