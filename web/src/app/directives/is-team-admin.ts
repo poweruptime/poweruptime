@@ -1,5 +1,5 @@
 import {NgIf} from '@angular/common';
-import {Directive, effect, inject} from '@angular/core';
+import {Directive, effect, inject, input} from '@angular/core';
 
 import {SelectedTeamStore} from '@app/services';
 
@@ -13,6 +13,10 @@ import {SelectedTeamStore} from '@app/services';
   ],
 })
 export class IsTeamAdmin {
+  teamId = input<string>(undefined, {
+    alias: 'isTeamAdmin',
+  });
+
   constructor() {
     const ngIfDirective = inject(NgIf);
     const selectedTeamStore = inject(SelectedTeamStore);
