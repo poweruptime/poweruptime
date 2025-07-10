@@ -26,3 +26,14 @@ databaseChangeLog:
             tableName: notification
             columnNames: check_result_id
             constraintName: notification_check_result_id_key
+  - changeSet:
+      id: 4
+      author: Dafnik
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: changelog/scripts/04-indexes.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
