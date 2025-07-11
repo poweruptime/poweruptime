@@ -23,7 +23,7 @@ import org.poweruptime.backend.features.monitor.dto.*
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
@@ -45,7 +45,7 @@ class MonitorController(
     private val monitorService: MonitorService,
     private val notificationMethodService: NotificationMethodService,
     private val statusPageGroupService: StatusPageGroupService,
-    private val checkResultService: CheckResultService,
+    private val checkResultStatisticsService: CheckResultStatisticsService,
     private val authService: AuthService,
     private val permissionRepository: PermissionRepository
 ) {
@@ -116,7 +116,7 @@ class MonitorController(
             }?.toList(),
             deleted = deleted,
         )
-        val checkResultsPerMonitor = checkResultService.getLastByMonitorIds(
+        val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(
             monitors.toList().map {
                 it.id
             },
@@ -127,7 +127,7 @@ class MonitorController(
             MonitorResponse(
                 it,
                 lastCheckResults = checkResultsPerMonitor[it.id] ?: emptyList(),
-                oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
+                oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
                     it.id,
                     TimeOption.ONE_DAY,
                 ).myFormat(),
@@ -249,13 +249,16 @@ class MonitorController(
 
     private fun Monitor.toMaxResponse() = MonitorMaxResponse(
         this,
-        uptime = checkResultService.uptimeStatisticsDto(this),
+        uptime = checkResultStatisticsService.uptimeStatisticsDto(this),
     )
 
     private fun Monitor.toFullResponse() = MonitorFullResponse(
         this,
-        uptime = checkResultService.uptimeStatisticsDto(this),
-        lastCheckResults = checkResultService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
-        oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
+        uptime = checkResultStatisticsService.uptimeStatisticsDto(this),
+        lastCheckResults = checkResultStatisticsService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
+        oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
+            this.id,
+            TimeOption.ONE_DAY,
+        ).myFormat(),
     )
 }

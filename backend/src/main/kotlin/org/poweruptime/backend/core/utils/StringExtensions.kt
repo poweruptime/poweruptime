@@ -3,6 +3,9 @@ package org.poweruptime.backend.core.utils
 import org.apache.commons.codec.binary.Base32
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.springframework.http.HttpHeaders
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import java.util.Base64
 import java.util.Locale.getDefault
 
@@ -43,3 +46,6 @@ fun HttpHeaders.addBasicAuthString(username: String, password: String) = apply {
 }
 
 fun <T : Any> T?.orThrowNotFound(message: String = "Property not found"): T = this ?: throw NotFoundException(message)
+
+fun LocalDate.startOfWeek(): LocalDate =
+    this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))

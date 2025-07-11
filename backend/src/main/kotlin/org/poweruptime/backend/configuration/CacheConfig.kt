@@ -9,28 +9,42 @@ import org.springframework.context.annotation.Configuration
 import java.util.concurrent.TimeUnit
 
 const val JSON_INFO_CACHE_KEY = "JSON_INFO_CACHE"
-const val MONITOR_ONE_DAY_CACHE_KEY = "MONITOR_ONE_DAY_CACHE"
+const val MONITOR_RECENT_UPTIME_CACHE_KEY = "MONITOR_RECENT_UPTIME_CACHE"
+const val MONITOR_UPTIME_STATISTICS_CACHE_KEY = "MONITOR_UPTIME_STATISTICS_CACHE"
+const val MONITOR_YEARLY_UPTIME_CACHE_KEY = "MONITOR_YEARLY_UPTIME_CACHE"
 
 @Configuration
 class CacheConfig {
 
     @Bean
-    fun cacheManager(): CacheManager {
-        val jsonInfoCache = Caffeine.newBuilder()
-            .expireAfterWrite(2, TimeUnit.MINUTES)
-            .build<Any, Any>()
-
-        val monitorOneDayUptimeCache = Caffeine.newBuilder()
-            .expireAfterWrite(2, TimeUnit.MINUTES)
-            .build<Any, Any>()
-
-        val manager = SimpleCacheManager()
-        manager.setCaches(
+    fun cacheManager(): CacheManager = SimpleCacheManager().apply {
+        setCaches(
             listOf(
-                CaffeineCache(JSON_INFO_CACHE_KEY, jsonInfoCache),
-                CaffeineCache(MONITOR_ONE_DAY_CACHE_KEY, monitorOneDayUptimeCache),
+                CaffeineCache(
+                    JSON_INFO_CACHE_KEY,
+                    Caffeine.newBuilder()
+                        .expireAfterWrite(2, TimeUnit.MINUTES)
+                        .build(),
+                ),
+                CaffeineCache(
+                    MONITOR_RECENT_UPTIME_CACHE_KEY,
+                    Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .build(),
+                ),
+                CaffeineCache(
+                    MONITOR_UPTIME_STATISTICS_CACHE_KEY,
+                    Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .build(),
+                ),
+                CaffeineCache(
+                    MONITOR_YEARLY_UPTIME_CACHE_KEY,
+                    Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .build(),
+                ),
             ),
         )
-        return manager
     }
 }

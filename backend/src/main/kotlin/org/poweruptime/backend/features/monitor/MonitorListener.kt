@@ -18,6 +18,7 @@ import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.resource.LAST_CHECK_RESULTS_COUNT
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
@@ -41,6 +42,7 @@ private fun Boolean.adjustForUpsideDown(upsideDown: Boolean) = if (upsideDown) !
 @Component
 class MonitorListener(
     private val checkResultService: CheckResultService,
+    private val checkResultStatisticsService: CheckResultStatisticsService,
     private val checkResultLogEntryService: CheckResultLogEntryService,
     private val monitorService: MonitorService,
     private val monitorCheckerFactory: MonitorCheckerFactory,
@@ -231,9 +233,12 @@ class MonitorListener(
 
     private fun Monitor.toFullResponse() = MonitorFullResponse(
         this,
-        uptime = checkResultService.uptimeStatisticsDto(this),
-        lastCheckResults = checkResultService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
-        oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(this.id, TimeOption.ONE_DAY).myFormat(),
+        uptime = checkResultStatisticsService.uptimeStatisticsDto(this),
+        lastCheckResults = checkResultStatisticsService.getLastByMonitorId(this.id, LAST_CHECK_RESULTS_COUNT),
+        oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
+            this.id,
+            TimeOption.ONE_DAY,
+        ).myFormat(),
     )
 
     /**
@@ -360,7 +365,7 @@ class MonitorListener(
      * Extension function on [CheckResult] to retrieve the previous result for the same monitor.
      */
     private fun CheckResult.getPrevious(): CheckResult? {
-        return checkResultService
+        return checkResultStatisticsService
             .getLastByMonitorId(monitor.id, 2)
             .firstOrNull { it.id != this.id }
     }

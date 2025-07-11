@@ -1,7 +1,7 @@
 package org.poweruptime.backend.configuration.schedule
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -12,7 +12,7 @@ const val FIFTEEN_MINUTES_IN_MILLI_SECONDS = 900_000L
 @Configuration
 @EnableScheduling
 class CheckResultHistoricalDayUptimeSchedule(
-    private val checkResultService: CheckResultService,
+    private val checkResultStatisticsService: CheckResultStatisticsService,
     private val monitorService: MonitorService,
 ) {
     private final val logger = KotlinLogging.logger {}
@@ -32,7 +32,7 @@ class CheckResultHistoricalDayUptimeSchedule(
     private fun execute() {
         monitorService.getAll().forEach {
             logger.debug { "Syncing check results of '${it.id}' to historical day uptime" }
-            checkResultService.syncCheckResultsToHistoricalDayUptime(it)
+            checkResultStatisticsService.syncCheckResultsToHistoricalDayUptime(it)
         }
     }
 }

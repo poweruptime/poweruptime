@@ -7,7 +7,7 @@ import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
-import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.statusPage.dto.PublicStatusPageResponse
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 class PublicStatusPageController(
     private val statusPageService: StatusPageService,
     private val monitorService: MonitorService,
-    private val checkResultService: CheckResultService,
+    private val checkResultStatisticsService: CheckResultStatisticsService,
 ) {
     @Operation(
         summary = "Get status page",
@@ -62,12 +62,15 @@ class PublicStatusPageController(
             usedInStatusPageGroupIds = usedInStatusPageGroupIds?.toList(),
         )
 
-        val checkResultsPerMonitor = checkResultService.getLastByMonitorIds(monitors.toList().map { it.id }, 35)
+        val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(
+            monitors.toList().map { it.id },
+            35,
+        )
 
         return monitors.toDto {
             PublicMonitorMinResponse(
                 monitor = it,
-                oneDayUptime = checkResultService.calculateRecentUptimeByMonitorId(
+                oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
                     it.id,
                     TimeOption.ONE_DAY,
                 ).myFormat(),

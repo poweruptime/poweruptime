@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorResponse
-import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Public Monitor API")
 class PublicMonitorController(
     private val monitorService: MonitorService,
-    private val checkResultService: CheckResultService,
+    private val checkResultStatisticsService: CheckResultStatisticsService,
 ) {
     @Operation(
         summary = "Get monitor",
@@ -25,8 +25,8 @@ class PublicMonitorController(
         monitorService.getByIdOrThrow(id).let {
             PublicMonitorResponse(
                 monitor = it,
-                uptime = checkResultService.uptimeStatisticsDto(it),
-                lastCheckResults = checkResultService.getLastByMonitorId(it.id, 100),
+                uptime = checkResultStatisticsService.uptimeStatisticsDto(it),
+                lastCheckResults = checkResultStatisticsService.getLastByMonitorId(it.id, 100),
             )
         }
 
@@ -37,6 +37,6 @@ class PublicMonitorController(
     @ResponseStatus(HttpStatus.OK)
     fun getYearlyUptime(@PathVariable id: String): List<DayUptimeStatistics> =
         monitorService.getByIdOrThrow(id).let {
-            checkResultService.calculateYearlyUptime(it)
+            checkResultStatisticsService.calculateYearlyUptime(it)
         }
 }
