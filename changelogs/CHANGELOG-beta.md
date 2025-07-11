@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.4.0-beta-1752226296 - 2025-07-11
+
+### <!-- 0 -->🚀 Features
+
+- Add instance info by Dafnik ([66da5f1](https://github.com/poweruptime/poweruptime/commit/66da5f11df31d6cccae24f303b1266b16574ad1e))
+- Add is team admin teamId input by Dafnik ([2501534](https://github.com/poweruptime/poweruptime/commit/250153425997b85baf790f450f83452ff26c3c6f))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Version check beta tag breaking weird by Dafnik ([34e357e](https://github.com/poweruptime/poweruptime/commit/34e357ee5a52dde13b4517f61c20cd361b8579d4))
+- Only show login via oauth2, if oauth2 is enabled by Dafnik ([a65fe6f](https://github.com/poweruptime/poweruptime/commit/a65fe6f49c07b3065f28a16a6fe948bec9a94f1d))
+- Add missing indexes by Dafnik ([3414346](https://github.com/poweruptime/poweruptime/commit/341434638f4dda7ac61db4692b968deb795b3c85))
+
+### <!-- 2 -->🚜 Refactor
+
+- Theme service into store by Dafnik ([8403dbb](https://github.com/poweruptime/poweruptime/commit/8403dbbfd999ae9fd00658c32ad967cf8fddf2df)), fix:theme flickering light / dark mode
+- Environment utils by Dafnik ([1a04ea5](https://github.com/poweruptime/poweruptime/commit/1a04ea5e398321e144f5e157095227834acc0ac7))
+- Environment utils by Dafnik ([7d0224e](https://github.com/poweruptime/poweruptime/commit/7d0224e976e9fe625980c19b55eb911f137d3593))
+- Simplify environment utils typing by Dafnik ([f936d35](https://github.com/poweruptime/poweruptime/commit/f936d3581b45b664f90313a00fba15becdcc4d17))
+- Get last check results in bulk when possible by Dafnik ([757dfc1](https://github.com/poweruptime/poweruptime/commit/757dfc1bc03c644e3d28287605674b6b752cad81))
+
+### <!-- 3 -->📚 Documentation
+
+- Add screenshots by Dafnik ([0d6690e](https://github.com/poweruptime/poweruptime/commit/0d6690ef83c6076848a28af5d11a708e4897f617))
+- Fix formatting error by Dafnik ([bdd1958](https://github.com/poweruptime/poweruptime/commit/bdd1958d90b6ca86f7a7f05d5af9ea953584bf8e))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Lock file maintenance (#252) by renovate[bot] ([e8a6336](https://github.com/poweruptime/poweruptime/commit/e8a6336b728e7fa769d56ac3b4c6f1a0ccbca84c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1751831283...0.4.0-beta-1752226296)
+
 ## 0.4.0-beta-1751831283 - 2025-07-06
 
 ### <!-- 0 -->🚀 Features
@@ -59,6 +91,7 @@
 - Update dependency @jsverse/transloco-keys-manager to v7 (#251) by renovate[bot] ([197ec67](https://github.com/poweruptime/poweruptime/commit/197ec67fc4005d4673d6dbb800bec9a01efa9227)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Update tailwindcss monorepo to v4.1.11 (#242) by renovate[bot] ([0ce6b7a](https://github.com/poweruptime/poweruptime/commit/0ce6b7a7ba6e1ee41daba15c72d1948f3e736551)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Update dependency typescript-eslint to v8.35.1 (#249) by renovate[bot] ([5c0e504](https://github.com/poweruptime/poweruptime/commit/5c0e504fcdc37aa2bbe702ab9359b7e29a1a0bac)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1751831283 by Dafnik ([6fb9394](https://github.com/poweruptime/poweruptime/commit/6fb93945fb1e130e5c5a03bcc7942dcace225022))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750694580...0.4.0-beta-1751831283)
 
