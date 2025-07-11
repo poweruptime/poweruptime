@@ -31,6 +31,7 @@ Usage: $0 [--local] [--dry-run] <command> [target] [extra]
 Commands:
   up               Deploy the stack (incl. pull)
   down             Stop & remove the stack
+  ps               List containers
   restart          Restart the stack
   pull             Pull images per versions.env
   update           Checkout, backup DB & redeploy stack
@@ -67,7 +68,7 @@ parse_args() {
         usage
         exit 0
         ;;
-      up|down|start|stop|restart|pull|backup|backup-prune|config|version|setup)
+      up|down|start|stop|restart|ps|pull|backup|backup-prune|config|version|setup)
         CMD="$1"
         shift
         ;;
@@ -217,11 +218,15 @@ source_env() {
 }
 
 do_pull() {
-  docker_compose pull
+  docker_compose pull --quiet-pull
+}
+
+do_ps() {
+  docker_compose ps
 }
 
 do_up() {
-  docker_compose pull
+  docker_compose pull --quiet-pull
   docker_compose up -d
   if ! $DRY_RUN; then
     if $LOCAL; then
@@ -464,6 +469,7 @@ main() {
   case "$CMD" in
     up|start)           do_up                             ;;
     down|stop)          do_down                           ;;
+    ps)                 do_ps                             ;;
     pull)               do_pull                           ;;
     restart)            do_restart                        ;;
     update)             source_env && do_update           ;;
