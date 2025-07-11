@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
+import org.poweruptime.backend.configuration.MONITOR_ONE_DAY_CACHE_KEY
 import org.poweruptime.backend.core.Filter
 import org.poweruptime.backend.core.FilterCompare
 import org.poweruptime.backend.core.dto.PageableValidator
@@ -23,6 +24,7 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -206,6 +208,7 @@ class CheckResultService(
         )
     }
 
+    @Cacheable(value = [MONITOR_ONE_DAY_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: String, timeOption: TimeOption): BigDecimal {
         val now = Instant.now()
         val checkResults = checkResultRepository.findByMonitorIdAndPickedUpBetween(
