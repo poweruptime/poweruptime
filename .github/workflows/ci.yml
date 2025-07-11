@@ -19,8 +19,6 @@ jobs:
       # Needed to get the commitlint config
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Run commitlint
         uses: dafnik/commitlint@v1
@@ -29,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: dafnik/setup-node-pnpm@v4
         with:

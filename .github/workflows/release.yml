@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: dafnik/setup-node-pnpm@v4
         with:
@@ -198,6 +196,26 @@ jobs:
           git tag ${{ github.ref_name }}
           git push origin ${{ github.ref_name }}
 
+  release-github-beta:
+    runs-on: ubuntu-latest
+    if: contains(github.ref_name, 'beta')
+    needs: [mirror-infra-beta]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: get only latest changelog
+        run: |
+          ./.github/extractLatestVersionChangelog.sh ./changelogs/CHANGELOG-beta.md
+          cat RELEASE_CHANGELOG.md
+
+      - name: create release ${{ github.ref_name }}
+        uses: softprops/action-gh-release@v2.3.2
+        with:
+          prerelease: true
+          body_path: ./RELEASE_CHANGELOG.md
+
   mirror-infra:
     runs-on: ubuntu-latest
     if: "!contains(github.ref_name, 'beta')"
@@ -242,3 +260,22 @@ jobs:
         run: |
           git tag ${{ github.ref_name }}
           git push origin ${{ github.ref_name }}
+
+  release-github:
+    runs-on: ubuntu-latest
+    if: "!contains(github.ref_name, 'beta')"
+    needs: [mirror-infra]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: get only latest changelog
+        run: |
+          ./.github/extractLatestVersionChangelog.sh ./changelogs/CHANGELOG.md
+          cat RELEASE_CHANGELOG.md
+
+      - name: create release ${{ github.ref_name }}
+        uses: softprops/action-gh-release@v2.3.2
+        with:
+          body_path: ./RELEASE_CHANGELOG.md
