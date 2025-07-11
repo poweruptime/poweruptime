@@ -1,8 +1,8 @@
 name: poweruptime-local-backend-dev
 
 services:
-  postgres:
-    container_name: poweruptime-local-backend-dev-db
+  poweruptime-db:
+    container_name: poweruptime-db
     image: postgres:17.5-bookworm
     restart: unless-stopped
     volumes:
@@ -22,8 +22,8 @@ services:
       retries: 5
       start_period: 60s
 
-  rabbitmq:
-    container_name: poweruptime-local-backend-dev-rabbit
+  poweruptime-rabbitmq:
+    container_name: poweruptime-rabbitmq
     image: rabbitmq:4.1.1-management
     restart: unless-stopped
     volumes:
@@ -43,8 +43,8 @@ services:
       retries: 5
       start_period: 60s
 
-  apprise:
-    container_name: poweruptime-local-backend-dev-apprise
+  poweruptime-apprise:
+    container_name: poweruptime-apprise
     image: caronc/apprise:1.2.0
     restart: unless-stopped
     environment:
@@ -62,21 +62,22 @@ services:
       retries: 5
       start_period: 60s
 
-  web:
-    container_name: poweruptime-local-backend-dev-web
+  poweruptime-web:
+    container_name: poweruptime-web
     restart: unless-stopped
     build:
       context: ../web
     ports:
-      - "4210:4200"
+      - "4200:4200"
     networks:
       - poweruptime-local-backend-dev-network
     healthcheck:
-      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://localhost:4200']
+      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://127.0.0.1:4200']
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
+
 
 networks:
   poweruptime-local-backend-dev-network:
@@ -84,3 +85,4 @@ networks:
 volumes:
   db:
   rabbit:
+  backend:

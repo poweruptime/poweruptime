@@ -7,7 +7,7 @@ public class HealthCheck {
     public static void main(String[] args) throws InterruptedException, IOException {
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/actuator/health"))
+                .uri(URI.create("http://127.0.0.1:8080/api/actuator/health"))
                 .header("accept", "application/json")
                 .build();
         var response = client.send(request, BodyHandlers.ofString());

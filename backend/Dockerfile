@@ -1,20 +1,38 @@
-FROM openjdk:21-jdk-slim as certs
-RUN apt-get update \
-    && apt-get install -y ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# 1) Build stage: install certs + compile HealthCheck.java
+FROM openjdk:21-jdk-slim AS builder
 
+# install system CA bundle & Java truststore
+RUN apt-get update \
+ && apt-get install -y ca-certificates ca-certificates-java \
+ && update-ca-certificates -f \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# copy & compile your little health‐check tool
+COPY HealthCheck.java .
+RUN javac HealthCheck.java
+
+# 2) Runtime stage: distroless + nonroot + your server.jar
 FROM gcr.io/distroless/java21-debian12:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
-# Copy HealthCheck.java into the container image it to be used as a Docker HealthCheck provider
-COPY HealthCheck.java .
+# distroless’s JAVA_HOME
+ENV JAVA_HOME=/usr/local/openjdk-21
+WORKDIR /app
 
-# Copy certs from none-distroless container (fixes some HTTP errors becoming certificate trust errors)
-COPY --from=certs /etc/ssl/certs /etc/ssl/certs
+# bring in the system certs & Java truststore from builder
+COPY --from=builder /etc/ssl/certs       /etc/ssl/certs
+COPY --from=builder /etc/ssl/certs/java/cacerts \
+                     $JAVA_HOME/lib/security/cacerts
 
-# hack to get a mount point where the nonroot user is allowed to write
-COPY --chown=nonroot:nonroot --chmod=770 docker/poweruptime /var/lib/poweruptime
+# bring in just the compiled health‐check class
+COPY --from=builder /app/HealthCheck.class .
 
+# your main app and writable dir for the nonroot user
 COPY build/libs/backend.jar server.jar
+COPY --chown=nonroot:nonroot --chmod=770 \
+     docker/poweruptime /var/lib/poweruptime
 
+# default command to launch your Spring Boot jar
 CMD ["-Djava.security.egd=file:/dev/urandom", "-Dspring.profiles.active=container", "server.jar"]

@@ -50,7 +50,7 @@ if (isMainModule(import.meta.url)) {
   (async () => {
     const server = await app();
     const host = process.env['HOST'] || '0.0.0.0';
-    const port = +(process.env['PORT'] || 4200);
+    const port = 4200;
     await server.listen({host, port});
     console.log(`Listening on http://localhost:${port}`);
   })();

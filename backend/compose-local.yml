@@ -1,23 +1,27 @@
+name: poweruptime-local-backend-dev
+
 services:
   poweruptime-backend:
-    container_name: poweruptime-backend-dev-backend
+    container_name: poweruptime-backend
     restart: unless-stopped
     build:
       context: .
     ports:
       - "8080:8080"
     depends_on:
-      rabbitmq:
+      poweruptime-rabbitmq:
         condition: service_healthy
-      postgres:
+      poweruptime-db:
+        condition: service_healthy
+      poweruptime-apprise:
         condition: service_healthy
     volumes:
       - backend:/var/lib/poweruptime
     environment:
-      - POWERUPTIME_HOST=localhost:8080
-      - DATABASE_HOST=poweruptime-local-backend-dev-db
+      - POWERUPTIME_HOST=localhost:4200
+      - DATABASE_HOST=poweruptime-db
       - DATABASE_PASSWORD=poweruptime
-      - RABBIT_HOST=poweruptime-local-backend-dev-rabbit
+      - RABBIT_HOST=poweruptime-rabbitmq
       - RABBIT_PASSWORD=poweruptime
       - SWAGGER_ENABLED=true
       - TEMP_NOTIFICATIONS_ENABLED=true
@@ -29,16 +33,16 @@ services:
     networks:
       - poweruptime-local-backend-dev-network
     healthcheck:
-      test: ['CMD', 'java', 'HealthCheck.java']
+      test: ['CMD', 'java', '-cp', '/app', 'HealthCheck']
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
 
+networks:
+  poweruptime-local-backend-dev-network:
+
 volumes:
   db:
   rabbit:
   backend:
-
-
-

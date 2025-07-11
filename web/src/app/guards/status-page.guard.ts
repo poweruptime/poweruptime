@@ -12,7 +12,12 @@ export const statusPageGuard: CanActivateFn = () => {
 
   return json$.pipe(
     take(1),
-    map((response) => response.host !== localHost),
+    map((response) => {
+      if (localHost === 'localhost:4200' || localHost === '127.0.0.1:4200') {
+        return false;
+      }
+      return response.host !== localHost;
+    }),
     tap((isStatusPageDomain) => {
       if (isStatusPageDomain) {
         console.warn('isStatusPageDomain');
