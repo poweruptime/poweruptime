@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-beta-1752429965 - 2025-07-13
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Github release by Dafnik ([64f3bb3](https://github.com/poweruptime/poweruptime/commit/64f3bb31f05a0d1af6683d366e970f71bedbab3d))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752429414...0.4.0-beta-1752429965)
+
 ## 0.4.0-beta-1752429414 - 2025-07-13
 
 ### <!-- 0 -->🚀 Features
@@ -17,6 +25,10 @@
 
 - Cache daily uptime by Dafnik ([0e86d87](https://github.com/poweruptime/poweruptime/commit/0e86d875d50ea49e3eaebe91ab31199999cfde1e))
 - Run configuration and dev compose files by Dafnik ([d312a23](https://github.com/poweruptime/poweruptime/commit/d312a23e0820c85e60494fcaf051bea6b3a1ded0))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1752429414 by Dafnik ([b30eba5](https://github.com/poweruptime/poweruptime/commit/b30eba5b6b14bbbaef5ebb8dfa18b6699d8a168e))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752226296...0.4.0-beta-1752429414)
 
