@@ -207,7 +207,8 @@ jobs:
 
       - name: get only latest changelog
         run: |
-          ./.github/extractLatestVersionChangelog.sh ./changelogs/CHANGELOG-beta.md
+          chmod +x ./.github/extractLatestChangelog.sh
+          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG-beta.md
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
@@ -272,7 +273,8 @@ jobs:
 
       - name: get only latest changelog
         run: |
-          ./.github/extractLatestVersionChangelog.sh ./changelogs/CHANGELOG.md
+          chmod +x ./.github/extractLatestChangelog.sh
+          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG.md
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
