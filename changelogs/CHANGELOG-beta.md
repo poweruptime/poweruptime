@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0-beta-1752429414 - 2025-07-13
+
+### <!-- 0 -->🚀 Features
+
+- Add docker compose ps command by Dafnik ([eafcf2c](https://github.com/poweruptime/poweruptime/commit/eafcf2c0db0922a47bf541ab30c08ee010e19c5f)), fix:use --quiet-pull flag
+- Add release github job by Dafnik ([dea8f81](https://github.com/poweruptime/poweruptime/commit/dea8f81da2adae10dd390ba0db1cc13be36c1945)), ci:do not overfetch commits
+- Add check result statistics cache by Dafnik ([1ce7e3d](https://github.com/poweruptime/poweruptime/commit/1ce7e3d72ff08e43b4286db4a571f1afc6fbf5e9))
+- Add cache header options for web static assets by Dafnik ([41f6b53](https://github.com/poweruptime/poweruptime/commit/41f6b538763d5841435662810f368f16d75a72dc))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Quiet-pull option not available by Dafnik ([e5aa448](https://github.com/poweruptime/poweruptime/commit/e5aa4483fda6871cc5753a86937509395c8f551a))
+
+### <!-- 2 -->🚜 Refactor
+
+- Cache daily uptime by Dafnik ([0e86d87](https://github.com/poweruptime/poweruptime/commit/0e86d875d50ea49e3eaebe91ab31199999cfde1e))
+- Run configuration and dev compose files by Dafnik ([d312a23](https://github.com/poweruptime/poweruptime/commit/d312a23e0820c85e60494fcaf051bea6b3a1ded0))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752226296...0.4.0-beta-1752429414)
+
 ## 0.4.0-beta-1752226296 - 2025-07-11
 
 ### <!-- 0 -->🚀 Features
@@ -29,6 +49,7 @@
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Lock file maintenance (#252) by renovate[bot] ([e8a6336](https://github.com/poweruptime/poweruptime/commit/e8a6336b728e7fa769d56ac3b4c6f1a0ccbca84c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Set POWERUPTIME_VERSION to 0.4.0-beta-1752226296 by Dafnik ([f599bda](https://github.com/poweruptime/poweruptime/commit/f599bda22ccb397dddcd33e1f4dbac56409b96fa))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1751831283...0.4.0-beta-1752226296)
 
