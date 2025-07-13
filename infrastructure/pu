@@ -218,7 +218,7 @@ source_env() {
 }
 
 do_pull() {
-  docker_compose pull --quiet-pull
+  docker_compose pull
 }
 
 do_ps() {
@@ -226,7 +226,7 @@ do_ps() {
 }
 
 do_up() {
-  docker_compose pull --quiet-pull
+  docker_compose pull
   docker_compose up -d
   if ! $DRY_RUN; then
     if $LOCAL; then
