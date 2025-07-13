@@ -27,6 +27,28 @@ export async function app() {
   server.register(fastifyStatic, {
     root: browserDistFolder,
     wildcard: false,
+    cacheControl: false,
+    setHeaders: (res, pathName) => {
+      if (/index\.html$/.test(pathName)) {
+        // no cache for index.html
+        res.setHeader(
+          'Cache-Control',
+          'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        );
+      } else if (/\.json$/.test(pathName)) {
+        // no cache for .json
+        res.setHeader(
+          'Cache-Control',
+          'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        );
+      } else if (/\.(css|js)$/.test(pathName)) {
+        // one year for css/js
+        res.setHeader('Cache-Control', 'public, max-age=31449600');
+      } else {
+        // fallback: 3 days
+        res.setHeader('Cache-Control', 'public, max-age=259200');
+      }
+    },
   });
 
   server.get('*', async (req, reply) => {
