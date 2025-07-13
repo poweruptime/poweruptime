@@ -12,11 +12,11 @@ services:
       POSTGRES_USER: poweruptime
       POSTGRES_PASSWORD: poweruptime
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - poweruptime-local-backend-dev-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -32,8 +32,8 @@ services:
       - RABBITMQ_DEFAULT_USER=poweruptime
       - RABBITMQ_DEFAULT_PASS=poweruptime
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'
     networks:
       - poweruptime-local-backend-dev-network
     healthcheck:
@@ -52,32 +52,15 @@ services:
       - APPRISE_WORKER_COUNT=1
       - LOG_LEVEL=debug
     ports:
-      - "8000:8000"
+      - '8000:8000'
     networks:
       - poweruptime-local-backend-dev-network
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:8000/status" ]
+      test: ['CMD', 'curl', '--fail', 'http://localhost:8000/status']
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
-
-  poweruptime-web:
-    container_name: poweruptime-web
-    restart: unless-stopped
-    build:
-      context: ../web
-    ports:
-      - "4200:4200"
-    networks:
-      - poweruptime-local-backend-dev-network
-    healthcheck:
-      test: ['CMD', 'wget', '-qO-', '--tries=1', 'http://127.0.0.1:4200']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
 
 networks:
   poweruptime-local-backend-dev-network:

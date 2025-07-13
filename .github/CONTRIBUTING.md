@@ -15,7 +15,7 @@ Use the `Server with dependencies` run configuration (or just `Server` if you st
 To start the dependencies manually use the `Dependency Containers` run config or run
 
 ```shell
-docker compose -f ./backend/compose-local-dev.yml up
+docker compose -f compose-dev.yml up
 ```
 
 #### Containerized
@@ -23,7 +23,7 @@ docker compose -f ./backend/compose-local-dev.yml up
 Use the `Containerized` run config or run
 
 ```shell
-pnpm web:build && ./gradlew backend:build -x test -Pversion=local && docker compose -f ./backend/compose-local-dev.yml -f ./backend/compose-local.yml up --build
+pnpm web:build && ./gradlew backend:build -x test -Pversion=local && docker compose -f compose-dev.yml -f ./backend/compose.yml up --build
 ```
 
 - Web interface: [http://localhost:4200/](http://localhost:4200/)

@@ -9,7 +9,7 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# copy & compile your little health‐check tool
+# copy & compile your health‐check tool
 COPY HealthCheck.java .
 RUN javac HealthCheck.java
 
@@ -34,5 +34,4 @@ COPY build/libs/backend.jar server.jar
 COPY --chown=nonroot:nonroot --chmod=770 \
      docker/poweruptime /var/lib/poweruptime
 
-# default command to launch your Spring Boot jar
 CMD ["-Djava.security.egd=file:/dev/urandom", "-Dspring.profiles.active=container", "server.jar"]

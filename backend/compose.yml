@@ -5,7 +5,7 @@ services:
     container_name: poweruptime-backend
     restart: unless-stopped
     build:
-      context: .
+      context: backend
     ports:
       - "8080:8080"
     depends_on:
