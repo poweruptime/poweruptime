@@ -79,7 +79,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.12")
