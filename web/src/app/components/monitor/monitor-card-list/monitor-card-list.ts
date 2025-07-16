@@ -45,9 +45,13 @@ import {MonitorCard} from './monitor-card';
     </cdk-virtual-scroll-viewport>
   `,
   styles: `
+    :host {
+      height: 100%;
+    }
+
     cdk-virtual-scroll-viewport {
-      height: 88.5vh;
-      max-height: 88.5vh;
+      min-height: 100%;
+      height: 100%;
 
       width: 21rem;
       min-width: 21rem;

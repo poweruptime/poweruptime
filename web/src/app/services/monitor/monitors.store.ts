@@ -1,7 +1,7 @@
 import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {distinctUntilChanged, filter, forkJoin, map, mergeMap, pipe, switchMap, tap} from 'rxjs';
+import {forkJoin, map, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
 import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
@@ -11,11 +11,11 @@ import {
   withComputed,
   withHooks,
   withMethods,
+  withProps,
   withState,
 } from '@ngrx/signals';
 import {
   addEntity,
-  removeAllEntities,
   removeEntity,
   setEntities,
   setEntity,
@@ -24,43 +24,51 @@ import {
 } from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
-import {BackendType, injectAPI} from '@app/api';
+import {BackendType, MonitorDataType, injectAPI} from '@app/api';
 import {injectConfirmDialog$} from '@app/components';
 import {PushService} from '@app/services';
 import {withMonitorsLoad} from '@app/services/monitor/monitors.feature';
 import {setError, setPending} from '@app/services/store-features';
 
+import {arrayToParam, paramToArray} from '../../util';
+
 const pageSize = 15;
+const defaultPage = 0;
 
 export const InfiniteMonitorsStore = signalStore(
+  {providedIn: 'root'},
   withState<{
-    page: number;
+    pages: Map<string | undefined, number>;
     requestCount: number;
     loadedAll: Set<string | undefined>;
     teamId: string | undefined;
   }>({
-    page: 0,
+    pages: new Map(),
     requestCount: 0,
     loadedAll: new Set<string | undefined>(),
     teamId: undefined,
   }),
   withEntities<BackendType['MonitorResponse']>(),
-  withComputed(({requestCount, entities}) => ({
+  withComputed(({requestCount, entities, teamId, pages}) => ({
     isPending: computed(() => requestCount() > 0),
+    page: computed(() => pages().get(teamId()) ?? defaultPage),
     sortedEntities: computed(() =>
-      entities().sort((a, b) => {
-        if (a.status < b.status) {
-          return -1;
-        } else if (a.status > b.status) {
-          return 1;
-        } else {
-          return a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
-            numeric: true,
-            sensitivity: 'base',
-          });
-        }
-      }),
+      entities()
+        .filter((it) => (teamId() === undefined ? true : teamId() === it.team.id))
+        .sort((a, b) => {
+          if (a.status < b.status) {
+            return -1;
+          } else if (a.status > b.status) {
+            return 1;
+          } else {
+            return a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
+              numeric: true,
+              sensitivity: 'base',
+            });
+          }
+        }),
     ),
   })),
   withMethods((store, api = injectAPI()) => ({
@@ -69,7 +77,13 @@ export const InfiniteMonitorsStore = signalStore(
         return;
       }
 
-      patchState(store, (state) => ({page: state.page + 1}));
+      patchState(store, ({pages}) => {
+        pages.set(teamId, (pages.get(teamId) ?? defaultPage) + 1);
+
+        return {
+          pages: new Map(pages),
+        };
+      });
     },
     addMonitor(it: BackendType['MonitorResponse']): void {
       patchState(store, addEntity(it));
@@ -109,21 +123,6 @@ export const InfiniteMonitorsStore = signalStore(
       page: number;
     }>(
       pipe(
-        distinctUntilChanged((prev, cur) => {
-          if (prev.teamId !== cur.teamId) {
-            patchState(store, removeAllEntities(), (state) => {
-              state.loadedAll.delete(cur.teamId);
-              return {
-                page: 0,
-                loadedAll: state.loadedAll,
-              };
-            });
-            // DIRTY Editing the current object
-            cur.page = 0;
-            return false;
-          }
-          return prev.page === cur.page;
-        }),
         tap(({teamId}) =>
           patchState(store, (state) => ({
             teamId,
@@ -148,13 +147,6 @@ export const InfiniteMonitorsStore = signalStore(
                   requestCount: state.requestCount - 1,
                 })),
               ),
-              filter(() => {
-                if (store.teamId() === teamId) {
-                  return true;
-                }
-                console.warn('Team id changed after fetching its monitors', store.teamId(), teamId);
-                return false;
-              }),
               tapResponse({
                 next: (response) => {
                   patchState(store, setEntities(response.data), (state) => {
@@ -191,6 +183,32 @@ export const InfiniteMonitorsStore = signalStore(
 
 export const MonitorsSearchStore = signalStore(
   withMonitorsLoad(),
+  withProps(() => ({
+    searchFilter: linkedQueryParam('search.name', {
+      stringify: (value) => (value.length > 0 ? value : null),
+    }),
+    statusesFilter: linkedQueryParam('search.status', {
+      parse: paramToArray<BackendType['MonitorResponse']['status']>(),
+      stringify: arrayToParam(),
+    }),
+    typesFilter: linkedQueryParam('search.type', {
+      parse: paramToArray<MonitorDataType>(),
+      stringify: arrayToParam(),
+    }),
+    tagsFilter: linkedQueryParam('search.tag', {
+      parse: paramToArray<string>(),
+      stringify: arrayToParam(),
+    }),
+  })),
+  withComputed(({searchFilter, statusesFilter, typesFilter, tagsFilter}) => ({
+    isSearching: computed(
+      () =>
+        (searchFilter() && searchFilter()!.length > 0) ||
+        (statusesFilter() && statusesFilter()!.length > 0) ||
+        (typesFilter() && typesFilter()!.length > 0) ||
+        (tagsFilter() && tagsFilter()!.length > 0),
+    ),
+  })),
   withMethods((store) => ({
     nextPage(): void {
       patchState(store, (state) => ({page: state.page + 1}));

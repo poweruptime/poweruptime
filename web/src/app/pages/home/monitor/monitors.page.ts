@@ -8,7 +8,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
 import {TeamSelect} from '@app/components/team-select';
 import {IsTeamAdmin} from '@app/directives';
@@ -18,12 +17,11 @@ import {
   MonitorsSearchStore,
   TagsStore,
 } from '@app/services';
-import {arrayToParam, paramToArray} from '@app/util';
 
 @Component({
   template: `
     <div class="flex gap-4">
-      <div class="flex flex-col gap-4" style="width: 21rem; min-width: 21rem;">
+      <div class="flex h-[calc(100vh-76px)] flex-col gap-4" style="width: 21rem; min-width: 21rem;">
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
@@ -50,23 +48,23 @@ import {arrayToParam, paramToArray} from '@app/util';
           @if (_showFilter) {
             <pu-monitors-filter
               [filter]="{
-                search: $any(searchFilter()),
-                types: typesFilter(),
-                statuses: statusesFilter(),
-                tags: tagsFilter(),
+                search: $any(monitorsSearchStore.searchFilter()),
+                types: monitorsSearchStore.typesFilter(),
+                statuses: monitorsSearchStore.statusesFilter(),
+                tags: monitorsSearchStore.tagsFilter(),
               }"
               [tags]="tagsStore.entities()"
               [dashboard]="dashboard"
               (filterChange)="
-                searchFilter.set($event.search);
-                typesFilter.set($event.types);
-                statusesFilter.set($event.statuses);
-                tagsFilter.set($event.tags)
+                monitorsSearchStore.searchFilter.set($event.search);
+                monitorsSearchStore.typesFilter.set($event.types);
+                monitorsSearchStore.statusesFilter.set($event.statuses);
+                monitorsSearchStore.tagsFilter.set($event.tags)
               " />
           }
         }
 
-        @if (isSearching()) {
+        @if (monitorsSearchStore.isSearching()) {
           @if (monitorsSearchStore.isFulfilled() && monitorsSearchStore.entities().length === 0) {
             <span>No monitors found.</span>
           }
@@ -76,7 +74,7 @@ import {arrayToParam, paramToArray} from '@app/util';
           }
         }
 
-        @if (isSearching() && _showFilter) {
+        @if (monitorsSearchStore.isSearching() && _showFilter) {
           <pu-monitor-card-list
             [entities]="monitorsSearchStore.entities()"
             [isPending]="monitorsSearchStore.isPending()"
@@ -88,19 +86,13 @@ import {arrayToParam, paramToArray} from '@app/util';
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="content grow overflow-y-auto overflow-x-hidden px-2 pb-24">
+      <div class="h-[calc(100vh-76px)] grow overflow-y-auto overflow-x-hidden px-2 pb-24">
         <router-outlet />
       </div>
     </div>
   `,
-  styles: `
-    .content {
-      height: 92.5vh;
-      max-height: 92.5vh;
-    }
-  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [InfiniteMonitorsStore, MonitorsSearchStore, MonitorsDashboardStore, TagsStore],
+  providers: [MonitorsSearchStore, MonitorsDashboardStore, TagsStore],
   imports: [
     RouterOutlet,
     RouterLink,
@@ -131,37 +123,12 @@ export class MonitorsPage {
     queryParamsHandling: '',
   });
 
-  readonly searchFilter = linkedQueryParam('search.name', {
-    stringify: (value) => (value.length > 0 ? value : null),
-  });
-  readonly statusesFilter = linkedQueryParam('search.status', {
-    parse: paramToArray<BackendType['MonitorResponse']['status']>(),
-    stringify: arrayToParam(),
-  });
-  readonly typesFilter = linkedQueryParam('search.type', {
-    parse: paramToArray<MonitorDataType>(),
-    stringify: arrayToParam(),
-  });
-  readonly tagsFilter = linkedQueryParam('search.tag', {
-    parse: paramToArray<string>(),
-    stringify: arrayToParam(),
-  });
-
-  isSearching = computed(
-    () =>
-      (this.searchFilter() && this.searchFilter()!.length > 0) ||
-      (this.statusesFilter() && this.statusesFilter()!.length > 0) ||
-      (this.typesFilter() && this.typesFilter()!.length > 0) ||
-      (this.tagsFilter() && this.tagsFilter()!.length > 0),
-  );
-
   constructor() {
     this.monitorsDashboardStore.loadByTeamId(this.teamId);
 
     this.monitorsStore.loadMonitorsByTeamId(
       computed(() => ({
         teamId: this.teamId(),
-        loadedAll: this.monitorsStore.loadedAll(),
         page: this.monitorsStore.page(),
       })),
     );
@@ -170,10 +137,10 @@ export class MonitorsPage {
       computed(() => ({
         ...this.monitorsSearchStore.pageable(),
         teamId: this.teamId() ?? undefined,
-        search: this.searchFilter() ?? undefined,
-        statuses: this.statusesFilter() ?? undefined,
-        types: this.typesFilter() ?? undefined,
-        tags: this.tagsFilter() ?? undefined,
+        search: this.monitorsSearchStore.searchFilter() ?? undefined,
+        statuses: this.monitorsSearchStore.statusesFilter() ?? undefined,
+        types: this.monitorsSearchStore.typesFilter() ?? undefined,
+        tags: this.monitorsSearchStore.tagsFilter() ?? undefined,
       })),
     );
 

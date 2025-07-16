@@ -23,7 +23,7 @@ export const MonitorActionStore = signalStore(
       router = inject(Router),
       relativeTo = inject(ActivatedRoute),
       confirmDialog$ = injectConfirmDialog$(),
-      monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
+      monitorsStore = inject(InfiniteMonitorsStore),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
       monitorDetailStore = inject(MonitorDetailStore),
     ) => {
@@ -33,7 +33,7 @@ export const MonitorActionStore = signalStore(
             next: (monitor) => {
               patchState(store, setFulfilled());
 
-              monitorsStore?.addMonitor(monitor);
+              monitorsStore.addMonitor(monitor);
 
               toast.success(`Successfully restored ${monitor.name}.`);
 
@@ -61,7 +61,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore?.updateMonitor(monitor);
+                      monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -88,7 +88,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore?.updateMonitor(monitor);
+                      monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -115,7 +115,7 @@ export const MonitorActionStore = signalStore(
                     next: (monitor) => {
                       patchState(store, setFulfilled());
 
-                      monitorsStore?.updateMonitor(monitor);
+                      monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
                       monitorDetailStore.updateMonitor(monitor);
                     },
@@ -136,7 +136,7 @@ export const MonitorActionStore = signalStore(
                       patchState(store, setFulfilled());
 
                       router.navigate(['..'], {relativeTo}).then(() => {
-                        monitorsStore?.removeMonitor(id);
+                        monitorsStore.removeMonitor(id);
                         monitorsSearchStore?.removeMonitor(id);
 
                         toast.success('Successfully deleted monitor.', {
@@ -161,7 +161,7 @@ export const MonitorActionStore = signalStore(
                 next: (it) => {
                   patchState(store, setFulfilled());
                   if (!teamId) {
-                    monitorsStore?.addMonitor(it);
+                    monitorsStore.addMonitor(it);
                   }
 
                   toast.success(translate('monitor.cloneSuccess'));

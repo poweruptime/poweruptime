@@ -21,7 +21,7 @@ export const MonitorEditStore = signalStore(
       router = inject(Router),
       api = injectAPI(),
       monitorDetailStore = inject(MonitorDetailStore),
-      monitorsStore = inject(InfiniteMonitorsStore, {optional: true}),
+      monitorsStore = inject(InfiniteMonitorsStore),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
     ) => ({
       create: rxMethod<BackendType['CreateMonitorDto']>(
@@ -30,7 +30,7 @@ export const MonitorEditStore = signalStore(
             tapResponse({
               next: (monitor) => {
                 monitorDetailStore.updateMonitor(monitor);
-                monitorsStore?.addMonitor(monitor);
+                monitorsStore.addMonitor(monitor);
 
                 void router.navigate(['/', 't', monitor.team.id, 'm', monitor.id, 'edit']);
               },
@@ -45,7 +45,7 @@ export const MonitorEditStore = signalStore(
             tapResponse({
               next: (monitor) => {
                 monitorDetailStore.updateMonitor(monitor);
-                monitorsStore?.updateMonitor(monitor);
+                monitorsStore.updateMonitor(monitor);
                 monitorsSearchStore?.updateMonitor(monitor);
 
                 void router.navigate(['/', 't', monitor.team.id, 'm', monitor.id], {
