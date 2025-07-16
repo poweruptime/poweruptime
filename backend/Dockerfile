@@ -17,13 +17,13 @@ RUN javac HealthCheck.java
 FROM gcr.io/distroless/java21-debian12:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
-# distroless’s JAVA_HOME
+# distroless's JAVA_HOME
 ENV JAVA_HOME=/usr/local/openjdk-21
 WORKDIR /app
 
 # bring in the system certs & Java truststore from builder
-COPY --from=builder /etc/ssl/certs       /etc/ssl/certs
-COPY --from=builder /etc/ssl/certs/java/cacerts \
+COPY --from=builder /etc/ssl/certs /etc/ssl/certs
+COPY --from=builder /usr/local/openjdk-21/lib/security/cacerts \
                      $JAVA_HOME/lib/security/cacerts
 
 # bring in just the compiled health‐check class
