@@ -21,20 +21,15 @@ interface CheckResultRepository : Repository<CheckResult>, JpaSpecificationExecu
 
     @Query(
         value = """
-      SELECT *
-      FROM (
-        SELECT
-          cr.*,
-          ROW_NUMBER() OVER (
-            PARTITION BY cr.monitor_id
-            ORDER BY cr.created_at DESC
-          ) AS rn
-        FROM check_result cr
-        WHERE
-          cr.monitor_id  IN (:monitorIds)
-          AND cr.picked_up_at IS NOT NULL
-      ) sub
-      WHERE sub.rn <= :limit
+    select * from (
+        select cr.*,
+               row_number() over (partition by cr.monitor_id order by cr.created_at desc) as rn
+        from check_result cr
+        where cr.monitor_id in :monitorIds
+        and cr.picked_up_at is not null
+    ) ranked
+    where ranked.rn <= :limit
+    order by ranked.monitor_id, ranked.created_at desc
     """,
         nativeQuery = true,
     )

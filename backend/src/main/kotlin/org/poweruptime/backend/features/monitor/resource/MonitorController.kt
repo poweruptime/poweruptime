@@ -117,9 +117,9 @@ class MonitorController(
             deleted = deleted,
         )
         val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(
-            monitors.toList().map {
+            monitors.map {
                 it.id
-            },
+            }.toList(),
             LAST_CHECK_RESULTS_COUNT,
         )
 
