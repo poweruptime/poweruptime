@@ -19,6 +19,8 @@ jobs:
       # Needed to get the commitlint config
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Run commitlint
         uses: dafnik/commitlint@v1
