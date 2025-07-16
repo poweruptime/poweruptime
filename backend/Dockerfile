@@ -34,4 +34,11 @@ COPY build/libs/backend.jar server.jar
 COPY --chown=nonroot:nonroot --chmod=770 \
      docker/poweruptime /var/lib/poweruptime
 
+HEALTHCHECK \
+  --interval=30s \
+  --timeout=10s \
+  --retries=5 \
+  --start-period=60s \
+  CMD ["java", "-cp", "/app", "HealthCheck"]
+
 CMD ["-Djava.security.egd=file:/dev/urandom", "-Dspring.profiles.active=container", "server.jar"]

@@ -32,12 +32,6 @@ services:
       - MAIL_PASSWORD=test
     networks:
       - poweruptime-local-backend-dev-network
-    healthcheck:
-      test: ['CMD', 'java', '-cp', '/app', 'HealthCheck']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
 
 networks:
   poweruptime-local-backend-dev-network:
