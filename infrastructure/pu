@@ -29,8 +29,8 @@ usage() {
 Usage: $0 [--local] [--dry-run] <command> [target] [extra]
 
 Commands:
-  up               Deploy the stack (incl. pull)
-  down             Stop & remove the stack
+  up, start        Deploy the stack (incl. pull)
+  down, stop       Stop & remove the stack
   ps               List containers
   restart          Restart the stack
   pull             Pull images per versions.env
@@ -39,15 +39,13 @@ Commands:
   backup           Create DB backup
   config           Print combined compose config
   version          Show current version
-  start            Alias for up
-  stop             Alias for down
   backup-prune     Prune all but latest 5 backups
   backup-verify    Verify encrypted DB backup
   backup-extract   Extract encrypted DB backup
   backup-import    Import encrypted DB backup (DANGEROUS)
 
 Options:
-  --dryRun        Print commands without executing
+  --dry-run        Print commands without executing
   --local          Use local compose files (local environment)
   -h, --help       Show this help
 EOF
@@ -60,7 +58,7 @@ parse_args() {
         LOCAL=true
         shift
         ;;
-      --dryRun)
+      --dry-run)
         DRY_RUN=true
         shift
         ;;
@@ -198,27 +196,46 @@ get_editor() {
   fi
 }
 
-ts()  { date +%Y%m%d%H%M%S; }
-log() { printf '%s: %s\n' "$(ts)" "$*"; }
-err() { printf '%s: ERROR: %s\n' "$(ts)" "$*" >&2; }
+log() { printf '%s [%s]: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "INFO" "$*"; }
+err() { printf '%s [%s]: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "ERROR" "$*" >&2; }
 
 source_env() {
-  if [ ! -f .env ]; then
-    err ".env file not found."; exit 1
+  if [[ ! -f .env ]]; then
+    err ".env file not found. Run '$0 setup' first."
+    exit 1
+  fi
+
+  # Validate .env format before sourcing
+  if ! grep -q '^[A-Z_][A-Z0-9_]*=' .env; then
+    err ".env file appears to be malformed"
+    exit 1
   fi
 
   # Load environment variables
+  set -a  # Export all variables
   # shellcheck source=/dev/null
   source .env
+  set +a
 
-  # Validate required vars
-  : "${DATABASE_USER:?Error: DATABASE_USER must be set in .env}"
-  : "${DATABASE_PASSWORD:?Error: DATABASE_PASSWORD must be set in .env}"
-  : "${DATABASE_NAME:?Error: DATABASE_NAME must be set in .env}"
+  # Validate required vars with better error messages
+  local required_vars=(DATABASE_USER DATABASE_PASSWORD DATABASE_NAME)
+  local missing_vars=()
+
+  for var in "${required_vars[@]}"; do
+    if [[ -z "${!var:-}" ]]; then
+      missing_vars+=("$var")
+    fi
+  done
+
+  if (( ${#missing_vars[@]} > 0 )); then
+    err "Missing required environment variables: ${missing_vars[*]}"
+    err "Please check your .env file"
+    exit 1
+  fi
 }
 
 do_pull() {
-  docker_compose pull
+  docker_compose pull --quiet
 }
 
 do_ps() {
@@ -226,8 +243,8 @@ do_ps() {
 }
 
 do_up() {
-  docker_compose pull
-  docker_compose up -d
+  docker_compose pull --quiet
+  docker_compose up -d --quiet-pull
   if ! $DRY_RUN; then
     if $LOCAL; then
       echo "Successfully started poweruptime locally."
@@ -299,6 +316,12 @@ do_backup_verify() {
   if [[ -z "$TARGET" ]]; then
     err "Missing backup file"; usage; exit 1
   fi
+
+  # Add file existence check
+  if [[ ! -f "$TARGET" ]]; then
+    err "Backup file does not exist: $TARGET"; exit 1
+  fi
+
   gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" >/dev/null
   echo "Verified: $TARGET"
 }
@@ -307,6 +330,12 @@ do_backup_extract() {
   if [[ -z "$TARGET" ]]; then
     err "Missing backup file"; usage; exit 1
   fi
+
+  # Add file existence check
+  if [[ ! -f "$TARGET" ]]; then
+    err "Backup file does not exist: $TARGET"; exit 1
+  fi
+
   local out=${2:-"${TARGET%.gpg}"}
   if $DRY_RUN; then
     echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' > '$out'"
