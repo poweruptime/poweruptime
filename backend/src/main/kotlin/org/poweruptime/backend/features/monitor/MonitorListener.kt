@@ -32,7 +32,7 @@ import java.time.Duration
 import java.time.Instant
 
 private const val QUEUE_MONITOR_TIMEOUT_SECONDS = 10L
-private const val MONITOR_DEFAULT_RETRY = 0L
+private const val MONITOR_DEFAULT_RETRY = 1L
 
 /**
  * Extension function to flip [Boolean] if [upsideDown] is true.
@@ -341,18 +341,17 @@ class MonitorListener(
                     checkResultLogEntryService.info(
                         stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
                         checkResult = checkResult,
-                        message = """Monitor exceeded maximal retries. Currently retried ${timesRetried}x
-                                | (max ${monitor.retries ?: 0}x retries)
-                        """.trimMargin(),
+                        message = "Retry limit exceeded: $timesRetried attempt${if (timesRetried != 1L) "s" else ""} " +
+                            "made, but the maximum allowed retries is ${monitor.retries ?: MONITOR_DEFAULT_RETRY}",
                     )
                     MonitorStatus.DOWN
                 } else {
                     checkResultLogEntryService.info(
                         stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
                         checkResult = checkResult,
-                        message = """Monitor did not exceed maximal retries. Currently retried ${timesRetried}x
-                                | (max ${monitor.retries ?: 0}x retries)
-                        """.trimMargin(),
+                        message = "Retry limit not reached: $timesRetried attempt" +
+                            "${if (timesRetried != 1L) "s" else ""} (maximum allowed: " +
+                            "${monitor.retries ?: MONITOR_DEFAULT_RETRY})",
                     )
                     MonitorStatus.UP
                 }
@@ -374,8 +373,11 @@ class MonitorListener(
      * Determines if we need to re-send notifications (only relevant for DOWN status and resendAfter enabled).
      */
     private fun shouldResendNotification(monitor: Monitor, checkResult: CheckResult): Boolean {
-        require(monitor.resendAfter != null && monitor.status == MonitorStatus.DOWN)
-        return (checkResult.timesRetried ?: 1) % monitor.resendAfter!! == 1L
+        requireNotNull(monitor.resendAfter)
+        requireNotNull(checkResult.timesRetried)
+        require(monitor.status == MonitorStatus.DOWN)
+
+        return checkResult.timesRetried!! % monitor.resendAfter!! == 1L
     }
 
     /*
