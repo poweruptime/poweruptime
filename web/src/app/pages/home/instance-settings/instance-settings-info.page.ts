@@ -20,7 +20,7 @@ import {
 
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 
-import {InfoStore, JsonStore} from '@app/services';
+import {InfoStore} from '@app/services';
 import {environment} from '@app/util';
 
 @Directive({
@@ -56,7 +56,7 @@ class StatusText implements PipeTransform {
 
 @Component({
   template: `
-    @if (info(); as info) {
+    @if (infoStore.environment(); as environmentInfo) {
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         <!-- System Information -->
         <mat-card>
@@ -80,7 +80,7 @@ class StatusText implements PipeTransform {
                   Java Runtime
                 </span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.javaRuntimeVersion }}
+                  {{ environmentInfo.javaRuntimeVersion }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
@@ -88,7 +88,7 @@ class StatusText implements PipeTransform {
                   Operating System
                 </span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.osName }}
+                  {{ environmentInfo.osName }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
@@ -96,13 +96,13 @@ class StatusText implements PipeTransform {
                   Architecture
                 </span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.osArch }}
+                  {{ environmentInfo.osArch }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">OS Version</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.osVersion }}
+                  {{ environmentInfo.osVersion }}
                 </span>
               </div>
             </div>
@@ -129,14 +129,14 @@ class StatusText implements PipeTransform {
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Host</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.host }}
+                  {{ environmentInfo.host }}
                 </span>
               </div>
               @if (environment.isBetaOrDevChannel) {
                 <div class="flex items-center justify-between py-2">
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Port</span>
                   <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                    {{ info.port }}
+                    {{ environmentInfo.port }}
                   </span>
                 </div>
               }
@@ -144,7 +144,7 @@ class StatusText implements PipeTransform {
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Log Level</span>
                 <span
                   class="rounded-md border border-gray-300 bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                  {{ info.logLevel }}
+                  {{ environmentInfo.logLevel }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
@@ -152,7 +152,7 @@ class StatusText implements PipeTransform {
                   Service started
                 </span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ json()?.serverStartTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
+                  {{ infoStore.time()?.serverStartTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
@@ -160,7 +160,7 @@ class StatusText implements PipeTransform {
                   Server time
                 </span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ json()?.serverTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
+                  {{ infoStore.time()?.serverTime | date: 'yyyy.MM.dd HH:mm:ss ZZ' }}
                 </span>
               </div>
             </div>
@@ -188,20 +188,20 @@ class StatusText implements PipeTransform {
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Mail Service
                 </span>
-                <span [puStatusBadge]="info.mailEnabled">
-                  {{ info.mailEnabled | statusText }}
+                <span [puStatusBadge]="environmentInfo.mailEnabled">
+                  {{ environmentInfo.mailEnabled | statusText }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Mail Host</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.mailHost }}
+                  {{ environmentInfo.mailHost }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Mail Port</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.mailPort }}
+                  {{ environmentInfo.mailPort }}
                 </span>
               </div>
             </div>
@@ -227,22 +227,25 @@ class StatusText implements PipeTransform {
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Push Notifications
                 </span>
-                <span [puStatusBadge]="info.pushEnabled">
-                  {{ info.pushEnabled | statusText }}
+                <span [puStatusBadge]="environmentInfo.pushEnabled">
+                  {{ environmentInfo.pushEnabled | statusText }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Swagger API Docs
                 </span>
-                @if (info.swaggerEnabled === 'true') {
-                  <a [puStatusBadge]="info.swaggerEnabled" href="/api/swagger/docs" target="_blank">
-                    {{ info.swaggerEnabled | statusText }}
+                @if (environmentInfo.swaggerEnabled === 'true') {
+                  <a
+                    [puStatusBadge]="environmentInfo.swaggerEnabled"
+                    href="/api/swagger/docs"
+                    target="_blank">
+                    {{ environmentInfo.swaggerEnabled | statusText }}
                     <bi size="12" name="box-arrow-up-right" />
                   </a>
                 } @else {
-                  <span [puStatusBadge]="info.swaggerEnabled">
-                    {{ info.swaggerEnabled | statusText }}
+                  <span [puStatusBadge]="environmentInfo.swaggerEnabled">
+                    {{ environmentInfo.swaggerEnabled | statusText }}
                   </span>
                 }
               </div>
@@ -251,17 +254,17 @@ class StatusText implements PipeTransform {
                   Temporary Notifications
                 </span>
 
-                @if (info.tempNotificationsEnabled === 'true') {
+                @if (environmentInfo.tempNotificationsEnabled === 'true') {
                   <a
-                    [puStatusBadge]="info.tempNotificationsEnabled"
+                    [puStatusBadge]="environmentInfo.tempNotificationsEnabled"
                     href="/api/v1/public/temp-notification"
                     target="_blank">
-                    {{ info.tempNotificationsEnabled | statusText }}
+                    {{ environmentInfo.tempNotificationsEnabled | statusText }}
                     <bi size="12" name="box-arrow-up-right" />
                   </a>
                 } @else {
-                  <span [puStatusBadge]="info.tempNotificationsEnabled">
-                    {{ info.tempNotificationsEnabled | statusText }}
+                  <span [puStatusBadge]="environmentInfo.tempNotificationsEnabled">
+                    {{ environmentInfo.tempNotificationsEnabled | statusText }}
                   </span>
                 }
               </div>
@@ -288,20 +291,20 @@ class StatusText implements PipeTransform {
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Rate Limiting
                 </span>
-                <span [puStatusBadge]="info.rateLimitEnabled">
-                  {{ info.rateLimitEnabled | statusText }}
+                <span [puStatusBadge]="environmentInfo.rateLimitEnabled">
+                  {{ environmentInfo.rateLimitEnabled | statusText }}
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Duration</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.rateLimitDurationInSeconds }}s
+                  {{ environmentInfo.rateLimitDurationInSeconds }}s
                 </span>
               </div>
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Max Tries</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ info.rateLimitTries }}
+                  {{ environmentInfo.rateLimitTries }}
                 </span>
               </div>
             </div>
@@ -325,7 +328,7 @@ class StatusText implements PipeTransform {
           </mat-card-header>
           <mat-card-content>
             <div class="space-y-4 pt-4">
-              @for (provider of info.oauth2Providers; track provider.registrationId) {
+              @for (provider of infoStore.oauth2Providers(); track provider.registrationId) {
                 <div class="space-y-2">
                   <div class="flex items-center justify-between">
                     <div class="inline-flex items-center gap-2">
@@ -400,6 +403,11 @@ class StatusText implements PipeTransform {
 export class InstanceSettingsInfoPage {
   protected readonly environment = environment;
 
-  readonly info = inject(InfoStore).environment;
-  readonly json = inject(JsonStore).json;
+  readonly infoStore = inject(InfoStore);
+
+  constructor() {
+    this.infoStore.loadEnvironment();
+    this.infoStore.loadSupport();
+    this.infoStore.loadOAuth2Providers();
+  }
 }

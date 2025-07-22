@@ -14,7 +14,7 @@ import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {injectIsValid} from '@app/form';
-import {AuthStore, JsonStore} from '@app/services';
+import {AuthStore, InfoStore} from '@app/services';
 
 @Component({
   template: `
@@ -136,14 +136,16 @@ import {AuthStore, JsonStore} from '@app/services';
   ],
 })
 export class LoginPage {
+  private readonly infoStore = inject(InfoStore);
+
   readonly authStore = inject(AuthStore);
-  private readonly json = inject(JsonStore).json;
 
   readonly enabledOAuth2Providers = computed(
     () =>
-      this.json()?.enabledOAuth2Providers?.sort((a, b) =>
-        a.clientName.toLowerCase().localeCompare(b.clientName.toLowerCase()),
-      ) ?? [],
+      this.infoStore
+        .oauth2Providers()
+        ?.sort((a, b) => a.clientName.toLowerCase().localeCompare(b.clientName.toLowerCase())) ??
+      [],
   );
 
   form = inject(NonNullableFormBuilder).group({
@@ -162,6 +164,8 @@ export class LoginPage {
   isValid = injectIsValid(this.form);
 
   constructor() {
+    this.infoStore.loadOAuth2Providers();
+
     const queryParams = injectQueryParams();
 
     effect(() => {

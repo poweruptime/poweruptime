@@ -16,7 +16,7 @@ import {MatButtonLoading} from '@ng-matero/extensions/button';
 import {environment} from '@app/util';
 
 import * as licensesJson from '../../assets/licenses.json';
-import {ChangelogStore, JsonStore} from '../services';
+import {ChangelogStore, InfoStore} from '../services';
 import {BACKEND_API_URL} from '../util';
 
 interface BackendEntry {
@@ -38,7 +38,7 @@ interface BackendEntry {
         <h2 class="text-3xl">{{ 'general.about' | transloco }} poweruptime</h2>
         <button
           [loading]="changelogStore.isPending()"
-          (click)="changelogStore.load(undefined)"
+          (click)="changelogStore.load({version: undefined, newVersion: false})"
           type="button"
           mat-stroked-button>
           Changelog
@@ -57,12 +57,20 @@ interface BackendEntry {
           .
         </p>
 
-        @if (jsonStore.json(); as json) {
-          @if (json.supportsSince) {
+        @if (infoStore.support(); as support) {
+          @if (support.supportsSince) {
             <p>
               This server supports the development of poweruptime.
               <br />
               Thank you ❤️
+            </p>
+          } @else {
+            <p>
+              Please consider supporting the development of poweruptime.
+              <br />
+              <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
+                Dafnik's GitHub Sponsors Profile
+              </a>
             </p>
           }
         }
@@ -130,7 +138,7 @@ interface BackendEntry {
   ],
 })
 export class AboutDialog {
-  readonly jsonStore = inject(JsonStore);
+  readonly infoStore = inject(InfoStore);
   readonly changelogStore = inject(ChangelogStore);
 
   version = environment.version;
@@ -181,4 +189,8 @@ export class AboutDialog {
       } satisfies BackendEntry;
     });
   });
+
+  constructor() {
+    this.infoStore.loadSupport();
+  }
 }

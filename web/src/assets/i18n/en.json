@@ -43,6 +43,9 @@
     "description": "It seems like the backend is offline. Try in a few minutes again.",
     "title": "{{general.error}}!"
   },
+  "changelog": {
+    "closeAndDontShowAgain": "{{general.close}} and don't show again"
+  },
   "checkResult": {
     "details": {
       "check": "Check",
@@ -70,7 +73,7 @@
         "create": "Create new {{general.statusPage}}"
       },
       "team": {
-        "create": "Create new {{general.team}}",
+        "create": "New {{general.team}}",
         "search": "{{general.search}} {{general.teams}}..."
       }
     }

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.utils.RandomGenerator
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData

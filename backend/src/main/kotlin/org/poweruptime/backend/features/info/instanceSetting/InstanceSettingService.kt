@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.instanceSetting
+package org.poweruptime.backend.features.info.instanceSetting
 
 import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.features.team.model.SettingKey
@@ -113,6 +113,15 @@ class InstanceSettingService(
     fun setVersionCheckAdminMailTo(value: Set<String>?) = setValueByKey(
         SettingKey.VERSION_CHECK_ADMIN_MAIL_TO,
         value?.joinToString(",") { it.trim() } ?: "null",
+    )
+
+    fun getShowNewVersionDialog(): Boolean = getValueByKey(
+        SettingKey.SHOW_NEW_VERSION_DIALOG,
+    ).toBoolean()
+
+    fun setShowNewVersionDialog(value: Boolean) = setValueByKey(
+        SettingKey.SHOW_NEW_VERSION_DIALOG,
+        value.toString(),
     )
 
     private fun setValueByKey(

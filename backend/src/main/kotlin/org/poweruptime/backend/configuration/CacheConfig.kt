@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.concurrent.TimeUnit
 
-const val JSON_INFO_CACHE_KEY = "JSON_INFO_CACHE"
 const val MONITOR_RECENT_UPTIME_CACHE_KEY = "MONITOR_RECENT_UPTIME_CACHE"
 const val MONITOR_UPTIME_STATISTICS_CACHE_KEY = "MONITOR_UPTIME_STATISTICS_CACHE"
 const val MONITOR_YEARLY_UPTIME_CACHE_KEY = "MONITOR_YEARLY_UPTIME_CACHE"
@@ -20,12 +19,6 @@ class CacheConfig {
     fun cacheManager(): CacheManager = SimpleCacheManager().apply {
         setCaches(
             listOf(
-                CaffeineCache(
-                    JSON_INFO_CACHE_KEY,
-                    Caffeine.newBuilder()
-                        .expireAfterWrite(2, TimeUnit.MINUTES)
-                        .build(),
-                ),
                 CaffeineCache(
                     MONITOR_RECENT_UPTIME_CACHE_KEY,
                     Caffeine.newBuilder()

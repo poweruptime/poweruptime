@@ -455,6 +455,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/instance-settings/showNewVersionDialog': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set showNewVersionDialog instance setting
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    put: operations['setShowNewVersionDialog'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/instance-settings/retention': {
     parameters: {
       query?: never;
@@ -964,40 +984,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/secure/json': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get json info */
-    get: operations['json'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/secure/is-setup': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get setup info */
-    get: operations['isSetup'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/public': {
     parameters: {
       query?: never;
@@ -1166,15 +1152,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/json': {
+  '/v1/public/info/version': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get json info */
-    get: operations['json_1'];
+    /** Get version */
+    get: operations['getVersion'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1183,15 +1169,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/is-setup': {
+  '/v1/public/info/support': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get setup info */
-    get: operations['isSetup_1'];
+    /** Get support status */
+    get: operations['getSupport'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/info/oauth2': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get enabled OAuth2 Providers */
+    get: operations['getOAuth2Providers'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/info/is-setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get setup */
+    get: operations['isSetup'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/public/info/host': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get host */
+    get: operations['getHost'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1420,10 +1457,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /**
-     * Get instance settings
-     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
-     */
+    /** Get instance settings */
     get: operations['getSettings_1'];
     put?: never;
     post?: never;
@@ -1442,6 +1476,57 @@ export interface paths {
     };
     /** Get instance timezones */
     get: operations['getAvailableTimezones'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/info/time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get server time */
+    get: operations['getTime'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/info/showNewVersionDialog': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get showNewVersionDialog */
+    get: operations['getShowNewVersionDialog'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/info/isUserAllowedToCreateTeams': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get isUserAllowedToCreateTeams */
+    get: operations['getIsUserAllowedToCreateTeams'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1826,8 +1911,8 @@ export interface components {
       email: string;
       name: string;
     };
-    SettingStringSetDto: {
-      value: string;
+    SettingStringDto: {
+      it: string;
     };
     TeamSettingsResponse: {
       timezone: string;
@@ -1836,9 +1921,9 @@ export interface components {
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
     };
-    SettingIntSetDto: {
+    SettingIntDto: {
       /** Format: int32 */
-      value: number;
+      it: number;
     };
     UpdateSystemNotificationDto: {
       id: string;
@@ -2051,6 +2136,7 @@ export interface components {
       versionCheckEnabled: boolean;
       versionCheckAdminMailEnabled: boolean;
       versionCheckAdminMailTo?: string[];
+      showNewVersionDialog: boolean;
     };
     InstanceSettingSupportDto: {
       supportLookup?: string;
@@ -2060,14 +2146,14 @@ export interface components {
       check: boolean;
       instanceSettings: components['schemas']['InstanceSettingsResponse'];
     };
+    SettingBooleanDto: {
+      it: boolean;
+    };
     InstanceSettingRetentionDto: {
       /** Format: int32 */
       checkResultRetentionPeriodInDays: number;
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
-    };
-    SettingBooleanSetDto: {
-      value: boolean;
     };
     CreateUserDto: {
       name: string;
@@ -2281,25 +2367,6 @@ export interface components {
     BooleanResponse: {
       it: boolean;
     };
-    JsonInfoResponse: {
-      info: string;
-      version: string;
-      /** Format: date-time */
-      serverTime: string;
-      /** Format: date-time */
-      serverStartTime: string;
-      host: string;
-      enabledOAuth2Providers: components['schemas']['OAuth2ProviderResponse'][];
-      /** Format: date-time */
-      serverSetupTime: string;
-      /** Format: date-time */
-      supportsSince?: string;
-      showSupportBadge: boolean;
-    };
-    OAuth2ProviderResponse: {
-      registrationId: string;
-      clientName: string;
-    };
     AppriseNotificationRequest: {
       urls: string[];
       body: string;
@@ -2368,6 +2435,16 @@ export interface components {
       /** Format: date */
       name: string;
       series: components['schemas']['DayUptimeStatistic'][];
+    };
+    InfoSupportResponse: {
+      /** Format: date-time */
+      supportsSince?: string;
+      showSupportBadge: boolean;
+    };
+    OAuth2ProviderResponse: {
+      registrationId: string;
+      clientName: string;
+      clientId: string;
     };
     ProfileResponse: {
       id: string;
@@ -2458,7 +2535,15 @@ export interface components {
     InstanceAvailableTimezonesResponse: {
       availableTimezones: string[];
     };
-    AdminInfoResponse: {
+    InfoTimeResponse: {
+      /** Format: date-time */
+      serverTime: string;
+      /** Format: date-time */
+      serverStartTime: string;
+      /** Format: date-time */
+      serverSetupTime: string;
+    };
+    InfoAdminResponse: {
       javaRuntimeVersion: string;
       osName: string;
       osArch: string;
@@ -2475,12 +2560,6 @@ export interface components {
       rateLimitEnabled: string;
       rateLimitDurationInSeconds: string;
       rateLimitTries: string;
-      oauth2Providers: components['schemas']['OAuth2ProviderInfoResponse'][];
-    };
-    OAuth2ProviderInfoResponse: {
-      registrationId: string;
-      clientName: string;
-      clientId: string;
     };
     DeadLetterResponse: {
       id: string;
@@ -2809,7 +2888,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingStringSetDto'];
+        'application/json': components['schemas']['SettingStringDto'];
       };
     };
     responses: {
@@ -2835,7 +2914,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingIntSetDto'];
+        'application/json': components['schemas']['SettingIntDto'];
       };
     };
     responses: {
@@ -2861,7 +2940,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingIntSetDto'];
+        'application/json': components['schemas']['SettingIntDto'];
       };
     };
     responses: {
@@ -3406,7 +3485,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingStringSetDto'];
+        'application/json': components['schemas']['SettingStringDto'];
       };
     };
     responses: {
@@ -3445,6 +3524,30 @@ export interface operations {
       };
     };
   };
+  setShowNewVersionDialog: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettingBooleanDto'];
+      };
+    };
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InstanceSettingsResponse'];
+        };
+      };
+    };
+  };
   setRetention: {
     parameters: {
       query?: never;
@@ -3478,7 +3581,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingBooleanSetDto'];
+        'application/json': components['schemas']['SettingBooleanDto'];
       };
     };
     responses: {
@@ -4188,46 +4291,6 @@ export interface operations {
       };
     };
   };
-  json: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['JsonInfoResponse'];
-        };
-      };
-    };
-  };
-  isSetup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['BooleanResponse'];
-        };
-      };
-    };
-  };
   api: {
     parameters: {
       query?: never;
@@ -4453,7 +4516,7 @@ export interface operations {
       };
     };
   };
-  json_1: {
+  getVersion: {
     parameters: {
       query?: never;
       header?: never;
@@ -4468,12 +4531,52 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['JsonInfoResponse'];
+          '*/*': components['schemas']['SettingStringDto'];
         };
       };
     };
   };
-  isSetup_1: {
+  getSupport: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InfoSupportResponse'];
+        };
+      };
+    };
+  };
+  getOAuth2Providers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['OAuth2ProviderResponse'][];
+        };
+      };
+    };
+  };
+  isSetup: {
     parameters: {
       query?: never;
       header?: never;
@@ -4489,6 +4592,26 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['BooleanResponse'];
+        };
+      };
+    };
+  };
+  getHost: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SettingStringDto'];
         };
       };
     };
@@ -4823,6 +4946,66 @@ export interface operations {
       };
     };
   };
+  getTime: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InfoTimeResponse'];
+        };
+      };
+    };
+  };
+  getShowNewVersionDialog: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
+        };
+      };
+    };
+  };
+  getIsUserAllowedToCreateTeams: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BooleanResponse'];
+        };
+      };
+    };
+  };
   adminInfo: {
     parameters: {
       query?: never;
@@ -4838,7 +5021,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['AdminInfoResponse'];
+          '*/*': components['schemas']['InfoAdminResponse'];
         };
       };
     };

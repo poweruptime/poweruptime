@@ -9,8 +9,8 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
-import org.poweruptime.backend.features.instanceSetting.SettingIntSetDto
-import org.poweruptime.backend.features.instanceSetting.SettingStringSetDto
+import org.poweruptime.backend.features.info.dto.SettingIntDto
+import org.poweruptime.backend.features.info.dto.SettingStringDto
 import org.poweruptime.backend.features.team.dto.TeamSettingsResponse
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.http.HttpStatus
@@ -48,12 +48,12 @@ class TeamSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setTimeZone(
         @PathVariable("teamId") teamId: String,
-        @RequestBody @Valid dto: SettingStringSetDto
+        @RequestBody @Valid dto: SettingStringDto
     ): TeamSettingsResponse {
-        if (!ZoneId.getAvailableZoneIds().contains(dto.value)) {
+        if (!ZoneId.getAvailableZoneIds().contains(dto.it)) {
             throw NotFoundException("ZoneId not found")
         }
-        teamSettingService.setTimeZone(teamId, ZoneId.of(dto.value))
+        teamSettingService.setTimeZone(teamId, ZoneId.of(dto.it))
 
         return getSettings(teamId)
     }
@@ -68,9 +68,9 @@ class TeamSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setCheckResultRetentionPeriodInDays(
         @PathVariable("teamId") teamId: String,
-        @RequestBody @Valid dto: SettingIntSetDto
+        @RequestBody @Valid dto: SettingIntDto
     ): TeamSettingsResponse {
-        teamSettingService.setCheckResultRetentionPeriodInDays(teamId, dto.value)
+        teamSettingService.setCheckResultRetentionPeriodInDays(teamId, dto.it)
 
         return getSettings(teamId)
     }
@@ -85,9 +85,9 @@ class TeamSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setCheckResultLogRetentionPeriodInDays(
         @PathVariable("teamId") teamId: String,
-        @RequestBody @Valid dto: SettingIntSetDto
+        @RequestBody @Valid dto: SettingIntDto
     ): TeamSettingsResponse {
-        teamSettingService.setCheckResultLogRetentionPeriodInDays(teamId, dto.value)
+        teamSettingService.setCheckResultLogRetentionPeriodInDays(teamId, dto.it)
 
         return getSettings(teamId)
     }

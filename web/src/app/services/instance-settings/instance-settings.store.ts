@@ -1,3 +1,5 @@
+import {inject} from '@angular/core';
+
 import {filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
@@ -7,6 +9,8 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
+import {InfoStore} from '../info.store';
+
 export const InstanceSettingsStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
@@ -15,7 +19,7 @@ export const InstanceSettingsStore = signalStore(
   }>({
     settings: undefined,
   }),
-  withMethods((store, api = injectAPI()) => ({
+  withMethods((store, api = injectAPI(), infoStore = inject(InfoStore)) => ({
     setSettings(settings: BackendType['InstanceSettingsResponse']) {
       patchState(store, () => ({settings}));
     },
@@ -36,10 +40,30 @@ export const InstanceSettingsStore = signalStore(
       pipe(
         filter((it): it is boolean => it !== null),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api.put('/v1/instance-settings/isUserAllowedToCreateTeams', {body: {value}}).pipe(
+        switchMap((it) =>
+          api.put('/v1/instance-settings/isUserAllowedToCreateTeams', {body: {it}}).pipe(
             tapResponse({
-              next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+              next: (settings) => {
+                patchState(store, () => ({settings}), setFulfilled());
+                infoStore.resetIsUserAllowedToCreateTeams();
+              },
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
+    setShowNewVersionDialog: rxMethod<boolean | null>(
+      pipe(
+        filter((it): it is boolean => it !== null),
+        tap(() => patchState(store, setPending())),
+        switchMap((it) =>
+          api.put('/v1/instance-settings/showNewVersionDialog', {body: {it}}).pipe(
+            tapResponse({
+              next: (settings) => {
+                patchState(store, () => ({settings}), setFulfilled());
+                infoStore.resetShowNewVersionDialog();
+              },
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -50,8 +74,8 @@ export const InstanceSettingsStore = signalStore(
       pipe(
         filter((it): it is string => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
-          api.put('/v1/instance-settings/timezone', {body: {value}}).pipe(
+        switchMap((it) =>
+          api.put('/v1/instance-settings/timezone', {body: {it}}).pipe(
             tapResponse({
               next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
               error: (error) => patchState(store, setError(error)),

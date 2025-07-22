@@ -22,21 +22,22 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
-import {JsonStore} from '@app/services';
+import {InfoStore} from '@app/services';
 
 import {SupporterBadge} from '../supporter-badge';
 import {TableLoadingBar} from '../table-loading-bar';
 
 @Component({
   template: `
-    @let json = jsonStore.json();
+    @let time = infoStore.time();
+    @let support = infoStore.support();
     <mat-card appearance="outlined">
       <mat-card-header>
         <div class="flex w-full flex-wrap items-center justify-between gap-2">
           <h3 class="text-xl">
             {{ 'general.sponsorship' | transloco }}
           </h3>
-          @if (json?.serverSetupTime; as serverSetupTime) {
+          @if (time?.serverSetupTime; as serverSetupTime) {
             <span
               class="text-gray-600 dark:text-gray-300"
               [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.yyyy')">
@@ -48,7 +49,7 @@ import {TableLoadingBar} from '../table-loading-bar';
       <mat-card-content>
         <div class="mb-6 mt-2 flex flex-col gap-2">
           <pu-table-loading-bar [loading]="isLoading()" />
-          @if (json?.supportsSince; as supportsSince) {
+          @if (support?.supportsSince; as supportsSince) {
             <p class="text-center">
               <b class="text-xl">
                 Thank's for your support
@@ -175,7 +176,7 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
   BackendType['InstanceSettingSupportDto'],
   BackendType['InstanceSettingSupportDto']
 > {
-  readonly jsonStore = inject(JsonStore);
+  readonly infoStore = inject(InfoStore);
 
   override form = this.fb.nonNullable.group({
     supportLookup: [
@@ -201,7 +202,7 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
   readonly isValid = injectIsValid(this.form);
 
   readonly usingPoweruptimeFor = computed(() => {
-    const serverSetupTime = this.jsonStore.json()?.serverSetupTime;
+    const serverSetupTime = this.infoStore.time()?.serverSetupTime;
     if (!serverSetupTime) {
       return undefined;
     }
@@ -209,4 +210,10 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
     const duration = new Date().getTime() - new Date(serverSetupTime).getTime();
     return format(duration, {ignoreZero: true, style: 'full'}).split(',')[0];
   });
+
+  constructor() {
+    super();
+    this.infoStore.loadTime();
+    this.infoStore.loadSupport();
+  }
 }

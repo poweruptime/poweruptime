@@ -12,7 +12,7 @@ import {toast} from 'ngx-sonner';
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
-import {JsonStore} from '../json.store';
+import {InfoStore} from '../info.store';
 import {InstanceSettingsStore} from './instance-settings.store';
 
 export const InstanceSettingsSupportStore = signalStore(
@@ -22,7 +22,7 @@ export const InstanceSettingsSupportStore = signalStore(
     (
       store,
       api = injectAPI(),
-      jsonStore = inject(JsonStore),
+      infoStore = inject(InfoStore),
       instanceSettingsStore = inject(InstanceSettingsStore),
     ) => ({
       setSupport: rxMethod<BackendType['InstanceSettingSupportDto']>(
@@ -36,7 +36,7 @@ export const InstanceSettingsSupportStore = signalStore(
                     if (response.check) {
                       toast.success(translate('instanceSettings.sponsorship.success'));
 
-                      confetti({
+                      void confetti({
                         particleCount: 100,
                         spread: 160,
                         origin: {y: 0.6},
@@ -49,7 +49,7 @@ export const InstanceSettingsSupportStore = signalStore(
 
                   instanceSettingsStore.setSettings(response.instanceSettings);
                   patchState(store, setFulfilled());
-                  jsonStore.refresh();
+                  infoStore.resetSupport();
                 },
                 error: (error) => patchState(store, setError(error)),
               }),

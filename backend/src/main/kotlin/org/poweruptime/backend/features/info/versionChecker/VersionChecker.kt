@@ -3,7 +3,7 @@ package org.poweruptime.backend.features.info.versionChecker
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.info.InfoService
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.emails.NewVersionEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
 import org.poweruptime.backend.features.user.domain.UserRepository

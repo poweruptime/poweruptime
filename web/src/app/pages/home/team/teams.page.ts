@@ -18,13 +18,13 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {a_chunk} from 'dfts-helper';
 
 import {TeamCard} from '@app/components/team';
-import {InstanceSettingsStore, SelectedTeamStore} from '@app/services';
+import {InfoStore, SelectedTeamStore} from '@app/services';
 import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
     <div class="flex items-center justify-between gap-4 px-4 py-2">
-      @if (instanceSettingsStore.settings()?.isUserAllowedToCreateTeams) {
+      @if (infoStore.isUserAllowedToCreateTeams()) {
         <a class="w-48" mat-flat-button routerLink="new">
           {{ 'cmdk.groups.team.create' | transloco }}
         </a>
@@ -86,7 +86,7 @@ import {TailwindBreakpoints} from '@app/services/util';
 })
 export class TeamsPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly instanceSettingsStore = inject(InstanceSettingsStore);
+  readonly infoStore = inject(InfoStore);
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   readonly viewport = viewChild.required(CdkVirtualScrollViewport);
@@ -94,6 +94,8 @@ export class TeamsPage {
   readonly searchControl = new FormControl<string>('');
 
   constructor() {
+    this.infoStore.loadIsUserAllowedToCreateTeams();
+
     this.selectedTeamStore.setSearch(this.searchControl.valueChanges);
 
     this.selectedTeamStore.loadAvailableTeams(

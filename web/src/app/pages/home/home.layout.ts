@@ -1,5 +1,12 @@
 import {NgOptimizedImage} from '@angular/common';
-import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
@@ -16,13 +23,15 @@ import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendOfflineAlert, Nav} from '@app/components';
-import {BackendOfflineService, ChangelogStore, PushService, SelectedTeamStore} from '@app/services';
-import {JsonStore} from '@app/services';
+import {BackendOfflineAlert, Nav, SupporterBadge} from '@app/components';
+import {
+  BackendOfflineService,
+  ChangelogStore,
+  InfoStore,
+  PushService,
+  SelectedTeamStore,
+} from '@app/services';
 import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
-import {environment} from '@app/util';
-
-import {SupporterBadge} from '../../components/supporter-badge';
 
 @Component({
   selector: 'home-layout',
@@ -65,10 +74,10 @@ import {SupporterBadge} from '../../components/supporter-badge';
                 </a>
               </div>
               <div>
-                @if (jsonStore.json(); as json) {
+                @if (infoStore.support(); as support) {
                   <pu-supporter-badge
-                    [hide]="!json.showSupportBadge"
-                    [supportsSince]="json.supportsSince" />
+                    [hide]="!support.showSupportBadge"
+                    [supportsSince]="support.supportsSince" />
                 }
               </div>
             </div>
@@ -128,7 +137,7 @@ import {SupporterBadge} from '../../components/supporter-badge';
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly jsonStore = inject(JsonStore);
+  readonly infoStore = inject(InfoStore);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {
@@ -158,15 +167,20 @@ export class HomeLayout {
   readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
 
   constructor() {
+    this.infoStore.loadSupport();
+
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
 
     const changelogStore = inject(ChangelogStore);
-    if (changelogStore.showNewChangelog()) {
-      changelogStore.load(changelogStore.lastVersion());
-      changelogStore.lastVersion.set(environment.version);
-    }
+
+    changelogStore.showNewVersionDialog(
+      computed(() => ({
+        version: changelogStore.lastVersion(),
+        newVersion: true,
+      })),
+    );
 
     const router = inject(Router);
 

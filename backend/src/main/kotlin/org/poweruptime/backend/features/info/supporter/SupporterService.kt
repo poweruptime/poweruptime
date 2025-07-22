@@ -3,7 +3,7 @@ package org.poweruptime.backend.features.info.supporter
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.exceptions.NotFoundException
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service

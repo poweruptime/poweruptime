@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType

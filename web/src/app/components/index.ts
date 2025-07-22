@@ -12,5 +12,6 @@ export * from './nav';
 export * from './placeholder';
 export * from './refresh-in';
 export * from './shadow-render.component';
+export * from './supporter-badge';
 export * from './table-loading-bar';
 export * from './timezone-input';

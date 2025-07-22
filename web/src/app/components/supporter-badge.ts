@@ -88,7 +88,7 @@ export class SupporterBadge {
 
   constructor() {
     this.confetti.pipe(takeUntilDestroyed(), throttleTime(1000)).subscribe(() => {
-      confetti({
+      void confetti({
         particleCount: n_generate_int(100, 200),
         spread: n_generate_int(160, 260),
         origin: {y: n_generate_float(0.25, 0.5, 2)},

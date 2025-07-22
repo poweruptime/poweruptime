@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.instanceSetting
+package org.poweruptime.backend.features.info.instanceSetting
 
 import jakarta.persistence.*
 import org.poweruptime.backend.core.SmallNanoId

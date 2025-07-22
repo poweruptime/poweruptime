@@ -3,20 +3,22 @@ import {CanActivateFn, Router} from '@angular/router';
 
 import {catchError, map, of, take, tap} from 'rxjs';
 
-import {JsonStore} from '@app/services';
+import {InfoStore} from '@app/services';
 
 export const statusPageGuard: CanActivateFn = () => {
   const router = inject(Router);
   const localHost = inject(DOCUMENT).location.host;
-  const json$ = inject(JsonStore).json$;
+  const infoStore = inject(InfoStore);
 
-  return json$.pipe(
+  infoStore.loadHost();
+
+  return infoStore.host$.pipe(
     take(1),
-    map((response) => {
+    map((host) => {
       if (localHost === 'localhost:4200' || localHost === '127.0.0.1:4200') {
         return false;
       }
-      return response.host !== localHost;
+      return host !== localHost;
     }),
     tap((isStatusPageDomain) => {
       if (isStatusPageDomain) {

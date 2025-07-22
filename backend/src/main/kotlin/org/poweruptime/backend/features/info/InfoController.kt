@@ -6,20 +6,87 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
-import org.poweruptime.backend.features.authentication.service.OAuth2ClientRegistrationService
+import org.poweruptime.backend.core.dto.BooleanResponse
+import org.poweruptime.backend.features.info.dto.InfoAdminResponse
+import org.poweruptime.backend.features.info.dto.InfoSupportResponse
+import org.poweruptime.backend.features.info.dto.InfoTimeResponse
+import org.poweruptime.backend.features.info.dto.OAuth2ProviderResponse
+import org.poweruptime.backend.features.info.dto.SettingStringDto
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/v1/public/info")
+@Tag(name = "Public Info API")
+class PublicInfoController(
+    private val infoService: InfoService,
+    private val instanceSettingService: InstanceSettingService,
+    private val userService: UserService,
+) {
+    @Operation(summary = "Get host")
+    @GetMapping("/host")
+    fun getHost(): SettingStringDto = SettingStringDto(
+        infoService.host,
+    )
+
+    @Operation(summary = "Get version")
+    @GetMapping("/version")
+    fun getVersion(): SettingStringDto = SettingStringDto(
+        infoService.version,
+    )
+
+    @Operation(summary = "Get enabled OAuth2 Providers")
+    @GetMapping("/oauth2")
+    fun getOAuth2Providers(): List<OAuth2ProviderResponse> = infoService.enabledOAuth2Providers
+
+    @Operation(summary = "Get setup")
+    @GetMapping("/is-setup")
+    @ResponseBody
+    fun isSetup(): BooleanResponse = BooleanResponse(userService.isSetup())
+
+    @Operation(summary = "Get support status")
+    @GetMapping("/support")
+    fun getSupport(): InfoSupportResponse = InfoSupportResponse(
+        supportsSince = instanceSettingService.getSupportsSince(),
+        showSupportBadge = instanceSettingService.getShowSupportBadge(),
+    )
+}
 
 @RestController
 @RequestMapping("/v1/info")
 @Tag(name = "Info API")
 class InfoController(
     private val infoService: InfoService,
-    private val oAuth2ClientRegistrationService: OAuth2ClientRegistrationService,
+    private val instanceSettingService: InstanceSettingService,
 ) {
+    @Operation(
+        summary = "Get server time",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+    )
+    @GetMapping("/time")
+    fun getTime(): InfoTimeResponse = InfoTimeResponse(
+        serverTime = infoService.getTime(),
+        serverStartTime = infoService.startTime,
+        serverSetupTime = instanceSettingService.serverSetupTime,
+    )
+
+    @Operation(summary = "Get isUserAllowedToCreateTeams")
+    @GetMapping("/isUserAllowedToCreateTeams")
+    fun getIsUserAllowedToCreateTeams(): BooleanResponse = BooleanResponse(
+        instanceSettingService.getUserAllowedToCreateTeams(),
+    )
+
+    @Operation(summary = "Get showNewVersionDialog")
+    @GetMapping("/showNewVersionDialog")
+    fun getShowNewVersionDialog(): BooleanResponse = BooleanResponse(
+        instanceSettingService.getShowNewVersionDialog(),
+    )
+
     @Operation(
         summary = "Get admin environment info",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -27,7 +94,7 @@ class InfoController(
     )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/environment")
-    fun adminInfo(): AdminInfoResponse = AdminInfoResponse(
+    fun adminInfo(): InfoAdminResponse = InfoAdminResponse(
         javaRuntimeVersion = infoService.javaRuntimeVersion,
         osName = infoService.osName,
         osArch = infoService.osArch,
@@ -44,38 +111,5 @@ class InfoController(
         rateLimitEnabled = infoService.rateLimitEnabled,
         rateLimitDurationInSeconds = infoService.rateLimitDurationInSeconds,
         rateLimitTries = infoService.rateLimitTries,
-        oauth2Providers = oAuth2ClientRegistrationService.getProviders().map { OAuth2ProviderInfoResponse(it) },
-    )
-}
-
-data class AdminInfoResponse(
-    val javaRuntimeVersion: String,
-    val osName: String,
-    val osArch: String,
-    val osVersion: String,
-    val host: String,
-    val port: String,
-    val swaggerEnabled: String,
-    val mailEnabled: String,
-    val mailHost: String,
-    val mailPort: String,
-    val logLevel: String,
-    val pushEnabled: String,
-    val tempNotificationsEnabled: String,
-    val rateLimitEnabled: String,
-    val rateLimitDurationInSeconds: String,
-    val rateLimitTries: String,
-    val oauth2Providers: List<OAuth2ProviderInfoResponse>
-)
-
-data class OAuth2ProviderInfoResponse(
-    val registrationId: String,
-    val clientName: String,
-    val clientId: String
-) {
-    constructor(clientRegistration: ClientRegistration) : this(
-        clientRegistration.registrationId,
-        clientRegistration.clientName,
-        clientRegistration.clientId,
     )
 }

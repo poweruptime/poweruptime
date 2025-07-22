@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.instanceSetting
+package org.poweruptime.backend.features.info.instanceSetting
 
 import org.poweruptime.backend.features.team.model.SettingKey
 import org.springframework.data.jpa.repository.JpaRepository

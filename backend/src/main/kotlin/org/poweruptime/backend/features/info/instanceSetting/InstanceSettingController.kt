@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.instanceSetting
+package org.poweruptime.backend.features.info.instanceSetting
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -8,7 +8,15 @@ import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.exceptions.NotFoundException
-import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
+import org.poweruptime.backend.features.info.dto.SettingBooleanDto
+import org.poweruptime.backend.features.info.dto.SettingStringDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceAvailableTimezonesResponse
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingRetentionDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingSupportDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingVersionCheckDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingsResponse
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSupportSettingsResponse
+import org.poweruptime.backend.features.info.instanceSetting.dto.VersionCheckResponse
 import org.poweruptime.backend.features.info.supporter.SupporterService
 import org.poweruptime.backend.features.info.versionChecker.VersionChecker
 import org.springframework.http.HttpStatus
@@ -16,9 +24,10 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.ZoneId
 
+@Tag(name = "Instance Setting API")
 @RestController
 @RequestMapping("/v1/instance-settings")
-@Tag(name = "Instance Setting API")
+@PreAuthorize("hasRole('ADMIN')")
 class InstanceSettingController(
     private val instanceSettingService: InstanceSettingService,
     private val supporterService: SupporterService,
@@ -27,7 +36,6 @@ class InstanceSettingController(
     @Operation(
         summary = "Get instance settings",
         security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -41,6 +49,7 @@ class InstanceSettingController(
         versionCheckEnabled = instanceSettingService.getVersionCheckEnabled(),
         versionCheckAdminMailEnabled = instanceSettingService.getVersionCheckAdminMailEnabled(),
         versionCheckAdminMailTo = instanceSettingService.getVersionCheckAdminMailTo(),
+        showNewVersionDialog = instanceSettingService.getShowNewVersionDialog(),
     )
 
     @Operation(
@@ -58,16 +67,15 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("timezone")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setTimeZone(
-        @RequestBody @Valid dto: SettingStringSetDto
+        @RequestBody @Valid dto: SettingStringDto
     ): InstanceSettingsResponse {
-        if (!ZoneId.getAvailableZoneIds().contains(dto.value)) {
+        if (!ZoneId.getAvailableZoneIds().contains(dto.it)) {
             throw NotFoundException("ZoneId not found")
         }
-        instanceSettingService.setTimeZone(ZoneId.of(dto.value))
+        instanceSettingService.setTimeZone(ZoneId.of(dto.it))
 
         return getSettings()
     }
@@ -77,7 +85,6 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("support")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setSupport(
@@ -104,13 +111,27 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("isUserAllowedToCreateTeams")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setIsUserAllowedToCreateTeams(
-        @RequestBody @Valid dto: SettingBooleanSetDto
+        @RequestBody @Valid dto: SettingBooleanDto
     ): InstanceSettingsResponse {
-        instanceSettingService.setUserAllowedToCreateTeams(dto.value)
+        instanceSettingService.setUserAllowedToCreateTeams(dto.it)
+
+        return getSettings()
+    }
+
+    @Operation(
+        summary = "Set showNewVersionDialog instance setting",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+    )
+    @PutMapping("showNewVersionDialog")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    fun setShowNewVersionDialog(
+        @RequestBody @Valid dto: SettingBooleanDto
+    ): InstanceSettingsResponse {
+        instanceSettingService.setShowNewVersionDialog(dto.it)
 
         return getSettings()
     }
@@ -120,7 +141,6 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("retention")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setRetention(
@@ -137,7 +157,6 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("versionCheck")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setVersionCheck(
@@ -155,7 +174,6 @@ class InstanceSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("versionCheck")
     fun versionCheck(
         @RequestParam("skipCache") skipCache: Boolean = false

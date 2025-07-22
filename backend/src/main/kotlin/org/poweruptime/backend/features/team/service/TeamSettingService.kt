@@ -2,7 +2,7 @@ package org.poweruptime.backend.features.team.service
 
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.team.domain.TeamRepository
 import org.poweruptime.backend.features.team.domain.TeamSettingRepository
 import org.poweruptime.backend.features.team.model.SettingKey

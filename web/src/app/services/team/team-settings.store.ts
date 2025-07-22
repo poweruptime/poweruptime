@@ -44,7 +44,7 @@ export const TeamSettingsStore = signalStore(
       pipe(
         filter((it): it is string => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
+        switchMap((it) =>
           api
             .put('/v1/team/{teamId}/setting/timezone', {
               params: {
@@ -52,7 +52,7 @@ export const TeamSettingsStore = signalStore(
                   teamId: store.teamId()!!,
                 },
               },
-              body: {value},
+              body: {it},
             })
             .pipe(
               tapResponse({
@@ -67,7 +67,7 @@ export const TeamSettingsStore = signalStore(
       pipe(
         filter((it): it is number => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
+        switchMap((it) =>
           api
             .put('/v1/team/{teamId}/setting/checkResultRetentionPeriodInDays', {
               params: {
@@ -75,7 +75,7 @@ export const TeamSettingsStore = signalStore(
                   teamId: store.teamId()!!,
                 },
               },
-              body: {value},
+              body: {it},
             })
             .pipe(
               tapResponse({
@@ -90,7 +90,7 @@ export const TeamSettingsStore = signalStore(
       pipe(
         filter((it): it is number => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((value) =>
+        switchMap((it) =>
           api
             .put('/v1/team/{teamId}/setting/checkResultLogRetentionPeriodInDays', {
               params: {
@@ -98,7 +98,7 @@ export const TeamSettingsStore = signalStore(
                   teamId: store.teamId()!!,
                 },
               },
-              body: {value},
+              body: {it},
             })
             .pipe(
               tapResponse({

@@ -50,6 +50,10 @@ enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
         override val code = "VT"
         override val default: String = "null"
     },
+    SHOW_NEW_VERSION_DIALOG {
+        override val code = "SV"
+        override val default: String = true.toString()
+    }
 }
 
 @Converter(autoApply = true)

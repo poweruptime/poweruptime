@@ -65,7 +65,7 @@ export const SetupStore = signalStore(
                 patchState(store, setFulfilled(), () => ({state: 'setupCompleted' as const}));
                 toast.success(translate('auth.setup.success'));
 
-                confetti({
+                void confetti({
                   particleCount: 100,
                   spread: 160,
                   origin: {y: 0.6},

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
-import org.poweruptime.backend.features.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
 import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodData

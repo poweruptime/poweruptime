@@ -24,7 +24,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database} from '@app/api';
 import {Tag} from '@app/directives';
-import {InstanceSettingsVersionCheckStore, JsonStore} from '@app/services';
+import {InfoStore, InstanceSettingsVersionCheckStore} from '@app/services';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {SaveButton, arrayItemMaxLength, arrayItemMinLength, injectIsValid} from '../../form';
@@ -33,7 +33,7 @@ import {TableLoadingBar} from '../table-loading-bar';
 
 @Component({
   template: `
-    @let currentVersion = jsonStore.json()?.version;
+    @let currentVersion = infoStore.version();
     <mat-card appearance="outlined">
       <mat-card-header>
         <div class="flex w-full items-center justify-between gap-2">
@@ -280,7 +280,7 @@ import {TableLoadingBar} from '../table-loading-bar';
 })
 export class InstanceSettingsVersionCheckForm {
   readonly instanceSettingsVersionCheckStore = inject(InstanceSettingsVersionCheckStore);
-  readonly jsonStore = inject(JsonStore);
+  readonly infoStore = inject(InfoStore);
 
   protected readonly chipInputAdd = chipInputAdd;
   protected readonly chipInputRemove = chipInputRemove;
@@ -326,6 +326,8 @@ export class InstanceSettingsVersionCheckForm {
   readonly versionCheckEnabled = computed(() => this.settings().versionCheckEnabled);
 
   constructor() {
+    this.infoStore.loadVersion();
+
     this.instanceSettingsVersionCheckStore.makeVersionCheck(
       computed(() => ({
         versionCheckEnabled: this.versionCheckEnabled(),

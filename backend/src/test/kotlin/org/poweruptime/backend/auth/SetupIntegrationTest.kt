@@ -34,11 +34,27 @@ class SetupIntegrationTest(
                     jsonPath("$.codeName") { value("SETUP_COMPLETED") }
                 }
             }
+
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.it") { value(false) }
+                }
+            }
         }
 
         @Test
         @ClearDatabase
         fun `test successful`() {
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.it") { value(true) }
+                }
+            }
+
             mvc.post("/v1/public/setup") {
                 contentType = MediaType.APPLICATION_JSON
                 content = ModelFactory.getTestSetupDto().toJSON()
@@ -47,6 +63,14 @@ class SetupIntegrationTest(
                 content { contentType(MediaType.APPLICATION_JSON) }
                 content {
                     jsonPath("$.id") { exists() }
+                }
+            }
+
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.it") { value(false) }
                 }
             }
 
@@ -71,9 +95,17 @@ class SetupIntegrationTest(
         fun `test fail already setup`() {
             mvc.post("/v1/public/setup/email?email=admin@admin.org").andExpect {
                 status { isForbidden() }
-                content { contentType(MediaType.APPLICATION_JSON) }
                 content {
+                    contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$.codeName") { value("SETUP_COMPLETED") }
+                }
+            }
+
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    jsonPath("$.it") { value(false) }
                 }
             }
         }
@@ -83,6 +115,14 @@ class SetupIntegrationTest(
         fun `test successful`() {
             mvc.post("/v1/public/setup/email?email=admin@admin.org").andExpect {
                 status { isOk() }
+            }
+
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    jsonPath("$.it") { value(true) }
+                }
             }
         }
     }
@@ -95,8 +135,8 @@ class SetupIntegrationTest(
         fun `test fail already setup`() {
             mvc.get("/v1/public/setup/email/verify?code=123456").andExpect {
                 status { isForbidden() }
-                content { contentType(MediaType.APPLICATION_JSON) }
                 content {
+                    contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$.codeName") { value("SETUP_COMPLETED") }
                 }
             }
@@ -107,9 +147,17 @@ class SetupIntegrationTest(
         fun `test fail invalid code`() {
             mvc.get("/v1/public/setup/email/verify?code=123456").andExpect {
                 status { isBadRequest() }
-                content { contentType(MediaType.APPLICATION_JSON) }
                 content {
+                    contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$.codeName") { value("INVALID_CODE") }
+                }
+            }
+
+            mvc.get("/v1/public/info/is-setup").andExpect {
+                status { isOk() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    jsonPath("$.it") { value(true) }
                 }
             }
         }
