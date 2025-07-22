@@ -15,11 +15,10 @@ import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {Heatmap, Placeholder} from '@app/components';
 import {
-  CheckResultList,
   InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
   MonitorStatus,
-  NotificationList,
+  NotificationCheckResultCard,
   PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
@@ -305,9 +304,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
       </mat-card>
 
       @if (monitorId(); as monitorId) {
-        <pu-check-result-list [monitorId]="monitorId" />
-
-        <pu-notification-list [monitorId]="monitorId" />
+        <pu-notification-check-result-card [monitorId]="monitorId" />
       }
     </div>
   `,
@@ -324,8 +321,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     PingChart,
     Heatmap,
     MonitorHeaderPlaceholder,
-    CheckResultList,
-    NotificationList,
     MatButton,
     RouterLink,
     DfxCutPipe,
@@ -340,6 +335,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatMenu,
     MatMenuItem,
     MatIconButton,
+    NotificationCheckResultCard,
   ],
 })
 export class MonitorDetailPage {

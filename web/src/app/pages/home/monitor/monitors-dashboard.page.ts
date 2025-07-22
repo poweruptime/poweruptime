@@ -3,7 +3,7 @@ import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {CheckResultList, NotificationList} from '@app/components/monitor';
+import {NotificationCheckResultCard} from '@app/components/monitor';
 import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
 
 @Component({
@@ -67,9 +67,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
 
       <ng-content />
 
-      <pu-notification-list [teamId]="teamId()" />
-
-      <pu-check-result-list [teamId]="teamId()" />
+      <pu-notification-check-result-card [teamId]="teamId()" />
     </div>
   `,
   selector: 'pu-monitors-dashboard',
@@ -84,7 +82,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
       }
     }
   `,
-  imports: [CheckResultList, NotificationList, RouterLink, TranslocoPipe],
+  imports: [RouterLink, TranslocoPipe, NotificationCheckResultCard],
 })
 export class MonitorsDashboardPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);

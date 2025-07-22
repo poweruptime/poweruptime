@@ -11,7 +11,6 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {MatIconAnchor} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSelect} from '@angular/material/select';
@@ -39,128 +38,120 @@ import {BackendType} from '../../../api';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-4">
-      <mat-card appearance="outlined">
-        <mat-card-content>
-          <div class="flex flex-wrap justify-between">
-            <h2 class="text-xl">{{ 'checkResult.list.title' | transloco }}</h2>
+    <div class="mt-4 flex flex-wrap justify-end">
+      <div class="flex flex-wrap items-center justify-end gap-2">
+        @let _showDuplicates = showDuplicates();
+        <mat-slide-toggle
+          [checked]="_showDuplicates ?? false"
+          (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
+          labelPosition="before">
+          {{ 'general.showDuplicates' | transloco }}
+        </mat-slide-toggle>
 
-            <div class="flex flex-wrap items-center justify-end gap-2">
-              @let _showDuplicates = showDuplicates();
-              <mat-slide-toggle
-                [checked]="_showDuplicates ?? false"
-                (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
-                labelPosition="before">
-                {{ 'general.showDuplicates' | transloco }}
-              </mat-slide-toggle>
-
-              <mat-form-field subscriptSizing="dynamic">
-                <mat-label>{{ 'general.status' | transloco }}</mat-label>
-                <bi name="arrow-down-up" matIconPrefix />
-                <mat-select [(ngModel)]="statuses" multiple>
-                  @for (status of availableStatuses(); track status.status) {
-                    <mat-option [value]="status.status">
-                      {{ status.name }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table
-              [dataSource]="checkResultsStore.entities()"
-              [matSortActive]="checkResultsStore.sortBy()"
-              [matSortDirection]="checkResultsStore.sortDirection()"
-              [trackBy]="trackBy"
-              mat-table
-              matSort>
-              <ng-container matColumnDef="monitor">
-                <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
-                <td class="max-w-64 truncate" *matCellDef="let element" mat-cell>
-                  <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
-                    {{ element.monitor.name }}
-                  </a>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="status">
-                <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                  {{ 'general.status' | transloco }}
-                </th>
-                <td *matCellDef="let element" mat-cell>
-                  <span
-                    class="rounded-md px-2 py-1 font-bold"
-                    [monitor-status-text-background]="element.status">
-                    {{ element.status }}
-                  </span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="createdAt">
-                <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
-                  {{ 'general.createdAt' | transloco }}
-                </th>
-                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                  <pu-relative-time [value]="element.createdAt" format="yyyy.MM.dd HH:mm:ss" />
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="title">
-                <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
-                <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-                  {{ element.title }}
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="actions">
-                <th *matHeaderCellDef mat-header-cell></th>
-                <td *matCellDef="let element" mat-cell>
-                  <a
-                    [matTooltip]="'checkResult.list.action.view' | transloco"
-                    [attr.aria-label]="'checkResult.list.action.view' | transloco"
-                    [routerLink]="
-                      teamId() || (!teamId() && !monitorId())
-                        ? element.monitor.id + '/c/' + element.id + '/logs'
-                        : 'c/' + element.id + '/logs'
-                    "
-                    matTooltipPosition="left"
-                    mat-icon-button
-                    stopPropagation>
-                    <bi name="arrow-right" />
-                  </a>
-                </td>
-              </ng-container>
-
-              <tr *matHeaderRowDef="checkResultsStore.columnsToDisplay()" mat-header-row></tr>
-              <tr
-                *matRowDef="let element; columns: checkResultsStore.columnsToDisplay()"
-                [routerLink]="
-                  teamId() || (!teamId() && !monitorId())
-                    ? element.monitor.id + '/c/' + element.id + '/logs'
-                    : 'c/' + element.id + '/logs'
-                "
-                mat-row
-                queryParamsHandling="merge"></tr>
-            </table>
-          </div>
-
-          <pu-table-loading-bar [loading]="checkResultsStore.isPending()" />
-
-          @if (checkResultsStore.isEmpty()) {
-            <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
-          }
-
-          <mat-paginator
-            [pageSizeOptions]="[10, 20, 50, 100, 200]"
-            [pageSize]="checkResultsStore.size()"
-            [pageIndex]="checkResultsStore.page()"
-            [length]="checkResultsStore.totalElements()"
-            showFirstLastButtons />
-        </mat-card-content>
-      </mat-card>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.status' | transloco }}</mat-label>
+          <bi name="arrow-down-up" matIconPrefix />
+          <mat-select [(ngModel)]="statuses" multiple>
+            @for (status of availableStatuses(); track status.status) {
+              <mat-option [value]="status.status">
+                {{ status.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
+
+    <div class="table-responsive">
+      <table
+        [dataSource]="checkResultsStore.entities()"
+        [matSortActive]="checkResultsStore.sortBy()"
+        [matSortDirection]="checkResultsStore.sortDirection()"
+        [trackBy]="trackBy"
+        mat-table
+        matSort>
+        <ng-container matColumnDef="monitor">
+          <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
+          <td class="max-w-64 truncate" *matCellDef="let element" mat-cell>
+            <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
+              {{ element.monitor.name }}
+            </a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.status' | transloco }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            <span
+              class="rounded-md px-2 py-1 font-bold"
+              [monitor-status-text-background]="element.status">
+              {{ element.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'general.createdAt' | transloco }}
+          </th>
+          <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+            <pu-relative-time [value]="element.createdAt" format="yyyy.MM.dd HH:mm:ss" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
+          <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
+            {{ element.title }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell></th>
+          <td *matCellDef="let element" mat-cell>
+            <a
+              [matTooltip]="'checkResult.list.action.view' | transloco"
+              [attr.aria-label]="'checkResult.list.action.view' | transloco"
+              [routerLink]="
+                teamId() || (!teamId() && !monitorId())
+                  ? element.monitor.id + '/c/' + element.id + '/logs'
+                  : 'c/' + element.id + '/logs'
+              "
+              matTooltipPosition="left"
+              mat-icon-button
+              stopPropagation>
+              <bi name="arrow-right" />
+            </a>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="checkResultsStore.columnsToDisplay()" mat-header-row></tr>
+        <tr
+          *matRowDef="let element; columns: checkResultsStore.columnsToDisplay()"
+          [routerLink]="
+            teamId() || (!teamId() && !monitorId())
+              ? element.monitor.id + '/c/' + element.id + '/logs'
+              : 'c/' + element.id + '/logs'
+          "
+          mat-row
+          queryParamsHandling="merge"></tr>
+      </table>
+    </div>
+
+    <pu-table-loading-bar [loading]="checkResultsStore.isPending()" />
+
+    @if (checkResultsStore.isEmpty()) {
+      <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
+    }
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 50, 100, 200]"
+      [pageSize]="checkResultsStore.size()"
+      [pageIndex]="checkResultsStore.page()"
+      [length]="checkResultsStore.totalElements()"
+      showFirstLastButtons />
   `,
   styles: `
     @reference "#styles.css";
@@ -181,8 +172,6 @@ import {BackendType} from '../../../api';
   providers: [CheckResultsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCard,
-    MatCardContent,
     MatTableModule,
     MatPaginator,
     MatSortModule,

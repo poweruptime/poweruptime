@@ -7,6 +7,7 @@ export * from './monitor-header-placeholder';
 export * from './monitor-list';
 export * from './monitor-status';
 export * from './monitors-filter';
+export * from './notification-check-result-card';
 export * from './notification-list';
 export * from './notification-method-selector';
 export * from './ping-chart';
