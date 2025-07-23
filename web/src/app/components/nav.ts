@@ -77,6 +77,7 @@ import {TeamSelect} from './team-select';
                   <span class="nav-text">
                     {{ team.name }}
                   </span>
+                  <!-- Stop propagation isn't enough -->
                   <button
                     class="close-button"
                     (click)="$event.preventDefault(); selectedTeamStore.removeSelectedTeam(team.id)"
@@ -277,7 +278,7 @@ export class Nav {
   }
 
   navigateToTeamDashboard(newTeamId: string) {
-    const current = this.router.url; // e.g. "/org/5/t/123/dashboard"
+    const current = this.router.url; // e.g. "/t/abc/notification-methods"
     const teamSegmentRe = /t\/[^/;?]+/;
 
     if (teamSegmentRe.test(current)) {
@@ -294,7 +295,7 @@ export class Nav {
   }
 }
 
-function getInitials(text?: string): string | undefined {
+function getInitials(text?: string) {
   if (!text) {
     return undefined;
   }
