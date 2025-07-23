@@ -423,10 +423,23 @@ do_setup() {
     echo "dryRun mode: skipping .env existence check"
   fi
 
+  if confirm "Check if ports 80/443 are in use?"; then
+    for port in 80 443; do
+      if sudo lsof -iTCP:"$port" -sTCP:LISTEN -t >/dev/null; then
+        echo "Error: port $port is already in use. Please free it and retry."
+        exit 1
+      fi
+    done
+    echo "Ports 80 and 443 are free."
+  else
+    echo "Skipping port checks."
+  fi
+
+
   echo "Copying .env.example to .env..."
   run_cmd cp .env.example .env
 
-  if confirm "Generate DATABASE_PASSWORD & RABBIT_PASSWORD now?"; then
+  if confirm "Generate DATABASE_PASSWORD & RABBIT_PASSWORD randomly now?"; then
     echo "Generating secrets..."
     DB_PASS=$(openssl rand -base64 64 \
       | tr -dc A-Za-z0-9 \
@@ -467,19 +480,6 @@ do_setup() {
     echo "Skipping secret generation. Remember to set them in .env."
   fi
 
-  if confirm "Check if ports 80/443 are in use?"; then
-    for port in 80 443; do
-      if sudo lsof -iTCP:"$port" -sTCP:LISTEN -t >/dev/null; then
-        echo "Error: port $port is already in use. Please free it and retry."
-        exit 1
-      fi
-    done
-    echo "Ports 80 and 443 are free."
-  else
-    echo "Skipping port checks."
-  fi
-
-  # 5) Let user fill out the rest
   echo "Please fill out the remaining .env variables:"
   editor=$(get_editor)
   if $DRY_RUN; then
@@ -488,7 +488,13 @@ do_setup() {
     $editor .env
   fi
 
-  echo "Setup complete. Start the stack with './pu start'"
+  echo "Setup complete. You can always edit the .env file manually later."
+
+  if confirm "Start the stack now?"; then
+    do_up
+  else
+    echo "You can start the stack later with './pu start'"
+  fi
 }
 
 

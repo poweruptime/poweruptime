@@ -30,14 +30,17 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    ```shell
    ./pu setup
    ```
+   You can also start the stack
 
 ### Manual
 
-3. Copy `.env.exmaple` to `.env`
+3. Make sure no other services listen on port `80` and `443`.
+
+4. Copy `.env.exmaple` to `.env`
    ```shell
    cp .env.example .env
    ```
-4. Fill out the necessary .env variables.
+5. Fill out the necessary .env variables.
 
    ```shell
    nano .env
@@ -56,7 +59,6 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
    > [!NOTE]  
    > The `DATABASE_PASSWORD` is also used for encrypting your database backups.
 
-5. Make sure no other services listen on port `80` and `443`.
 6. Start the stack
    ```shell
    ./pu start
@@ -93,18 +95,19 @@ Accounts are matched by E-Mail address: if an OAuth2 user’s E-Mail matches an 
    - No duplicate accounts: the same E-Mail always maps to one user.
 
 2. Feature Parity
-   - Users who sign up or log in via OAuth2 have exactly the same capabilities as those who register via the dashboard:
+
+   Users who sign up or log in via OAuth2 have exactly the same capabilities as those who register via the dashboard:
    - Deactivate/reactivate accounts
-   - Set up MFA (note:
+   - Set up MFA
      - OAuth2 login skips MFA,
-     - but MFA still applies when logging in with E-Mail & password)
+     - but MFA still applies when logging in with E-Mail & password
    - Reset password
-   - Change password (the initial password for an OAuth2-only user is randomly generated behind the scenes)
+   - Change password (the initial password for an user registered/created via OAuth2 user is randomly generated behind the scenes)
    - Join teams
    - Be granted admin rights
 
 3. Limitations
-   - With OAuth2 enabled, users cannot change their E-Mail address (this restriction applies instance-wide to all users).
+   - With OAuth2 is enabled, users cannot change their E-Mail address (this restriction applies instance-wide to all users).
 
 All other user-management operations work exactly the same, regardless of how the account was created.
 
