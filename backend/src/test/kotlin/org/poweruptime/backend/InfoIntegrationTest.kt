@@ -54,7 +54,7 @@ class InfoIntegrationTest(
                 status { isOk() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.it") { value("99.99.99") }
+                    jsonPath("$.showSupportBadge") { exists() }
                 }
             }
         }
