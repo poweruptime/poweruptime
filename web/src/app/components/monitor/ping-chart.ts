@@ -10,9 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 
+import {ThemeService} from '@angularui/theme';
 import Chart, {TooltipItem} from 'chart.js/auto';
-
-import {ThemeStore} from '@app/services';
 
 @Component({
   template: `
@@ -44,7 +43,7 @@ import {ThemeStore} from '@app/services';
 export class PingChart {
   private readonly locale = inject(LOCALE_ID);
   private readonly dateFormat = new DatePipe(this.locale);
-  private readonly themeService = inject(ThemeStore);
+  private readonly themeService = inject(ThemeService);
 
   chart = input.required<{
     data: {name: string; value: number}[];
@@ -87,7 +86,7 @@ export class PingChart {
                 display: true,
                 drawTicks: true,
                 color:
-                  this.themeService.currentTheme() === 'dark'
+                  this.themeService.resolvedTheme() === 'dark'
                     ? 'oklch(27.8% 0.033 256.848)'
                     : 'oklch(92.8% 0.006 264.531)',
                 lineWidth: 1,

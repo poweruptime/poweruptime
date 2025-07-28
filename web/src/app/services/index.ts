@@ -16,5 +16,4 @@ export * from './is-setup.store';
 export * from './push.service';
 export * from './setup.store';
 export * from './tags.store';
-export * from './theme.store';
 export * from './transloco-loader';

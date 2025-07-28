@@ -12,14 +12,16 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 
 import {map} from 'rxjs';
 
+import {ThemeService} from '@angularui/theme';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {IsSystemAdmin} from '@app/directives';
 import {IsTeamAdmin} from '@app/directives';
-import {AuthStore, ProfileStore, SelectedTeamStore, ThemeStore, themeOptions} from '@app/services';
+import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {isMobileBreakpoints} from '@app/services/util';
+import {themeOptions} from '@app/util';
 
 import {AboutDialog} from './about-dialog';
 import {TeamSelect} from './team-select';
@@ -179,7 +181,7 @@ import {TeamSelect} from './team-select';
             </button>
           </mat-menu>
 
-          @let selectedTheme = themeService.selectedTheme();
+          @let selectedTheme = themeService.theme();
           <mat-menu #themeMenu="matMenu" yPosition="above">
             @for (theme of themeOptions; track theme.value) {
               <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
@@ -254,7 +256,7 @@ export class Nav {
   readonly selectedTeamStore = inject(SelectedTeamStore);
   readonly profileStore = inject(ProfileStore);
   readonly authStore = inject(AuthStore);
-  readonly themeService = inject(ThemeStore);
+  readonly themeService = inject(ThemeService);
   readonly dialog = inject(MatDialog);
   readonly translocoService = inject(TranslocoService);
   readonly router = inject(Router);

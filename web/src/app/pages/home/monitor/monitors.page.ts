@@ -1,8 +1,16 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  computed,
+  inject,
+  input,
+} from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {MatButton} from '@angular/material/button';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
+import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
@@ -37,7 +45,10 @@ import {
             }
           </div>
 
-          <mat-chip-listbox (change)="showFilter.set(!_showFilter)">
+          <mat-chip-listbox
+            (change)="showFilter.set(!_showFilter)"
+            matTooltip="Ctrl + F"
+            matTooltipPosition="after">
             <mat-chip-option [selected]="_showFilter">
               <bi name="filter" />
             </mat-chip-option>
@@ -105,6 +116,7 @@ import {
     MatButton,
     TeamSelect,
     IsTeamAdmin,
+    MatTooltip,
   ],
   selector: 'pu-monitors-page',
 })
@@ -122,6 +134,12 @@ export class MonitorsPage {
     stringify: (value) => (!value ? null : value),
     queryParamsHandling: '',
   });
+
+  @HostListener('window:keydown.control.f', ['$event'])
+  toggleSearch(event: KeyboardEvent) {
+    event.preventDefault();
+    this.showFilter.set(!this.showFilter());
+  }
 
   constructor() {
     this.monitorsDashboardStore.loadByTeamId(this.teamId);

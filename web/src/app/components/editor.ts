@@ -10,9 +10,8 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
+import {ThemeService} from '@angularui/theme';
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
-
-import {ThemeStore} from '@app/services';
 
 @Component({
   selector: 'pu-editor',
@@ -31,13 +30,13 @@ import {ThemeStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Editor implements ControlValueAccessor {
-  private themeService = inject(ThemeStore);
+  private themeService = inject(ThemeService);
 
   placeholder = input<string>('');
   autocompleteVariables = input<string[]>();
 
   init = computed(() => {
-    const currenTheme = this.themeService.currentTheme();
+    const currenTheme = this.themeService.resolvedTheme();
     const autocompleteVariables = this.autocompleteVariables();
     return {
       selector: 'textarea',

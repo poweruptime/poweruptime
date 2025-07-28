@@ -17,6 +17,7 @@ import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angul
 import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
+import {provideUiTheme} from '@angularui/theme';
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
 import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
@@ -75,6 +76,10 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     provideAnimationsAsync(),
+    provideUiTheme({
+      strategy: 'class',
+      storageKey: 'pu_theme',
+    }),
     provideTransloco({
       config: {
         availableLangs: [

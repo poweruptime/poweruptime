@@ -1,6 +1,6 @@
 import {Directive, booleanAttribute, computed, inject, input} from '@angular/core';
 
-import {ThemeStore} from '@app/services';
+import {ThemeService} from '@angularui/theme';
 
 import {BackendType} from '../api';
 
@@ -57,7 +57,7 @@ import {BackendType} from '../api';
   },
 })
 export class Tag {
-  private readonly themeService = inject(ThemeStore);
+  private readonly themeService = inject(ThemeService);
 
   variant = input.required<BackendType['TagDto']['variant'] | 'GHOST'>({
     alias: 'pu-tag',
@@ -65,7 +65,7 @@ export class Tag {
   clickable = input(false, {transform: booleanAttribute});
 
   matChipLabelTextColor = computed(() => {
-    const theme = this.themeService.currentTheme();
+    const theme = this.themeService.resolvedTheme();
     switch (this.variant()) {
       case 'GHOST':
         return getColorByTheme(theme, 'oklch(14.5% 0 0)', 'oklch(97% 0 0)');
@@ -83,7 +83,7 @@ export class Tag {
   });
 
   matChipOutlineColor = computed(() => {
-    const theme = this.themeService.currentTheme();
+    const theme = this.themeService.resolvedTheme();
     switch (this.variant()) {
       case 'GHOST':
         return getColorByTheme(theme, 'oklch(14.5% 0 0)', 'oklch(97% 0 0)');

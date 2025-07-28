@@ -16,6 +16,39 @@
     <link rel="manifest" href="/assets/favis/site.webmanifest" />
   </head>
   <body id="body">
+    <script>
+      (function () {
+        'use strict';
+        try {
+          const t = localStorage.getItem('pu_theme') || 'system',
+            e =
+              t === 'system'
+                ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ? 'dark'
+                  : 'light'
+                : t === 'light' || t === 'dark'
+                  ? t
+                  : 'light',
+            n = document.documentElement;
+          if (n) {
+            (n.classList.remove('light', 'dark'),
+              e === 'dark'
+                ? (n.classList.add('dark'), n.setAttribute('data-theme', 'dark'))
+                : (n.classList.remove('dark'), n.removeAttribute('data-theme')),
+              (n.style.colorScheme = e));
+          }
+        } catch (e) {
+          try {
+            const n = document.documentElement;
+            n &&
+              (n.classList.remove('light', 'dark'),
+              n.removeAttribute('data-theme'),
+              (n.style.colorScheme = 'light'));
+          } catch (e) {}
+        }
+      })();
+    </script>
+
     <app-root></app-root>
   </body>
 </html>

@@ -3,16 +3,17 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {MatMiniFabButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
+import {ThemeService} from '@angularui/theme';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {ThemeStore, themeOptions} from '@app/services';
+import {themeOptions} from '@app/util';
 
 @Component({
   template: `
     <button [matMenuTriggerFor]="menu" type="button" mat-mini-fab>
       <bi name="paint-bucket" size="20" />
     </button>
-    @let selectedTheme = themeService.selectedTheme();
+    @let selectedTheme = themeService.theme();
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {
         <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
@@ -30,5 +31,5 @@ import {ThemeStore, themeOptions} from '@app/services';
 })
 export class OutsideThemeSwitch {
   readonly themeOptions = themeOptions;
-  readonly themeService = inject(ThemeStore);
+  readonly themeService = inject(ThemeService);
 }
