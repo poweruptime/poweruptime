@@ -49,8 +49,8 @@ spring:
     listener:
       simple:
         default-requeue-rejected: 'false'
-        concurrency: 8
-        max-concurrency: 16
+        concurrency: ${RABBIT_LISTENER_CONCURRENCY:16}
+        max-concurrency: ${RABBIT_LISTENER_MAX_CONCURRENCY:16}
 
   mail:
     host: ${MAIL_HOST}

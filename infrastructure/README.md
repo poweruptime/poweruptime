@@ -197,6 +197,14 @@ These configuration values only effect the System E-Mail service.
 | `RATE_LIMIT_DURATION_IN_SECONDS` | Duration, in seconds, of the rate limiting window.                  | `240`         | x        |
 | `RATE_LIMIT_TRIES`               | Maximum number of requests allowed within the rate limiting window. | `40`          | x        |
 
+### Performance
+
+| Name                              | Description                                                                                   | Default value | Required |
+| --------------------------------- | --------------------------------------------------------------------------------------------- | ------------- | -------- |
+| `APPRISE_WORKER_COUNT`            | Number of parallel worker processes Apprise will spawn to deliver notifications concurrently. | `-2`          | x        |
+| `RABBIT_LISTENER_CONCURRENCY`     | Number of concurrent RabbitMQ listener instances.                                             | `16`          | x        |
+| `RABBIT_LISTENER_MAX_CONCURRENCY` | Upper limit of the concurrent RabbitMQ listener instances.                                    | `16`          | x        |
+
 ### Development
 
 | Name                         | Description                                                       | Default value | Required |
