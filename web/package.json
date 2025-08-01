@@ -45,7 +45,7 @@
     "@ngxpert/input-otp": "1.0.3",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
     "@tailwindcss/postcss": "4.1.11",
-    "@tinymce/tinymce-angular": "9.0.0",
+    "@tinymce/tinymce-angular": "9.1.0",
     "bootstrap-icons": "1.13.1",
     "canvas-confetti": "1.9.3",
     "chart.js": "^4.4.9",
