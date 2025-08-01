@@ -1,94 +1,101 @@
 [
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/animations"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.0.3",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/cdk"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/common"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/compiler"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/core"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/forms"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.0.3",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.0.3",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material-date-fns-adapter"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser-dynamic"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-server"
   },
   {
     "author": "angular",
-    "installedVersion": "20.0.4",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/router"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.0.3",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular-cli.git",
     "name": "@angular/ssr"
+  },
+  {
+    "author": "Mohammad Javed mohammadjaved@angularcafe.com https://x.com/immohammadjaved",
+    "installedVersion": "0.1.2",
+    "licenseType": "MIT",
+    "link": "git+https://github.com/angularcafe/angularui-theme.git",
+    "name": "@angularui/theme"
   },
   {
     "author": "David LJ https://davidlj95.com",
@@ -99,7 +106,7 @@
   },
   {
     "author": "Matteo Collina <hello@matteocollina.com>",
-    "installedVersion": "11.2.0",
+    "installedVersion": "11.3.0",
     "licenseType": "MIT",
     "link": "git+https://github.com/fastify/fastify-http-proxy.git",
     "name": "@fastify/http-proxy"
@@ -127,7 +134,7 @@
   },
   {
     "author": "nzbin<nzb329@163.com>",
-    "installedVersion": "20.1.0",
+    "installedVersion": "20.1.1",
     "licenseType": "MIT",
     "link": "git+https://github.com/ng-matero/extensions.git",
     "name": "@ng-matero/extensions"
@@ -176,7 +183,7 @@
   },
   {
     "author": "n/a",
-    "installedVersion": "4.1.10",
+    "installedVersion": "4.1.11",
     "licenseType": "MIT",
     "link": "git+https://github.com/tailwindlabs/tailwindcss.git",
     "name": "@tailwindcss/postcss"
