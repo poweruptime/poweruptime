@@ -118,7 +118,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "some@some.com",
-                    password = "asdf",
+                    password = "asdf1234",
                     sessionInformation = "Testing",
                     stayLoggedIn = true,
                 ).toJSON()
@@ -138,7 +138,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/login") {
                 content = LoginDto(
                     email = "admin@admin.org",
-                    password = "wurst",
+                    password = "wurst1234",
                 ).toJSON()
                 contentType = MediaType.APPLICATION_JSON
             }.andExpect {
