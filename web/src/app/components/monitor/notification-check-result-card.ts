@@ -14,10 +14,10 @@ import {NotificationList} from './notification-list';
       <mat-card-content>
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
           <mat-tab [label]="'general.notifications' | transloco">
-            <pu-notification-list [teamId]="teamId()" />
+            <pu-notification-list [teamId]="teamId()" [monitorId]="monitorId()" />
           </mat-tab>
           <mat-tab [label]="'checkResult.list.title' | transloco">
-            <pu-check-result-list [teamId]="teamId()" />
+            <pu-check-result-list [teamId]="teamId()" [monitorId]="monitorId()" />
           </mat-tab>
         </mat-tab-group>
       </mat-card-content>
