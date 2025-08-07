@@ -130,32 +130,44 @@ tasks.register("releaseBeta") {
 
     doLast {
         val version = getNewBetaVersion(versionParam)
-
         val timestamp = Instant.now().epochSecond
         val tagName = "$version-beta-$timestamp"
 
-        // Set POWERUPTIME_VERSION in .versions file
         setPowerUpTimeVersion(tagName)
 
-        exec {
+        execOps.exec {
             commandLine(
                 "git-cliff",
-                "--count-tags", "beta",
-                "--output", "./changelogs/CHANGELOG-beta.md",
-                "--tag", tagName
+                "--count-tags",
+                "beta",
+                "--output",
+                "./changelogs/CHANGELOG-beta.md",
+                "--tag",
+                tagName
             )
         }
 
-        exec {
-            commandLine("pnpm", "exec", "prettier", "--write", "./changelogs/CHANGELOG-beta.md")
+        execOps.exec {
+            commandLine(
+                "pnpm",
+                "exec",
+                "prettier",
+                "--write",
+                "./changelogs/CHANGELOG-beta.md"
+            )
         }
 
-        // Commit changes
-        commitChanges("chore: set POWERUPTIME_VERSION to $tagName", listOf("./infrastructure/versions.env", "./changelogs/CHANGELOG-beta.md"))
+        commitChanges(
+            "chore: set POWERUPTIME_VERSION to $tagName",
+            listOf(
+                "./infrastructure/versions.env",
+                "./changelogs/CHANGELOG-beta.md"
+            )
+        )
 
         println()
         println("Creating git tag $tagName")
-        exec {
+        execOps.exec {
             commandLine("git", "tag", tagName)
         }
     }
@@ -169,34 +181,46 @@ tasks.register("releaseProd") {
 
         setPowerUpTimeVersion(version.toString())
 
-        exec {
+        execOps.exec {
             commandLine(
                 "git-cliff",
-                "--ignore-tags", "beta",
-                "--output", "./changelogs/CHANGELOG.md",
-                "--tag", version
+                "--ignore-tags",
+                "beta",
+                "--output",
+                "./changelogs/CHANGELOG.md",
+                "--tag",
+                version
             )
         }
 
-        exec {
-            commandLine("pnpm", "exec", "prettier", "--write", "./changelogs/CHANGELOG.md")
+        execOps.exec {
+            commandLine(
+                "pnpm",
+                "exec",
+                "prettier",
+                "--write",
+                "./changelogs/CHANGELOG.md"
+            )
         }
 
-        // Commit changes
-        commitChanges("chore: set POWERUPTIME_VERSION to $version", listOf("./infrastructure/versions.env", "./changelogs/CHANGELOG.md"))
+        commitChanges(
+            "chore: set POWERUPTIME_VERSION to $version",
+            listOf(
+                "./infrastructure/versions.env",
+                "./changelogs/CHANGELOG.md"
+            )
+        )
 
         println()
         println("Creating git tag $version")
-        exec {
+        execOps.exec {
             commandLine("git", "tag", version)
         }
     }
 }
 
 fun getNewBetaVersion(version: String?): VersionNumber {
-    if (version != null) {
-        return VersionNumber.fromString(version)
-    }
+    if (version != null) return VersionNumber.fromString(version)
 
     val lastBetaTagVersion = getLastVersion(false)
     val lastProdTagVersion = getLastVersion(true)
@@ -205,31 +229,27 @@ fun getNewBetaVersion(version: String?): VersionNumber {
 
     println(
         """
-            Version: $lastBetaTagVersion
-            What do you want to increase?
-            1: Major
-            2: Minor
-            3: Patch
-            4: Reuse from current beta tag (default)
-        """.trimIndent()
+      Version: $lastBetaTagVersion
+      What do you want to increase?
+      1: Major
+      2: Minor
+      3: Patch
+      4: Reuse from current beta tag (default)
+    """.trimIndent()
     )
 
     val increaseInput: String? = System.`in`.bufferedReader().readLine()
-
     val newVersion: VersionNumber = lastBetaTagVersion
     when (increaseInput) {
         "1" -> newVersion.increaseMajor()
         "2" -> newVersion.increaseMinor()
         "3" -> newVersion.increasePatch()
     }
-
     return newVersion
 }
 
 fun getNewProdVersion(version: String?): VersionNumber {
-    if (version != null) {
-        return VersionNumber.fromString(version)
-    }
+    if (version != null) return VersionNumber.fromString(version)
 
     val lastBetaTagVersion = getLastVersion(false)
     val lastProdTagVersion = getLastVersion(true)
@@ -238,43 +258,44 @@ fun getNewProdVersion(version: String?): VersionNumber {
     println()
     println(
         """
-        Version: $lastProdTagVersion
-        What do you want to increase?
-        1: Major
-        2: Minor
-        3: Patch (default)
-        """.trimIndent()
+      Version: $lastProdTagVersion
+      What do you want to increase?
+      1: Major
+      2: Minor
+      3: Patch (default)
+    """.trimIndent()
     )
 
     val increaseInput: String? = System.`in`.bufferedReader().readLine()
-
     val newVersion: VersionNumber = lastProdTagVersion
     when (increaseInput) {
         "1" -> newVersion.increaseMajor()
         "2" -> newVersion.increaseMinor()
         else -> newVersion.increasePatch()
     }
-
     return newVersion
 }
 
+
 fun getLastTag(prod: Boolean): String {
     // Fetch all the remote tags
-    exec {
-            commandLine("git", "fetch", "--tags")
-        }
+    execOps.exec {
+        commandLine("git", "fetch", "--tags")
+    }
 
     // Capture the names of all tags
     val osAllTags = ByteArrayOutputStream()
-    exec {
+    execOps.exec {
         commandLine("git", "tag", "-l")
         standardOutput = osAllTags
     }
-    val allExistingVersions: List<String> = osAllTags.toString("UTF-8")
-        .trim()
-        .lines()
-        .filter { if (prod) !it.contains("beta") else it.contains("beta") }
-        .filter { it.substringBefore('-').matches(VersionNumber.versionRegex) }
+
+    val allExistingVersions: List<String> =
+        osAllTags.toString(Charsets.UTF_8.name())
+            .trim()
+            .lines()
+            .filter { if (prod) !it.contains("beta") else it.contains("beta") }
+            .filter { it.substringBefore('-').matches(VersionNumber.versionRegex) }
 
     return allExistingVersions.max()
 }
@@ -282,6 +303,7 @@ fun getLastTag(prod: Boolean): String {
 fun getLastVersion(prod: Boolean): VersionNumber {
     return VersionNumber.fromString(getLastTag(prod).substringBefore('-'))
 }
+
 
 fun setPowerUpTimeVersion(version: String) {
     val versionsFile = file("./infrastructure/versions.env")
@@ -305,16 +327,17 @@ fun setPowerUpTimeVersion(version: String) {
 }
 
 fun commitChanges(message: String, files: List<String>) {
-    files.forEach {
-        exec {
-            commandLine("git", "add", it)
+    files.forEach { path ->
+        execOps.exec {
+            commandLine("git", "add", path)
         }
     }
-    exec {
+    execOps.exec {
         commandLine("git", "commit", "-m", message)
     }
     println("Committed changes with message: $message")
 }
+
 
 data class VersionNumber(
     var major: Int,
@@ -369,3 +392,12 @@ fun String.nullOrParameter(): String? {
        this
     }
 }
+
+abstract class ExecSupport {
+    @get:Inject
+    abstract val execOps: ExecOperations
+}
+
+val execSupport = objects.newInstance(ExecSupport::class.java)
+val execOps = execSupport.execOps
+
