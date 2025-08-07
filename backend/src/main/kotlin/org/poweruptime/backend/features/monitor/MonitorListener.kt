@@ -28,6 +28,7 @@ import org.poweruptime.backend.features.notification.service.SubNotificationServ
 import org.poweruptime.backend.features.push.PushService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.Instant
 
@@ -56,6 +57,7 @@ class MonitorListener(
      * Receives messages from "monitor-queue" and processes [CheckResult] by ID.
      */
     @RabbitListener(queues = [MONITOR_QUEUE])
+    @Transactional
     fun monitorQueueConsumer(monitorCheckId: String) {
         val checkResult = checkResultService.getByIdOrThrow(monitorCheckId)
         val monitor = checkResult.monitor
@@ -63,47 +65,27 @@ class MonitorListener(
         logger.debug { "Received monitor check '${checkResult.id}' of monitor '${monitor.name}'" }
 
         // Perform the actual check and persist the updated CheckResult
-        val updatedCheck = processCheckResult(checkResult)
+        val updatedCheck = checkResult.performCheck()
 
         // Notify subscribed clients about the new check result
-        sendNewCheckResultPush(monitor, updatedCheck)
+        updatedCheck.sendNewCheckResultPush()
 
         // Attempt to update the monitor’s status if needed
         val oldStatus = monitor.status
-        val updatedMonitor = updateMonitorStatusIfRequired(monitor, updatedCheck)
+        val updatedMonitor = monitor.updateMonitorStatusIfUpOrDown(updatedCheck)
 
         // If the monitor status changed, send a monitor status change push
-        sendStatusChangePushIfNeeded(oldStatus, updatedMonitor)
+        updatedMonitor.sendStatusChangePushIfNeeded(oldStatus)
 
         // Send notifications (UP / DOWN) if required
-        sendUpOrDownNotifications(oldStatus, updatedMonitor, updatedCheck)
-    }
-
-    /**
-     * Orchestrates the check flow (picked up time, maintenance/paused checks, main check).
-     */
-    private fun processCheckResult(checkResult: CheckResult): CheckResult {
-        val updatedCheck = checkResultService.save(
-            performCheck(checkResult).apply {
-                require(status != MonitorStatus.PENDING) { "Check result must not remain PENDING." }
-                requireNotNull(pickedUpAt) { "Check result pickedUpAt must not be null." }
-                requireNotNull(previousStatus) { "Check result previousStatus must not be null." }
-            },
-        )
-
-        checkResultLogEntryService.info(
-            stage = CheckResultLogStage.CHECK,
-            checkResult = updatedCheck,
-            message = "Sent result to subscribed clients",
-        )
-
-        return updatedCheck
+        updatedMonitor.sendUpOrDownNotifications(oldStatus, updatedCheck)
     }
 
     /**
      * Performs the actual check, including handling late pickup, paused/maintenance, and running the checker.
      */
-    private fun performCheck(checkResult: CheckResult): CheckResult = checkResult.apply {
+    @Suppress("LongMethod")
+    private fun CheckResult.performCheck(): CheckResult = apply {
         pickedUpAt = Instant.now()
 
         val previousCheck = getPrevious()
@@ -113,11 +95,11 @@ class MonitorListener(
         val isPickedUpTooLate = isPickedUpTooLate()
         checkResultLogEntryService.action(
             stage = CheckResultLogStage.SETUP,
-            checkResult = checkResult,
+            checkResult = this,
             message = "Job picked up in time",
             properties = mapOf(
                 "result" to (!isPickedUpTooLate).toString(),
-                "time" to Duration.between(checkResult.createdAt, checkResult.pickedUpAt!!).toMillis().toString(),
+                "time" to Duration.between(createdAt, pickedUpAt!!).toMillis().toString(),
             ),
         )
         if (isPickedUpTooLate) {
@@ -165,38 +147,51 @@ class MonitorListener(
                 "time" to pingMsValue.toString(),
             ),
         )
+    }.run {
+        require(status != MonitorStatus.PENDING) { "Check result must not remain PENDING." }
+        requireNotNull(pickedUpAt) { "Check result pickedUpAt must not be null." }
+        requireNotNull(previousStatus) { "Check result previousStatus must not be null." }
+
+        val updatedCheck = checkResultService.save(this)
+        checkResultLogEntryService.info(
+            stage = CheckResultLogStage.CHECK,
+            checkResult = updatedCheck,
+            message = "Sent result to subscribed clients",
+        )
+
+        return updatedCheck
     }
 
     /**
      * Send a push notification for the new check result.
      */
-    private fun sendNewCheckResultPush(monitor: Monitor, updatedCheck: CheckResult) {
+    private fun CheckResult.sendNewCheckResultPush() {
         logger.info { "Send push new check result for team '${monitor.team.id}'" }
         pushService.send(
             monitor.team.id,
-            PushCheckResultDto(checkResult = CheckResultResponse(updatedCheck)),
+            PushCheckResultDto(checkResult = CheckResultResponse(this)),
         )
     }
 
     /**
      * Attempts to update the [monitor]'s status if it is UP or DOWN; returns the updated monitor.
      */
-    private fun updateMonitorStatusIfRequired(monitor: Monitor, updatedCheck: CheckResult): Monitor {
+    private fun Monitor.updateMonitorStatusIfUpOrDown(updatedCheck: CheckResult): Monitor {
         return when (updatedCheck.status) {
             MonitorStatus.UP, MonitorStatus.DOWN -> {
                 val successfulUpdatedMonitor = monitorService.updateStatus(
-                    monitor.id,
-                    determineUpdatedMonitorStatus(monitor, updatedCheck),
+                    id,
+                    determineUpdatedMonitorStatus(updatedCheck),
                 ) > 0
 
                 val updatedMonitor = if (successfulUpdatedMonitor) {
-                    monitorService.getByIdOrThrow(monitor.id)
+                    monitorService.getByIdOrThrow(id)
                 } else {
                     logger.warn {
-                        "Monitor '${monitor.name}', was updated after receiving it for processing. " +
+                        "Monitor '$name', was updated after receiving it for processing. " +
                             "Could not persist to db. Continuing with not-persisted monitor"
                     }
-                    monitor
+                    this
                 }
 
                 checkResultLogEntryService.action(
@@ -209,10 +204,11 @@ class MonitorListener(
             }
             else -> {
                 logger.info {
-                    "Monitor '${monitor.name}', new status: '${updatedCheck.status}', not processing status change"
+                    "Monitor '$name' is paused or in maintenance, status: '${updatedCheck.status}', " +
+                        "not processing status change"
                 }
 
-                monitor
+                this
             }
         }
     }
@@ -220,13 +216,13 @@ class MonitorListener(
     /**
      * Sends a push if the monitor status has changed from [oldStatus] to the new monitor status.
      */
-    private fun sendStatusChangePushIfNeeded(oldStatus: MonitorStatus, updatedMonitor: Monitor) {
-        if (oldStatus != updatedMonitor.status) {
-            logger.debug { "Send push status change for team '${updatedMonitor.team.id}'" }
+    private fun Monitor.sendStatusChangePushIfNeeded(oldStatus: MonitorStatus) {
+        if (oldStatus != status) {
+            logger.debug { "Send push status change for team '${team.id}'" }
 
             pushService.send(
-                updatedMonitor.team.id,
-                PushMonitorDto(monitor = updatedMonitor.toFullResponse()),
+                team.id,
+                PushMonitorDto(monitor = toFullResponse()),
             )
         }
     }
@@ -244,13 +240,12 @@ class MonitorListener(
     /**
      * Decides if and sends a UP or DOWN notification. Also checks for resend logic.
      */
-    private fun sendUpOrDownNotifications(
+    private fun Monitor.sendUpOrDownNotifications(
         oldStatus: MonitorStatus,
-        updatedMonitor: Monitor,
         checkResult: CheckResult
     ) {
         fun sendNotification(): Notification {
-            val notification = notificationService.send(updatedMonitor, checkResult)
+            val notification = notificationService.send(this, checkResult)
             notification.subNotifications.forEach { subNotification ->
                 subNotificationService.queueNotification(subNotification.id)
 
@@ -270,30 +265,30 @@ class MonitorListener(
         }
 
         when {
-            updatedMonitor.isFirstUpResultAfterBoot(oldStatus) -> {
+            isFirstUpResultAfterBoot(oldStatus) -> {
                 logNoNotificationNeeded(
                     checkResult,
                     reason = "First up result after server start, not queuing notifications",
                 )
             }
             // Monitor has resending enabled, the status is the same as before and DOWN
-            updatedMonitor.resendAfter != null &&
-                oldStatus == updatedMonitor.status &&
-                updatedMonitor.status == MonitorStatus.DOWN -> {
-                logMonitorHasResendingEnabled(checkResult, updatedMonitor.resendAfter!!)
-                val resendNotification = shouldResendNotification(updatedMonitor, checkResult)
+            resendAfter != null &&
+                oldStatus == status &&
+                status == MonitorStatus.DOWN -> {
+                logMonitorHasResendingEnabled(checkResult, resendAfter!!)
+                val resendNotification = shouldResendNotification(this, checkResult)
 
                 val notification = if (resendNotification) sendNotification() else null
 
                 logResendDownNotification(checkResult, resendNotification, notification)
             }
-            oldStatus != updatedMonitor.status -> {
+            oldStatus != status -> {
                 val notification = sendNotification()
-                logSendNormalNotification(checkResult, updatedMonitor, oldStatus, notification)
+                logSendNormalNotification(checkResult, this, oldStatus, notification)
             }
             else -> {
                 // Duplicate status without resending
-                require(oldStatus == updatedMonitor.status)
+                require(oldStatus == status)
                 logNoNotificationNeeded(
                     checkResult,
                     reason = "Duplicate status, not queuing notifications",
@@ -304,59 +299,55 @@ class MonitorListener(
 
     /**
      * Decides new [Monitor.status] based on the [CheckResult].
-     */
-    private fun determineUpdatedMonitorStatus(monitor: Monitor, checkResult: CheckResult): MonitorStatus {
-        return if (checkResult.status == MonitorStatus.UP) {
-            MonitorStatus.UP
-        } else {
-            setMonitorDownIfRetriesExhausted(monitor, checkResult)
-        }
-    }
-
-    /**
+     *
      * Marks a [Monitor] as DOWN only when retries are exhausted, or immediately if the monitor
      * was PENDING (first check after server start).
      */
-    private fun setMonitorDownIfRetriesExhausted(monitor: Monitor, checkResult: CheckResult): MonitorStatus {
-        require(checkResult.status == MonitorStatus.DOWN) {
-            "This function should only be called if the checkResult is DOWN."
-        }
-
-        return when {
-            // Immediately mark as DOWN if it was previously PENDING
-            monitor.status == MonitorStatus.PENDING -> {
-                checkResultLogEntryService.info(
-                    stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
-                    checkResult = checkResult,
-                    message = "Previous monitor status is pending",
-                )
-                MonitorStatus.DOWN
+    private fun Monitor.determineUpdatedMonitorStatus(checkResult: CheckResult): MonitorStatus {
+        return if (checkResult.status == MonitorStatus.UP) {
+            MonitorStatus.UP
+        } else {
+            require(checkResult.status == MonitorStatus.DOWN) {
+                "This function should only be called if the checkResult is DOWN."
             }
-            checkResult.timesRetried != null -> {
-                val timesRetried = checkResult.timesRetried!!
 
-                // Mark as DOWN if the down-check count (including this one) >= retries
-                // Otherwise, remain UP until all retries are used
-                if (timesRetried >= (monitor.retries ?: MONITOR_DEFAULT_RETRY)) {
+            return when {
+                // Immediately mark as DOWN if it was previously PENDING
+                status == MonitorStatus.PENDING -> {
                     checkResultLogEntryService.info(
                         stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
                         checkResult = checkResult,
-                        message = "Retry limit exceeded: $timesRetried attempt${if (timesRetried != 1L) "s" else ""} " +
-                            "made, but the maximum allowed retries is ${monitor.retries ?: MONITOR_DEFAULT_RETRY}",
+                        message = "Previous monitor status is pending",
                     )
                     MonitorStatus.DOWN
-                } else {
-                    checkResultLogEntryService.info(
-                        stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
-                        checkResult = checkResult,
-                        message = "Retry limit not reached: $timesRetried attempt" +
-                            "${if (timesRetried != 1L) "s" else ""} (maximum allowed: " +
-                            "${monitor.retries ?: MONITOR_DEFAULT_RETRY})",
-                    )
-                    MonitorStatus.UP
                 }
+                checkResult.timesRetried != null -> {
+                    val timesRetried = checkResult.timesRetried!!
+
+                    // Mark as DOWN if the down-check count (including this one) >= retries
+                    // Otherwise, remain UP until all retries are used
+                    if (timesRetried >= (retries ?: MONITOR_DEFAULT_RETRY)) {
+                        checkResultLogEntryService.info(
+                            stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
+                            checkResult = checkResult,
+                            message = "Retry limit exceeded: $timesRetried attempt${
+                                if (timesRetried != 1L) "s" else ""
+                            } made, but the maximum allowed retries is ${retries ?: MONITOR_DEFAULT_RETRY}",
+                        )
+                        MonitorStatus.DOWN
+                    } else {
+                        checkResultLogEntryService.info(
+                            stage = CheckResultLogStage.MONITOR_STATUS_UPDATE,
+                            checkResult = checkResult,
+                            message = "Retry limit not reached: $timesRetried attempt" +
+                                "${if (timesRetried != 1L) "s" else ""} (maximum allowed: " +
+                                "${retries ?: MONITOR_DEFAULT_RETRY})",
+                        )
+                        MonitorStatus.UP
+                    }
+                }
+                else -> MonitorStatus.DOWN
             }
-            else -> MonitorStatus.DOWN
         }
     }
 
@@ -440,8 +431,10 @@ class MonitorListener(
 /**
  * Indicates if the queue pickup was too late (exceeding [QUEUE_MONITOR_TIMEOUT_SECONDS]).
  */
-private fun CheckResult.isPickedUpTooLate(): Boolean =
-    Instant.now().minusSeconds(QUEUE_MONITOR_TIMEOUT_SECONDS).isAfter(createdAt)
+private fun CheckResult.isPickedUpTooLate(): Boolean {
+    requireNotNull(pickedUpAt) { "pickedUpAt is set a step before this" }
+    return pickedUpAt!!.minusSeconds(QUEUE_MONITOR_TIMEOUT_SECONDS).isAfter(createdAt)
+}
 
 /**
  * Handles marking the [CheckResult] as DOWN if picked up too late.
