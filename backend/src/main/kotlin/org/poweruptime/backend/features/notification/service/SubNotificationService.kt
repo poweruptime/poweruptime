@@ -1,14 +1,9 @@
 package org.poweruptime.backend.features.notification.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.poweruptime.backend.amqp.RabbitMQService
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.SubNotificationRepository
@@ -37,57 +32,33 @@ class SubNotificationService(
         methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
     ): Page<SubNotification> = subNotificationRepository.findAll(
-        { root: Root<SubNotification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            assert(
-                (userId !== null && teamId == null && monitorId == null && notificationId == null) ||
-                    (userId === null && teamId != null && monitorId == null && notificationId == null) ||
-                    (userId === null && teamId == null && monitorId != null && notificationId == null) ||
-                    (userId === null && teamId == null && monitorId == null && notificationId != null),
-            )
+        buildSpecification {
+            distinct = true
 
-            query?.distinct(true)
+            where {
+                and {
+                    require(userId != null || teamId != null || monitorId !== null || notificationId != null) {
+                        "notificationId or teamId or monitorId or userId needs to be provided"
+                    }
+                    and {
+                        notificationId?.let { col("notification.id") eq it }
+                        teamId?.let { col("notification.checkResult.monitor.team.id") eq it }
+                        monitorId?.let { col("notification.checkResult.monitor.id") eq it }
+                        userId?.let { col("notification.checkResult.monitor.team.teamUsers.id.user.id") eq it }
+                    }
 
-            val idPredicate = when {
-                notificationId != null -> Filter("notification.id", notificationId, FilterCompare.EQ)
-                teamId != null -> Filter("notification.checkResult.monitor.team.id", teamId, FilterCompare.EQ)
-                monitorId != null -> Filter("notification.checkResult.monitor.id", monitorId, FilterCompare.EQ)
-                userId != null -> Filter(
-                    "notification.checkResult.monitor.team.teamUsers.id.user.id",
-                    userId,
-                    FilterCompare.EQ,
-                )
-                else -> throw AssertionError("notificationId or teamId or monitorId or userId needs to be provided")
-            }.toPredicate(root, criteriaBuilder)
+                    and {
+                        statuses?.ifEmpty { null }?.let { col("notification.checkResult.status") inList it }
+                        methods?.ifEmpty { null }?.let { col(SubNotification::method) inList it }
 
-            val filterPredicates = if (
-                !methods.isNullOrEmpty() ||
-                !statuses.isNullOrEmpty() ||
-                teamId != null ||
-                userId != null
-            ) {
-                criteriaBuilder.and(
-                    *buildList {
-                        statuses?.let { add(Filter("notification.checkResult.status", it, FilterCompare.IN)) }
-                        methods?.let { add(Filter("method", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
-                            add(Filter("notification.checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
+                            col("notification.checkResult.monitor.deleted").isNull()
                         }
-                    }.toPredicate(root, criteriaBuilder).toTypedArray(),
-                )
-            } else {
-                null
-            }
-
-            if (filterPredicates != null) {
-                criteriaBuilder.and(idPredicate, filterPredicates)
-            } else {
-                idPredicate
+                    }
+                }
             }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("notification.checkResult.status", "method", "createdAt"),
-        ),
+        pageable.validateSort("notification.checkResult.status", "method", "createdAt"),
     )
 
     fun deleteByTeamIdAndOlderThan(teamId: String, than: Instant) = subNotificationRepository.findByTeamIdAndOlderThan(

@@ -23,10 +23,21 @@ object PageableValidator {
     }
 }
 
-fun <T, U> Page<T>.toDto(map: (it: T) -> U) = run {
-    PaginatedResponse(
-        numberOfItems = totalElements,
-        numberOfPages = totalPages,
-        data = content.map(map),
-    )
+fun Pageable.validateSort(vararg allowedSortParameters: String): Pageable {
+    val allowed = allowedSortParameters.toList()
+    val sortParametersNotAllowed = sort.filter { it.property !in allowed }
+
+    if (!sortParametersNotAllowed.isEmpty) {
+        throw BadRequestException(
+            """Sort parameter(s) "${sortParametersNotAllowed.joinToString(", ")}" not found""",
+        )
+    }
+
+    return this
 }
+
+fun <T, U> Page<T>.toDto(map: (it: T) -> U) = PaginatedResponse(
+    numberOfItems = totalElements,
+    numberOfPages = totalPages,
+    data = content.map(map),
+)

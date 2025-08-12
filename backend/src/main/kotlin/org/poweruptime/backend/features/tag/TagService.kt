@@ -1,14 +1,9 @@
 package org.poweruptime.backend.features.tag
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.colDeleted
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.core.toDeletedFilter
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.team.model.Team
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -81,36 +76,22 @@ class TagService(
         name: String?,
         deleted: Boolean = false
     ): Page<Tag> = tagRepository.findAll(
-        { root: Root<Tag>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            fun getTeamOrUserIdPredicate() = (
-                teamId?.let {
-                    Filter("team.id", it, FilterCompare.EQ)
-                } ?: userId?.let {
-                    Filter("team.teamUsers.id.user.id", it, FilterCompare.EQ)
-                } ?: throw AssertionError("teamId or userId needs to be provided")
-                ).toPredicate(root, criteriaBuilder)
+        buildSpecification {
+            where {
+                and {
+                    require(teamId != null || userId != null) { "teamId or userId needs to be provided" }
+                    and {
+                        teamId?.let { col("team.id") eq it }
+                        userId?.let { col("team.teamUsers.id.user.id") eq it }
+                    }
 
-            fun getFilterPredicates() = criteriaBuilder.and(
-                *buildList {
-                    add(deleted.toDeletedFilter())
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
-
-            criteriaBuilder.and(
-                *buildList {
-                    add(getTeamOrUserIdPredicate())
-
-                    add(getFilterPredicates())
-                }.toTypedArray(),
-            )
+                    and {
+                        colDeleted(deleted)
+                        name?.let { col(Tag::name) lowercaseLike "%$it%" }
+                    }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf(
-                "name",
-                "variant",
-            ),
-        ),
+        pageable.validateSort("name", "variant"),
     )
 }

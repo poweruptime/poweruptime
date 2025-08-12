@@ -1,13 +1,8 @@
 package org.poweruptime.backend.features.user.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.SystemRole
@@ -114,30 +109,18 @@ class UserService(
         activated: Boolean?,
         role: SystemRole?,
     ): Page<User> = userRepository.findAll(
-        { root: Root<User>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            fun shouldAddFilter() = name != null || email != null || activated != null || role != null
+        buildSpecification {
+            where {
+                and {
+                    name?.let { col(User::name) lowercaseLike "%$it%" }
+                    email?.let { col(User::email) lowercaseLike "%$it%" }
 
-            fun getFilterPredicates() = criteriaBuilder.and(
-                *buildList {
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                    email?.let { add(Filter("email", it, FilterCompare.LIKE)) }
-                    activated?.let { add(Filter("activated", it, FilterCompare.LIKE)) }
-                    role?.let { add(Filter("role", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
-
-            criteriaBuilder.and(
-                *buildList {
-                    if (shouldAddFilter()) {
-                        add(getFilterPredicates())
-                    }
-                }.toTypedArray(),
-            )
+                    activated?.let { col(User::activated) eq it }
+                    role?.let { col(User::role) eq it }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("name", "activated", "role", "createdAt"),
-        ),
+        pageable.validateSort("name", "activated", "role", "createdAt"),
     )
 
     fun isSetup(): Boolean = userRepository.isSetup()

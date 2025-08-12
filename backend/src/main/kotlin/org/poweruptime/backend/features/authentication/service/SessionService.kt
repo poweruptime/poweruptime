@@ -1,14 +1,9 @@
 package org.poweruptime.backend.features.authentication.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.authentication.SessionInformationMissingException
 import org.poweruptime.backend.features.authentication.SessionTokenIncorrectException
 import org.poweruptime.backend.features.authentication.domain.RefreshTokenRepository
@@ -171,17 +166,14 @@ class SessionService(
         userId: String,
         valid: Boolean = true
     ): Page<Session> = sessionRepository.findAll(
-        { root: Root<Session>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            criteriaBuilder.and(
-                *buildList {
-                    add(Filter("user.id", userId, FilterCompare.EQ))
-                    add(Filter("valid", valid, FilterCompare.EQ))
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
+        buildSpecification {
+            where {
+                and {
+                    col("user.id") eq userId
+                    col(Session::valid) eq valid
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("updatedAt", "createdAt"),
-        ),
+        pageable.validateSort("updatedAt", "createdAt"),
     )
 }

@@ -1,13 +1,8 @@
 package org.poweruptime.backend.features.team.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.emails.JoinTeamEmail
@@ -29,18 +24,15 @@ class TeamJoinTokenService(
 ) : AEntityService<TeamJoinToken>(teamJoinTokenRepository) {
 
     fun getByTeamIdPaginated(pageable: Pageable, teamId: String) = teamJoinTokenRepository.findAll(
-        { root: Root<TeamJoinToken>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            criteriaBuilder.and(
-                *buildList {
-                    add(Filter("team.id", teamId, FilterCompare.EQ))
-                    add(Filter("version", 0, FilterCompare.EQ))
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
+        buildSpecification {
+            where {
+                and {
+                    col("team.id") eq teamId
+                    col(TeamJoinToken::version) eq 0
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("invitee.email", "inviter.email", "role", "createdAt"),
-        ),
+        pageable.validateSort("invitee.email", "inviter.email", "role", "createdAt"),
     )
 
     fun countByTeamIdAndInviteeId(teamId: String, inviteeId: String) =

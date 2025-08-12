@@ -1,14 +1,9 @@
 package org.poweruptime.backend.features.notification.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -57,51 +52,32 @@ class NotificationService(
         methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
     ): Page<Notification> = notificationRepository.findAll(
-        { root: Root<Notification>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            assert(
-                (userId !== null && teamId == null && monitorId == null) ||
-                    (userId === null && teamId != null && monitorId == null) ||
-                    (userId === null && teamId == null && monitorId != null),
-            )
+        buildSpecification {
+            distinct = true
 
-            query?.distinct(true)
+            where {
+                and {
+                    require(
+                        userId != null || teamId != null || monitorId !== null,
+                    ) { "teamId or monitorId or userId needs to be provided" }
+                    and {
+                        teamId?.let { col("checkResult.monitor.team.id") eq it }
+                        monitorId?.let { col("checkResult.monitor.id") eq it }
+                        userId?.let { col("checkResult.monitor.team.teamUsers.id.user.id") eq it }
+                    }
 
-            val idPredicate = when {
-                teamId != null -> Filter("checkResult.monitor.team.id", teamId, FilterCompare.EQ)
-                monitorId != null -> Filter("checkResult.monitor.id", monitorId, FilterCompare.EQ)
-                userId != null -> Filter("checkResult.monitor.team.teamUsers.id.user.id", userId, FilterCompare.EQ)
-                else -> throw AssertionError("teamId or monitorId or userId needs to be provided")
-            }.toPredicate(root, criteriaBuilder)
+                    and {
+                        statuses?.ifEmpty { null }?.let { col("checkResult.status") inList it }
+                        methods?.ifEmpty { null }?.let { col("subNotifications.method.data._type") inList it }
 
-            val filterPredicates = if (
-                !methods.isNullOrEmpty() ||
-                !statuses.isNullOrEmpty() ||
-                teamId != null ||
-                userId != null
-            ) {
-                criteriaBuilder.and(
-                    *buildList {
-                        statuses?.let { add(Filter("checkResult.status", it, FilterCompare.IN)) }
-                        methods?.let { add(Filter("subNotifications.method.data._type", it, FilterCompare.IN)) }
                         if (teamId != null || userId != null) {
-                            add(Filter("checkResult.monitor.deleted", "", FilterCompare.IS_NULL))
+                            col("checkResult.monitor.deleted").isNull()
                         }
-                    }.toPredicate(root, criteriaBuilder).toTypedArray(),
-                )
-            } else {
-                null
-            }
-
-            if (filterPredicates != null) {
-                criteriaBuilder.and(idPredicate, filterPredicates)
-            } else {
-                idPredicate
+                    }
+                }
             }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("checkResult.status", "createdAt"),
-        ),
+        pageable.validateSort("checkResult.status", "createdAt"),
     )
 
     fun deleteByTeamIdAndOlderThan(teamId: String, than: Instant) = notificationRepository.findByTeamIdAndOlderThan(

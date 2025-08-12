@@ -20,7 +20,7 @@ spring:
       mode: never
 
   jpa:
-    show-sql: false
+    show-sql: true
     generate-ddl: true
     open-in-view: false
     hibernate:
