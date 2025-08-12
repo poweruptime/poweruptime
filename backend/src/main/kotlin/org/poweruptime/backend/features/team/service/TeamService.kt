@@ -1,15 +1,10 @@
 package org.poweruptime.backend.features.team.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.apache.coyote.BadRequestException
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import org.poweruptime.backend.core.colDeleted
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.core.toDeletedFilter
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.team.domain.TeamRepository
@@ -60,22 +55,22 @@ class TeamService(
         role: TeamRole?,
         deleted: Boolean = false,
     ): Page<Team> = teamRepository.findAll(
-        { root: Root<Team>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            criteriaBuilder.and(
-                *buildList {
-                    add(deleted.toDeletedFilter())
-                    userId?.let { add(Filter("teamUsers.id.user.id", it, FilterCompare.EQ)) }
+        buildSpecification {
+            where {
+                and {
+                    colDeleted(deleted)
+
+                    userId?.let { col("teamUsers.id.user.id") eq it }
+
                     if (userId != null && role != null) {
-                        add(Filter("teamUsers.role", role, FilterCompare.EQ))
+                        col("teamUsers.role") eq role
                     }
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
+
+                    name?.let { col(Team::name) lowercaseLike "%$it%" }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("name", "personalUser.id", "createdAt"),
-        ),
+        pageable.validateSort("name", "personalUser.id", "createdAt"),
     )
 
     override fun deleteByIdOrThrow(id: String) {

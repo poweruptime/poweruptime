@@ -1,13 +1,8 @@
 package org.poweruptime.backend.features.monitor.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.features.monitor.domain.CheckResultLogEntryRepository
 import org.poweruptime.backend.features.monitor.model.*
 import org.springframework.data.domain.Page
@@ -66,21 +61,16 @@ class CheckResultLogEntryService(
         checkResultId: String,
         stages: List<CheckResultLogStage>? = null,
     ): Page<CheckResultLogEntry> = checkResultLogEntryRepository.findAll(
-        { root: Root<CheckResultLogEntry>, query: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            query?.distinct(true)
+        buildSpecification {
+            distinct = true
 
-            criteriaBuilder.and(
-                *buildList {
-                    add(Filter("checkResult.id", checkResultId, FilterCompare.EQ))
-                    stages?.let {
-                        add(Filter("stage", it, FilterCompare.IN))
-                    }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
+            where {
+                and {
+                    col("checkResult.id") eq checkResultId
+                    stages?.ifEmpty { null }?.let { col(CheckResultLogEntry::stage) inList it }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("stage", "level", "createdAt"),
-        ),
+        pageable.validateSort("stage", "level", "createdAt"),
     )
 }

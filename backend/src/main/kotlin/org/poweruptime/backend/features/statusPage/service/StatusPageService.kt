@@ -1,16 +1,11 @@
 package org.poweruptime.backend.features.statusPage.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
-import org.poweruptime.backend.core.Filter
-import org.poweruptime.backend.core.FilterCompare
-import org.poweruptime.backend.core.dto.PageableValidator
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
+import org.poweruptime.backend.core.colDeleted
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.core.toDeletedFilter
-import org.poweruptime.backend.core.toPredicate
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.fileUpload.FileService
 import org.poweruptime.backend.features.monitor.service.MonitorService
@@ -181,29 +176,18 @@ class StatusPageService(
         name: String?,
         deleted: Boolean = false
     ): Page<StatusPage> = statusPageRepository.findAll(
-        { root: Root<StatusPage>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            fun getTeamIdPredicate() = (
-                Filter("team.id", teamId, FilterCompare.EQ)
-                ).toPredicate(root, criteriaBuilder)
+        buildSpecification {
+            where {
+                and {
+                    col("team.id") eq teamId
 
-            fun getFilterPredicates() = criteriaBuilder.and(
-                *buildList {
-                    add(deleted.toDeletedFilter())
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
-
-            criteriaBuilder.and(
-                *buildList {
-                    add(getTeamIdPredicate())
-
-                    add(getFilterPredicates())
-                }.toTypedArray(),
-            )
+                    and {
+                        colDeleted(deleted)
+                        name?.let { col(StatusPage::name) lowercaseLike "%$it%" }
+                    }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("name", "slug", "createdAt", "updatedAt", "deleted"),
-        ),
+        pageable.validateSort("name", "slug", "createdAt", "updatedAt", "deleted"),
     )
 }

@@ -3,16 +3,14 @@ package org.poweruptime.backend.features.team.resource
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.validation.Valid
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.dto.IdResponse
-import org.poweruptime.backend.core.dto.PageableValidator
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.core.exceptions.TooManyRequestsException
@@ -24,7 +22,6 @@ import org.poweruptime.backend.features.team.dto.InviteTeamUserDto
 import org.poweruptime.backend.features.team.dto.TeamJoinTokenResponse
 import org.poweruptime.backend.features.team.dto.TeamUserResponse
 import org.poweruptime.backend.features.team.dto.UpdateTeamUserDto
-import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.service.MAX_TEAM_JOIN_TOKENS_PER_USER_AND_TEAM_IN_3_DAYS
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
@@ -60,12 +57,20 @@ class TeamUserController(
         @PathVariable("teamId") teamId: String,
     ): PaginatedResponse<TeamUserResponse> =
         teamUserRepository.findAll(
-            { root: Root<TeamUser>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.and(Filter("id.team.id", teamId, FilterCompare.EQ).toPredicate(root, criteriaBuilder))
+            buildSpecification {
+                where {
+                    and {
+                        col("id.team.id") eq teamId
+                    }
+                }
             },
-            PageableValidator.validateSort(
-                pageable,
-                listOf("id.user.name", "id.user.id", "role", "invitedBy.name", "invitedBy.email", "createdAt"),
+            pageable.validateSort(
+                "id.user.name",
+                "id.user.id",
+                "role",
+                "invitedBy.name",
+                "invitedBy.email",
+                "createdAt",
             ),
         ).toDto { TeamUserResponse(it) }
 

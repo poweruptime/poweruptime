@@ -1,12 +1,10 @@
 package org.poweruptime.backend.features.notification.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
-import org.poweruptime.backend.core.dto.PageableValidator
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
@@ -107,28 +105,22 @@ class NotificationMethodService(
         useByDefault: Boolean?,
         deleted: Boolean = false,
     ): Page<NotificationMethod> = notificationMethodRepository.findAll(
-        { root: Root<NotificationMethod>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            fun getFilterPredicates() = criteriaBuilder.and(
-                *buildList {
-                    add(deleted.toDeletedFilter())
-                    types?.let { add(Filter("sender._type", it, FilterCompare.IN)) }
-                    useByDefault?.let { add(Filter("useByDefault", it, FilterCompare.EQ)) }
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
+        buildSpecification {
+            where {
+                and {
+                    col("team.id") eq teamId
 
-            criteriaBuilder.and(
-                *buildList {
-                    add(Filter("team.id", teamId, FilterCompare.EQ).toPredicate(root, criteriaBuilder))
+                    and {
+                        colDeleted(deleted)
+                        types?.ifEmpty { null }?.let { col("sender._type") inList it }
 
-                    add(getFilterPredicates())
-                }.toTypedArray(),
-            )
+                        useByDefault?.let { col(NotificationMethod::useByDefault) eq it }
+                        name?.let { col(NotificationMethod::name) lowercaseLike "%$it%" }
+                    }
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf("name", "useByDefault", "sender._type", "createdAt", "deleted"),
-        ),
+        pageable.validateSort("name", "useByDefault", "sender._type", "createdAt", "deleted"),
     )
 
     private fun NotificationMethod.clone(

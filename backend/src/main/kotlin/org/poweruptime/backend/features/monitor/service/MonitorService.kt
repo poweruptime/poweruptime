@@ -1,11 +1,9 @@
 package org.poweruptime.backend.features.monitor.service
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
+import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.domain.findByIdOrThrow
-import org.poweruptime.backend.core.dto.PageableValidator
+import org.poweruptime.backend.core.dto.validateSort
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
@@ -138,65 +136,45 @@ class MonitorService(
         usedInStatusPageGroupIds: List<String>? = null,
         deleted: Boolean = false
     ): Page<Monitor> = monitorRepository.findAll(
-        { root: Root<Monitor>, _: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-            fun getTeamOrUserIdPredicate() = (
-                teamId?.let {
-                    Filter("team.id", it, FilterCompare.EQ)
-                } ?: userId?.let {
-                    Filter("team.teamUsers.id.user.id", it, FilterCompare.EQ)
-                } ?: statusPageSlug?.let {
-                    Filter("groupMonitors.connection.group.statusPage.slug", statusPageSlug, FilterCompare.EQ)
-                } ?: throw AssertionError("teamId or userId needs to be provided")
-                ).toPredicate(root, criteriaBuilder)
-
-            fun getFilterPredicates() = criteriaBuilder.and(
-                *buildList {
-                    add(deleted.toDeletedFilter())
-                    enabledNotificationMethodIds?.let {
-                        add(
-                            Filter(
-                                "enabledNotificationMethods.id",
-                                it,
-                                FilterCompare.IN,
-                            ),
-                        )
+        buildSpecification {
+            where {
+                and {
+                    require(
+                        teamId != null || userId != null || statusPageSlug != null,
+                    ) { "teamId, userId or slug needs to be provided" }
+                    and {
+                        teamId?.let { col("team.id") eq it }
+                        userId?.let { col("team.teamUsers.id.user.id") eq it }
+                        statusPageSlug?.let { col("groupMonitors.connection.group.statusPage.slug") eq it }
                     }
-                    usedInStatusPageGroupIds?.let {
-                        add(
-                            Filter(
-                                "groupMonitors.connection.group.id",
-                                it,
-                                FilterCompare.IN,
-                            ),
-                        )
+
+                    and {
+                        colDeleted(deleted)
+
+                        name?.ifBlank { null }?.let { col(Monitor::name) lowercaseLike "%$it%" }
+
+                        enabledNotificationMethodIds?.ifEmpty { null }?.let {
+                            col("enabledNotificationMethods.id") inList it
+                        }
+                        usedInStatusPageGroupIds?.ifEmpty { null }?.let {
+                            col("groupMonitors.connection.group.id") inList it
+                        }
+                        statuses?.ifEmpty { null }?.let { col(Monitor::status) inList it }
+                        types?.ifEmpty { null }?.let { col("checker._type") inList it }
+                        tags?.ifEmpty { null }?.let { col("selectedTags.name") inList it }
                     }
-                    statuses?.let { add(Filter("status", it, FilterCompare.IN)) }
-                    types?.let { add(Filter("checker._type", it, FilterCompare.IN)) }
-                    tags?.let { add(Filter("selectedTags.name", it, FilterCompare.IN)) }
-                    name?.let { add(Filter("name", it, FilterCompare.LIKE)) }
-                }.toPredicate(root, criteriaBuilder).toTypedArray(),
-            )
-
-            criteriaBuilder.and(
-                *buildList {
-                    add(getTeamOrUserIdPredicate())
-
-                    add(getFilterPredicates())
-                }.toTypedArray(),
-            )
+                }
+            }
         },
-        PageableValidator.validateSort(
-            pageable,
-            listOf(
-                "name",
-                "status",
-                "testIntervalSeconds",
-                "retries",
-                "deleted",
-                "createdAt",
-                "groupMonitors.position",
-                "team.name",
-            ),
+        pageable.validateSort(
+            "name",
+            "status",
+            "testIntervalSeconds",
+            "retries",
+            "deleted",
+            "createdAt",
+            "groupMonitors.position",
+            "team.name",
         ),
     )
 
