@@ -84,7 +84,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
           <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="sender._type">
+        <ng-container matColumnDef="data._type">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.type' | transloco }}
           </th>
