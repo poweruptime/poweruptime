@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0-beta-1755087379 - 2025-08-13
+
+### <!-- 0 -->🚀 Features
+
+- Add website redirect by Dafnik ([cedac88](https://github.com/poweruptime/poweruptime/commit/cedac88fc2627238011df5ac7a3d4c36b776f3b0))
+- Add kotlin-jpa-specification-builder by Dafnik ([80e9763](https://github.com/poweruptime/poweruptime/commit/80e976357f1b4737c4f58b56f19cb3c45f03cf37))
+- Add user and team table filters by Dafnik ([e0f5118](https://github.com/poweruptime/poweruptime/commit/e0f5118bb39de273edad7da9f875145cce356045))
+- Notification detail blankslate by Dafnik ([2c3939f](https://github.com/poweruptime/poweruptime/commit/2c3939f9d62de8d3e9bb5a5295f34e2de80c41aa))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Notification methods sort and filter sender to data migration by Dafnik ([340d61f](https://github.com/poweruptime/poweruptime/commit/340d61f8e415dca19f336938e9ff716e14895dbe))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1754582539...0.4.0-beta-1755087379)
+
 ## 0.4.0-beta-1754582539 - 2025-08-07
 
 ### <!-- 1 -->🐛 Bug Fixes
@@ -19,28 +34,6 @@
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Fix commitlint by Dafnik ([63fd50e](https://github.com/poweruptime/poweruptime/commit/63fd50ed43d3538637c4137567deaf69d33ac394))
-- Lock file maintenance (#271) by renovate[bot] ([f6cdbac](https://github.com/poweruptime/poweruptime/commit/f6cdbac8ee67eae293bd4def3004c9af88f74066)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo to v20.1.3 (#274) by renovate[bot] ([6483924](https://github.com/poweruptime/poweruptime/commit/648392485d467f05bb2ace63c2feca10581fb48a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency io.github.oshai:kotlin-logging-jvm to v7.0.10 (#278) by renovate[bot] ([43c2b4d](https://github.com/poweruptime/poweruptime/commit/43c2b4d74e9dd39a7572e6c54490565a8514f6e8)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Generate new license report (#279) by github-actions[bot] ([41c4abb](https://github.com/poweruptime/poweruptime/commit/41c4abb2a5357ebae959e9383fa79112d52a1214)), Co-authored-by:Dafnik <16242839+Dafnik@users.noreply.github.com>
-- Update jackson dependencies to v2.19.2 (#280) by renovate[bot] ([5cc6796](https://github.com/poweruptime/poweruptime/commit/5cc67965c6802a5e85636db647f7067eac610362)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update plugin org.springframework.boot to v3.5.4 (#281) by renovate[bot] ([5727ba5](https://github.com/poweruptime/poweruptime/commit/5727ba5c6a65a65085cc7e24efb108cbf0665462)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angularmaterial monorepo to v20.1.3 (#275) by renovate[bot] ([6b4db8c](https://github.com/poweruptime/poweruptime/commit/6b4db8c2b88017012077c585ecfbc7403023261f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @jsverse/transloco-keys-manager to v7.0.2 (#276) by renovate[bot] ([9be706d](https://github.com/poweruptime/poweruptime/commit/9be706d7d0ec17992cdb48f98ba816b50d4c163e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @types/node to v22.16.5 (#277) by renovate[bot] ([81db273](https://github.com/poweruptime/poweruptime/commit/81db2735eb653e789a1993dc23b7fb3f6392744b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency commons-codec:commons-codec to v1.19.0 (#284) by renovate[bot] ([55b2582](https://github.com/poweruptime/poweruptime/commit/55b2582063297654475b851c9df1a6141aa7c9bd)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency git-cliff to v2.10.0 (#285) by renovate[bot] ([2b11e37](https://github.com/poweruptime/poweruptime/commit/2b11e37d2680fa5928fa46b073773c8ef9c4158c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update lint packages (#286) by renovate[bot] ([97989fc](https://github.com/poweruptime/poweruptime/commit/97989fcf3c35064a0676083f7c828ab96eb74a1e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update traefik docker tag to v3.5 (#287) by renovate[bot] ([162f031](https://github.com/poweruptime/poweruptime/commit/162f031d2f6df78acac407c2ae543a14abc11924)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @ng-matero/extensions to v20.2.0 (#283) by renovate[bot] ([e25ab78](https://github.com/poweruptime/poweruptime/commit/e25ab782ec9c9d68371fc3f415fb2d94800000cd)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency tinymce to v8 (#289) by renovate[bot] ([71711a0](https://github.com/poweruptime/poweruptime/commit/71711a08db081bf97df2f4523f31cd28cff65578)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update typescript types (#290) by renovate[bot] ([26292f1](https://github.com/poweruptime/poweruptime/commit/26292f131d9353c2fdff550bc3ad7521b31341ce)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update ngrx to v20 (#292) by renovate[bot] ([f408632](https://github.com/poweruptime/poweruptime/commit/f408632c0146ac6457174671e93d1fd6c0245551)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @tinymce/tinymce-angular to v9.1.0 (#291) by renovate[bot] ([4fcb615](https://github.com/poweruptime/poweruptime/commit/4fcb615011e2281b15232ccb1c96b70d806efb07)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update react-email by Dafnik ([2fc7e2c](https://github.com/poweruptime/poweruptime/commit/2fc7e2c8a4ce1b8d65aab4e10a3710d212fc1ccb))
-- Update react-email by Dafnik ([ae22399](https://github.com/poweruptime/poweruptime/commit/ae22399d531576c9aade622aae491549b61dc9c2))
-- Lock file maintenance (#272) by renovate[bot] ([c08ddb1](https://github.com/poweruptime/poweruptime/commit/c08ddb1e3cbceed5163cf012564930cf3bcebf42)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency gradle to v9 (#288) by renovate[bot] ([29087ac](https://github.com/poweruptime/poweruptime/commit/29087ac2f53d9607629c2d83729179ae79dc80ce)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1753709570...0.4.0-beta-1754582539)
 
@@ -62,29 +55,11 @@
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
-- Update dependency @ng-matero/extensions to v20.1.1 (#254) by renovate[bot] ([6d40209](https://github.com/poweruptime/poweruptime/commit/6d40209884cad7627c2c235898e08bcebd4ef81c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency com.icegreen:greenmail-junit5 to v2.1.4 (#255) by renovate[bot] ([ae023fe](https://github.com/poweruptime/poweruptime/commit/ae023fe37dcc115f385323e98b3bc455ae6c9a7d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency gradle to v8.14.3 (#256) by renovate[bot] ([9d7456e](https://github.com/poweruptime/poweruptime/commit/9d7456edb20aa620d8076d1322b6cfecea8c0c4e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency io.hypersistence:hypersistence-utils-hibernate-63 to v3.10.3 (#257) by renovate[bot] ([66241df](https://github.com/poweruptime/poweruptime/commit/66241df198be78244dcd4e228a99c417b15b0317)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier-plugin-tailwindcss to v0.6.14 (#258) by renovate[bot] ([c49fdfc](https://github.com/poweruptime/poweruptime/commit/c49fdfcddb452d2e10a8170e76ff5cd7a235d1a4)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update rabbitmq docker tag to v4.1.2 (#259) by renovate[bot] ([4673e87](https://github.com/poweruptime/poweruptime/commit/4673e87cb6f39b61650bec24314c72291d43ccdf)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @types/node to v22.16.3 (#262) by renovate[bot] ([b8b152f](https://github.com/poweruptime/poweruptime/commit/b8b152fd753dae0e31b94b94154a5031e0c03157)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angularmaterial monorepo to v20.1.0 (#261) by renovate[bot] ([0face9b](https://github.com/poweruptime/poweruptime/commit/0face9b8b07663225d6609c46d0f3b98629a9cf6)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo to v20.1.0 (#260) by renovate[bot] ([5f65dc9](https://github.com/poweruptime/poweruptime/commit/5f65dc98852c95e7b9cb4ce1c0a735de7a4c76d5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency com.github.ben-manes.caffeine:caffeine to v3.2.2 (#264) by renovate[bot] ([2abed59](https://github.com/poweruptime/poweruptime/commit/2abed597faaa21a725bcb1a30be6014d03abd53a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.liquibase:liquibase-core to v4.33.0 (#265) by renovate[bot] ([8b7bcd9](https://github.com/poweruptime/poweruptime/commit/8b7bcd96b5e6fdfd7f73ec5d89c7b8ad2fc1a331)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update plugin com.gradle.develocity to v4.1 (#268) by renovate[bot] ([91252d8](https://github.com/poweruptime/poweruptime/commit/91252d8809e17c26b3c019048e82956e40774f46)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update pnpm to v10.13.1 (#269) by renovate[bot] ([cbaf833](https://github.com/poweruptime/poweruptime/commit/cbaf833b92dc7a841a978eb64354ff2dc5851434)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update lint packages (#266) by renovate[bot] ([5f4dd35](https://github.com/poweruptime/poweruptime/commit/5f4dd35aa22489414a22613d98a55b9706da3ecc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update react email (#270) by renovate[bot] ([a7d283d](https://github.com/poweruptime/poweruptime/commit/a7d283d308a76651a9d68c537645b0d4e658d8ba)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @types/node to v22.16.4 (#267) by renovate[bot] ([14bf2d1](https://github.com/poweruptime/poweruptime/commit/14bf2d1481878c806e2a20185671083ef1964e7e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Fix commitlint not having commits available by Dafnik ([8ae51af](https://github.com/poweruptime/poweruptime/commit/8ae51af7ef52351be2b987a2845efbd91f36630f))
 - Add backend seed run configuration by Dafnik ([e61b0e9](https://github.com/poweruptime/poweruptime/commit/e61b0e9b5a7f6d94d8dee640c62dafb1dd6a81c8))
 - Run web:build:docker for Containerized run configuration by Dafnik ([1a23e26](https://github.com/poweruptime/poweruptime/commit/1a23e261bbf5c061b53a6629923df23bf2618dfa))
-- Lock file maintenance (#263) by renovate[bot] ([3333f39](https://github.com/poweruptime/poweruptime/commit/3333f396c06107125888a0a622b4ea0aa0dfb299)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Enhance pu cli by Dafnik ([15c13f3](https://github.com/poweruptime/poweruptime/commit/15c13f367db0d2add4312066a4179241575a9f60))
 - Style updates by Dafnik ([889638f](https://github.com/poweruptime/poweruptime/commit/889638f743a72e2b3d41206a5e59272a1bee252e))
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1753709570 by Dafnik ([9c611db](https://github.com/poweruptime/poweruptime/commit/9c611db9e693bc83de4d58886606fe2f3be8504c))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752429965...0.4.0-beta-1753709570)
 
@@ -93,10 +68,6 @@
 ### <!-- 1 -->🐛 Bug Fixes
 
 - Github release by Dafnik ([64f3bb3](https://github.com/poweruptime/poweruptime/commit/64f3bb31f05a0d1af6683d366e970f71bedbab3d))
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1752429965 by Dafnik ([8b7a0de](https://github.com/poweruptime/poweruptime/commit/8b7a0de285cfd230d7ff0ce7e00531d7bfcf1d2e))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752429414...0.4.0-beta-1752429965)
 
@@ -117,10 +88,6 @@
 
 - Cache daily uptime by Dafnik ([0e86d87](https://github.com/poweruptime/poweruptime/commit/0e86d875d50ea49e3eaebe91ab31199999cfde1e))
 - Run configuration and dev compose files by Dafnik ([d312a23](https://github.com/poweruptime/poweruptime/commit/d312a23e0820c85e60494fcaf051bea6b3a1ded0))
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1752429414 by Dafnik ([b30eba5](https://github.com/poweruptime/poweruptime/commit/b30eba5b6b14bbbaef5ebb8dfa18b6699d8a168e))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1752226296...0.4.0-beta-1752429414)
 
@@ -150,11 +117,6 @@
 - Add screenshots by Dafnik ([0d6690e](https://github.com/poweruptime/poweruptime/commit/0d6690ef83c6076848a28af5d11a708e4897f617))
 - Fix formatting error by Dafnik ([bdd1958](https://github.com/poweruptime/poweruptime/commit/bdd1958d90b6ca86f7a7f05d5af9ea953584bf8e))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Lock file maintenance (#252) by renovate[bot] ([e8a6336](https://github.com/poweruptime/poweruptime/commit/e8a6336b728e7fa769d56ac3b4c6f1a0ccbca84c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1752226296 by Dafnik ([f599bda](https://github.com/poweruptime/poweruptime/commit/f599bda22ccb397dddcd33e1f4dbac56409b96fa))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1751831283...0.4.0-beta-1752226296)
 
 ## 0.4.0-beta-1751831283 - 2025-07-06
@@ -180,44 +142,6 @@
 
 - Add OAuth2 setup guide by Dafnik ([5c08f7a](https://github.com/poweruptime/poweruptime/commit/5c08f7a67ea5d2dce222d3e23520f7c85e2b855e))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Lock file maintenance (#217) by renovate[bot] ([82f285b](https://github.com/poweruptime/poweruptime/commit/82f285bfa9987137fbd4988d34ab849cdc0609cb)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo (#218) by renovate[bot] ([06ef1e8](https://github.com/poweruptime/poweruptime/commit/06ef1e8e94657563d72b893103f24752e9f20cd5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update testcontainers to v1.21.2 (#219) by renovate[bot] ([a7db08a](https://github.com/poweruptime/poweruptime/commit/a7db08aea73b88196201c1759e2fe9fe1808978a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @react-email/components to v0.1.0 (#220) by renovate[bot] ([1a63f01](https://github.com/poweruptime/poweruptime/commit/1a63f01f290ea3412027fb01837e76f589acfe30)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier-plugin-tailwindcss to v0.6.13 (#221) by renovate[bot] ([280f300](https://github.com/poweruptime/poweruptime/commit/280f3002dcc892ea7ebf8387b91598f39308ffb5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.jsoup:jsoup to v1.21.1 (#222) by renovate[bot] ([bd106ee](https://github.com/poweruptime/poweruptime/commit/bd106ee9c7bfa40c6794772e5dd01cef410e7ba7)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update pnpm to v10.12.2 (#223) by renovate[bot] ([e99b059](https://github.com/poweruptime/poweruptime/commit/e99b059595af001066a91394bad0dacf00bbb906)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @ng-matero/extensions to v20.1.0 (#224) by renovate[bot] ([0df59a5](https://github.com/poweruptime/poweruptime/commit/0df59a5fdaa8a57fcc27435121addd19041e643c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier to v3.6.0 (#225) by renovate[bot] ([3c1698b](https://github.com/poweruptime/poweruptime/commit/3c1698b7cfcea6896ca008cadfa06ea8522ac830)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update plugin org.springframework.boot to v3.5.3 (#226) by renovate[bot] ([589428f](https://github.com/poweruptime/poweruptime/commit/589428f939b027a0659d06b406c0941622804b49)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update lint packages (#227) by renovate[bot] ([13663c1](https://github.com/poweruptime/poweruptime/commit/13663c1b0beafc30a18f662babd7e7f9133d2546)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update kotlin dependencies to v2.2.0 (#229) by renovate[bot] ([a9d2678](https://github.com/poweruptime/poweruptime/commit/a9d26782f10630f359a162b9eff2fe72f430aa0f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update react email (#228) by renovate[bot] ([3d8af30](https://github.com/poweruptime/poweruptime/commit/3d8af307914b9bc59c7ef9b7a89fec05ec293604)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @types/node to v22.15.32 (#230) by renovate[bot] ([f385654](https://github.com/poweruptime/poweruptime/commit/f385654a856cdc4c1d1e6a8e9018a33493013704)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier to v3.6.1 (#232) by renovate[bot] ([72ad55e](https://github.com/poweruptime/poweruptime/commit/72ad55eea2e45f12a504457d235bd0af552fe8a7)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency postcss to v8.5.6 (#231) by renovate[bot] ([a79d013](https://github.com/poweruptime/poweruptime/commit/a79d0139b5d85f6108fd931a99cef1f93ec6b3c4)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @jsverse/transloco-keys-manager to v6.2.2 (#233) by renovate[bot] ([738e061](https://github.com/poweruptime/poweruptime/commit/738e0614c6e9eabd4415c0350fb21ee16c72b55e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency ngxtension to v5.1.0 (#234) by renovate[bot] ([edafdbb](https://github.com/poweruptime/poweruptime/commit/edafdbbfda7f633fa0650c643474630f938ebae6)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency angular-eslint to v20 (#235) by renovate[bot] ([69e10c4](https://github.com/poweruptime/poweruptime/commit/69e10c412c875e795aebcc06ccd723e0e1a8bf5d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update ngx-dropzone to v20 (#236) by renovate[bot] ([ddc562e](https://github.com/poweruptime/poweruptime/commit/ddc562ecf8cfdbd6f2987352d9fa32ce37db7c3c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Lock file maintenance (#246) by renovate[bot] ([ae0973d](https://github.com/poweruptime/poweruptime/commit/ae0973d5075d71296ad1678d9f7a54acc77bc58a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo (#237) by renovate[bot] ([aba4023](https://github.com/poweruptime/poweruptime/commit/aba40236720b5191279107b42a02bb066d969144)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier to v3.6.2 (#240) by renovate[bot] ([da469c4](https://github.com/poweruptime/poweruptime/commit/da469c477719229f0b8f43d16f48d0b478224e41)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update pnpm to v10.12.4 (#241) by renovate[bot] ([a8c7cc6](https://github.com/poweruptime/poweruptime/commit/a8c7cc6d5db6d1ca81f776f253b32c3e7d57522d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Generate new license report (#247) by github-actions[bot] ([f3015a1](https://github.com/poweruptime/poweruptime/commit/f3015a16b3c0d0bf591fbc5a0edc5c3b4bbe5e8d)), Co-authored-by:Dafnik <16242839+Dafnik@users.noreply.github.com>
-- Update dependency @fastify/http-proxy to v11.3.0 (#244) by renovate[bot] ([63c7850](https://github.com/poweruptime/poweruptime/commit/63c7850af0b2539dae604c29613c5d3d02001637)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angularmaterial monorepo to v20.0.4 (#238) by renovate[bot] ([756ad8c](https://github.com/poweruptime/poweruptime/commit/756ad8cc4c1700a7c79896fcf1d03ddd6725de9e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update testcontainers to v1.21.3 (#243) by renovate[bot] ([c7b0e0e](https://github.com/poweruptime/poweruptime/commit/c7b0e0e24bd34277c2cdd32bcd5f31a2fbeb4250)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.jetbrains.kotlinx:kotlinx-serialization-json to v1.9.0 (#245) by renovate[bot] ([1c00b91](https://github.com/poweruptime/poweruptime/commit/1c00b914d047a44066625287d4e1100adfd7a1ca)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @types/node to v22.15.34 (#239) by renovate[bot] ([bb4a01e](https://github.com/poweruptime/poweruptime/commit/bb4a01e3ede028e5ec443061b692790b6091415b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update lint packages (#248) by renovate[bot] ([0c11d5f](https://github.com/poweruptime/poweruptime/commit/0c11d5f0f5f2adb65a0002b899bc35e91d7cc06d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @jsverse/transloco-keys-manager to v7 (#251) by renovate[bot] ([197ec67](https://github.com/poweruptime/poweruptime/commit/197ec67fc4005d4673d6dbb800bec9a01efa9227)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update tailwindcss monorepo to v4.1.11 (#242) by renovate[bot] ([0ce6b7a](https://github.com/poweruptime/poweruptime/commit/0ce6b7a7ba6e1ee41daba15c72d1948f3e736551)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency typescript-eslint to v8.35.1 (#249) by renovate[bot] ([5c0e504](https://github.com/poweruptime/poweruptime/commit/5c0e504fcdc37aa2bbe702ab9359b7e29a1a0bac)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1751831283 by Dafnik ([6fb9394](https://github.com/poweruptime/poweruptime/commit/6fb93945fb1e130e5c5a03bcc7942dcace225022))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750694580...0.4.0-beta-1751831283)
 
 ## 0.4.0-beta-1750694580 - 2025-06-23
@@ -227,10 +151,6 @@
 - Disable backend and web health check by Dafnik ([da23d26](https://github.com/poweruptime/poweruptime/commit/da23d2612055dda81e6167b42ca66ed9b7cad058))
 - Add team to MonitorDto by Dafnik ([48f1ad8](https://github.com/poweruptime/poweruptime/commit/48f1ad8c4f654cbb558b0f8fa0308f18d5e03659))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1750694580 by Dafnik ([d8d93ca](https://github.com/poweruptime/poweruptime/commit/d8d93ca5b88382a58d98999cbe41cad0abf36d6a))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750690322...0.4.0-beta-1750694580)
 
 ## 0.4.0-beta-1750690322 - 2025-06-23
@@ -239,29 +159,13 @@
 
 - Casing by Dafnik ([98fdccf](https://github.com/poweruptime/poweruptime/commit/98fdccf8b5b0a9a4888feda657bb27b11237c4fb))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1750690322 by Dafnik ([07472ad](https://github.com/poweruptime/poweruptime/commit/07472ade47336002228928a7476cc6eb0b615e45))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750688139...0.4.0-beta-1750690322)
-
-## 0.4.0-beta-1750688139 - 2025-06-23
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1750688139 by Dafnik ([53e66ca](https://github.com/poweruptime/poweruptime/commit/53e66cad914cbfe89cbf9fb4282dc8e2285e82a1))
-
-[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750687541...0.4.0-beta-1750688139)
 
 ## 0.4.0-beta-1750687541 - 2025-06-23
 
 ### <!-- 2 -->🚜 Refactor
 
 - Performance improvements by Dafnik ([8189c51](https://github.com/poweruptime/poweruptime/commit/8189c5189523f8bcaa309d33dab7b55c11eb2c37))
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1750687541 by Dafnik ([8dfe562](https://github.com/poweruptime/poweruptime/commit/8dfe562d160da2e184095fc30e4e8c3864dcfec9))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1750679987...0.4.0-beta-1750687541)
 
@@ -308,32 +212,10 @@
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
-- Set POWERUPTIME_VERSION to 0.2.4 by Dafnik ([816ddb8](https://github.com/poweruptime/poweruptime/commit/816ddb895ef82c2576b984dfe9814ae00ca0b734))
-- Update jackson dependencies to v2.19.1 (#132) by renovate[bot] ([46b3e2f](https://github.com/poweruptime/poweruptime/commit/46b3e2fecd083367339d593bbccae6756facecc6)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo (#201) by renovate[bot] ([262b282](https://github.com/poweruptime/poweruptime/commit/262b282d401449f852b8e15734156ba24f5f8d56)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency io.hypersistence:hypersistence-utils-hibernate-63 to v3.10.1 (#203) by renovate[bot] ([7031f7c](https://github.com/poweruptime/poweruptime/commit/7031f7c97edd8dec6f620ede165856afb373b6e7)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency prettier-plugin-tailwindcss to v0.6.12 (#205) by renovate[bot] ([bbaa475](https://github.com/poweruptime/poweruptime/commit/bbaa475d163b4b37d74d01831d34cf60529ca3a4)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency tailwindcss-motion to v1.1.1 (#206) by renovate[bot] ([7dd4bf6](https://github.com/poweruptime/poweruptime/commit/7dd4bf66c9fb33ff90b4b16daf2e5dd3023b9f2b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update react email (#207) by renovate[bot] ([60a7136](https://github.com/poweruptime/poweruptime/commit/60a71365e9a15aa5d7c7027716c23b6164f0a9cc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency angular-eslint to v19.8.0 (#210) by renovate[bot] ([70cae7d](https://github.com/poweruptime/poweruptime/commit/70cae7d841d02a9814fed87f8ecf69b7d8a4bb5b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angularmaterial monorepo to v20.0.3 (#202) by renovate[bot] ([74dda86](https://github.com/poweruptime/poweruptime/commit/74dda8676dcde605e9e9e6099af451b3970bf429)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency postcss to v8.5.5 (#204) by renovate[bot] ([3ecaadc](https://github.com/poweruptime/poweruptime/commit/3ecaadc7c77aea4f23e9d37e2120363ed3eab946)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update tailwindcss monorepo to v4.1.10 (#208) by renovate[bot] ([fe85cfb](https://github.com/poweruptime/poweruptime/commit/fe85cfb4b16922211d54aaea8f272e73d7417ebf)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @fastify/http-proxy to v11.2.0 (#211) by renovate[bot] ([86f75b2](https://github.com/poweruptime/poweruptime/commit/86f75b29743f6da8c52e2c140db86780df7fbc3b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency fastify to v5.4.0 (#212) by renovate[bot] ([5c9ab2d](https://github.com/poweruptime/poweruptime/commit/5c9ab2dc67d9daea5536c563dfc5dcfbef743ca5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update pnpm to v10.12.1 (#214) by renovate[bot] ([0f28b2f](https://github.com/poweruptime/poweruptime/commit/0f28b2fadeb75882b2b029c8fe4f2e9a2b261883)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency git-cliff to v2.9.1 (#213) by renovate[bot] ([18722f6](https://github.com/poweruptime/poweruptime/commit/18722f61b8eaf0bcf4c68eeb3a3f1d0050a26673)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update typescript types (#209) by renovate[bot] ([b16db48](https://github.com/poweruptime/poweruptime/commit/b16db48b786bb9baa3ea53722981bb7453bf5f94)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @ng-matero/extensions to v20.0.2 (#215) by renovate[bot] ([80bb535](https://github.com/poweruptime/poweruptime/commit/80bb5353fd1298dbc7ece3eb71e2213738daf70f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.3.0 by Dafnik ([be0b499](https://github.com/poweruptime/poweruptime/commit/be0b4992d017232d95b1959380715a9ba4f7c12e))
-- Set POWERUPTIME_VERSION to 0.3.1 by Dafnik ([0b2acc8](https://github.com/poweruptime/poweruptime/commit/0b2acc87390474479b86d9f0b7af03397bd68148))
 - Remove unused packages by Dafnik ([7dcae63](https://github.com/poweruptime/poweruptime/commit/7dcae63eb4ac6d4e42d42dacbcf0b04ed7c52f27))
 - Dev badge by Dafnik ([22f9df0](https://github.com/poweruptime/poweruptime/commit/22f9df04bbeefd8867261a4883cfb6437e596e3f))
 - Replace MatAnchor with MatButton by Dafnik ([70874f8](https://github.com/poweruptime/poweruptime/commit/70874f848d73d432f11bba6167c2c79c8c8f5612))
-- Update to JDK 21 by Dafnik ([d520de2](https://github.com/poweruptime/poweruptime/commit/d520de23b92fa647608412e1a5848e1bad4c3cd1))
-- Lock file maintenance (#216) by renovate[bot] ([f81a167](https://github.com/poweruptime/poweruptime/commit/f81a1671caf191935276e1811b3c8b7c8e6a5ef7)), Co-authored-by:Dafnik <git@dafnik.me>, Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Add spring boot actuator endpoints by Dafnik ([de2a16d](https://github.com/poweruptime/poweruptime/commit/de2a16dae7c48edd29d67fd4a0905c68d95270a1))
-- Set POWERUPTIME_VERSION to 0.4.0-beta-1750679987 by Dafnik ([3e1aee2](https://github.com/poweruptime/poweruptime/commit/3e1aee2598067d32b41b33c9da3d31ecd27d2a79))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.4-beta-1749720011...0.4.0-beta-1750679987)
 
@@ -345,11 +227,6 @@
 - Styles by Dafnik ([51395ce](https://github.com/poweruptime/poweruptime/commit/51395ce777cc480a9f79012f55dcaf510f1e3ec6))
 - Render root page on server by Dafnik ([2ec529e](https://github.com/poweruptime/poweruptime/commit/2ec529e5566049996da3f1a1bed53b66f5b94ce8))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.3 by Dafnik ([7a692d4](https://github.com/poweruptime/poweruptime/commit/7a692d40c5083b3ee4e397fb27f6613abd381770))
-- Set POWERUPTIME_VERSION to 0.2.4-beta-1749720011 by Dafnik ([68b6767](https://github.com/poweruptime/poweruptime/commit/68b6767b7a611e36c29ebcc593d3838bdaceea8e))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.3-beta-1749716466...0.2.4-beta-1749720011)
 
 ## 0.2.3-beta-1749716466 - 2025-06-12
@@ -357,10 +234,6 @@
 ### <!-- 1 -->🐛 Bug Fixes
 
 - APPRISE_URL default value by Dafnik ([113c9df](https://github.com/poweruptime/poweruptime/commit/113c9df6810a7421c28a96b3a108163b8da634ce))
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.3-beta-1749716466 by Dafnik ([c96b821](https://github.com/poweruptime/poweruptime/commit/c96b821b2a3eaf3c02d8a6890c66d0e8772f0e21))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.3-beta-1749716076...0.2.3-beta-1749716466)
 
@@ -383,38 +256,7 @@
 
 - Add logging to AppriseSender by Dafnik ([99e9191](https://github.com/poweruptime/poweruptime/commit/99e9191ecdbe5c802f2a5e1c9c4e8ce7aa16d005))
 
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.2 by Dafnik ([0dfc5c5](https://github.com/poweruptime/poweruptime/commit/0dfc5c549f6733b20803c441a76f6efa4b82e782))
-- Update postgres (#199) by renovate[bot] ([04b49a6](https://github.com/poweruptime/poweruptime/commit/04b49a6ef42d9dad4a06e73cef0322e9891b5946)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.2.3-beta-1749714382 by Dafnik ([8db5ebb](https://github.com/poweruptime/poweruptime/commit/8db5ebbd01208e9f83817e030a4acc3e995c1d80))
-- Set POWERUPTIME_VERSION to 0.2.3-beta-1749716076 by Dafnik ([40f02c1](https://github.com/poweruptime/poweruptime/commit/40f02c1e80bea2360e8bb54b77f1d0fc61fe78f5))
-
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749644582...0.2.3-beta-1749716076)
-
-## 0.2.2-beta-1749644582 - 2025-06-11
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.2-beta-1749644582 by Dafnik ([6804648](https://github.com/poweruptime/poweruptime/commit/6804648dd9bcac15ddf0ea9f8a6ee35f5dd72327))
-
-[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749644217...0.2.2-beta-1749644582)
-
-## 0.2.2-beta-1749644217 - 2025-06-11
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.2-beta-1749644217 by Dafnik ([19ed14f](https://github.com/poweruptime/poweruptime/commit/19ed14f55ee50db8ddc6b750193700b224b4c7dc))
-
-[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.2-beta-1749642872...0.2.2-beta-1749644217)
-
-## 0.2.2-beta-1749642872 - 2025-06-11
-
-### <!-- 7 -->⚙️ Miscellaneous Tasks
-
-- Set POWERUPTIME_VERSION to 0.2.2-beta-1749642872 by Dafnik ([7201dea](https://github.com/poweruptime/poweruptime/commit/7201dea62f6f491ac69cb0fa6b8b697fbe05a65d))
-
-[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.1-beta-1749642330...0.2.2-beta-1749642872)
 
 ## 0.2.1-beta-1749642330 - 2025-06-11
 
@@ -443,41 +285,7 @@
 
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
-- Update angular monorepo (#164) by renovate[bot] ([e89d876](https://github.com/poweruptime/poweruptime/commit/e89d8767b007c01d28d265f7785dc7c9f48c23ae)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.liquibase:liquibase-core to v4.32.0 (#166) by renovate[bot] ([7eefdb9](https://github.com/poweruptime/poweruptime/commit/7eefdb95c3c6812586c07684dbead292dbe4b277)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency software.xdev.mockserver:client to v1.0.17 (#167) by renovate[bot] ([4ae705f](https://github.com/poweruptime/poweruptime/commit/4ae705ff183a9189e345758a12a00dc5a66c600b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency marked to v15.0.12 (#165) by renovate[bot] ([dbb8a73](https://github.com/poweruptime/poweruptime/commit/dbb8a7371b483b31561ddd85740f064e34aeadb2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency software.xdev.mockserver:testcontainers to v1.0.17 (#168) by renovate[bot] ([a123b34](https://github.com/poweruptime/poweruptime/commit/a123b3473013ff117e8964bf088e4a1f3cea964d)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency react-email to v4.0.15 (#170) by renovate[bot] ([0c2f9a2](https://github.com/poweruptime/poweruptime/commit/0c2f9a2dd49961fd6c944c26305d0825966157f8)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.springframework.retry:spring-retry to v2.0.12 (#169) by renovate[bot] ([90db495](https://github.com/poweruptime/poweruptime/commit/90db49551fae449aa80c853b4e0ec7c866da7c6a)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angular monorepo to v19.2.14 (#174) by renovate[bot] ([5ffd384](https://github.com/poweruptime/poweruptime/commit/5ffd3842e7449d9d072cc338023a3e46511350ae)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency gradle to v8.14.1 (#176) by renovate[bot] ([3fb6335](https://github.com/poweruptime/poweruptime/commit/3fb6335efd6c7381327c0eed2c24b2a2312a6715)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update testcontainers to v1.21.1 (#181) by renovate[bot] ([0adf605](https://github.com/poweruptime/poweruptime/commit/0adf605e9812dbeeefa78a18a90fe8e6e7f92215)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.postgresql:postgresql to v42.7.6 (#177) by renovate[bot] ([73d6368](https://github.com/poweruptime/poweruptime/commit/73d636884744abc4d73b773ea31151ee46b5ae5b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update plugin com.gradle.develocity to v4.0.2 (#178) by renovate[bot] ([12d3f2f](https://github.com/poweruptime/poweruptime/commit/12d3f2fcf0902f40f087d6ac3953618860041723)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update angularmaterial monorepo to v19.2.18 (#175) by renovate[bot] ([4a11551](https://github.com/poweruptime/poweruptime/commit/4a11551e7989bd39f8aba42d6ea503cc3b6a1b71)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Generate new license report (#179) by github-actions[bot] ([dfb30a3](https://github.com/poweruptime/poweruptime/commit/dfb30a350f39d72cca2cdd71630c4d9ba5e43a36)), Co-authored-by:Dafnik <16242839+Dafnik@users.noreply.github.com>
-- Update dependency ngx-mat-select-search to v8.0.2 (#182) by renovate[bot] ([1f60f08](https://github.com/poweruptime/poweruptime/commit/1f60f08a3b768bea607c0bda0ec4a2dd2705a023)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.springframework.cloud:spring-cloud-dependencies to v2025 (#190) by renovate[bot] ([7f5da99](https://github.com/poweruptime/poweruptime/commit/7f5da99638d0923e91e625a6e0aa5e12c42dbcea)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update tailwindcss monorepo to v4.1.8 (#180) by renovate[bot] ([186497b](https://github.com/poweruptime/poweruptime/commit/186497b6c1f840b24028df6f6e82479a7ff0bfb2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.apache.httpcomponents.client5:httpclient5 to v5.5 (#187) by renovate[bot] ([02cecea](https://github.com/poweruptime/poweruptime/commit/02cecea68623b7f8f9f78d5f63b6bcea631b2386)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency tinymce to v7.9.1 (#188) by renovate[bot] ([af6db7b](https://github.com/poweruptime/poweruptime/commit/af6db7bfa1d7607bbec74a0bbb4c7235b8b15372)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency angular-eslint to v19.6.0 (#186) by renovate[bot] ([5fc74e2](https://github.com/poweruptime/poweruptime/commit/5fc74e2c6521c6f7b144f3bb71aee62b688ea1a9)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Lock file maintenance (#172) by renovate[bot] ([1131b57](https://github.com/poweruptime/poweruptime/commit/1131b57799bcdbfd8c5d70490d184b3d4a91c434)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency typescript-eslint to v8.33.0 (#189) by renovate[bot] ([dbba1a0](https://github.com/poweruptime/poweruptime/commit/dbba1a0c80997c60db9d79df07dc31be9d93a98f)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency @ng-matero/extensions to v19.4.0 (#185) by renovate[bot] ([a3d91e3](https://github.com/poweruptime/poweruptime/commit/a3d91e3eb7593f4be656f4f5bdd085e2e4e0f769)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency postcss to v8.5.4 (#183) by renovate[bot] ([d579b47](https://github.com/poweruptime/poweruptime/commit/d579b47e957bcc2b53e36b97b5d8bbe09a5b20cf)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update typescript types (#184) by renovate[bot] ([84a8d54](https://github.com/poweruptime/poweruptime/commit/84a8d542da25e350618d7b0e83f61bd10552dbc5)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Lock file maintenance (#194) by renovate[bot] ([b86ce8c](https://github.com/poweruptime/poweruptime/commit/b86ce8ce1c1dbac142e6bc7410454423486a1546)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Fix format by Dafnik ([d8eafe8](https://github.com/poweruptime/poweruptime/commit/d8eafe87e19138c6d375f63556a82220f836a905))
-- Update dependency org.springdoc:springdoc-openapi-starter-webmvc-ui to v2.8.9 (#195) by renovate[bot] ([befb934](https://github.com/poweruptime/poweruptime/commit/befb9341b83dceed4d496808e93fb77e89a0e3ac)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update plugin org.springframework.boot to v3.5.0 (#171) by renovate[bot] ([ddb0564](https://github.com/poweruptime/poweruptime/commit/ddb05642644f3ffafd1e7bb6b75673233940c76c)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency io.github.oshai:kotlin-logging-jvm to v7.0.7 (#197) by renovate[bot] ([1203106](https://github.com/poweruptime/poweruptime/commit/1203106a609596083581b64153c81fb18009210b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency gradle to v8.14.2 (#196) by renovate[bot] ([f211ad0](https://github.com/poweruptime/poweruptime/commit/f211ad0f6a8540c176494493138bf7f6ed9e5150)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update rabbitmq docker tag to v4.1.1 (#198) by renovate[bot] ([4b30d3d](https://github.com/poweruptime/poweruptime/commit/4b30d3d18c4c61aeb135e4857f4daab1bf8ecfeb)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.2.0 by Dafnik ([32738fd](https://github.com/poweruptime/poweruptime/commit/32738fd586c28ccf82a4a3365e5f4f56a859b058))
-- Set POWERUPTIME_VERSION to 0.2.1 by Dafnik ([c3e0438](https://github.com/poweruptime/poweruptime/commit/c3e043810bc032be1729ec69e2bfe546461d4f69))
-- Set POWERUPTIME_VERSION to 0.2.1-beta-1749642330 by Dafnik ([0ae498f](https://github.com/poweruptime/poweruptime/commit/0ae498f5f8b54c43aabca6a83fdbba61c80331c4))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.2.0-beta-1747925021...0.2.1-beta-1749642330)
 
@@ -645,35 +453,28 @@
 
 - Make release not concurrent by Dafnik ([3d72de5](https://github.com/poweruptime/poweruptime/commit/3d72de5827e654a33e0b7b5bae1c307447c4d19e)), docs:add issue templates
 - Repository cleanup & fixes by Dafnik ([0e89595](https://github.com/poweruptime/poweruptime/commit/0e895951b43eecda08c3f0c29a7c097cc4e95501))
-- Update traefik docker tag to v3.3 by renovate[bot] ([64dca3b](https://github.com/poweruptime/poweruptime/commit/64dca3bc0940b98b087c1a7a5647e2b8f76e333e))
-- Update typescript types by renovate[bot] ([63bcd4e](https://github.com/poweruptime/poweruptime/commit/63bcd4e642dbe4273806c131c8d6dbcf18e92d39))
-- Update plugin org.springframework.boot to v3.4.4 by renovate[bot] ([b3b6a1b](https://github.com/poweruptime/poweruptime/commit/b3b6a1b803405c907982af2b261d32fa50b7f6ce))
-- Update kotlin dependencies to v2.1.20 by renovate[bot] ([e4640cb](https://github.com/poweruptime/poweruptime/commit/e4640cbdd2918e17df7d4a34f8643b72d29e7647))
-- Generate new license report by Dafnik ([ebdd3e2](https://github.com/poweruptime/poweruptime/commit/ebdd3e2f331f036a2c93f4e005966f8ace16c773))
-- Update dependency @types/node to v22.13.15 by renovate[bot] ([031db02](https://github.com/poweruptime/poweruptime/commit/031db0230e6d7cc540b2897ca9d39a66d4b93241))
 - Tailwind v4 migration by Dafnik ([539a18f](https://github.com/poweruptime/poweruptime/commit/539a18fe26e260b9ee87204d2dede46715432dbf))
 - Only run infra mirror on changes to the infra directory by Dafnik ([c2d0256](https://github.com/poweruptime/poweruptime/commit/c2d0256288fea0c81596a125d2087db9643da4ee))
-- Update detekt and prettier runner by Dafnik ([5dbd56a](https://github.com/poweruptime/poweruptime/commit/5dbd56a4d605637ab9633ddff19584cad7cf8009))
-- Update rabbitmq docker tag to v4.0.8 by renovate[bot] ([3c9356e](https://github.com/poweruptime/poweruptime/commit/3c9356e1033206c0523e1fcae2f5c52bc27e6092))
-- Update dependency tailwindcss to v4.1.3 by renovate[bot] ([26fe590](https://github.com/poweruptime/poweruptime/commit/26fe59009252f02325d3316a25cf3738b4666369))
-- Update rabbitmq docker tag to v4.0.9 by renovate[bot] ([5a4fb12](https://github.com/poweruptime/poweruptime/commit/5a4fb1247f9d384149deea90bd50b85b61f138b2))
-- Update typescript types by renovate[bot] ([649e97c](https://github.com/poweruptime/poweruptime/commit/649e97ce31731ab8b0c9d82302a2462fc8efd693))
-- Update plugin com.gradle.develocity to v4 by renovate[bot] ([79693d9](https://github.com/poweruptime/poweruptime/commit/79693d92a75290646d2378f77526378d2d9d8529))
-- Update dependency typescript to v5.8.3 by renovate[bot] ([5230f66](https://github.com/poweruptime/poweruptime/commit/5230f6602594b0a764a7074d3c5ba52335440bf3))
-- Update dependency tailwindcss to v4.1.4 by renovate[bot] ([42993eb](https://github.com/poweruptime/poweruptime/commit/42993eb409dcedc9e3e61afb71291b40f4552bf8))
-- Update dafnik/setup-node-pnpm action to v4 by renovate[bot] ([79bb7e6](https://github.com/poweruptime/poweruptime/commit/79bb7e668afa239e668bb0cf6575c39b53601835))
-- Set POWERUPTIME_VERSION to 0.1.0 by Dafnik ([e5666d0](https://github.com/poweruptime/poweruptime/commit/e5666d075704eb0ad8a8da2c21da5c727a4f21c3))
-- Update angular monorepo (#119) by renovate[bot] ([ea0cefc](https://github.com/poweruptime/poweruptime/commit/ea0cefc90c2dd7fba4099600f406f514cbf37d38)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency org.apache.httpcomponents.client5:httpclient5 to v5.4.4 (#127) by renovate[bot] ([b78b695](https://github.com/poweruptime/poweruptime/commit/b78b695c47d71fb37f2464a9b5dbc676355f5054)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update dependency io.hypersistence:hypersistence-utils-hibernate-63 to v3.9.10 (#124) by renovate[bot] ([3685013](https://github.com/poweruptime/poweruptime/commit/368501304746daf1068addc4c9f3116770e2fe35)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Remove cmdk by Dafnik ([9ef9d66](https://github.com/poweruptime/poweruptime/commit/9ef9d6665923d98edf2bce0b98219a8a99ca4ca1))
 - Run transloco validator in right scope by Dafnik ([a602e12](https://github.com/poweruptime/poweruptime/commit/a602e12a3f28c7bfb124413283ed56132f5ee20e))
-- Update typescript types (#141) by renovate[bot] ([d88bc4e](https://github.com/poweruptime/poweruptime/commit/d88bc4e586edbfdb5652cf3dcae16cd2e266dd01)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Update typescript types (#153) by renovate[bot] ([1634550](https://github.com/poweruptime/poweruptime/commit/1634550d0c802498427de1b7434dbb5d1ae540d8)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency software.xdev.mockserver:testcontainers to v1.0.16 (#146) by renovate[bot] ([026c984](https://github.com/poweruptime/poweruptime/commit/026c984d58bfea7a5e81b1e51f904db2abf8743e)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency org.springdoc:springdoc-openapi-starter-webmvc-ui to v2.8.8 (#144) by renovate[bot] ([6915599](https://github.com/poweruptime/poweruptime/commit/691559963e1a8c8824d48c2a1df4c2c16ef47252)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update react email (#147) by renovate[bot] ([1816f4d](https://github.com/poweruptime/poweruptime/commit/1816f4d36d90698c6b618e3dcdc7a8ee0d081256)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angularmaterial monorepo to v19.2.15 (#143) by renovate[bot] ([b080772](https://github.com/poweruptime/poweruptime/commit/b08077213eb13d54fd9e065b8d80865daad10695)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency tailwindcss to v4.1.6 (#139) by renovate[bot] ([b1d5617](https://github.com/poweruptime/poweruptime/commit/b1d5617bcfde6207495d98bc4b42d5e51ce7b222)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update traefik docker tag to v3.4 (#152) by renovate[bot] ([515ca3a](https://github.com/poweruptime/poweruptime/commit/515ca3a990a05496135026a0daed54af026429c2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update angularmaterial monorepo to v19.2.16 (#149) by renovate[bot] ([d2bbba9](https://github.com/poweruptime/poweruptime/commit/d2bbba9be8f7745de65de7fcb43322fe8ba8aa44)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update kotlin dependencies to v2.1.21 (#140) by renovate[bot] ([583bd41](https://github.com/poweruptime/poweruptime/commit/583bd41a6605c047bab0eb53cbeb2cc15f889480)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @react-email/components to v0.0.41 (#150) by renovate[bot] ([3420d75](https://github.com/poweruptime/poweruptime/commit/3420d754e36d77aa50279c5dced9f93a197bbeb4)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency software.xdev.mockserver:client to v1.0.16 (#145) by renovate[bot] ([cc2904a](https://github.com/poweruptime/poweruptime/commit/cc2904a032370daa7924dbe6d54505d745458ddb)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency openapi-typescript to v7.8.0 (#148) by renovate[bot] ([892b11d](https://github.com/poweruptime/poweruptime/commit/892b11d3e0568b68c7dd3a686553155050d31b07)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update postgres docker tag to v17.5 (#151) by renovate[bot] ([96411fd](https://github.com/poweruptime/poweruptime/commit/96411fdde80c951613a29e32480e6013fcc72ad8)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @std/fmt to v1.0.8 (#155) by renovate[bot] ([5e332ab](https://github.com/poweruptime/poweruptime/commit/5e332abe7c48e924bb72e095547a27e8a1af88b3)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update pnpm to v10.11.0 (#156) by renovate[bot] ([368efa4](https://github.com/poweruptime/poweruptime/commit/368efa4d2b49ea4d60632e9b975f5c75f7854d22)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update ngrx to v19.2.0 (#157) by renovate[bot] ([d4880fc](https://github.com/poweruptime/poweruptime/commit/d4880fc8361db0764b5a2e692c3864824687fad2)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency eventsource to v4 (#158) by renovate[bot] ([0715c8e](https://github.com/poweruptime/poweruptime/commit/0715c8ec8803c4dfc50287c2fdb1506544122602)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
+- Update dependency @swimlane/ngx-charts to v22 (#159) by renovate[bot] ([2fe4595](https://github.com/poweruptime/poweruptime/commit/2fe45955563be9a3e965244f37fd1d81a70ada4b)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
 - Try to fix renovate to use chore semantic commit type by Dafnik ([3b5dcb3](https://github.com/poweruptime/poweruptime/commit/3b5dcb39e2d60fe0cd7461e4c7e1c4d4ab57b980))
-- Lock file maintenance (#161) by renovate[bot] ([5ab60cb](https://github.com/poweruptime/poweruptime/commit/5ab60cb6312fd85268369ac5d1a6b933d5e2fbfc)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Lock file maintenance (#162) by renovate[bot] ([e7847b1](https://github.com/poweruptime/poweruptime/commit/e7847b1cc1c3f1c752dca7899e7afaaff1430ce9)), Co-authored-by:renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>
-- Set POWERUPTIME_VERSION to 0.2.0-beta-1747925021 by Dafnik ([4595f4d](https://github.com/poweruptime/poweruptime/commit/4595f4ded4ac7a3b06a1d64730b9cfde1d264c72))
 
 [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.0.9-beta-1743093279751...0.2.0-beta-1747925021)
 
@@ -856,36 +657,10 @@
 ### <!-- 7 -->⚙️ Miscellaneous Tasks
 
 - Fix by Dafnik ([c860393](https://github.com/poweruptime/poweruptime/commit/c8603930110717bee9460dbc030cef1a1960e9cc))
-- Update dependency @types/node to v22.12.0 by renovate[bot] ([a06c287](https://github.com/poweruptime/poweruptime/commit/a06c2879ddcac50a6f23f9c60b64ef21ba3aa306))
-- Update dependency postcss to v8.5.1 by renovate[bot] ([3dca3ea](https://github.com/poweruptime/poweruptime/commit/3dca3eac23a029f5c3803543f556ae0a13a15e6c))
 - Fix pnpm workspace path by Dafnik ([9e45fd6](https://github.com/poweruptime/poweruptime/commit/9e45fd691dfb85560c098b5d84a420655b792577))
 - Fix containter name by Dafnik ([c98ef72](https://github.com/poweruptime/poweruptime/commit/c98ef72afe73b5a451062d66f220bfb04f901ec4))
-- Update rabbitmq docker tag to v4.0.6 by renovate[bot] ([b1bd9f6](https://github.com/poweruptime/poweruptime/commit/b1bd9f6f56f8eed081300d4099e2b4406d093b6f))
-- Update plugin com.gradle.develocity to v3.19.1 by renovate[bot] ([62e38d5](https://github.com/poweruptime/poweruptime/commit/62e38d50bbaa2d8919ae8d7fd3c6a4c41558f803))
-- Update dependency gradle to v8.12.1 by renovate[bot] ([5c783f6](https://github.com/poweruptime/poweruptime/commit/5c783f6400111ef227e4fbb2156c073d962f3eb2))
-- Update dependency postcss to v8.5.2 by renovate[bot] ([0e50049](https://github.com/poweruptime/poweruptime/commit/0e50049a09db8488f74498afa92088d95933de28))
-- Update plugin org.springframework.boot to v3.4.2 by renovate[bot] ([64d64bd](https://github.com/poweruptime/poweruptime/commit/64d64bd5a3cef74ee0c8dcdb4304ae8980eda9a8))
 - Do not run web ci for every branch by Dafnik ([cf2099b](https://github.com/poweruptime/poweruptime/commit/cf2099b1dd94523842de7731a9fc0217179fc4f5))
 - Remove prNotPending by Dafnik ([db89667](https://github.com/poweruptime/poweruptime/commit/db896678069b01930dd757210530c97438592c27))
-- Update dependency @types/node to v22.13.4 by renovate[bot] ([46cfe97](https://github.com/poweruptime/poweruptime/commit/46cfe9755604747106050b2feb7f108a81a4ef36))
-- Update dependency prettier to v3.5.1 by renovate[bot] ([25d0cf4](https://github.com/poweruptime/poweruptime/commit/25d0cf4c689f9df1422c999f8ce0264b569ac003))
-- Update postgres docker tag to v17.3 by renovate[bot] ([96c526c](https://github.com/poweruptime/poweruptime/commit/96c526cb8b394afec668c6daa3050e3783959cab))
-- Update plugin com.gradle.develocity to v3.19.2 by renovate[bot] ([7700bbf](https://github.com/poweruptime/poweruptime/commit/7700bbfa2f1add9356f4fe83f6b8a5df94d625ae))
-- Update react email by renovate[bot] ([85c15f9](https://github.com/poweruptime/poweruptime/commit/85c15f990315e044c79b43bf43c21f2abca21175))
-- Update dependency @types/node to v22.13.5 by renovate[bot] ([a86e39d](https://github.com/poweruptime/poweruptime/commit/a86e39d905862633c5d18718e90ef9da691ac03b))
-- Update dependency postcss to v8.5.3 by renovate[bot] ([feb0a14](https://github.com/poweruptime/poweruptime/commit/feb0a14062740900da6208a0fc045f55bed0d229))
-- Update dependency prettier to v3.5.2 by renovate[bot] ([e24409d](https://github.com/poweruptime/poweruptime/commit/e24409dbfc44c648ad24040b8697e46e0c9eb009))
-- Update postgres docker tag to v17.4 by renovate[bot] ([f958ee7](https://github.com/poweruptime/poweruptime/commit/f958ee7e8212b808b72f0780ae1ba0e9a80eb4c0))
-- Update plugin org.springframework.boot to v3.4.3 by renovate[bot] ([d9153a3](https://github.com/poweruptime/poweruptime/commit/d9153a3846c3311ad7210fe8fb4ae3a4ce529ea8))
-- Update rabbitmq docker tag to v4.0.7 by renovate[bot] ([f456cc2](https://github.com/poweruptime/poweruptime/commit/f456cc27604f83cb13142e7b4d63ca3f79c46cf9))
-- Generate new license report by Dafnik ([9ede84b](https://github.com/poweruptime/poweruptime/commit/9ede84b0f40e3bde1812f90b7423426645e0b1b1))
-- Update dependency gradle to v8.13 by renovate[bot] ([70c1830](https://github.com/poweruptime/poweruptime/commit/70c1830a3cc3a9bcaeab90366c46b332d412039c))
-- Update dependency typescript to v5.7.3 by renovate[bot] ([91c7e87](https://github.com/poweruptime/poweruptime/commit/91c7e878bfce6df731ffe14a76d93c4d70817d6b))
 - Angular dependency update by Dafnik ([5caf2f2](https://github.com/poweruptime/poweruptime/commit/5caf2f28a5f9ae77d573a2e40c0394704bdaea6c))
 - Dependency update by Dafnik ([fdb104a](https://github.com/poweruptime/poweruptime/commit/fdb104aa1c9fc990251d23926b1872b546fedba5))
-- Update dependency @types/node to v22.13.10 by renovate[bot] ([8bfe40f](https://github.com/poweruptime/poweruptime/commit/8bfe40fc68303e90c40adb3a8347227f27d9ace3))
-- Update dependency prettier to v3.5.3 by renovate[bot] ([e346f38](https://github.com/poweruptime/poweruptime/commit/e346f3894c1633759104a441a1bee9046d7cf144))
-- Update dependency autoprefixer to v10.4.21 by renovate[bot] ([d5e1e2c](https://github.com/poweruptime/poweruptime/commit/d5e1e2c1866a923a83217b77ed61cb83332da792))
-- Update dependency typescript to v5.8.2 by renovate[bot] ([c0478d1](https://github.com/poweruptime/poweruptime/commit/c0478d170e1cb5de2e4411c51e0f7c4e338dc1f8))
-- Update plugin io.gitlab.arturbosch.detekt to v1.23.8 by renovate[bot] ([f323b86](https://github.com/poweruptime/poweruptime/commit/f323b8617d7583d1040c5e12f6f9bbf38e601a08))
 - Change provideServerRoutes function by Dafnik ([2c822ff](https://github.com/poweruptime/poweruptime/commit/2c822ff8895550e8aee923360d037290f9ee9a2b))
