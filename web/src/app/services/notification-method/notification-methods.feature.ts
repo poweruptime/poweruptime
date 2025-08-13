@@ -40,7 +40,7 @@ export function withNotificationMethodsLoad() {
     withRequestStatus(),
     withEntities<BackendType['NotificationMethodResponse']>(),
     withPaginatedTable<BackendType['NotificationMethodResponse']>({
-      columnsToDisplay: ['name', 'sender._type', 'sender', 'useByDefault', 'actions'],
+      columnsToDisplay: ['name', 'data._type', 'sender', 'useByDefault', 'actions'],
       defaultSortBy: 'name',
     }),
     withSelection<BackendType['NotificationMethodResponse']>({}),
