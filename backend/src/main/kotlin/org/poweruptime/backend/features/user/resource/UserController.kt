@@ -64,14 +64,12 @@ class UserController(
     @GetMapping
     fun getAll(
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("name") name: String?,
-        @RequestParam("email") email: String?,
+        @RequestParam("search") search: String?,
         @RequestParam("activated") activated: Boolean?,
         @RequestParam("role") role: SystemRole?,
     ): PaginatedResponse<UserResponse> = userService.getAllPaginated(
         pageable = pageable,
-        name = name,
-        email = email,
+        search = search,
         activated = activated,
         role = role,
     ).toDto { UserResponse(it) }

@@ -1,8 +1,12 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatPrefix} from '@angular/material/form-field';
+import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -10,6 +14,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
+import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {TableLoadingBar} from '@app/components';
 import {TeamsStore} from '@app/services';
@@ -17,7 +22,36 @@ import {trackBy} from '@app/util';
 
 @Component({
   template: `
-    <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
+    <div class="flex flex-col items-end justify-between gap-2 pt-1 md:flex-row md:items-center">
+      <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
+
+      <div class="flex flex-col items-end gap-2 md:flex-row md:items-center">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.search' | transloco }}</mat-label>
+          <bi name="search" matIconPrefix />
+          <input [(ngModel)]="searchFilter" matInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button
+              class="flex items-center"
+              [attr.aria-label]="'general.clear' | transloco"
+              (click)="searchFilter.set('')"
+              type="button"
+              matSuffix
+              mat-icon-button>
+              <bi name="x-lg" aria-hidden="true" />
+            </button>
+          }
+        </mat-form-field>
+
+        @let _deleted = deletedFilter();
+        <mat-slide-toggle
+          [checked]="_deleted ?? false"
+          (toggleChange)="deletedFilter.set(_deleted ? null : true)"
+          labelPosition="before">
+          {{ 'general.deleted' | transloco }}
+        </mat-slide-toggle>
+      </div>
+    </div>
 
     <div class="table-responsive">
       <table
@@ -121,6 +155,15 @@ import {trackBy} from '@app/util';
     StopPropagationDirective,
     TranslocoPipe,
     MatButton,
+    FormsModule,
+    MatSlideToggle,
+    MatFormField,
+    MatLabel,
+    MatPrefix,
+    MatInput,
+    MatSuffix,
+    MatFormField,
+    MatLabel,
   ],
 })
 export class InstanceSettingsTeamsPage {
@@ -129,13 +172,24 @@ export class InstanceSettingsTeamsPage {
   private readonly paginator = viewChild.required(MatPaginator);
   private readonly sort = viewChild.required(MatSort);
 
+  searchFilter = linkedQueryParam('name', {
+    stringify: (value) => (value.length > 0 ? value : null),
+  });
+  deletedFilter = linkedQueryParam('deleted', {
+    parse: paramToBoolean(),
+  });
+
   constructor() {
     this.teamsStore.setPaginator(this.paginator);
     this.teamsStore.setSort(this.sort);
 
+    this.teamsStore.setName(this.searchFilter);
+    this.teamsStore.setDeleted(this.deletedFilter);
+
     this.teamsStore.load(
       computed(() => ({
         name: this.teamsStore.name(),
+        deleted: this.teamsStore.deleted(),
         ...this.teamsStore.pageable(),
       })),
     );
