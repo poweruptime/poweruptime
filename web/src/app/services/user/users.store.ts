@@ -19,13 +19,11 @@ import {
 
 export const UsersStore = signalStore(
   withState<{
-    name: string | undefined;
-    email: string | undefined;
+    search: string | undefined;
     activated: boolean | undefined;
     role: BackendType['UserResponse']['role'] | undefined;
   }>({
-    name: undefined,
-    email: undefined,
+    search: undefined,
     activated: undefined,
     role: undefined,
   }),
@@ -37,11 +35,8 @@ export const UsersStore = signalStore(
     defaultSortDirection: 'desc',
   }),
   withMethods((store, api = injectAPI()) => ({
-    setName: rxMethod<string | null>(
-      tap((name) => patchState(store, () => ({name: name ?? undefined}))),
-    ),
-    setEmail: rxMethod<string | null>(
-      tap((email) => patchState(store, () => ({email: email ?? undefined}))),
+    setSearch: rxMethod<string | null>(
+      tap((search) => patchState(store, () => ({search: search ?? undefined}))),
     ),
     setActivated: rxMethod<boolean | null>(
       tap((setActivated) => patchState(store, () => ({activated: setActivated ?? undefined}))),
@@ -51,8 +46,7 @@ export const UsersStore = signalStore(
     ),
     load: rxMethod<
       {
-        name: string | undefined;
-        email: string | undefined;
+        search: string | undefined;
         activated: boolean | undefined;
         role: BackendType['UserResponse']['role'] | undefined;
       } & PaginationDto

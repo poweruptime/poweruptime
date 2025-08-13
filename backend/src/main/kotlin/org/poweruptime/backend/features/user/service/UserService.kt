@@ -104,16 +104,19 @@ class UserService(
 
     fun getAllPaginated(
         pageable: Pageable,
-        name: String?,
-        email: String?,
+        search: String?,
         activated: Boolean?,
         role: SystemRole?,
     ): Page<User> = userRepository.findAll(
         buildSpecification {
             where {
                 and {
-                    name?.let { col(User::name) lowercaseLike "%$it%" }
-                    email?.let { col(User::email) lowercaseLike "%$it%" }
+                    search?.let {
+                        or {
+                            col(User::name) lowercaseLike "%$it%"
+                            col(User::email) lowercaseLike "%$it%"
+                        }
+                    }
 
                     activated?.let { col(User::activated) eq it }
                     role?.let { col(User::role) eq it }

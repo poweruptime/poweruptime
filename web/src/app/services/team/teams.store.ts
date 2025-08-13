@@ -26,9 +26,11 @@ export const TeamsStore = signalStore(
   withState<{
     name: string | undefined;
     role: BackendType['TeamMaxResponse']['role'] | undefined;
+    deleted: boolean | undefined;
   }>({
     name: undefined,
     role: undefined,
+    deleted: undefined,
   }),
   withRequestStatus(),
   withEntities<BackendType['TeamResponse']>(),
@@ -42,6 +44,7 @@ export const TeamsStore = signalStore(
       {
         name?: string;
         role?: BackendType['TeamMaxResponse']['role'];
+        deleted?: boolean;
       } & PaginationDto
     >(
       pipe(
@@ -78,6 +81,9 @@ export const TeamsStore = signalStore(
       ),
       setRole: rxMethod<BackendType['TeamMaxResponse']['role'] | undefined>(
         pipe(tap((role) => patchState(store, () => ({role})))),
+      ),
+      setDeleted: rxMethod<boolean | undefined | null>(
+        pipe(tap((deleted) => patchState(store, () => ({deleted: deleted ?? undefined})))),
       ),
       load,
       delete: rxMethod<string>(
