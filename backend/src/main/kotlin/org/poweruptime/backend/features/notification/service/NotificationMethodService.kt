@@ -112,7 +112,7 @@ class NotificationMethodService(
 
                     and {
                         colDeleted(deleted)
-                        types?.ifEmpty { null }?.let { col("sender._type") inList it }
+                        types?.ifEmpty { null }?.let { col("data._type") inList it }
 
                         useByDefault?.let { col(NotificationMethod::useByDefault) eq it }
                         name?.let { col(NotificationMethod::name) lowercaseLike "%$it%" }
@@ -120,7 +120,7 @@ class NotificationMethodService(
                 }
             }
         },
-        pageable.validateSort("name", "useByDefault", "sender._type", "createdAt", "deleted"),
+        pageable.validateSort("name", "useByDefault", "data._type", "createdAt", "deleted"),
     )
 
     private fun NotificationMethod.clone(

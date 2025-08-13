@@ -54,53 +54,72 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
         <hr />
 
-        <div class="grid gap-2">
-          <div class="flex items-center justify-between gap-4">
-            <h2 class="text-2xl">Notification Deliveries</h2>
-            @let _expandAll = expandAll();
-            <mat-chip-listbox (change)="expandAll.set(!_expandAll)">
-              <mat-chip-option [selected]="_expandAll">
-                <bi name="arrows-expand" />
-              </mat-chip-option>
-            </mat-chip-listbox>
-          </div>
+        @if (subNotificationsStore.entities().length > 0) {
+          <div class="grid gap-2">
+            <div class="flex items-center justify-between gap-4">
+              <h2 class="text-2xl">Notification Deliveries</h2>
+              @let _expandAll = expandAll();
+              <mat-chip-listbox (change)="expandAll.set(!_expandAll)">
+                <mat-chip-option [selected]="_expandAll">
+                  <bi name="arrows-expand" />
+                </mat-chip-option>
+              </mat-chip-listbox>
+            </div>
 
-          <mat-accordion class="example-headers-align" multi>
-            @for (subNotification of subNotificationsStore.entities(); track subNotification.id) {
-              <mat-expansion-panel [expanded]="_expandAll">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>{{ subNotification.method.name }}</mat-panel-title>
-                  <mat-panel-description>
-                    <div class="flex w-full justify-between">
-                      <div></div>
+            <mat-accordion class="example-headers-align" multi>
+              @for (subNotification of subNotificationsStore.entities(); track subNotification.id) {
+                <mat-expansion-panel [expanded]="_expandAll">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>{{ subNotification.method.name }}</mat-panel-title>
+                    <mat-panel-description>
+                      <div class="flex w-full justify-between">
+                        <div></div>
 
-                      <span>
-                        @if (subNotification.error) {
-                          <span pu-tag="RED">Error</span>
-                        } @else {
-                          Sent {{ subNotification.sentAt | relativeTime }}
-                        }
-                      </span>
+                        <span>
+                          @if (subNotification.error) {
+                            <span pu-tag="RED">Error</span>
+                          } @else {
+                            Sent {{ subNotification.sentAt | relativeTime }}
+                          }
+                        </span>
+                      </div>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <pu-shadow-render [html]="subNotification.title" />
+
+                  @if (subNotification.message; as message) {
+                    <pu-shadow-render [html]="message" />
+                  }
+
+                  @if (subNotification.error; as error) {
+                    <div puAlert type="WARN">
+                      <strong>Error:</strong>
+                      {{ error }}
                     </div>
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
+                  }
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center gap-2 pt-4">
+            <bi size="28" name="bell" />
 
-                <pu-shadow-render [html]="subNotification.title" />
+            <h2 class="mb-2 text-lg font-semibold text-gray-800">
+              Stay in the loop — set up notifications
+            </h2>
 
-                @if (subNotification.message; as message) {
-                  <pu-shadow-render [html]="message" />
-                }
+            <p class="mb-4 max-w-md text-center text-gray-600">
+              This monitor doesn’t have any notification methods linked yet. Add one now to get
+              alerts when something important happens.
+            </p>
 
-                @if (subNotification.error; as error) {
-                  <div puAlert type="WARN">
-                    <strong>Error:</strong>
-                    {{ error }}
-                  </div>
-                }
-              </mat-expansion-panel>
-            }
-          </mat-accordion>
-        </div>
+            <a routerLink="/t/{{ notification.team.id }}/notification-methods" mat-flat-button>
+              Create or edit notification methods
+            </a>
+          </div>
+        }
       }
     </div>
   `,
