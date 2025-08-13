@@ -99,7 +99,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.3")
     testImplementation("org.testcontainers:rabbitmq:1.21.3")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.4")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.5")
 }
 
 tasks.withType<Test> {
