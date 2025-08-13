@@ -4,6 +4,7 @@ import org.poweruptime.backend.features.monitor.dto.CheckResultMinResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorMinResponse
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.SubNotification
+import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
 
 data class NotificationTemplate(val title: String, val body: String)
@@ -19,7 +20,8 @@ data class NotificationResponse(
     val checkResult: CheckResultMinResponse,
     val title: String,
     val createdAt: Instant,
-    val monitor: MonitorMinResponse
+    val monitor: MonitorMinResponse,
+    val team: TeamMinResponse,
 ) {
     constructor(it: Notification) : this(
         id = it.id,
@@ -27,6 +29,7 @@ data class NotificationResponse(
         title = it.title,
         createdAt = it.createdAt,
         monitor = MonitorMinResponse(it.checkResult.monitor),
+        team = TeamMinResponse(it.checkResult.monitor.team),
     )
 }
 

@@ -2465,6 +2465,7 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       monitor: components['schemas']['MonitorMinResponse'];
+      team: components['schemas']['TeamMinResponse'];
     };
     PaginatedResponseNotificationResponse: {
       /** Format: int64 */
@@ -2648,8 +2649,7 @@ export interface operations {
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
         sort?: string[];
-        name?: string;
-        email?: string;
+        search?: string;
         activated?: boolean;
         role?: 'ADMIN' | 'USER';
       };
