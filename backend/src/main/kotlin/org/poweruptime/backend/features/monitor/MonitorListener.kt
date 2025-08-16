@@ -28,7 +28,6 @@ import org.poweruptime.backend.features.notification.service.SubNotificationServ
 import org.poweruptime.backend.features.push.PushService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.Instant
 
@@ -57,7 +56,6 @@ class MonitorListener(
      * Receives messages from "monitor-queue" and processes [CheckResult] by ID.
      */
     @RabbitListener(queues = [MONITOR_QUEUE])
-    @Transactional
     fun monitorQueueConsumer(monitorCheckId: String) {
         val checkResult = checkResultService.getByIdOrThrow(monitorCheckId)
         val monitor = checkResult.monitor
