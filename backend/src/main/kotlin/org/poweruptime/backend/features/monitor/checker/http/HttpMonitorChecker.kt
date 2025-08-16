@@ -54,7 +54,7 @@ class HttpMonitorChecker(
 
         logger.debug {
             "Sending http request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                "url: '{httpMonitorCheckerData.url}'"
+                "url: '${httpMonitorCheckerData.url}'"
         }
 
         val result = MonitoringResultHandler()
