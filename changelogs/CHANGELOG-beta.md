@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-beta-1755356737 - 2025-08-16
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Downgrade fastify by Dafnik ([5d0d722](https://github.com/poweruptime/poweruptime/commit/5d0d722d1fda455d390b499335aa5e1224d820e0))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1755355622...0.4.0-beta-1755356737)
+
 ## 0.4.0-beta-1755355622 - 2025-08-16
 
 ### <!-- 0 -->🚀 Features
