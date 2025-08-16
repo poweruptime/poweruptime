@@ -29,20 +29,21 @@ usage() {
 Usage: $0 [--local] [--dry-run] <command> [target] [extra]
 
 Commands:
-  up, start        Deploy the stack (incl. pull)
-  down, stop       Stop & remove the stack
-  ps               List containers
-  restart          Restart the stack
-  pull             Pull images per versions.env
-  update           Checkout, backup DB & redeploy stack
-  setup            Initial project setup
-  backup           Create DB backup
-  config           Print combined compose config
-  version          Show current version
-  backup-prune     Prune all but latest 5 backups
-  backup-verify    Verify encrypted DB backup
-  backup-extract   Extract encrypted DB backup
-  backup-import    Import encrypted DB backup (DANGEROUS)
+  up, start                  Deploy the stack (incl. pull)
+  down, stop                 Stop & remove the stack
+  ps                         List containers
+  restart                    Restart the stack
+  pull                       Pull images per versions.env
+  update                     Checkout, backup DB & redeploy stack
+  setup                      Initial project setup
+  backup                     Create DB backup
+  config                     Print combined compose config
+  version                    Show current version
+  backup-prune               Prune all but latest 5 backups
+  backup-verify              Verify encrypted DB backup
+  backup-extract             Extract encrypted DB backup
+  backup-import              Import encrypted DB backup (DANGEROUS)
+  backup-import-insecure     Import decrypted DB backup (DANGEROUS)
 
 Options:
   --dry-run        Print commands without executing
@@ -79,7 +80,7 @@ parse_args() {
           shift
         fi
         ;;
-      backup-verify|backup-extract|backup-import)
+      backup-verify|backup-extract|backup-import|backup-import-insecure)
         CMD="$1"
         if [[ $# -ge 2 && ! "$2" =~ ^- ]]; then
           TARGET="$2"
@@ -363,6 +364,43 @@ do_backup_import() {
   fi
 }
 
+do_backup_import_insecure() {
+  if [[ -z "$TARGET" ]]; then
+    err "Missing backup file"
+    usage
+    exit 1
+  fi
+
+  if ! confirm "Restore '$TARGET' into '$DATABASE_NAME'?"; then
+    echo "Import cancelled."
+    exit 1
+  fi
+
+  log "Importing $TARGET"
+
+  if $DRY_RUN; then
+    echo "+ docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
+    psql -U '$DATABASE_USER' -d postgres -c \"DROP DATABASE IF EXISTS \"$DATABASE_NAME\" WITH (FORCE);\""
+
+    echo "+ docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
+    psql -U '$DATABASE_USER' -d postgres -c \"CREATE DATABASE \"$DATABASE_NAME\";\""
+
+    echo "+ cat '$TARGET' \
+    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
+      psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+  else
+    docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+      psql -U "$DATABASE_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DATABASE_NAME\" WITH (FORCE);"
+
+    docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+      psql -U "$DATABASE_USER" -d postgres -c "CREATE DATABASE \"$DATABASE_NAME\";"
+
+    cat "$TARGET" \
+    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+      psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+  fi
+}
+
 do_update() {
   local log_file=./backup/update.log
   mkdir -p "$(dirname "$log_file")"
@@ -502,20 +540,21 @@ main() {
   parse_args "$@"
   setup_compose_args
   case "$CMD" in
-    up|start)           do_up                             ;;
-    down|stop)          do_down                           ;;
-    ps)                 do_ps                             ;;
-    pull)               do_pull                           ;;
-    restart)            do_restart                        ;;
-    update)             source_env && do_update           ;;
-    setup)              do_setup                          ;;
-    backup)             source_env && do_backup           ;;
-    backup-prune)       source_env && do_backup_prune     ;;
-    backup-verify)      source_env && do_backup_verify    ;;
-    backup-extract)     source_env && do_backup_extract   ;;
-    backup-import)      source_env && do_backup_import    ;;
-    config)             do_config                         ;;
-    version)            do_version                        ;;
+    up|start)                    do_up                                      ;;
+    down|stop)                   do_down                                    ;;
+    ps)                          do_ps                                      ;;
+    pull)                        do_pull                                    ;;
+    restart)                     do_restart                                 ;;
+    update)                      source_env && do_update                    ;;
+    setup)                       do_setup                                   ;;
+    backup)                      source_env && do_backup                    ;;
+    backup-prune)                source_env && do_backup_prune              ;;
+    backup-verify)               source_env && do_backup_verify             ;;
+    backup-extract)              source_env && do_backup_extract            ;;
+    backup-import)               source_env && do_backup_import             ;;
+    backup-import-insecure)      source_env && do_backup_import_insecure    ;;
+    config)                      do_config                                  ;;
+    version)                     do_version                                 ;;
   esac
 }
 
