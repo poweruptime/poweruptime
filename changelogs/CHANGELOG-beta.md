@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0-beta-1755355622 - 2025-08-16
+
+### <!-- 0 -->🚀 Features
+
+- Add insecure import by Dafnik ([b4f96b7](https://github.com/poweruptime/poweruptime/commit/b4f96b77f1146ac88104ab7b0780a8834bfda1c6))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Downgrade traefik by Dafnik ([e05939d](https://github.com/poweruptime/poweruptime/commit/e05939d99e2e63a3356f70dc8f7d8fec6fe4b025))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Log backend host environment variable in web container by Dafnik ([7485024](https://github.com/poweruptime/poweruptime/commit/7485024478cfbc1f9c0cc28573fad3ce04b5f791))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1755351663...0.4.0-beta-1755355622)
+
 ## 0.4.0-beta-1755351663 - 2025-08-16
 
 ### <!-- 0 -->🚀 Features
