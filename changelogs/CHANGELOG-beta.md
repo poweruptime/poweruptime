@@ -1,19 +1,21 @@
 # Changelog
 
-## 0.4.0-beta-1755087379 - 2025-08-13
+## 0.4.0-beta-1755351663 - 2025-08-16
 
 ### <!-- 0 -->🚀 Features
 
 - Add website redirect by Dafnik ([cedac88](https://github.com/poweruptime/poweruptime/commit/cedac88fc2627238011df5ac7a3d4c36b776f3b0))
-- Add kotlin-jpa-specification-builder by Dafnik ([80e9763](https://github.com/poweruptime/poweruptime/commit/80e976357f1b4737c4f58b56f19cb3c45f03cf37))
-- Add user and team table filters by Dafnik ([e0f5118](https://github.com/poweruptime/poweruptime/commit/e0f5118bb39de273edad7da9f875145cce356045))
-- Notification detail blankslate by Dafnik ([2c3939f](https://github.com/poweruptime/poweruptime/commit/2c3939f9d62de8d3e9bb5a5295f34e2de80c41aa))
+- Add kotlin-jpa-specification-builder by Dafnik ([ec2b3d4](https://github.com/poweruptime/poweruptime/commit/ec2b3d4e3ce0c395fbcfb4d80f86a43356843e69))
+- Add user and team table filters by Dafnik ([f28a9b0](https://github.com/poweruptime/poweruptime/commit/f28a9b0bc15c462267c424b2941b644cab0fb6d0))
+- Notification detail blankslate by Dafnik ([86d1ebd](https://github.com/poweruptime/poweruptime/commit/86d1ebd2589fa26b751e653136355d35788ed293))
 
 ### <!-- 1 -->🐛 Bug Fixes
 
-- Notification methods sort and filter sender to data migration by Dafnik ([340d61f](https://github.com/poweruptime/poweruptime/commit/340d61f8e415dca19f336938e9ff716e14895dbe))
+- Notification methods sort and filter sender to data migration by Dafnik ([975e2c9](https://github.com/poweruptime/poweruptime/commit/975e2c992aca60b6fade268216b6f8e2cbee4f88))
+- Transactional having side effects by Dafnik ([2d5fad4](https://github.com/poweruptime/poweruptime/commit/2d5fad46b1fc4db208e6edf55301378f26d025c5))
+- Http url debug log by Dafnik ([8fd1d52](https://github.com/poweruptime/poweruptime/commit/8fd1d52516a63593d21537b16322d6b184343608))
 
-[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1754582539...0.4.0-beta-1755087379)
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1754582539...0.4.0-beta-1755351663)
 
 ## 0.4.0-beta-1754582539 - 2025-08-07
 
