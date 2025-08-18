@@ -42,7 +42,6 @@ object ModelFactory {
         email = email,
         activated = true,
         passwordHash = "",
-        personalTeam = Team("Test Personal Team"),
     )
 
     fun getTestMonitor(

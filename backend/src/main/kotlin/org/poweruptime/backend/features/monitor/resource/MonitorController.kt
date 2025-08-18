@@ -17,7 +17,7 @@ import org.poweruptime.backend.features.authentication.domain.isPartOfByNotifica
 import org.poweruptime.backend.features.authentication.domain.isPartOfByStatusPageGroupIds
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.*
-import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.*
 import org.poweruptime.backend.features.monitor.model.Monitor
@@ -46,7 +46,6 @@ class MonitorController(
     private val notificationMethodService: NotificationMethodService,
     private val statusPageGroupService: StatusPageGroupService,
     private val checkResultStatisticsService: CheckResultStatisticsService,
-    private val authService: AuthService,
     private val permissionRepository: PermissionRepository
 ) {
     @Operation(
@@ -67,7 +66,7 @@ class MonitorController(
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
-        authentication: Authentication,
+        auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
         @RequestParam("teamId") teamId: String?,
         @RequestParam("name") name: String?,
@@ -78,18 +77,16 @@ class MonitorController(
         @RequestParam("usedInStatusPageGroupIds") usedInStatusPageGroupIds: Set<String>?,
         @RequestParam("deleted") deleted: Boolean = false
     ): PaginatedResponse<MonitorResponse> {
-        val user = authService.getByAuthOrThrow(authentication)
-
         teamId?.let {
-            user.throwIfNotPartOf { user ->
-                permissionRepository.isPartOfByTeamId(user.id, it)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByTeamId(userId, it)
             }
         }
 
         val monitors = monitorService.getAllPaginated(
             pageable = pageable,
             teamId = teamId,
-            userId = if (teamId == null) user.id else null,
+            userId = if (teamId == null) auth.userId() else null,
             statuses = statuses,
             types = types,
             name = name,
@@ -98,7 +95,7 @@ class MonitorController(
                 if (teamId != null) {
                     notificationMethodService.getById(this).ensureAllInTeam(teamId) { it.team.id }
                 } else {
-                    permissionRepository.isPartOfByNotificationMethodIds(user.id, this)
+                    permissionRepository.isPartOfByNotificationMethodIds(auth.userId(), this)
                 }
             }?.toList(),
             usedInStatusPageGroupIds = usedInStatusPageGroupIds?.apply {
@@ -111,7 +108,7 @@ class MonitorController(
                         throw ForbiddenException("Can only check for status page groups in same team")
                     }
                 } else {
-                    permissionRepository.isPartOfByStatusPageGroupIds(user.id, this)
+                    permissionRepository.isPartOfByStatusPageGroupIds(auth.userId(), this)
                 }
             }?.toList(),
             deleted = deleted,
@@ -231,20 +228,18 @@ class MonitorController(
     @GetMapping("/dashboard")
     @ResponseStatus(HttpStatus.OK)
     fun getDashboard(
-        authentication: Authentication,
+        auth: Authentication,
         @RequestParam("teamId") teamId: String?,
     ): MonitorDashboardResponse {
-        val user = authService.getByAuthOrThrow(authentication)
-
         teamId?.let { teamId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, teamId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByTeamId(userId, teamId)
             }
 
             return monitorService.getTeamDashboard(teamId)
         }
 
-        return monitorService.getUserDashboard(user.id)
+        return monitorService.getUserDashboard(auth.userId())
     }
 
     private fun Monitor.toMaxResponse() = MonitorMaxResponse(

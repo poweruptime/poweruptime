@@ -16,7 +16,6 @@ import org.poweruptime.backend.features.authentication.model.MFABackupCode
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.emails.MFALowBackupCodesEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
-import org.poweruptime.backend.features.user.domain.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import kotlin.jvm.Throws
@@ -27,7 +26,6 @@ class MFAService(
     private val systemEmailService: SystemEmailService,
     private val mfaRepository: MFARepository,
     private val mfaBackupCodeRepository: MFABackupCodeRepository,
-    private val userRepository: UserRepository,
 ) : AEntityService<MFA>(mfaRepository) {
 
     fun getByUserId(userId: String) = mfaRepository.findByUserId(userId)
@@ -115,9 +113,6 @@ class MFAService(
             mfaBackupCodeRepository.findByMFAId(mfa.id).forEach {
                 mfaBackupCodeRepository.deleteById(it.id)
             }
-
-            user.mfa = null
-            userRepository.saveAndFlush(user)
 
             deleteById(mfa.id)
 

@@ -19,35 +19,27 @@ interface MonitorRepository : ISoftDeleteRepository<Monitor>, JpaSpecificationEx
 
     @Query(
         """
-        select count(m) from Monitor m
+        select m.status, count(m)
+        from Monitor m
         join m.team t
         join t.teamUsers tu
         where tu.id.user.id = :uId and m.deleted is null
+        group by m.status
     """,
     )
-    fun countMonitorsByUserEmail(@Param("uId") userId: String): Long
-
-    @Query("select count(m) from Monitor m where m.team.id = :teamId and m.deleted is null")
-    fun countMonitorsByTeamId(@Param("teamId") teamId: String): Long
+    fun countMonitorsByUserGrouped(@Param("uId") userId: String): List<Pair<MonitorStatus, Long>>
 
     @Query(
         """
-        select count(m) from Monitor m
-        join m.team t
-        join t.teamUsers tu
-        where tu.id.user.id = :uId and m.status = :status and m.deleted is null
-    """,
+    select new  org.poweruptime.backend.features.monitor.domain.TeamStatusCount(m.team.id, m.status, count(m))
+    from Monitor m
+    where m.team.id in :teamIds and m.deleted is null
+    group by m.team.id, m.status
+""",
     )
-    fun countMonitorsByUserEmailAndStatus(
-        @Param("uId") userId: String,
-        @Param("status") status: MonitorStatus
-    ): Long
-
-    @Query("select count(m) from Monitor m where m.team.id = :teamId and m.status = :status and m.deleted is null")
-    fun countMonitorsByTeamIdAndStatus(
-        @Param("teamId") teamId: String,
-        @Param("status") status: MonitorStatus
-    ): Long
+    fun countMonitorsByTeamIdsGrouped(
+        @Param("teamIds") teamIds: List<String>
+    ): List<TeamStatusCount>
 
     @Modifying
     @Transactional
@@ -58,3 +50,9 @@ interface MonitorRepository : ISoftDeleteRepository<Monitor>, JpaSpecificationEx
     )
     fun updateStatus(@Param("id") monitorId: String, @Param("status") status: MonitorStatus): Int
 }
+
+data class TeamStatusCount(
+    val teamId: String,
+    val status: MonitorStatus,
+    val count: Long
+)

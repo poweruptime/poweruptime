@@ -20,7 +20,6 @@ spring:
       mode: never
 
   jpa:
-    show-sql: true
     generate-ddl: true
     open-in-view: false
     hibernate:
@@ -75,6 +74,10 @@ springdoc:
 logging:
   level:
     org.poweruptime: DEBUG
+    org.hibernate:
+      SQL: DEBUG
+      type.descriptor.sql.BasicBinder: Trace
+      orm.jdbc.bind: TRACE
 #    org.springframework.security: DEBUG
 #    org.springframework.web: DEBUG
 #    org.hibernate: ERROR

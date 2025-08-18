@@ -53,7 +53,7 @@ class ProfileController(
     @ResponseStatus(HttpStatus.OK)
     fun getProfile(authentication: Authentication): ProfileResponse {
         val user = authService.getByAuthOrThrow(authentication)
-        return ProfileResponse(user, mfaService.getByUserId(user.id))
+        return ProfileResponse(user)
     }
 
     @Operation(

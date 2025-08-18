@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
@@ -33,7 +34,8 @@ class Team(
     @OneToMany(mappedBy = "team")
     var statusPages: List<StatusPage> = ArrayList(),
 
-    @OneToOne(mappedBy = "personalTeam", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", unique = true)
     var personalUser: User? = null,
 
     @OneToMany(mappedBy = "id.team")

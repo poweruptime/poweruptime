@@ -26,6 +26,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
+@Suppress("TooManyFunctions")
 @Service
 class MonitorService(
     private val monitorRepository: MonitorRepository,
@@ -203,25 +204,39 @@ class MonitorService(
         monitorScheduler.stop(this.id)
     }
 
-    fun getUserDashboard(
-        userId: String,
-    ) = MonitorDashboardResponse(
-        monitorCount = monitorRepository.countMonitorsByUserEmail(userId),
-        upCount = monitorRepository.countMonitorsByUserEmailAndStatus(userId, MonitorStatus.UP),
-        downCount = monitorRepository.countMonitorsByUserEmailAndStatus(userId, MonitorStatus.DOWN),
-        maintenanceCount = monitorRepository.countMonitorsByUserEmailAndStatus(userId, MonitorStatus.MAINTENANCE),
-        pausedCount = monitorRepository.countMonitorsByUserEmailAndStatus(userId, MonitorStatus.PAUSED),
-    )
+    fun getUserDashboard(userId: String): MonitorDashboardResponse {
+        val counts = monitorRepository.countMonitorsByUserGrouped(userId).toMap()
 
-    fun getTeamDashboard(
-        teamId: String,
-    ) = MonitorDashboardResponse(
-        monitorCount = monitorRepository.countMonitorsByTeamId(teamId),
-        upCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.UP),
-        downCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.DOWN),
-        maintenanceCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.MAINTENANCE),
-        pausedCount = monitorRepository.countMonitorsByTeamIdAndStatus(teamId, MonitorStatus.PAUSED),
-    )
+        return MonitorDashboardResponse(
+            monitorCount = counts.values.sum(),
+            upCount = counts[MonitorStatus.UP] ?: 0,
+            downCount = counts[MonitorStatus.DOWN] ?: 0,
+            maintenanceCount = counts[MonitorStatus.MAINTENANCE] ?: 0,
+            pausedCount = counts[MonitorStatus.PAUSED] ?: 0,
+        )
+    }
+
+    fun getTeamDashboard(teamId: String): MonitorDashboardResponse {
+        return getTeamDashboards(listOf(teamId))[teamId] ?: MonitorDashboardResponse()
+    }
+
+    fun getTeamDashboards(teamIds: List<String>): Map<String, MonitorDashboardResponse> {
+        val results = monitorRepository.countMonitorsByTeamIdsGrouped(teamIds)
+
+        val grouped = results.groupBy { it.teamId }
+
+        return grouped.mapValues { (_, counts) ->
+            val statusMap = counts.associate { it.status to it.count }
+
+            MonitorDashboardResponse(
+                monitorCount = statusMap.values.sum(),
+                upCount = statusMap[MonitorStatus.UP] ?: 0,
+                downCount = statusMap[MonitorStatus.DOWN] ?: 0,
+                maintenanceCount = statusMap[MonitorStatus.MAINTENANCE] ?: 0,
+                pausedCount = statusMap[MonitorStatus.PAUSED] ?: 0,
+            )
+        }
+    }
 
     private fun Monitor.clone(
         attachedCheckerData: MonitorData,

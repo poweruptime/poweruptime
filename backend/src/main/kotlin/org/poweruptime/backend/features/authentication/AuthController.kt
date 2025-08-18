@@ -13,6 +13,7 @@ import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.user.dto.CreateUserDto
 import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -54,13 +55,9 @@ class AuthController(
             ),
         )
 
+        mfaService.validate(authentication.userId(), mfaCode)
+
         val user = authService.getByAuthOrThrow(authentication)
-
-        if (!user.activated) {
-            throw AccountNotActivatedException()
-        }
-
-        mfaService.validate(user.id, mfaCode)
 
         val sessionToken = sessionService.createSessionIfNeeded(
             stayLoggedIn = request.stayLoggedIn,

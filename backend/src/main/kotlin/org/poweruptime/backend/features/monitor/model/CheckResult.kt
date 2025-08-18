@@ -8,7 +8,6 @@ import org.poweruptime.backend.core.MaxNanoId
 import org.poweruptime.backend.core.models.AEntity
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
-import org.poweruptime.backend.features.notification.model.Notification
 import java.time.Instant
 
 @Entity
@@ -51,9 +50,6 @@ class CheckResult(
 
     @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
     var message: String? = null,
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "checkResult")
-    var notification: Notification? = null,
 ) : AEntity() {
     @Id
     @MaxNanoId

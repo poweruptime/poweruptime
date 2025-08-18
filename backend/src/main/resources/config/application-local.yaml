@@ -25,7 +25,6 @@ spring:
       mode: never
 
   jpa:
-    show-sql: false
     generate-ddl: false
     open-in-view: false
     hibernate:
@@ -112,9 +111,14 @@ springdoc:
     tagsSorter: alpha
   packagesToScan: org.poweruptime.backend
 
+
 logging:
   level:
     org.poweruptime: DEBUG
+    org.hibernate:
+      SQL: DEBUG
+      type.descriptor.sql.BasicBinder: Trace
+      orm.jdbc.bind: TRACE
 #    org.springframework.security: DEBUG
 #    org.springframework.web: DEBUG
 #    org.hibernate: ERROR

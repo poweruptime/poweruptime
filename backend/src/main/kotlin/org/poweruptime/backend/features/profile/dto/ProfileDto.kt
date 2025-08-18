@@ -3,7 +3,6 @@ package org.poweruptime.backend.features.profile.dto
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
-import org.poweruptime.backend.features.authentication.model.MFA
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 
@@ -39,17 +38,11 @@ data class ProfileResponse(
     val email: String,
     val name: String,
     val role: SystemRole,
-    val mfa: MFAState
 ) {
-    constructor(user: User, mfa: MFA?) : this(
+    constructor(user: User) : this(
         id = user.id,
         email = user.email,
         name = user.name,
         role = user.role,
-        mfa = if (mfa != null) {
-            if (mfa.active) MFAState.ENABLED else MFAState.DISABLED
-        } else {
-            MFAState.DISABLED
-        },
     )
 }

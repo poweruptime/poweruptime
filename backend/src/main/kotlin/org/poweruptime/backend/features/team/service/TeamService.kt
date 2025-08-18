@@ -28,8 +28,8 @@ class TeamService(
     private val monitorService: MonitorService,
 ) : ASoftDeleteEntityService<Team>(teamRepository) {
 
-    fun create(it: CreateTeamDto, creator: User? = null): Team {
-        val team = save(Team.fromDto(it))
+    fun create(dto: CreateTeamDto, creator: User? = null, personalUser: User? = null): Team {
+        val team = save(Team.fromDto(dto, personalUser))
 
         if (creator != null) {
             teamUserRepository.save(
@@ -68,6 +68,8 @@ class TeamService(
 
                     name?.let { col(Team::name) lowercaseLike "%$it%" }
                 }
+
+                fetch<User>("personalUser")
             }
         },
         pageable.validateSort("name", "personalUser.id", "createdAt"),

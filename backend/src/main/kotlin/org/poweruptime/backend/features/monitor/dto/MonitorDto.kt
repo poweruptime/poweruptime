@@ -78,7 +78,9 @@ data class MonitorDashboardResponse(
     val downCount: Long,
     val maintenanceCount: Long,
     val pausedCount: Long,
-)
+) {
+    constructor() : this(0, 0, 0, 0, 0)
+}
 
 data class MonitorMinResponse(
     val name: String,

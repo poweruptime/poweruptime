@@ -13,7 +13,7 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 @Table(name = "notification")
 class Notification(
     @JoinColumn(name = "check_result_id", nullable = false, referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     val checkResult: CheckResult,
 

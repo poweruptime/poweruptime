@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.dto.ErrorPayload
 import org.poweruptime.backend.core.dto.ValidationErrorPayload
 import org.poweruptime.backend.core.exceptions.HttpException
+import org.poweruptime.backend.features.authentication.AccountNotActivatedException
 import org.poweruptime.backend.features.authentication.PasswordChangeRequiredException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
+import org.springframework.security.authentication.LockedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -61,18 +63,16 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         ex: CredentialsExpiredException,
         request: WebRequest
     ): ResponseEntity<ErrorPayload> {
-        val passwordChangeRequiredException = PasswordChangeRequiredException()
-        val payload = ErrorPayload(
-            message = passwordChangeRequiredException.message,
-            code = passwordChangeRequiredException.httpCode,
-            codeName = passwordChangeRequiredException.codeName,
-        )
-        return buildResponse(
-            passwordChangeRequiredException,
-            passwordChangeRequiredException.httpStatus,
-            payload,
-            request,
-        )
+        return buildResponse(PasswordChangeRequiredException(), request)
+    }
+
+    @Suppress("UnusedParameter")
+    @ExceptionHandler(LockedException::class)
+    fun handleAccountLocked(
+        ex: LockedException,
+        request: WebRequest
+    ): ResponseEntity<ErrorPayload> {
+        return buildResponse(AccountNotActivatedException(), request)
     }
 
     @ExceptionHandler(InvocationTargetException::class)
@@ -126,6 +126,16 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         )
         return buildResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, payload, request)
     }
+
+    private fun buildResponse(
+        httpException: HttpException,
+        webRequest: WebRequest
+    ): ResponseEntity<ErrorPayload> = buildResponse(
+        httpException,
+        httpException.httpStatus,
+        ErrorPayload(httpException),
+        webRequest,
+    )
 
     private fun <T> buildResponse(
         ex: Exception,

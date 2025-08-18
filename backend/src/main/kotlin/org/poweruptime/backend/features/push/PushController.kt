@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
-import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.domain.TeamUserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,7 +20,6 @@ import reactor.core.publisher.Flux
 @Tag(name = "SSE API")
 class PushController(
     private val pushService: PushService,
-    private val authService: AuthService,
     private val teamUserRepository: TeamUserRepository,
 ) {
 
@@ -31,7 +30,7 @@ class PushController(
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     @ResponseStatus(HttpStatus.OK)
     fun get(auth: Authentication): Flux<String> {
-        val teamIds = teamUserRepository.findTeamIdsByUserId(authService.getByAuthOrThrow(auth).id)
+        val teamIds = teamUserRepository.findTeamIdsByUserId(auth.userId())
 
         if (teamIds.isEmpty()) {
             return Flux.empty()

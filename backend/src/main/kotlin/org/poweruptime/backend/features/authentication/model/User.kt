@@ -1,20 +1,16 @@
 package org.poweruptime.backend.features.authentication.model
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.ColumnDefault
 import org.poweruptime.backend.core.SmallNanoId
 import org.poweruptime.backend.core.models.AEntity
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
-import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamJoinToken
 import org.poweruptime.backend.features.team.model.TeamUser
 
@@ -51,13 +47,6 @@ class User(
     @Column(nullable = false, length = 1)
     var role: SystemRole = SystemRole.USER,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personal_team_id", nullable = false)
-    val personalTeam: Team,
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    var mfa: MFA? = null,
-
     @OneToMany(mappedBy = "invitee", fetch = FetchType.LAZY)
     var invitedTo: List<TeamJoinToken> = ArrayList(),
 
@@ -80,8 +69,6 @@ class User(
     @SmallNanoId
     @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
     override lateinit var id: String
-
-    fun isAdmin(): Boolean = role == SystemRole.ADMIN
 
     override fun toString(): String = "Id: '$id', Name: '$name', Email: '$email', role: '$role'"
 

@@ -22,7 +22,7 @@ import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
 import org.poweruptime.backend.features.authentication.permission.MONITOR_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
-import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.domain.CheckResultRepository
 import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
@@ -48,7 +48,6 @@ const val TWO_DAYS_IN_MINUTES = 2880L
 class CheckResultController(
     private val checkResultRepository: CheckResultRepository,
     private val checkResultService: CheckResultService,
-    private val authService: AuthService,
     private val permissionRepository: PermissionRepository
 ) {
     @Operation(
@@ -70,17 +69,15 @@ class CheckResultController(
             throw BadRequestException("Monitor or Team id required")
         }
 
-        val user = authService.getByAuthOrThrow(auth)
-
         monitorId?.let { monitorId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByMonitorId(user.id, monitorId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByMonitorId(userId, monitorId)
             }
         }
 
         teamId?.let { teamId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, teamId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByTeamId(userId, teamId)
             }
         }
 
@@ -88,7 +85,7 @@ class CheckResultController(
             pageable = pageable,
             monitorId = monitorId,
             teamId = teamId,
-            userId = if (teamId == null && monitorId == null) user.id else null,
+            userId = if (teamId == null && monitorId == null) auth.userId() else null,
             statuses = statuses,
             onlyChanges = onlyChanges,
         ).toDto {

@@ -58,9 +58,9 @@ export const InfoStore = signalStore(
       pipe(
         tap(() => patchState(store, setPending())),
         switchMap(() =>
-          api.get('/v1/public/info/host').pipe(
+          api.get('/v1/public/info/version').pipe(
             tapResponse({
-              next: ({it: host}) => patchState(store, () => ({host}), setFulfilled()),
+              next: ({it: version}) => patchState(store, () => ({version}), setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

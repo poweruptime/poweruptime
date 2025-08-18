@@ -3,12 +3,14 @@
 package org.poweruptime.backend.features.authentication.domain
 
 import org.poweruptime.backend.core.exceptions.ForbiddenException
-import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.service.isAdmin
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.Repository
 import org.springframework.data.repository.query.Param
+import org.springframework.security.core.Authentication
 
 interface PermissionRepository : Repository<TeamUser, String> {
 
@@ -302,8 +304,8 @@ fun PermissionRepository.isPartOfByStatusPageGroupIds(
     statusPageGroupIds: Collection<String>
 ): Boolean = statusPageGroupIds.all { isPartOfByStatusPageGroupId(userId, it) }
 
-fun User.throwIfNotPartOf(checker: (user: User) -> Boolean) {
-    if (!isAdmin() && !checker(this)) {
+fun Authentication.throwIfNotPartOf(checker: (userId: String) -> Boolean) {
+    if (!isAdmin() && !checker(userId())) {
         throw ForbiddenException()
     }
 }

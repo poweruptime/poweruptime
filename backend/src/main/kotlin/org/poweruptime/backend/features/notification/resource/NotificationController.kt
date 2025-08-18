@@ -13,7 +13,7 @@ import org.poweruptime.backend.features.authentication.domain.PermissionReposito
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.NOTIFICATION_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
-import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Notification API")
 class NotificationController(
     val notificationService: NotificationService,
-    val authService: AuthService,
     val permissionRepository: PermissionRepository
 ) {
     @Operation(
@@ -58,17 +57,15 @@ class NotificationController(
             throw BadRequestException("Monitor or Team id required")
         }
 
-        val user = authService.getByAuthOrThrow(auth)
-
         monitorId?.let { monitorId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByMonitorId(user.id, monitorId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByMonitorId(userId, monitorId)
             }
         }
 
         teamId?.let { teamId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, teamId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByTeamId(userId, teamId)
             }
         }
 
@@ -76,7 +73,7 @@ class NotificationController(
             pageable = pageable,
             monitorId = monitorId,
             teamId = teamId,
-            userId = if (teamId == null && monitorId == null) user.id else null,
+            userId = if (teamId == null && monitorId == null) auth.userId() else null,
             methods = methods,
             statuses = statuses,
         ).toDto {

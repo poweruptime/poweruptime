@@ -1,5 +1,3 @@
-import {effect, inject} from '@angular/core';
-
 import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
@@ -7,7 +5,6 @@ import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
-import {ProfileStore} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
 type MFAEditStoreState = 'DISABLED' | 'ENABLED' | 'CONFIRM';
@@ -24,9 +21,19 @@ export const MFAEditStore = signalStore(
     backupCodes: undefined,
   }),
   withMethods((store, api = injectAPI()) => ({
-    setState(state: MFAEditStoreState): void {
-      patchState(store, () => ({state}));
-    },
+    load: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, setPending())),
+        switchMap(() =>
+          api.get('/v1/profile/mfa/state').pipe(
+            tapResponse({
+              next: (state) => patchState(store, setFulfilled(), () => ({state})),
+              error: (error) => patchState(store, setError(error)),
+            }),
+          ),
+        ),
+      ),
+    ),
     setup: rxMethod<void>(
       pipe(
         tap(() => patchState(store, setPending())),
@@ -81,13 +88,8 @@ export const MFAEditStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(store, profileStore = inject(ProfileStore)) {
-      effect(() => {
-        const mfa = profileStore.mfa();
-        if (mfa) {
-          store.setState(mfa);
-        }
-      });
+    onInit(store) {
+      store.load();
     },
   }),
 );

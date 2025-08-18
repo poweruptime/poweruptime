@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.authentication.service
 
 import org.poweruptime.backend.core.exceptions.UnauthorizedException
+import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.emails.PasswordChangedEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -59,3 +60,6 @@ class AuthService(
     @Throws(UnauthorizedException::class)
     fun getByAuthOrThrow(auth: Authentication) = getByIdOrThrow(auth.name)
 }
+
+fun Authentication.userId(): String = name
+fun Authentication.isAdmin(): Boolean = authorities.any { it == SystemRole.ADMIN.grantedAuthority }

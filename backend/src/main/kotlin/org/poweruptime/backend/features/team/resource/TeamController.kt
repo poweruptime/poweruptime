@@ -11,11 +11,13 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.domain.PermissionRepository
-import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.isAdmin
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
+import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.dto.TeamMaxResponse
@@ -52,12 +54,15 @@ class TeamController(
     fun create(
         authentication: Authentication,
         @RequestBody @Valid dto: CreateTeamDto
-    ): TeamMaxResponse = authService.getByAuthOrThrow(authentication).let {
-        if (!it.isAdmin() && !instanceSettingService.getUserAllowedToCreateTeams()) {
+    ): TeamMaxResponse {
+        if (!authentication.isAdmin() && !instanceSettingService.getUserAllowedToCreateTeams()) {
             throw ForbiddenException("User not allowed to create teams")
         }
 
-        teamService.create(dto, it).toMaxResponse(it)
+        return teamService.create(
+            dto,
+            creator = authService.getByAuthOrThrow(authentication),
+        ).toMaxResponse(authentication)
     }
 
     @Operation(
@@ -69,7 +74,7 @@ class TeamController(
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun get(authentication: Authentication, @PathVariable id: String): TeamMaxResponse =
-        teamService.getByIdOrThrow(id).toMaxResponse(authService.getByAuthOrThrow(authentication))
+        teamService.getByIdOrThrow(id).toMaxResponse(authentication)
 
     @Operation(
         summary = "Get all teams, if global admin return all teams, else user specific teams",
@@ -85,19 +90,21 @@ class TeamController(
         @RequestParam("role") role: TeamRole?,
         @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<TeamResponse> {
-        val user = authService.getByAuthOrThrow(authentication)
-
-        return teamService.getAllPaginated(
+        val teams = teamService.getAllPaginated(
             pageable = pageable,
-            userId = if (user.isAdmin()) {
+            userId = if (authentication.isAdmin()) {
                 null
             } else {
-                user.id
+                authentication.userId()
             },
             name = name,
             deleted = deleted,
             role = role,
-        ).toDto { it.toResponse(user) }
+        )
+
+        val dashboards = monitorService.getTeamDashboards(teams.map { it.id }.toList())
+
+        return teams.toDto { it.toResponse(authentication.userId(), dashboards[it.id] ?: MonitorDashboardResponse()) }
     }
 
     @Operation(
@@ -109,7 +116,7 @@ class TeamController(
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     fun update(authentication: Authentication, @RequestBody @Valid dto: UpdateTeamDto): TeamMaxResponse =
-        teamService.update(dto).toMaxResponse(authService.getByAuthOrThrow(authentication))
+        teamService.update(dto).toMaxResponse(authentication)
 
     @Operation(
         summary = "Delete team",
@@ -130,22 +137,25 @@ class TeamController(
     @DeleteMapping("/{id}/undo")
     @ResponseStatus(HttpStatus.OK)
     fun undelete(authentication: Authentication, @PathVariable("id") id: String): TeamMaxResponse =
-        teamService.undeleteById(id).toMaxResponse(authService.getByAuthOrThrow(authentication))
+        teamService.undeleteById(id).toMaxResponse(authentication)
 
-    private fun Team.toResponse(user: User): TeamResponse = TeamResponse(
+    private fun Team.toResponse(userId: String, dashboard: MonitorDashboardResponse): TeamResponse = TeamResponse(
         team = this,
-        personal = this.personalUser?.id == user.id,
-        dashboard = monitorService.getTeamDashboard(this.id),
+        personal = this.personalUser?.id == userId,
+        dashboard = dashboard,
     )
 
-    private fun Team.toMaxResponse(user: User) = TeamMaxResponse(
+    private fun Team.toMaxResponse(authentication: Authentication) = TeamMaxResponse(
         team = this,
-        personal = this.personalUser?.id == user.id,
+        personal = this.personalUser?.id == authentication.userId(),
         dashboard = monitorService.getTeamDashboard(this.id),
-        role = if (user.isAdmin()) {
+        role = if (authentication.isAdmin()) {
             TeamRole.ADMIN
         } else {
-            permissionRepository.findByTeamId(user.id, this.id)?.role ?: throw ForbiddenException("User not in team")
+            permissionRepository.findByTeamId(
+                userId = authentication.userId(),
+                teamId = this.id,
+            )?.role ?: throw ForbiddenException("User not in team")
         },
     )
 }

@@ -9,11 +9,7 @@ import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.mail.emails.InviteUserEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
-import org.poweruptime.backend.features.team.domain.TeamUserRepository
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
-import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.team.model.TeamUser
-import org.poweruptime.backend.features.team.model.TeamUserId
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.user.domain.UserRepository
 import org.poweruptime.backend.features.user.dto.CreateUserDto
@@ -33,7 +29,6 @@ class UserService(
     val passwordEncoder: PasswordEncoder,
     val systemEmailService: SystemEmailService,
     val teamService: TeamService,
-    val teamUserRepository: TeamUserRepository,
 ) : AEntityService<User>(userRepository) {
     fun getByEmailOrThrow(email: String): User =
         userRepository.findUserByEmail(email).orThrowNotFound("""${javaClass.simpleName} not found""")
@@ -43,12 +38,9 @@ class UserService(
     fun create(dto: CreateUserDto, inviter: User? = null, forcePasswordChange: Boolean = true): User {
         val onetimePassword = dto.password ?: RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
 
-        val team = teamService.create(CreateTeamDto(dto.name))
-
         val user = User.fromDto(
             createDto = dto,
             passwordHash = passwordEncoder.encode(onetimePassword),
-            personalTeam = team,
             forcePasswordChange = forcePasswordChange,
         )
 
@@ -61,15 +53,7 @@ class UserService(
         }
 
         return repository.save(user).let {
-            teamUserRepository.save(
-                TeamUser(
-                    id = TeamUserId(
-                        team = team,
-                        user = it,
-                    ),
-                    role = TeamRole.ADMIN,
-                ),
-            )
+            teamService.create(dto = CreateTeamDto(dto.name), creator = it, personalUser = it)
 
             it
         }

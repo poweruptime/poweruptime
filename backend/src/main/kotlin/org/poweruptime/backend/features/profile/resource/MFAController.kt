@@ -11,6 +11,7 @@ import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.profile.dto.ConfirmMFADto
 import org.poweruptime.backend.features.profile.dto.ConfirmMFAResponse
+import org.poweruptime.backend.features.profile.dto.MFAState
 import org.poweruptime.backend.features.profile.dto.SetupMFAResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
@@ -30,6 +31,22 @@ class MFAController(
     private val authService: AuthService,
     private val mfaService: MFAService,
 ) {
+    @Operation(
+        summary = "Get MFA state",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+    )
+    @GetMapping("state")
+    @ResponseStatus(HttpStatus.OK)
+    fun getState(authentication: Authentication): MFAState {
+        val mfa = mfaService.getByUserId(authentication.name)
+
+        return if (mfa != null) {
+            if (mfa.active) MFAState.ENABLED else MFAState.DISABLED
+        } else {
+            MFAState.DISABLED
+        }
+    }
+
     @Operation(
         summary = "Setup MFA",
         security = [SecurityRequirement(name = BEARER_AUTH)],

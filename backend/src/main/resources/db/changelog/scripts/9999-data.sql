@@ -3,27 +3,30 @@ INSERT INTO team (id, name) VALUES ('4Lxhu5YKWPBr', 'First Team');
 INSERT INTO team (id, name) VALUES ('wERfKhghD98U', 'Second Team');
 INSERT INTO team (id, name) VALUES ('5GXzHe8YATsA', 'Third Team');
 
-INSERT INTO team (id, name) VALUES ('Ew1uauhgwaMR', 'Gerhold Walburga');
-INSERT INTO team (id, name) VALUES ('5KP6CoeMBmHo', 'Maria Bauer');
-INSERT INTO team (id, name) VALUES ('rRzu565wSrSf', 'Herbert Müller');
-INSERT INTO team (id, name) VALUES ('kLGeRaxXMM1t', 'Franz Lugger');
-INSERT INTO team (id, name) VALUES ('Ue3EDswEefwu', 'Hannes Schwatz');
-
-
 -- System Admin Users
-INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('ZD5CjpPYSPEk', true, 'admin@admin.org', 'Gerhold Walburga', false, '{bcrypt}$2a$10$fWZC48Sm9NVD68NaHya2q.CyU8bc0Vo8obPC.YyzPze9fqMt0okFq', 'A', 'Ew1uauhgwaMR')
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('ZD5CjpPYSPEk', true, 'admin@admin.org', 'Gerhold Walburga', false, '{bcrypt}$2a$10$fWZC48Sm9NVD68NaHya2q.CyU8bc0Vo8obPC.YyzPze9fqMt0okFq', 'A')
 ON CONFLICT DO NOTHING;
 
 -- Users
-INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('ccYmAsus39gG', true, 'test1@test.org', 'Maria Bauer', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', '5KP6CoeMBmHo');
-INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('8BS4AaxuYG9h', true, 'test2@test.org', 'Herbert Müller', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'rRzu565wSrSf');
-INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('2XxpcofD6Ubg', true, 'test3@test.org', 'Franz Lugger', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'kLGeRaxXMM1t');
-INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role, personal_team_id)
-VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U', 'Ue3EDswEefwu');
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('ccYmAsus39gG', true, 'test1@test.org', 'Maria Bauer', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U');
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('8BS4AaxuYG9h', true, 'test2@test.org', 'Herbert Müller', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U');
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('2XxpcofD6Ubg', true, 'test3@test.org', 'Franz Lugger', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U');
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('phECfcYSejyt', true, 'test4@test.org', 'Hannes Schwatz', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U');
+INSERT INTO "user" (id, activated, email, name, force_password_change, password_hash, role)
+VALUES ('BLyrWbFXSg3K', false, 'test5@test.org', 'Peter Lorenz', false, '{bcrypt}$2a$10$n7.iyAMCTNmZHJ90ySiBE.yqVUMFuZoPNJP07WrxoORj88Y6zBQ8K', 'U');
+
+INSERT INTO team (id, name, user_id) VALUES ('Ew1uauhgwaMR', 'Gerhold Walburga', 'ZD5CjpPYSPEk');
+INSERT INTO team (id, name, user_id) VALUES ('5KP6CoeMBmHo', 'Maria Bauer', 'ccYmAsus39gG');
+INSERT INTO team (id, name, user_id) VALUES ('rRzu565wSrSf', 'Herbert Müller', '8BS4AaxuYG9h');
+INSERT INTO team (id, name, user_id) VALUES ('kLGeRaxXMM1t', 'Franz Lugger', '2XxpcofD6Ubg');
+INSERT INTO team (id, name, user_id) VALUES ('Ue3EDswEefwu', 'Hannes Schwatz', 'phECfcYSejyt');
+INSERT INTO team (id, name, user_id) VALUES ('wPHyC6bKWT3Y', 'Peter Lorenz', 'BLyrWbFXSg3K');
+
 
 -- MFA Code
 -- Add to user 4

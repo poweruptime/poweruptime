@@ -12,7 +12,7 @@ import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.domain.PermissionRepository
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
-import org.poweruptime.backend.features.authentication.service.AuthService
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Sub Notification API")
 class SubNotificationController(
     val subNotificationService: SubNotificationService,
-    val authService: AuthService,
     val permissionRepository: PermissionRepository
 ) {
     @Operation(
@@ -56,23 +55,21 @@ class SubNotificationController(
             throw BadRequestException("Monitor or Team id required")
         }
 
-        val user = authService.getByAuthOrThrow(auth)
-
         monitorId?.let { monitorId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByMonitorId(user.id, monitorId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByMonitorId(userId, monitorId)
             }
         }
 
         teamId?.let { teamId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByTeamId(user.id, teamId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByTeamId(userId, teamId)
             }
         }
 
         notificationId?.let { notificationId ->
-            user.throwIfNotPartOf {
-                permissionRepository.isPartOfByNotificationId(user.id, notificationId)
+            auth.throwIfNotPartOf { userId ->
+                permissionRepository.isPartOfByNotificationId(userId, notificationId)
             }
         }
 
@@ -81,7 +78,7 @@ class SubNotificationController(
             notificationId = notificationId,
             monitorId = monitorId,
             teamId = teamId,
-            userId = if (teamId == null && monitorId == null && notificationId == null) user.id else null,
+            userId = if (teamId == null && monitorId == null && notificationId == null) auth.userId() else null,
             methods = methods,
             statuses = statuses,
         ).toDto {

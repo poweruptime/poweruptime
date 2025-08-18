@@ -134,6 +134,21 @@ class AuthIntegrationTest(
         }
 
         @Test
+        fun `test unsuccessful login with deactivated account`() {
+            mvc.post("/v1/auth/login") {
+                contentType = MediaType.APPLICATION_JSON
+                content = LoginDto(
+                    email = "test5@test.org",
+                    password = "test1234",
+                    sessionInformation = "Testing",
+                    stayLoggedIn = true,
+                ).toJSON()
+            }.andExpect {
+                status { isForbidden() }
+            }
+        }
+
+        @Test
         fun `test sign in with wrong credentials with existing email`() {
             mvc.post("/v1/auth/login") {
                 content = LoginDto(

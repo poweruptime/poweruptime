@@ -14,13 +14,11 @@ export const ProfileStore = signalStore(
     email: string | undefined;
     name: string | undefined;
     role: 'ADMIN' | 'USER' | undefined;
-    mfa: 'DISABLED' | 'ENABLED' | undefined;
   }>({
     id: undefined,
     email: undefined,
     name: undefined,
     role: undefined,
-    mfa: undefined,
   }),
   withRequestStatus(),
   withMethods((store, api = injectAPI()) => ({
