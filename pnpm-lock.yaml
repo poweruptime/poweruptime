@@ -112,11 +112,11 @@ importers:
         specifier: 20.2.1
         version: 20.2.1(@angular/cdk@20.1.6(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(@angular/forms@20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(@angular/platform-browser@20.1.7(@angular/animations@20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.1.6(11f606e180ee44910bab31082e87930c))
       '@ngrx/operators':
-        specifier: 20.0.0
-        version: 20.0.0(rxjs@7.8.2)
+        specifier: 20.0.1
+        version: 20.0.1(rxjs@7.8.2)
       '@ngrx/signals':
-        specifier: 20.0.0
-        version: 20.0.0(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 20.0.1
+        version: 20.0.1(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2)
       '@ngx-dropzone/cdk':
         specifier: 20.0.0
         version: 20.0.0(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(@angular/forms@20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(@angular/platform-browser@20.1.7(@angular/animations@20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
@@ -1964,13 +1964,13 @@ packages:
       '@angular/core': ^20.0.0
       '@angular/forms': ^20.0.0
 
-  '@ngrx/operators@20.0.0':
-    resolution: {integrity: sha512-Dp6HweO6wOJkUgcfuv6s8OrYIJf3TAYfvCFCoM1cQtLc70P9vhvqKggCR8BsrckF7XZa95zcm7Pab6OHFnOPWg==}
+  '@ngrx/operators@20.0.1':
+    resolution: {integrity: sha512-IIaVUlPU2LB1FbZ2m4/4FmAZnTEDCDgC115naods4SHo6U+DU7ZzItfIGDLeEPDaHa8MnjVJwOtrXjy73eJcNg==}
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ngrx/signals@20.0.0':
-    resolution: {integrity: sha512-ALz9dzu4tkL3QtgtkyHqvO14Od3tY/febpsqS6LaUgIxF8jFtmAneo0VgaGB2O7KamMwrwF005lpZjl/zeZghA==}
+  '@ngrx/signals@20.0.1':
+    resolution: {integrity: sha512-7YYPH4nTkmLEgibJnwi527toEm3tsnlCzp5AzT9osS8JxN9cHxkG6iQ7fzhw9N4bTt+8wyUZb7PF0YLFYD2RHA==}
     peerDependencies:
       '@angular/core': ^20.0.0
       rxjs: ^6.5.3 || ^7.4.0
@@ -7826,12 +7826,12 @@ snapshots:
       '@angular/forms': 20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(@angular/platform-browser@20.1.7(@angular/animations@20.1.7(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(@angular/common@20.1.7(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)))(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@ngrx/operators@20.0.0(rxjs@7.8.2)':
+  '@ngrx/operators@20.0.1(rxjs@7.8.2)':
     dependencies:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ngrx/signals@20.0.0(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngrx/signals@20.0.1(@angular/core@20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 20.1.7(@angular/compiler@20.1.7)(rxjs@7.8.2)
       tslib: 2.8.1
