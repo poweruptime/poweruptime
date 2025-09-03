@@ -1,6 +1,8 @@
 FROM gcr.io/distroless/nodejs22-debian12:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
+USER nobody
+
 COPY dist/poweruptime-web ./
 COPY HealthCheck.js ./
 

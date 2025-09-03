@@ -3,7 +3,7 @@ FROM openjdk:21-jdk-slim AS builder
 
 # install system CA bundle & Java truststore
 RUN apt-get update \
- && apt-get install -y ca-certificates ca-certificates-java \
+ && apt-get install -y ca-certificates ca-certificates-java --no-install-recommends \
  && update-ca-certificates -f \
  && rm -rf /var/lib/apt/lists/*
 
@@ -16,6 +16,8 @@ RUN javac HealthCheck.java
 # 2) Runtime stage: distroless + nonroot + your server.jar
 FROM gcr.io/distroless/java21-debian12:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
+
+USER nobody
 
 # distroless's JAVA_HOME
 ENV JAVA_HOME=/usr/local/openjdk-21
