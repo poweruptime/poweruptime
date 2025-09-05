@@ -131,6 +131,8 @@ poweruptime:
     ignore-tls-errors: ${MAIL_IGNORE_TLS_ERRORS:false}
   notification-temp:
     enabled: ${TEMP_NOTIFICATIONS_ENABLED:false}
+  monitor-autostart:
+    enabled: true
   storage:
     directory: /var/lib/poweruptime/storage
   keys:

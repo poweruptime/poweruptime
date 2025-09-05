@@ -121,3 +121,67 @@ INSERT INTO notification_method_data (id, _type) VALUES ('xStfmBA6wH4C', 'EMAIL'
 INSERT INTO notification_method_data_email (mail_ignore_tls_errors, mail_port, mail_security, id, mail_host, mail_password, mail_username, mail_to)
 VALUES (false, 1234, 'S', 'xStfmBA6wH4C', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
 INSERT INTO notification_method (id, notification_method_data_id, team_id, name) VALUES ('TPAbk1uHLp7p', 'xStfmBA6wH4C', '4Lxhu5YKWPBr', 'Test E-Mail 2');
+
+-- Check Results
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Bq7xLk2mN9aYp4sQw8VdR3tXe', '6XSKoPbRhSsb', 'U', '2025-01-04 15:00:08.846185 +00:00', '2025-01-04 15:01:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Cw9mRt5pF2kZs7dLb4XhQ6uYf', '6XSKoPbRhSsb', 'U', '2025-01-04 15:10:08.846185 +00:00', '2025-01-04 15:11:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Dx1nVb8qJ5lMt0eNc7YjR9wZg', '6XSKoPbRhSsb', 'U', '2025-01-04 15:20:08.846185 +00:00', '2025-01-04 15:21:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Ey3oXc1rK8mNu2fOd0ZkS2aBh', '6XSKoPbRhSsb', 'U', '2025-01-04 15:30:08.846185 +00:00', '2025-01-04 15:31:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Fz5pYd4sL1nOv3gPe2AlT5bCi', '6XSKoPbRhSsb', 'U', '2025-01-04 15:40:08.846185 +00:00', '2025-01-04 15:41:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Ga7qZe7tM4oPw6hQf5BmU8cDj', '6XSKoPbRhSsb', 'U', '2025-01-04 15:50:08.846185 +00:00', '2025-01-04 15:51:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Hb9rAf0uN7pQx9iRg8CnV1dEk', '6XSKoPbRhSsb', 'U', '2025-01-04 16:00:08.846185 +00:00', '2025-01-04 16:01:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Ic1sBg3vO0qRy2jSh1DoW4eFl', '6XSKoPbRhSsb', 'U', '2025-01-04 16:10:08.846185 +00:00', '2025-01-04 16:11:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Jd3tCh6wP3rSz5kTi4EpX7fGm', '6XSKoPbRhSsb', 'U', '2025-01-04 16:20:08.846185 +00:00', '2025-01-04 16:21:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Ke5uDi9xQ6sTa8lUj7FqY0gHn', '6XSKoPbRhSsb', 'U', '2025-01-04 16:30:08.846185 +00:00', '2025-01-04 16:31:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Lf7vEj2yR9tUb1mVk0GrZ3hIo', '6XSKoPbRhSsb', 'U', '2025-01-04 16:40:08.846185 +00:00', '2025-01-04 16:41:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Mg9wFk5zS2uVc4nWl3HsA6iJp', '6XSKoPbRhSsb', 'U', '2025-01-04 16:50:08.846185 +00:00', '2025-01-04 16:51:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Nh1xGl8aT5vWd7oXm6ItB9jKq', '6XSKoPbRhSsb', 'U', '2025-01-04 17:00:08.846185 +00:00', '2025-01-04 17:01:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Oi3yHm1bU8wXe0pYn9JuC2kLr', '6XSKoPbRhSsb', 'U', '2025-01-04 17:10:08.846185 +00:00', '2025-01-04 17:11:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Pj5zIn4cV1xYf3qZo2KvD5lMs', '6XSKoPbRhSsb', 'U', '2025-01-04 17:20:08.846185 +00:00', '2025-01-04 17:21:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Qk7aJo7dW4yZg6rAp5LwE8mNt', '6XSKoPbRhSsb', 'U', '2025-01-04 17:30:08.846185 +00:00', '2025-01-04 17:31:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Rl9bKp0eX7zAh9sBq8MxF1nOu', '6XSKoPbRhSsb', 'U', '2025-01-04 17:40:08.846185 +00:00', '2025-01-04 17:41:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Sm1cLq3fY0aBi2tCr1NyG4oPv', '6XSKoPbRhSsb', 'U', '2025-01-04 17:50:08.846185 +00:00', '2025-01-04 17:51:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Tn3dMr6gZ3bCj5uDs4OzH7pQw', '6XSKoPbRhSsb', 'U', '2025-01-04 18:00:08.846185 +00:00', '2025-01-04 18:01:08.846185 +00:00', 20, 1, '200 - OK');
+INSERT INTO check_result(id, monitor_id, previous_status, checked_at, picked_up_at, ping, times_retried, title)
+VALUES ('Uo5eNs9hA6cDk8vEt7PaJ0qRx', '6XSKoPbRhSsb', 'U', '2025-01-04 18:10:08.846185 +00:00', '2025-01-04 18:11:08.846185 +00:00', 20, 1, '200 - OK');
+
+-- Notifications
+INSERT INTO notification(id, check_result_id, title) VALUES ('7hySSGASMhDwbcLh6xrEF', 'Bq7xLk2mN9aYp4sQw8VdR3tXe', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('2BcDeFgHiJkLmNoPqRsTu', 'Cw9mRt5pF2kZs7dLb4XhQ6uYf', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('3CdEfGhIjKlMnOpQrStUv', 'Dx1nVb8qJ5lMt0eNc7YjR9wZg', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('4DeFgHiJkLmNoPqRsTuVw', 'Ey3oXc1rK8mNu2fOd0ZkS2aBh', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('5EfGhIjKlMnOpQrStUvWx', 'Fz5pYd4sL1nOv3gPe2AlT5bCi', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('6FgHiJkLmNoPqRsTuVwXy', 'Ga7qZe7tM4oPw6hQf5BmU8cDj', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('7GhIjKlMnOpQrStUvWxYz', 'Hb9rAf0uN7pQx9iRg8CnV1dEk', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('8HiJkLmNoPqRsTuVwXyZa', 'Ic1sBg3vO0qRy2jSh1DoW4eFl', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('9IjKlMnOpQrStUvWxYzAb', 'Jd3tCh6wP3rSz5kTi4EpX7fGm', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('0JkLmNoPqRsTuVwXyZaBc', 'Ke5uDi9xQ6sTa8lUj7FqY0gHn', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('1KlMnOpQrStUvWxYzAbCd', 'Lf7vEj2yR9tUb1mVk0GrZ3hIo', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('2LmNoPqRsTuVwXyZaBcDe', 'Mg9wFk5zS2uVc4nWl3HsA6iJp', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('3MnOpQrStUvWxYzAbCdEf', 'Nh1xGl8aT5vWd7oXm6ItB9jKq', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('4NoPqRsTuVwXyZaBcDeFg', 'Oi3yHm1bU8wXe0pYn9JuC2kLr', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('5OpQrStUvWxYzAbCdEfGh', 'Pj5zIn4cV1xYf3qZo2KvD5lMs', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('6PqRsTuVwXyZaBcDeFgHi', 'Qk7aJo7dW4yZg6rAp5LwE8mNt', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('7QrStUvWxYzAbCdEfGhIj', 'Rl9bKp0eX7zAh9sBq8MxF1nOu', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('8RsTuVwXyZaBcDeFgHiJk', 'Sm1cLq3fY0aBi2tCr1NyG4oPv', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('9StUvWxYzAbCdEfGhIjKl', 'Tn3dMr6gZ3bCj5uDs4OzH7pQw', '200 - OK');
+INSERT INTO notification(id, check_result_id, title) VALUES ('0TuVwXyZaBcDeFgHiJkLm', 'Uo5eNs9hA6cDk8vEt7PaJ0qRx', '200 - OK');

@@ -22,7 +22,8 @@ class StartupApplicationListener(
     private val infoService: InfoService,
     private val fileService: FileService,
     private val instanceSettingService: InstanceSettingService,
-    @param:Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
+    @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
+    @Value(Config.MONITOR_AUTOSTART_ENABLED) private val monitorAutostartEnabled: Boolean = true,
 ) : ApplicationListener<ContextRefreshedEvent> {
 
     private final val logger = KotlinLogging.logger {}
@@ -37,7 +38,9 @@ class StartupApplicationListener(
         fileService.init()
         setupTempNotification()
 
-        monitorService.startAll()
+        if (monitorAutostartEnabled) {
+            monitorService.startAll()
+        }
     }
 
     private fun setupTempNotification() {

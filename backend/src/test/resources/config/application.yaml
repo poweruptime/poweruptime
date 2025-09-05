@@ -101,6 +101,8 @@ poweruptime:
   host: localhost:4200
   notification-temp:
     enabled: true
+  monitor-autostart:
+    enabled: false
   storage:
     directory: storage
   keys:

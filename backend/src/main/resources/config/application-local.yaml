@@ -119,6 +119,9 @@ logging:
       SQL: DEBUG
       type.descriptor.sql.BasicBinder: Trace
       orm.jdbc.bind: TRACE
+      loader: TRACE
+      engine:
+        internal: TRACE
 #    org.springframework.security: DEBUG
 #    org.springframework.web: DEBUG
 #    org.hibernate: ERROR
@@ -143,6 +146,8 @@ poweruptime:
     ignore-tls-errors: false # greenmail does not support STARTTLS
   notification-temp:
     enabled: true
+  monitor-autostart:
+    enabled: false
   storage:
     directory: storage
   keys:

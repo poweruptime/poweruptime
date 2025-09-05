@@ -2,6 +2,7 @@ package org.poweruptime.backend.features.monitor
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.amqp.RabbitMQService
+import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
@@ -9,6 +10,7 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -23,6 +25,7 @@ class MonitorScheduler(
     private val checkResultService: CheckResultService,
     private val checkResultLogEntryService: CheckResultLogEntryService,
     private val rabbitMQService: RabbitMQService,
+    @Value(Config.MONITOR_AUTOSTART_ENABLED) private val monitorAutostartEnabled: Boolean = true,
 ) {
     private final val logger = KotlinLogging.logger {}
 
@@ -30,6 +33,11 @@ class MonitorScheduler(
 
     fun start(monitor: Monitor, booting: Boolean = false) {
         stop(monitor.id)
+
+        if (!monitorAutostartEnabled) {
+            logger.info { "Monitor ${monitor.id} prevented from starting. monitor autostart disabled" }
+            return
+        }
 
         if (monitor.status === MonitorStatus.PAUSED) {
             return

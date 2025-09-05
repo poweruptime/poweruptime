@@ -114,7 +114,7 @@ class TeamIntegrationTests(
                 status { isOk() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.data.length()") { value(8) }
+                    jsonPath("$.data.length()") { value(9) }
                     jsonPath("$.data[0].name") { hasItem("First Team") }
                     jsonPath("$.data[1].name") { hasItem("Second Team") }
                     jsonPath("$.data[2].name") { hasItem("Third Team") }

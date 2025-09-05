@@ -39,7 +39,6 @@ class ProfileIntegrationTest(
                     jsonPath("$.email") { value("admin@admin.org") }
                     jsonPath("$.name") { value("Gerhold Walburga") }
                     jsonPath("$.role") { value("ADMIN") }
-                    jsonPath("$.mfa") { value("DISABLED") }
                 }
             }
         }
@@ -54,7 +53,6 @@ class ProfileIntegrationTest(
                     jsonPath("$.email") { value("test1@test.org") }
                     jsonPath("$.name") { value("Maria Bauer") }
                     jsonPath("$.role") { value("USER") }
-                    jsonPath("$.mfa") { value("DISABLED") }
                 }
             }
         }
@@ -62,14 +60,11 @@ class ProfileIntegrationTest(
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if success with inactive mfa`() {
-            mockMvc.get("/v1/profile").andExpect {
+            mockMvc.get("/v1/profile/mfa/state").andExpect {
                 status { isOk() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.email") { value("test3@test.org") }
-                    jsonPath("$.name") { value("Franz Lugger") }
-                    jsonPath("$.role") { value("USER") }
-                    jsonPath("$.mfa") { value("DISABLED") }
+                    string(""""DISABLED"""")
                 }
             }
         }
@@ -77,14 +72,11 @@ class ProfileIntegrationTest(
         @Test
         @MockUser(MockUsers.USER4)
         fun `test if success with enabled mfa`() {
-            mockMvc.get("/v1/profile").andExpect {
+            mockMvc.get("/v1/profile/mfa/state").andExpect {
                 status { isOk() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.email") { value("test4@test.org") }
-                    jsonPath("$.name") { value("Hannes Schwatz") }
-                    jsonPath("$.role") { value("USER") }
-                    jsonPath("$.mfa") { value("ENABLED") }
+                    string(""""ENABLED"""")
                 }
             }
         }

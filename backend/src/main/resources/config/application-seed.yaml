@@ -25,7 +25,6 @@ spring:
       mode: never
 
   jpa:
-    show-sql: false
     generate-ddl: false
     open-in-view: false
     hibernate:
@@ -105,6 +104,8 @@ poweruptime:
     ignore-tls-errors: false # greenmail does not support STARTTLS
   notification-temp:
     enabled: true
+  monitor-autostart:
+    enabled: false
   storage:
     directory: storage
   keys:

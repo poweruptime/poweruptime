@@ -7,6 +7,7 @@ object Config {
 
     const val HOST = "\${poweruptime.host}"
     const val NOTIFICATION_TEMP_ENABLED = "\${poweruptime.notification-temp.enabled}"
+    const val MONITOR_AUTOSTART_ENABLED = "\${poweruptime.monitor-autostart.enabled}"
     const val MAIL_ENABLED = "\${poweruptime.mail.enabled}"
     const val MAIL_HOST = "\${spring.mail.host}"
     const val MAIL_PORT = "\${spring.mail.port}"
