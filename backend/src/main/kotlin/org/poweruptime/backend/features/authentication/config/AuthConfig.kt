@@ -15,6 +15,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.*
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider
 import org.springframework.stereotype.Component
 
@@ -82,8 +83,7 @@ class AuthConfig(val keyUtils: KeyUtils) {
         authDetailsService: AuthDetailsService,
         passwordEncoder: PasswordEncoder
     ): DaoAuthenticationProvider {
-        val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(authDetailsService)
+        val authProvider = DaoAuthenticationProvider(authDetailsService)
         authProvider.setPasswordEncoder(passwordEncoder)
         return authProvider
     }
@@ -144,9 +144,9 @@ class AuthConfig(val keyUtils: KeyUtils) {
 @Component
 class JwtToUserConverter(
     private val authService: AuthService
-) : Converter<Jwt, UsernamePasswordAuthenticationToken?> {
+) : Converter<Jwt, UsernamePasswordAuthenticationToken> {
     override fun convert(jwt: Jwt): UsernamePasswordAuthenticationToken {
-        val authDetails = authService.getUserDetailsById(jwt.subject)
+        val authDetails = authService.getUserDetailsByPublicId(jwt.subject)
 
         return UsernamePasswordAuthenticationToken(authDetails, jwt, authDetails.authorities)
     }

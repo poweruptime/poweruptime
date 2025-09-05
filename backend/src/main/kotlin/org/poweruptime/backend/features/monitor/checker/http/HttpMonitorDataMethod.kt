@@ -25,3 +25,5 @@ enum class HttpMonitorDataMethod : ADatabaseEnumConvertable {
         override val code = "OPTIONS"
     }
 }
+
+const val MAX_HTTP_MONITOR_DATA_METHOD_LENGTH = 7

@@ -10,8 +10,8 @@ data class DeadLetterResponse(
     val createdAt: Instant,
     val updatedAt: Instant
 ) {
-    constructor(it: DeadLetter) : this(
-        it.id,
+    constructor(it: DeadLetterRecord) : this(
+        it.publicId,
         it.body,
         it.queue,
         it.exchange,

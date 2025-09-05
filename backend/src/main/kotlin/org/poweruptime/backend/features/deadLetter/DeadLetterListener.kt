@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.deadLetter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.jetbrains.exposed.v1.jdbc.insert
 import org.poweruptime.backend.amqp.RabbitMQ.DEAD_LETTER_QUEUE
 import org.poweruptime.backend.amqp.RabbitMQ.X_DEATH_FIRST_EXCHANGE
 import org.poweruptime.backend.amqp.RabbitMQ.X_DEATH_FIRST_QUEUE
@@ -9,7 +10,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 
 @Component
-class DeadLetterListener(private val deadLetterRepository: DeadLetterRepository) {
+class DeadLetterListener {
     private final val logger = KotlinLogging.logger {}
 
     /**
@@ -31,6 +32,10 @@ class DeadLetterListener(private val deadLetterRepository: DeadLetterRepository)
             "Received dead letter dto from queue: '$queue' and exchange: '$exchange'"
         }
 
-        deadLetterRepository.save(DeadLetter(queue, exchange, body))
+        DeadLetterTable.insert {
+            it[DeadLetterTable.queue] = queue
+            it[DeadLetterTable.exchange] = exchange
+            it[DeadLetterTable.body] = body
+        }
     }
 }

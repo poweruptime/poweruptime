@@ -46,13 +46,7 @@ class TeamUserIntegrationTests(
         @MockAdmin
         fun `test if admin fail not found`() {
             mockMvc.get("/v1/team/abcdefg/user").andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("data.length()") { value(0) }
-                    }
-                }
+                status { isNotFound() }
             }
         }
 
@@ -420,9 +414,9 @@ class TeamUserJoinIntegrationTests(
     @Test
     @MockUser(MockUsers.USER3)
     fun `test if fail if other user tries to use token`() {
-        val inviterTeam = teamService.getByIdOrThrow("4Lxhu5YKWPBr") // Team 1
-        val inviter = userService.getByIdOrThrow("ccYmAsus39gG") // User 1
-        val invitee = userService.getByIdOrThrow("phECfcYSejyt") // User 4
+        val inviterTeam = teamService.getByPublicId("4Lxhu5YKWPBr") // Team 1
+        val inviter = userService.getByPublicId("ccYmAsus39gG") // User 1
+        val invitee = userService.getByPublicId("phECfcYSejyt") // User 4
 
         val token = teamJoinTokenService.create(
             inviterTeam = inviterTeam,
@@ -431,7 +425,7 @@ class TeamUserJoinIntegrationTests(
             role = TeamRole.MEMBER,
         )
 
-        mockMvc.get("/v1/team/join/${token.token}").andExpect {
+        mockMvc.get("/v1/team/join/$token").andExpect {
             status { isUnauthorized() }
         }
     }
@@ -439,9 +433,9 @@ class TeamUserJoinIntegrationTests(
     @Test
     @MockUser(MockUsers.USER2)
     fun `test if fail if same user tries to join again`() {
-        val inviterTeam = teamService.getByIdOrThrow("4Lxhu5YKWPBr") // Team 1
-        val inviter = userService.getByIdOrThrow("ccYmAsus39gG") // User 1
-        val invitee = userService.getByIdOrThrow("8BS4AaxuYG9h") // User 2
+        val inviterTeam = teamService.getByPublicId("4Lxhu5YKWPBr") // Team 1
+        val inviter = userService.getByPublicId("ccYmAsus39gG") // User 1
+        val invitee = userService.getByPublicId("8BS4AaxuYG9h") // User 2
 
         val token = teamJoinTokenService.create(
             inviterTeam = inviterTeam,
@@ -450,7 +444,7 @@ class TeamUserJoinIntegrationTests(
             role = TeamRole.MEMBER,
         )
 
-        mockMvc.get("/v1/team/join/${token.token}").andExpect {
+        mockMvc.get("/v1/team/join/$token").andExpect {
             status { isUnauthorized() }
         }
     }
@@ -459,9 +453,9 @@ class TeamUserJoinIntegrationTests(
     @MockUser(MockUsers.USER4)
     @ClearInitDatabase
     fun `test success`() {
-        val inviterTeam = teamService.getByIdOrThrow("4Lxhu5YKWPBr") // Team 1
-        val inviter = userService.getByIdOrThrow("ccYmAsus39gG") // User 1
-        val invitee = userService.getByIdOrThrow("phECfcYSejyt") // User 4
+        val inviterTeam = teamService.getByPublicId("4Lxhu5YKWPBr") // Team 1
+        val inviter = userService.getByPublicId("ccYmAsus39gG") // User 1
+        val invitee = userService.getByPublicId("phECfcYSejyt") // User 4
 
         val token = teamJoinTokenService.create(
             inviterTeam = inviterTeam,
@@ -470,7 +464,7 @@ class TeamUserJoinIntegrationTests(
             role = TeamRole.MEMBER,
         )
 
-        mockMvc.get("/v1/team/join/${token.token}").andExpect {
+        mockMvc.get("/v1/team/join/$token").andExpect {
             status { isOk() }
         }
     }
@@ -479,9 +473,9 @@ class TeamUserJoinIntegrationTests(
     @MockUser(MockUsers.USER4)
     @ClearInitDatabase
     fun `test success token not usable again`() {
-        val inviterTeam = teamService.getByIdOrThrow("4Lxhu5YKWPBr") // Team 1
-        val inviter = userService.getByIdOrThrow("ccYmAsus39gG") // User 1
-        val invitee = userService.getByIdOrThrow("phECfcYSejyt") // User 4
+        val inviterTeam = teamService.getByPublicId("4Lxhu5YKWPBr") // Team 1
+        val inviter = userService.getByPublicId("ccYmAsus39gG") // User 1
+        val invitee = userService.getByPublicId("phECfcYSejyt") // User 4
 
         val token = teamJoinTokenService.create(
             inviterTeam = inviterTeam,
@@ -490,11 +484,11 @@ class TeamUserJoinIntegrationTests(
             role = TeamRole.MEMBER,
         )
 
-        mockMvc.get("/v1/team/join/${token.token}").andExpect {
+        mockMvc.get("/v1/team/join/$token").andExpect {
             status { isOk() }
         }
 
-        mockMvc.get("/v1/team/join/${token.token}").andExpect {
+        mockMvc.get("/v1/team/join/$token").andExpect {
             status { isUnauthorized() }
         }
     }

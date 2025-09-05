@@ -1,37 +1,45 @@
 package org.poweruptime.backend.features.tag
 
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
-import org.poweruptime.backend.core.colDeleted
-import org.poweruptime.backend.core.dto.validateSort
-import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.features.team.model.Team
+import org.jetbrains.exposed.v1.jdbc.batchInsert
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.findById
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-class TagService(
-    private val tagRepository: TagRepository,
-) : ASoftDeleteEntityService<Tag>(tagRepository) {
+@Transactional(readOnly = true)
+class TagService {
+
+    fun getByMonitorId(monitorIds: List<ULong>): Map<ULong, List<TagRecord>> =
+        TagTable.findByMonitorId(monitorIds)
+            .groupBy { it.monitorTag.monitorId }
+            .mapValues {
+                it.value.map { tagJoinMonitor -> tagJoinMonitor.tag }
+            }
+
+    fun getByMonitorId(monitorId: ULong): List<TagRecord> = TagTable.findByMonitorId(monitorId)
+
+    @Transactional
     fun getByTeamIdAndNames(
-        team: Team,
+        teamId: ULong,
         unsafeTags: List<TagDto>
-    ): List<Tag> {
+    ): List<TagRecord> {
         val tags = unsafeTags.distinctBy { it.name }
 
         // 1) fetch all existing tags for this team & name set
-        val existingByName = tagRepository
-            .findByTeamIdAndNames(
-                team.id,
-                tags.map(TagDto::name),
-            )
-            .associateBy(Tag::name)
+        val existingByName = TagTable.findByTeamIdAndNames(
+            teamId,
+            tags.map(TagDto::name),
+        )
+            .associateBy(TagRecord::name)
 
         // 2) index DTOs by name for quick lookup
         val tagDtosByName = tags.associateBy(TagDto::name)
 
         // 3) find & mutate only those tags whose variantProperties changed
-        val toUpdate = existingByName.values
+        val updatedTags = existingByName.values
             .filter { tag ->
                 val dto = tagDtosByName[tag.name]!!
                 tag.variant != dto.variant
@@ -39,28 +47,32 @@ class TagService(
             .onEach { tag ->
                 val dto = tagDtosByName[tag.name]!!
                 tag.variant = dto.variant
+            }.map { tag ->
+                TagTable.update({ TagTable.id eq tag.id }) {
+                    it[TagTable.variant] = tag.variant
+                }
+                tag.id
+            }.let { tagIds ->
+                TagTable.findById(tagIds) {
+                    TagTable.rowToTagRecord(it)
+                }
             }
 
-        // 4) persist the updates (if any)
-        val updatedTags = if (toUpdate.isNotEmpty()) {
-            tagRepository.saveAll(toUpdate)
-        } else {
-            emptyList()
-        }
-
         // 5) build & persist new tags for names that didn’t exist
-        val toCreate = tags
+        val createdTags = tags
             .filter { it.name !in existingByName }
-            .map { Tag.fromDto(it, team) }
-
-        val createdTags = if (toCreate.isNotEmpty()) {
-            tagRepository.saveAll(toCreate)
-        } else {
-            emptyList()
-        }
+            .let { tags ->
+                TagTable.batchInsert(tags) { tag ->
+                    this[TagTable.teamId] = teamId
+                    this[TagTable.name] = tag.name
+                    this[TagTable.variant] = tag.variant
+                }
+            }.map { tag ->
+                TagTable.rowToTagRecord(tag)
+            }
 
         // 6) return unchanged existing + updated + newly created
-        val unchanged = existingByName.values - toUpdate.toSet()
+        val unchanged = existingByName.values - updatedTags.toSet()
 
         return buildList {
             addAll(unchanged)
@@ -71,27 +83,15 @@ class TagService(
 
     fun getAllPaginated(
         pageable: Pageable,
-        teamId: String?,
-        userId: String?,
+        teamId: ULong?,
+        userId: ULong?,
         name: String?,
         deleted: Boolean = false
-    ): Page<Tag> = tagRepository.findAll(
-        buildSpecification {
-            where {
-                and {
-                    require(teamId != null || userId != null) { "teamId or userId needs to be provided" }
-                    and {
-                        teamId?.let { col("team.id") eq it }
-                        userId?.let { col("team.teamUsers.id.user.id") eq it }
-                    }
-
-                    and {
-                        colDeleted(deleted)
-                        name?.let { col(Tag::name) lowercaseLike "%$it%" }
-                    }
-                }
-            }
-        },
-        pageable.validateSort("name", "variant"),
+    ): Page<TagRecord> = TagTable.findAll(
+        pageable = pageable,
+        teamId = teamId,
+        userId = userId,
+        name = name,
+        deleted = deleted,
     )
 }

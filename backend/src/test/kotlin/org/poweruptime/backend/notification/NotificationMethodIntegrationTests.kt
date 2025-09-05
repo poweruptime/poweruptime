@@ -9,9 +9,9 @@ import org.poweruptime.backend.core.*
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.notification.dto.NotificationMethodResponse
-import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodData
-import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
-import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodData
+import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodDataRecord
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodDataRecord
+import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodDataRecord
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -21,16 +21,17 @@ class NotificationMethodIntegrationTests(
     @Autowired val mockMvc: MockMvc,
     @Autowired val instanceSettingService: InstanceSettingService
 ) : BaseTestWithReusingContainers() {
-    private val discordNotificationSenderData = DiscordNotificationMethodData(
+    private val discordNotificationSenderData = DiscordNotificationMethodDataRecord(
         url = "https://test.at",
+        displayName = null,
     )
 
     private val notificationSender = listOf(
         discordNotificationSenderData,
-        SlackNotificationMethodData(
+        SlackNotificationMethodDataRecord(
             url = "https://test.at",
         ),
-        EmailNotificationMethodData(
+        EmailNotificationMethodDataRecord(
             setOf("test@test.at"),
             "mail.test.at",
             1234,
@@ -38,6 +39,8 @@ class NotificationMethodIntegrationTests(
             "test",
             EmailSecurity.NONE_STARTTLS,
             false,
+            cc = null,
+            bcc = null,
         ),
     )
 
@@ -84,7 +87,8 @@ class NotificationMethodIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("UoKSMt62oFcX") }
-                        jsonPath("$.sender._type") { value("EMAIL") }
+                        jsonPath("$.type") { value("EMAIL") }
+                        jsonPath("$.data._type") { value("EMAIL") }
                     }
                 }
             }
@@ -99,7 +103,8 @@ class NotificationMethodIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("UoKSMt62oFcX") }
-                        jsonPath("$.sender._type") { value("EMAIL") }
+                        jsonPath("$.type") { value("EMAIL") }
+                        jsonPath("$.data._type") { value("EMAIL") }
                     }
                 }
             }
@@ -114,7 +119,8 @@ class NotificationMethodIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("UoKSMt62oFcX") }
-                        jsonPath("$.sender._type") { value("EMAIL") }
+                        jsonPath("$.type") { value("EMAIL") }
+                        jsonPath("$.data._type") { value("EMAIL") }
                     }
                 }
             }
@@ -202,7 +208,9 @@ class NotificationMethodIntegrationTests(
         fun `test if secured`() {
             mockMvc.post("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateNotificationMethodDto(discordNotificationSenderData).toJSON()
+                content = ModelFactory.getCreateNotificationMethodDto(
+                    discordNotificationSenderData,
+                ).toJSON()
             }.andExpect {
                 status { isUnauthorized() }
             }
@@ -211,7 +219,9 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockUser
         fun `test success with user`() {
-            val model = ModelFactory.getCreateNotificationMethodDto(discordNotificationSenderData)
+            val model = ModelFactory.getCreateNotificationMethodDto(
+                discordNotificationSenderData,
+            )
             mockMvc.post("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()
@@ -268,7 +278,9 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockAdmin
         fun `test success with admin`() {
-            val model = ModelFactory.getCreateNotificationMethodDto(discordNotificationSenderData)
+            val model = ModelFactory.getCreateNotificationMethodDto(
+                discordNotificationSenderData,
+            )
             mockMvc.post("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()
@@ -287,8 +299,8 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockAdmin
         fun `test success all types`() {
-            val createdNotificationMethods = notificationSender.map {
-                val model = ModelFactory.getCreateNotificationMethodDto(it)
+            val createdNotificationMethods = notificationSender.map { data ->
+                val model = ModelFactory.getCreateNotificationMethodDto(data)
                 val notificationMethod = mockMvc.post("/v1/notification-method") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
@@ -299,19 +311,22 @@ class NotificationMethodIntegrationTests(
                         content {
                             jsonPath("$.id") { exists() }
                             jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.sender._type") { value(it._type.code) }
+                            jsonPath("$.type") { value(model.data._type.code) }
+                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
                 }.andReturn().toDto<NotificationMethodResponse>()
 
-                assertThat(notificationMethod.sender.toJSON()).isEqualTo(it.toJSON())
+                assertThat(notificationMethod.data.toJSON()).isEqualTo(data.toJSON())
 
                 notificationMethod.id
             }
 
             // Test updating
-            createdNotificationMethods.forEach {
-                val model = ModelFactory.getUpdateNotificationMethodDto(it, notificationSender.random())
+            createdNotificationMethods.forEach { id ->
+                val model = notificationSender.random().let { data ->
+                    ModelFactory.getUpdateNotificationMethodDto(id, data)
+                }
                 val monitor = mockMvc.put("/v1/notification-method") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
@@ -320,14 +335,15 @@ class NotificationMethodIntegrationTests(
                     content {
                         contentType(MediaType.APPLICATION_JSON)
                         content {
-                            jsonPath("$.id") { value(it) }
+                            jsonPath("$.id") { value(id) }
                             jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.sender._type") { value(model.sender._type.code) }
+                            jsonPath("$.type") { value(model.data._type.code) }
+                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
                 }.andReturn().toDto<NotificationMethodResponse>()
 
-                assertThat(monitor.sender.toJSON()).isEqualTo(model.sender.toJSON())
+                assertThat(monitor.data.toJSON()).isEqualTo(model.data.toJSON())
             }
         }
     }
@@ -351,7 +367,10 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if secured with team user`() {
-            val model = ModelFactory.getUpdateNotificationMethodDto("UoKSMt62oFcX", discordNotificationSenderData)
+            val model = ModelFactory.getUpdateNotificationMethodDto(
+                "UoKSMt62oFcX",
+                discordNotificationSenderData,
+            )
             mockMvc.put("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()
@@ -363,7 +382,10 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if secured with wrong team user`() {
-            val model = ModelFactory.getUpdateNotificationMethodDto("UoKSMt62oFcX", discordNotificationSenderData)
+            val model = ModelFactory.getUpdateNotificationMethodDto(
+                "UoKSMt62oFcX",
+                discordNotificationSenderData,
+            )
             mockMvc.put("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()
@@ -375,7 +397,10 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockAdmin
         fun `test success with admin`() {
-            val model = ModelFactory.getUpdateNotificationMethodDto("UoKSMt62oFcX", discordNotificationSenderData)
+            val model = ModelFactory.getUpdateNotificationMethodDto(
+                "UoKSMt62oFcX",
+                discordNotificationSenderData,
+            )
             mockMvc.put("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()
@@ -394,7 +419,10 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockUser
         fun `test success with team admin user`() {
-            val model = ModelFactory.getUpdateNotificationMethodDto("UoKSMt62oFcX", discordNotificationSenderData)
+            val model = ModelFactory.getUpdateNotificationMethodDto(
+                "UoKSMt62oFcX",
+                discordNotificationSenderData,
+            )
             mockMvc.put("/v1/notification-method") {
                 contentType = MediaType.APPLICATION_JSON
                 content = model.toJSON()

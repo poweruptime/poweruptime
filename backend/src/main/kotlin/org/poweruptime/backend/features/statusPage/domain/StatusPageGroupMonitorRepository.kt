@@ -1,20 +1,27 @@
 package org.poweruptime.backend.features.statusPage.domain
 
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.stereotype.Repository
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.monitor.model.MonitorTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorJoinMonitorRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorTable
+import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupMonitorJoinMonitorRecord
 
-@Repository
-interface StatusPageGroupMonitorRepository :
-    JpaRepository<StatusPageGroupMonitor, String>,
-    JpaSpecificationExecutor<StatusPageGroupMonitor> {
-    @Query(
-        """
-        select spgm from StatusPageGroupMonitor spgm where spgm.statusPage.id = :statusPageId order by spgm.position asc
-        """,
-    )
-    fun findByStatusPage(@Param("statusPageId") statusPageId: String): List<StatusPageGroupMonitor>
-}
+fun StatusPageGroupMonitorTable.findByStatusPage(statusPageId: ULong): List<StatusPageGroupMonitorJoinMonitorRecord> =
+    innerJoin(MonitorTable)
+        .selectAll()
+        .where { StatusPageGroupMonitorTable.statusPageId eq statusPageId }
+        .orderBy(StatusPageGroupMonitorTable.position, SortOrder.ASC)
+        .map {
+            StatusPageGroupMonitorTable.rowToStatusPageGroupMonitorJoinMonitorRecord(it)
+        }
+
+fun StatusPageGroupMonitorTable.findByStatusPage(statusPageId: List<ULong>):
+    List<StatusPageGroupMonitorJoinMonitorRecord> =
+    innerJoin(MonitorTable)
+        .selectAll()
+        .where { StatusPageGroupMonitorTable.statusPageId inList statusPageId }
+        .orderBy(StatusPageGroupMonitorTable.position, SortOrder.ASC)
+        .map {
+            StatusPageGroupMonitorTable.rowToStatusPageGroupMonitorJoinMonitorRecord(it)
+        }

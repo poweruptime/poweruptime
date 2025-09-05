@@ -11,7 +11,7 @@ class SlackNotificationMethodDataAppriseConverter(
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
-        val data = notificationMethodData as SlackNotificationMethodData
+        val data = notificationMethodData as SlackNotificationMethodDataRecord
 
         return NotificationMethodDataAppriseDto(
             data.url,

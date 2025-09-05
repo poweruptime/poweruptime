@@ -1,20 +1,21 @@
 package org.poweruptime.backend.features.notification.core
 
-import org.poweruptime.backend.features.notification.notificationMethods.apprise.AppriseNotificationMethodData
-import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodData
-import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodData
-import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodData
+import org.poweruptime.backend.features.notification.notificationMethods.apprise.AppriseNotificationMethodDataRecord
+import org.poweruptime.backend.features.notification.notificationMethods.discord.DiscordNotificationMethodDataRecord
+import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodDataRecord
+import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodDataRecord
 
 class NotificationMethodDataTypeFactory {
     private val dataTypes = mapOf(
-        NotificationMethodTypes.APPRISE to AppriseNotificationMethodData::class.java,
-        NotificationMethodTypes.DISCORD to DiscordNotificationMethodData::class.java,
-        NotificationMethodTypes.EMAIL to EmailNotificationMethodData::class.java,
-        NotificationMethodTypes.SLACK to SlackNotificationMethodData::class.java,
+        NotificationMethodTypes.APPRISE to AppriseNotificationMethodDataRecord::class.java,
+        NotificationMethodTypes.DISCORD to DiscordNotificationMethodDataRecord::class.java,
+        NotificationMethodTypes.EMAIL to EmailNotificationMethodDataRecord::class.java,
+        NotificationMethodTypes.SLACK to SlackNotificationMethodDataRecord::class.java,
     )
 
-    fun toClass(monitorType: String): Class<*> =
-        dataTypes[monitorType] ?: throw IllegalArgumentException("Unknown method data: $monitorType")
+    fun toClass(notificationMethodType: String): Class<*> =
+        dataTypes[notificationMethodType]
+            ?: throw IllegalArgumentException("Unknown method data: $notificationMethodType")
 
     fun toStringRepresentation(klass: Class<*>?): String = klass?.let { k ->
         dataTypes.entries.find { it.value == k }?.key

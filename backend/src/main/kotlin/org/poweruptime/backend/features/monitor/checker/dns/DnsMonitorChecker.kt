@@ -1,10 +1,19 @@
 package org.poweruptime.backend.features.monitor.checker.dns
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.core.CheckResultDto
+import org.poweruptime.backend.features.monitor.core.MonitorChecker
+import org.poweruptime.backend.features.monitor.core.MonitoringResultHandler
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.xbill.DNS.*
+import org.xbill.DNS.DClass
+import org.xbill.DNS.Message
+import org.xbill.DNS.Name
+import org.xbill.DNS.Record
+import org.xbill.DNS.Resolver
+import org.xbill.DNS.SimpleResolver
+import org.xbill.DNS.Type
 import java.net.InetAddress
 import java.net.InetSocketAddress
 
@@ -16,8 +25,8 @@ class DnsMonitorChecker : MonitorChecker {
     override val type = MonitorType.DNS
 
     @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val dnsMonitorCheckerData = monitor.checker as DnsMonitorData
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        val dnsMonitorCheckerData = data as DnsMonitorDataRecord
 
         val result = MonitoringResultHandler()
         try {

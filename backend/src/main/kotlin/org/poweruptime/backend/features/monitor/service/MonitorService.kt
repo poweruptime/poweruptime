@@ -1,211 +1,338 @@
 package org.poweruptime.backend.features.monitor.service
 
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
-import org.poweruptime.backend.core.*
+import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.jdbc.batchInsert
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findByIdOrThrow
-import org.poweruptime.backend.core.dto.validateSort
+import org.poweruptime.backend.core.domain.findByPublicId
+import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
+import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
+import org.poweruptime.backend.core.domain.undeleteById
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.MonitorScheduler
-import org.poweruptime.backend.features.monitor.domain.MonitorRepository
+import org.poweruptime.backend.features.monitor.domain.countMonitorsByTeamIdsGrouped
+import org.poweruptime.backend.features.monitor.domain.countMonitorsByUserGrouped
+import org.poweruptime.backend.features.monitor.domain.findAll
+import org.poweruptime.backend.features.monitor.domain.findAllNoneDeleted
+import org.poweruptime.backend.features.monitor.domain.findByNotificationMethodId
+import org.poweruptime.backend.features.monitor.domain.findJoinTeamByIdOrThrow
+import org.poweruptime.backend.features.monitor.domain.updateStatus
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
-import org.poweruptime.backend.features.monitor.dto.fromDto
-import org.poweruptime.backend.features.monitor.dto.update
-import org.poweruptime.backend.features.monitor.model.Monitor
-import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
+import org.poweruptime.backend.features.monitor.model.MonitorRecordJoinTeamRecord
+import org.poweruptime.backend.features.monitor.model.MonitorRecordWithDataJoinTeamRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.poweruptime.backend.features.notification.domain.NotificationMethodRepository
+import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
+import org.poweruptime.backend.features.notification.domain.findByMonitorId
+import org.poweruptime.backend.features.notification.model.MonitorNotificationMethodTable
+import org.poweruptime.backend.features.notification.model.NotificationMethodTable
+import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
+import org.poweruptime.backend.features.tag.MonitorTagTable
 import org.poweruptime.backend.features.tag.TagService
-import org.poweruptime.backend.features.team.domain.TeamRepository
-import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamTable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Suppress("TooManyFunctions")
 @Service
+@Transactional(readOnly = true)
 class MonitorService(
-    private val monitorRepository: MonitorRepository,
-    private val teamRepository: TeamRepository,
     private val monitorScheduler: MonitorScheduler,
     private val monitorDataService: MonitorDataService,
-    private val notificationMethodRepository: NotificationMethodRepository,
     private val tagService: TagService,
-) : ASoftDeleteEntityService<Monitor>(monitorRepository) {
-    fun create(dto: CreateMonitorDto): Monitor {
-        val team = teamRepository.findByIdOrThrow(dto.teamId)
+) {
+    fun getJoinTeamById(id: ULong): MonitorRecordJoinTeamRecord = MonitorTable.findJoinTeamByIdOrThrow(id)
 
-        return save(
-            Monitor.fromDto(
-                it = dto,
-                team = team,
-                notificationMethods = notificationMethodRepository.findByIdOrThrow(
-                    dto.notificationMethodIds,
-                ).ensureAllInTeam(dto.teamId) { notificationMethod -> notificationMethod.team.id },
-                tags = tagService.getByTeamIdAndNames(team, dto.tags),
-                attachedChecker = monitorDataService.save(dto.checker),
-            ),
-        ).start()
-    }
+    fun getIdByPublicId(publicId: String, includeDeleted: Boolean = false): ULong =
+        MonitorTable.findIdByPublicIdOrThrow(publicId, includeDeleted)
 
-    fun update(dto: UpdateMonitorDto): Monitor = getByIdOrThrow(dto.id).let {
-        val oldCheckerId = it.checker.id
-        val newChecker = monitorDataService.save(dto.checker)
-
-        val monitor = monitorRepository.saveAndFlush(
-            it.update(
-                it = dto,
-                notificationMethods = notificationMethodRepository.findByIdOrThrow(
-                    dto.notificationMethodIds,
-                ).ensureAllInTeam(it.team.id) { notificationMethod -> notificationMethod.team.id },
-                tags = tagService.getByTeamIdAndNames(it.team, dto.tags),
-                attachedChecker = newChecker,
-            ),
-        ).stop().start()
-
-        monitorDataService.finalDeleteById(oldCheckerId)
-
-        monitor
-    }
-
-    fun clone(monitor: Monitor, teamId: String? = null): Monitor = save(
-        monitor.clone(
-            attachedCheckerData = monitorDataService.save(monitor.checker.clone()),
-            team = teamId?.let { teamRepository.findByIdOrThrow(it) },
-        ),
-    ).start()
-
-    fun updateStatus(monitorId: String, status: MonitorStatus): Int = monitorRepository.updateStatus(monitorId, status)
-
-    override fun deleteById(id: String) {
-        deleteByIdOrThrow(id)
-    }
-
-    override fun deleteByIdOrThrow(id: String) {
-        monitorScheduler.stop(id)
-        val monitor = getByIdOrThrow(id)
-        super.deleteByIdOrThrow(id)
-
-        monitorDataService.deleteByIdOrThrow(monitor.checker.id)
-    }
-
-    override fun undeleteById(id: String): Monitor = super.undeleteById(id).let {
-        monitorDataService.undeleteById(it.checker.id)
-        it.start()
-        it
-    }
-
-    fun pause(id: String): Monitor = getByIdOrThrow(id).let {
-        it.stop()
-        it.status = MonitorStatus.PAUSED
-        save(it)
-    }
-
-    fun maintenance(id: String): Monitor = getByIdOrThrow(id).let {
-        it.status = MonitorStatus.MAINTENANCE
-        save(it)
-    }
-
-    fun start(id: String): Monitor = getByIdOrThrow(id).let {
-        if (it.status !== MonitorStatus.MAINTENANCE && it.status !== MonitorStatus.PAUSED) {
-            throw BadRequestException("Monitor can only be start if it's paused or in maintenance")
+    fun getByPublicId(publicId: String): MonitorRecord =
+        MonitorTable.findByPublicIdOrThrow(publicId) {
+            MonitorTable.rowToMonitorRecord(it)
+        }
+    fun getByPublicId(publicIds: List<String>): List<MonitorRecord> =
+        MonitorTable.findByPublicId(publicIds) {
+            MonitorTable.rowToMonitorRecord(it)
         }
 
-        it.status = MonitorStatus.PENDING
-        save(it).let { saved ->
-            it.start()
-            saved
+    fun getById(id: ULong): MonitorRecord =
+        MonitorTable.findByIdOrThrow(id) {
+            MonitorTable.rowToMonitorRecord(it)
         }
-    }
 
-    fun getIdsByTeamId(teamId: String) = monitorRepository.findIdsByTeamId(teamId)
+    fun getByNotificationMethodId(id: ULong): List<MonitorRecord> = MonitorTable.findByNotificationMethodId(id)
+    fun getByNotificationMethodId(ids: List<ULong>): Map<ULong, List<MonitorRecord>> =
+        MonitorTable.findByNotificationMethodId(ids)
+
+    fun getAllNoneDeleted(): List<MonitorRecord> = MonitorTable.findAllNoneDeleted()
 
     fun getAllPaginated(
         pageable: Pageable,
-        teamId: String? = null,
-        userId: String? = null,
+        teamId: ULong? = null,
+        userId: ULong? = null,
         statusPageSlug: String? = null,
         name: String? = null,
-        enabledNotificationMethodIds: List<String>? = null,
+        enabledNotificationMethodIds: List<ULong>? = null,
         statuses: List<MonitorStatus>? = null,
         types: List<MonitorType>? = null,
         tags: List<String>? = null,
-        usedInStatusPageGroupIds: List<String>? = null,
+        usedInStatusPageGroupIds: List<ULong>? = null,
         deleted: Boolean = false
-    ): Page<Monitor> = monitorRepository.findAll(
-        buildSpecification {
-            where {
-                and {
-                    require(
-                        teamId != null || userId != null || statusPageSlug != null,
-                    ) { "teamId, userId or slug needs to be provided" }
-                    and {
-                        teamId?.let { col("team.id") eq it }
-                        userId?.let { col("team.teamUsers.id.user.id") eq it }
-                        statusPageSlug?.let { col("groupMonitors.connection.group.statusPage.slug") eq it }
-                    }
-
-                    and {
-                        colDeleted(deleted)
-
-                        name?.ifBlank { null }?.let { col(Monitor::name) lowercaseLike "%$it%" }
-
-                        enabledNotificationMethodIds?.ifEmpty { null }?.let {
-                            col("enabledNotificationMethods.id") inList it
-                        }
-                        usedInStatusPageGroupIds?.ifEmpty { null }?.let {
-                            col("groupMonitors.connection.group.id") inList it
-                        }
-                        statuses?.ifEmpty { null }?.let { col(Monitor::status) inList it }
-                        types?.ifEmpty { null }?.let { col("checker._type") inList it }
-                        tags?.ifEmpty { null }?.let { col("selectedTags.name") inList it }
-                    }
-                }
-            }
-        },
-        pageable.validateSort(
-            "name",
-            "status",
-            "testIntervalSeconds",
-            "retries",
-            "deleted",
-            "createdAt",
-            "groupMonitors.position",
-            "team.name",
-        ),
+    ): Page<MonitorRecordJoinTeamRecord> = MonitorTable.findAll(
+        pageable = pageable,
+        teamId = teamId,
+        userId = userId,
+        statusPageSlug = statusPageSlug,
+        name = name,
+        enabledNotificationMethodIds = enabledNotificationMethodIds,
+        statuses = statuses,
+        types = types,
+        tags = tags,
+        usedInStatusPageGroupIds = usedInStatusPageGroupIds,
+        deleted = deleted,
     )
 
-    fun ensureAllMonitorsInTeam(monitors: Collection<Monitor>, teamId: String) = monitors.all { it.team.id == teamId }
+    @Transactional
+    fun create(dto: CreateMonitorDto): MonitorRecordWithDataJoinTeamRecord {
+        val teamId = TeamTable.findIdByPublicIdOrThrow(dto.teamId)
 
-    fun startAll(): List<Monitor> = monitorRepository.findAllNoneDeleted().map {
-        it.apply {
-            status = when (it.status) {
-                MonitorStatus.PENDING,
-                MonitorStatus.DOWN,
-                MonitorStatus.UP -> MonitorStatus.PENDING
-                MonitorStatus.MAINTENANCE,
-                MonitorStatus.PAUSED -> it.status
-            }
+        val tags = tagService.getByTeamIdAndNames(teamId, dto.tags)
+
+        val notificationMethodIds = NotificationMethodTable.findByPublicId(
+            dto.notificationMethodIds,
+        ) {
+            NotificationMethodTable.rowToNotificationMethodRecord(it)
         }
-        it.start(true)
-    }.apply {
-        saveAll(this)
+            .ensureAllInTeam(teamId) { notificationMethod -> notificationMethod.teamId }
+            .map { notificationMethod -> notificationMethod.id }
+
+        return MonitorTable.insertAndGetId {
+            it[MonitorTable.teamId] = teamId
+            it[MonitorTable.type] = dto.data._type
+            it[MonitorTable.name] = dto.name
+            it[MonitorTable.description] = dto.description
+            it[MonitorTable.testIntervalSeconds] = dto.testIntervalSeconds
+            it[MonitorTable.retries] = dto.retries
+            it[MonitorTable.upsideDown] = dto.upsideDown
+            it[MonitorTable.resendAfter] = dto.resendAfter
+        }
+            .let { getJoinTeamById(it.value) }
+            .let {
+                MonitorRecordWithDataJoinTeamRecord(
+                    monitor = it.monitor,
+                    team = it.team,
+                    data = monitorDataService.insert(it.monitor, dto.data),
+                )
+            }.also {
+                MonitorTagTable.batchInsert(tags) { tag ->
+                    this[MonitorTagTable.tagId] = tag.id
+                    this[MonitorTagTable.monitorId] = it.monitor.id
+                }
+
+                MonitorNotificationMethodTable.batchInsert(notificationMethodIds) { notificationMethodId ->
+                    this[MonitorNotificationMethodTable.notificationMethodId] = notificationMethodId
+                    this[MonitorNotificationMethodTable.monitorId] = it.monitor.id
+                }
+
+                it.monitor.start()
+            }
     }
 
-    private fun Monitor.start(booting: Boolean = false): Monitor = apply {
+    @Transactional
+    fun update(dto: UpdateMonitorDto): MonitorRecordWithDataJoinTeamRecord =
+        MonitorTable.findByPublicIdOrThrow(dto.id) {
+            MonitorTable.rowToMonitorRecord(it)
+        }.let { monitor ->
+            val tags = tagService.getByTeamIdAndNames(monitor.id, dto.tags)
+
+            val notificationMethodIds = NotificationMethodTable.findByPublicId(
+                dto.notificationMethodIds,
+            ) {
+                NotificationMethodTable.rowToNotificationMethodRecord(it)
+            }
+                .ensureAllInTeam(monitor.teamId) { notificationMethod -> notificationMethod.teamId }
+                .map { notificationMethod -> notificationMethod.id }
+
+            MonitorTagTable.deleteWhere { MonitorTagTable.monitorId eq monitor.id }
+
+            MonitorNotificationMethodTable.deleteWhere { MonitorNotificationMethodTable.monitorId eq monitor.id }
+
+            MonitorTagTable.batchInsert(tags) { tag ->
+                this[MonitorTagTable.tagId] = tag.id
+                this[MonitorTagTable.monitorId] = monitor.id
+            }
+
+            MonitorNotificationMethodTable.batchInsert(notificationMethodIds) { notificationMethodId ->
+                this[MonitorNotificationMethodTable.notificationMethodId] = notificationMethodId
+                this[MonitorNotificationMethodTable.monitorId] = monitor.id
+            }
+
+            MonitorTable.update({ MonitorTable.id eq monitor.id }) {
+                it[MonitorTable.type] = dto.data._type
+                it[MonitorTable.name] = dto.name
+                it[MonitorTable.description] = dto.description
+                it[MonitorTable.testIntervalSeconds] = dto.testIntervalSeconds
+                it[MonitorTable.retries] = dto.retries
+                it[MonitorTable.upsideDown] = dto.upsideDown
+                it[MonitorTable.resendAfter] = dto.resendAfter
+            }.let { MonitorTable.findJoinTeamByIdOrThrow(monitor.id) }
+                .let {
+                    MonitorRecordWithDataJoinTeamRecord(
+                        monitor = it.monitor,
+                        team = it.team,
+                        data = monitorDataService.update(
+                            oldMonitor = monitor,
+                            updatedMonitor = it.monitor,
+                            data = dto.data,
+                        ),
+                    )
+                }.also {
+                    it.monitor.stop().start()
+                }
+        }
+
+    @Transactional
+    fun clone(publicMonitorId: String, teamId: ULong? = null): MonitorRecordJoinTeamRecord =
+        MonitorTable.findByPublicIdOrThrow(publicMonitorId) {
+            MonitorTable.rowToMonitorRecord(it)
+        }.let { monitor ->
+            val data = monitorDataService.findByIdAndType(monitor.id, monitor.type)
+
+            MonitorTable.insertAndGetId {
+                it[MonitorTable.teamId] = teamId ?: monitor.teamId
+                it[MonitorTable.type] = data._type
+                it[MonitorTable.name] = "${monitor.name} (Copy)"
+                it[MonitorTable.description] = monitor.description
+                it[MonitorTable.testIntervalSeconds] = monitor.testIntervalSeconds
+                it[MonitorTable.retries] = monitor.retries
+                it[MonitorTable.upsideDown] = monitor.upsideDown
+                it[MonitorTable.resendAfter] = monitor.resendAfter
+            }
+                .let { getJoinTeamById(it.value) }
+                .let {
+                    MonitorRecordWithDataJoinTeamRecord(
+                        monitor = it.monitor,
+                        team = it.team,
+                        data = monitorDataService.insert(it.monitor, data),
+                    )
+                }
+                .also { (updatedMonitor) ->
+
+                    if (teamId == null) {
+                        MonitorTagTable.batchInsert(tagService.getByMonitorId(monitor.id)) { tag ->
+                            this[MonitorTagTable.tagId] = tag.id
+                            this[MonitorTagTable.monitorId] = updatedMonitor.id
+                        }
+
+                        MonitorNotificationMethodTable.batchInsert(
+                            NotificationMethodTable.findByMonitorId(monitor.id),
+                        ) { notificationMethod ->
+                            this[MonitorNotificationMethodTable.notificationMethodId] = notificationMethod.id
+                            this[MonitorNotificationMethodTable.monitorId] = updatedMonitor.id
+                        }
+                    }
+
+                    updatedMonitor.start()
+                }
+        }
+
+    @Transactional
+    fun updateStatus(monitorId: ULong, status: MonitorStatus): Int = MonitorTable.updateStatus(monitorId, status)
+
+    @Transactional
+    fun deleteById(id: ULong): Int {
+        monitorScheduler.stop(id)
+        return MonitorTable.deleteById(id)
+    }
+
+    @Transactional
+    fun deleteById(ids: Iterable<ULong>): Int {
+        ids.forEach {
+            monitorScheduler.stop(it)
+        }
+        return MonitorTable.deleteById(ids)
+    }
+
+    @Transactional
+    fun undeleteById(id: ULong): MonitorRecordJoinTeamRecord = MonitorTable.undeleteById(
+        id,
+    ).let { getJoinTeamById(id) }.also {
+        it.monitor.start()
+    }
+
+    @Transactional
+    fun pause(id: ULong): MonitorRecordJoinTeamRecord = getJoinTeamById(id).also {
+        it.monitor.stop()
+        MonitorTable.updateStatus(it.monitor.id, MonitorStatus.PAUSED)
+    }.let {
+        it.monitor.status = MonitorStatus.PAUSED
+        it
+    }
+
+    @Transactional
+    fun maintenance(id: ULong): MonitorRecordJoinTeamRecord = getJoinTeamById(id).also {
+        MonitorTable.updateStatus(it.monitor.id, MonitorStatus.MAINTENANCE)
+    }.let {
+        it.monitor.status = MonitorStatus.MAINTENANCE
+        it
+    }
+
+    @Transactional
+    fun start(id: ULong): MonitorRecordJoinTeamRecord = getJoinTeamById(id).also {
+        if (it.monitor.status !== MonitorStatus.MAINTENANCE && it.monitor.status !== MonitorStatus.PAUSED) {
+            throw BadRequestException("Monitor can only start if it's paused or in maintenance")
+        }
+
+        MonitorTable.updateStatus(it.monitor.id, MonitorStatus.PENDING)
+    }.let {
+        it.monitor.status = MonitorStatus.PENDING
+        it
+    }.also {
+        it.monitor.start()
+    }
+
+    @Transactional
+    fun startAll() {
+        val monitors = getAllNoneDeleted()
+
+        monitors
+            .filter {
+                when (it.status) {
+                    MonitorStatus.PENDING,
+                    MonitorStatus.DOWN,
+                    MonitorStatus.UP -> true
+                    MonitorStatus.MAINTENANCE,
+                    MonitorStatus.PAUSED -> false
+                }
+            }.map { it.id }.let { monitorIds ->
+                if (monitorIds.isNotEmpty()) {
+                    MonitorTable.updateStatus(monitorIds, MonitorStatus.PENDING)
+                }
+            }
+
+        monitors.forEach { it.start(true) }
+    }
+
+    private fun MonitorRecord.start(booting: Boolean = false): MonitorRecord = apply {
         monitorScheduler.start(this, booting)
     }
 
-    private fun Monitor.stop(): Monitor = apply {
+    private fun MonitorRecord.stop(): MonitorRecord = apply {
         monitorScheduler.stop(this.id)
     }
 
-    fun getUserDashboard(userId: String): MonitorDashboardResponse {
-        val counts = monitorRepository.countMonitorsByUserGrouped(userId).toMap()
+    fun getUserDashboard(userId: ULong): MonitorDashboardResponse {
+        val counts = MonitorTable.countMonitorsByUserGrouped(userId).toMap()
 
         return MonitorDashboardResponse(
             monitorCount = counts.values.sum(),
@@ -216,12 +343,12 @@ class MonitorService(
         )
     }
 
-    fun getTeamDashboard(teamId: String): MonitorDashboardResponse {
+    fun getTeamDashboard(teamId: ULong): MonitorDashboardResponse {
         return getTeamDashboards(listOf(teamId))[teamId] ?: MonitorDashboardResponse()
     }
 
-    fun getTeamDashboards(teamIds: List<String>): Map<String, MonitorDashboardResponse> {
-        val results = monitorRepository.countMonitorsByTeamIdsGrouped(teamIds)
+    fun getTeamDashboards(teamIds: List<ULong>): Map<ULong, MonitorDashboardResponse> {
+        val results = MonitorTable.countMonitorsByTeamIdsGrouped(teamIds)
 
         val grouped = results.groupBy { it.teamId }
 
@@ -237,28 +364,6 @@ class MonitorService(
             )
         }
     }
-
-    private fun Monitor.clone(
-        attachedCheckerData: MonitorData,
-        team: Team?
-    ) = Monitor(
-        name = """$name (Copy)""",
-        testIntervalSeconds = testIntervalSeconds,
-        upsideDown = upsideDown,
-        team = team ?: this.team,
-        checker = attachedCheckerData,
-        retries = retries,
-        resendAfter = resendAfter,
-        description = description,
-        enabledNotificationMethods = if (team == null && enabledNotificationMethods.isNotEmpty()) {
-            notificationMethodRepository.findAllById(
-                enabledNotificationMethods.map {
-                    it.id
-                },
-            )
-        } else {
-            listOf()
-        },
-        selectedTags = if (team == null) selectedTags else listOf(),
-    )
 }
+
+fun Collection<MonitorRecord>.ensureAllMonitorsInTeam(teamId: ULong) = all { it.teamId == teamId }

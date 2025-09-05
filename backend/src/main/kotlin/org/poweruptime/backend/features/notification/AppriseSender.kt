@@ -15,7 +15,9 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodTemp
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.htmlConverter.HtmlConverterFactory
-import org.poweruptime.backend.features.notification.model.SubNotification
+import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
+import org.poweruptime.backend.features.notification.model.SubNotificationRecord
+import org.poweruptime.backend.features.notification.service.NotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
@@ -36,6 +38,7 @@ class AppriseSender(
     private val appriseUrl: String,
 
     private val restTemplate: RestTemplate,
+    private val notificationMethodDataService: NotificationMethodDataService,
     private val notificationTemplateService: NotificationTemplateService,
     private val tempNotificationService: TempNotificationService,
 ) {
@@ -43,13 +46,17 @@ class AppriseSender(
     private final val notificationMethodDataConverterFactory = NotificationMethodDataConverterFactory()
     private final val htmlConverterFactory = HtmlConverterFactory()
 
-    fun send(subNotification: SubNotification): SubNotification {
+    fun send(
+        subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+    ): SubNotificationRecord {
+        val subNotification = subNotificationJoin.subNotification
+        val method = subNotificationJoin.method
         logger.info {
-            "Starting send() for SubNotification(id=${subNotification.id}, type=${subNotification.method.data._type})"
+            "Starting send() for SubNotification(id=${subNotification.id}, type=${method.type})"
         }
 
         val notificationTemplate =
-            notificationTemplateService.getRenderedNotification(subNotification)
+            notificationTemplateService.getRenderedNotification(subNotificationJoin)
         logger.debug {
             "Rendered template: title='${notificationTemplate.title}', " +
                 "body='${notificationTemplate.body.take(100)}...'"
@@ -59,14 +66,14 @@ class AppriseSender(
         subNotification.message = notificationTemplate.body
 
         val converter =
-            notificationMethodDataConverterFactory.getConverter(subNotification.method.data._type)
-        val appriseDto = converter.convert(subNotification.method.data)
+            notificationMethodDataConverterFactory.getConverter(method.type)
+        val appriseDto = converter.convert(notificationMethodDataService.findByIdAndType(method.id, method.type))
 
         val request = getAppriseNotificationRequest(
             appriseDto,
             notificationTemplate,
-            subNotification.method.data._type,
-            subNotification.notification.checkResult.status,
+            method.type,
+            subNotificationJoin.checkResult.status,
         )
         logger.debug {
             "Built AppriseNotificationRequest: $request"
@@ -76,7 +83,7 @@ class AppriseSender(
             logger.info { "Temp notifications enabled, storing temp notification" }
             tempNotificationService.addNotification(
                 TempNotification(
-                    to = subNotification.method.data._type.name,
+                    to = method.type.name,
                     subject = notificationTemplate.title,
                     bodyHTML = notificationTemplate.body,
                     appriseDto = request,

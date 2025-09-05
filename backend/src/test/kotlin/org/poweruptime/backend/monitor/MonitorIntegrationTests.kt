@@ -9,14 +9,14 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataRecord
 import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataContentType
 import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataMethod
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorData
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
 import org.poweruptime.backend.features.team.dto.TeamResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +27,7 @@ class MonitorIntegrationTests(
     @Autowired val mockMvc: MockMvc,
     @Autowired val instanceSettingService: InstanceSettingService
 ) : BaseTestWithReusingContainers() {
-    private val dnsMonitorCheckerData = DnsMonitorData(
+    private val dnsMonitorCheckerData = DnsMonitorDataRecord(
         host = "playground.dafnik.me",
         server = "9.9.9.9",
         port = 53,
@@ -37,21 +37,21 @@ class MonitorIntegrationTests(
 
     private val monitorCheckers = listOf(
         dnsMonitorCheckerData,
-        HttpMonitorData(
+        HttpMonitorDataRecord(
             url = "https://expired.badssl.com/",
             method = HttpMonitorDataMethod.GET,
             contentType = HttpMonitorDataContentType.JSON,
             ignoreTLS = true,
             allowedStatusCodeRanges = listOf("200 - 299"),
         ),
-        PingMonitorData(
+        PingMonitorDataRecord(
             ip = "1.1.1.1",
             port = 80,
         ),
-        PushMonitorData(
+        PushMonitorDataRecord(
             pushId = RandomGenerator.nanoId(),
         ),
-        SSLCertificateMonitorData(
+        SSLCertificateMonitorDataRecord(
             url = "https://dafnik.me",
             validDaysLeft = 30,
         ),
@@ -100,7 +100,8 @@ class MonitorIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("k6A6bEK7C9pC") }
-                        jsonPath("$.checker._type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.data._type") { value("SSL_CERTIFICATE") }
                     }
                 }
             }
@@ -115,7 +116,8 @@ class MonitorIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("k6A6bEK7C9pC") }
-                        jsonPath("$.checker._type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.data._type") { value("SSL_CERTIFICATE") }
                     }
                 }
             }
@@ -130,7 +132,8 @@ class MonitorIntegrationTests(
                     contentType(MediaType.APPLICATION_JSON)
                     content {
                         jsonPath("$.id") { value("k6A6bEK7C9pC") }
-                        jsonPath("$.checker._type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.type") { value("SSL_CERTIFICATE") }
+                        jsonPath("$.data._type") { value("SSL_CERTIFICATE") }
                     }
                 }
             }
@@ -338,8 +341,8 @@ class MonitorIntegrationTests(
         @Test
         @MockAdmin
         fun `test success all types`() {
-            val createdMonitors = monitorCheckers.map {
-                val model = ModelFactory.getCreateMonitorDto(it)
+            val createdMonitors = monitorCheckers.map { data ->
+                val model = ModelFactory.getCreateMonitorDto(data)
                 val monitor = mockMvc.post("/v1/monitor") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
@@ -351,19 +354,22 @@ class MonitorIntegrationTests(
                             jsonPath("$.id") { exists() }
                             jsonPath("$.name") { value(model.name) }
                             jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
-                            jsonPath("$.checker._type") { value(it._type.code) }
+                            jsonPath("$.type") { value(model.data._type.code) }
+                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
                 }.andReturn().toDto<MonitorFullResponse>()
 
-                assertThat(monitor.checker.toJSON()).isEqualTo(it.toJSON())
+                assertThat(monitor.data.toJSON()).isEqualTo(data.toJSON())
 
                 monitor.id
             }
 
             // Test updating
-            createdMonitors.forEach {
-                val model = ModelFactory.getUpdateMonitorDto(it, monitorCheckers.random())
+            createdMonitors.forEach { id ->
+                val model = monitorCheckers.random().let { data ->
+                    ModelFactory.getUpdateMonitorDto(id, data)
+                }
                 val monitor = mockMvc.put("/v1/monitor") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
@@ -372,15 +378,16 @@ class MonitorIntegrationTests(
                     content {
                         contentType(MediaType.APPLICATION_JSON)
                         content {
-                            jsonPath("$.id") { value(it) }
+                            jsonPath("$.id") { value(id) }
                             jsonPath("$.name") { value(model.name) }
                             jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
-                            jsonPath("$.checker._type") { value(model.checker._type.code) }
+                            jsonPath("$.type") { value(model.data._type.code) }
+                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
                 }.andReturn().toDto<MonitorFullResponse>()
 
-                assertThat(monitor.checker.toJSON()).isEqualTo(model.checker.toJSON())
+                assertThat(monitor.data.toJSON()).isEqualTo(model.data.toJSON())
             }
         }
     }
@@ -392,7 +399,10 @@ class MonitorIntegrationTests(
         fun `test if secured`() {
             mockMvc.put("/v1/monitor") {
                 contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateMonitorDto("6XSKoPbRhSsb", dnsMonitorCheckerData).toJSON()
+                content = ModelFactory.getUpdateMonitorDto(
+                    "6XSKoPbRhSsb",
+                    dnsMonitorCheckerData,
+                ).toJSON()
             }.andExpect {
                 status { isUnauthorized() }
             }

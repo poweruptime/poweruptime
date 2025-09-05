@@ -106,11 +106,11 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
           <div class="flex flex-col items-center justify-center gap-2 pt-4">
             <bi size="28" name="bell" />
 
-            <h2 class="mb-2 text-lg font-semibold text-gray-800">
+            <h2 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
               Stay in the loop — set up notifications
             </h2>
 
-            <p class="mb-4 max-w-md text-center text-gray-600">
+            <p class="mb-4 max-w-md text-center text-gray-600 dark:text-gray-300">
               This monitor doesn’t have any notification methods linked yet. Add one now to get
               alerts when something important happens.
             </p>

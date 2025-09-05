@@ -13,3 +13,5 @@ enum class HttpMonitorDataContentType : ADatabaseEnumConvertable {
         override val code = "HTML"
     }
 }
+
+const val MAX_HTTP_MONITOR_DATA_CONTENT_TYPE_LENGTH = 4

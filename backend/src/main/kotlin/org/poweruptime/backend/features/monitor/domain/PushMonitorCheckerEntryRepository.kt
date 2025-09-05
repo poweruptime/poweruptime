@@ -1,24 +1,33 @@
 package org.poweruptime.backend.features.monitor.domain
 
-import org.poweruptime.backend.core.domain.Repository
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryRecord
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryTable
+import org.poweruptime.backend.features.monitor.checker.push.rowToPushMonitorCheckerEntryRecord
 import java.time.Instant
 
-@org.springframework.stereotype.Repository
-interface PushMonitorCheckerEntryRepository : Repository<PushMonitorCheckerEntry>, IPushMonitorCheckerEntryRepository {
-    @Query(
-        """
-        select pe from PushMonitorCheckerEntry pe where pe.pushId = :pushId and pe.createdAt >= :then order by pe.createdAt desc limit 1
-    """,
-    )
-    override fun getLatestByPushIdAndBetweenNowAndThen(
-        @Param("pushId") pushId: String,
-        @Param("then") then: Instant
-    ): PushMonitorCheckerEntry?
+interface IPushMonitorCheckerEntryRepository {
+    fun getLatestByPushIdAndBetweenNowAndThen(
+        pushId: String,
+        then: Instant
+    ): PushMonitorCheckerEntryRecord?
 }
 
-interface IPushMonitorCheckerEntryRepository {
-    fun getLatestByPushIdAndBetweenNowAndThen(pushId: String, then: Instant): PushMonitorCheckerEntry?
+class PushMonitorCheckerEntryRepository : IPushMonitorCheckerEntryRepository {
+    override fun getLatestByPushIdAndBetweenNowAndThen(
+        pushId: String,
+        then: Instant
+    ): PushMonitorCheckerEntryRecord? =
+        PushMonitorCheckerEntryTable.selectAll().where {
+            (PushMonitorCheckerEntryTable.publicId eq pushId) and
+                (PushMonitorCheckerEntryTable.createdAt greaterEq then)
+        }
+            .orderBy(PushMonitorCheckerEntryTable.createdAt, SortOrder.DESC)
+            .limit(1)
+            .firstOrNull()
+            ?.let {
+                PushMonitorCheckerEntryTable.rowToPushMonitorCheckerEntryRecord(it)
+            }
 }

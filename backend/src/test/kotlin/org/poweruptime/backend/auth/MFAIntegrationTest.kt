@@ -11,6 +11,8 @@ import org.poweruptime.backend.core.MockUser
 import org.poweruptime.backend.core.MockUsers
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.core.toDto
+import org.poweruptime.backend.features.authentication.JwtResponse
+import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.profile.dto.ConfirmMFADto
 import org.poweruptime.backend.features.profile.dto.SetupMFAResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -121,7 +123,21 @@ class MFAIntegrationTest(
             }
         }.andReturn().toDto<SetupMFAResponse>()
 
+        // Make explicit a login attempt, so we definitely have the new mfa in the user auth object
+        val jwtResponse = mockMvc.post("/v1/auth/login") {
+            content = LoginDto(
+                email = "test3@test.org",
+                password = "test1234",
+                sessionInformation = null,
+                stayLoggedIn = false,
+            ).toJSON()
+            contentType = MediaType.APPLICATION_JSON
+        }.andReturn().toDto<JwtResponse>()
+
         mockMvc.post("/v1/profile/mfa") {
+            headers {
+                setBearerAuth(jwtResponse.accessToken)
+            }
             content = ConfirmMFADto(
                 code = GoogleAuthenticator(
                     base32secret = response.base32Secret.toByteArray(),
@@ -140,6 +156,7 @@ class MFAIntegrationTest(
         mockMvc.delete("/v1/profile/mfa") {
             contentType = MediaType.APPLICATION_JSON
             headers {
+                setBearerAuth(jwtResponse.accessToken)
                 set(
                     CustomHttpHeader.MFA_CODE,
                     GoogleAuthenticator(

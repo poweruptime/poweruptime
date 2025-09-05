@@ -1,15 +1,26 @@
 package org.poweruptime.backend.core.utils
 
 object Database {
+    const val NUMERIC_COLLATION = "numeric"
+
     const val MIN_NAME_LENGTH = 2
     const val MAX_NAME_LENGTH = 70
     const val MIN_MAIL_LENGTH = 5
     const val MAX_MAIL_LENGTH = 255
 
+    const val MAX_QUEUE_LENGTH = 255
+    const val MAX_EXCHANGE_LENGTH = 255
+
+    const val MAX_PU_VERSION_LENGTH = 21
+
+    const val MAX_MFA_SECRET_LENGTH = 10
+
     const val MAX_BCRYPT_LENGTH = 68
 
     const val MIN_FILE_NAME_LENGTH = 1
     const val MAX_FILE_NAME_LENGTH = 256
+
+    const val MAX_SETTING_VALUE_LENGTH = 2048
 
     const val MIN_TEST_INTERVAL_SECONDS = 30L // 30 seconds
     const val MAX_TEST_INTERVAL_SECONDS = 94608000L // 3 years

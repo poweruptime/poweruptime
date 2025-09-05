@@ -13,7 +13,7 @@ import {AlertDirective} from './alert.directive';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div puAlert type="WARN">
+    <div class="mb-4" puAlert type="WARN">
       <span class="font-bold">{{ 'backendOffline.title' | transloco }}</span>
       {{ 'backendOffline.description' | transloco }}
     </div>

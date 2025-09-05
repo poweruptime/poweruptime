@@ -1,19 +1,19 @@
 package org.poweruptime.backend.features.monitor.core
 
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorData
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorData
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 
 class MonitorDataTypeFactory {
     private val dataTypes = mapOf(
-        MonitorDataTypes.DNS to DnsMonitorData::class.java,
-        MonitorDataTypes.HTTP to HttpMonitorData::class.java,
-        MonitorDataTypes.PING to PingMonitorData::class.java,
-        MonitorDataTypes.PUSH to PushMonitorData::class.java,
-        MonitorDataTypes.SSL_CERTIFICATE to SSLCertificateMonitorData::class.java,
+        MonitorDataTypes.DNS to DnsMonitorDataRecord::class.java,
+        MonitorDataTypes.HTTP to HttpMonitorDataRecord::class.java,
+        MonitorDataTypes.PING to PingMonitorDataRecord::class.java,
+        MonitorDataTypes.PUSH to PushMonitorDataRecord::class.java,
+        MonitorDataTypes.SSL_CERTIFICATE to SSLCertificateMonitorDataRecord::class.java,
     )
 
     fun toClass(monitorType: String): Class<*> =

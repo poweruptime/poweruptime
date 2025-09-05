@@ -76,7 +76,7 @@ class SendEmailService {
                 "'${emailDto.to}'"
             }
         } catch (e: Throwable) {
-            logger.error {
+            logger.error(e) {
                 "Could not send email to '${emailDto.to}', subject: '${emailDto.subject}'"
             }
             throw e

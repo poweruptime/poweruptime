@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import org.jetbrains.exposed.v1.jdbc.insert
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
-import org.poweruptime.backend.features.monitor.domain.PushMonitorCheckerEntryRepository
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryTable
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/v1/public/push")
 @Tag(name = "Monitor API")
-class PushMonitorCheckerEntryController(
-    private val pushMonitorCheckerEntryRepository: PushMonitorCheckerEntryRepository,
-) {
+class PushMonitorCheckerEntryController {
     @Operation(summary = "Add push monitor entry")
     @GetMapping("/{pushId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,15 +30,13 @@ class PushMonitorCheckerEntryController(
         when (status) {
             MonitorStatus.UP,
             MonitorStatus.DOWN -> {
-                pushMonitorCheckerEntryRepository.save(
-                    PushMonitorCheckerEntry(
-                        pushId = pushId,
-                        status = status,
-                        title = title,
-                        message = message,
-                        pingMs = pingMs,
-                    ),
-                )
+                PushMonitorCheckerEntryTable.insert {
+                    it[PushMonitorCheckerEntryTable.publicId] = pushId
+                    it[PushMonitorCheckerEntryTable.status] = status
+                    it[PushMonitorCheckerEntryTable.title] = title
+                    it[PushMonitorCheckerEntryTable.message] = message
+                    it[PushMonitorCheckerEntryTable.pingMs] = pingMs
+                }
             }
             else -> throw BadRequestException("Status has to be UP or DOWN")
         }

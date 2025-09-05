@@ -11,7 +11,7 @@ class AppriseNotificationMethodDataAppriseConverter(
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
-        val data = notificationMethodData as AppriseNotificationMethodData
+        val data = notificationMethodData as AppriseNotificationMethodDataRecord
 
         val urlParts = data.url.split("?")
         val queryExtras = urlParts.last().split("&")

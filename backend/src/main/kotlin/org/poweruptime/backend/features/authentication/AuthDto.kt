@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.authentication.model.Session
+import org.poweruptime.backend.features.authentication.model.SessionRecord
 import java.time.Instant
 
 data class LoginDto(
@@ -57,14 +57,12 @@ data class JwtResponse(
 data class SessionResponse(
     val id: String,
     val description: String,
-    val userId: String,
     val createdAt: Instant,
     val updatedAt: Instant
 ) {
-    constructor(session: Session) : this(
-        session.id,
+    constructor(session: SessionRecord) : this(
+        session.publicId,
         session.description,
-        session.user.id,
         session.createdAt,
         session.updatedAt,
     )

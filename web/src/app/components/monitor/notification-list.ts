@@ -11,7 +11,14 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {MatIconAnchor} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {
+  MatDateRangeInput,
+  MatDateRangePicker,
+  MatDatepickerToggle,
+  MatEndDate,
+  MatStartDate,
+} from '@angular/material/datepicker';
+import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -33,6 +40,7 @@ import {NotificationsStore} from '@app/services';
 import {arrayToParam, paramToArray, trackBy} from '@app/util';
 
 import {BackendType} from '../../api';
+import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../services/util';
 
 @Component({
   template: `
@@ -51,15 +59,21 @@ import {BackendType} from '../../api';
             }
           </mat-select>
         </mat-form-field>
+
         <mat-form-field subscriptSizing="dynamic">
-          <mat-label>{{ 'general.type' | transloco }}</mat-label>
-          <mat-select [(ngModel)]="typesFilter" multiple>
-            @for (type of types(); track type.value) {
-              <mat-option [value]="type.value">
-                {{ type.name }}
-              </mat-option>
-            }
-          </mat-select>
+          <mat-label>{{ 'general.startEnd' | transloco }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [max]="max">
+            <input
+              [(ngModel)]="start"
+              [placeholder]="'monitor.details.pingChart.startDate' | transloco"
+              matStartDate />
+            <input
+              [(ngModel)]="end"
+              [placeholder]="'monitor.details.pingChart.endDate' | transloco"
+              matEndDate />
+          </mat-date-range-input>
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
       </div>
     </div>
@@ -81,7 +95,7 @@ import {BackendType} from '../../api';
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="status">
+        <ng-container matColumnDef="checkResult.status">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.status' | transloco }}
           </th>
@@ -177,7 +191,7 @@ import {BackendType} from '../../api';
     .mat-column-monitor {
       @apply w-64;
     }
-    .mat-column-status {
+    .mat-column-checkResult-status {
       @apply w-32;
     }
     .mat-column-actions {
@@ -205,9 +219,17 @@ import {BackendType} from '../../api';
     MatOption,
     FormsModule,
     StopPropagationDirective,
+    MatDateRangeInput,
+    MatDateRangePicker,
+    MatDatepickerToggle,
+    MatEndDate,
+    MatStartDate,
+    MatSuffix,
   ],
 })
 export class NotificationList {
+  protected readonly max = new Date();
+
   readonly notificationsStore = inject(NotificationsStore);
 
   readonly monitorId = input<string>();
@@ -220,39 +242,43 @@ export class NotificationList {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
     stringify: arrayToParam(),
   });
-  typesFilter = linkedQueryParam('notifi.types', {
-    parse: paramToArray<BackendType['NotificationMethodResponse']['sender']['_type']>(),
-    stringify: arrayToParam(),
-  });
 
   readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},
     {status: 'DOWN' as const, name: 'Down'},
   ]);
 
-  readonly types = signal([
-    {value: 'DISCORD' as const, name: 'Discord'},
-    {value: 'EMAIL' as const, name: 'Email'},
-    {value: 'SLACK' as const, name: 'Slack'},
-  ]);
+  start = linkedQueryParam('notifi.start', {
+    parse: (it) => (it ? toBackendDate(it) : undefined),
+    stringify: (it) => (it ? toBackendDate(it) : undefined),
+  });
+  end = linkedQueryParam('notifi.end', {
+    parse: (it) => (it ? toBackendDate(it) : undefined),
+    stringify: (it) => (it ? toBackendDate(it) : undefined),
+  });
 
   constructor() {
     this.notificationsStore.setPaginator(this.paginator);
     this.notificationsStore.setSort(this.sort);
 
     this.notificationsStore.load(
-      computed(() => ({
-        teamId: this.teamId(),
-        monitorId: this.monitorId(),
-        methods: this.typesFilter(),
-        statuses: this.statuses(),
-        ...this.notificationsStore.pageable(),
-      })),
+      computed(() => {
+        const start = this.start();
+        const end = this.end();
+        return {
+          teamId: this.teamId(),
+          monitorId: this.monitorId(),
+          statuses: this.statuses(),
+          start: start ? toBackendDateTime(dateToDateTime(start)) : undefined,
+          end: end ? toBackendDateTime(dateToDateTime(end)) : undefined,
+          ...this.notificationsStore.pageable(),
+        };
+      }),
     );
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeMonitorColumn) => {
-        let it = ['status', 'createdAt', 'title', 'actions'];
+        let it = ['checkResult.status', 'createdAt', 'title', 'actions'];
 
         if (includeMonitorColumn) {
           it = ['monitor', ...it];

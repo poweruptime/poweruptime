@@ -24,11 +24,11 @@ import org.testcontainers.lifecycle.Startables
 abstract class BaseTestWithReusingContainers {
     companion object {
         @JvmStatic
-        private val postgresDBContainer = PostgreSQLContainer("postgres:16.2-bookworm")
+        private val postgresDBContainer = PostgreSQLContainer("postgres:17.6-bookworm")
             .withReuse(true)
 
         @JvmStatic
-        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:3.13.1-management")
+        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:4.2.0-management")
             .withReuse(true)
 
         @DynamicPropertySource
@@ -59,11 +59,11 @@ abstract class BaseTest protected constructor() {
     companion object {
         @Container
         @JvmStatic
-        private val postgresDBContainer = PostgreSQLContainer("postgres:16.2-bookworm")
+        private val postgresDBContainer = PostgreSQLContainer("postgres:17.6-bookworm")
 
         @Container
         @JvmStatic
-        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:management")
+        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:4.2.0-management")
 
         @DynamicPropertySource
         @JvmStatic

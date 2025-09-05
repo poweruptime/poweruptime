@@ -21,6 +21,12 @@ import {setError, setFulfilled, setPending, withRequestStatus} from './store-fea
 interface LoadOptions {
   version: string | undefined;
   newVersion: boolean;
+  autoDialog: boolean;
+}
+
+interface PublicLoadOptions {
+  version: string | undefined;
+  newVersion: boolean;
 }
 
 export const ChangelogStore = signalStore(
@@ -53,11 +59,11 @@ export const ChangelogStore = signalStore(
         return environment.version !== store.lastVersion();
       }
 
-      function load$({version, newVersion}: LoadOptions) {
+      function load$({version, newVersion, autoDialog}: LoadOptions) {
         patchState(store, setPending());
 
         return httpClient
-          .get(`${BACKEND_API_URL}/v1/changelog`, {
+          .get(`${BACKEND_API_URL}/v1/public/changelog`, {
             responseType: 'text',
             params: {
               ...(version ? {version} : {}),
@@ -68,26 +74,28 @@ export const ChangelogStore = signalStore(
             tapResponse({
               next: (changelog) => {
                 patchState(store, setFulfilled());
-                dialog.open(ChangelogDialog, {data: {changelog, newVersion}});
+                dialog.open(ChangelogDialog, {data: {changelog, newVersion, autoDialog}});
               },
               error: (error) => patchState(store, setError(error)),
             }),
           );
       }
 
-      const showNewVersionDialog = rxMethod<LoadOptions>(
+      const showNewVersionDialog = rxMethod<PublicLoadOptions>(
         switchMap((options) => {
           infoStore.loadShowNewVersionDialog();
 
           return infoStore.showNewVersionDialog$.pipe(
             filter((showNewVersionDialog) => showNewVersionDialog && showNewChangelog()),
-            switchMap(() => load$(options)),
+            switchMap(() => load$({...options, autoDialog: true})),
             tap(() => store.lastVersion.set(environment.version)),
           );
         }),
       );
 
-      const load = rxMethod<LoadOptions>(switchMap((options) => load$(options)));
+      const load = rxMethod<PublicLoadOptions>(
+        switchMap((options) => load$({...options, autoDialog: false})),
+      );
 
       return {
         showNewVersionDialog,

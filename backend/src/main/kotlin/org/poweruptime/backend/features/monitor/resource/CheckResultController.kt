@@ -17,19 +17,20 @@ import org.poweruptime.backend.core.utils.DAYS_PER_MONTH
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_MINUTE
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_SECONDS
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
-import org.poweruptime.backend.features.authentication.domain.PermissionRepository
+import org.poweruptime.backend.features.authentication.domain.PermissionsService
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
 import org.poweruptime.backend.features.authentication.permission.MONITOR_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.userId
-import org.poweruptime.backend.features.monitor.domain.CheckResultRepository
 import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultService
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.buildPingTimelineResponse
 import org.poweruptime.backend.features.monitor.service.generatePingTimelineEntries
+import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -46,9 +47,10 @@ const val TWO_DAYS_IN_MINUTES = 2880L
 @RequestMapping("/v1/check-result")
 @Tag(name = "Check Result API")
 class CheckResultController(
-    private val checkResultRepository: CheckResultRepository,
     private val checkResultService: CheckResultService,
-    private val permissionRepository: PermissionRepository
+    private val monitorService: MonitorService,
+    private val teamService: TeamService,
+    private val permissionsService: PermissionsService,
 ) {
     @Operation(
         summary = "Get check results",
@@ -60,34 +62,40 @@ class CheckResultController(
     fun getAll(
         auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("monitorId") monitorId: String?,
-        @RequestParam("teamId") teamId: String?,
+        @RequestParam("monitorId") publicMonitorId: String?,
+        @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("onlyChanges") onlyChanges: Boolean = false,
+        @RequestParam("hasNotification") hasNotification: Boolean?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
+        @RequestParam("start") @DateTimeFormat(pattern = DATETIME_FORMAT) start: ZonedDateTime?,
+        @RequestParam("end") @DateTimeFormat(pattern = DATETIME_FORMAT) end: ZonedDateTime?,
     ): PaginatedResponse<CheckResultResponse> {
-        if (monitorId != null && teamId != null) {
+        if (publicMonitorId != null && publicTeamId != null) {
             throw BadRequestException("Monitor or Team id required")
         }
 
-        monitorId?.let { monitorId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByMonitorId(userId, monitorId)
+        publicMonitorId?.let {
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByMonitorId(publicUserId, publicMonitorId)
             }
         }
 
-        teamId?.let { teamId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByTeamId(userId, teamId)
+        publicTeamId?.let {
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
             }
         }
 
         return checkResultService.getAllPaginated(
             pageable = pageable,
-            monitorId = monitorId,
-            teamId = teamId,
-            userId = if (teamId == null && monitorId == null) auth.userId() else null,
+            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+            userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
             statuses = statuses,
             onlyChanges = onlyChanges,
+            hasNotification = hasNotification,
+            start = start?.toInstant(),
+            end = end?.plusDays(1)?.toInstant(),
         ).toDto {
             CheckResultResponse(it)
         }
@@ -98,10 +106,11 @@ class CheckResultController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
-    @PreAuthorize("hasPermission(#id, '$CHECK_RESULT_MEMBER')")
+    @PreAuthorize("hasPermission(#publicId, '$CHECK_RESULT_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(@PathVariable id: String): CheckResultResponse = CheckResultResponse(checkResultService.getByIdOrThrow(id))
+    fun get(@PathVariable("id") publicId: String): CheckResultResponse =
+        CheckResultResponse(checkResultService.getByIdJoinMonitorAndTeam(checkResultService.getIdByPublicId(publicId)))
 
     @Operation(
         summary = "Get ping timeline",
@@ -109,15 +118,17 @@ class CheckResultController(
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
     @GetMapping("/ping")
-    @PreAuthorize("hasPermission(#monitorId, '$MONITOR_MEMBER')")
+    @PreAuthorize("hasPermission(#publicMonitorId, '$MONITOR_MEMBER')")
     @ResponseStatus(HttpStatus.OK)
     fun getPingTimeline(
-        @RequestParam("monitorId") monitorId: String,
+        @RequestParam("monitorId") publicMonitorId: String,
         @RequestParam("start") @NotNull @DateTimeFormat(pattern = DATETIME_FORMAT) start: ZonedDateTime,
         @RequestParam("end") @NotNull @DateTimeFormat(pattern = DATETIME_FORMAT) end: ZonedDateTime,
         // Min 2 minutes, max 2 days
         @RequestParam("precision") @NotNull @Min(2) @Max(TWO_DAYS_IN_MINUTES) precisionInMinutes: Long,
     ): PingTimelineResponse {
+        val monitorId = monitorService.getIdByPublicId(publicMonitorId)
+
         val startInstant = start.toInstant()
         val endInstant = end.toInstant()
 
@@ -142,7 +153,7 @@ class CheckResultController(
         val adjustedEndInstant = endInstant.plusSeconds(halfPrecisionSeconds)
 
         // Get check results
-        val checkResults = checkResultRepository.findByMonitorIdAndPickedUpBetween(
+        val checkResults = checkResultService.getByStatusUpMonitorIdAndPickedUpBetween(
             monitorId,
             adjustedStartInstant,
             adjustedEndInstant,

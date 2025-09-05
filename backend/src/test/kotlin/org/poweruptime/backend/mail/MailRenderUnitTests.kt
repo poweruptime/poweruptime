@@ -114,7 +114,13 @@ class MailRenderUnitTests(
     @Test
     fun `test password reset`() {
         val testMail = emailTemplateService.getRenderedMail(
-            PasswordResetEmail(email = "test@test.org", resetToken = "securetesttoken", name = "Fritz"),
+            PasswordResetEmail(
+                user = ModelFactory.getTestUser(
+                    name = "Peter Berger",
+                    email = "peter.berger@gmail1234.com",
+                ),
+                resetToken = "securetesttoken",
+            ),
         )
         println("plain: ${testMail.plain}")
         println("html: ${testMail.html.openInBrowser("reset_password")}")

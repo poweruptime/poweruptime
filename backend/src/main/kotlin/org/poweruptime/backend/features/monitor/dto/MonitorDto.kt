@@ -6,13 +6,17 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.model.CheckResult
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.notification.dto.NotificationMethodMinResponse
+import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
 import org.poweruptime.backend.features.tag.TagDto
+import org.poweruptime.backend.features.tag.TagRecord
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
+import org.poweruptime.backend.features.team.model.TeamRecord
 import java.time.Instant
 
 data class PublicMonitorUptimeStatistics(
@@ -33,18 +37,20 @@ data class PublicMonitorUptimeStatistics(
 data class PublicMonitorResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
     val description: String?,
     val uptime: PublicMonitorUptimeStatistics,
     val lastCheckResults: List<CheckResultMinResponse>,
 ) {
     constructor(
-        monitor: Monitor,
+        monitor: MonitorRecord,
         uptime: PublicMonitorUptimeStatistics,
-        lastCheckResults: List<CheckResult>,
+        lastCheckResults: List<CheckResultRecord>,
     ) : this(
         name = monitor.name,
-        id = monitor.id,
+        id = monitor.publicId,
+        type = monitor.type,
         status = monitor.status,
         description = monitor.description,
         uptime = uptime,
@@ -55,17 +61,19 @@ data class PublicMonitorResponse(
 data class PublicMonitorMinResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
     val oneDayUptime: String?,
     val lastCheckResults: List<CheckResultMinResponse>,
 ) {
     constructor(
-        monitor: Monitor,
+        monitor: MonitorRecord,
         oneDayUptime: String?,
-        lastCheckResults: List<CheckResult>,
+        lastCheckResults: List<CheckResultRecord>,
     ) : this(
         name = monitor.name,
-        id = monitor.id,
+        id = monitor.publicId,
+        type = monitor.type,
         status = monitor.status,
         oneDayUptime = oneDayUptime,
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
@@ -85,13 +93,15 @@ data class MonitorDashboardResponse(
 data class MonitorMinResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
 ) {
     constructor(
-        it: Monitor,
+        it: MonitorRecord,
     ) : this(
         name = it.name,
-        id = it.id,
+        id = it.publicId,
+        type = it.type,
         status = it.status,
     )
 }
@@ -99,25 +109,26 @@ data class MonitorMinResponse(
 data class MonitorResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
     val tags: List<TagDto>,
-    val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
 ) {
     constructor(
-        it: Monitor,
-        lastCheckResults: List<CheckResult>,
+        monitor: MonitorRecord,
+        team: TeamRecord,
+        tags: List<TagRecord>,
         oneDayUptime: String?
     ) : this(
-        name = it.name,
-        id = it.id,
-        status = it.status,
-        team = TeamMinResponse(it.team),
-        deleted = it.deleted,
-        tags = it.selectedTags.map { TagDto(it) },
-        lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
+        name = monitor.name,
+        id = monitor.publicId,
+        type = monitor.type,
+        status = monitor.status,
+        team = TeamMinResponse(team),
+        deleted = monitor.deleted,
+        tags = tags.map { TagDto(it) },
         oneDayUptime = oneDayUptime,
     )
 }
@@ -125,6 +136,7 @@ data class MonitorResponse(
 data class MonitorMaxResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
@@ -135,26 +147,31 @@ data class MonitorMaxResponse(
     val retries: Long?,
     val resendAfter: Long?,
     val upsideDown: Boolean,
-    val checker: MonitorData,
+    val data: MonitorData,
     val uptime: PublicMonitorUptimeStatistics,
 ) {
     constructor(
-        it: Monitor,
+        monitor: MonitorRecord,
+        data: MonitorData,
+        team: TeamRecord,
+        notificationMethods: List<NotificationMethodRecord>,
+        tags: List<TagRecord>,
         uptime: PublicMonitorUptimeStatistics,
     ) : this(
-        name = it.name,
-        id = it.id,
-        status = it.status,
-        team = TeamMinResponse(it.team),
-        deleted = it.deleted,
-        tags = it.selectedTags.map { TagDto(it) },
-        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
-        description = it.description,
-        testIntervalSeconds = it.testIntervalSeconds,
-        retries = it.retries,
-        resendAfter = it.resendAfter,
-        upsideDown = it.upsideDown,
-        checker = it.checker,
+        name = monitor.name,
+        id = monitor.publicId,
+        type = monitor.type,
+        status = monitor.status,
+        team = TeamMinResponse(team),
+        deleted = monitor.deleted,
+        tags = tags.map { TagDto(it) },
+        notificationMethods = notificationMethods.map { NotificationMethodMinResponse(it) },
+        description = monitor.description,
+        testIntervalSeconds = monitor.testIntervalSeconds,
+        retries = monitor.retries,
+        resendAfter = monitor.resendAfter,
+        upsideDown = monitor.upsideDown,
+        data = data,
         uptime = uptime,
     )
 }
@@ -162,6 +179,7 @@ data class MonitorMaxResponse(
 data class MonitorFullResponse(
     val name: String,
     val id: String,
+    val type: MonitorType,
     val status: MonitorStatus,
     val team: TeamMinResponse,
     val deleted: Instant?,
@@ -172,30 +190,35 @@ data class MonitorFullResponse(
     val retries: Long?,
     val resendAfter: Long?,
     val upsideDown: Boolean,
-    val checker: MonitorData,
+    val data: MonitorData,
     val uptime: PublicMonitorUptimeStatistics,
     val lastCheckResults: List<CheckResultMinResponse>,
     val oneDayUptime: String?,
 ) {
     constructor(
-        it: Monitor,
+        monitor: MonitorRecord,
+        data: MonitorData,
+        team: TeamRecord,
+        notificationMethods: List<NotificationMethodRecord>,
+        tags: List<TagRecord>,
         uptime: PublicMonitorUptimeStatistics,
-        lastCheckResults: List<CheckResult>,
+        lastCheckResults: List<CheckResultRecord>,
         oneDayUptime: String?
     ) : this(
-        name = it.name,
-        id = it.id,
-        status = it.status,
-        team = TeamMinResponse(it.team),
-        deleted = it.deleted,
-        tags = it.selectedTags.map { TagDto(it) },
-        notificationMethods = it.enabledNotificationMethods.map { NotificationMethodMinResponse(it) },
-        description = it.description,
-        testIntervalSeconds = it.testIntervalSeconds,
-        retries = it.retries,
-        resendAfter = it.resendAfter,
-        upsideDown = it.upsideDown,
-        checker = it.checker,
+        name = monitor.name,
+        id = monitor.publicId,
+        type = monitor.type,
+        status = monitor.status,
+        team = TeamMinResponse(team),
+        deleted = monitor.deleted,
+        tags = tags.map { TagDto(it) },
+        notificationMethods = notificationMethods.map { NotificationMethodMinResponse(it) },
+        description = monitor.description,
+        testIntervalSeconds = monitor.testIntervalSeconds,
+        retries = monitor.retries,
+        resendAfter = monitor.resendAfter,
+        upsideDown = monitor.upsideDown,
+        data = data,
         uptime = uptime,
         lastCheckResults = lastCheckResults.map { CheckResultMinResponse(it) },
         oneDayUptime = oneDayUptime,
@@ -213,7 +236,7 @@ data class CreateMonitorDto(
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
-    @get:NotNull val checker: MonitorData,
+    @get:NotNull val data: MonitorData,
     @get:NotNull val notificationMethodIds: List<String>,
     @get:NotNull val tags: List<TagDto>,
 )
@@ -229,7 +252,7 @@ data class UpdateMonitorDto(
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
-    @get:NotNull val checker: MonitorData,
+    @get:NotNull val data: MonitorData,
     @get:NotNull val notificationMethodIds: List<String>,
     @get:NotNull val tags: List<TagDto>,
 )

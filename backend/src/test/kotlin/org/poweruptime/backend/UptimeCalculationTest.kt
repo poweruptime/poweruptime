@@ -4,10 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.features.monitor.core.TimeOption
-import org.poweruptime.backend.features.monitor.model.CheckResult
-import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
+import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.calculateHistoricalUptime
 import org.poweruptime.backend.features.monitor.service.calculateUptimeFromCheckResults
@@ -17,11 +16,33 @@ import java.time.LocalDate
 
 @Suppress("VariableNaming")
 class UptimeCalculationTest {
-    private val testMonitor = ModelFactory.getTestMonitor()
+    private var idCounter = 1UL
 
     @Nested
     @DisplayName("calculateUptime")
     inner class CalculateUptime {
+        private fun getTestCheckResultRecord(
+            status: MonitorStatus,
+            previousStatus: MonitorStatus,
+            pickedUpAt: Instant
+        ) = CheckResultRecord(
+            status = status,
+            previousStatus = previousStatus,
+            pickedUpAt = pickedUpAt,
+            id = idCounter.also {
+                idCounter++
+            },
+            publicId = "1234",
+            createdAt = Instant.now(),
+            updatedAt = Instant.now(),
+            monitorId = 1UL,
+            timesRetried = null,
+            checkedAt = null,
+            pingMs = null,
+            title = null,
+            message = null,
+        )
+
         @Test
         fun `test empty list`() {
             assertThat(
@@ -44,10 +65,9 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
                     ),
@@ -62,10 +82,9 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024,
                         ),
                     ),
@@ -80,10 +99,9 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024.minusSeconds(1),
                         ),
                     ),
@@ -98,16 +116,14 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
                         ),
                     ),
@@ -122,16 +138,14 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
                         ),
                     ),
@@ -146,28 +160,24 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12).minusNanos(1),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024.minusNanos(1),
                         ),
                     ),
@@ -182,28 +192,24 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).minusNanos(1),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024.minusNanos(1),
                         ),
                     ),
@@ -218,46 +224,39 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).minusNanos(1),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).plusNanos(1),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).plusSeconds(60),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024.minusNanos(1),
                         ),
                     ),
@@ -272,40 +271,34 @@ class UptimeCalculationTest {
             assertThat(
                 calculateUptimeFromCheckResults(
                     listOf(
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.PENDING,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024,
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).plusSeconds(60),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.UP,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 7),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.UP,
-                            monitor = testMonitor,
                             pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).minusNanos(1),
                         ),
-                        CheckResult(
+                        getTestCheckResultRecord(
                             status = MonitorStatus.DOWN,
                             previousStatus = MonitorStatus.DOWN,
-                            monitor = testMonitor,
                             pickedUpAt = date_13_12_2024.minusNanos(1),
                         ),
                     ),
@@ -319,8 +312,19 @@ class UptimeCalculationTest {
     @Nested
     @DisplayName("calculateHistoricalUptime")
     inner class CalculateHistoricalUptime {
-
         private val date_12_12_2024 = LocalDate.of(2020, 12, 12)
+
+        private fun getTestHistoricalDayUptimeRecord(
+            date: LocalDate,
+            uptime: BigDecimal
+        ) = HistoricalDayUptimeRecord(
+            id = idCounter.also {
+                idCounter++
+            },
+            monitorId = 1UL,
+            date = date,
+            uptime = uptime,
+        )
 
         @Test
         fun `test empty list`() {
@@ -332,8 +336,7 @@ class UptimeCalculationTest {
             assertThat(
                 calculateHistoricalUptime(
                     listOf(
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
                             uptime = BigDecimal("100.0000"),
                         ),
@@ -348,18 +351,15 @@ class UptimeCalculationTest {
             assertThat(
                 calculateHistoricalUptime(
                     listOf(
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(1),
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(2),
                             uptime = BigDecimal("100"),
                         ),
@@ -374,18 +374,15 @@ class UptimeCalculationTest {
             assertThat(
                 calculateHistoricalUptime(
                     listOf(
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(1),
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(2),
                             uptime = BigDecimal("0"),
                         ),
@@ -400,18 +397,15 @@ class UptimeCalculationTest {
             assertThat(
                 calculateHistoricalUptime(
                     listOf(
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(1),
                             uptime = BigDecimal("50"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(2),
                             uptime = BigDecimal("50"),
                         ),
@@ -426,18 +420,15 @@ class UptimeCalculationTest {
             assertThat(
                 calculateHistoricalUptime(
                     listOf(
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
                             uptime = BigDecimal("100"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(1),
                             uptime = BigDecimal("50"),
                         ),
-                        HistoricalDayUptime(
-                            monitor = testMonitor,
+                        getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024.plusDays(2),
                             uptime = BigDecimal("0"),
                         ),

@@ -4,7 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import java.time.Duration
 import java.time.Instant
 
@@ -13,11 +14,10 @@ class PingMonitorCheckerTest {
 
     @Test
     fun `test if simple works`(): Unit = pingMonitorChecker.execute(
-        ModelFactory.getTestMonitor(
-            PingMonitorData(
-                ip = "8.8.8.8",
-                port = 53,
-            ),
+        ModelFactory.getTestMonitor(MonitorType.PING),
+        PingMonitorDataRecord(
+            ip = "8.8.8.8",
+            port = 53,
         ),
     ).let {
         assertThat(it.isUp).isTrue()
@@ -28,11 +28,10 @@ class PingMonitorCheckerTest {
     fun `test if simple and timeout works`() {
         val now = Instant.now()
         pingMonitorChecker.execute(
-            ModelFactory.getTestMonitor(
-                PingMonitorData(
-                    ip = "8.8.8.8",
-                    port = 1234,
-                ),
+            ModelFactory.getTestMonitor(MonitorType.PING),
+            PingMonitorDataRecord(
+                ip = "8.8.8.8",
+                port = 1234,
             ),
         ).let {
             assertThat(it.isUp).isFalse()
@@ -44,11 +43,10 @@ class PingMonitorCheckerTest {
 
     @Test
     fun `test if not existing fails`(): Unit = pingMonitorChecker.execute(
-        ModelFactory.getTestMonitor(
-            PingMonitorData(
-                ip = "10.0.30.123",
-                port = 80,
-            ),
+        ModelFactory.getTestMonitor(MonitorType.PING),
+        PingMonitorDataRecord(
+            ip = "10.0.30.123",
+            port = 80,
         ),
     ).let {
         assertThat(it.isUp).isFalse()

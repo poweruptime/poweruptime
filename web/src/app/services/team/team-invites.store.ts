@@ -44,7 +44,10 @@ export const TeamInvitesStore = signalStore(
                 next: (response) =>
                   patchState(
                     store,
-                    setAllEntities(response.data),
+                    setAllEntities(response.data, {
+                      selectId: (it) =>
+                        `${it.inviter.id}-${it.inviteeEmail}-${new Date(it.createdAt).getTime().toString()}`,
+                    }),
                     setTotalElements(response.numberOfItems),
                     setFulfilled(),
                   ),

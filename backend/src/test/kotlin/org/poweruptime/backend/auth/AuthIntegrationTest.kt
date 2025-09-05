@@ -450,8 +450,7 @@ class AuthIntegrationTest(
 
             // When
             val userSession = sessionService.getByTokenOrThrow(response.refreshToken!!)
-            userSession.valid = false
-            sessionService.save(userSession)
+            sessionService.invalidateSessionByPublicId(userSession.publicId)
 
             // Then
             mvc.post("/v1/auth/refresh") {

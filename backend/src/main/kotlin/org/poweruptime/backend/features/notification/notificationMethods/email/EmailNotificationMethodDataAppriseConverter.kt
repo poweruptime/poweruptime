@@ -12,7 +12,7 @@ class EmailNotificationMethodDataAppriseConverter(
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
-        val data = notificationMethodData as EmailNotificationMethodData
+        val data = notificationMethodData as EmailNotificationMethodDataRecord
 
         val usernameDomain = data.username.split("@").last()
 

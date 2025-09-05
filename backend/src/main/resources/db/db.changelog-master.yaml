@@ -48,3 +48,14 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 6
+      author: Dafnik
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: changelog/scripts/06-exposed.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

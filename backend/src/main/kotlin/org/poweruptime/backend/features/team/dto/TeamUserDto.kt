@@ -3,8 +3,8 @@ package org.poweruptime.backend.features.team.dto
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.team.model.TeamUser
-import org.poweruptime.backend.features.user.dto.UserMinResponse
+import org.poweruptime.backend.features.team.model.TeamUserJoinUserAndInviterRecord
+import org.poweruptime.backend.features.user.UserMinResponse
 import java.time.Instant
 
 data class InviteTeamUserDto(
@@ -23,10 +23,10 @@ data class TeamUserResponse(
     val invitedBy: UserMinResponse?,
     val invitedAt: Instant,
 ) {
-    constructor(teamUser: TeamUser) : this(
-        user = UserMinResponse(teamUser.id.user),
-        role = teamUser.role,
-        invitedBy = teamUser.invitedBy?.let { UserMinResponse(it) },
-        invitedAt = teamUser.createdAt,
+    constructor(teamUser: TeamUserJoinUserAndInviterRecord) : this(
+        user = UserMinResponse(teamUser.user),
+        role = teamUser.teamUser.role,
+        invitedBy = teamUser.inviter?.let { UserMinResponse(it) },
+        invitedAt = teamUser.teamUser.createdAt,
     )
 }

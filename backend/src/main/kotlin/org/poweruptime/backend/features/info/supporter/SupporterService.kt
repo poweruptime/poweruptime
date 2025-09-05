@@ -9,6 +9,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.time.Instant
+import java.util.Calendar
+import java.util.Locale
 
 @Service
 class SupporterService(
@@ -18,7 +20,12 @@ class SupporterService(
 ) {
     private final val logger = KotlinLogging.logger {}
 
-    private val testHandle = "Test1234"
+    // Test-11-2025
+    private fun testHandle() = "Test-${
+        Calendar.getInstance().let {
+            String.format(Locale.US, "%02d-%04d", it.get(Calendar.MONTH) + 1, it.get(Calendar.YEAR))
+        }
+    }"
 
     fun check(
         githubHandle: String? = instanceSettingService.getSupportLookup()
@@ -53,7 +60,7 @@ class SupporterService(
     private fun isSupporter(
         handle: String,
         sponsors: List<GitHubSponsorDto>
-    ) = handle == testHandle || sponsors.any { it.handle == handle }
+    ): Boolean = handle == testHandle() || sponsors.any { it.handle == handle }
 
     private fun updateSupportSince(isSupporter: Boolean) {
         val since = instanceSettingService.getSupportsSince()

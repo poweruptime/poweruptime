@@ -11,9 +11,10 @@ import org.apache.hc.core5.util.Timeout
 import org.poweruptime.backend.configuration.puRestTemplate
 import org.poweruptime.backend.core.utils.addBasicAuthString
 import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.http.HttpEntity
@@ -37,15 +38,15 @@ class HttpMonitorChecker(
     override val type = MonitorType.HTTP
 
     @Suppress("ReturnCount")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val httpMonitorCheckerData = monitor.checker as HttpMonitorData
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        val httpMonitorCheckerData = data as HttpMonitorDataRecord
         if (httpMonitorCheckerData.certificateExpiry) {
-            monitor.checker = SSLCertificateMonitorData(
-                url = httpMonitorCheckerData.url,
-                validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
-            )
             val certificateExpiryResult = SSLCertificateMonitorChecker(teamSettingService).execute(
                 monitor,
+                data = SSLCertificateMonitorDataRecord(
+                    url = httpMonitorCheckerData.url,
+                    validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
+                ),
             )
             if (!certificateExpiryResult.isUp) {
                 return certificateExpiryResult
@@ -94,13 +95,13 @@ class HttpMonitorChecker(
     )
 
     @Suppress("LongMethod")
-    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorData): HttpResponse {
+    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorDataRecord): HttpResponse {
         val requestConfig = RequestConfig.custom().apply {
             if (httpMonitorCheckerData.maxRedirects == null) {
                 setRedirectsEnabled(false)
             } else {
                 setRedirectsEnabled(true)
-                setMaxRedirects(httpMonitorCheckerData.maxRedirects!!.toInt())
+                setMaxRedirects(httpMonitorCheckerData.maxRedirects.toInt())
             }
             setResponseTimeout(Timeout.of(Duration.ofSeconds(8)))
         }.build()

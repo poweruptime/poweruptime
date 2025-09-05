@@ -19,12 +19,14 @@ import {ChangelogStore} from '../services';
       <div class="prose dark:prose-invert" [innerHTML]="data.changelog"></div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button
-        (click)="changelogStore.showDialogOnNewVersion.set(false); dialogRef.close()"
-        type="button"
-        mat-button>
-        {{ 'changelog.closeAndDontShowAgain' | transloco }}
-      </button>
+      @if (data.autoDialog) {
+        <button
+          (click)="changelogStore.showDialogOnNewVersion.set(false); dialogRef.close()"
+          type="button"
+          mat-button>
+          {{ 'changelog.closeAndDontShowAgain' | transloco }}
+        </button>
+      }
       <button type="button" mat-flat-button mat-dialog-close>
         {{ 'general.close' | transloco }}
       </button>
@@ -38,5 +40,5 @@ export class ChangelogDialog {
   dialogRef = inject(MatDialogRef);
   changelogStore = inject(ChangelogStore);
 
-  data = inject(MAT_DIALOG_DATA) as {changelog: string; newVersion: boolean};
+  data = inject(MAT_DIALOG_DATA) as {changelog: string; newVersion: boolean; autoDialog: boolean};
 }

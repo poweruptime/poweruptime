@@ -1,10 +1,23 @@
 package org.poweruptime.backend.features.statusPage.domain
 
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.stereotype.Repository
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
+import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRecord
 
-@Repository
-interface StatusPageGroupRepository :
-    org.poweruptime.backend.core.domain.Repository<StatusPageGroup>,
-    JpaSpecificationExecutor<StatusPageGroup>
+fun StatusPageGroupTable.findByStatusPage(statusPageId: ULong): List<StatusPageGroupRecord> =
+    selectAll()
+        .where { StatusPageGroupTable.statusPageId eq statusPageId }
+        .orderBy(StatusPageGroupTable.position, SortOrder.ASC)
+        .map {
+            StatusPageGroupTable.rowToStatusPageGroupRecord(it)
+        }
+
+fun StatusPageGroupTable.findByStatusPage(statusPageId: List<ULong>): List<StatusPageGroupRecord> =
+    selectAll()
+        .where { StatusPageGroupTable.statusPageId inList statusPageId }
+        .orderBy(StatusPageGroupTable.position, SortOrder.ASC)
+        .map {
+            StatusPageGroupTable.rowToStatusPageGroupRecord(it)
+        }

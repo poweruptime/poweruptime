@@ -27,4 +27,6 @@ object Config {
     const val KEY_REFRESH_TOKEN_PUBLIC = "\${poweruptime.keys.refresh-token.public}"
 
     const val PUSH_ENABLED = "\${poweruptime.push.enabled}"
+
+    const val DATABASE_DDL_AUTO = "\${poweruptime.database.ddl-auto}"
 }

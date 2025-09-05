@@ -1,43 +1,89 @@
 package org.poweruptime.backend.features.statusPage.service
 
-import jakarta.transaction.Transactional
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
-import org.poweruptime.backend.core.colDeleted
-import org.poweruptime.backend.core.dto.validateSort
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.core.statements.UpsertSqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.jdbc.batchInsert
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
+import org.poweruptime.backend.core.domain.includeDeleted
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.core.service.ASoftDeleteEntityService
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.fileUpload.FileService
+import org.poweruptime.backend.features.fileUpload.FileTable
 import org.poweruptime.backend.features.monitor.service.MonitorService
-import org.poweruptime.backend.features.statusPage.domain.StatusPageDomainNameRepository
-import org.poweruptime.backend.features.statusPage.domain.StatusPageGroupMonitorRepository
-import org.poweruptime.backend.features.statusPage.domain.StatusPageRepository
+import org.poweruptime.backend.features.monitor.service.ensureAllMonitorsInTeam
+import org.poweruptime.backend.features.statusPage.domain.findAll
+import org.poweruptime.backend.features.statusPage.domain.findByDomainName
 import org.poweruptime.backend.features.statusPage.dto.CreateStatusPageDto
 import org.poweruptime.backend.features.statusPage.dto.UpdateStatusPageDto
-import org.poweruptime.backend.features.statusPage.dto.fromDto
-import org.poweruptime.backend.features.statusPage.dto.update
-import org.poweruptime.backend.features.statusPage.model.StatusPage
-import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorId
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageTable
+import org.poweruptime.backend.features.statusPage.model.rowToStatusPageDomainNameRecord
+import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRecord
+import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
+@Transactional(readOnly = true)
 class StatusPageService(
-    private val statusPageRepository: StatusPageRepository,
-    private val statusPageGroupMonitorRepository: StatusPageGroupMonitorRepository,
-    private val statusPageDomainNameRepository: StatusPageDomainNameRepository,
-    private val statusPageGroupService: StatusPageGroupService,
     private val monitorService: MonitorService,
     private val teamService: TeamService,
     private val fileService: FileService,
-) : ASoftDeleteEntityService<StatusPage>(statusPageRepository) {
+) {
+
+    fun getIdByPublicId(publicId: String, includeDeleted: Boolean = false): ULong =
+        StatusPageTable.findIdByPublicIdOrThrow(publicId, includeDeleted)
+
+    fun getById(id: ULong, includeDeleted: Boolean = false): StatusPageRecord =
+        StatusPageTable
+            .leftJoin(FileTable, { FileTable.id }, { StatusPageTable.imageId })
+            .selectAll()
+            .where { StatusPageTable.id eq id and StatusPageTable.deleted.includeDeleted(includeDeleted) }
+            .limit(1)
+            .firstOrNull()
+            ?.let {
+                StatusPageTable.rowToStatusPageRecord(it)
+            }.orThrowNotFound()
+
+    fun findBySlug(slug: String, includeDeleted: Boolean = false): StatusPageRecord? =
+        StatusPageTable
+            .leftJoin(FileTable, { FileTable.id }, { StatusPageTable.imageId })
+            .selectAll()
+            .where { StatusPageTable.publicId eq slug and StatusPageTable.deleted.includeDeleted(includeDeleted) }
+            .limit(1)
+            .firstOrNull()
+            ?.let {
+                StatusPageTable.rowToStatusPageRecord(it)
+            }
+
+    fun findByDomainName(domainName: String): StatusPageRecord? = StatusPageTable.findByDomainName(domainName)
+
+    fun getAllPaginated(
+        pageable: Pageable,
+        teamId: ULong,
+        name: String?,
+        deleted: Boolean = false
+    ): Page<StatusPageRecord> = StatusPageTable.findAll(
+        pageable = pageable,
+        teamId = teamId,
+        name = name,
+        deleted = deleted,
+    )
+
     @Transactional
-    fun create(dto: CreateStatusPageDto): StatusPage {
+    fun create(dto: CreateStatusPageDto): StatusPageRecord {
         val allMonitorIds = dto.groups.flatMap { it.monitorIds }
 
         // Check for unique monitor
@@ -45,59 +91,59 @@ class StatusPageService(
             throw BadRequestException("All monitor ids should be unique")
         }
 
-        if (getBySlug(dto.slug) != null) {
+        if (findBySlug(dto.slug) != null) {
             throw BadRequestException("Slug ${dto.slug} already used", "slug_in_use")
         }
 
-        val monitors = monitorService.getByIdOrThrow(allMonitorIds).associateBy { it.id }
+        val teamId = teamService.getIdByPublicId(dto.teamId)
 
-        if (!monitorService.ensureAllMonitorsInTeam(monitors.values, dto.teamId)) {
+        val monitors = monitorService.getByPublicId(allMonitorIds).associateBy { it.publicId }
+
+        if (!monitors.values.ensureAllMonitorsInTeam(teamId)) {
             throw BadRequestException("All monitors should be in the same team as of status page")
         }
 
-        val statusPage = save(
-            StatusPage.fromDto(
-                dto,
-                teamService.getByIdOrThrow(dto.teamId),
-                dto.imageId?.let {
-                    fileService.getByFileId(it).orThrowNotFound("Image not found")
-                },
-            ),
-        )
+        val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
 
-        val domainNames = statusPageDomainNameRepository.saveAll(
-            dto.domainNames.map { StatusPageDomainName(it, statusPage) },
-        )
+        val statusPage = StatusPageTable.insertAndGetId {
+            it[StatusPageTable.name] = dto.name
+            it[StatusPageTable.publicId] = dto.slug
+            it[StatusPageTable.description] = dto.description
+            it[StatusPageTable.footer] = dto.footer
+            it[StatusPageTable.teamId] = teamId
+            it[StatusPageTable.imageId] = fileId
+        }.let { getById(it.value) }
 
-        val groups = statusPageGroupService.saveAll(
-            dto.groups.mapIndexed { index, groupDto ->
-                StatusPageGroup.fromDto(groupDto, index, statusPage)
-            },
-        )
+        StatusPageDomainNameTable.batchInsert(dto.domainNames) { domainName ->
+            this[StatusPageDomainNameTable.name] = domainName
+            this[StatusPageDomainNameTable.statusPageId] = statusPage.id
+        }.map { StatusPageDomainNameTable.rowToStatusPageDomainNameRecord(it) }
+
+        val groups = StatusPageGroupTable.batchInsert(
+            dto.groups.mapIndexed { index, dto -> Pair(index, dto) },
+        ) { (index, dto) ->
+            this[StatusPageGroupTable.position] = index
+            this[StatusPageGroupTable.statusPageId] = statusPage.id
+            this[StatusPageGroupTable.name] = dto.name
+            this[StatusPageGroupTable.description] = dto.description
+        }.map { StatusPageGroupTable.rowToStatusPageGroupRecord(it) }
 
         dto.groups.forEachIndexed { groupIndex, groupDto ->
-            statusPageGroupMonitorRepository.saveAll(
-                groupDto.monitorIds.mapIndexed { index, monitorId ->
-                    StatusPageGroupMonitor(
-                        connection = StatusPageGroupMonitorId(
-                            group = groups[groupIndex],
-                            monitor = monitors[monitorId].orThrowNotFound(),
-                        ),
-                        statusPage = statusPage,
-                        position = index,
-                    )
-                },
-            )
+            StatusPageGroupMonitorTable.batchInsert(
+                groupDto.monitorIds.mapIndexed { index, monitorId -> Pair(index, monitorId) },
+            ) { (index, monitorId) ->
+                this[StatusPageGroupMonitorTable.position] = index
+                this[StatusPageGroupMonitorTable.statusPageId] = statusPage.id
+                this[StatusPageGroupMonitorTable.groupId] = groups[groupIndex].id
+                this[StatusPageGroupMonitorTable.monitorId] = monitors[monitorId].orThrowNotFound().id
+            }
         }
 
-        return statusPage.apply {
-            this.groups = groups
-            this.domainNames = domainNames
-        }
+        return statusPage
     }
 
     @Transactional
-    fun update(dto: UpdateStatusPageDto): StatusPage {
+    fun update(dto: UpdateStatusPageDto): StatusPageRecord {
         val allMonitorIds = dto.groups.flatMap { it.monitorIds }
 
         // Check for unique monitor
@@ -105,89 +151,83 @@ class StatusPageService(
             throw BadRequestException("All monitor ids should be unique")
         }
 
-        val oldStatusPage = getByIdOrThrow(dto.id)
+        val oldStatusPage = findBySlug(dto.slug).orThrowNotFound()
 
-        if (oldStatusPage.slug != dto.slug) {
-            if (getBySlug(dto.slug) != null) {
+        if (oldStatusPage.publicId != dto.slug) {
+            if (findBySlug(dto.slug) != null) {
                 throw BadRequestException("Slug ${dto.slug} already used", "slug_in_use")
             }
         }
 
-        val monitors = monitorService.getByIdOrThrow(allMonitorIds).associateBy { it.id }
+        val monitors = monitorService.getByPublicId(allMonitorIds).associateBy { it.publicId }
 
-        if (!monitorService.ensureAllMonitorsInTeam(monitors.values, oldStatusPage.team.id)) {
+        if (!monitors.values.ensureAllMonitorsInTeam(oldStatusPage.teamId)) {
             throw BadRequestException("All monitors should be in the same team as the status page")
         }
 
-        val statusPage = save(
-            oldStatusPage.update(
-                dto,
-                dto.imageId?.let {
-                    fileService.getByFileId(it).orThrowNotFound("Image not found")
-                },
-            ),
-        )
+        val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
 
-        statusPageDomainNameRepository.deleteAll(statusPage.domainNames)
-        statusPageGroupMonitorRepository.deleteAll(statusPage.groupMonitors)
-        statusPageGroupService.deleteAll(statusPage.groups)
+        val statusPage = StatusPageTable.update({ StatusPageTable.id eq oldStatusPage.id }) {
+            it[StatusPageTable.name] = dto.name
+            it[StatusPageTable.publicId] = dto.slug
+            it[StatusPageTable.description] = dto.description
+            it[StatusPageTable.footer] = dto.footer
+            it[StatusPageTable.imageId] = fileId
+        }.let { getById(oldStatusPage.id) }
 
-        statusPageDomainNameRepository.flush()
-        statusPageGroupMonitorRepository.flush()
-        statusPageGroupService.flush()
+        StatusPageDomainNameTable.deleteWhere { StatusPageDomainNameTable.statusPageId eq oldStatusPage.id }
+        StatusPageGroupMonitorTable.deleteWhere { StatusPageGroupMonitorTable.statusPageId eq oldStatusPage.id }
+        StatusPageGroupTable.deleteWhere { StatusPageGroupTable.statusPageId eq oldStatusPage.id }
 
-        val domainNames = statusPageDomainNameRepository.saveAll(
-            dto.domainNames.map { StatusPageDomainName(it, statusPage) },
-        )
+        StatusPageDomainNameTable.batchInsert(dto.domainNames) { domainName ->
+            this[StatusPageDomainNameTable.name] = domainName
+            this[StatusPageDomainNameTable.statusPageId] = statusPage.id
+        }.map { StatusPageDomainNameTable.rowToStatusPageDomainNameRecord(it) }
 
-        val groups = statusPageGroupService.saveAll(
-            dto.groups.mapIndexed { index, groupDto ->
-                StatusPageGroup.fromDto(groupDto, index, statusPage)
-            },
-        )
+        val groups = StatusPageGroupTable.batchInsert(
+            dto.groups.mapIndexed { index, dto -> Pair(index, dto) },
+        ) { (index, dto) ->
+            this[StatusPageGroupTable.position] = index
+            this[StatusPageGroupTable.statusPageId] = statusPage.id
+            this[StatusPageGroupTable.name] = dto.name
+            this[StatusPageGroupTable.description] = dto.description
+        }.map { StatusPageGroupTable.rowToStatusPageGroupRecord(it) }
 
         dto.groups.forEachIndexed { groupIndex, groupDto ->
-            statusPageGroupMonitorRepository.saveAll(
-                groupDto.monitorIds.mapIndexed { index, monitorId ->
-                    StatusPageGroupMonitor(
-                        connection = StatusPageGroupMonitorId(
-                            group = groups[groupIndex],
-                            monitor = monitors[monitorId].orThrowNotFound(),
-                        ),
-                        statusPage = statusPage,
-                        position = index,
-                    )
-                },
-            )
+            StatusPageGroupMonitorTable.batchInsert(
+                groupDto.monitorIds.mapIndexed { index, monitorId -> Pair(index, monitorId) },
+            ) { (index, monitorId) ->
+                this[StatusPageGroupMonitorTable.position] = index
+                this[StatusPageGroupMonitorTable.statusPageId] = statusPage.id
+                this[StatusPageGroupMonitorTable.groupId] = groups[groupIndex].id
+                this[StatusPageGroupMonitorTable.monitorId] = monitors[monitorId].orThrowNotFound().id
+            }
         }
 
-        return statusPage.apply {
-            this.groups = groups
-            this.domainNames = domainNames
+        return statusPage
+    }
+
+    @Transactional
+    fun deleteById(id: ULong) {
+        val statusPage = getById(id)
+        StatusPageTable.update({ StatusPageTable.id eq id }) {
+            it[deleted] = Instant.now()
+            it[publicId] = statusPage.publicId + DELETED_SLUG_SUFFIX
         }
     }
 
-    fun getBySlug(slug: String): StatusPage? = statusPageRepository.findBySlug(slug)
-    fun getByDomainName(domainName: String): StatusPage? = statusPageRepository.findByDomainName(domainName)
-
-    fun getAllPaginated(
-        pageable: Pageable,
-        teamId: String,
-        name: String?,
-        deleted: Boolean = false
-    ): Page<StatusPage> = statusPageRepository.findAll(
-        buildSpecification {
-            where {
-                and {
-                    col("team.id") eq teamId
-
-                    and {
-                        colDeleted(deleted)
-                        name?.let { col(StatusPage::name) lowercaseLike "%$it%" }
-                    }
-                }
-            }
-        },
-        pageable.validateSort("name", "slug", "createdAt", "updatedAt", "deleted"),
-    )
+    @Transactional
+    fun undeleteById(id: ULong): StatusPageRecord {
+        val statusPage = getById(id, includeDeleted = true)
+        StatusPageTable.update({ StatusPageTable.id eq id }) {
+            it[deleted] = null
+            it[publicId] = statusPage.publicId.removeSuffix(DELETED_SLUG_SUFFIX)
+        }
+        return statusPage.apply {
+            publicId = publicId.removeSuffix(DELETED_SLUG_SUFFIX)
+            deleted = null
+        }
+    }
 }
+
+private const val DELETED_SLUG_SUFFIX = "_deleted_111"

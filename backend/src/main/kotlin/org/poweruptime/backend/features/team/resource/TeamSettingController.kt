@@ -12,16 +12,24 @@ import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.info.dto.SettingIntDto
 import org.poweruptime.backend.features.info.dto.SettingStringDto
 import org.poweruptime.backend.features.team.dto.TeamSettingsResponse
+import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
 import java.time.ZoneId
 
 @RestController
 @RequestMapping("/v1/team")
 @Tag(name = "Team Setting API")
 class TeamSettingController(
+    private val teamService: TeamService,
     private val teamSettingService: TeamSettingService
 ) {
     @Operation(
@@ -29,10 +37,13 @@ class TeamSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
-    @PreAuthorize("""hasPermission(#teamId, '$TEAM_ADMIN')""")
+    @PreAuthorize("""hasPermission(#publicTeamId, '$TEAM_ADMIN')""")
     @GetMapping("{teamId}/setting")
     @ResponseStatus(HttpStatus.OK)
-    fun getSettings(@PathVariable("teamId") teamId: String) = TeamSettingsResponse(
+    fun getSettings(@PathVariable("teamId") publicTeamId: String) =
+        getSettings(teamService.getIdByPublicId(publicTeamId))
+
+    private fun getSettings(teamId: ULong): TeamSettingsResponse = TeamSettingsResponse(
         timezone = teamSettingService.getTimeZone(teamId).id,
         checkResultRetentionPeriodInDays = teamSettingService.getCheckResultRetentionPeriodInDays(teamId),
         checkResultLogRetentionPeriodInDays = teamSettingService.getCheckResultLogRetentionPeriodInDays(teamId),
@@ -43,16 +54,17 @@ class TeamSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
-    @PreAuthorize("hasPermission(#teamId, '$TEAM_ADMIN')")
+    @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_ADMIN')")
     @PutMapping("{teamId}/setting/timezone")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setTimeZone(
-        @PathVariable("teamId") teamId: String,
+        @PathVariable("teamId") publicTeamId: String,
         @RequestBody @Valid dto: SettingStringDto
     ): TeamSettingsResponse {
         if (!ZoneId.getAvailableZoneIds().contains(dto.it)) {
             throw NotFoundException("ZoneId not found")
         }
+        val teamId = teamService.getIdByPublicId(publicTeamId)
         teamSettingService.setTimeZone(teamId, ZoneId.of(dto.it))
 
         return getSettings(teamId)
@@ -63,13 +75,14 @@ class TeamSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
-    @PreAuthorize("hasPermission(#teamId, '$TEAM_ADMIN')")
+    @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_ADMIN')")
     @PutMapping("{teamId}/setting/checkResultRetentionPeriodInDays")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setCheckResultRetentionPeriodInDays(
-        @PathVariable("teamId") teamId: String,
+        @PathVariable("teamId") publicTeamId: String,
         @RequestBody @Valid dto: SettingIntDto
     ): TeamSettingsResponse {
+        val teamId = teamService.getIdByPublicId(publicTeamId)
         teamSettingService.setCheckResultRetentionPeriodInDays(teamId, dto.it)
 
         return getSettings(teamId)
@@ -80,13 +93,14 @@ class TeamSettingController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
-    @PreAuthorize("hasPermission(#teamId, '$TEAM_ADMIN')")
+    @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_ADMIN')")
     @PutMapping("{teamId}/setting/checkResultLogRetentionPeriodInDays")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setCheckResultLogRetentionPeriodInDays(
-        @PathVariable("teamId") teamId: String,
+        @PathVariable("teamId") publicTeamId: String,
         @RequestBody @Valid dto: SettingIntDto
     ): TeamSettingsResponse {
+        val teamId = teamService.getIdByPublicId(publicTeamId)
         teamSettingService.setCheckResultLogRetentionPeriodInDays(teamId, dto.it)
 
         return getSettings(teamId)

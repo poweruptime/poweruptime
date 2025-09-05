@@ -1,25 +1,14 @@
 package org.poweruptime.backend.features.fileUpload
 
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.stereotype.Repository
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.statusPage.model.StatusPageTable
 import java.time.Instant
 
-@Repository
-interface FileRepository : org.poweruptime.backend.core.domain.Repository<File> {
-    @Query(
-        """
-        select file from File file where file.fileId=:fileId
-    """,
-    )
-    fun findByFileId(@Param("fileId") fileId: String): File?
-
-    @Query(
-        """
-        select file from File file
-        join file.statusPage sp
-        where file.createdAt > :createdAfter and sp is null
-    """,
-    )
-    fun findUnusedCreatedAfterThan(@Param("createdAfter") createdAfter: Instant): List<File>
-}
+fun FileTable.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> =
+    selectAll().where {
+        (FileTable.id notInSubQuery StatusPageTable.select(StatusPageTable.imageId)) and
+            (FileTable.createdAt less createdAfter)
+    }
+        .map { FileTable.rowToFileRecord(it) }

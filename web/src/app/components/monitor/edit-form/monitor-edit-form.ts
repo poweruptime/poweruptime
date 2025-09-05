@@ -382,13 +382,13 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
         this.formDisabled = true;
       }
 
-      this.setFormCheckerType(it.checker._type);
+      this.setFormCheckerType(it.data._type);
 
       const testInterval = getTestInterval(it.testIntervalSeconds);
 
       this.form.patchValue({
         ...it,
-        type: it.checker._type,
+        type: it.data._type,
         testInterval: testInterval.testInterval,
         testIntervalUnit: testInterval.testIntervalUnit,
       });
@@ -451,10 +451,10 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
 
   private setFormCheckerType(type: BackendType['MonitorData']['_type']) {
     // @ts-expect-error Checker Form Control
-    this.form.setControl('checker', this.monitorEditFormDataService.formCheckerFactory(type));
+    this.form.setControl('data', this.monitorEditFormDataService.formCheckerFactory(type));
 
     // @ts-expect-error Checker Form Control
-    this.form.controls['checker'].patchValue({
+    this.form.controls['data'].patchValue({
       _type: type,
     });
   }

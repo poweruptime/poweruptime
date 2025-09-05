@@ -12,6 +12,8 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
 
+const val ONE_SECOND_IN_MILLIS = 1000
+
 @Service
 class RabbitMQService(
     private val rabbitTemplate: RabbitTemplate,
@@ -24,19 +26,19 @@ class RabbitMQService(
         emailDto,
     )
 
-    fun sendToProcessMonitor(monitorId: String) = rabbitTemplate.convertAndSend(
+    fun sendToProcessMonitor(checkResultId: ULong) = rabbitTemplate.convertAndSend(
         MONITOR_EXCHANGE,
         "",
-        monitorId,
+        checkResultId.toString(),
     )
 
-    fun sendToProcessNotification(notificationId: String) = rabbitTemplate.convertAndSend(
+    fun sendToProcessSubNotification(subNotificationId: ULong) = rabbitTemplate.convertAndSend(
         NOTIFICATION_EXCHANGE,
         "",
-        notificationId,
+        subNotificationId.toString(),
     )
 
-    fun sendToPush(teamId: String, pushDto: PushDto) {
+    fun sendToPush(teamId: ULong, pushDto: PushDto) {
         createPushExchangeAndQueue(teamId)
 
         rabbitTemplate.convertAndSend(
@@ -46,11 +48,11 @@ class RabbitMQService(
         )
     }
 
-    fun createPushExchangeAndQueue(teamId: String): String {
+    fun createPushExchangeAndQueue(teamId: ULong): String {
         val queueName = rabbitMQConfiguration.getPushQueueName(teamId)
         val routingKey = rabbitMQConfiguration.getPushRoutingKey(teamId)
 
-        val queue = QueueBuilder.nonDurable(queueName).expires(1_000).build()
+        val queue = QueueBuilder.nonDurable(queueName).expires(ONE_SECOND_IN_MILLIS).build()
 
         rabbitAdmin.declareQueue(queue)
         val binding = BindingBuilder.bind(queue).to(rabbitMQConfiguration.pushDirectExchange()).with(routingKey)

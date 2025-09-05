@@ -3,7 +3,7 @@ package org.poweruptime.backend.features.push
 import org.poweruptime.backend.amqp.RabbitMQConfiguration
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.Config
-import org.poweruptime.backend.features.monitor.dto.*
+import org.poweruptime.backend.features.monitor.dto.PushDto
 import org.springframework.amqp.core.AcknowledgeMode
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
@@ -28,9 +28,9 @@ class PushService(
         val container: SimpleMessageListenerContainer
     )
 
-    private val holderByTeam = ConcurrentHashMap<String, MessageListenerHolder>()
+    private val holderByTeam = ConcurrentHashMap<ULong, MessageListenerHolder>()
 
-    private fun createTeamFlux(teamId: String): MessageListenerHolder {
+    private fun createTeamFlux(teamId: ULong): MessageListenerHolder {
         rabbitMQService.createPushExchangeAndQueue(teamId)
 
         val container = SimpleMessageListenerContainer(connectionFactory).apply {
@@ -71,7 +71,7 @@ class PushService(
     /**
      * Each call to getTeamFlux increments the reference count for the team's flux.
      */
-    private fun getTeamFlux(teamId: String): Flux<String> {
+    private fun getTeamFlux(teamId: ULong): Flux<String> {
         val holder = holderByTeam.computeIfAbsent(teamId) {
             createTeamFlux(teamId)
         }
@@ -79,7 +79,7 @@ class PushService(
         return holder.flux
     }
 
-    fun newSubscription(teamIds: List<String>): Flux<String> {
+    fun newSubscription(teamIds: List<ULong>): Flux<String> {
         if (!pushEnabled) {
             return Flux.empty()
         }
@@ -87,7 +87,7 @@ class PushService(
         return Flux.merge(teamIds.map { getTeamFlux(it) })
     }
 
-    fun send(teamId: String, dto: PushDto) {
+    fun send(teamId: ULong, dto: PushDto) {
         if (pushEnabled) {
             rabbitMQService.sendToPush(teamId, dto)
         }

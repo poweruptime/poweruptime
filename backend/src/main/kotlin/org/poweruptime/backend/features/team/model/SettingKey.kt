@@ -1,8 +1,6 @@
 package org.poweruptime.backend.features.team.model
 
-import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
-import org.poweruptime.backend.core.models.ADatabaseEnumConverter
 import java.time.ZoneId
 
 enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
@@ -54,11 +52,6 @@ enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
         override val code = "SV"
         override val default: String = true.toString()
     }
-}
-
-@Converter(autoApply = true)
-class SettingKeyDatabaseConverter : ADatabaseEnumConverter<SettingKey>() {
-    override fun getKeys(): Array<SettingKey> = SettingKey.entries.toTypedArray()
 }
 
 interface SettingKeyDefaultValue {

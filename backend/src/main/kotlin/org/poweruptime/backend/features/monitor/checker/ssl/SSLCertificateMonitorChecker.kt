@@ -2,7 +2,8 @@ package org.poweruptime.backend.features.monitor.checker.ssl
 
 import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import java.io.IOException
@@ -26,8 +27,8 @@ class SSLCertificateMonitorChecker(
     override val type = MonitorType.SSL_CERTIFICATE
 
     @Suppress("ReturnCount")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val sslData = monitor.checker as SSLCertificateMonitorData
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        val sslData = data as SSLCertificateMonitorDataRecord
         val result = MonitoringResultHandler()
         val now = Instant.now()
 
@@ -50,7 +51,7 @@ class SSLCertificateMonitorChecker(
                 }
             }
 
-            val tz = teamSettingService.getTimeZone(monitor.team.id)
+            val tz = teamSettingService.getTimeZone(monitor.teamId)
 
             return when {
                 grouped[false]?.isNotEmpty() == true -> result.error(

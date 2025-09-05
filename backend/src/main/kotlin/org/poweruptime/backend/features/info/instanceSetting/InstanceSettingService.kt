@@ -1,16 +1,17 @@
 package org.poweruptime.backend.features.info.instanceSetting
 
-import org.poweruptime.backend.core.service.AEntityService
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.features.team.model.SettingKey
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.ZoneId
 
 @Suppress("TooManyFunctions")
 @Service
-class InstanceSettingService(
-    private val instanceSettingRepository: InstanceSettingRepository,
-) : AEntityService<InstanceSetting>(instanceSettingRepository) {
+@Transactional
+class InstanceSettingService {
     fun getCheckResultRetentionPeriodInDays(): Int = getValueByKey(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
     ).toInt()
@@ -29,18 +30,20 @@ class InstanceSettingService(
         value.toString(),
     )
 
-    val serverSetupTime: Instant by lazy {
+    fun getServerSetupTime(): Instant {
         val raw = getValueByKey(SettingKey.SERVER_SETUP_TIME).let { stored ->
             if (stored == SettingKey.SERVER_SETUP_TIME.default) {
+                val value = Instant.now().toString()
                 setValueByKey(
                     SettingKey.SERVER_SETUP_TIME,
-                    Instant.now().toString(),
-                ).value
+                    value,
+                )
+                value
             } else {
                 stored
             }
         }
-        Instant.parse(raw)
+        return Instant.parse(raw)
     }
 
     fun getSupportLookup(): String? = getValueByKey(
@@ -127,18 +130,28 @@ class InstanceSettingService(
     private fun setValueByKey(
         key: SettingKey,
         value: String
-    ): InstanceSetting {
-        val instanceSetting = instanceSettingRepository.findValueByKey(key)?.apply {
-            this.value = value
-        } ?: InstanceSetting(
-            key = key,
-            value = value,
-        )
+    ) {
+        val instanceSetting = InstanceSettingTable.findByKey(key)
 
-        return save(instanceSetting)
+        if (instanceSetting == null) {
+            InstanceSettingTable.insertAndGetId {
+                it[InstanceSettingTable.value] = value
+                it[InstanceSettingTable.key] = key
+            }
+
+            return
+        }
+
+        InstanceSettingTable.update({ InstanceSettingTable.id eq instanceSetting.id }) {
+            it[InstanceSettingTable.value] = value
+        }
     }
+
+    private fun getByKey(
+        key: SettingKey,
+    ): InstanceSettingRecord? = InstanceSettingTable.findByKey(key)
 
     private fun getValueByKey(
         key: SettingKey,
-    ): String = instanceSettingRepository.findValueByKey(key)?.value ?: key.default
+    ): String = getByKey(key)?.value ?: key.default
 }

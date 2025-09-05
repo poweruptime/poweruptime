@@ -8,10 +8,11 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.features.authentication.domain.PermissionRepository
+import org.poweruptime.backend.features.authentication.domain.PermissionsService
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.userId
+import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Tag API")
 class TagController(
     private val tagService: TagService,
-    private val permissionRepository: PermissionRepository,
+    private val teamService: TeamService,
+    private val permissionsService: PermissionsService,
 ) {
     @Operation(
         summary = "Get tags",
@@ -36,19 +38,19 @@ class TagController(
     fun getAll(
         auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("teamId") teamId: String?,
+        @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("name") name: String?,
     ): PaginatedResponse<TagDto> {
-        teamId?.let {
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByTeamId(userId, it)
+        publicTeamId?.let { publicTeamId ->
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
             }
         }
 
         return tagService.getAllPaginated(
             pageable = pageable,
-            teamId = teamId,
-            userId = if (teamId == null) auth.userId() else null,
+            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+            userId = if (publicTeamId == null) auth.userId() else null,
             name = name,
         ).toDto {
             TagDto(it)

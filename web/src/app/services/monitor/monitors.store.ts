@@ -98,23 +98,6 @@ export const InfiniteMonitorsStore = signalStore(
 
       patchState(store, updateEntity({id: it.id, changes: it}));
     },
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
-
-      if (!monitor) {
-        return;
-      }
-
-      patchState(
-        store,
-        updateEntity({
-          id: monitor.id,
-          changes: {
-            lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 21)],
-          },
-        }),
-      );
-    },
     removeMonitor(id: string): void {
       patchState(store, removeEntity(id));
     },
@@ -173,10 +156,6 @@ export const InfiniteMonitorsStore = signalStore(
       pushService.monitorStatusChange$
         .pipe(takeUntilDestroyed())
         .subscribe((it) => store.updateMonitor(it));
-
-      pushService.checkResults$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
     },
   }),
 );

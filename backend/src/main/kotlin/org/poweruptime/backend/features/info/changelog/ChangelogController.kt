@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/v1/changelog")
+@RequestMapping("/v1/public/changelog")
 @Tag(name = "Changelog API")
 class ChangelogController(
     private val changelogService: ChangelogService

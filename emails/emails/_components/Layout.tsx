@@ -18,7 +18,7 @@ export default function (props: PropsWithChildren & {disableLogo?: boolean}) {
           REF: https://github.com/resend/react-email/issues/1150#issuecomment-1973529988
         */}
         <Fragment>
-          <Body className="mx-auto my-auto bg-white px-2 font-sans dark:bg-black">
+          <Body className="mx-auto my-auto px-2 font-sans dark:bg-black">
             <Container className="mx-auto my-[40px] max-w-[465px] rounded-lg border border-solid border-[#eaeaea] p-[20px]">
               {!props.disableLogo && (
                 <Section className="mt-[32px]">

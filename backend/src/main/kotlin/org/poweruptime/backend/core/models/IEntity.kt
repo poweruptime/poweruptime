@@ -27,6 +27,6 @@ interface ISoftDeleteEntity : IEntity {
     fun isDeleted(): Boolean
 }
 
-interface HasPosition : IHasID {
+interface IHasPosition : IHasID {
     var position: Int?
 }

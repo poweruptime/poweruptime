@@ -4,22 +4,25 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.monitor.core.*
 import org.poweruptime.backend.features.monitor.domain.IPushMonitorCheckerEntryRepository
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 class PushMonitorChecker(
-    private val pushMonitorCheckerEntryRepository: IPushMonitorCheckerEntryRepository,
-    private val teamSettingService: TeamSettingService
+    private val repository: IPushMonitorCheckerEntryRepository,
+    private val teamSettingService: TeamSettingService,
 ) : MonitorChecker {
     private final val logger = KotlinLogging.logger {}
 
     override val type = MonitorType.PUSH
 
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val pushMonitorCheckerData = monitor.checker as PushMonitorData
+    @Transactional
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        val pushMonitorCheckerData = data as PushMonitorDataRecord
 
         logger.debug {
             "Checking for push request for monitor '${monitor.name}' with id '${monitor.id}', " +
@@ -30,13 +33,14 @@ class PushMonitorChecker(
 
         val result = MonitoringResultHandler()
 
-        val entry = pushMonitorCheckerEntryRepository.getLatestByPushIdAndBetweenNowAndThen(
-            pushMonitorCheckerData.pushId, since,
+        val entry = repository.getLatestByPushIdAndBetweenNowAndThen(
+            pushId = pushMonitorCheckerData.pushId,
+            then = since,
         ) ?: return result.error(
             "No push detected since last run",
             "No push since: ${
                 since
-                    .atZone(teamSettingService.getTimeZone(monitor.team.id))
+                    .atZone(teamSettingService.getTimeZone(monitor.teamId))
                     .format(DateTimeUtils.simpleDateTimeFormatter)
             } (${monitor.testIntervalSeconds} seconds)",
         )

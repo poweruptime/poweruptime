@@ -25,3 +25,5 @@ enum class MonitorStatus : ADatabaseEnumConvertable {
         override val code = MONITOR_STATUS_PAUSED
     },
 }
+
+const val MAX_MONITOR_STATUS_LENGTH = 1

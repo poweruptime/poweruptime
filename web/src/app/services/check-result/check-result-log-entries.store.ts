@@ -115,7 +115,7 @@ const mapEntriesWithTime = (
     time:
       (it.properties?.['time'] ?? entries[index - 1])
         ? (
-            new Date(it.createdAt).getTime() - new Date(entries[index - 1]!.createdAt).getTime()
+            new Date(it.createdAt).getTime() - new Date(entries[index - 1]?.createdAt).getTime()
           ).toString()
         : undefined,
   } as Record<string, string>,

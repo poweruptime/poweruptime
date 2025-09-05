@@ -1,88 +1,99 @@
 package org.poweruptime.backend.features.team.service
 
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
 import org.apache.coyote.BadRequestException
-import org.poweruptime.backend.core.colDeleted
-import org.poweruptime.backend.core.dto.validateSort
-import org.poweruptime.backend.core.service.ASoftDeleteEntityService
-import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.monitor.service.MonitorService
-import org.poweruptime.backend.features.team.domain.TeamRepository
-import org.poweruptime.backend.features.team.domain.TeamUserRepository
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.deleteById
+import org.poweruptime.backend.core.domain.findByIdOrThrow
+import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
+import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
+import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.features.monitor.domain.findIdsByTeamId
+import org.poweruptime.backend.features.monitor.model.MonitorTable
+import org.poweruptime.backend.features.team.domain.findAll
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.dto.UpdateTeamDto
-import org.poweruptime.backend.features.team.dto.fromDto
-import org.poweruptime.backend.features.team.dto.update
-import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.team.model.TeamUser
-import org.poweruptime.backend.features.team.model.TeamUserId
+import org.poweruptime.backend.features.team.model.TeamTable
+import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-class TeamService(
-    private val teamRepository: TeamRepository,
-    private val teamUserRepository: TeamUserRepository,
-    private val monitorService: MonitorService,
-) : ASoftDeleteEntityService<Team>(teamRepository) {
+@Transactional(readOnly = true)
+class TeamService {
+    fun getAll(): List<TeamRecord> = TeamTable.selectAll().map { TeamTable.rowToTeamRecord(it) }
 
-    fun create(dto: CreateTeamDto, creator: User? = null, personalUser: User? = null): Team {
-        val team = save(Team.fromDto(dto, personalUser))
-
-        if (creator != null) {
-            teamUserRepository.save(
-                TeamUser(
-                    id = TeamUserId(
-                        team = team,
-                        user = creator,
-                    ),
-                    role = TeamRole.ADMIN,
-                ),
-            )
-        }
-
-        return team
+    fun getById(id: ULong) = TeamTable.findByIdOrThrow(id) {
+        TeamTable.rowToTeamRecord(it)
     }
 
-    fun update(it: UpdateTeamDto) = save(getByIdOrThrow(it.id).update(it))
+    fun getByPublicId(publicId: String) = TeamTable.findByPublicIdOrThrow(publicId) {
+        TeamTable.rowToTeamRecord(it)
+    }
+
+    fun getIdByPublicId(publicId: String, includeDeleted: Boolean = false): ULong =
+        TeamTable.findIdByPublicIdOrThrow(publicId, includeDeleted)
+
+    @Transactional
+    fun create(dto: CreateTeamDto, creatorId: ULong? = null, personalUserId: ULong? = null): TeamRecord =
+        TeamTable.insertAndGetId {
+            it[TeamTable.name] = dto.name
+            it[TeamTable.personalUserId] = personalUserId
+        }
+            .let { getById(it.value) }
+            .also { team ->
+                if (creatorId != null) {
+                    TeamUserTable.insert {
+                        it[TeamUserTable.teamId] = team.id
+                        it[TeamUserTable.userId] = creatorId
+                        it[TeamUserTable.role] = TeamRole.ADMIN
+                    }
+                }
+            }
+
+    @Transactional
+    fun update(dto: UpdateTeamDto): TeamRecord =
+        TeamTable.findIdByPublicIdOrThrow(dto.id).let { id ->
+            TeamTable.update({ TeamTable.id eq id }) {
+                it[TeamTable.name] = dto.name
+            }.let { getById(id) }
+        }
 
     fun getAllPaginated(
         pageable: Pageable,
-        userId: String?,
+        userId: ULong?,
         name: String?,
         role: TeamRole?,
         deleted: Boolean = false,
-    ): Page<Team> = teamRepository.findAll(
-        buildSpecification {
-            where {
-                and {
-                    colDeleted(deleted)
-
-                    userId?.let { col("teamUsers.id.user.id") eq it }
-
-                    if (userId != null && role != null) {
-                        col("teamUsers.role") eq role
-                    }
-
-                    name?.let { col(Team::name) lowercaseLike "%$it%" }
-                }
-
-                fetch<User>("personalUser")
-            }
-        },
-        pageable.validateSort("name", "personalUser.id", "createdAt"),
+    ): Page<TeamRecord> = TeamTable.findAll(
+        pageable = pageable,
+        userId = userId,
+        name = name,
+        role = role,
+        deleted = deleted,
     )
 
-    override fun deleteByIdOrThrow(id: String) {
-        val team = getByIdOrThrow(id)
-        if (team.personalUser != null) {
+    @Transactional
+    fun deleteById(id: ULong): Int {
+        val team = getById(id)
+        if (team.personalUserId != null) {
             throw BadRequestException("Can't delete personal team")
         }
 
-        monitorService.getIdsByTeamId(id).forEach { monitorService.deleteByIdOrThrow(it) }
+        MonitorTable.deleteById(MonitorTable.findIdsByTeamId(id))
 
-        super.deleteByIdOrThrow(id)
+        return TeamTable.deleteById(id)
     }
+
+    @Transactional
+    fun undeleteById(id: ULong): TeamRecord = TeamTable.undeleteById(
+        id,
+    ).let { getById(id) }
 }

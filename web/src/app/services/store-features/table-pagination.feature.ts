@@ -72,6 +72,7 @@ export function withPaginatedTable<EntityType>({
       setStartSort: rxMethod<{by: string; direction: SortDirection}>(
         tap(({by, direction}) => patchState(store, () => ({sortBy: by, sortDirection: direction}))),
       ),
+      setPageSize: rxMethod<number>(tap((size) => patchState(store, () => ({size})))),
       setPaginator: rxMethod<MatPaginator>(
         switchMap((paginator) =>
           paginator.page.pipe(

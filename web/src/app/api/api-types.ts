@@ -145,34 +145,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/system-notification': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Get all system tempNotification for editing
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    get: operations['getAll_2'];
-    /**
-     * Update system notification
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    put: operations['update_2'];
-    /**
-     * Create system notification
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    post: operations['create_2'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/status-page': {
     parameters: {
       query?: never;
@@ -184,17 +156,17 @@ export interface paths {
      * Get all status pages of team
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_3'];
+    get: operations['getAll_2'];
     /**
      * Update status page
      * @description <b>Required auth:</b> ROLE_ADMIN | STATUS_PAGE_ADMIN
      */
-    put: operations['update_3'];
+    put: operations['update_2'];
     /**
      * Add status page
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    post: operations['create_3'];
+    post: operations['create_2'];
     delete?: never;
     options?: never;
     head?: never;
@@ -246,17 +218,17 @@ export interface paths {
      * Get notification methods
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_4'];
+    get: operations['getAll_3'];
     /**
      * Update notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_ADMIN
      */
-    put: operations['update_4'];
+    put: operations['update_3'];
     /**
      * Add notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    post: operations['create_4'];
+    post: operations['create_3'];
     delete?: never;
     options?: never;
     head?: never;
@@ -294,17 +266,17 @@ export interface paths {
      * Get all monitors
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_5'];
+    get: operations['getAll_4'];
     /**
      * Update monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
      */
-    put: operations['update_5'];
+    put: operations['update_4'];
     /**
      * Add monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    post: operations['create_5'];
+    post: operations['create_4'];
     delete?: never;
     options?: never;
     head?: never;
@@ -585,23 +557,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/auth/setup': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Setup first user */
-    post: operations['setup_2'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/auth/resetPassword': {
     parameters: {
       query?: never;
@@ -843,27 +798,7 @@ export interface paths {
      * Get tags
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_6'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/system-notification/active': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Get all system tempNotification to be displayed
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    get: operations['getActive'];
+    get: operations['getAll_5'];
     put?: never;
     post?: never;
     delete?: never;
@@ -883,7 +818,7 @@ export interface paths {
      * Get sub notifications
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_7'];
+    get: operations['getAll_6'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1008,7 +943,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['getAll_8'];
+    get: operations['getAll_7'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1109,7 +1044,7 @@ export interface paths {
       cookie?: never;
     };
     /** Add push monitor entry */
-    get: operations['create_6'];
+    get: operations['create_5'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1288,6 +1223,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/public/changelog': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get changelog */
+    get: operations['getChangelog'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/profile': {
     parameters: {
       query?: never;
@@ -1350,7 +1302,7 @@ export interface paths {
      * Get notifications
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_9'];
+    get: operations['getAll_8'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1583,7 +1535,7 @@ export interface paths {
      * Get all dead letters
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    get: operations['getAll_10'];
+    get: operations['getAll_9'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1603,7 +1555,7 @@ export interface paths {
      * Get check results
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_11'];
+    get: operations['getAll_10'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1643,7 +1595,7 @@ export interface paths {
      * Get check result logs
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
-    get: operations['getAll_12'];
+    get: operations['getAll_11'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1664,23 +1616,6 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_MEMBER
      */
     get: operations['getPingTimeline'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/changelog': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get changelog */
-    get: operations['getChangelog'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1744,26 +1679,6 @@ export interface paths {
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
     delete: operations['undelete'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/system-notification/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /**
-     * Delete system notification by id
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    delete: operations['delete_6'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1860,7 +1775,7 @@ export interface paths {
      * Delete dead letter
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    delete: operations['delete_7'];
+    delete: operations['delete_6'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1873,6 +1788,7 @@ export interface components {
     UpdateUserDto: {
       id: string;
       name: string;
+      /** Format: email */
       email: string;
       /** @enum {string} */
       role: 'ADMIN' | 'USER';
@@ -1881,8 +1797,14 @@ export interface components {
       sendInvitation: boolean;
       password?: string;
     };
-    IdResponse: {
+    UserResponse: {
       id: string;
+      name: string;
+      email: string;
+      activated: boolean;
+      forcePasswordChange: boolean;
+      /** @enum {string} */
+      role: 'ADMIN' | 'USER';
     };
     UpdateTeamDto: {
       id: string;
@@ -1906,6 +1828,7 @@ export interface components {
       /** Format: date-time */
       deleted?: string;
       personal: boolean;
+      yourPersonal: boolean;
       dashboard: components['schemas']['MonitorDashboardResponse'];
       /** @enum {string} */
       role: 'ADMIN' | 'MEMBER';
@@ -1942,37 +1865,12 @@ export interface components {
       /** Format: int32 */
       it: number;
     };
-    UpdateSystemNotificationDto: {
-      id: string;
-      title?: string;
-      description: string;
-      active: boolean;
-      /** @enum {string} */
-      type: 'INFO' | 'WARNING' | 'DANGER' | 'SUCCESS' | 'NEUTRAL';
-      /** Format: date-time */
-      starts?: string;
-      /** Format: date-time */
-      ends?: string;
-    };
-    SystemNotificationResponse: {
-      id: string;
-      title?: string;
-      description: string;
-      active: boolean;
-      /** @enum {string} */
-      type: 'INFO' | 'WARNING' | 'DANGER' | 'SUCCESS' | 'NEUTRAL';
-      /** Format: date-time */
-      starts?: string;
-      /** Format: date-time */
-      ends?: string;
-    };
     StatusPageGroupDto: {
       name?: string;
       monitorIds: string[];
       description?: string;
     };
     UpdateStatusPageDto: {
-      id: string;
       name: string;
       slug: string;
       groups: components['schemas']['StatusPageGroupDto'][];
@@ -1988,6 +1886,8 @@ export interface components {
     MonitorMinResponse: {
       name: string;
       id: string;
+      /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
     };
@@ -2006,7 +1906,6 @@ export interface components {
       monitors: components['schemas']['StatusPageGroupMonitorResponse'][];
     };
     StatusPageResponse: {
-      id: string;
       name: string;
       slug: string;
       description?: string;
@@ -2023,6 +1922,7 @@ export interface components {
     };
     UpdateEmailDto: {
       password: string;
+      /** Format: email */
       email: string;
     };
     NotificationMethodData: {
@@ -2032,7 +1932,7 @@ export interface components {
     UpdateNotificationMethodDto: {
       id: string;
       name: string;
-      sender: components['schemas']['NotificationMethodData'];
+      data: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       monitorIds: string[];
       testSend: boolean;
@@ -2044,7 +1944,9 @@ export interface components {
       name: string;
       /** Format: date-time */
       deleted?: string;
-      sender: components['schemas']['NotificationMethodData'];
+      /** @enum {string} */
+      type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
+      data: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
@@ -2073,7 +1975,7 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      checker: components['schemas']['MonitorData'];
+      data: components['schemas']['MonitorData'];
       notificationMethodIds: string[];
       tags: components['schemas']['TagDto'][];
     };
@@ -2090,6 +1992,8 @@ export interface components {
       name: string;
       id: string;
       /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
+      /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
@@ -2104,19 +2008,16 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      checker: components['schemas']['MonitorData'];
+      data: components['schemas']['MonitorData'];
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };
-    NotificationMethodDataMinDto: {
-      /** @enum {string} */
-      _type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
-    };
     NotificationMethodMinResponse: {
       id: string;
       name: string;
-      sender: components['schemas']['NotificationMethodDataMinDto'];
+      /** @enum {string} */
+      type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
     };
     PublicMonitorUptimeStatistics: {
       oneHour?: string;
@@ -2174,6 +2075,7 @@ export interface components {
     };
     CreateUserDto: {
       name: string;
+      /** Format: email */
       email: string;
       password?: string;
       activated: boolean;
@@ -2189,16 +2091,8 @@ export interface components {
       role: 'ADMIN' | 'MEMBER';
       email: string;
     };
-    CreateSystemNotificationDto: {
-      title?: string;
-      description: string;
-      active: boolean;
-      /** @enum {string} */
-      type: 'INFO' | 'WARNING' | 'DANGER' | 'SUCCESS' | 'NEUTRAL';
-      /** Format: date-time */
-      starts?: string;
-      /** Format: date-time */
-      ends?: string;
+    IdResponse: {
+      id: string;
     };
     CreateStatusPageDto: {
       teamId: string;
@@ -2212,6 +2106,7 @@ export interface components {
     };
     SetupDto: {
       name: string;
+      /** Format: email */
       email: string;
     };
     ConfirmMFADto: {
@@ -2223,7 +2118,7 @@ export interface components {
     CreateNotificationMethodDto: {
       teamId: string;
       name: string;
-      sender: components['schemas']['NotificationMethodData'];
+      data: components['schemas']['NotificationMethodData'];
       useByDefault: boolean;
       monitorIds: string[];
       testSend: boolean;
@@ -2241,7 +2136,7 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      checker: components['schemas']['MonitorData'];
+      data: components['schemas']['MonitorData'];
       notificationMethodIds: string[];
       tags: components['schemas']['TagDto'][];
     };
@@ -2284,15 +2179,6 @@ export interface components {
       numberOfPages: number;
       data: components['schemas']['UserResponse'][];
     };
-    UserResponse: {
-      id: string;
-      name: string;
-      email: string;
-      activated: boolean;
-      forcePasswordChange: boolean;
-      /** @enum {string} */
-      role: 'ADMIN' | 'USER';
-    };
     PaginatedResponseSessionResponse: {
       /** Format: int64 */
       numberOfItems: number;
@@ -2303,7 +2189,6 @@ export interface components {
     SessionResponse: {
       id: string;
       description: string;
-      userId: string;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2322,6 +2207,7 @@ export interface components {
       /** Format: date-time */
       deleted?: string;
       personal: boolean;
+      yourPersonal: boolean;
       dashboard: components['schemas']['MonitorDashboardResponse'];
     };
     PaginatedResponseTeamUserResponse: {
@@ -2339,7 +2225,6 @@ export interface components {
       data: components['schemas']['TeamJoinTokenResponse'][];
     };
     TeamJoinTokenResponse: {
-      id: string;
       inviteeEmail: string;
       inviter: components['schemas']['UserMinResponse'];
       /** @enum {string} */
@@ -2410,7 +2295,6 @@ export interface components {
       description?: string;
     };
     PublicStatusPageResponse: {
-      id: string;
       slug: string;
       name: string;
       description?: string;
@@ -2429,6 +2313,8 @@ export interface components {
       name: string;
       id: string;
       /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
+      /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       oneDayUptime?: string;
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
@@ -2436,6 +2322,8 @@ export interface components {
     PublicMonitorResponse: {
       name: string;
       id: string;
+      /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       description?: string;
@@ -2509,12 +2397,13 @@ export interface components {
       name: string;
       id: string;
       /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
+      /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       team: components['schemas']['TeamMinResponse'];
       /** Format: date-time */
       deleted?: string;
       tags: components['schemas']['TagDto'][];
-      lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };
     PaginatedResponseMonitorResponse: {
@@ -2527,6 +2416,8 @@ export interface components {
     MonitorMaxResponse: {
       name: string;
       id: string;
+      /** @enum {string} */
+      type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       team: components['schemas']['TeamMinResponse'];
@@ -2542,7 +2433,7 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      checker: components['schemas']['MonitorData'];
+      data: components['schemas']['MonitorData'];
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
     };
     VersionCheckResponse: {
@@ -2704,7 +2595,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['IdResponse'];
+          '*/*': components['schemas']['UserResponse'];
         };
       };
     };
@@ -2728,7 +2619,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['IdResponse'];
+          '*/*': components['schemas']['UserResponse'];
         };
       };
     };
@@ -2972,74 +2863,6 @@ export interface operations {
   };
   getAll_2: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['SystemNotificationResponse'][];
-        };
-      };
-    };
-  };
-  update_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateSystemNotificationDto'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['SystemNotificationResponse'];
-        };
-      };
-    };
-  };
-  create_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateSystemNotificationDto'];
-      };
-    };
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['SystemNotificationResponse'];
-        };
-      };
-    };
-  };
-  getAll_3: {
-    parameters: {
       query: {
         /** @description Zero-based page index (0..N) */
         page?: number;
@@ -3068,7 +2891,7 @@ export interface operations {
       };
     };
   };
-  update_3: {
+  update_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -3092,7 +2915,7 @@ export interface operations {
       };
     };
   };
-  create_3: {
+  create_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -3164,7 +2987,7 @@ export interface operations {
       };
     };
   };
-  getAll_4: {
+  getAll_3: {
     parameters: {
       query: {
         /** @description Zero-based page index (0..N) */
@@ -3196,7 +3019,7 @@ export interface operations {
       };
     };
   };
-  update_4: {
+  update_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -3220,7 +3043,7 @@ export interface operations {
       };
     };
   };
-  create_4: {
+  create_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -3270,7 +3093,7 @@ export interface operations {
       };
     };
   };
-  getAll_5: {
+  getAll_4: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -3305,7 +3128,7 @@ export interface operations {
       };
     };
   };
-  update_5: {
+  update_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -3329,7 +3152,7 @@ export interface operations {
       };
     };
   };
-  create_5: {
+  create_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -3630,7 +3453,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['IdResponse'];
+          '*/*': components['schemas']['UserResponse'];
         };
       };
     };
@@ -3742,30 +3565,6 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['FileResponse'];
-        };
-      };
-    };
-  };
-  setup_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SetupDto'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['IdResponse'];
         };
       };
     };
@@ -4099,7 +3898,7 @@ export interface operations {
       };
     };
   };
-  getAll_6: {
+  getAll_5: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4128,27 +3927,7 @@ export interface operations {
       };
     };
   };
-  getActive: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['SystemNotificationResponse'][];
-        };
-      };
-    };
-  };
-  getAll_7: {
+  getAll_6: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4326,7 +4105,7 @@ export interface operations {
       };
     };
   };
-  getAll_8: {
+  getAll_7: {
     parameters: {
       query?: never;
       header?: never;
@@ -4462,7 +4241,7 @@ export interface operations {
       };
     };
   };
-  create_6: {
+  create_5: {
     parameters: {
       query: {
         status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
@@ -4693,6 +4472,29 @@ export interface operations {
       };
     };
   };
+  getChangelog: {
+    parameters: {
+      query?: {
+        beta?: boolean;
+        version?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/markdown': string;
+        };
+      };
+    };
+  };
   getProfile: {
     parameters: {
       query?: never;
@@ -4760,7 +4562,7 @@ export interface operations {
       };
     };
   };
-  getAll_9: {
+  getAll_8: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -4771,7 +4573,6 @@ export interface operations {
         sort?: string[];
         monitorId?: string;
         teamId?: string;
-        methods?: ('APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK')[];
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
       };
       header?: never;
@@ -5061,7 +4862,7 @@ export interface operations {
       };
     };
   };
-  getAll_10: {
+  getAll_9: {
     parameters: {
       query?: never;
       header?: never;
@@ -5081,7 +4882,7 @@ export interface operations {
       };
     };
   };
-  getAll_11: {
+  getAll_10: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -5093,7 +4894,10 @@ export interface operations {
         monitorId?: string;
         teamId?: string;
         onlyChanges?: boolean;
+        hasNotification?: boolean;
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
+        start?: string;
+        end?: string;
       };
       header?: never;
       path?: never;
@@ -5134,7 +4938,7 @@ export interface operations {
       };
     };
   };
-  getAll_12: {
+  getAll_11: {
     parameters: {
       query?: {
         /** @description Zero-based page index (0..N) */
@@ -5185,29 +4989,6 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PingTimelineResponse'];
-        };
-      };
-    };
-  };
-  getChangelog: {
-    parameters: {
-      query?: {
-        beta?: boolean;
-        version?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'text/markdown': string;
         };
       };
     };
@@ -5272,26 +5053,6 @@ export interface operations {
         content: {
           '*/*': components['schemas']['TeamMaxResponse'];
         };
-      };
-    };
-  };
-  delete_6: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
@@ -5381,7 +5142,7 @@ export interface operations {
       };
     };
   };
-  delete_7: {
+  delete_6: {
     parameters: {
       query?: never;
       header?: never;

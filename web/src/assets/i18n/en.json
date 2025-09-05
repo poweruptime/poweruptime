@@ -30,7 +30,7 @@
       "skip": "Skip",
       "success": "Successfully setup your first admin account. Please check your E-Mail inbox.",
       "testEmail": {
-        "failed": "Email sending failed. Please fix your E-Mail environment variables.",
+        "failed": "Email sending failed. Please try to fix your E-Mail environment variables.",
         "info": "Please use this step to verify your E-Mail environment variables.",
         "send": "Send Test E-Mail",
         "success": "Successfully sent test E-Mail. Please check your inbox."
@@ -58,6 +58,7 @@
       "action": {
         "view": "View check"
       },
+      "hasNotification": "Has {{general.notifications}}",
       "title": "Checks"
     }
   },

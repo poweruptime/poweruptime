@@ -6,136 +6,158 @@ import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorData
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorData
+import org.poweruptime.backend.features.authentication.model.UserRecord
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
-import org.poweruptime.backend.features.monitor.model.CheckResult
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorType
+import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
-import org.poweruptime.backend.features.notification.model.Notification
-import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
-import org.poweruptime.backend.features.notification.model.SubNotification
-import org.poweruptime.backend.features.systemNotification.dto.CreateSystemNotificationDto
-import org.poweruptime.backend.features.systemNotification.dto.UpdateSystemNotificationDto
-import org.poweruptime.backend.features.systemNotification.model.SystemNotificationType
+import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
+import org.poweruptime.backend.features.notification.model.NotificationRecord
+import org.poweruptime.backend.features.notification.model.SubNotificationRecord
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.dto.InviteTeamUserDto
 import org.poweruptime.backend.features.team.dto.UpdateTeamDto
 import org.poweruptime.backend.features.team.dto.UpdateTeamUserDto
-import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.user.dto.CreateUserDto
+import org.poweruptime.backend.features.user.CreateUserDto
 import java.time.Instant
 
 object ModelFactory {
-    fun getTestTeam(name: String = "acme") = Team(name).apply {
-        id = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH)
+    private var idCounter = 1UL
+
+    fun getId() = idCounter.also {
+        idCounter++
     }
-    fun getTestUser(name: String = "Franz Huber", email: String = "franz.huber@gmail1234.com") = User(
+
+    fun getTestTeam(name: String = "acme") = TeamRecord(
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        deleted = null,
+        personalUserId = null,
+        name = name,
+    )
+
+    fun getTestUser(name: String = "Franz Huber", email: String = "franz.huber@gmail1234.com") = UserRecord(
         name = name,
         email = email,
         activated = true,
         passwordHash = "",
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        mfaId = null,
+        forcePasswordChange = false,
+        role = SystemRole.USER,
+    )
+
+    fun getTestMonitorData() = PingMonitorDataRecord(
+        "1.1.1.1",
+        443,
     )
 
     fun getTestMonitor(
-        checker: MonitorData = PingMonitorData(
-            "1.1.1.1",
-            443,
-        ),
+        type: MonitorType = MonitorType.DNS,
         name: String = "Test"
-    ) = Monitor(
+    ) = MonitorRecord(
         name = name,
         testIntervalSeconds = 30,
         retries = 3,
         upsideDown = false,
-        checker = checker,
-        team = getTestTeam(),
         description = null,
-    ).apply {
-        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-    }
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        deleted = null,
+        teamId = getTestTeam().id,
+        type = type,
+        resendAfter = null,
+        status = MonitorStatus.PENDING,
+    )
 
     fun getTestCheckResult(
         status: MonitorStatus = MonitorStatus.UP,
-        monitor: Monitor = getTestMonitor(HttpMonitorData()),
+        monitorId: ULong = getTestMonitor().id,
         previousStatus: MonitorStatus = status,
         pickedUpAt: Instant? = Instant.now(),
         checkedAt: Instant? = Instant.now(),
         pingMs: Long? = 1000,
         title: String? = "Test Title",
         message: String? = "Test Message",
-    ) = CheckResult(
+    ) = CheckResultRecord(
         status = status,
-        monitor = monitor,
+        monitorId = monitorId,
         previousStatus = previousStatus,
         pickedUpAt = pickedUpAt,
         checkedAt = checkedAt,
         pingMs = pingMs,
         title = title,
         message = message,
-    ).apply {
-        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-    }
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        timesRetried = null,
+    )
 
     fun getTestNotificationMethod(
         name: String = "Test",
-        sender: NotificationMethodData,
-    ) = NotificationMethod(
+        type: NotificationMethodType = NotificationMethodType.APPRISE
+    ) = NotificationMethodRecord(
         name = name,
-        data = sender,
-        team = getTestTeam(),
+        type = type,
+        teamId = getTestTeam().id,
         useByDefault = false,
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        deleted = null,
+        titleTemplate = null,
+        bodyTemplate = null,
     )
 
     fun getTestNotification(
         title: String = "Test Title",
-        checkResult: CheckResult = getTestCheckResult(title = title)
-    ) = Notification(
-        checkResult = checkResult,
+        checkResultId: ULong = getTestCheckResult(title = title).id
+    ) = NotificationRecord(
+        checkResultId = checkResultId,
         title = title,
-    ).apply {
-        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-    }
-
-    fun getTestSubNotification(
-        notification: Notification,
-        sender: NotificationMethodData,
-        pickedUpAt: Instant? = Instant.now(),
-        title: String = "Test Title",
-    ) = SubNotification(
-        notification = notification,
-        title = title,
-        message = "Test Message",
-        method = getTestNotificationMethod(sender = sender),
-        pickedUpAt = pickedUpAt,
-    ).apply {
-        id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-    }
-
-    fun getCreateSystemNotification() = CreateSystemNotificationDto(
-        title = "Danger Danger Danger",
-        description = "Cool description",
-        active = true,
-        type = SystemNotificationType.DANGER,
-        starts = Instant.now(),
-        ends = Instant.now().plusSeconds(60),
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
     )
 
-    fun getUpdateSystemNotification(id: String) = UpdateSystemNotificationDto(
-        id = id,
-        title = "Planned Maintenance Updated",
-        description = "Updated",
-        active = true,
-        type = SystemNotificationType.WARNING,
-        starts = null,
-        ends = null,
+    fun getTestSubNotification(
+        notificationId: ULong = getTestNotification().id,
+        notificationMethodId: ULong = getTestNotificationMethod().id,
+        pickedUpAt: Instant? = Instant.now(),
+        title: String = "Test Title",
+    ) = SubNotificationRecord(
+        notificationId = notificationId,
+        methodId = notificationMethodId,
+        title = title,
+        message = "Test Message",
+        pickedUpAt = pickedUpAt,
+        id = getId(),
+        publicId = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
+        createdAt = Instant.now(),
+        updatedAt = Instant.now(),
+        sentAt = null,
+        error = null,
     )
 
     fun getCreateUserDto() = CreateUserDto(
@@ -170,7 +192,7 @@ object ModelFactory {
         UpdateTeamUserDto(userId, role)
 
     fun getCreateMonitorDto(
-        checker: MonitorData,
+        data: MonitorData,
         teamId: String = "4Lxhu5YKWPBr", // Team 1
     ) = CreateMonitorDto(
         teamId = teamId,
@@ -180,14 +202,14 @@ object ModelFactory {
         retries = null,
         resendAfter = null,
         upsideDown = false,
-        checker = checker,
+        data = data,
         notificationMethodIds = listOf(),
         tags = listOf(),
     )
 
     fun getUpdateMonitorDto(
         id: String,
-        checker: MonitorData,
+        data: MonitorData,
         name: String? = null
     ) = UpdateMonitorDto(
         id = id,
@@ -197,18 +219,18 @@ object ModelFactory {
         retries = null,
         resendAfter = null,
         upsideDown = false,
-        checker = checker,
+        data = data,
         notificationMethodIds = listOf(),
         tags = listOf(),
     )
 
     fun getCreateNotificationMethodDto(
-        sender: NotificationMethodData,
+        data: NotificationMethodData,
         teamId: String = "4Lxhu5YKWPBr", // Team 1
     ) = CreateNotificationMethodDto(
         teamId = teamId,
         name = "Test Notification Method",
-        sender = sender,
+        data = data,
         useByDefault = false,
         titleTemplate = null,
         bodyTemplate = null,
@@ -217,12 +239,12 @@ object ModelFactory {
 
     fun getUpdateNotificationMethodDto(
         id: String,
-        sender: NotificationMethodData,
+        data: NotificationMethodData,
         name: String? = null
     ) = UpdateNotificationMethodDto(
         id = id,
         name = name ?: "Updated Test Notification Method",
-        sender = sender,
+        data = data,
         useByDefault = false,
         titleTemplate = null,
         bodyTemplate = null,

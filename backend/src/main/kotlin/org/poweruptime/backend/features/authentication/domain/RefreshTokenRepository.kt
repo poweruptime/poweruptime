@@ -1,40 +1,22 @@
 package org.poweruptime.backend.features.authentication.domain
 
-import org.poweruptime.backend.features.authentication.model.RefreshToken
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.transaction.annotation.Transactional
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.features.authentication.model.RefreshTokenRecord
+import org.poweruptime.backend.features.authentication.model.RefreshTokenTable
+import org.poweruptime.backend.features.authentication.model.rowToRefreshTokenRecord
 
-interface RefreshTokenRepository : JpaRepository<RefreshToken, String> {
-    @Query(
-        """
-        select st from RefreshToken st
-        where st.token = ?1
-    """,
-    )
-    fun findByToken(token: String): RefreshToken?
+fun RefreshTokenTable.findByToken(token: String): RefreshTokenRecord? =
+    RefreshTokenTable.selectAll().where { RefreshTokenTable.token eq token }.firstOrNull()?.let {
+        RefreshTokenTable.rowToRefreshTokenRecord(it)
+    }
 
-    @Modifying
-    @Transactional
-    @Query(
-        """
-        update RefreshToken rT
-        set rT.valid = false
-        where rT.session.id = :session_id
-    """,
-    )
-    fun invalidateAllTokensForSession(@Param("session_id") sessionId: String)
+fun RefreshTokenTable.invalidateAllTokensBySessionId(sessionId: ULong) =
+    RefreshTokenTable.update({ RefreshTokenTable.sessionId eq sessionId }) {
+        it[valid] = false
+    }
 
-    @Modifying
-    @Transactional
-    @Query(
-        """
-        update RefreshToken rT
-        set rT.valid = false
-        where rT.session.id in :session_ids
-    """,
-    )
-    fun invalidateAllTokensForSessions(@Param("session_ids") sessionIds: List<String>)
-}
+fun RefreshTokenTable.invalidateAllTokensBySessionIds(sessionIds: List<ULong>) =
+    RefreshTokenTable.update({ RefreshTokenTable.sessionId inList sessionIds }) {
+        it[valid] = false
+    }

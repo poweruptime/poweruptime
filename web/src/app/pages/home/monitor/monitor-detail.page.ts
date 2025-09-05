@@ -5,7 +5,6 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatChip} from '@angular/material/chips';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
-import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {format} from '@std/fmt/duration';
@@ -39,19 +38,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
       @if (monitorDetailStore.monitor(); as monitor) {
         <div class="flex flex-wrap items-center justify-between gap-x-16 gap-y-2">
           <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2">
-              <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
-              <a href="/public/m/{{ monitor.id }}" target="_blank">
-                <bi
-                  class="text-gray-500 dark:text-gray-400"
-                  [matTooltip]="'monitor.details.openPublic' | transloco"
-                  style="vertical-align: -0.25em"
-                  size="18"
-                  name="box-arrow-up-right"
-                  matTooltipPosition="below"
-                  aria-hidden="true" />
-              </a>
-            </div>
+            <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
 
             <pu-monitor-status [status]="monitor.status" />
           </div>
@@ -88,6 +75,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               <bi name="three-dots-vertical" />
             </button>
             <mat-menu #menu="matMenu">
+              <a href="/public/m/{{ monitor.id }}" target="_blank" type="button" mat-menu-item>
+                <bi name="box-arrow-up-right" />
+                {{ 'monitor.details.openPublic' | transloco }}
+              </a>
               <button
                 (click)="monitorActionStore.clone({id: monitor.id})"
                 type="button"
@@ -116,34 +107,34 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         }
 
         <div class="flex flex-wrap gap-4">
-          @switch (monitor.checker._type) {
+          @switch (monitor.data._type) {
             @case ('HTTP') {
               <a
                 class="font-extrabold text-emerald-700 dark:text-green-500"
-                [href]="$any(monitor.checker)['url']"
+                [href]="$any(monitor.data)['url']"
                 target="_blank"
                 rel="noopener noreferrer">
-                {{ $any(monitor.checker)['url'] }}
+                {{ $any(monitor.data)['url'] }}
               </a>
             }
             @case ('SSL_CERTIFICATE') {
               <a
                 class="font-extrabold text-emerald-700 dark:text-green-500"
-                [href]="$any(monitor.checker)['url']"
+                [href]="$any(monitor.data)['url']"
                 target="_blank"
                 rel="noopener noreferrer">
-                {{ $any(monitor.checker)['url'] }}
+                {{ $any(monitor.data)['url'] }}
               </a>
             }
             @case ('DNS') {
               <span class="font-extrabold text-emerald-700 dark:text-green-500">
-                [{{ $any(monitor.checker)['type'] }}]
-                {{ $any(monitor.checker)['host'] }}
+                [{{ $any(monitor.data)['type'] }}]
+                {{ $any(monitor.data)['host'] }}
               </span>
             }
             @case ('PING') {
               <span class="font-extrabold text-emerald-700 dark:text-green-500">
-                {{ $any(monitor.checker)['ip'] }}:{{ $any(monitor.checker)['port'] }}
+                {{ $any(monitor.data)['ip'] }}:{{ $any(monitor.data)['port'] }}
               </span>
             }
           }
@@ -153,10 +144,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           <a
             class="hover:cursor-pointer"
             [routerLink]="[]"
-            [queryParams]="{'search.show': true, 'search.type': monitor.checker._type}"
+            [queryParams]="{'search.show': true, 'search.type': monitor.data._type}"
             queryParamsHandling="merge">
             <mat-chip>
-              {{ monitor.checker._type | monitorCheckerDataValueLabel | transloco }}
+              {{ monitor.data._type | monitorCheckerDataValueLabel | transloco }}
               {{ 'general.monitor' | transloco }}
             </mat-chip>
           </a>
@@ -328,7 +319,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     TranslocoPipe,
     PingChartFilter,
     MonitorCheckerDataValueLabelPipe,
-    MatTooltip,
     IsTeamAdmin,
     Tag,
     MatMenuTrigger,

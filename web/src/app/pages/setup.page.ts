@@ -43,14 +43,22 @@ import {SetupStore} from '../services';
 
             @switch (setupStore.state()) {
               @case ('setupTestEmail') {
-                @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {
-                  <div puAlert type="WARN">{{ 'auth.setup.testEmail.failed' | transloco }}</div>
-                }
-
                 <div puAlert type="INFO">
                   <strong>{{ 'general.info' | transloco }}!</strong>
                   {{ 'auth.setup.testEmail.info' | transloco }}
                 </div>
+
+                @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {
+                  <div puAlert type="WARN">
+                    {{ 'auth.setup.testEmail.failed' | transloco }}
+                    <br />
+                    <br />
+                    <span>Error message:</span>
+                    @if (setupStore.error()?.message; as errorMessage) {
+                      <div [innerHTML]="errorMessage"></div>
+                    }
+                  </div>
+                }
 
                 <form class="grid gap-4" [formGroup]="testEmailForm" (ngSubmit)="submitTestEmail()">
                   <mat-form-field>

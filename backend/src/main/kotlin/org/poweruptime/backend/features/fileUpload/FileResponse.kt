@@ -4,5 +4,5 @@ data class FileResponse(
     val name: String,
     val fileId: String
 ) {
-    constructor(file: File) : this(file.name, file.fileId)
+    constructor(file: FileRecord) : this(file.name, file.fileId)
 }

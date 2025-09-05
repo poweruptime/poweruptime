@@ -29,9 +29,9 @@ abstract class TokenGenerationService(
     val validDuration: Duration
 ) {
     fun createToken(authentication: Authentication) =
-        createToken(authentication.name, authentication.authorities)
+        createToken(authentication.publicUserId(), authentication.authorities)
 
-    fun createToken(userId: String, authorities: Collection<GrantedAuthority>): String {
+    fun createToken(publicUserId: String, authorities: Collection<GrantedAuthority>): String {
         val now = Instant.now()
         val expirationTime = now.plusSeconds(validDuration.inWholeSeconds)
 
@@ -39,7 +39,7 @@ abstract class TokenGenerationService(
             .issuer("poweruptime")
             .issuedAt(now)
             .expiresAt(expirationTime)
-            .subject(userId)
+            .subject(publicUserId)
             .claim("scope", createScope(authorities))
             .build()
 

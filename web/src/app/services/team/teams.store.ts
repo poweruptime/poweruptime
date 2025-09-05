@@ -1,6 +1,6 @@
 import {computed} from '@angular/core';
 
-import {debounceTime, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, forkJoin, map, pipe, switchMap, tap} from 'rxjs';
 
 import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
@@ -20,6 +20,7 @@ import {
   setTotalElements,
   withPaginatedTable,
   withRequestStatus,
+  withSelection,
 } from '../store-features';
 
 export const TeamsStore = signalStore(
@@ -39,6 +40,7 @@ export const TeamsStore = signalStore(
     defaultSortBy: 'name',
     defaultSortDirection: 'asc',
   }),
+  withSelection<BackendType['TeamResponse']>({}),
   withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => {
     const load = rxMethod<
       {
@@ -129,13 +131,42 @@ export const TeamsStore = signalStore(
           ),
         ),
       ),
+      restoreSelection: rxMethod<void>(
+        switchMap(() =>
+          confirmDialog$(
+            translate('general.confirmRestore.title'),
+            translate('general.confirmRestore.description'),
+          ).pipe(
+            tap(() => patchState(store, setPending())),
+            map(() => store.selection().map((it) => it.id)),
+            switchMap((ids) =>
+              forkJoin(
+                ids.map((id) => api.delete('/v1/team/{id}/undo', {params: {path: {id}}})),
+              ).pipe(
+                tapResponse({
+                  next: () => {
+                    toast.success(translate('general.restoreSuccess'));
+
+                    load({
+                      ...store.pageable(),
+                      deleted: true,
+                      name: store.name(),
+                    });
+                  },
+                  error: (error) => patchState(store, setError(error)),
+                }),
+              ),
+            ),
+          ),
+        ),
+      ),
     };
   }),
   withComputed(({entities}) => ({
-    personalTeam: computed(() => entities()?.find((team) => team.personal)),
-    sortedEntitiesWithoutPersonal: computed(() =>
+    personalTeam: computed(() => entities()?.find((team) => team.yourPersonal)),
+    sortedEntitiesWithoutYourPersonal: computed(() =>
       entities()
-        .filter((it) => !it.personal)
+        .filter((it) => !it.yourPersonal)
         .sort((a, b) =>
           a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {
             numeric: true,

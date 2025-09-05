@@ -11,7 +11,7 @@ class DiscordNotificationMethodDataAppriseConverter(
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
-        val data = notificationMethodData as DiscordNotificationMethodData
+        val data = notificationMethodData as DiscordNotificationMethodDataRecord
 
         return NotificationMethodDataAppriseDto(
             url = data.url,

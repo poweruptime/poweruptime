@@ -30,9 +30,9 @@ class CheckResultHistoricalDayUptimeSchedule(
     }
 
     private fun execute() {
-        monitorService.getAll().forEach {
+        monitorService.getAllNoneDeleted().forEach {
             logger.debug { "Syncing check results of '${it.id}' to historical day uptime" }
-            checkResultStatisticsService.syncCheckResultsToHistoricalDayUptime(it)
+            checkResultStatisticsService.syncCheckResultsToHistoricalDayUptime(it.id)
         }
     }
 }

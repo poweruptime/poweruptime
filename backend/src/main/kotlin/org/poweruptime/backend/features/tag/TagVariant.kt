@@ -1,8 +1,6 @@
 package org.poweruptime.backend.features.tag
 
-import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
-import org.poweruptime.backend.core.models.ADatabaseEnumConverter
 
 enum class TagVariant : ADatabaseEnumConvertable {
     RED {
@@ -20,9 +18,4 @@ enum class TagVariant : ADatabaseEnumConvertable {
     YELLOW {
         override val code = "Y"
     },
-}
-
-@Converter(autoApply = true)
-class TagVariantDatabaseConverter : ADatabaseEnumConverter<TagVariant>() {
-    override fun getKeys(): Array<TagVariant> = TagVariant.entries.toTypedArray()
 }
