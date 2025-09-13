@@ -31,9 +31,9 @@ dependencies {
     implementation("com.bucket4j:bucket4j-core:8.10.1")
 
     // JWT
-    implementation("io.jsonwebtoken:jjwt-api:0.12.7")
-    implementation("io.jsonwebtoken:jjwt-impl:0.12.7")
-    implementation("io.jsonwebtoken:jjwt-jackson:0.12.7")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+    implementation("io.jsonwebtoken:jjwt-impl:0.13.0")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
 
     // NanoID
     implementation("io.viascom.nanoid:nanoid:1.0.1")
