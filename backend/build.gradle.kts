@@ -81,7 +81,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
 
-    implementation("me.dafnik:kotlin-jpa-specification-builder:0.2.1")
+    implementation("me.dafnik:kotlin-jpa-specification-builder:0.3.3")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.12")
