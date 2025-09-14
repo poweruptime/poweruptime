@@ -212,7 +212,7 @@ jobs:
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
-        uses: softprops/action-gh-release@v2.3.2
+        uses: softprops/action-gh-release@v2.3.3
         with:
           prerelease: true
           body_path: ./RELEASE_CHANGELOG.md
@@ -278,6 +278,6 @@ jobs:
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
-        uses: softprops/action-gh-release@v2.3.2
+        uses: softprops/action-gh-release@v2.3.3
         with:
           body_path: ./RELEASE_CHANGELOG.md
