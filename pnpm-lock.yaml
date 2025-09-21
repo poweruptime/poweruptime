@@ -88,8 +88,8 @@ importers:
         specifier: 20.2.4
         version: 20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/animations@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/ssr':
-        specifier: 20.1.6
-        version: 20.1.6(16310d294e2bf0af9e438ddff589efd6)
+        specifier: 20.3.0
+        version: 20.3.0(16310d294e2bf0af9e438ddff589efd6)
       '@angularui/theme':
         specifier: ^0.1.2
         version: 0.1.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))
@@ -195,7 +195,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: 20.2.2
-        version: 20.2.2(37c2d628f60a3a7f5c7423ce367a6e02)
+        version: 20.2.2(8eafd84eb65eafdf1222c424e7c9e80b)
       '@angular/cli':
         specifier: 20.2.2
         version: 20.2.2(@types/node@22.18.1)(chokidar@4.0.3)
@@ -545,8 +545,8 @@ packages:
       '@angular/platform-browser': 20.2.4
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@angular/ssr@20.1.6':
-    resolution: {integrity: sha512-kVuoRP4sANv9Nky2GtUGj19MTPILz6A+NyWyYlgUIKo4aOzlQIBJnsW79iomZx0JlkO9IgH/83jzyBfoPQhYJw==}
+  '@angular/ssr@20.3.0':
+    resolution: {integrity: sha512-vVe3xfikXRUpQvrYf2egB+oH6DRvmeEIS7mVwyGSLBkBD2UHDIrNEExGQL0TpDOzq1yff6bvNtK6COrIhsDRpg==}
     peerDependencies:
       '@angular/common': ^20.0.0
       '@angular/core': ^20.0.0
@@ -6346,7 +6346,7 @@ snapshots:
       '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@angular/build@20.2.2(37c2d628f60a3a7f5c7423ce367a6e02)':
+  '@angular/build@20.2.2(8eafd84eb65eafdf1222c424e7c9e80b)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2002.2(chokidar@4.0.3)
@@ -6382,7 +6382,7 @@ snapshots:
       '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
       '@angular/platform-browser': 20.2.4(@angular/animations@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))
       '@angular/platform-server': 20.1.7(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@20.2.4)(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/animations@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@angular/ssr': 20.1.6(16310d294e2bf0af9e438ddff589efd6)
+      '@angular/ssr': 20.3.0(16310d294e2bf0af9e438ddff589efd6)
       lmdb: 3.4.2
       postcss: 8.5.6
       tailwindcss: 4.1.13
@@ -6524,7 +6524,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@angular/ssr@20.1.6(16310d294e2bf0af9e438ddff589efd6)':
+  '@angular/ssr@20.3.0(16310d294e2bf0af9e438ddff589efd6)':
     dependencies:
       '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
