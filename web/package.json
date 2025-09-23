@@ -81,13 +81,13 @@
     "angular-eslint": "20.3.0",
     "autoprefixer": "10.4.21",
     "esbuild-visualizer": "0.7.0",
-    "eslint": "9.35.0",
+    "eslint": "9.36.0",
     "openapi-typescript": "7.9.1",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.13",
     "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.43.0"
+    "typescript-eslint": "8.44.0"
   },
   "imports": {
     "#styles.css": "./src/styles.css"
