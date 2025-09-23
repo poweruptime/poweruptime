@@ -1,6 +1,6 @@
 {
   "assignees": ["Dafnik"],
-  "baseBranches": ["main"],
+  "baseBranchPatterns": ["main"],
   "commitBody": "See associated pull request for more information.",
   "customManagers": [
     {
