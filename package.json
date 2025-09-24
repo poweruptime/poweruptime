@@ -6,6 +6,8 @@
     "web:build:docker": "pnpm -C web build:docker",
     "web:api": "pnpm -C web api",
     "web:lint": "pnpm -C web lint",
+    "web:e2e": "pnpm -C web e2e",
+    "web:e2e:docker": "pnpm -C web e2e:docker",
     "emails:start": "pnpm -C emails start",
     "emails:export": "pnpm -C emails export",
     "format:check": "prettier --check .",

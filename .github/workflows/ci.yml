@@ -17,8 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Needed to get the commitlint config
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -40,8 +39,7 @@ jobs:
   detekt:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
