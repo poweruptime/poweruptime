@@ -41,7 +41,7 @@ importers:
     devDependencies:
       '@react-email/preview-server':
         specifier: 4.2.11
-        version: 4.2.11(postcss@8.5.6)(sass@1.90.0)
+        version: 4.2.11(@playwright/test@1.55.1)(postcss@8.5.6)(sass@1.90.0)
       '@types/react':
         specifier: 19.1.12
         version: 19.1.12
@@ -214,6 +214,9 @@ importers:
       '@jsverse/transloco-validator':
         specifier: 7.0.1
         version: 7.0.1
+      '@playwright/test':
+        specifier: 1.55.1
+        version: 1.55.1
       '@tailwindcss/typography':
         specifier: 0.5.18
         version: 0.5.18(tailwindcss@4.1.13)
@@ -241,6 +244,9 @@ importers:
       openapi-typescript:
         specifier: 7.9.1
         version: 7.9.1(typescript@5.9.2)
+      playwright-ng-schematics:
+        specifier: 2.1.1
+        version: 2.1.1(@angular-devkit/architect@0.2003.2(chokidar@4.0.3))(@angular-devkit/core@20.3.2(chokidar@4.0.3))(@angular-devkit/schematics@20.3.2(chokidar@4.0.3))
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -2149,6 +2155,11 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@playwright/test@1.55.1':
+    resolution: {integrity: sha512-IVAh/nOJaw6W9g+RJVlIQJ6gSiER+ae6mKQ5CX1bERzQgbC1VSeBlwdvczT7pxb0GWiyrxH4TGKbMfDb4Sq/ig==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@radix-ui/colors@3.0.0':
     resolution: {integrity: sha512-FUOsGBkHrYJwCSEtWRCIfQbZG7q1e6DgxCIOe1SUQzDe/7rXXeA47s8yCn6fuTNQAj1Zq4oTFi9Yjp3wzElcxg==}
@@ -4224,6 +4235,11 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -5305,6 +5321,23 @@ packages:
 
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
+
+  playwright-core@1.55.1:
+    resolution: {integrity: sha512-Z6Mh9mkwX+zxSlHqdr5AOcJnfp+xUWLCt9uKV18fhzA8eyxUd8NUWzAjxUh55RZKSYwDGX0cfaySdhZJGMoJ+w==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright-ng-schematics@2.1.1:
+    resolution: {integrity: sha512-RJdBPKmH0CB93TWIKgTclRMMSjRPrbfbHo9Md6uuV5sxSuxxT5JXq1u8JWlO/G7zlKfbAYpqBiGKiJ+SL9XAZA==}
+    peerDependencies:
+      '@angular-devkit/architect': '>= 0.2000.0 < 0.2100.0'
+      '@angular-devkit/core': ^20.0.0
+      '@angular-devkit/schematics': ^20.0.0
+
+  playwright@1.55.1:
+    resolution: {integrity: sha512-cJW4Xd/G3v5ovXtJJ52MAOclqeac9S/aGGgRzLabuF8TnIb6xHvMzKIa6JmrRzUkeXJgfL1MhukP0NK6l39h3A==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
@@ -8085,6 +8118,10 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@playwright/test@1.55.1':
+    dependencies:
+      playwright: 1.55.1
+
   '@radix-ui/colors@3.0.0': {}
 
   '@radix-ui/primitive@1.1.2': {}
@@ -8521,7 +8558,7 @@ snapshots:
       md-to-react-email: 5.0.5(react@19.0.0)
       react: 19.0.0
 
-  '@react-email/preview-server@4.2.11(postcss@8.5.6)(sass@1.90.0)':
+  '@react-email/preview-server@4.2.11(@playwright/test@1.55.1)(postcss@8.5.6)(sass@1.90.0)':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/parser': 7.27.0
@@ -8547,7 +8584,7 @@ snapshots:
       json5: 2.2.3
       log-symbols: 4.1.0
       module-punycode: punycode@2.3.1
-      next: 15.5.2(@babel/core@7.26.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.90.0)
+      next: 15.5.2(@babel/core@7.26.10)(@playwright/test@1.55.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.90.0)
       node-html-parser: 7.0.1
       ora: 5.4.1
       pretty-bytes: 6.1.1
@@ -10340,6 +10377,9 @@ snapshots:
 
   fs.realpath@1.0.0: {}
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -11019,7 +11059,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@15.5.2(@babel/core@7.26.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.90.0):
+  next@15.5.2(@babel/core@7.26.10)(@playwright/test@1.55.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.90.0):
     dependencies:
       '@next/env': 15.5.2
       '@swc/helpers': 0.5.15
@@ -11037,6 +11077,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 15.5.2
       '@next/swc-win32-arm64-msvc': 15.5.2
       '@next/swc-win32-x64-msvc': 15.5.2
+      '@playwright/test': 1.55.1
       sass: 1.90.0
       sharp: 0.34.4
     transitivePeerDependencies:
@@ -11420,6 +11461,20 @@ snapshots:
       confbox: 0.2.2
       exsolve: 1.0.7
       pathe: 2.0.3
+
+  playwright-core@1.55.1: {}
+
+  playwright-ng-schematics@2.1.1(@angular-devkit/architect@0.2003.2(chokidar@4.0.3))(@angular-devkit/core@20.3.2(chokidar@4.0.3))(@angular-devkit/schematics@20.3.2(chokidar@4.0.3)):
+    dependencies:
+      '@angular-devkit/architect': 0.2003.2(chokidar@4.0.3)
+      '@angular-devkit/core': 20.3.2(chokidar@4.0.3)
+      '@angular-devkit/schematics': 20.3.2(chokidar@4.0.3)
+
+  playwright@1.55.1:
+    dependencies:
+      playwright-core: 1.55.1
+    optionalDependencies:
+      fsevents: 2.3.2
 
   pluralize@8.0.0: {}
 

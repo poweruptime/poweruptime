@@ -74,6 +74,17 @@
             "tsConfig": "tsconfig.app.json"
           }
         },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "configurations": {
+            "docker": {
+              "devServerTarget": "poweruptime-web:serve:docker"
+            }
+          },
+          "options": {
+            "devServerTarget": "poweruptime-web:serve:development"
+          }
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
