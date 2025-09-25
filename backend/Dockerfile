@@ -17,7 +17,7 @@ RUN javac HealthCheck.java
 FROM gcr.io/distroless/java21-debian12:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
-USER nobody
+USER nonroot
 
 # distroless's JAVA_HOME
 ENV JAVA_HOME=/usr/local/openjdk-21
@@ -40,7 +40,7 @@ HEALTHCHECK \
   --interval=30s \
   --timeout=10s \
   --retries=5 \
-  --start-period=60s \
+  --start-period=120s \
   CMD ["java", "-cp", "/app", "HealthCheck"]
 
 CMD ["-Djava.security.egd=file:/dev/urandom", "-Dspring.profiles.active=container", "server.jar"]
