@@ -77,7 +77,7 @@
     "@jsverse/transloco-utils": "7.0.2",
     "@jsverse/transloco-validator": "7.0.1",
     "@playwright/test": "1.55.1",
-    "@tailwindcss/typography": "0.5.18",
+    "@tailwindcss/typography": "0.5.19",
     "@types/canvas-confetti": "1.9.0",
     "@types/d3-shape": "3.1.7",
     "@types/node": "22.18.1",
