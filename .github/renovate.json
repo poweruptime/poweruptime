@@ -29,76 +29,80 @@
   "packageRules": [
     {
       "groupName": "Jackson dependencies",
-      "matchPackageNames": ["com.fasterxml.jackson"]
+      "matchPackageNames": ["/^com.fasterxml.jackson/i"]
     },
     {
       "groupName": "spring boot",
-      "matchDepNames": ["org.springframework.boot", "org.springframework.boot:**"]
+      "matchDepNames": ["/^org.springframework.boot/i"]
     },
     {
       "groupName": "Kotlin dependencies",
-      "matchPackageNames": ["org.jetbrains.kotlin"]
+      "matchPackageNames": ["/^org.jetbrains.kotlin/i"]
     },
     {
       "groupName": "JWT dependencies",
-      "matchPackageNames": ["io.jsonwebtoken"]
+      "matchPackageNames": ["/^io.jsonwebtoken/i"]
     },
     {
       "groupName": "NanoID",
-      "matchPackageNames": ["io.viascom.nanoid"]
+      "matchPackageNames": ["/^io.viascom.nanoid/i"]
     },
     {
       "groupName": "DNS Java",
-      "matchPackageNames": ["dnsjava"]
+      "matchPackageNames": ["/^dnsjava/i"]
     },
     {
       "groupName": "Apache dependencies",
-      "matchPackageNames": ["org.apache"]
+      "matchPackageNames": ["/^org.apache/i"]
     },
     {
       "groupName": "Liquibase dependencies",
-      "matchPackageNames": ["org.liquibase"]
+      "matchPackageNames": ["/^org.liquibase/"]
     },
     {
       "groupName": "Postgres",
-      "matchPackageNames": ["org.postgresql", "io.hypersistence"]
+      "matchPackageNames": ["/^org.postgresql/i", "/^io.hypersistence/i"]
     },
     {
       "groupName": "Springdoc dependencies",
-      "matchPackageNames": ["org.springdoc"]
+      "matchPackageNames": ["/^org.springdoc/i"]
     },
     {
       "groupName": "Bucket4j dependencies",
-      "matchPackageNames": ["com.bucket4j"]
+      "matchPackageNames": ["/^com.bucket4j/i"]
     },
     {
       "groupName": "Testcontainers",
-      "matchPackageNames": ["org.testcontainers", "com.icegreen"]
+      "matchPackageNames": ["/^org.testcontainers/i", "/^com.icegreen/i"]
     },
     {
       "groupName": "React",
-      "matchPackagePatterns": ["^react$", "^react-dom$", "^@types/react$", "^@types/react-dom$"]
+      "matchPackageNames": [
+        "/^react$/i",
+        "/^react-dom$/i",
+        "/^@types/react$/i",
+        "/^@types/react-dom$/i"
+      ]
     },
     {
       "groupName": "React Email",
-      "matchPackagePatterns": ["^react-email", "^@react-email/"]
+      "matchPackageNames": ["/^react-email/i", "/^@react-email//i"]
     },
     {
       "groupName": "ngx-dropzone",
-      "matchPackageNames": ["@ngx-dropzone"]
+      "matchPackageNames": ["/^@ngx-dropzone/i"]
     },
     {
       "groupName": "ngrx",
-      "matchPackageNames": ["@ngrx"]
+      "matchPackageNames": ["/^@ngrx/i"]
     },
     {
       "groupName": "transloco",
-      "matchPackageNames": ["@jsverse"]
+      "matchPackageNames": ["/^@jsverse/i"]
     },
     {
-      "excludePackageNames": ["@types/react", "@types/react-dom"],
       "groupName": "typescript types",
-      "matchPackageNames": ["@types"]
+      "matchPackageNames": ["/^@types/i", "!@types/react", "!@types/react-dom"]
     },
     {
       "groupName": "typescript dependencies",
@@ -116,7 +120,7 @@
     },
     {
       "groupName": "Lint packages",
-      "matchPackageNames": ["lint"]
+      "matchPackageNames": ["/lint/i"]
     }
   ],
   "prHourlyLimit": 5,
