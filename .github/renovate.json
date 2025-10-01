@@ -7,7 +7,9 @@
       "customType": "regex",
       "datasourceTemplate": "docker",
       "managerFilePatterns": ["infrastructure/versions.env"],
-      "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
+      "matchStrings": [
+        "IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"
+      ]
     }
   ],
   "extends": [
@@ -33,7 +35,10 @@
     },
     {
       "groupName": "spring boot",
-      "matchDepNames": ["org.springframework.boot", "org.springframework.boot:**"]
+      "matchDepNames": [
+        "org.springframework.boot",
+        "org.springframework.boot:**"
+      ]
     },
     {
       "groupName": "Kotlin dependencies",
@@ -77,11 +82,16 @@
     },
     {
       "groupName": "React",
-      "matchPackagePatterns": ["^react$", "^react-dom$", "^@types/react$", "^@types/react-dom$"]
+      "matchPackageNames": [
+        "/^react$/",
+        "/^react-dom$/",
+        "/^@types/react$/",
+        "/^@types/react-dom$/"
+      ]
     },
     {
       "groupName": "React Email",
-      "matchPackagePatterns": ["^react-email", "^@react-email/"]
+      "matchPackageNames": ["/^react-email/", "/^@react-email//"]
     },
     {
       "groupName": "ngx-dropzone",
@@ -96,9 +106,8 @@
       "matchPackageNames": ["@jsverse"]
     },
     {
-      "excludePackageNames": ["@types/react", "@types/react-dom"],
       "groupName": "typescript types",
-      "matchPackageNames": ["@types"]
+      "matchPackageNames": ["@types", "!@types/react", "!@types/react-dom"]
     },
     {
       "groupName": "typescript dependencies",
