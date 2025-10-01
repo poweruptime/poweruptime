@@ -76,14 +76,12 @@
       "matchPackageNames": ["/^org\\.testcontainers/", "/^com\\.icegreen/"]
     },
     {
+      "groupName": "React",
+      "matchPackagePatterns": ["^react$", "^react-dom$", "^@types/react$", "^@types/react-dom$"]
+    },
+    {
       "groupName": "React Email",
-      "matchPackageNames": [
-        "/@react-email/components/",
-        "/react-email/",
-        "/react/",
-        "/@types/react/",
-        "/@types/react-dom/"
-      ]
+      "matchPackagePatterns": ["^react-email", "^@react-email/"]
     },
     {
       "groupName": "ngx-dropzone",
