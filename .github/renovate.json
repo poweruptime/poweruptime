@@ -6,7 +6,7 @@
     {
       "customType": "regex",
       "datasourceTemplate": "docker",
-      "managerFilePatterns": ["/^infrastructure/versions\\.env$/"],
+      "managerFilePatterns": ["infrastructure/versions.env"],
       "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
     }
   ],
@@ -29,7 +29,7 @@
   "packageRules": [
     {
       "groupName": "Jackson dependencies",
-      "matchPackageNames": ["/^com\\.fasterxml\\.jackson/"]
+      "matchPackageNames": ["com.fasterxml.jackson"]
     },
     {
       "groupName": "spring boot",
@@ -37,43 +37,43 @@
     },
     {
       "groupName": "Kotlin dependencies",
-      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/"]
+      "matchPackageNames": ["org.jetbrains.kotlin"]
     },
     {
       "groupName": "JWT dependencies",
-      "matchPackageNames": ["/^io\\.jsonwebtoken/"]
+      "matchPackageNames": ["io.jsonwebtoken"]
     },
     {
       "groupName": "NanoID",
-      "matchPackageNames": ["/^io\\.viascom.nanoid/"]
+      "matchPackageNames": ["io.viascom.nanoid"]
     },
     {
       "groupName": "DNS Java",
-      "matchPackageNames": ["/^dnsjava/"]
+      "matchPackageNames": ["dnsjava"]
     },
     {
       "groupName": "Apache dependencies",
-      "matchPackageNames": ["/^org\\.apache\\./"]
+      "matchPackageNames": ["org.apache"]
     },
     {
       "groupName": "Liquibase dependencies",
-      "matchPackageNames": ["/^org\\.liquibase/"]
+      "matchPackageNames": ["org.liquibase"]
     },
     {
       "groupName": "Postgres",
-      "matchPackageNames": ["/^org\\.postgresql/", "/io.hypersistence*/"]
+      "matchPackageNames": ["org.postgresql", "io.hypersistence"]
     },
     {
       "groupName": "Springdoc dependencies",
-      "matchPackageNames": ["/^org\\.springdoc/"]
+      "matchPackageNames": ["org.springdoc"]
     },
     {
       "groupName": "Bucket4j dependencies",
-      "matchPackageNames": ["/^com\\.bucket4j/"]
+      "matchPackageNames": ["com.bucket4j"]
     },
     {
       "groupName": "Testcontainers",
-      "matchPackageNames": ["/^org\\.testcontainers/", "/^com\\.icegreen/"]
+      "matchPackageNames": ["org.testcontainers", "com.icegreen"]
     },
     {
       "groupName": "React",
@@ -85,19 +85,20 @@
     },
     {
       "groupName": "ngx-dropzone",
-      "matchPackageNames": ["/^@ngx-dropzone/"]
+      "matchPackageNames": ["@ngx-dropzone"]
     },
     {
       "groupName": "ngrx",
-      "matchPackageNames": ["/^@ngrx/"]
+      "matchPackageNames": ["@ngrx"]
     },
     {
       "groupName": "transloco",
-      "matchPackageNames": ["/^@jsverse/"]
+      "matchPackageNames": ["@jsverse"]
     },
     {
+      "excludePackageNames": ["@types/react", "@types/react-dom"],
       "groupName": "typescript types",
-      "matchPackageNames": ["/^@types/"]
+      "matchPackageNames": ["@types"]
     },
     {
       "groupName": "typescript dependencies",
@@ -115,7 +116,7 @@
     },
     {
       "groupName": "Lint packages",
-      "matchPackageNames": ["/lint/"]
+      "matchPackageNames": ["lint"]
     }
   ],
   "prHourlyLimit": 5,
