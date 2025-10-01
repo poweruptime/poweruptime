@@ -55,8 +55,8 @@ importers:
         specifier: 20.3.1
         version: 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))
       '@angular/cdk':
-        specifier: 20.2.4
-        version: 20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 20.2.5
+        version: 20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common':
         specifier: 20.3.1
         version: 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -70,11 +70,11 @@ importers:
         specifier: 20.3.1
         version: 20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/material':
-        specifier: 20.2.4
-        version: 20.2.4(a0475b9a9fd967f72d56c19914e87cb1)
+        specifier: 20.2.5
+        version: 20.2.5(cd10d5a72f758687050c45a56b4d9e6a)
       '@angular/material-date-fns-adapter':
-        specifier: 20.2.4
-        version: 20.2.4(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1))(date-fns@4.1.0)
+        specifier: 20.2.5
+        version: 20.2.5(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a))(date-fns@4.1.0)
       '@angular/platform-browser':
         specifier: 20.3.1
         version: 20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))
@@ -110,7 +110,7 @@ importers:
         version: 7.0.2(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@jsverse/transloco@7.6.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(typescript@5.9.2))
       '@ng-matero/extensions':
         specifier: 20.3.1
-        version: 20.3.1(@angular/cdk@20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/forms@20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1))
+        version: 20.3.1(@angular/cdk@20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/forms@20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a))
       '@ngrx/operators':
         specifier: 20.0.1
         version: 20.0.1(rxjs@7.8.2)
@@ -155,7 +155,7 @@ importers:
         version: 20.0.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(bootstrap-icons@1.13.1)(rxjs@7.8.2)
       dfx-helper:
         specifier: 20.0.0
-        version: 20.0.0(d1c60230595a0a55ce87731fb356ebb3)
+        version: 20.0.0(0c281ec5b924378890df075139336c93)
       dfx-openapi:
         specifier: 20.0.0
         version: 20.0.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
@@ -173,7 +173,7 @@ importers:
         version: 5.1.6
       ngx-mat-select-search:
         specifier: 8.0.2
-        version: 8.0.2(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1))
+        version: 8.0.2(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a))
       ngx-sonner:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))
@@ -439,8 +439,8 @@ packages:
       vitest:
         optional: true
 
-  '@angular/cdk@20.2.4':
-    resolution: {integrity: sha512-5UzrN854pnQH+Qw6XZRxx2zWkcOxKrzWPLXe+gHFxFhxWUZfJKGcTJeAj8bnmyb+C3lqBbGpoNQPQ8pFXQGEaQ==}
+  '@angular/cdk@20.2.5':
+    resolution: {integrity: sha512-1cpR/5jeKXLR1D+PsEvRn0QhSWD3/AjtbugJF5nlx/7L90YXhNFCmNAxAkdFKSn4YIDoPwMHgvOpS7yb51wohQ==}
     peerDependencies:
       '@angular/common': ^20.0.0 || ^21.0.0
       '@angular/core': ^20.0.0 || ^21.0.0
@@ -495,17 +495,17 @@ packages:
       '@angular/platform-browser': 20.3.1
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@angular/material-date-fns-adapter@20.2.4':
-    resolution: {integrity: sha512-cgvjcZe0+82eaROhnkPAfCuxfJtMQgB25NezcAjYDaEu/tXU+qLmOzQa+uoXq2KU0x1U5g10nloBtmMeGZdKjw==}
+  '@angular/material-date-fns-adapter@20.2.5':
+    resolution: {integrity: sha512-Q4p30bJkgRxr2+SM4dQrPGslXcZ3u7F5hWhNrl3vynkLfNI4MmqQYpNLG8FSvthifgyWq8t9UnH5Mr9Y57mlIQ==}
     peerDependencies:
       '@angular/core': ^20.0.0 || ^21.0.0
-      '@angular/material': 20.2.4
+      '@angular/material': 20.2.5
       date-fns: '>2.20.0 <5.0'
 
-  '@angular/material@20.2.4':
-    resolution: {integrity: sha512-B1XUOL9TbBDQZpH3j2C6hEpwdokvvmoeaOI7aMTpXrNzomyXHTWZWrMybq30trB7sE7cNze1DQRiOuDXsLgnTw==}
+  '@angular/material@20.2.5':
+    resolution: {integrity: sha512-zgmHqPykH3InEsVmNSpcVicXLWcYKHIt9Nv/J86K3NZDw4/IQgpfujnr7IotLwc9VpgI4Cl7Jbo95tFVFQAYmw==}
     peerDependencies:
-      '@angular/cdk': 20.2.4
+      '@angular/cdk': 20.2.5
       '@angular/common': ^20.0.0 || ^21.0.0
       '@angular/core': ^20.0.0 || ^21.0.0
       '@angular/forms': ^20.0.0 || ^21.0.0
@@ -6657,7 +6657,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@angular/cdk@20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@angular/cdk@20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)
@@ -6731,16 +6731,16 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@angular/material-date-fns-adapter@20.2.4(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1))(date-fns@4.1.0)':
+  '@angular/material-date-fns-adapter@20.2.5(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a))(date-fns@4.1.0)':
     dependencies:
       '@angular/core': 20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)
-      '@angular/material': 20.2.4(a0475b9a9fd967f72d56c19914e87cb1)
+      '@angular/material': 20.2.5(cd10d5a72f758687050c45a56b4d9e6a)
       date-fns: 4.1.0
       tslib: 2.8.1
 
-  '@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1)':
+  '@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a)':
     dependencies:
-      '@angular/cdk': 20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/cdk': 20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)
       '@angular/forms': 20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2)
@@ -7936,12 +7936,12 @@ snapshots:
   '@next/swc-win32-x64-msvc@15.5.2':
     optional: true
 
-  '@ng-matero/extensions@20.3.1(@angular/cdk@20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/forms@20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1))':
+  '@ng-matero/extensions@20.3.1(@angular/cdk@20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/forms@20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a))':
     dependencies:
-      '@angular/cdk': 20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/cdk': 20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)
-      '@angular/material': 20.2.4(a0475b9a9fd967f72d56c19914e87cb1)
+      '@angular/material': 20.2.5(cd10d5a72f758687050c45a56b4d9e6a)
       '@ng-select/ng-select': 20.2.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/forms@20.3.1(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@angular/platform-browser@20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(rxjs@7.8.2))
       ngx-color: 10.1.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))
       photoviewer: 3.10.3
@@ -9854,9 +9854,9 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  dfx-helper@20.0.0(d1c60230595a0a55ce87731fb356ebb3):
+  dfx-helper@20.0.0(0c281ec5b924378890df075139336c93):
     dependencies:
-      '@angular/cdk': 20.2.4(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/cdk': 20.2.5(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)
       '@angular/platform-browser': 20.3.1(@angular/animations@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)))(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))
@@ -11125,9 +11125,9 @@ snapshots:
       material-colors: 1.2.6
       tslib: 2.8.1
 
-  ngx-mat-select-search@8.0.2(@angular/material@20.2.4(a0475b9a9fd967f72d56c19914e87cb1)):
+  ngx-mat-select-search@8.0.2(@angular/material@20.2.5(cd10d5a72f758687050c45a56b4d9e6a)):
     dependencies:
-      '@angular/material': 20.2.4(a0475b9a9fd967f72d56c19914e87cb1)
+      '@angular/material': 20.2.5(cd10d5a72f758687050c45a56b4d9e6a)
       tslib: 2.8.1
 
   ngx-sonner@3.1.0(@angular/common@20.3.1(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2)):
