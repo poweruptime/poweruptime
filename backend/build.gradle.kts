@@ -42,7 +42,7 @@ dependencies {
     implementation("dnsjava:dnsjava:3.6.3")
 
     // HttpClient library
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.5")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
