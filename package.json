@@ -13,7 +13,7 @@
     "format:check": "prettier --check .",
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
-  "packageManager": "pnpm@10.18.2",
+  "packageManager": "pnpm@10.18.3",
   "private": true,
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
