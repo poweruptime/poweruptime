@@ -20,4 +20,7 @@ runs:
 
     - name: Install Playwright dependencies
       shell: bash
-      run: pnpx playwright install --with-deps --only-shell
+      run: |
+        cd web
+        pnpm exec playwright install --with-deps --only-shell
+        cd -

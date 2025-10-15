@@ -12,7 +12,7 @@ test('has title', async ({page}) => {
 });
 
 test('complete setup and open invitation link', async ({page}) => {
-  await page.goto('/setup');
+  await page.goto('/setup?preview=true');
 
   // Fill the email field
   await page.fill('#mat-input-0', 'admin@admin.org');
