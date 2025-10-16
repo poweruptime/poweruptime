@@ -55,7 +55,7 @@
     "dfts-helper": "2.0.0",
     "dfx-bootstrap-icons": "20.0.0",
     "dfx-helper": "20.0.0",
-    "dfx-openapi": "20.0.0",
+    "dfx-openapi": "20.1.0",
     "dfx-qrcode": "20.0.0",
     "eventsource": "4.0.0",
     "fastify": "5.6.1",

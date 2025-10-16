@@ -157,8 +157,8 @@ importers:
         specifier: 20.0.0
         version: 20.0.0(d8287f9099ab93891e5f808226b28f93)
       dfx-openapi:
-        specifier: 20.0.0
-        version: 20.0.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
+        specifier: 20.1.0
+        version: 20.1.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
       dfx-qrcode:
         specifier: 20.0.0
         version: 20.0.0(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))
@@ -3591,8 +3591,8 @@ packages:
       dfts-helper: '2'
       rxjs: '7'
 
-  dfx-openapi@20.0.0:
-    resolution: {integrity: sha512-cXst5OtKOp0XEGO3qvOgq7So6vDPv4mAGeWNQnZrxS6rwbbvCmgBxE7W4ZRgs5xM0Jt6Fgth+E2QtZKTu7Bc7A==}
+  dfx-openapi@20.1.0:
+    resolution: {integrity: sha512-Dbl409ve8KJV//ZhzKHO/PPs0eCtFd/ccRYtkvctiGrL3mnV89zTOojyvbNYCYJOIUWJ2s2UxL9QJGmgP90ALw==}
     peerDependencies:
       '@angular/common': '20'
       openapi-typescript-helpers: '>=0.0.15'
@@ -9400,7 +9400,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  dfx-openapi@20.0.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2):
+  dfx-openapi@20.1.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2):
     dependencies:
       '@angular/common': 20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2)
       openapi-typescript-helpers: 0.0.15
