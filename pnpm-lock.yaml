@@ -154,8 +154,8 @@ importers:
         specifier: 20.0.0
         version: 20.0.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(bootstrap-icons@1.13.1)(rxjs@7.8.2)
       dfx-helper:
-        specifier: 20.0.0
-        version: 20.0.0(d8287f9099ab93891e5f808226b28f93)
+        specifier: 20.1.0
+        version: 20.1.0(d8287f9099ab93891e5f808226b28f93)
       dfx-openapi:
         specifier: 20.1.0
         version: 20.1.0(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
@@ -3580,8 +3580,8 @@ packages:
       bootstrap-icons: '1'
       rxjs: '7'
 
-  dfx-helper@20.0.0:
-    resolution: {integrity: sha512-a5Wyu3hCDM4lShHmK7GA1zj352DyCuDyLhKHYd/2OAXG4tO4dilnunLtzS49TBjVoVOqclAQmOI2Vy40+FPYKg==}
+  dfx-helper@20.1.0:
+    resolution: {integrity: sha512-16wVOgxM1VOtxL/j0yrB137C/+nWhbRmJvSLtwmjhjUvopOVNuk7B9dqfHYuWNd3Z2gT6qbDWZjUkYtdestcAw==}
     peerDependencies:
       '@angular/cdk': '20'
       '@angular/common': '20'
@@ -9389,7 +9389,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  dfx-helper@20.0.0(d8287f9099ab93891e5f808226b28f93):
+  dfx-helper@20.1.0(d8287f9099ab93891e5f808226b28f93):
     dependencies:
       '@angular/cdk': 20.2.8(@angular/common@20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.4(@angular/core@20.3.4(@angular/compiler@20.3.4)(rxjs@7.8.2))(rxjs@7.8.2)
