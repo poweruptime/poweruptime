@@ -32,7 +32,7 @@
     "@angular/platform-browser-dynamic": "20.3.4",
     "@angular/platform-server": "20.3.4",
     "@angular/router": "20.3.4",
-    "@angular/ssr": "20.3.5",
+    "@angular/ssr": "20.3.6",
     "@angularui/theme": "0.1.4",
     "@davidlj95/ngx-meta": "20.0.1",
     "@fastify/http-proxy": "11.3.0",
