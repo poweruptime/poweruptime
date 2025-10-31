@@ -1,91 +1,91 @@
 [
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/animations"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.2.4",
+    "installedVersion": "20.2.8",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/cdk"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/common"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/compiler"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/core"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/forms"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.2.4",
+    "installedVersion": "20.2.8",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.2.4",
+    "installedVersion": "20.2.8",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/components.git",
     "name": "@angular/material-date-fns-adapter"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-browser-dynamic"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/platform-server"
   },
   {
     "author": "angular",
-    "installedVersion": "20.3.1",
+    "installedVersion": "20.3.4",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular.git",
     "name": "@angular/router"
   },
   {
     "author": "n/a",
-    "installedVersion": "20.3.2",
+    "installedVersion": "20.3.6",
     "licenseType": "MIT",
     "link": "git+https://github.com/angular/angular-cli.git",
     "name": "@angular/ssr"
@@ -183,7 +183,7 @@
   },
   {
     "author": "n/a",
-    "installedVersion": "4.1.13",
+    "installedVersion": "4.1.14",
     "licenseType": "MIT",
     "link": "git+https://github.com/tailwindlabs/tailwindcss.git",
     "name": "@tailwindcss/postcss"
@@ -211,7 +211,7 @@
   },
   {
     "author": "n/a",
-    "installedVersion": "4.5.0",
+    "installedVersion": "4.5.1",
     "licenseType": "MIT",
     "link": "git+https://github.com/chartjs/Chart.js.git",
     "name": "chart.js"
@@ -239,14 +239,14 @@
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "20.0.0",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-helper"
   },
   {
     "author": "Dafnik contact@dafnik.me https://dafnik.me",
-    "installedVersion": "20.0.0",
+    "installedVersion": "20.1.0",
     "licenseType": "MIT",
     "link": "git+ssh://git@github.com/Dafnik/dfts-common.git",
     "name": "dfx-openapi"
@@ -267,14 +267,14 @@
   },
   {
     "author": "Matteo Collina <hello@matteocollina.com>",
-    "installedVersion": "5.6.0",
+    "installedVersion": "5.6.1",
     "licenseType": "MIT",
     "link": "git+https://github.com/fastify/fastify.git",
     "name": "fastify"
   },
   {
     "author": "Andrey Sitnik <andrey@sitnik.ru>",
-    "installedVersion": "5.1.5",
+    "installedVersion": "5.1.6",
     "licenseType": "MIT",
     "link": "git+https://github.com/ai/nanoid.git",
     "name": "nanoid"
