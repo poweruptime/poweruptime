@@ -85,7 +85,7 @@
     "autoprefixer": "10.4.21",
     "esbuild-visualizer": "0.7.0",
     "eslint": "9.38.0",
-    "openapi-typescript": "7.9.1",
+    "openapi-typescript": "7.10.1",
     "playwright-ng-schematics": "2.1.1",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.16",
