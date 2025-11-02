@@ -88,7 +88,7 @@ interface BackendEntry {
             <div class="grid gap-4">
               @for (license of feLicenses(); track $index) {
                 <a class="grid" [href]="license.link" rel="noreferrer" target="_blank">
-                  <div class="w-100 flex justify-between">
+                  <div class="flex w-100 justify-between">
                     <h6>{{ license.name }}</h6>
                     <small>{{ license.licenseType }}</small>
                   </div>

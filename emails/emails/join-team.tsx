@@ -28,7 +28,7 @@ export const JoinTeam = () => {
         ) has invited you to the <strong th:text="${inviterTeam}">Placeholder Team</strong> team on{' '}
         <strong>poweruptime</strong>.
       </PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/t/join/{token}(host=${urlHost}, token=${token})}">

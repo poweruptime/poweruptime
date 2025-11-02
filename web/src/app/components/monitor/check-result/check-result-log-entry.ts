@@ -33,10 +33,10 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
         </span>
 
         @if (_logEntry.properties?.['time']) {
-          <span class="text-sm tabular-nums text-gray-500">{{ duration() }}</span>
+          <span class="text-sm text-gray-500 tabular-nums">{{ duration() }}</span>
         } @else if (!disableStartTimestamp()) {
           <pu-relative-time
-            class="text-sm tabular-nums text-gray-500"
+            class="text-sm text-gray-500 tabular-nums"
             [value]="_logEntry.createdAt"
             format="yyyy.MM.dd HH:mm:ss" />
         }

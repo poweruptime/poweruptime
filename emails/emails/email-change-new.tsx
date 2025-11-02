@@ -18,7 +18,7 @@ export const EmailChangeNew = () => {
         You are trying to change your email address for your <strong>poweruptime</strong> account.
       </PuText>
       <PuText>Press the following button to confirm this email address.</PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/email-change/confirm/{confirmToken}(host=${urlHost}, confirmToken=${confirmToken})}">

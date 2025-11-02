@@ -7,7 +7,7 @@ import {MonitorStatusTextBackground} from '@app/directives';
   template: `
     @let _status = status();
     <div
-      class="rounded-4xl flex h-8 items-center justify-center px-3 text-lg"
+      class="flex h-8 items-center justify-center rounded-4xl px-3 text-lg"
       [monitor-status-text-background]="_status">
       <span>
         <ng-content>

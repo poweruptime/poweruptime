@@ -47,7 +47,7 @@ import {TableLoadingBar} from '../table-loading-bar';
         </div>
       </mat-card-header>
       <mat-card-content>
-        <div class="mb-6 mt-2 flex flex-col gap-2">
+        <div class="mt-2 mb-6 flex flex-col gap-2">
           <pu-table-loading-bar [loading]="isLoading()" />
           @if (support?.supportsSince; as supportsSince) {
             <p class="text-center">
@@ -57,7 +57,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                 <span class="motion-preset-pulse-sm">❤️</span>
               </b>
             </p>
-            <div class="mb-4 mt-4 flex justify-center">
+            <div class="mt-4 mb-4 flex justify-center">
               <pu-supporter-badge [supportsSince]="supportsSince" />
             </div>
           } @else {

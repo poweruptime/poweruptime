@@ -72,7 +72,7 @@ import {Editor} from '@app/components/editor';
       }
 
       <div
-        class="border-1 dark:bg-bg-dark relative mt-4 min-h-24 rounded-sm border border-dashed border-gray-500 bg-white"
+        class="dark:bg-bg-dark relative mt-4 min-h-24 rounded-sm border border-1 border-dashed border-gray-500 bg-white"
         [class.px-4]="_html"
         [class.p-4]="!_html">
         <span

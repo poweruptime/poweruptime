@@ -18,7 +18,7 @@ import {BackendType} from '../api';
 @Component({
   template: `
     @let _selected = selected();
-    <div class="flex flex-row gap-2 overflow-x-auto pb-8 pt-0.5">
+    <div class="flex flex-row gap-2 overflow-x-auto pt-0.5 pb-8">
       <div class="text-xxs flex flex-col gap-3 pr-2">
         <div class="heatmap-x-axis-label">Mon</div>
         <div class="heatmap-x-axis-label">Tue</div>

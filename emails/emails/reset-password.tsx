@@ -19,7 +19,7 @@ export const ResetPassword = () => {
       <PuText>
         you've requested a password reset for <strong>poweruptime.</strong>
       </PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/auth/forgot-password?email={email}&resetToken={resetToken}(host=${urlHost}, email=${email}, resetToken=${resetToken})}">

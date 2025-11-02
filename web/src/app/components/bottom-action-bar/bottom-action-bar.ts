@@ -6,7 +6,7 @@ import {OutsideThemeSwitch} from './theme-switch';
 
 @Component({
   template: `
-    <div class="fixed bottom-4 right-4">
+    <div class="fixed right-4 bottom-4">
       <div class="inline-flex gap-4">
         <pu-outside-theme-switch />
         <pu-outside-language-switch />

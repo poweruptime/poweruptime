@@ -355,7 +355,7 @@ class StatusText implements PipeTransform {
                     </a>
                   </div>
 
-                  <div class="break-all font-mono text-xs text-gray-600 dark:text-gray-400">
+                  <div class="font-mono text-xs break-all text-gray-600 dark:text-gray-400">
                     {{ provider.clientId }}
                   </div>
                   @if (!$last) {

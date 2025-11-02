@@ -75,7 +75,7 @@ import {MonitorStatusBackground} from '@app/directives';
         }
 
         @if (_last && _length > 10) {
-          <span class="absolute -bottom-8 right-0">
+          <span class="absolute right-0 -bottom-8">
             {{ _checkResult.createdAt | date: 'HH:mm' }}
           </span>
         }
