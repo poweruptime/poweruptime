@@ -11,7 +11,7 @@ plugins {
     kotlin("plugin.jpa")
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
-    id ("com.github.jk1.dependency-license-report") version "2.9"
+    id ("com.github.jk1.dependency-license-report") version "3.0.1"
 }
 
 springBoot {
