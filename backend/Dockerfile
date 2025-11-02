@@ -1,5 +1,5 @@
 # 1) Build stage: install certs + compile HealthCheck.java
-FROM openjdk:21-jdk-slim AS builder
+FROM openjdk:25-jdk-slim AS builder
 
 # install system CA bundle & Java truststore
 RUN apt-get update \
