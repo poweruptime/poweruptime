@@ -172,8 +172,8 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
       ngx-mat-select-search:
-        specifier: 8.0.2
-        version: 8.0.2(@angular/material@20.2.10(53d591941f0e953ac30291dc3dff8a20))
+        specifier: 8.0.3
+        version: 8.0.3(@angular/material@20.2.10(53d591941f0e953ac30291dc3dff8a20))
       ngx-sonner:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))
@@ -4827,8 +4827,8 @@ packages:
       '@angular/common': '>=19.0.0-0'
       '@angular/core': '>=19.0.0-0'
 
-  ngx-mat-select-search@8.0.2:
-    resolution: {integrity: sha512-Ke8wpcgrhgJeC2d1Qqc4Hec57OrqGVJURw5OW55xVgGIbgT+mqVIm6wiOOTwBSnwskb4x4v59zbtC+VGoyYIsA==}
+  ngx-mat-select-search@8.0.3:
+    resolution: {integrity: sha512-Fj8xWJvUAjCqMa8iJKNqUuc6rx4YDyugMHapc64TyilWpWI0RYu/KvM52FbH3zXdHQBwoo6T4tz5WcIDLlDbsw==}
     peerDependencies:
       '@angular/material': ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0
 
@@ -10792,7 +10792,7 @@ snapshots:
       material-colors: 1.2.6
       tslib: 2.8.1
 
-  ngx-mat-select-search@8.0.2(@angular/material@20.2.10(53d591941f0e953ac30291dc3dff8a20)):
+  ngx-mat-select-search@8.0.3(@angular/material@20.2.10(53d591941f0e953ac30291dc3dff8a20)):
     dependencies:
       '@angular/material': 20.2.10(53d591941f0e953ac30291dc3dff8a20)
       tslib: 2.8.1
