@@ -38,7 +38,7 @@ jobs:
         run: pnpm web:build:docker
 
       - name: Archive web artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: web
           path: ./web/dist/poweruptime-web
@@ -60,7 +60,7 @@ jobs:
         run: ./gradlew backend:build -x test -Pversion=${{ github.ref_name }} -Dspring.profiles.active=container --scan --no-daemon
 
       - name: Archive backend artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: backend
           path: ./backend/build/libs/backend.jar
@@ -77,14 +77,14 @@ jobs:
 
       - name: Download backend files
         if: contains(matrix.containers, 'backend')
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: ${{ matrix.containers }}
           path: ./backend/build/libs
 
       - name: Download web files
         if: contains(matrix.containers, 'web')
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: ${{ matrix.containers }}
           path: ./web/dist/poweruptime-web
