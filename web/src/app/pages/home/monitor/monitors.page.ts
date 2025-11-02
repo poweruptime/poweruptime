@@ -97,7 +97,7 @@ import {
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="h-[calc(100vh-76px)] grow overflow-y-auto overflow-x-hidden px-2 pb-24">
+      <div class="h-[calc(100vh-76px)] grow overflow-x-hidden overflow-y-auto px-2 pb-24">
         <router-outlet />
       </div>
     </div>

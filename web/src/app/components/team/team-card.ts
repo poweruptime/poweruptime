@@ -57,7 +57,7 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
             [style.background-image]="backgroundPattern()"
             [style.background-position]="'center'"></div>
         </div>
-        <div class="rounded-b-xl border-b border-l border-r px-4 pb-4">
+        <div class="rounded-b-xl border-r border-b border-l px-4 pb-4">
           <div class="mt-3 flex items-center justify-between">
             <div class="inline-flex items-center gap-2">
               <span class="text-2xl">{{ _team.name }}</span>

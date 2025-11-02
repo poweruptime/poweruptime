@@ -14,7 +14,7 @@ export const SetupTest = () => {
         <strong>poweruptime</strong> email setup test
       </PuHeading>
       <PuText>Test email successfully delivered.</PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/setup?email={email}&code={code}(host=${urlHost}, email=${inviteeEmail}, code=${code})}">

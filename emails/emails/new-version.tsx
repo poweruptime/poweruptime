@@ -13,7 +13,7 @@ export const NewVersion = () => {
       <PuText>
         Hi! poweruptime version <b th:text="${latestVersion}">99.99.99</b> is available.
       </PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button className={CALL_TO_ACTION} th:href="@{{host}/settings/overview(host=${urlHost})}">
           Check the dashboard
         </Button>

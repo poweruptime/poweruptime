@@ -94,9 +94,9 @@ import {TeamSelect} from './team-select';
           </div>
 
           @if (selectedTeam; as selectedTeam) {
-            <div class="mb-2 mt-4 flex items-center gap-3">
+            <div class="mt-4 mb-2 flex items-center gap-3">
               <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
-              <span class="whitespace-nowrap break-keep">
+              <span class="break-keep whitespace-nowrap">
                 {{ selectedTeam.name }}
               </span>
               <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />

@@ -26,7 +26,7 @@ export const InviteUser = () => {
         </Link>
         ) has invited you to <strong>poweruptime</strong>.
       </PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/auth/login?email={email}&onetimePassword={onetimePassword}(host=${urlHost}, email=${inviteeEmail}, onetimePassword=${onetimePassword})}">

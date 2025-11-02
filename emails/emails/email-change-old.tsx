@@ -20,7 +20,7 @@ export const EmailChangeOld = () => {
       <PuText>
         If you did not request this change, press the following button to undo/cancel this action.
       </PuText>
-      <Section className="mb-[32px] mt-[32px] text-center">
+      <Section className="mt-[32px] mb-[32px] text-center">
         <Button
           className={CALL_TO_ACTION}
           th:href="@{{host}/email-change/undo/{cancelToken}(host=${urlHost}, cancelToken=${cancelToken})}">

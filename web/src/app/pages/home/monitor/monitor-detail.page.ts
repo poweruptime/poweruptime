@@ -209,7 +209,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           <div class="flex flex-wrap gap-2">
             @for (tag of monitor.tags; track tag.name) {
               <span
-                class="whitespace-nowrap text-xs"
+                class="text-xs whitespace-nowrap"
                 [pu-tag]="tag.variant"
                 [routerLink]="[]"
                 [queryParams]="{'search.show': true, 'search.tag': tag.name}"

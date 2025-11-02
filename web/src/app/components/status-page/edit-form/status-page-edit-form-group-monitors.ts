@@ -82,7 +82,7 @@ interface DragEventType {
       @let _allMonitors = mappedByIdMonitors();
       @let _monitorIdsWithWriteableSignal = monitorIdsWithWriteableSignal();
       <div
-        class="drag-list border-1 flex min-h-20 flex-col justify-center gap-2 rounded-lg border border-dashed border-gray-500"
+        class="drag-list flex min-h-20 flex-col justify-center gap-2 rounded-lg border border-1 border-dashed border-gray-500"
         [id]="'list-spgm-' + index()"
         [cdkDropListData]="_monitorIdsWithWriteableSignal"
         [cdkDropListEnterPredicate]="alreadyInListPredicate()"
