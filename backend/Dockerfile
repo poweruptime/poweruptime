@@ -1,11 +1,5 @@
 # 1) Build stage: install certs + compile HealthCheck.java
-FROM openjdk:21-jdk-slim AS builder
-
-# install system CA bundle & Java truststore
-RUN apt-get update \
- && apt-get install -y ca-certificates ca-certificates-java --no-install-recommends \
- && update-ca-certificates -f \
- && rm -rf /var/lib/apt/lists/*
+FROM amazoncorretto:21 AS builder
 
 WORKDIR /app
 
@@ -25,7 +19,7 @@ WORKDIR /app
 
 # bring in the system certs & Java truststore from builder
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /usr/local/openjdk-21/lib/security/cacerts \
+COPY --from=builder /usr/lib/jvm/java-21-amazon-corretto/lib/security/cacerts \
                      $JAVA_HOME/lib/security/cacerts
 
 # bring in just the compiled health‐check class

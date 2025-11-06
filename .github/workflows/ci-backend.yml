@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: 21
-          distribution: temurin
+          distribution: corretto
           cache: gradle
 
       - name: Generate kover coverage report
