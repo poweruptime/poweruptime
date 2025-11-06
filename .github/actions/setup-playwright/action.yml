@@ -21,6 +21,20 @@ runs:
     - name: Install Playwright dependencies
       shell: bash
       run: |
+        # Avoid long delays on the "Processing triggers for man-db"
+        # step during installation
+        #
+        # ```
+        # pnpm playwright install --with-deps chrome
+        # Installing dependencies...
+        # Switching to root user to install dependencies...
+        # ...
+        # Processing triggers for man-db (2.12.0-4build2) ...
+        # ```
+        #
+        # - https://github.com/actions/runner/issues/4030
+        # - https://github.com/microsoft/playwright/issues/14434
+        sudo apt-get --yes remove --purge man-db
         cd web
         pnpm exec playwright install --with-deps --only-shell
         cd -
