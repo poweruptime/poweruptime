@@ -110,17 +110,18 @@
     },
     {
       "extends": ["monorepo:angular"],
-      "groupName": "angular monorepo",
-      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+      "groupName": "angular monorepo"
     },
     {
       "extends": ["monorepo:angular-cli"],
-      "groupName": "angular monorepo",
-      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+      "groupName": "angular monorepo"
     },
     {
       "groupName": "Lint packages",
       "matchPackageNames": ["/lint/i"]
+    },
+    {
+      "extends": ["group:allNonMajor"]
     }
   ],
   "prHourlyLimit": 5,
