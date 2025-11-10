@@ -81,17 +81,17 @@
     "@types/canvas-confetti": "1.9.0",
     "@types/d3-shape": "3.1.7",
     "@types/node": "22.18.13",
-    "angular-eslint": "20.5.0",
+    "angular-eslint": "20.5.1",
     "autoprefixer": "10.4.21",
     "esbuild-visualizer": "0.7.0",
-    "eslint": "9.38.0",
+    "eslint": "9.39.1",
     "openapi-typescript": "7.10.1",
     "playwright-ng-schematics": "2.1.1",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.16",
     "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.2"
+    "typescript-eslint": "8.46.3"
   },
   "imports": {
     "#styles.css": "./src/styles.css"
