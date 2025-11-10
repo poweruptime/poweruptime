@@ -46,7 +46,7 @@ dependencies {
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
-    implementation("commons-codec:commons-codec:1.19.0")
+    implementation("commons-codec:commons-codec:1.20.0")
 
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
