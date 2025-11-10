@@ -1,5 +1,5 @@
 # 1) Build stage: install certs + compile HealthCheck.java
-FROM amazoncorretto:21 AS builder
+FROM amazoncorretto:21.0.9 AS builder
 
 WORKDIR /app
 
