@@ -62,7 +62,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core:5.0.1")
     runtimeOnly("org.postgresql:postgresql:42.7.8")
     // Postgres Arrays
-    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.12.0")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
