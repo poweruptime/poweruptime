@@ -24,6 +24,10 @@ object TeamUserTable : Table("team_user"), HasModifiers {
     val inviterId = ulong("inviter_id").references(UserTable.id).nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(teamId, userId)
+
+    init {
+        index(true, userId, teamId)
+    }
 }
 
 data class TeamUserRecord(

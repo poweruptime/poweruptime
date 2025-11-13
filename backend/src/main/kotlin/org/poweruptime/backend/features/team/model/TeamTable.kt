@@ -22,7 +22,7 @@ object TeamTable : ULongIdTable("team"), HasPublicId, HasModifiers, HasSoftDelet
     override val deleted = softDelete()
     override val name = name()
 
-    val personalUserId = ulong("user_id").references(UserTable.id).nullable().uniqueIndex()
+    val personalUserId = ulong("user_id").references(UserTable.id).nullable().index().uniqueIndex()
 }
 
 data class TeamRecord(

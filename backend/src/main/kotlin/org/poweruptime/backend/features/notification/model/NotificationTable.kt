@@ -20,7 +20,7 @@ object NotificationTable : ULongIdTable("notification"), HasPublicId, HasModifie
     override val createdAt = createdAt()
     override val updatedAt = updatedAt()
 
-    val checkResultId = ulong("check_result_id").references(CheckResultTable.id).uniqueIndex()
+    val checkResultId = ulong("check_result_id").references(CheckResultTable.id).index().uniqueIndex()
 
     val title = varchar("title", Database.MAX_TITLE_LENGTH)
 }

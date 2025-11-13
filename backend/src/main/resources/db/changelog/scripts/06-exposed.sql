@@ -141,6 +141,9 @@ create table team
             on update restrict on delete restrict
 );
 
+create index team_user_id
+    on team (user_id);
+
 create table monitor
 (
     id                    bigserial
@@ -397,6 +400,12 @@ create table check_result
 create index check_result_monitor_id
     on check_result (monitor_id);
 
+create index check_result_created_at_desc_id
+    on check_result (created_at desc, id);
+
+create index check_result_monitor_id_id
+    on check_result (monitor_id) include (id);
+
 create table check_result_log_entry
 (
     id              bigserial
@@ -453,6 +462,12 @@ create table notification
             on update restrict on delete restrict,
     title           varchar(2000)           not null
 );
+
+create index notification_check_result_id
+    on notification (check_result_id);
+
+create index notification_created_at_desc_check_result_id
+    ON notification (created_at desc, check_result_id);
 
 create table monitor_notification_method
 (
@@ -783,7 +798,9 @@ create table team_user
             references "user"
             on update restrict on delete restrict,
     constraint pk_team_user
-        primary key (team_id, user_id)
+        primary key (team_id, user_id),
+    constraint team_user_user_id_team_id_unique
+        unique (user_id, team_id)
 );
 
 create index team_user_team_id
