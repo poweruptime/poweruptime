@@ -89,6 +89,14 @@
   @apply w-52;
 }
 
+.mat-mdc-paginator-range-actions {
+  button {
+    svg {
+      vertical-align: 10px;
+    }
+  }
+}
+
 .tox-promotion-link {
   display: none !important;
 }
