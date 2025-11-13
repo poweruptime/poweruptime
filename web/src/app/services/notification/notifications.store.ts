@@ -23,7 +23,9 @@ import {
 export const NotificationsStore = signalStore(
   withState<{
     monitorId: string | undefined;
+    teamId: string | undefined;
   }>({
+    teamId: undefined,
     monitorId: undefined,
   }),
   withRequestStatus(),
@@ -58,12 +60,14 @@ export const NotificationsStore = signalStore(
       } & PaginationDto
     >(
       pipe(
-        tap(({monitorId}) =>
+        tap(({teamId, monitorId}) =>
           patchState(
             store,
             setPending(),
-            store.monitorId() !== monitorId ? removeAllEntities() : () => ({}),
-            () => ({monitorId}),
+            store.monitorId() !== monitorId || store.teamId() !== teamId
+              ? removeAllEntities()
+              : () => ({}),
+            () => ({teamId, monitorId}),
           ),
         ),
         debounceTime(275),
