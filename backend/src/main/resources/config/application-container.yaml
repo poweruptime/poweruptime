@@ -16,6 +16,7 @@ spring:
     banner-mode: off
 
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DATABASE_HOST:poweruptime-db}:${DATABASE_PORT:5432}/${DATABASE_NAME:poweruptime}
     username: ${DATABASE_USERNAME:poweruptime}
     password: ${DATABASE_PASSWORD}
@@ -23,12 +24,6 @@ spring:
   sql:
     init:
       mode: never
-
-  jpa:
-    generate-ddl: false
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
 
   servlet:
     multipart:
@@ -109,7 +104,7 @@ logging:
     org.poweruptime: ${LOG_LEVEL:ERROR}
     org.springframework.security: ${LOG_LEVEL:ERROR}
     org.springframework.web: ${LOG_LEVEL:ERROR}
-    org.hibernate: ${LOG_LEVEL:ERROR}
+    Exposed: ${LOG_LEVEL:ERROR}
 
 management:
   endpoints:
@@ -149,3 +144,5 @@ poweruptime:
     tries: ${RATE_LIMIT_TRIES:40}
   push:
     enabled: ${PUSH_ENABLED:true}
+  database:
+    ddl-auto: validate

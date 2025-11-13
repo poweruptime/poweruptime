@@ -111,3 +111,5 @@ poweruptime:
     tries: 20
   push:
     enabled: true
+  database:
+    ddl-auto: validate
