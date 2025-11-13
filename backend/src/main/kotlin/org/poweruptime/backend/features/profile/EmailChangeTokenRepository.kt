@@ -1,6 +1,8 @@
 package org.poweruptime.backend.features.profile
 
 import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import java.time.Instant
 

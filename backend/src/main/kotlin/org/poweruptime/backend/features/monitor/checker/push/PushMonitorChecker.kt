@@ -22,11 +22,11 @@ class PushMonitorChecker(
 
     @Transactional
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
-        val pushMonitorCheckerData = data as PushMonitorDataRecord
+        data as PushMonitorDataRecord
 
         logger.debug {
             "Checking for push request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                "push id: '${pushMonitorCheckerData.pushId}'"
+                "push id: '${data.pushId}'"
         }
 
         val since = Instant.now().minusSeconds(monitor.testIntervalSeconds)
@@ -34,7 +34,7 @@ class PushMonitorChecker(
         val result = MonitoringResultHandler()
 
         val entry = repository.getLatestByPushIdAndBetweenNowAndThen(
-            pushId = pushMonitorCheckerData.pushId,
+            pushId = data.pushId,
             then = since,
         ) ?: return result.error(
             "No push detected since last run",

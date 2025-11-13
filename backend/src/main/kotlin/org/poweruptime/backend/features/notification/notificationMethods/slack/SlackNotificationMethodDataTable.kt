@@ -4,8 +4,12 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
+import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
 
@@ -17,6 +21,35 @@ object SlackNotificationMethodDataTable : NotificationMethodDataTable(Notificati
         url = row[url],
         displayName = row[displayName],
     )
+
+    override fun insert(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as SlackNotificationMethodDataRecord
+
+        insert {
+            it[id] = notificationMethodId
+            it[url] = data.url
+            it[displayName] = data.displayName
+        }
+    }
+
+    override fun update(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as SlackNotificationMethodDataRecord
+
+        update({ id eq notificationMethodId }) {
+            it[url] = data.url
+            it[displayName] = data.displayName
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
 }
 
 data class SlackNotificationMethodDataRecord(
@@ -27,4 +60,10 @@ data class SlackNotificationMethodDataRecord(
 
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
-) : NotificationMethodData(NotificationMethodType.SLACK)
+) : NotificationMethodData(NotificationMethodType.SLACK) {
+    companion object {
+        init {
+            registerDataRecord(NotificationMethodTypes.SLACK, SlackNotificationMethodDataRecord::class)
+        }
+    }
+}

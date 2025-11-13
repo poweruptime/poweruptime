@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.team.domain
 
 import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.features.team.model.SettingKey
 import org.poweruptime.backend.features.team.model.TeamSettingRecord

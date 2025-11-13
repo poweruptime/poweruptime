@@ -53,59 +53,47 @@ INSERT INTO team_user (team_id, role, user_id, inviter_id) VALUES (1, 'M', 3, 2)
 -- Add user 3 to team 2
 INSERT INTO team_user (team_id, role, user_id) VALUES (2, 'A', 4);
 
--- System Notifications
-INSERT INTO system_notification (public_id, title, description, active, type, starts, ends)
-    VALUES ('KDemk18U55Wo', 'Planned Maintenance 1', 'Updates will be done', true, 'W', '2023-06-04 17:40:00.434373', '2023-06-04 20:40:00.434373');
-INSERT INTO system_notification (public_id, title, description, active, type)
-    VALUES ('hroof4wcGKgs', 'Planned Maintenance 2', 'Updates will be done', true, 'W');
-INSERT INTO system_notification (public_id, title, description, active, type, starts, ends)
-    VALUES ('uWWhR6FzeGmC', 'Planned Maintenance not active', 'Updates will be done', false, 'W', '2023-06-04 17:40:00.434373', '2023-06-04 20:40:00.434373');
-
 -- Monitors
 
 -- SSL Certificate
+INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
+VALUES (1, 'k6A6bEK7C9pC', 'SSL_CERTIFICATE', 1, 'Test SSL Certificate', 120, 'U', false, 0, 'Test');
 INSERT INTO monitor_data_ssl_certificate (id, ssl_certificate_url, ssl_certificate_valid_days_left)
 VALUES (1, 'https://dafnik.me', 30);
 
-INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
-VALUES (1, 'k6A6bEK7C9pC', 'SSL_CERTIFICATE', 1, 'Test SSL Certificate', 120, 'U', false, 0, 'Test');
-
 -- HTTP
+INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
+VALUES (2, '6XSKoPbRhSsb', 'HTTP', 1, 'Test HTTP', 120, 'U', false, 0, 'Test');
 INSERT INTO monitor_data_http (id, http_url, http_content_type, http_ignore_tls, http_method, http_allowed_status_code_ranges, http_certificate_expiry)
 VALUES (2, 'https://expired.badssl.com/', 'JSON', true, 'GET', ARRAY['200-299'], false);
 
-INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
-VALUES (2, '6XSKoPbRhSsb', 'HTTP', 1, 'Test HTTP', 120, 'U', false, 0, 'Test');
-
 -- DNS CNAME Matches
+INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
+VALUES (3, 'rKALbBX37kWr', 'DNS', 1, 'Test playground CNAME DNS', 60, 'U', false, 0, 'Test');
 INSERT INTO monitor_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
 VALUES (3, '9.9.9.9', 'playground.dafnik.me', '{dafnik.github.io.}', 53, 'CNAME');
 
-INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
-VALUES (3, 'rKALbBX37kWr', 'DNS', 1, 'Test playground CNAME DNS', 60, 'U', false, 0, 'Test');
-
 -- DNS Exists Team 2
+INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
+VALUES (4, 'pbP9gekfhG44', 'DNS', 2, 'Test playground A DNS null matches', 60, 'U', false, 2, 'Test');
 INSERT INTO monitor_data_dns (id, dns_server, dns_host, dns_matches, dns_port, dns_type)
 VALUES (4, '9.9.9.9', 'playground.dafnik.me', null, 53, 'A');
 
-INSERT INTO monitor (id, public_id, type, team_id, name, test_interval_seconds, status, upside_down, retries, description)
-VALUES (4, 'pbP9gekfhG44', 'DNS', 2, 'Test playground A DNS null matches', 60, 'U', false, 2, 'Test');
-
 -- Notification Methods
 -- E-Mail
+INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (1, 'UoKSMt62oFcX', 1, 'EMAIL', 'Test E-Mail');
 INSERT INTO notification_method_data_email (id, mail_ignore_tls_errors, mail_port, mail_security, mail_host, mail_password, mail_username, mail_to)
 VALUES (1, false, 1234, 'S', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (1, 'UoKSMt62oFcX', 1, 'EMAIL', 'Test E-Mail');
 
 -- E-Mail
+INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (2, 'gs7jTakASRSp', 1, 'EMAIL', 'Test E-Mail 2');
 INSERT INTO notification_method_data_email (id, mail_ignore_tls_errors, mail_port, mail_security, mail_host, mail_password, mail_username, mail_to)
 VALUES (2, false, 1234, 'S', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (2, 'gs7jTakASRSp', 1, 'EMAIL', 'Test E-Mail 2');
 
 -- E-Mail
+INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (3, 'TPAbk1uHLp7p', 1, 'EMAIL', 'Test E-Mail 3');
 INSERT INTO notification_method_data_email (id, mail_ignore_tls_errors, mail_port, mail_security, mail_host, mail_password, mail_username, mail_to)
 VALUES (3, false, 1234, 'S', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
-INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (3, 'TPAbk1uHLp7p', 1, 'EMAIL', 'Test E-Mail 3');
 
 -- Check Results
 INSERT INTO check_result(id, public_id, monitor_id, status, previous_status, checked_at, picked_up_at, ping, times_retried, title)
@@ -195,11 +183,7 @@ SELECT setval('team_id_seq', (SELECT MAX(id) FROM team));
 SELECT setval('user_id_seq', (SELECT MAX(id) FROM "user"));
 SELECT setval('mfa_id_seq', (SELECT MAX(id) FROM mfa));
 SELECT setval('mfa_backup_code_id_seq', (SELECT MAX(id) FROM mfa_backup_code));
-SELECT setval('monitor_data_ssl_certificate_id_seq', (SELECT MAX(id) FROM monitor_data_ssl_certificate));
-SELECT setval('monitor_data_http_id_seq', (SELECT MAX(id) FROM monitor_data_http));
-SELECT setval('monitor_data_dns_id_seq', (SELECT MAX(id) FROM monitor_data_dns));
 SELECT setval('monitor_id_seq', (SELECT MAX(id) FROM monitor));
-SELECT setval('notification_method_data_email_id_seq', (SELECT MAX(id) FROM notification_method_data_email));
 SELECT setval('notification_method_id_seq', (SELECT MAX(id) FROM notification_method));
 SELECT setval('check_result_id_seq', (SELECT MAX(id) FROM check_result));
 SELECT setval('notification_id_seq', (SELECT MAX(id) FROM notification));

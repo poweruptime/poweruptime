@@ -2,10 +2,10 @@ package org.poweruptime.backend.features.monitor.domain
 
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.statements.UpsertSqlExpressionBuilder.eq
-import org.jetbrains.exposed.v1.core.statements.UpsertSqlExpressionBuilder.inList
-import org.jetbrains.exposed.v1.core.statements.UpsertSqlExpressionBuilder.inSubQuery
-import org.jetbrains.exposed.v1.core.statements.UpsertSqlExpressionBuilder.less
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.inSubQuery
+import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll

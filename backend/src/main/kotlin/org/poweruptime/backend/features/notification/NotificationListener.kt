@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.notification
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_QUEUE
 import org.poweruptime.backend.core.utils.Database

@@ -35,7 +35,7 @@ class MonitorIntegrationTests(
         matches = listOf("dafnik.github.io."),
     )
 
-    private val monitorCheckers = listOf(
+    private fun monitorCheckers() = listOf(
         dnsMonitorCheckerData,
         HttpMonitorDataRecord(
             url = "https://expired.badssl.com/",
@@ -341,7 +341,7 @@ class MonitorIntegrationTests(
         @Test
         @MockAdmin
         fun `test success all types`() {
-            val createdMonitors = monitorCheckers.map { data ->
+            val createdMonitors = monitorCheckers().map { data ->
                 val model = ModelFactory.getCreateMonitorDto(data)
                 val monitor = mockMvc.post("/v1/monitor") {
                     contentType = MediaType.APPLICATION_JSON
@@ -367,7 +367,7 @@ class MonitorIntegrationTests(
 
             // Test updating
             createdMonitors.forEach { id ->
-                val model = monitorCheckers.random().let { data ->
+                val model = monitorCheckers().random().let { data ->
                     ModelFactory.getUpdateMonitorDto(id, data)
                 }
                 val monitor = mockMvc.put("/v1/monitor") {

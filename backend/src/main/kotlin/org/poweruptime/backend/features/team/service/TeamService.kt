@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.team.service
 
 import org.apache.coyote.BadRequestException
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll

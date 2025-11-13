@@ -6,9 +6,13 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object PingMonitorDataTable : MonitorDataTable(MonitorType.PING) {
@@ -19,6 +23,29 @@ object PingMonitorDataTable : MonitorDataTable(MonitorType.PING) {
         ip = row[ip],
         port = row[port],
     )
+
+    override fun insert(monitorId: ULong, data: MonitorData) {
+        data as PingMonitorDataRecord
+
+        insert {
+            it[id] = monitorId
+            it[ip] = data.ip
+            it[port] = data.port
+        }
+    }
+
+    override fun update(monitorId: ULong, data: MonitorData) {
+        data as PingMonitorDataRecord
+
+        update({ id eq monitorId }) {
+            it[PingMonitorDataTable.ip] = data.ip
+            it[PingMonitorDataTable.port] = data.port
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
 }
 
 data class PingMonitorDataRecord(
@@ -29,4 +56,10 @@ data class PingMonitorDataRecord(
     @get:Min(Database.MIN_PORT)
     @get:Max(Database.MAX_PORT)
     val port: Int,
-) : MonitorData(MonitorType.PING)
+) : MonitorData(MonitorType.PING) {
+    companion object {
+        init {
+            registerDataRecord(MonitorDataTypes.PING, PingMonitorDataRecord::class)
+        }
+    }
+}

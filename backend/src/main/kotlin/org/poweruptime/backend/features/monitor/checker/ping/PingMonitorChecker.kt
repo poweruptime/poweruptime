@@ -14,18 +14,18 @@ class PingMonitorChecker : MonitorChecker {
     override val type = MonitorType.PING
 
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
-        val pingMonitorCheckerData = data as PingMonitorDataRecord
+        data as PingMonitorDataRecord
 
         logger.debug {
             "Sending ping request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                "ip: '${pingMonitorCheckerData.ip}'"
+                "ip: '${data.ip}'"
         }
 
         val result = MonitoringResultHandler()
         @Suppress("TooGenericExceptionCaught")
         try {
             Socket().use { soc ->
-                soc.connect(InetSocketAddress(pingMonitorCheckerData.ip, pingMonitorCheckerData.port), 4000)
+                soc.connect(InetSocketAddress(data.ip, data.port), 4000)
                 return result.success("Ping successful")
             }
         } catch (_: Exception) {

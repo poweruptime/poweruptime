@@ -7,10 +7,14 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object DnsMonitorDataTable : MonitorDataTable(MonitorType.DNS) {
@@ -28,6 +32,35 @@ object DnsMonitorDataTable : MonitorDataTable(MonitorType.DNS) {
         type = row[type],
         matches = row[matches],
     )
+
+    override fun insert(monitorId: ULong, data: MonitorData) {
+        data as DnsMonitorDataRecord
+
+        insert {
+            it[id] = monitorId
+            it[host] = data.host
+            it[server] = data.server
+            it[port] = data.port
+            it[type] = data.type
+            it[matches] = data.matches
+        }
+    }
+
+    override fun update(monitorId: ULong, data: MonitorData) {
+        data as DnsMonitorDataRecord
+
+        update({ id eq monitorId }) {
+            it[host] = data.host
+            it[server] = data.server
+            it[port] = data.port
+            it[type] = data.type
+            it[matches] = data.matches
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
 }
 
 data class DnsMonitorDataRecord(
@@ -52,4 +85,10 @@ data class DnsMonitorDataRecord(
     @get:NotNull
     val type: DnsMonitorDataType,
     val matches: List<String>?,
-) : MonitorData(MonitorType.DNS)
+) : MonitorData(MonitorType.DNS) {
+    companion object {
+        init {
+            registerDataRecord(MonitorDataTypes.DNS, DnsMonitorDataRecord::class)
+        }
+    }
+}

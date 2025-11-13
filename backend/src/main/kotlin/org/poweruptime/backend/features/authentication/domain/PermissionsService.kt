@@ -3,6 +3,7 @@
 package org.poweruptime.backend.features.authentication.domain
 
 import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.exceptions.ForbiddenException

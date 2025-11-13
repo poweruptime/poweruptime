@@ -11,11 +11,15 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.ListItemRegex
 import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 
@@ -53,6 +57,51 @@ object HttpMonitorDataTable : MonitorDataTable(MonitorType.HTTP) {
         basicAuthDataUsername = row[basicAuthDataUsername],
         basicAuthDataPassword = row[basicAuthDataPassword],
     )
+
+    override fun insert(monitorId: ULong, data: MonitorData) {
+        data as HttpMonitorDataRecord
+
+        insert {
+            it[id] = monitorId
+            it[url] = data.url
+            it[method] = data.method
+            it[contentType] = data.contentType
+            it[allowedStatusCodeRanges] = data.allowedStatusCodeRanges
+            it[maxRedirects] = data.maxRedirects
+            it[ignoreTLS] = data.ignoreTLS
+            it[certificateExpiry] = data.certificateExpiry
+            it[certificateValidDaysLeft] = data.certificateValidDaysLeft
+            it[body] = data.body
+            it[searchTerm] = data.searchTerm
+            it[authType] = data.authType
+            it[basicAuthDataUsername] = data.basicAuthDataUsername
+            it[basicAuthDataPassword] = data.basicAuthDataPassword
+        }
+    }
+
+    override fun update(monitorId: ULong, data: MonitorData) {
+        data as HttpMonitorDataRecord
+
+        update({ id eq monitorId }) {
+            it[url] = data.url
+            it[method] = data.method
+            it[contentType] = data.contentType
+            it[allowedStatusCodeRanges] = data.allowedStatusCodeRanges
+            it[maxRedirects] = data.maxRedirects
+            it[ignoreTLS] = data.ignoreTLS
+            it[certificateExpiry] = data.certificateExpiry
+            it[certificateValidDaysLeft] = data.certificateValidDaysLeft
+            it[body] = data.body
+            it[searchTerm] = data.searchTerm
+            it[authType] = data.authType
+            it[basicAuthDataUsername] = data.basicAuthDataUsername
+            it[basicAuthDataPassword] = data.basicAuthDataPassword
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
 }
 
 data class HttpMonitorDataRecord(
@@ -106,6 +155,12 @@ data class HttpMonitorDataRecord(
         require(parts.size == 2)
 
         parts[0].toInt()..parts[1].toInt()
+    }
+
+    companion object {
+        init {
+            registerDataRecord(MonitorDataTypes.HTTP, HttpMonitorDataRecord::class)
+        }
     }
 }
 

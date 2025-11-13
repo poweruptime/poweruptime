@@ -28,12 +28,13 @@ class SSLCertificateMonitorChecker(
 
     @Suppress("ReturnCount")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
-        val sslData = data as SSLCertificateMonitorDataRecord
+        data as SSLCertificateMonitorDataRecord
+
         val result = MonitoringResultHandler()
         val now = Instant.now()
 
         try {
-            val certs = makeRequest(sslData.url)
+            val certs = makeRequest(data.url)
 
             if (certs.isEmpty()) {
                 return result.error("No certificates found")
@@ -42,7 +43,7 @@ class SSLCertificateMonitorChecker(
             // group by “still within your expected days‐left” vs. “too close/expired”
             val grouped = certs.groupBy { cert ->
                 val expiresAt = cert.notAfter.toInstant()
-                val validDaysLeft = sslData.validDaysLeft
+                val validDaysLeft = data.validDaysLeft
                 if (validDaysLeft != null) {
                     Duration.between(now, expiresAt).toDays() >= validDaysLeft
                 } else {

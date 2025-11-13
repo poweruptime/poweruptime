@@ -2,7 +2,7 @@ package org.poweruptime.backend.features.authentication.service
 
 import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
 import org.apache.commons.codec.binary.Base32
-import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId

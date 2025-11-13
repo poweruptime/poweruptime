@@ -13,7 +13,6 @@ truncate table monitor_push_entry cascade;
 truncate table notification_method_data_apprise cascade;
 truncate table notification_method_data_discord cascade;
 truncate table notification_method_data_email cascade;
-truncate table system_notification cascade;
 truncate table check_result_log_entry cascade;
 truncate table historical_day_uptime cascade;
 truncate table monitor_notification_method cascade;

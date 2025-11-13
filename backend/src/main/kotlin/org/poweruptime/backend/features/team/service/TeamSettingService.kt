@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.team.service
 
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.findByIdOrThrow

@@ -7,13 +7,18 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
+import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
+import kotlin.collections.toList
 
 object EmailNotificationMethodDataTable : NotificationMethodDataTable(NotificationMethodType.EMAIL) {
     val to = array<String>("mail_to")
@@ -41,6 +46,49 @@ object EmailNotificationMethodDataTable : NotificationMethodDataTable(Notificati
         cc = row[cc]?.toSet(),
         bcc = row[bcc]?.toSet(),
     )
+
+    override fun insert(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as EmailNotificationMethodDataRecord
+
+        insert {
+            it[id] = notificationMethodId
+            it[to] = data.to.toList()
+            it[host] = data.host
+            it[port] = data.port
+            it[username] = data.username
+            it[password] = data.password
+            it[security] = data.security
+            it[ignoreTLSErrors] = data.ignoreTLSErrors
+            it[cc] = data.cc?.toList()
+            it[bcc] = data.bcc?.toList()
+        }
+    }
+
+    override fun update(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as EmailNotificationMethodDataRecord
+
+        update({ id eq notificationMethodId }) {
+            it[to] = data.to.toList()
+            it[host] = data.host
+            it[port] = data.port
+            it[username] = data.username
+            it[password] = data.password
+            it[security] = data.security
+            it[ignoreTLSErrors] = data.ignoreTLSErrors
+            it[cc] = data.cc?.toList()
+            it[bcc] = data.bcc?.toList()
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
 }
 
 data class EmailNotificationMethodDataRecord(
@@ -75,4 +123,10 @@ data class EmailNotificationMethodDataRecord(
 
     val cc: Set<String>?,
     val bcc: Set<String>?,
-) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender
+) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender {
+    companion object {
+        init {
+            registerDataRecord(NotificationMethodTypes.EMAIL, EmailNotificationMethodDataRecord::class)
+        }
+    }
+}

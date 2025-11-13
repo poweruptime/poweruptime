@@ -39,13 +39,14 @@ class HttpMonitorChecker(
 
     @Suppress("ReturnCount")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
-        val httpMonitorCheckerData = data as HttpMonitorDataRecord
-        if (httpMonitorCheckerData.certificateExpiry) {
+        data as HttpMonitorDataRecord
+
+        if (data.certificateExpiry) {
             val certificateExpiryResult = SSLCertificateMonitorChecker(teamSettingService).execute(
                 monitor,
                 data = SSLCertificateMonitorDataRecord(
-                    url = httpMonitorCheckerData.url,
-                    validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
+                    url = data.url,
+                    validDaysLeft = data.certificateValidDaysLeft,
                 ),
             )
             if (!certificateExpiryResult.isUp) {
@@ -55,25 +56,25 @@ class HttpMonitorChecker(
 
         logger.debug {
             "Sending http request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                "url: '${httpMonitorCheckerData.url}'"
+                "url: '${data.url}'"
         }
 
         val result = MonitoringResultHandler()
 
         try {
-            val httpResponse = makeHttpRequest(httpMonitorCheckerData)
+            val httpResponse = makeHttpRequest(data)
 
-            if (!httpMonitorCheckerData.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
+            if (!data.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
                 return result.error(httpResponse.title, httpResponse.message)
             }
 
-            if (httpMonitorCheckerData.searchTerm == null) {
+            if (data.searchTerm == null) {
                 return result.success(httpResponse.title, httpResponse.message)
             }
 
             val responseBody = httpResponse.responseBody ?: return result.error("HTTP Body not found")
 
-            if (!(responseBody as String).contains(httpMonitorCheckerData.searchTerm)) {
+            if (!(responseBody as String).contains(data.searchTerm)) {
                 return result.error("Search term not found in body", responseBody)
             }
 

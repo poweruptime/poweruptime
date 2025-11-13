@@ -26,28 +26,28 @@ class DnsMonitorChecker : MonitorChecker {
 
     @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
-        val dnsMonitorCheckerData = data as DnsMonitorDataRecord
+        data as DnsMonitorDataRecord
 
         val result = MonitoringResultHandler()
         try {
             val resolver = SimpleResolver().apply {
                 address = InetSocketAddress(
-                    InetAddress.getByName(dnsMonitorCheckerData.server),
+                    InetAddress.getByName(data.server),
                     port,
                 )
             }
 
             logger.debug {
                 "Sending dns request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                    "host: '${dnsMonitorCheckerData.host}', type: '$type', " +
-                    "checking for matches: '${dnsMonitorCheckerData.matches != null}'"
+                    "host: '${data.host}', type: '$type', " +
+                    "checking for matches: '${data.matches != null}'"
             }
 
-            val answerSection = getDNSAnswerSection(resolver, dnsMonitorCheckerData.host, dnsMonitorCheckerData.type)
+            val answerSection = getDNSAnswerSection(resolver, data.host, data.type)
 
             logger.debug { "Monitor '${monitor.id}', dns response '$answerSection'" }
 
-            if (dnsMonitorCheckerData.matches == null) {
+            if (data.matches == null) {
                 return if (answerSection.isEmpty()) {
                     result.error("DNS record(s) not found")
                 } else {
@@ -55,7 +55,7 @@ class DnsMonitorChecker : MonitorChecker {
                 }
             }
 
-            val answers = parseAnswerSection(answerSection, dnsMonitorCheckerData.type)
+            val answers = parseAnswerSection(answerSection, data.type)
 
             logger.info { "Mapped answers '${answers.joinToString()}'" }
 
@@ -63,7 +63,7 @@ class DnsMonitorChecker : MonitorChecker {
                 return result.error("DNS record(s) not found")
             }
 
-            if (!dnsMonitorCheckerData.matches.all { answers.contains(it) }) {
+            if (!data.matches.all { answers.contains(it) }) {
                 return result.error(
                     title = "DNS record(s) not corresponding with specified matches",
                     message = """
@@ -71,7 +71,7 @@ class DnsMonitorChecker : MonitorChecker {
                         |
                         |=========
                         |Specified matches
-                        |${dnsMonitorCheckerData.matches.joinToString("\n")}
+                        |${data.matches.joinToString("\n")}
                     """.trimMargin(),
                 )
             }

@@ -61,11 +61,20 @@ dependencies {
     implementation("org.liquibase:liquibase-core:5.0.1")
     runtimeOnly("org.postgresql:postgresql:42.7.8")
 
+    implementation("com.zaxxer:HikariCP:7.0.2")
+
+    val exposedVersion = "1.0.0-rc-3"
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-json:${exposedVersion}")
+    implementation("org.jetbrains.exposed:spring-transaction:$exposedVersion")
     // Spring
     implementation("org.aspectj:aspectjweaver")
+
+    implementation("org.springframework.data:spring-data-commons")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    implementation("org.springframework.data:spring-data-commons")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
