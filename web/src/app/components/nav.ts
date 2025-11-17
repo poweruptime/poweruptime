@@ -6,6 +6,7 @@ import {MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatTooltip} from '@angular/material/tooltip';
 
 import {BreakpointObserver} from '@angular/cdk/layout';
 
@@ -143,6 +144,7 @@ import {TeamSelect} from './team-select';
         <div class="flex min-h-16 items-center justify-between pt-2">
           <mat-nav-list>
             <a
+              [matTooltip]="'profile.settings' | transloco"
               routerLink="/profile"
               routerLinkActive="active"
               mat-list-item
@@ -174,13 +176,21 @@ import {TeamSelect} from './team-select';
 
           <div class="inline-flex gap-1">
             <mat-nav-list>
-              <a *isSystemAdmin mat-list-item routerLink="/settings" routerLinkActive="active">
+              <a
+                *isSystemAdmin
+                [matTooltip]="'nav.instanceSettings' | transloco"
+                mat-list-item
+                routerLink="/settings"
+                routerLinkActive="active">
                 <bi class="mt-1" name="building-gear" />
               </a>
             </mat-nav-list>
 
             <mat-nav-list>
-              <a [matMenuTriggerFor]="menu" mat-list-item>
+              <a
+                [matMenuTriggerFor]="menu"
+                [matTooltip]="'general.settings' | transloco"
+                mat-list-item>
                 <bi class="mt-1" name="gear" />
               </a>
             </mat-nav-list>
@@ -275,6 +285,7 @@ import {TeamSelect} from './team-select';
     TeamSelect,
     IsTeamAdmin,
     MonitorStatusText,
+    MatTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

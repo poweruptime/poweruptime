@@ -12,7 +12,7 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxCutPipe} from 'dfx-helper';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
-import {Heatmap, Placeholder} from '@app/components';
+import {ChartPlaceholder, Heatmap, Placeholder} from '@app/components';
 import {
   InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
@@ -260,7 +260,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
       @defer (on idle) {
         @if (monitorDetailYearlyUptimeStore.isPending()) {
-          <pu-placeholder class="h-64 w-full" />
+          <pu-placeholder class="h-60 w-full" />
         } @else {
           <mat-card appearance="outlined">
             <mat-card-content>
@@ -269,7 +269,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           </mat-card>
         }
       } @placeholder {
-        <pu-placeholder class="h-64 w-full" />
+        <pu-placeholder class="h-60 w-full" />
       }
 
       <mat-card appearance="outlined">
@@ -286,10 +286,10 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             @if (checkResultsPingStore.isFulfilled()) {
               <pu-ping-chart [chart]="checkResultsPingStore.data()!" />
             } @else {
-              <pu-placeholder class="w-full" style="height: 24rem" />
+              <pu-chart-placeholder class="w-full" style="height: 24rem" />
             }
           } @placeholder {
-            <pu-placeholder class="w-full" style="height: 24rem" />
+            <pu-chart-placeholder class="w-full" style="height: 24rem" />
           }
         </mat-card-content>
       </mat-card>
@@ -326,6 +326,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatMenuItem,
     MatIconButton,
     NotificationCheckResultCard,
+    ChartPlaceholder,
   ],
 })
 export class MonitorDetailPage {

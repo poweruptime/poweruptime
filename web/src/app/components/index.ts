@@ -5,6 +5,7 @@ export * from './backend-image';
 export * from './backend-offline-alert';
 export * from './copy-icon-button';
 export * from './changelog-dialog';
+export * from './chart-placeholder.component';
 export * from './confirm-dialog';
 export * from './file-upload';
 export * from './heatmap';
