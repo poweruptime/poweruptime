@@ -25,6 +25,7 @@ class TeamSettingService(
         instanceSettingService.getCheckResultRetentionPeriodInDays().toString(),
     ).toInt()
 
+    @Transactional
     fun setCheckResultRetentionPeriodInDays(teamId: ULong, value: Int) = setValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
         teamId,
@@ -37,6 +38,7 @@ class TeamSettingService(
         instanceSettingService.getCheckResultLogRetentionPeriodInDays().toString(),
     ).toInt()
 
+    @Transactional
     fun setCheckResultLogRetentionPeriodInDays(teamId: ULong, value: Int) = setValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_LOG_RETENTION_PERIOD_IN_DAYS,
         teamId,
@@ -51,6 +53,7 @@ class TeamSettingService(
         ),
     )
 
+    @Transactional
     fun setTimeZone(teamId: ULong, value: ZoneId) = setValueByKeyAndTeamId(
         SettingKey.TIMEZONE,
         teamId,

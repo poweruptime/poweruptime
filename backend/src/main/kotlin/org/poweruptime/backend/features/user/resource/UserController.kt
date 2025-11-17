@@ -84,15 +84,15 @@ class UserController(
         userService.update(dto, auth.user()),
     )
 
-    @Operation(
-        summary = "Delete a user by id",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun delete(@PathVariable("id") publicId: String) {
-        userService.deleteById(userService.getIdByPublicId(publicId))
-    }
+//    @Operation(
+//        summary = "Delete a user by id",
+//        security = [SecurityRequirement(name = BEARER_AUTH)],
+//        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+//    )
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    fun delete(@PathVariable("id") publicId: String) {
+//        userService.deleteById(userService.getIdByPublicId(publicId))
+//    }
 }

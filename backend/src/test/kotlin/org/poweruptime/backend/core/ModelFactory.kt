@@ -7,6 +7,9 @@ import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.UserRecord
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingRetentionDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingSupportDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingVersionCheckDto
 import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
@@ -29,6 +32,7 @@ import org.poweruptime.backend.features.team.dto.UpdateTeamUserDto
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.user.CreateUserDto
+import org.poweruptime.backend.features.user.UpdateUserDto
 import java.time.Instant
 
 object ModelFactory {
@@ -160,13 +164,40 @@ object ModelFactory {
         error = null,
     )
 
-    fun getCreateUserDto() = CreateUserDto(
-        name = "Herbert",
-        email = "test@unit.at",
-        password = "testpatestpasswordtestpasswordtestpasswordssword",
-        activated = true,
-        sendInvitation = false,
-        role = SystemRole.ADMIN,
+    fun getCreateUserDto(
+        name: String = "Test User",
+        email: String = "testuser${System.nanoTime()}@example.com",
+        password: String? = "TestPassword123",
+        sendInvitation: Boolean = false,
+        activated: Boolean = false,
+        role: SystemRole = SystemRole.USER,
+    ): CreateUserDto = CreateUserDto(
+        name = name,
+        email = email,
+        password = password,
+        sendInvitation = sendInvitation,
+        activated = activated,
+        role = role,
+    )
+
+    fun getUpdateUserDto(
+        id: String,
+        name: String = "Test User",
+        email: String = "testuser${System.nanoTime()}@example.com",
+        password: String? = "TestPassword123",
+        sendInvitation: Boolean = false,
+        activated: Boolean = false,
+        role: SystemRole = SystemRole.USER,
+        forcePasswordChange: Boolean = false,
+    ): UpdateUserDto = UpdateUserDto(
+        id = id,
+        name = name,
+        email = email,
+        password = password,
+        sendInvitation = sendInvitation,
+        activated = activated,
+        role = role,
+        forcePasswordChange = forcePasswordChange,
     )
 
     fun getAdminSignInDto(stayLoggedIn: Boolean = true) = LoginDto(
@@ -254,5 +285,31 @@ object ModelFactory {
     fun getTestSetupDto() = SetupDto(
         name = "admin",
         email = "admin@admin.org",
+    )
+
+    fun getInstanceSettingSupportDto(
+        supportLookup: String? = null,
+        showSupportBadge: Boolean = true,
+    ): InstanceSettingSupportDto = InstanceSettingSupportDto(
+        supportLookup = supportLookup,
+        showSupportBadge = showSupportBadge,
+    )
+
+    fun getInstanceSettingRetentionDto(
+        checkResultRetentionPeriodInDays: Int = 365,
+        checkResultLogRetentionPeriodInDays: Int = 182,
+    ): InstanceSettingRetentionDto = InstanceSettingRetentionDto(
+        checkResultRetentionPeriodInDays = checkResultRetentionPeriodInDays,
+        checkResultLogRetentionPeriodInDays = checkResultLogRetentionPeriodInDays,
+    )
+
+    fun getInstanceSettingVersionCheckDto(
+        versionCheckEnabled: Boolean = false,
+        versionCheckAdminMailEnabled: Boolean = false,
+        versionCheckAdminMailTo: Set<String>? = null,
+    ): InstanceSettingVersionCheckDto = InstanceSettingVersionCheckDto(
+        versionCheckEnabled = versionCheckEnabled,
+        versionCheckAdminMailEnabled = versionCheckAdminMailEnabled,
+        versionCheckAdminMailTo = versionCheckAdminMailTo,
     )
 }

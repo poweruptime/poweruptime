@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.SystemRole
@@ -19,6 +20,7 @@ import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.user.CreateUserDto
 import org.poweruptime.backend.features.user.UpdateUserDto
+import org.poweruptime.backend.features.user.domain.existsByEmail
 import org.poweruptime.backend.features.user.domain.findAll
 import org.poweruptime.backend.features.user.domain.findByEmail
 import org.poweruptime.backend.features.user.domain.isSetup
@@ -78,6 +80,10 @@ class UserService(
 
     @Transactional
     fun create(dto: CreateUserDto, inviter: UserRecord? = null, forcePasswordChange: Boolean = true): UserRecord {
+        if (UserTable.existsByEmail(dto.email)) {
+            throw BadRequestException("User email already taken", "USER_EMAIL_ALREADY_TAKEN")
+        }
+
         val onetimePassword = dto.password ?: RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
 
         val activated = if (dto.sendInvitation) {

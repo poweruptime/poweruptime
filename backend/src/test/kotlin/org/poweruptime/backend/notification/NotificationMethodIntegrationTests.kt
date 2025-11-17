@@ -468,7 +468,7 @@ class NotificationMethodIntegrationTests(
         @Test
         @MockUser(MockUsers.USER2)
         fun `test secured with team user`() {
-            mockMvc.delete("/v1/notification-method/gs7jTakASRSp").andExpect {
+            mockMvc.delete("/v1/notification-method/xytSF54WhCtC").andExpect {
                 status { isForbidden() }
             }
         }

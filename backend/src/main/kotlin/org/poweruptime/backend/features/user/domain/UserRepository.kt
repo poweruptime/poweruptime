@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.core.or
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
@@ -21,6 +22,9 @@ fun UserTable.findByEmail(email: String): UserRecord? =
     selectAll().where { UserTable.email eq email }.limit(1).firstOrNull()?.let {
         UserTable.rowToUserRecord(it)
     }
+
+fun UserTable.existsByEmail(email: String): Boolean =
+    select(id).where { UserTable.email eq email }.limit(1).count() > 0
 
 fun UserTable.findByRole(role: SystemRole): List<UserRecord> =
     selectAll().where { UserTable.role eq role }.map { UserTable.rowToUserRecord(it) }

@@ -95,6 +95,11 @@ INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (3, 
 INSERT INTO notification_method_data_email (id, mail_ignore_tls_errors, mail_port, mail_security, mail_host, mail_password, mail_username, mail_to)
 VALUES (3, false, 1234, 'S', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
 
+-- E-Mail
+INSERT INTO notification_method (id, public_id, team_id, type, name) VALUES (4, 'xytSF54WhCtC', 9, 'EMAIL', 'Check team user permission');
+INSERT INTO notification_method_data_email (id, mail_ignore_tls_errors, mail_port, mail_security, mail_host, mail_password, mail_username, mail_to)
+VALUES (4, false, 1234, 'S', 'test.at', '1234', '1234',ARRAY ['test@test.at']);
+
 -- Check Results
 INSERT INTO check_result(id, public_id, monitor_id, status, previous_status, checked_at, picked_up_at, ping, times_retried, title)
 VALUES (1,'Bq7xLk2mN9aYp4sQw8VdR3tXe', 2, 'U', 'U', '2025-01-04 15:00:08.846185 +00:00', '2025-01-04 15:01:08.846185 +00:00', 20, 1, '200 - OK');
