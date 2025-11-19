@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable
 
 fun Tag.findByTeamIdAndNames(teamId: ULong, names: List<String>): List<TagRecord> =
     selectAll().where { (Tag.teamId eq teamId) and (Tag.name inList names) }.map {
-        Tag.rowToTagRecord(it)
+        rowToTagRecord(it)
     }
 
 fun Tag.findByMonitorId(monitorIds: List<ULong>): List<TagJoinMonitorRecord> =
@@ -26,7 +26,7 @@ fun Tag.findByMonitorId(monitorIds: List<ULong>): List<TagJoinMonitorRecord> =
         .where { MonitorTag.monitorId inList monitorIds }
         .map {
             TagJoinMonitorRecord(
-                tag = Tag.rowToTagRecord(it),
+                tag = rowToTagRecord(it),
                 monitorTag = MonitorTag.rowToMonitorTagRecord(it),
             )
         }
@@ -36,7 +36,7 @@ fun Tag.findByMonitorId(monitorId: ULong): List<TagRecord> =
         .selectAll()
         .where { MonitorTag.monitorId eq monitorId }
         .map {
-            Tag.rowToTagRecord(it)
+            rowToTagRecord(it)
         }
 
 fun Tag.findAll(

@@ -11,9 +11,9 @@ fun EmailChangeToken.findByUserIdAndCreatedAfter(
     createdAfter: Instant
 ): List<EmailChangeTokenRecord> =
     selectAll().where {
-        (EmailChangeToken.userId eq userId) and (EmailChangeToken.createdAt greater createdAfter)
+        (EmailChangeToken.userId eq userId) and (createdAt greater createdAfter)
     }.map {
-        EmailChangeToken.rowToEmailChangeTokenRecord(it)
+        rowToEmailChangeTokenRecord(it)
     }
 
 fun EmailChangeToken.countInvalidByUserIdAndCreatedAfter(
@@ -21,8 +21,8 @@ fun EmailChangeToken.countInvalidByUserIdAndCreatedAfter(
     createdAfter: Instant
 ): Long =
     selectAll().where {
-        (EmailChangeToken.userId eq userId) and (EmailChangeToken.createdAt greater createdAfter) and
-            (EmailChangeToken.valid eq false)
+        (EmailChangeToken.userId eq userId) and (createdAt greater createdAfter) and
+            (valid eq false)
     }.count()
 
 fun EmailChangeToken.findValidByTokenAndCreatedAfter(
@@ -30,11 +30,11 @@ fun EmailChangeToken.findValidByTokenAndCreatedAfter(
     createdAfter: Instant
 ): EmailChangeTokenRecord? =
     selectAll().where {
-        (EmailChangeToken.publicId eq token) and
-            (EmailChangeToken.createdAt greater createdAfter) and
-            (EmailChangeToken.valid eq true)
+        (publicId eq token) and
+            (createdAt greater createdAfter) and
+            (valid eq true)
     }.limit(1).firstOrNull()?.let {
-        EmailChangeToken.rowToEmailChangeTokenRecord(it)
+        rowToEmailChangeTokenRecord(it)
     }
 
 fun EmailChangeToken.findByTokenAndCreatedAfter(
@@ -42,7 +42,7 @@ fun EmailChangeToken.findByTokenAndCreatedAfter(
     createdAfter: Instant
 ): EmailChangeTokenRecord? =
     selectAll().where {
-        (EmailChangeToken.publicId eq token) and (EmailChangeToken.createdAt greater createdAfter)
+        (publicId eq token) and (createdAt greater createdAfter)
     }.limit(1).firstOrNull()?.let {
-        EmailChangeToken.rowToEmailChangeTokenRecord(it)
+        rowToEmailChangeTokenRecord(it)
     }

@@ -34,17 +34,17 @@ fun TeamJoinToken.findValidByInviteeIdTokenAndCreatedAfter(
     createdAfter: Instant
 ): TeamJoinTokenRecord? = selectAll().where {
     (TeamJoinToken.inviteeId eq inviteeId) and
-        (TeamJoinToken.id eq token) and
-        (TeamJoinToken.createdAt greater createdAfter) and
-        (TeamJoinToken.valid eq true)
+        (id eq token) and
+        (createdAt greater createdAfter) and
+        (valid eq true)
 }.firstOrNull()?.let {
-    TeamJoinToken.rowToTeamJoinTokenRecord(it)
+    rowToTeamJoinTokenRecord(it)
 }
 
 fun TeamJoinToken.invalidateByInviteeId(
     inviteeId: ULong
 ): Int = update({
-    (TeamJoinToken.inviteeId eq inviteeId) and (TeamJoinToken.valid eq true)
+    (TeamJoinToken.inviteeId eq inviteeId) and (valid eq true)
 }) {
     it[valid] = false
 }
@@ -89,5 +89,5 @@ fun TeamJoinToken.findAll(
 fun TeamJoinToken.deleteOlderThan(
     before: Instant
 ): Int = deleteWhere {
-    TeamJoinToken.createdAt less before
+    createdAt less before
 }

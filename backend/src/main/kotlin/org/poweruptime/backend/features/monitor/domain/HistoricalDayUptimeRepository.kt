@@ -23,5 +23,5 @@ fun HistoricalDayUptime.findByMonitorIdBetweenDates(
             date,
             SortOrder.DESC,
         ).map {
-            HistoricalDayUptime.rowToHistoricalDayUptimeRecord(it)
+            rowToHistoricalDayUptimeRecord(it)
         }

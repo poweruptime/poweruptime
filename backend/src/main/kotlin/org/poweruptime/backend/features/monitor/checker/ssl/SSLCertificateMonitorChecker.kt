@@ -23,8 +23,7 @@ import javax.net.ssl.HttpsURLConnection
 
 class SSLCertificateMonitorChecker(
     private val teamSettingService: TeamSettingService
-) : MonitorChecker {
-    override val type = MonitorType.SSL_CERTIFICATE
+) : MonitorChecker(MonitorType.SSL_CERTIFICATE) {
 
     @Suppress("ReturnCount")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {

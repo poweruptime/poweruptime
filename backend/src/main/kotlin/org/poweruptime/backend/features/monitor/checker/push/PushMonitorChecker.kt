@@ -12,13 +12,11 @@ import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
-class PushMonitorChecker(
-    private val repository: IPushMonitorCheckerEntryRepository,
+open class PushMonitorChecker(
+    private val pushMonitorCheckerEntryRepository: IPushMonitorCheckerEntryRepository,
     private val teamSettingService: TeamSettingService,
-) : MonitorChecker {
+) : MonitorChecker(MonitorType.PUSH) {
     private final val logger = KotlinLogging.logger {}
-
-    override val type = MonitorType.PUSH
 
     @Transactional
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
@@ -33,7 +31,7 @@ class PushMonitorChecker(
 
         val result = MonitoringResultHandler()
 
-        val entry = repository.getLatestByPushIdAndBetweenNowAndThen(
+        val entry = pushMonitorCheckerEntryRepository.getLatestByPushIdAndBetweenNowAndThen(
             pushId = data.pushId,
             then = since,
         ) ?: return result.error(

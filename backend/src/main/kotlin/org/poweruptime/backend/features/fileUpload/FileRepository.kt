@@ -10,7 +10,7 @@ import java.time.Instant
 
 fun File.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> =
     selectAll().where {
-        (File.id notInSubQuery StatusPage.select(StatusPage.imageId)) and
-            (File.createdAt less createdAfter)
+        (id notInSubQuery StatusPage.select(StatusPage.imageId)) and
+            (createdAt less createdAfter)
     }
-        .map { File.rowToFileRecord(it) }
+        .map { rowToFileRecord(it) }

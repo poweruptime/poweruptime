@@ -9,10 +9,10 @@ import org.poweruptime.backend.features.statusPage.model.rowToStatusPageDomainNa
 
 fun StatusPageDomainName.findByStatusPage(statusPageId: ULong): List<StatusPageDomainNameRecord> =
     selectAll().where { StatusPageDomainName.statusPageId eq statusPageId }.map {
-        StatusPageDomainName.rowToStatusPageDomainNameRecord(it)
+        rowToStatusPageDomainNameRecord(it)
     }
 
 fun StatusPageDomainName.findByStatusPage(statusPageId: List<ULong>): List<StatusPageDomainNameRecord> =
     selectAll().where { StatusPageDomainName.statusPageId inList statusPageId }.map {
-        StatusPageDomainName.rowToStatusPageDomainNameRecord(it)
+        rowToStatusPageDomainNameRecord(it)
     }

@@ -11,12 +11,13 @@ import java.time.ZoneId
 
 @Suppress("TooManyFunctions")
 @Service
-@Transactional
+@Transactional(readOnly = true)
 class InstanceSettingService {
     fun getCheckResultRetentionPeriodInDays(): Int = getValueByKey(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
     ).toInt()
 
+    @Transactional
     fun setCheckResultRetentionPeriodInDays(value: Int) = setValueByKey(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
         value.toString(),
@@ -26,11 +27,13 @@ class InstanceSettingService {
         SettingKey.CHECK_RESULT_LOG_RETENTION_PERIOD_IN_DAYS,
     ).toInt()
 
+    @Transactional
     fun setCheckResultLogRetentionPeriodInDays(value: Int) = setValueByKey(
         SettingKey.CHECK_RESULT_LOG_RETENTION_PERIOD_IN_DAYS,
         value.toString(),
     )
 
+    @Transactional
     fun getServerSetupTime(): Instant {
         val raw = getValueByKey(SettingKey.SERVER_SETUP_TIME).let { stored ->
             if (stored == SettingKey.SERVER_SETUP_TIME.default) {
@@ -51,6 +54,7 @@ class InstanceSettingService {
         SettingKey.SUPPORT_LOOKUP,
     ).takeUnless { it == "null" }
 
+    @Transactional
     fun setSupportLookup(value: String?) = setValueByKey(
         SettingKey.SUPPORT_LOOKUP,
         value ?: "null",
@@ -60,6 +64,7 @@ class InstanceSettingService {
         SettingKey.SUPPORTS_SINCE,
     ).takeUnless { it == "null" }?.let { Instant.parse(it) }
 
+    @Transactional
     fun setSupportSince(value: Instant?) = setValueByKey(
         SettingKey.SUPPORTS_SINCE,
         value?.toString() ?: "null",
@@ -69,6 +74,7 @@ class InstanceSettingService {
         SettingKey.SHOW_SUPPORT_BADGE,
     ).toBoolean()
 
+    @Transactional
     fun setShowSupportBadge(value: Boolean) = setValueByKey(
         SettingKey.SHOW_SUPPORT_BADGE,
         value.toString(),
@@ -78,6 +84,7 @@ class InstanceSettingService {
         getValueByKey(SettingKey.TIMEZONE),
     )
 
+    @Transactional
     fun setTimeZone(value: ZoneId) = setValueByKey(
         SettingKey.TIMEZONE,
         value.id,
@@ -87,6 +94,7 @@ class InstanceSettingService {
         SettingKey.USERS_ALLOWED_TO_CREATE_TEAMS,
     ).toBoolean()
 
+    @Transactional
     fun setUserAllowedToCreateTeams(value: Boolean) = setValueByKey(
         SettingKey.USERS_ALLOWED_TO_CREATE_TEAMS,
         value.toString(),
@@ -96,6 +104,7 @@ class InstanceSettingService {
         SettingKey.VERSION_CHECK_ENABLED,
     ).toBoolean()
 
+    @Transactional
     fun setVersionCheckEnabled(value: Boolean) = setValueByKey(
         SettingKey.VERSION_CHECK_ENABLED,
         value.toString(),
@@ -105,6 +114,7 @@ class InstanceSettingService {
         SettingKey.VERSION_CHECK_ADMIN_MAIL_ENABLED,
     ).toBoolean()
 
+    @Transactional
     fun setVersionCheckAdminMailEnabled(value: Boolean) = setValueByKey(
         SettingKey.VERSION_CHECK_ADMIN_MAIL_ENABLED,
         value.toString(),
@@ -114,6 +124,7 @@ class InstanceSettingService {
         SettingKey.VERSION_CHECK_ADMIN_MAIL_TO,
     ).takeUnless { it == "null" }?.split(",")
 
+    @Transactional
     fun setVersionCheckAdminMailTo(value: Set<String>?) = setValueByKey(
         SettingKey.VERSION_CHECK_ADMIN_MAIL_TO,
         value?.joinToString(",") { it.trim() } ?: "null",
@@ -123,6 +134,7 @@ class InstanceSettingService {
         SettingKey.SHOW_NEW_VERSION_DIALOG,
     ).toBoolean()
 
+    @Transactional
     fun setShowNewVersionDialog(value: Boolean) = setValueByKey(
         SettingKey.SHOW_NEW_VERSION_DIALOG,
         value.toString(),

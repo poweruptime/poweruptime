@@ -14,9 +14,10 @@ inline fun <reified T> maxCodeLength(): Int
 
 inline fun <reified T> Table.enumerationByCode(
     name: String,
+    maxCodeLength: Int = maxCodeLength<T>()
 ): Column<T>
     where T : Enum<T>, T : ADatabaseEnumConvertable {
-    return registerColumn(name, EnumColumnType(maxCodeLength<T>(), enumValues<T>()))
+    return registerColumn(name, EnumColumnType(maxCodeLength, enumValues<T>()))
 }
 
 /**

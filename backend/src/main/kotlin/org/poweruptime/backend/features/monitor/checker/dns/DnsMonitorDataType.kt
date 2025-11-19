@@ -34,5 +34,3 @@ enum class DnsMonitorDataType : ADatabaseEnumConvertable {
         override val code = "TXT"
     }
 }
-
-const val MAX_DNS_TYPE_LENGTH = 5

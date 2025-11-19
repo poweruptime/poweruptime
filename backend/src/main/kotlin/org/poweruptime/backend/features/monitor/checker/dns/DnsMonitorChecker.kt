@@ -19,10 +19,8 @@ import java.net.InetSocketAddress
 
 private const val DNS_ANSWER_SECTION = 1
 
-class DnsMonitorChecker : MonitorChecker {
+class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
     private final val logger = KotlinLogging.logger {}
-
-    override val type = MonitorType.DNS
 
     @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
@@ -39,7 +37,7 @@ class DnsMonitorChecker : MonitorChecker {
 
             logger.debug {
                 "Sending dns request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                    "host: '${data.host}', type: '$type', " +
+                    "host: '${data.host}', type: '${data.type}', " +
                     "checking for matches: '${data.matches != null}'"
             }
 

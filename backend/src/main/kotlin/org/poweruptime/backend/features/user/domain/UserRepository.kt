@@ -27,7 +27,7 @@ fun User.existsByEmail(email: String): Boolean =
     select(id).where { User.email eq email }.limit(1).count() > 0
 
 fun User.findByRole(role: SystemRole): List<UserRecord> =
-    selectAll().where { User.role eq role }.map { User.rowToUserRecord(it) }
+    selectAll().where { User.role eq role }.map { rowToUserRecord(it) }
 
 fun User.isSetup(): Boolean = selectAll().count() == 0L
 

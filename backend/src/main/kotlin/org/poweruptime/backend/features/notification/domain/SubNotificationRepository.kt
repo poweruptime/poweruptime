@@ -45,7 +45,7 @@ fun SubNotification.deleteByTeamIdAndOlderThan(
     teamId: ULong,
     before: Instant
 ): Int = deleteWhere {
-    SubNotification.notificationId inSubQuery (
+    notificationId inSubQuery (
         Notification
             .innerJoin(CheckResult)
             .innerJoin(Monitor)

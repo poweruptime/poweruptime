@@ -43,8 +43,7 @@ fun CheckResultLogEntry.findAll(
         condition = condition and (CheckResultLogEntry.stage inList it)
     }
 
-    val query = CheckResultLogEntry
-        .selectAll().where(condition)
+    val query = selectAll().where(condition)
 
     return pageQuery(
         query,

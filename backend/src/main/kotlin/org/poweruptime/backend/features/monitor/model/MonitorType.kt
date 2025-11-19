@@ -27,5 +27,3 @@ enum class MonitorType : ADatabaseEnumConvertable {
         override val code = MonitorDataTypes.SSL_CERTIFICATE
     },
 }
-
-const val MAX_MONITOR_TYPE_LENGTH = 31

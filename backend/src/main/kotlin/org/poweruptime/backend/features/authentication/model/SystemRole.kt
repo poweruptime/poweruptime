@@ -14,6 +14,3 @@ enum class SystemRole : ADatabaseEnumConvertable {
     val grantedAuthority = SimpleGrantedAuthority("ROLE_$name")
     val grantedAuthorities = listOf(grantedAuthority)
 }
-
-const val MAX_SYSTEM_ROLE_LENGTH = 5
-val MAX_SYSTEM_ROLE_LENGTH_TEST = SystemRole.entries.maxOf { it.code.length }

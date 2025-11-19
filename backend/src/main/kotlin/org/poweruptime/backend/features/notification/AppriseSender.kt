@@ -9,8 +9,8 @@ import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.AppriseNotificationFormat
 import org.poweruptime.backend.features.notification.core.AppriseNotificationRequest
 import org.poweruptime.backend.features.notification.core.AppriseNotificationType
+import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseConverter
 import org.poweruptime.backend.features.notification.core.NotificationMethodDataAppriseDto
-import org.poweruptime.backend.features.notification.core.NotificationMethodDataConverterFactory
 import org.poweruptime.backend.features.notification.core.NotificationMethodTemplateType
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
@@ -43,7 +43,6 @@ class AppriseSender(
     private val tempNotificationService: TempNotificationService,
 ) {
     private final val logger = KotlinLogging.logger {}
-    private final val notificationMethodDataConverterFactory = NotificationMethodDataConverterFactory()
     private final val htmlConverterFactory = HtmlConverterFactory()
 
     fun send(
@@ -65,9 +64,11 @@ class AppriseSender(
         subNotification.title = notificationTemplate.title
         subNotification.message = notificationTemplate.body
 
-        val converter =
-            notificationMethodDataConverterFactory.getConverter(method.type)
-        val appriseDto = converter.convert(notificationMethodDataService.findByIdAndType(method.id, method.type))
+        val appriseDto = NotificationMethodDataAppriseConverter
+            .getByType(method.type)
+            .convert(
+                notificationMethodDataService.findByIdAndType(method.id, method.type),
+            )
 
         val request = getAppriseNotificationRequest(
             appriseDto,

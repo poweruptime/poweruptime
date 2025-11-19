@@ -13,16 +13,16 @@ fun StatusPageGroupMonitor.findByStatusPage(statusPageId: ULong): List<StatusPag
     innerJoin(Monitor)
         .selectAll()
         .where { StatusPageGroupMonitor.statusPageId eq statusPageId }
-        .orderBy(StatusPageGroupMonitor.position, SortOrder.ASC)
+        .orderBy(position, SortOrder.ASC)
         .map {
-            StatusPageGroupMonitor.rowToStatusPageGroupMonitorJoinMonitorRecord(it)
+            rowToStatusPageGroupMonitorJoinMonitorRecord(it)
         }
 
 fun StatusPageGroupMonitor.findByStatusPage(statusPageId: List<ULong>): List<StatusPageGroupMonitorJoinMonitorRecord> =
     innerJoin(Monitor)
         .selectAll()
         .where { StatusPageGroupMonitor.statusPageId inList statusPageId }
-        .orderBy(StatusPageGroupMonitor.position, SortOrder.ASC)
+        .orderBy(position, SortOrder.ASC)
         .map {
-            StatusPageGroupMonitor.rowToStatusPageGroupMonitorJoinMonitorRecord(it)
+            rowToStatusPageGroupMonitorJoinMonitorRecord(it)
         }

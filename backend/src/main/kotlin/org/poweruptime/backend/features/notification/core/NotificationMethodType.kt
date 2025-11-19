@@ -96,5 +96,3 @@ enum class NotificationMethodTemplateFeatures {
 enum class NotificationMethodTemplateType {
     PLAIN, HTML, MARKDOWN, MRKDWN
 }
-
-const val MAX_NOTIFICATION_METHOD_TYPE_LENGTH = 31

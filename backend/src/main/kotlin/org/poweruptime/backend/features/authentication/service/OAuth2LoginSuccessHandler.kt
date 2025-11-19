@@ -31,7 +31,7 @@ class OAuth2LoginSuccessHandler(
         // the principal is the DefaultOAuth2User we returned above
         val oauthUser = authentication.principal as OAuth2User
 
-        val email = oauthUser.attributes["email"] as String? ?: throw BadRequestException("Email required")
+        val email: String = oauthUser.attributes["email"] as String? ?: throw BadRequestException("Email required")
 
         val user = authService.findByEmail(email) ?: userService.create(
             dto = CreateUserDto(

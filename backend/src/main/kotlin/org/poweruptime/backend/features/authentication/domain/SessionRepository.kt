@@ -85,7 +85,7 @@ fun Session.deleteByPublicId(
 fun Session.existsByRefreshToken(refreshToken: String): Boolean =
     innerJoin(RefreshToken).selectAll().where {
         RefreshToken.token eq refreshToken
-    }.count() > 0
+    }.limit(1).count() > 0
 
 fun Session.existsByPublicSessionAndUserId(
     publicSessionId: String,
@@ -94,16 +94,16 @@ fun Session.existsByPublicSessionAndUserId(
     selectAll().where {
         Session.publicId eq publicSessionId
         Session.userId eq userId
-    }.count() > 0
+    }.limit(1).count() > 0
 
 fun Session.invalidateSession(
     sessionId: ULong
 ) = update({ Session.id eq sessionId }) {
-    it[Session.valid] = false
+    it[valid] = false
 }
 
 fun Session.invalidateSessions(
     sessionIds: List<ULong>
-) = update({ Session.id inList sessionIds }) {
-    it[Session.valid] = false
+) = update({ id inList sessionIds }) {
+    it[valid] = false
 }

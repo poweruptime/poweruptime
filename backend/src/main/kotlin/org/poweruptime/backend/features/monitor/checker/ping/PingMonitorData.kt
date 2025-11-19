@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
@@ -51,6 +52,7 @@ object PingMonitorData : MonitorDataTable(MonitorType.PING) {
 data class PingMonitorDataRecord(
     @get:NotBlank
     @get:Size(min = Database.MIN_IPV4_LENGTH, max = Database.MAX_IPV4_LENGTH)
+    @get:Pattern(regexp = Database.IPV4_REGEX)
     val ip: String,
     @get:NotNull
     @get:Min(Database.MIN_PORT)

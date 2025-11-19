@@ -58,9 +58,12 @@ fun TeamUser.findAll(
 fun TeamUser.findByTeamAndUserId(teamId: ULong, userId: ULong): TeamUserRecord? =
     selectAll().where {
         (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
-    }.firstOrNull()?.let {
-        TeamUser.rowToTeamUserRecord(it)
     }
+        .limit(1)
+        .firstOrNull()
+        ?.let {
+            rowToTeamUserRecord(it)
+        }
 
 fun TeamUser.findJoinUserAndInviterByTeamAndUserId(
     teamId: ULong,
@@ -73,13 +76,15 @@ fun TeamUser.findJoinUserAndInviterByTeamAndUserId(
         .innerJoin(inviter, { TeamUser.inviterId }, { inviter[User.id] })
         .selectAll().where {
             (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
-        }.firstOrNull()?.let {
-            TeamUser.rowToTeamUserJoinUserAndInviterRecord(it, user, inviter)
+        }.limit(1)
+        .firstOrNull()
+        ?.let {
+            rowToTeamUserJoinUserAndInviterRecord(it, user, inviter)
         }
 }
 
 fun TeamUser.findTeamIdsByUserId(userId: ULong): List<ULong> =
-    select(TeamUser.teamId).where {
+    select(teamId).where {
         TeamUser.userId eq userId
     }.map { it[TeamUser.teamId] }
 

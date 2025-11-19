@@ -24,14 +24,14 @@ fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? =
         { StatusPage.id },
         { StatusPageDomainName.statusPageId },
     )
-        .leftJoin(File, { File.id }, { StatusPage.imageId })
+        .leftJoin(File, { File.id }, { imageId })
         .selectAll()
-        .where { StatusPageDomainName.name eq domainName }
+        .where { name eq domainName }
         .withDistinctOn(StatusPage.id)
         .limit(1)
         .firstOrNull()
         ?.let {
-            StatusPage.rowToStatusPageRecord(it)
+            rowToStatusPageRecord(it)
         }
 
 fun StatusPage.findAll(
@@ -46,7 +46,7 @@ fun StatusPage.findAll(
         condition = condition and (StatusPage.name.lowerCase() like "%${it.lowercase()}%")
     }
 
-    val query = leftJoin(File, { StatusPage.imageId }, { File.id })
+    val query = leftJoin(File, { imageId }, { File.id })
         .selectAll().where(condition)
 
     return pageQuery(

@@ -8,6 +8,7 @@ import org.poweruptime.backend.amqp.RabbitMQ.X_DEATH_FIRST_QUEUE
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class DeadLetterListener {
@@ -17,6 +18,7 @@ class DeadLetterListener {
      * Consumer for "dead-letter-queue"
      */
     @RabbitListener(queues = [DEAD_LETTER_QUEUE])
+    @Transactional
     fun deadLetterQueueConsumer(dto: Message) {
         @Suppress("TooGenericExceptionCaught", "SwallowedException")
         val body = try {

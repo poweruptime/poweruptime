@@ -11,8 +11,11 @@ import org.poweruptime.backend.features.team.model.rowToTeamSettingRecord
 fun TeamSetting.findValueByKeyAndTeamId(
     key: SettingKey,
     teamId: ULong
-): TeamSettingRecord? = TeamSetting.selectAll().where {
+): TeamSettingRecord? = selectAll().where {
     (TeamSetting.key eq key) and (TeamSetting.teamId eq teamId)
-}.firstOrNull()?.let {
-    TeamSetting.rowToTeamSettingRecord(it)
 }
+    .limit(1)
+    .firstOrNull()
+    ?.let {
+        rowToTeamSettingRecord(it)
+    }

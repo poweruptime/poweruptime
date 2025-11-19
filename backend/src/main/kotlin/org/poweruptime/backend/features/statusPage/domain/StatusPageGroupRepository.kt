@@ -11,15 +11,15 @@ import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRec
 fun StatusPageGroup.findByStatusPage(statusPageId: ULong): List<StatusPageGroupRecord> =
     selectAll()
         .where { StatusPageGroup.statusPageId eq statusPageId }
-        .orderBy(StatusPageGroup.position, SortOrder.ASC)
+        .orderBy(position, SortOrder.ASC)
         .map {
-            StatusPageGroup.rowToStatusPageGroupRecord(it)
+            rowToStatusPageGroupRecord(it)
         }
 
 fun StatusPageGroup.findByStatusPage(statusPageId: List<ULong>): List<StatusPageGroupRecord> =
     selectAll()
         .where { StatusPageGroup.statusPageId inList statusPageId }
-        .orderBy(StatusPageGroup.position, SortOrder.ASC)
+        .orderBy(position, SortOrder.ASC)
         .map {
-            StatusPageGroup.rowToStatusPageGroupRecord(it)
+            rowToStatusPageGroupRecord(it)
         }

@@ -8,10 +8,8 @@ import org.poweruptime.backend.features.monitor.model.MonitorType
 import java.net.InetSocketAddress
 import java.net.Socket
 
-class PingMonitorChecker : MonitorChecker {
+class PingMonitorChecker : MonitorChecker(MonitorType.PING) {
     private final val logger = KotlinLogging.logger {}
-
-    override val type = MonitorType.PING
 
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
         data as PingMonitorDataRecord

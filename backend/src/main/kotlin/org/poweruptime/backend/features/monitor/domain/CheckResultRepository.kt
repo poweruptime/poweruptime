@@ -135,8 +135,8 @@ fun CheckResult.findLastByMonitorId(
     limit: Int
 ): List<CheckResultRecord> = selectAll()
     .where {
-        CheckResult.monitorId eq monitorId and (CheckResult.pickedUpAt.isNotNull())
-    }.orderBy(CheckResult.createdAt, SortOrder.DESC)
+        CheckResult.monitorId eq monitorId and (pickedUpAt.isNotNull())
+    }.orderBy(createdAt, SortOrder.DESC)
     .limit(limit)
     .map {
         rowToCheckResultRecord(it)

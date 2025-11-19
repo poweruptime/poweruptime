@@ -32,10 +32,8 @@ import java.time.Duration
 
 class HttpMonitorChecker(
     private val teamSettingService: TeamSettingService
-) : MonitorChecker {
+) : MonitorChecker(MonitorType.HTTP) {
     private final val logger = KotlinLogging.logger {}
-
-    override val type = MonitorType.HTTP
 
     @Suppress("ReturnCount")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {

@@ -43,7 +43,7 @@ fun Monitor.updateStatus(id: ULong, newStatus: MonitorStatus): Int = update({ Mo
 }
 
 fun Monitor.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord =
-    (Team innerJoin Monitor)
+    innerJoin(Team)
         .selectAll()
         .where { Monitor.id eq id }
         .limit(1)
@@ -212,7 +212,7 @@ fun Monitor.findAll(
     )
 }
 
-fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(Monitor.id).where {
+fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(id).where {
     Monitor.teamId eq teamId and deleted.isNull()
 }.map { it[id].value }
 
@@ -235,10 +235,10 @@ fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatus
         }
 
 fun Monitor.countMonitorsByUserGrouped(userId: ULong): List<Pair<MonitorStatus, Long>> =
-    (Monitor innerJoin Team innerJoin TeamUser)
+    innerJoin(TeamUser, { teamId }, { TeamUser.teamId })
         .select(status, id.count())
         .where {
-            (TeamUser.userId eq userId) and Monitor.deleted.isNull()
+            (TeamUser.userId eq userId) and deleted.isNull()
         }
         .groupBy(status)
         .map {

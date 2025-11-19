@@ -21,16 +21,14 @@ class MonitorCheckerFactory(
         HttpMonitorChecker(teamSettingService),
         PingMonitorChecker(),
         PushMonitorChecker(
-            repository = PushMonitorCheckerEntryRepository(),
+            pushMonitorCheckerEntryRepository = PushMonitorCheckerEntryRepository(),
             teamSettingService,
         ),
         SSLCertificateMonitorChecker(teamSettingService),
     ).associateBy { it.type }
 
     fun execute(monitor: MonitorRecord): CheckResultDto {
-        val checker = checkers[monitor.type] ?: throw IllegalArgumentException("Unknown monitor: $monitor")
-        val data = monitorDataService.findByIdAndType(monitor.id, monitor.type)
-
-        return checker.execute(monitor, data)
+        val checker = checkers[monitor.type] ?: throw IllegalArgumentException("Unknown monitor type: ${monitor.type}")
+        return checker.execute(monitor, data = monitorDataService.findByIdAndType(monitor.id, monitor.type))
     }
 }

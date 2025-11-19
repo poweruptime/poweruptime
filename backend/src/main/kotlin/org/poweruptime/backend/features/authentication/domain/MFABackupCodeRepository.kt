@@ -10,9 +10,9 @@ import org.poweruptime.backend.features.authentication.model.rowToMFABackupCodeR
 fun MFABackupCode.findByMFAId(mfaId: ULong): List<MFABackupCodeRecord> = selectAll().where {
     MFABackupCode.mfaId eq mfaId
 }.map {
-    MFABackupCode.rowToMFABackupCodeRecord(it)
+    rowToMFABackupCodeRecord(it)
 }
 
 fun MFABackupCode.invalidateCodeById(id: ULong) = update({ MFABackupCode.id eq id }) {
-    it[MFABackupCode.valid] = false
+    it[valid] = false
 }
