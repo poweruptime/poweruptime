@@ -69,6 +69,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-json:${exposedVersion}")
     implementation("org.jetbrains.exposed:spring-transaction:$exposedVersion")
+
     // Spring
     implementation("org.aspectj:aspectjweaver")
 
@@ -81,10 +82,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // Spring SSE
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Spring Mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+    // Spring Cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
 

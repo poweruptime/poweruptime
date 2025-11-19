@@ -5,6 +5,7 @@ package org.poweruptime.backend.features.authentication.domain
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.jdbc.Query
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.model.UserTable
@@ -28,6 +29,11 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class PermissionsService {
+    private fun Query.isPartOfCheck(): Boolean = this.limit(1).count() > 0
+    private fun Query.findBy(): TeamUserRecord? = this.limit(1)
+        .firstOrNull()
+        ?.let { TeamUserTable.rowToTeamUserRecord(it) }
+
     //region isPartOf
     fun isPartOfByTeamId(
         publicUserId: String,
@@ -39,7 +45,8 @@ class PermissionsService {
             .selectAll()
             .where {
                 (UserTable.publicId eq publicUserId) and (TeamTable.publicId eq publicTeamId)
-            }.count() > 0
+            }
+            .isPartOfCheck()
 
     fun isPartOfByMonitorId(
         publicUserId: String,
@@ -51,7 +58,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (MonitorTable.publicId eq publicMonitorId)
-        }.count() > 0
+        }
+        .isPartOfCheck()
 
     fun isPartOfByCheckResultId(
         publicUserId: String,
@@ -64,7 +72,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (CheckResultTable.publicId eq publicCheckResultId)
-        }.count() > 0
+        }
+        .isPartOfCheck()
 
     fun isPartOfByNotificationMethodId(
         publicUserId: String,
@@ -76,7 +85,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (NotificationMethodTable.publicId eq publicNotificationMethodId)
-        }.count() > 0
+        }
+        .isPartOfCheck()
 
     fun isPartOfByNotificationId(
         publicUserId: String,
@@ -90,7 +100,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (NotificationTable.publicId eq publicNotificationId)
-        }.count() > 0
+        }
+        .isPartOfCheck()
 
     fun isPartOfByStatusPageId(
         publicUserId: String,
@@ -102,7 +113,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (StatusPageTable.publicId eq publicStatusPageId)
-        }.count() > 0
+        }
+        .isPartOfCheck()
 
     fun isPartOfByStatusPageGroupId(
         publicUserId: String,
@@ -116,7 +128,8 @@ class PermissionsService {
             .selectAll()
             .where {
                 (UserTable.publicId eq publicUserId) and (StatusPageGroupTable.publicId eq publicStatusPageGroupId)
-            }.count() > 0
+            }
+            .isPartOfCheck()
 //endregion
 
     //region findByEntityId
@@ -129,7 +142,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (TeamTable.publicId eq publicTeamId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByMonitorId(
         publicUserId: String,
@@ -141,7 +155,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (MonitorTable.publicId eq publicMonitorId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByCheckResultId(
         publicUserId: String,
@@ -154,7 +169,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (CheckResultTable.publicId eq publicCheckResultId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByNotificationMethodId(
         publicUserId: String,
@@ -166,7 +182,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (NotificationMethodTable.publicId eq publicNotificationMethodId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByNotificationId(
         publicUserId: String,
@@ -180,7 +197,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (NotificationTable.publicId eq publicNotificationId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByStatusPageId(
         publicUserId: String,
@@ -192,7 +210,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (StatusPageTable.publicId eq publicStatusPageId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
     fun findByStatusPageGroupId(
         publicUserId: String,
@@ -205,7 +224,8 @@ class PermissionsService {
         .selectAll()
         .where {
             (UserTable.publicId eq publicUserId) and (StatusPageGroupTable.publicId eq publicStatusPageGroupId)
-        }.firstOrNull()?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        }
+        .findBy()
 
 //endregion
 

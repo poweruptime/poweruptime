@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.deleteById
+import org.poweruptime.backend.core.domain.findAll
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findByPublicId
 import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
@@ -17,7 +18,6 @@ import org.poweruptime.backend.features.monitor.MonitorScheduler
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByTeamIdsGrouped
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByUserGrouped
 import org.poweruptime.backend.features.monitor.domain.findAll
-import org.poweruptime.backend.features.monitor.domain.findAllNoneDeleted
 import org.poweruptime.backend.features.monitor.domain.findByNotificationMethodId
 import org.poweruptime.backend.features.monitor.domain.findJoinTeamByIdOrThrow
 import org.poweruptime.backend.features.monitor.domain.updateStatus
@@ -74,7 +74,9 @@ class MonitorService(
     fun getByNotificationMethodId(ids: List<ULong>): Map<ULong, List<MonitorRecord>> =
         MonitorTable.findByNotificationMethodId(ids)
 
-    fun getAllNoneDeleted(): List<MonitorRecord> = MonitorTable.findAllNoneDeleted()
+    fun getAllNoneDeleted(): List<MonitorRecord> = MonitorTable.findAll(includeDeleted = false) {
+        MonitorTable.rowToMonitorRecord(it)
+    }
 
     fun getAllPaginated(
         pageable: Pageable,

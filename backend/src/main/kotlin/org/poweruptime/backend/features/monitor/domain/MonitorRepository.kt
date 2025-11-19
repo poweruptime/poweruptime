@@ -212,9 +212,6 @@ fun MonitorTable.findAll(
     )
 }
 
-fun MonitorTable.findAllNoneDeleted(): List<MonitorRecord> =
-    selectAll().where { deleted.isNull() }.map { rowToMonitorRecord(it) }
-
 fun MonitorTable.findIdsByTeamId(teamId: ULong): List<ULong> = select(MonitorTable.id).where {
     MonitorTable.teamId eq teamId and deleted.isNull()
 }.map { it[id].value }

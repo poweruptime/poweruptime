@@ -9,16 +9,16 @@ import org.poweruptime.backend.features.authentication.model.RefreshTokenTable
 import org.poweruptime.backend.features.authentication.model.rowToRefreshTokenRecord
 
 fun RefreshTokenTable.findByToken(token: String): RefreshTokenRecord? =
-    RefreshTokenTable.selectAll().where { RefreshTokenTable.token eq token }.firstOrNull()?.let {
+    selectAll().where { RefreshTokenTable.token eq token }.limit(1).firstOrNull()?.let {
         RefreshTokenTable.rowToRefreshTokenRecord(it)
     }
 
 fun RefreshTokenTable.invalidateAllTokensBySessionId(sessionId: ULong) =
-    RefreshTokenTable.update({ RefreshTokenTable.sessionId eq sessionId }) {
+    update({ RefreshTokenTable.sessionId eq sessionId }) {
         it[valid] = false
     }
 
 fun RefreshTokenTable.invalidateAllTokensBySessionIds(sessionIds: List<ULong>) =
-    RefreshTokenTable.update({ RefreshTokenTable.sessionId inList sessionIds }) {
+    update({ RefreshTokenTable.sessionId inList sessionIds }) {
         it[valid] = false
     }
