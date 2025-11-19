@@ -108,7 +108,6 @@ Accounts are matched by E-Mail address: if an OAuth2 user’s E-Mail matches an 
 
 3. Limitations
    - With OAuth2 is enabled, users cannot change their E-Mail address (this restriction applies instance-wide to all users).
-   - Admins need to sign-in via E-Mail & password to have all admin rights. (protection of hostile Account takeover via OAuth)
 
 All other user-management operations work exactly the same, regardless of how the account was created.
 

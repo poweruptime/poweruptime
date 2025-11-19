@@ -7,13 +7,13 @@ import Logo from './Logo';
 
 export default function (props: PropsWithChildren & {disableLogo?: boolean}) {
   return (
-    <Html lang="de">
+    <Html>
       <Tailwind>
         {/* Adding the head element automatically adds <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"> */}
         <Head>
           <title th:text="${metaTitle} ? ${metaTitle} : 'poweruptime email'"></title>
         </Head>
-        <Body className="mx-auto my-auto bg-white px-2 font-sans dark:bg-black">
+        <Body className="mx-auto my-auto bg-white px-2 font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] rounded-lg border border-solid border-[#eaeaea] p-[20px]">
             {!props.disableLogo && (
               <Section className="mt-[32px]">
@@ -29,7 +29,7 @@ export default function (props: PropsWithChildren & {disableLogo?: boolean}) {
 }
 
 export const CALL_TO_ACTION =
-  'bg-[#000000] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3 cursor-pointer';
+  'bg-black rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3 cursor-pointer';
 export const SECONDARY_BUTTON =
   'border border-solid border-black dark:border-white rounded text-black dark:text-white text-[12px] font-medium no-underline text-center px-5 py-3 cursor-pointer';
 export const FOOTER_TEXT = 'text-black text-[12px] leading-[24px]';
