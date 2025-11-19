@@ -21,7 +21,7 @@ class Exposed {
         SpringTransactionManager(dataSource)
             .also {
                 logger.info {
-                    "=== USE SQL datasource ${dataSource.toDetailsText()}"
+                    """SQL datasource: "${dataSource.toDetailsText()}""""
                 }
             }
 
