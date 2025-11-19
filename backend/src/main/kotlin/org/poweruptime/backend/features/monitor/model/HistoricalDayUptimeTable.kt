@@ -6,15 +6,21 @@ import org.jetbrains.exposed.v1.javatime.date
 import java.math.BigDecimal
 import java.time.LocalDate
 
-const val PRECISION = 7
-const val SCALE = 4
+/*
+|--6--| <- PRECISION
+100.000
+    |3| <- SCALE
+ */
+
+const val PRECISION = 6
+const val PRECISION_SCALE = 3
 
 object HistoricalDayUptimeTable : ULongIdTable("historical_day_uptime") {
     val monitorId = ulong("monitor_id").references(MonitorTable.id).index()
 
     val date = date("date")
 
-    val uptime = decimal("uptime", PRECISION, SCALE)
+    val uptime = decimal("uptime", PRECISION, PRECISION_SCALE)
 
     init {
         index(true, date, monitorId)

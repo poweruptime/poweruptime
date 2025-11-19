@@ -74,7 +74,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -91,7 +91,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -108,7 +108,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -130,7 +130,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -152,7 +152,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -184,7 +184,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("50.0000"))
+            ).isEqualTo(BigDecimal("50.000"))
         }
 
         @Test
@@ -216,7 +216,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("25.0000"))
+            ).isEqualTo(BigDecimal("25.000"))
         }
 
         @Test
@@ -263,7 +263,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("50.0000"))
+            ).isEqualTo(BigDecimal("50.000"))
         }
 
         @Test
@@ -305,7 +305,7 @@ class UptimeCalculationTest {
                     date_12_12_2024,
                     date_13_12_2024,
                 ),
-            ).isEqualTo(BigDecimal("50.0000"))
+            ).isEqualTo(BigDecimal("50.000"))
         }
     }
 
@@ -328,7 +328,7 @@ class UptimeCalculationTest {
 
         @Test
         fun `test empty list`() {
-            assertThat(calculateHistoricalUptime(listOf(), TimeOption.THREE_DAYS)).isEqualTo(BigDecimal("100.0000"))
+            assertThat(calculateHistoricalUptime(listOf(), TimeOption.THREE_DAYS)).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -338,12 +338,12 @@ class UptimeCalculationTest {
                     listOf(
                         getTestHistoricalDayUptimeRecord(
                             date = date_12_12_2024,
-                            uptime = BigDecimal("100.0000"),
+                            uptime = BigDecimal("100.000"),
                         ),
                     ),
                     TimeOption.THREE_DAYS,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -366,7 +366,7 @@ class UptimeCalculationTest {
                     ),
                     TimeOption.THREE_DAYS,
                 ),
-            ).isEqualTo(BigDecimal("100.0000"))
+            ).isEqualTo(BigDecimal("100.000"))
         }
 
         @Test
@@ -389,7 +389,7 @@ class UptimeCalculationTest {
                     ),
                     TimeOption.THREE_DAYS,
                 ),
-            ).isEqualTo(BigDecimal("66.6667"))
+            ).isEqualTo(BigDecimal("66.667"))
         }
 
         @Test
@@ -412,7 +412,7 @@ class UptimeCalculationTest {
                     ),
                     TimeOption.THREE_DAYS,
                 ),
-            ).isEqualTo(BigDecimal("66.6667"))
+            ).isEqualTo(BigDecimal("66.667"))
         }
 
         @Test
@@ -435,7 +435,7 @@ class UptimeCalculationTest {
                     ),
                     TimeOption.THREE_DAYS,
                 ),
-            ).isEqualTo(BigDecimal("50.0000"))
+            ).isEqualTo(BigDecimal("50.000"))
         }
     }
 }

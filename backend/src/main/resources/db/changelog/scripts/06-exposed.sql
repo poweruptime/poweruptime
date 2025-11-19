@@ -437,7 +437,7 @@ create table historical_day_uptime
             references monitor
             on update restrict on delete restrict,
     date       date          not null,
-    uptime     numeric(7, 4) not null,
+    uptime     numeric(6, 3) not null,
     constraint historical_day_uptime_date_monitor_id_unique
         unique (date, monitor_id)
 );

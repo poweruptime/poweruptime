@@ -22,6 +22,7 @@ import org.poweruptime.backend.features.monitor.model.CheckResultTable
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeTable
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.PRECISION_SCALE
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +36,6 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
-const val PRECISION_SCALE = 4
 const val FULL_PERCENT = 100
 
 fun BigDecimal.myFormat(): String {
