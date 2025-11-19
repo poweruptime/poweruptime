@@ -32,8 +32,8 @@ fun <IdType : Any, TableType> TableType.existsById(
     }.empty()
 
 fun <IdType : Any, TableType, X> TableType.findAll(
+    includeDeleted: Boolean = false,
     rowToRecordConverter: RowToRecordConverter<X>,
-    includeDeleted: Boolean = false
 ): List<X> where TableType : IdTable<IdType>, TableType : HasSoftDelete = selectAll().where {
     if (includeDeleted) {
         deleted.isNotNull()
@@ -44,8 +44,8 @@ fun <IdType : Any, TableType, X> TableType.findAll(
 
 fun <IdType : Any, TableType, X> TableType.findById(
     ids: Iterable<IdType>,
+    includeDeleted: Boolean = false,
     rowToRecordConverter: RowToRecordConverter<X>,
-    includeDeleted: Boolean = false
 ): List<X> where TableType : IdTable<IdType>, TableType : HasSoftDelete = selectAll().where {
     id inList ids and
         if (includeDeleted) {
@@ -57,8 +57,8 @@ fun <IdType : Any, TableType, X> TableType.findById(
 
 fun <IdType : Any, TableType, X> TableType.findById(
     idValue: IdType,
+    includeDeleted: Boolean = false,
     rowToRecordConverter: RowToRecordConverter<X>,
-    includeDeleted: Boolean = false
 ): X? where TableType : IdTable<IdType>, TableType : HasSoftDelete = selectAll().where {
     id eq idValue and if (includeDeleted) {
         deleted.isNotNull()
@@ -104,10 +104,10 @@ fun <IdType : Any, TableType> TableType.deleteAll(
 
 fun <IdType : Any, TableType, X> TableType.findByIdOrThrow(
     id: IdType,
+    includeDeleted: Boolean = false,
     rowToRecordConverter: RowToRecordConverter<X>,
-    includeDeleted: Boolean = false
 ): X where TableType : IdTable<IdType>, TableType : HasSoftDelete =
-    findById(id, rowToRecordConverter, includeDeleted)
+    findById(id, includeDeleted, rowToRecordConverter)
         ?: throw NotFoundException("""${javaClass.simpleName} not found""")
 
 fun <IdType : Any, TableType, X> TableType.findByIdOrThrow(
@@ -115,7 +115,7 @@ fun <IdType : Any, TableType, X> TableType.findByIdOrThrow(
     rowToRecordConverter: RowToRecordConverter<X>,
     includeDeleted: Boolean = false
 ): List<X> where TableType : IdTable<IdType>, TableType : HasSoftDelete {
-    val entities = findById(ids, rowToRecordConverter, includeDeleted)
+    val entities = findById(ids, includeDeleted, rowToRecordConverter)
     if (entities.size != ids.size) {
         throw NotFoundException()
     }
