@@ -3,10 +3,15 @@ package org.poweruptime.backend.features.monitor.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver
+import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.core.MonitorDataTypeResolver
 import kotlin.reflect.KClass
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "_type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
 @JsonTypeIdResolver(MonitorDataTypeResolver::class)
 abstract class MonitorData(
     @Suppress("PropertyName", "ConstructorParameterNaming")
@@ -16,7 +21,7 @@ abstract class MonitorData(
     companion object {
         private val registry = mutableMapOf<String, KClass<out MonitorData>>()
 
-        fun registerDataRecord(type: String, clazz: KClass<out MonitorData>) {
+        private fun registerDataRecord(type: String, clazz: KClass<out MonitorData>) {
             registry[type] = clazz
         }
 
@@ -26,5 +31,13 @@ abstract class MonitorData(
         fun forClass(klass: KClass<*>?): String =
             registry.entries.find { it.value == klass }?.key
                 ?: error("Unknown monitor class: ${klass?.simpleName ?: "null"}")
+
+        init {
+            registerDataRecord(MonitorDataTypes.DNS, DnsMonitorDataRecord::class)
+            registerDataRecord(MonitorDataTypes.HTTP, HttpMonitorDataRecord::class)
+            registerDataRecord(MonitorDataTypes.PING, PingMonitorDataRecord::class)
+            registerDataRecord(MonitorDataTypes.PUSH, PushMonitorDataRecord::class)
+            registerDataRecord(MonitorDataTypes.SSL_CERTIFICATE, SSLCertificateMonitorDataRecord::class)
+        }
     }
 }

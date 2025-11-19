@@ -8,10 +8,6 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 class AppriseNotificationMethodDataAppriseConverter :
     NotificationMethodDataAppriseConverter(NotificationMethodType.APPRISE) {
 
-    init {
-        registerConverter(this)
-    }
-
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {

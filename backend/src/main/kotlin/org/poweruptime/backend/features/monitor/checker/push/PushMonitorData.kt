@@ -9,7 +9,6 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object PushMonitorData : MonitorDataTable(MonitorType.PUSH) {
@@ -45,10 +44,4 @@ data class PushMonitorDataRecord(
     @get:NotBlank
     @get:Size(min = Database.MIN_PUSH_ID_LENGTH, max = Database.MAX_PUSH_ID_LENGTH)
     val pushId: String,
-) : MonitorData(MonitorType.PUSH) {
-    companion object {
-        init {
-            registerDataRecord(MonitorDataTypes.PUSH, PushMonitorDataRecord::class)
-        }
-    }
-}
+) : MonitorData(MonitorType.PUSH)

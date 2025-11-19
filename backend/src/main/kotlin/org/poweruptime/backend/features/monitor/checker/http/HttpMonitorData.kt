@@ -19,7 +19,6 @@ import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 
@@ -155,12 +154,6 @@ data class HttpMonitorDataRecord(
         require(parts.size == 2)
 
         parts[0].toInt()..parts[1].toInt()
-    }
-
-    companion object {
-        init {
-            registerDataRecord(MonitorDataTypes.HTTP, HttpMonitorDataRecord::class)
-        }
     }
 }
 

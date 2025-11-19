@@ -9,7 +9,6 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
 
@@ -59,10 +58,4 @@ data class DiscordNotificationMethodDataRecord(
     val url: String,
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String?,
-) : NotificationMethodData(NotificationMethodType.DISCORD) {
-    companion object {
-        init {
-            registerDataRecord(NotificationMethodTypes.DISCORD, DiscordNotificationMethodDataRecord::class)
-        }
-    }
-}
+) : NotificationMethodData(NotificationMethodType.DISCORD)

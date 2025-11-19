@@ -84,7 +84,7 @@ export const InstanceSettingsStore = signalStore(
         ),
       ),
     ),
-    setRetention: rxMethod<BackendType['InstanceSettingRetentionDto']>(
+    setRetention: rxMethod<BackendType['SettingRetentionDto']>(
       pipe(
         tap(() => patchState(store, setPending())),
         switchMap((body) =>

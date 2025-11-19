@@ -9,10 +9,6 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 class EmailNotificationMethodDataAppriseConverter :
     NotificationMethodDataAppriseConverter(NotificationMethodType.EMAIL) {
 
-    init {
-        registerConverter(this)
-    }
-
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {

@@ -12,7 +12,6 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object SSLCertificateMonitorData : MonitorDataTable(MonitorType.SSL_CERTIFICATE) {
@@ -60,10 +59,4 @@ data class SSLCertificateMonitorDataRecord(
     @get:Min(Database.MIN_VALID_DAYS_LEFT)
     @get:Max(Database.MAX_VALID_DAYS_LEFT)
     val validDaysLeft: Long? = null,
-) : MonitorData(MonitorType.SSL_CERTIFICATE) {
-    companion object {
-        init {
-            registerDataRecord(MonitorDataTypes.SSL_CERTIFICATE, SSLCertificateMonitorDataRecord::class)
-        }
-    }
-}
+) : MonitorData(MonitorType.SSL_CERTIFICATE)

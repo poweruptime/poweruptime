@@ -7,9 +7,9 @@ import org.poweruptime.backend.features.authentication.LoginDto
 import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.UserRecord
-import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingRetentionDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingSupportDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingVersionCheckDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.SettingRetentionDto
 import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
@@ -298,7 +298,7 @@ object ModelFactory {
     fun getInstanceSettingRetentionDto(
         checkResultRetentionPeriodInDays: Int = 365,
         checkResultLogRetentionPeriodInDays: Int = 182,
-    ): InstanceSettingRetentionDto = InstanceSettingRetentionDto(
+    ): SettingRetentionDto = SettingRetentionDto(
         checkResultRetentionPeriodInDays = checkResultRetentionPeriodInDays,
         checkResultLogRetentionPeriodInDays = checkResultLogRetentionPeriodInDays,
     )

@@ -9,7 +9,6 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
 
@@ -60,10 +59,4 @@ data class SlackNotificationMethodDataRecord(
 
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
-) : NotificationMethodData(NotificationMethodType.SLACK) {
-    companion object {
-        init {
-            registerDataRecord(NotificationMethodTypes.SLACK, SlackNotificationMethodDataRecord::class)
-        }
-    }
-}
+) : NotificationMethodData(NotificationMethodType.SLACK)

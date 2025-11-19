@@ -15,7 +15,6 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
 import kotlin.collections.toList
@@ -123,10 +122,4 @@ data class EmailNotificationMethodDataRecord(
 
     val cc: Set<String>?,
     val bcc: Set<String>?,
-) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender {
-    companion object {
-        init {
-            registerDataRecord(NotificationMethodTypes.EMAIL, EmailNotificationMethodDataRecord::class)
-        }
-    }
-}
+) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender

@@ -105,7 +105,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/team/{teamId}/setting/checkResultRetentionPeriodInDays': {
+  '/v1/team/{teamId}/setting/retention': {
     parameters: {
       query?: never;
       header?: never;
@@ -114,30 +114,10 @@ export interface paths {
     };
     get?: never;
     /**
-     * Set checkResultRetentionPeriodInDays setting for team
+     * Set retention setting for team
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    put: operations['setCheckResultRetentionPeriodInDays'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/team/{teamId}/setting/checkResultLogRetentionPeriodInDays': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Set checkResultLogRetentionPeriodInDays setting for team
-     * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
-     */
-    put: operations['setCheckResultLogRetentionPeriodInDays'];
+    put: operations['setRetention'];
     post?: never;
     delete?: never;
     options?: never;
@@ -459,7 +439,7 @@ export interface paths {
      * Set retention instance setting
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    put: operations['setRetention'];
+    put: operations['setRetention_1'];
     post?: never;
     delete?: never;
     options?: never;
@@ -673,11 +653,7 @@ export interface paths {
     get: operations['get'];
     put?: never;
     post?: never;
-    /**
-     * Delete a user by id
-     * @description <b>Required auth:</b> ROLE_ADMIN
-     */
-    delete: operations['delete_1'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -761,7 +737,7 @@ export interface paths {
      * Delete team
      * @description <b>Required auth:</b> ROLE_ADMIN | TEAM_ADMIN
      */
-    delete: operations['delete_2'];
+    delete: operations['delete_1'];
     options?: never;
     head?: never;
     patch?: never;
@@ -845,7 +821,7 @@ export interface paths {
      * Delete status page
      * @description <b>Required auth:</b> ROLE_ADMIN | STATUS_PAGE_ADMIN
      */
-    delete: operations['delete_3'];
+    delete: operations['delete_2'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1349,7 +1325,7 @@ export interface paths {
      * Delete notification method
      * @description <b>Required auth:</b> ROLE_ADMIN | NOTIFICATION_METHOD_ADMIN
      */
-    delete: operations['delete_4'];
+    delete: operations['delete_3'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1393,7 +1369,7 @@ export interface paths {
      * Delete monitor
      * @description <b>Required auth:</b> ROLE_ADMIN | MONITOR_ADMIN
      */
-    delete: operations['delete_5'];
+    delete: operations['delete_4'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1775,7 +1751,7 @@ export interface paths {
      * Delete dead letter
      * @description <b>Required auth:</b> ROLE_ADMIN
      */
-    delete: operations['delete_6'];
+    delete: operations['delete_5'];
     options?: never;
     head?: never;
     patch?: never;
@@ -1861,9 +1837,11 @@ export interface components {
       /** Format: int32 */
       checkResultLogRetentionPeriodInDays: number;
     };
-    SettingIntDto: {
+    SettingRetentionDto: {
       /** Format: int32 */
-      it: number;
+      checkResultRetentionPeriodInDays: number;
+      /** Format: int32 */
+      checkResultLogRetentionPeriodInDays: number;
     };
     StatusPageGroupDto: {
       name?: string;
@@ -2066,12 +2044,6 @@ export interface components {
     };
     SettingBooleanDto: {
       it: boolean;
-    };
-    InstanceSettingRetentionDto: {
-      /** Format: int32 */
-      checkResultRetentionPeriodInDays: number;
-      /** Format: int32 */
-      checkResultLogRetentionPeriodInDays: number;
     };
     CreateUserDto: {
       name: string;
@@ -2809,7 +2781,7 @@ export interface operations {
       };
     };
   };
-  setCheckResultRetentionPeriodInDays: {
+  setRetention: {
     parameters: {
       query?: never;
       header?: never;
@@ -2820,33 +2792,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SettingIntDto'];
-      };
-    };
-    responses: {
-      /** @description Accepted */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['TeamSettingsResponse'];
-        };
-      };
-    };
-  };
-  setCheckResultLogRetentionPeriodInDays: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        teamId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SettingIntDto'];
+        'application/json': components['schemas']['SettingRetentionDto'];
       };
     };
     responses: {
@@ -3386,7 +3332,7 @@ export interface operations {
       };
     };
   };
-  setRetention: {
+  setRetention_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3395,7 +3341,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['InstanceSettingRetentionDto'];
+        'application/json': components['schemas']['SettingRetentionDto'];
       };
     };
     responses: {
@@ -3735,26 +3681,6 @@ export interface operations {
       };
     };
   };
-  delete_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   getSessions: {
     parameters: {
       query: {
@@ -3856,7 +3782,7 @@ export interface operations {
       };
     };
   };
-  delete_2: {
+  delete_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3981,7 +3907,7 @@ export interface operations {
       };
     };
   };
-  delete_3: {
+  delete_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -4574,6 +4500,8 @@ export interface operations {
         monitorId?: string;
         teamId?: string;
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
+        start?: string;
+        end?: string;
       };
       header?: never;
       path?: never;
@@ -4636,7 +4564,7 @@ export interface operations {
       };
     };
   };
-  delete_4: {
+  delete_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -4700,7 +4628,7 @@ export interface operations {
       };
     };
   };
-  delete_5: {
+  delete_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -5142,7 +5070,7 @@ export interface operations {
       };
     };
   };
-  delete_6: {
+  delete_5: {
     parameters: {
       query?: never;
       header?: never;

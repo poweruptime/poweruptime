@@ -14,7 +14,6 @@ import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object DnsMonitorData : MonitorDataTable(MonitorType.DNS) {
@@ -85,10 +84,4 @@ data class DnsMonitorDataRecord(
     @get:NotNull
     val type: DnsMonitorDataType,
     val matches: List<String>?,
-) : MonitorData(MonitorType.DNS) {
-    companion object {
-        init {
-            registerDataRecord(MonitorDataTypes.DNS, DnsMonitorDataRecord::class)
-        }
-    }
-}
+) : MonitorData(MonitorType.DNS)

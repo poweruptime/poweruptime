@@ -13,7 +13,6 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorDataTable
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object PingMonitorData : MonitorDataTable(MonitorType.PING) {
@@ -58,10 +57,4 @@ data class PingMonitorDataRecord(
     @get:Min(Database.MIN_PORT)
     @get:Max(Database.MAX_PORT)
     val port: Int,
-) : MonitorData(MonitorType.PING) {
-    companion object {
-        init {
-            registerDataRecord(MonitorDataTypes.PING, PingMonitorDataRecord::class)
-        }
-    }
-}
+) : MonitorData(MonitorType.PING)

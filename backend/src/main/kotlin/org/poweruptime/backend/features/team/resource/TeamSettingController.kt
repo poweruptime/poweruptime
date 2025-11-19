@@ -9,8 +9,8 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
-import org.poweruptime.backend.features.info.dto.SettingIntDto
 import org.poweruptime.backend.features.info.dto.SettingStringDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.SettingRetentionDto
 import org.poweruptime.backend.features.team.dto.TeamSettingsResponse
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.team.service.TeamSettingService
@@ -71,37 +71,21 @@ class TeamSettingController(
     }
 
     @Operation(
-        summary = "Set checkResultRetentionPeriodInDays setting for team",
+        summary = "Set retention setting for team",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
     )
     @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_ADMIN')")
-    @PutMapping("{teamId}/setting/checkResultRetentionPeriodInDays")
+    @PutMapping("{teamId}/setting/retention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setCheckResultRetentionPeriodInDays(
+    fun setRetention(
         @PathVariable("teamId") publicTeamId: String,
-        @RequestBody @Valid dto: SettingIntDto
+        @RequestBody @Valid dto: SettingRetentionDto
     ): TeamSettingsResponse {
         val teamId = teamService.getIdByPublicId(publicTeamId)
-        teamSettingService.setCheckResultRetentionPeriodInDays(teamId, dto.it)
 
-        return getSettings(teamId)
-    }
-
-    @Operation(
-        summary = "Set checkResultLogRetentionPeriodInDays setting for team",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_ADMIN",
-    )
-    @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_ADMIN')")
-    @PutMapping("{teamId}/setting/checkResultLogRetentionPeriodInDays")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setCheckResultLogRetentionPeriodInDays(
-        @PathVariable("teamId") publicTeamId: String,
-        @RequestBody @Valid dto: SettingIntDto
-    ): TeamSettingsResponse {
-        val teamId = teamService.getIdByPublicId(publicTeamId)
-        teamSettingService.setCheckResultLogRetentionPeriodInDays(teamId, dto.it)
+        teamSettingService.setCheckResultRetentionPeriodInDays(teamId, dto.checkResultRetentionPeriodInDays)
+        teamSettingService.setCheckResultLogRetentionPeriodInDays(teamId, dto.checkResultLogRetentionPeriodInDays)
 
         return getSettings(teamId)
     }

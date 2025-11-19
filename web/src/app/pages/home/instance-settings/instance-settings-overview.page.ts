@@ -68,13 +68,14 @@ export class InstanceSettingsOverviewPage {
 
   submitGeneralForm(it: BackendType['InstanceSettingsResponse']) {
     this.instanceSettingsStore.setTimezone(it.timezone);
+    this.instanceSettingsStore.setShowNewVersionDialog(it.showNewVersionDialog);
   }
 
   submitPermissionsForm(it: BackendType['InstanceSettingsResponse']) {
     this.instanceSettingsStore.setIsUserAllowedToCreateTeams(it.isUserAllowedToCreateTeams);
   }
 
-  submitRetentionForm(it: BackendType['InstanceSettingRetentionDto']) {
+  submitRetentionForm(it: BackendType['SettingRetentionDto']) {
     this.instanceSettingsStore.setRetention(it);
   }
 

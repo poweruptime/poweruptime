@@ -9,7 +9,6 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
 
@@ -53,10 +52,4 @@ data class AppriseNotificationMethodDataRecord(
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
     @get:Pattern(regexp = Database.URL_REGEX)
     val url: String,
-) : NotificationMethodData(NotificationMethodType.APPRISE) {
-    companion object {
-        init {
-            registerDataRecord(NotificationMethodTypes.APPRISE, AppriseNotificationMethodDataRecord::class)
-        }
-    }
-}
+) : NotificationMethodData(NotificationMethodType.APPRISE)

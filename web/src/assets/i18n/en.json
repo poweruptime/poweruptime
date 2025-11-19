@@ -225,6 +225,7 @@
       "logs": "Logs retention",
       "title": "Individual check & log retention"
     },
+    "showNewVersionDialog": "Show new version changelog dialog after update",
     "sponsorship": {
       "failed": "GitHub Sponsorship check failed.",
       "githubHandle": "GitHub Username",
