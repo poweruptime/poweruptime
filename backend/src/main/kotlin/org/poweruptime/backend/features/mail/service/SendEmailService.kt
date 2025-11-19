@@ -77,7 +77,10 @@ class SendEmailService {
             }
         } catch (e: Throwable) {
             logger.error(e) {
-                "Could not send email to '${emailDto.to}', subject: '${emailDto.subject}'"
+                """
+                    |Could not send email to '${emailDto.to}', subject: '${emailDto.subject}'
+                    |${emailDto.plain}
+                """.trimMargin()
             }
             throw e
         }
