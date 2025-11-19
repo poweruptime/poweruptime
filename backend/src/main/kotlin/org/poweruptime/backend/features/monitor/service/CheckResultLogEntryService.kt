@@ -53,24 +53,24 @@ class CheckResultLogEntryService {
         message: String,
         properties: Map<String, String>? = null,
     ) {
-        CheckResultLogEntryTable.insert {
-            it[CheckResultLogEntryTable.level] = level
-            it[CheckResultLogEntryTable.checkResultId] = checkResultId
-            it[CheckResultLogEntryTable.stage] = stage
-            it[CheckResultLogEntryTable.message] = message
-            it[CheckResultLogEntryTable.properties] = properties
+        CheckResultLogEntry.insert {
+            it[CheckResultLogEntry.level] = level
+            it[CheckResultLogEntry.checkResultId] = checkResultId
+            it[CheckResultLogEntry.stage] = stage
+            it[CheckResultLogEntry.message] = message
+            it[CheckResultLogEntry.properties] = properties
         }
     }
 
     @Transactional
     fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant) =
-        CheckResultLogEntryTable.deleteByTeamIdAndOlderThan(teamId, than)
+        CheckResultLogEntry.deleteByTeamIdAndOlderThan(teamId, than)
 
     fun getAllPaginated(
         pageable: Pageable,
         checkResultId: ULong,
         stages: List<CheckResultLogStage>? = null,
-    ): Page<CheckResultLogEntryRecord> = CheckResultLogEntryTable.findAll(
+    ): Page<CheckResultLogEntryRecord> = CheckResultLogEntry.findAll(
         pageable = pageable,
         checkResultId = checkResultId,
         stages = stages,

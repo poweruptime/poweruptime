@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.domain.findTeamIdsByUserId
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
@@ -32,7 +32,7 @@ class PushController(
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     fun get(auth: Authentication): Flux<String> {
-        val teamIds = TeamUserTable.findTeamIdsByUserId(auth.userId())
+        val teamIds = TeamUser.findTeamIdsByUserId(auth.userId())
 
         if (teamIds.isEmpty()) {
             return Flux.empty()

@@ -25,8 +25,8 @@ class DeadLetterController {
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAll() = DeadLetterTable.findAll {
-        DeadLetterTable.rowToDeadLetterRecord(it)
+    fun getAll() = DeadLetter.findAll {
+        DeadLetter.rowToDeadLetterRecord(it)
     }.map { DeadLetterResponse(it) }
 
     @Operation(
@@ -37,6 +37,6 @@ class DeadLetterController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun delete(@PathVariable("id") publicId: String) {
-        DeadLetterTable.deleteById(DeadLetterTable.findIdByPublicIdOrThrow(publicId))
+        DeadLetter.deleteById(DeadLetter.findIdByPublicIdOrThrow(publicId))
     }
 }

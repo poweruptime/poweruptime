@@ -132,25 +132,25 @@ class InstanceSettingService {
         key: SettingKey,
         value: String
     ) {
-        val instanceSetting = InstanceSettingTable.findByKey(key)
+        val instanceSetting = InstanceSetting.findByKey(key)
 
         if (instanceSetting == null) {
-            InstanceSettingTable.insertAndGetId {
-                it[InstanceSettingTable.value] = value
-                it[InstanceSettingTable.key] = key
+            InstanceSetting.insertAndGetId {
+                it[InstanceSetting.value] = value
+                it[InstanceSetting.key] = key
             }
 
             return
         }
 
-        InstanceSettingTable.update({ InstanceSettingTable.id eq instanceSetting.id }) {
-            it[InstanceSettingTable.value] = value
+        InstanceSetting.update({ InstanceSetting.id eq instanceSetting.id }) {
+            it[InstanceSetting.value] = value
         }
     }
 
     private fun getByKey(
         key: SettingKey,
-    ): InstanceSettingRecord? = InstanceSettingTable.findByKey(key)
+    ): InstanceSettingRecord? = InstanceSetting.findByKey(key)
 
     private fun getValueByKey(
         key: SettingKey,

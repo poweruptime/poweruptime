@@ -8,19 +8,19 @@ import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.Query
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.exceptions.ForbiddenException
-import org.poweruptime.backend.features.authentication.model.UserTable
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.service.isAdmin
 import org.poweruptime.backend.features.authentication.service.publicUserId
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
-import org.poweruptime.backend.features.monitor.model.MonitorTable
-import org.poweruptime.backend.features.notification.model.NotificationMethodTable
-import org.poweruptime.backend.features.notification.model.NotificationTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.team.model.TeamTable
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.TeamUserRecord
-import org.poweruptime.backend.features.team.model.TeamUserTable
 import org.poweruptime.backend.features.team.model.rowToTeamUserRecord
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -32,87 +32,87 @@ class PermissionsService {
     private fun Query.isPartOfCheck(): Boolean = this.limit(1).count() > 0
     private fun Query.findBy(): TeamUserRecord? = this.limit(1)
         .firstOrNull()
-        ?.let { TeamUserTable.rowToTeamUserRecord(it) }
+        ?.let { TeamUser.rowToTeamUserRecord(it) }
 
     //region isPartOf
     fun isPartOfByTeamId(
         publicUserId: String,
         publicTeamId: String
     ): Boolean =
-        TeamUserTable
-            .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-            .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
+        TeamUser
+            .innerJoin(User, { TeamUser.userId }, { User.id })
+            .innerJoin(Team, { TeamUser.teamId }, { Team.id })
             .selectAll()
             .where {
-                (UserTable.publicId eq publicUserId) and (TeamTable.publicId eq publicTeamId)
+                (User.publicId eq publicUserId) and (Team.publicId eq publicTeamId)
             }
             .isPartOfCheck()
 
     fun isPartOfByMonitorId(
         publicUserId: String,
         publicMonitorId: String
-    ): Boolean = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
+    ): Boolean = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (MonitorTable.publicId eq publicMonitorId)
+            (User.publicId eq publicUserId) and (Monitor.publicId eq publicMonitorId)
         }
         .isPartOfCheck()
 
     fun isPartOfByCheckResultId(
         publicUserId: String,
         publicCheckResultId: String
-    ): Boolean = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
-        .innerJoin(CheckResultTable)
+    ): Boolean = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
+        .innerJoin(CheckResult)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (CheckResultTable.publicId eq publicCheckResultId)
+            (User.publicId eq publicUserId) and (CheckResult.publicId eq publicCheckResultId)
         }
         .isPartOfCheck()
 
     fun isPartOfByNotificationMethodId(
         publicUserId: String,
         publicNotificationMethodId: String
-    ): Boolean = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(NotificationMethodTable)
+    ): Boolean = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(NotificationMethod)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (NotificationMethodTable.publicId eq publicNotificationMethodId)
+            (User.publicId eq publicUserId) and (NotificationMethod.publicId eq publicNotificationMethodId)
         }
         .isPartOfCheck()
 
     fun isPartOfByNotificationId(
         publicUserId: String,
         publicNotificationId: String
-    ): Boolean = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
-        .innerJoin(CheckResultTable)
-        .innerJoin(NotificationTable)
+    ): Boolean = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
+        .innerJoin(CheckResult)
+        .innerJoin(Notification)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (NotificationTable.publicId eq publicNotificationId)
+            (User.publicId eq publicUserId) and (Notification.publicId eq publicNotificationId)
         }
         .isPartOfCheck()
 
     fun isPartOfByStatusPageId(
         publicUserId: String,
         publicStatusPageId: String
-    ): Boolean = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(StatusPageTable)
+    ): Boolean = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(StatusPage)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (StatusPageTable.publicId eq publicStatusPageId)
+            (User.publicId eq publicUserId) and (StatusPage.publicId eq publicStatusPageId)
         }
         .isPartOfCheck()
 
@@ -120,14 +120,14 @@ class PermissionsService {
         publicUserId: String,
         publicStatusPageGroupId: String
     ): Boolean =
-        TeamUserTable
-            .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-            .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-            .innerJoin(StatusPageTable)
-            .innerJoin(StatusPageGroupTable)
+        TeamUser
+            .innerJoin(User, { TeamUser.userId }, { User.id })
+            .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+            .innerJoin(StatusPage)
+            .innerJoin(StatusPageGroup)
             .selectAll()
             .where {
-                (UserTable.publicId eq publicUserId) and (StatusPageGroupTable.publicId eq publicStatusPageGroupId)
+                (User.publicId eq publicUserId) and (StatusPageGroup.publicId eq publicStatusPageGroupId)
             }
             .isPartOfCheck()
 //endregion
@@ -136,94 +136,94 @@ class PermissionsService {
     fun findByTeamId(
         publicUserId: String,
         publicTeamId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (TeamTable.publicId eq publicTeamId)
+            (User.publicId eq publicUserId) and (Team.publicId eq publicTeamId)
         }
         .findBy()
 
     fun findByMonitorId(
         publicUserId: String,
         publicMonitorId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (MonitorTable.publicId eq publicMonitorId)
+            (User.publicId eq publicUserId) and (Monitor.publicId eq publicMonitorId)
         }
         .findBy()
 
     fun findByCheckResultId(
         publicUserId: String,
         publicCheckResultId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
-        .innerJoin(CheckResultTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
+        .innerJoin(CheckResult)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (CheckResultTable.publicId eq publicCheckResultId)
+            (User.publicId eq publicUserId) and (CheckResult.publicId eq publicCheckResultId)
         }
         .findBy()
 
     fun findByNotificationMethodId(
         publicUserId: String,
         publicNotificationMethodId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(NotificationMethodTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(NotificationMethod)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (NotificationMethodTable.publicId eq publicNotificationMethodId)
+            (User.publicId eq publicUserId) and (NotificationMethod.publicId eq publicNotificationMethodId)
         }
         .findBy()
 
     fun findByNotificationId(
         publicUserId: String,
         publicNotificationId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(MonitorTable)
-        .innerJoin(CheckResultTable)
-        .innerJoin(NotificationTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(Monitor)
+        .innerJoin(CheckResult)
+        .innerJoin(Notification)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (NotificationTable.publicId eq publicNotificationId)
+            (User.publicId eq publicUserId) and (Notification.publicId eq publicNotificationId)
         }
         .findBy()
 
     fun findByStatusPageId(
         publicUserId: String,
         publicStatusPageId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(StatusPageTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(StatusPage)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (StatusPageTable.publicId eq publicStatusPageId)
+            (User.publicId eq publicUserId) and (StatusPage.publicId eq publicStatusPageId)
         }
         .findBy()
 
     fun findByStatusPageGroupId(
         publicUserId: String,
         publicStatusPageGroupId: String
-    ): TeamUserRecord? = TeamUserTable
-        .innerJoin(UserTable, { TeamUserTable.userId }, { UserTable.id })
-        .innerJoin(TeamTable, { TeamUserTable.teamId }, { TeamTable.id })
-        .innerJoin(StatusPageTable)
-        .innerJoin(StatusPageGroupTable)
+    ): TeamUserRecord? = TeamUser
+        .innerJoin(User, { TeamUser.userId }, { User.id })
+        .innerJoin(Team, { TeamUser.teamId }, { Team.id })
+        .innerJoin(StatusPage)
+        .innerJoin(StatusPageGroup)
         .selectAll()
         .where {
-            (UserTable.publicId eq publicUserId) and (StatusPageGroupTable.publicId eq publicStatusPageGroupId)
+            (User.publicId eq publicUserId) and (StatusPageGroup.publicId eq publicStatusPageGroupId)
         }
         .findBy()
 

@@ -6,8 +6,8 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.exceptions.UnauthorizedException
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.SystemRole
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.UserRecord
-import org.poweruptime.backend.features.authentication.model.UserTable
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import org.poweruptime.backend.features.mail.emails.PasswordChangedEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -47,20 +47,20 @@ class AuthService(
 
     @Transactional
     fun updateCredentials(userId: ULong, credentials: String, forcePasswordChange: Boolean? = null): UserRecord =
-        UserTable.update({ UserTable.id eq userId }) {
-            it[UserTable.passwordHash] = passwordEncoder.encode(credentials)
+        User.update({ User.id eq userId }) {
+            it[User.passwordHash] = passwordEncoder.encode(credentials)
             if (forcePasswordChange != null) {
-                it[UserTable.forcePasswordChange] = forcePasswordChange
+                it[User.forcePasswordChange] = forcePasswordChange
             }
         }.let {
-            UserTable.selectAll().where { UserTable.id eq userId }.limit(1).firstOrNull()?.let {
-                UserTable.rowToUserRecord(it)
+            User.selectAll().where { User.id eq userId }.limit(1).firstOrNull()?.let {
+                User.rowToUserRecord(it)
             }.orThrowNotFound()
         }.also {
             systemEmailService.queueEmail(PasswordChangedEmail(it))
         }
 
-    fun findByEmail(email: String): UserRecord? = UserTable.findByEmail(email)
+    fun findByEmail(email: String): UserRecord? = User.findByEmail(email)
 
     @Throws(UnauthorizedException::class)
     fun getByEmail(email: String): UserRecord = findByEmail(email) ?: throw UnauthorizedException()
@@ -69,15 +69,15 @@ class AuthService(
     fun getByAuth(auth: Authentication) = getByPublicId(auth.publicUserId())
 
     @Throws(UnauthorizedException::class)
-    private fun getByPublicId(publicId: String): UserRecord = UserTable
+    private fun getByPublicId(publicId: String): UserRecord = User
         .selectAll()
         .where {
-            UserTable.publicId eq publicId
+            User.publicId eq publicId
         }
         .limit(1)
         .firstOrNull()
         ?.let {
-            UserTable.rowToUserRecord(it)
+            User.rowToUserRecord(it)
         } ?: throw UnauthorizedException()
 }
 

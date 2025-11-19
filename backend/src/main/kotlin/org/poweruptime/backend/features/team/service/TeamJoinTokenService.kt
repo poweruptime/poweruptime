@@ -9,9 +9,9 @@ import org.poweruptime.backend.features.team.domain.deleteOlderThan
 import org.poweruptime.backend.features.team.domain.findAll
 import org.poweruptime.backend.features.team.domain.findValidByInviteeIdTokenAndCreatedAfter
 import org.poweruptime.backend.features.team.domain.invalidateByInviteeId
+import org.poweruptime.backend.features.team.model.TeamJoinToken
 import org.poweruptime.backend.features.team.model.TeamJoinTokenJoinInviteeAndInviter
 import org.poweruptime.backend.features.team.model.TeamJoinTokenRecord
-import org.poweruptime.backend.features.team.model.TeamJoinTokenTable
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.springframework.data.domain.Page
@@ -30,18 +30,18 @@ class TeamJoinTokenService(
 ) {
 
     fun getByTeamIdPaginated(pageable: Pageable, teamId: ULong): Page<TeamJoinTokenJoinInviteeAndInviter> =
-        TeamJoinTokenTable.findAll(pageable, teamId)
+        TeamJoinToken.findAll(pageable, teamId)
 
     fun countByTeamIdAndInviteeId(teamId: ULong, inviteeId: ULong) =
-        TeamJoinTokenTable.countByTeamAndInviteeId(teamId, inviteeId)
+        TeamJoinToken.countByTeamAndInviteeId(teamId, inviteeId)
 
     @Transactional
     fun create(inviterTeam: TeamRecord, inviter: UserRecord, invitee: UserRecord, role: TeamRole): String =
-        TeamJoinTokenTable.insertAndGetId {
-            it[TeamJoinTokenTable.teamId] = inviterTeam.id
-            it[TeamJoinTokenTable.inviteeId] = invitee.id
-            it[TeamJoinTokenTable.inviterId] = inviter.id
-            it[TeamJoinTokenTable.role] = role
+        TeamJoinToken.insertAndGetId {
+            it[TeamJoinToken.teamId] = inviterTeam.id
+            it[TeamJoinToken.inviteeId] = invitee.id
+            it[TeamJoinToken.inviterId] = inviter.id
+            it[TeamJoinToken.role] = role
         }.value
             .also {
                 systemEmailService.queueEmail(
@@ -56,19 +56,19 @@ class TeamJoinTokenService(
 
     @Transactional
     fun validateToken(inviteeId: ULong, token: String): TeamJoinTokenRecord? {
-        val joinToken = TeamJoinTokenTable.findValidByInviteeIdTokenAndCreatedAfter(
+        val joinToken = TeamJoinToken.findValidByInviteeIdTokenAndCreatedAfter(
             inviteeId = inviteeId,
             token = token,
             createdAfter = Instant.now().minusSeconds(THREE_DAYS_IN_SECONDS),
         )
 
         if (joinToken != null) {
-            TeamJoinTokenTable.invalidateByInviteeId(inviteeId)
+            TeamJoinToken.invalidateByInviteeId(inviteeId)
         }
 
         return joinToken
     }
 
     @Transactional
-    fun deleteOlderThan(past: Instant): Int = TeamJoinTokenTable.deleteOlderThan(past)
+    fun deleteOlderThan(past: Instant): Int = TeamJoinToken.deleteOlderThan(past)
 }

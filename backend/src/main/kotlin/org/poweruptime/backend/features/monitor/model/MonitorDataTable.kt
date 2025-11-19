@@ -14,7 +14,7 @@ abstract class MonitorDataTable(
     HasModifiers {
     override val id: Column<EntityID<ULong>> = ulong("id")
         .entityId()
-        .references(MonitorTable.id)
+        .references(Monitor.id)
         .uniqueIndex()
 
     override val createdAt = createdAt()

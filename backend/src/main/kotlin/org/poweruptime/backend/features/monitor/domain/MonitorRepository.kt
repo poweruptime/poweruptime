@@ -16,64 +16,64 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorRecordJoinTeamRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
-import org.poweruptime.backend.features.notification.model.MonitorNotificationMethodTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
-import org.poweruptime.backend.features.tag.MonitorTagTable
-import org.poweruptime.backend.features.tag.TagTable
-import org.poweruptime.backend.features.team.model.TeamTable
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
+import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
+import org.poweruptime.backend.features.tag.MonitorTag
+import org.poweruptime.backend.features.tag.Tag
+import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun MonitorTable.updateStatus(ids: List<ULong>, newStatus: MonitorStatus): Int =
+fun Monitor.updateStatus(ids: List<ULong>, newStatus: MonitorStatus): Int =
     update({ id inList ids }) {
         it[status] = newStatus
     }
 
-fun MonitorTable.updateStatus(id: ULong, newStatus: MonitorStatus): Int = update({ MonitorTable.id eq id }) {
+fun Monitor.updateStatus(id: ULong, newStatus: MonitorStatus): Int = update({ Monitor.id eq id }) {
     it[status] = newStatus
 }
 
-fun MonitorTable.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord =
-    (TeamTable innerJoin MonitorTable)
+fun Monitor.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord =
+    (Team innerJoin Monitor)
         .selectAll()
-        .where { MonitorTable.id eq id }
+        .where { Monitor.id eq id }
         .limit(1)
         .firstOrNull()
         ?.let {
             MonitorRecordJoinTeamRecord(
                 monitor = rowToMonitorRecord(it),
-                team = TeamTable.rowToTeamRecord(it),
+                team = Team.rowToTeamRecord(it),
             )
         } ?: throw NotFoundException()
 
-fun MonitorTable.findByNotificationMethodId(notificationMethodId: ULong): List<MonitorRecord> =
-    innerJoin(MonitorNotificationMethodTable, { MonitorTable.id }, { MonitorNotificationMethodTable.monitorId })
+fun Monitor.findByNotificationMethodId(notificationMethodId: ULong): List<MonitorRecord> =
+    innerJoin(MonitorNotificationMethod, { Monitor.id }, { MonitorNotificationMethod.monitorId })
         .selectAll()
-        .where { MonitorNotificationMethodTable.notificationMethodId eq notificationMethodId }
+        .where { MonitorNotificationMethod.notificationMethodId eq notificationMethodId }
         .map {
             rowToMonitorRecord(it)
         }
 
-fun MonitorTable.findByNotificationMethodId(notificationMethodIds: List<ULong>): Map<ULong, List<MonitorRecord>> =
-    innerJoin(MonitorNotificationMethodTable, { MonitorTable.id }, { MonitorNotificationMethodTable.monitorId })
+fun Monitor.findByNotificationMethodId(notificationMethodIds: List<ULong>): Map<ULong, List<MonitorRecord>> =
+    innerJoin(MonitorNotificationMethod, { Monitor.id }, { MonitorNotificationMethod.monitorId })
         .selectAll()
-        .where { MonitorNotificationMethodTable.notificationMethodId inList notificationMethodIds }
+        .where { MonitorNotificationMethod.notificationMethodId inList notificationMethodIds }
         .groupBy(
-            keySelector = { it[MonitorNotificationMethodTable.notificationMethodId] },
+            keySelector = { it[MonitorNotificationMethod.notificationMethodId] },
             valueTransform = { rowToMonitorRecord(it) },
         )
 
 @Suppress("LongMethod")
-fun MonitorTable.findAll(
+fun Monitor.findAll(
     pageable: Pageable,
     teamId: ULong? = null,
     userId: ULong? = null,
@@ -90,99 +90,99 @@ fun MonitorTable.findAll(
         "teamId, userId or slug needs to be provided"
     }
 
-    var selectColumns = columns + TeamTable.columns
+    var selectColumns = columns + Team.columns
 
-    val query = innerJoin(TeamTable)
+    val query = innerJoin(Team)
         .select(selectColumns)
 
-    query.andWhere { MonitorTable.deleted.deletedFilter(deleted) }
+    query.andWhere { Monitor.deleted.deletedFilter(deleted) }
 
     teamId?.let {
-        query.andWhere { MonitorTable.teamId eq it }
+        query.andWhere { Monitor.teamId eq it }
     }
     userId?.let {
         query.adjustColumnSet {
-            innerJoin(TeamUserTable)
+            innerJoin(TeamUser)
         }.adjustSelect {
-            selectColumns = selectColumns + TeamUserTable.userId
+            selectColumns = selectColumns + TeamUser.userId
             select(selectColumns)
         }.andWhere {
-            TeamUserTable.userId eq it
+            TeamUser.userId eq it
         }
     }
 
     if (statusPageSlug != null || usedInStatusPageGroupIds?.takeIf { it.isNotEmpty() } != null) {
         query.adjustColumnSet {
-            innerJoin(StatusPageGroupMonitorTable)
+            innerJoin(StatusPageGroupMonitor)
         }
     }
 
     statusPageSlug?.let {
         query.adjustColumnSet {
-            innerJoin(StatusPageTable)
+            innerJoin(StatusPage)
         }.adjustSelect {
-            selectColumns = selectColumns + StatusPageTable.publicId
+            selectColumns = selectColumns + StatusPage.publicId
             select(selectColumns)
         }.andWhere {
-            StatusPageTable.publicId eq it
+            StatusPage.publicId eq it
         }
     }
 
     usedInStatusPageGroupIds?.takeIf { it.isNotEmpty() }?.let {
         query.adjustSelect {
-            selectColumns = selectColumns + StatusPageGroupMonitorTable.groupId
+            selectColumns = selectColumns + StatusPageGroupMonitor.groupId
             select(selectColumns)
         }.andWhere {
-            StatusPageGroupMonitorTable.groupId inList it
+            StatusPageGroupMonitor.groupId inList it
         }
     }
 
     name?.takeIf { it.isNotEmpty() }?.let {
         query.andWhere {
-            MonitorTable.name.lowerCase() like "%${it.lowercase()}%"
+            Monitor.name.lowerCase() like "%${it.lowercase()}%"
         }
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
         query.andWhere {
-            MonitorTable.status inList it
+            Monitor.status inList it
         }
     }
 
     types?.takeIf { it.isNotEmpty() }?.let {
         query.andWhere {
-            MonitorTable.type inList it
+            Monitor.type inList it
         }
     }
 
     enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let {
         query.adjustColumnSet {
-            innerJoin(MonitorNotificationMethodTable)
+            innerJoin(MonitorNotificationMethod)
         }.adjustSelect {
-            selectColumns = selectColumns + MonitorNotificationMethodTable.notificationMethodId
+            selectColumns = selectColumns + MonitorNotificationMethod.notificationMethodId
             select(selectColumns)
         }.andWhere {
-            MonitorNotificationMethodTable.notificationMethodId inList it
+            MonitorNotificationMethod.notificationMethodId inList it
         }
     }
 
     enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let { methodIds ->
         query.andWhere {
-            MonitorTable.id inSubQuery (
-                MonitorNotificationMethodTable
-                    .select(MonitorNotificationMethodTable.monitorId)
-                    .where { MonitorNotificationMethodTable.notificationMethodId inList methodIds }
+            Monitor.id inSubQuery (
+                MonitorNotificationMethod
+                    .select(MonitorNotificationMethod.monitorId)
+                    .where { MonitorNotificationMethod.notificationMethodId inList methodIds }
                 )
         }
     }
 
     tags?.takeIf { it.isNotEmpty() }?.let { tagList ->
         query.andWhere {
-            MonitorTable.id inSubQuery (
-                MonitorTagTable
-                    .innerJoin(TagTable, { MonitorTagTable.tagId }, { TagTable.id })
-                    .select(MonitorTagTable.monitorId)
-                    .where { TagTable.name inList tagList }
+            Monitor.id inSubQuery (
+                MonitorTag
+                    .innerJoin(Tag, { MonitorTag.tagId }, { Tag.id })
+                    .select(MonitorTag.monitorId)
+                    .where { Tag.name inList tagList }
                 )
         }
     }
@@ -192,31 +192,31 @@ fun MonitorTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "name" -> MonitorTable.name
-                "status" -> MonitorTable.status
-                "testIntervalSeconds" -> MonitorTable.testIntervalSeconds
-                "retries" -> MonitorTable.retries
-                "deleted" -> MonitorTable.deleted
-                "createdAt" -> MonitorTable.createdAt
-                "groupMonitors.position" -> StatusPageGroupMonitorTable.position
-                "team.name" -> TeamTable.name
+                "name" -> Monitor.name
+                "status" -> Monitor.status
+                "testIntervalSeconds" -> Monitor.testIntervalSeconds
+                "retries" -> Monitor.retries
+                "deleted" -> Monitor.deleted
+                "createdAt" -> Monitor.createdAt
+                "groupMonitors.position" -> StatusPageGroupMonitor.position
+                "team.name" -> Team.name
                 else -> null
             }
         },
         {
             MonitorRecordJoinTeamRecord(
-                monitor = MonitorTable.rowToMonitorRecord(it),
-                team = TeamTable.rowToTeamRecord(it),
+                monitor = Monitor.rowToMonitorRecord(it),
+                team = Team.rowToTeamRecord(it),
             )
         },
     )
 }
 
-fun MonitorTable.findIdsByTeamId(teamId: ULong): List<ULong> = select(MonitorTable.id).where {
-    MonitorTable.teamId eq teamId and deleted.isNull()
+fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(Monitor.id).where {
+    Monitor.teamId eq teamId and deleted.isNull()
 }.map { it[id].value }
 
-fun MonitorTable.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> =
+fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> =
     select(
         teamId,
         status,
@@ -234,11 +234,11 @@ fun MonitorTable.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamS
             )
         }
 
-fun MonitorTable.countMonitorsByUserGrouped(userId: ULong): List<Pair<MonitorStatus, Long>> =
-    (MonitorTable innerJoin TeamTable innerJoin TeamUserTable)
+fun Monitor.countMonitorsByUserGrouped(userId: ULong): List<Pair<MonitorStatus, Long>> =
+    (Monitor innerJoin Team innerJoin TeamUser)
         .select(status, id.count())
         .where {
-            (TeamUserTable.userId eq userId) and MonitorTable.deleted.isNull()
+            (TeamUser.userId eq userId) and Monitor.deleted.isNull()
         }
         .groupBy(status)
         .map {

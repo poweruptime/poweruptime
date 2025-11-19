@@ -5,12 +5,12 @@ import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.core.notInSubQuery
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
+import org.poweruptime.backend.features.statusPage.model.StatusPage
 import java.time.Instant
 
-fun FileTable.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> =
+fun File.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> =
     selectAll().where {
-        (FileTable.id notInSubQuery StatusPageTable.select(StatusPageTable.imageId)) and
-            (FileTable.createdAt less createdAfter)
+        (File.id notInSubQuery StatusPage.select(StatusPage.imageId)) and
+            (File.createdAt less createdAfter)
     }
-        .map { FileTable.rowToFileRecord(it) }
+        .map { File.rowToFileRecord(it) }

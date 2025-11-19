@@ -7,20 +7,20 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.notification.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.notification.domain.findAll
+import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
 import org.poweruptime.backend.features.notification.model.NotificationRecord
-import org.poweruptime.backend.features.notification.model.NotificationTable
-import org.poweruptime.backend.features.notification.model.SubNotificationTable
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
-import org.poweruptime.backend.features.team.model.TeamTable
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -33,44 +33,44 @@ import java.time.Instant
 class NotificationService(
     private val notificationMethodService: NotificationMethodService,
 ) {
-    fun getById(id: ULong): NotificationRecord = NotificationTable.findByIdOrThrow(id) {
-        NotificationTable.rowToNotificationRecord(it)
+    fun getById(id: ULong): NotificationRecord = Notification.findByIdOrThrow(id) {
+        Notification.rowToNotificationRecord(it)
     }
 
-    fun getIdByPublicId(publicId: String): ULong = NotificationTable.findIdByPublicIdOrThrow(publicId)
+    fun getIdByPublicId(publicId: String): ULong = Notification.findIdByPublicIdOrThrow(publicId)
 
     fun getByIdJoinCheckResultMonitorAndTeam(id: ULong): NotificationJoinCheckResultMonitorAndTeamRecord =
-        NotificationTable
-            .innerJoin(CheckResultTable)
-            .innerJoin(MonitorTable)
-            .innerJoin(TeamTable)
+        Notification
+            .innerJoin(CheckResult)
+            .innerJoin(Monitor)
+            .innerJoin(Team)
             .selectAll()
             .where {
-                NotificationTable.id eq id
+                Notification.id eq id
             }
             .limit(1)
             .firstOrNull()
             ?.let {
                 NotificationJoinCheckResultMonitorAndTeamRecord(
-                    notification = NotificationTable.rowToNotificationRecord(it),
-                    checkResult = CheckResultTable.rowToCheckResultRecord(it),
-                    monitor = MonitorTable.rowToMonitorRecord(it),
-                    team = TeamTable.rowToTeamRecord(it),
+                    notification = Notification.rowToNotificationRecord(it),
+                    checkResult = CheckResult.rowToCheckResultRecord(it),
+                    monitor = Monitor.rowToMonitorRecord(it),
+                    team = Team.rowToTeamRecord(it),
                 )
             }.orThrowNotFound()
 
     @Transactional
     fun send(monitorId: ULong, checkResult: CheckResultRecord): NotificationJoinCheckResultMonitorAndTeamRecord {
-        val notificationId = NotificationTable.insertAndGetId {
-            it[NotificationTable.checkResultId] = checkResult.id
-            it[NotificationTable.title] = checkResult.title!!
+        val notificationId = Notification.insertAndGetId {
+            it[Notification.checkResultId] = checkResult.id
+            it[Notification.title] = checkResult.title!!
         }.value
 
-        SubNotificationTable.batchInsert(notificationMethodService.getByMonitorId(monitorId)) { notificationMethod ->
-            this[SubNotificationTable.notificationId] = notificationId
-            this[SubNotificationTable.methodId] = notificationMethod.id
-            this[SubNotificationTable.title] = checkResult.title!!
-            this[SubNotificationTable.message] = checkResult.message
+        SubNotification.batchInsert(notificationMethodService.getByMonitorId(monitorId)) { notificationMethod ->
+            this[SubNotification.notificationId] = notificationId
+            this[SubNotification.methodId] = notificationMethod.id
+            this[SubNotification.title] = checkResult.title!!
+            this[SubNotification.message] = checkResult.message
         }
 
         return getByIdJoinCheckResultMonitorAndTeam(notificationId)
@@ -84,7 +84,7 @@ class NotificationService(
         statuses: List<MonitorStatus>?,
         start: Instant?,
         end: Instant?,
-    ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = NotificationTable.findAll(
+    ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = Notification.findAll(
         pageable = pageable,
         monitorId = monitorId,
         teamId = teamId,
@@ -95,7 +95,7 @@ class NotificationService(
     )
 
     @Transactional
-    fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int = NotificationTable.deleteByTeamIdAndOlderThan(
+    fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int = Notification.deleteByTeamIdAndOlderThan(
         teamId,
         than,
     )

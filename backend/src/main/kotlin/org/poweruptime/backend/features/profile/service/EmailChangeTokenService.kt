@@ -16,8 +16,8 @@ import org.poweruptime.backend.features.mail.emails.EmailChangeNewEmail
 import org.poweruptime.backend.features.mail.emails.EmailChangeOldEmail
 import org.poweruptime.backend.features.mail.emails.EmailChangedEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
+import org.poweruptime.backend.features.profile.EmailChangeToken
 import org.poweruptime.backend.features.profile.EmailChangeTokenRecord
-import org.poweruptime.backend.features.profile.EmailChangeTokenTable
 import org.poweruptime.backend.features.profile.countInvalidByUserIdAndCreatedAfter
 import org.poweruptime.backend.features.profile.findByTokenAndCreatedAfter
 import org.poweruptime.backend.features.profile.findByUserIdAndCreatedAfter
@@ -43,14 +43,14 @@ class EmailChangeTokenService(
             throw BadRequestException("Email address needs to change")
         }
 
-        if (EmailChangeTokenTable.countInvalidByUserIdAndCreatedAfter(user.id, threeDaysAgo()) > 0) {
+        if (EmailChangeToken.countInvalidByUserIdAndCreatedAfter(user.id, threeDaysAgo()) > 0) {
             throw TooManyRequestsException(
                 "Email address can be changed only once in 3 days.",
                 codeName = "email_already_changed",
             )
         }
 
-        if (EmailChangeTokenTable.findByUserIdAndCreatedAfter(
+        if (EmailChangeToken.findByUserIdAndCreatedAfter(
                 user.id,
                 Instant.now().minusSeconds(60 * 60), // 1 hour
             ).size > 2
@@ -62,13 +62,13 @@ class EmailChangeTokenService(
             return
         }
 
-        val confirmToken = EmailChangeTokenTable.insertAndGetId {
-            it[EmailChangeTokenTable.email] = email
-            it[EmailChangeTokenTable.userId] = user.id
-            it[EmailChangeTokenTable.oldEmail] = user.email
+        val confirmToken = EmailChangeToken.insertAndGetId {
+            it[EmailChangeToken.email] = email
+            it[EmailChangeToken.userId] = user.id
+            it[EmailChangeToken.oldEmail] = user.email
         }.let { id ->
-            EmailChangeTokenTable.findByIdOrThrow(id.value) {
-                EmailChangeTokenTable.rowToEmailChangeTokenRecord(it)
+            EmailChangeToken.findByIdOrThrow(id.value) {
+                EmailChangeToken.rowToEmailChangeTokenRecord(it)
             }
         }
 
@@ -82,7 +82,7 @@ class EmailChangeTokenService(
 
     @Transactional
     fun undo(token: String) {
-        val emailChangeToken = EmailChangeTokenTable.findByTokenAndCreatedAfter(
+        val emailChangeToken = EmailChangeToken.findByTokenAndCreatedAfter(
             token,
             threeDaysAgo(),
         )?.invalidate() ?: throw ForbiddenException()
@@ -95,12 +95,12 @@ class EmailChangeTokenService(
 
     @Transactional
     fun validateToken(token: String) {
-        val emailChangeToken = EmailChangeTokenTable.findValidByTokenAndCreatedAfter(
+        val emailChangeToken = EmailChangeToken.findValidByTokenAndCreatedAfter(
             token,
             threeHoursAgo(),
         )?.invalidate() ?: throw ForbiddenException()
 
-        if (EmailChangeTokenTable.countInvalidByUserIdAndCreatedAfter(emailChangeToken.userId, threeDaysAgo()) > 0) {
+        if (EmailChangeToken.countInvalidByUserIdAndCreatedAfter(emailChangeToken.userId, threeDaysAgo()) > 0) {
             throw TooManyRequestsException(
                 "Email address can be changed only once in 3 days.",
                 codeName = "email_already_changed",
@@ -123,7 +123,7 @@ class EmailChangeTokenService(
 
     @Transactional
     fun clearOlderThan(before: Instant) {
-        EmailChangeTokenTable.deleteWhere { EmailChangeTokenTable.createdAt less before }
+        EmailChangeToken.deleteWhere { EmailChangeToken.createdAt less before }
     }
 
     private fun threeHoursAgo() = Instant.now().minusSeconds(3 * 60 * 60)
@@ -132,17 +132,17 @@ class EmailChangeTokenService(
 
     @Transactional
     private fun invalidateTokensOlderThan(userId: ULong, createdAfter: Instant) {
-        EmailChangeTokenTable.update({
-            (EmailChangeTokenTable.userId eq userId) and (EmailChangeTokenTable.createdAt less createdAfter)
+        EmailChangeToken.update({
+            (EmailChangeToken.userId eq userId) and (EmailChangeToken.createdAt less createdAfter)
         }) {
-            it[EmailChangeTokenTable.valid] = false
+            it[EmailChangeToken.valid] = false
         }
     }
 
     @Transactional
     private fun EmailChangeTokenRecord.invalidate(): EmailChangeTokenRecord {
-        EmailChangeTokenTable.update({ EmailChangeTokenTable.id eq id }) {
-            it[EmailChangeTokenTable.valid] = false
+        EmailChangeToken.update({ EmailChangeToken.id eq id }) {
+            it[EmailChangeToken.valid] = false
         }
 
         return this

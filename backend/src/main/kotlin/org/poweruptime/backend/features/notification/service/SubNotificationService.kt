@@ -5,22 +5,22 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.utils.orThrowNotFound
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.notification.domain.findAll
 import org.poweruptime.backend.features.notification.domain.findByNotificationId
-import org.poweruptime.backend.features.notification.model.NotificationMethodTable
-import org.poweruptime.backend.features.notification.model.NotificationTable
+import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationTable
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
 import org.poweruptime.backend.features.notification.model.rowToSubNotificationRecord
@@ -39,33 +39,33 @@ class SubNotificationService(
         rabbitMQService.sendToProcessSubNotification(subNotificationId)
     }
 
-    fun getById(subNotificationId: ULong): SubNotificationRecord = SubNotificationTable.findByIdOrThrow(
+    fun getById(subNotificationId: ULong): SubNotificationRecord = SubNotification.findByIdOrThrow(
         subNotificationId,
     ) {
-        SubNotificationTable.rowToSubNotificationRecord(it)
+        SubNotification.rowToSubNotificationRecord(it)
     }
 
     fun getByIdJoin(subNotificationId: ULong): SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord =
-        SubNotificationTable
-            .innerJoin(NotificationMethodTable)
-            .innerJoin(NotificationTable)
-            .innerJoin(CheckResultTable)
-            .innerJoin(MonitorTable)
+        SubNotification
+            .innerJoin(NotificationMethod)
+            .innerJoin(Notification)
+            .innerJoin(CheckResult)
+            .innerJoin(Monitor)
             .selectAll()
             .where {
-                SubNotificationTable.id eq subNotificationId
+                SubNotification.id eq subNotificationId
             }.limit(1).firstOrNull()?.let {
                 SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord(
-                    subNotification = SubNotificationTable.rowToSubNotificationRecord(it),
-                    method = NotificationMethodTable.rowToNotificationMethodRecord(it),
-                    notification = NotificationTable.rowToNotificationRecord(it),
-                    checkResult = CheckResultTable.rowToCheckResultRecord(it),
-                    monitor = MonitorTable.rowToMonitorRecord(it),
+                    subNotification = SubNotification.rowToSubNotificationRecord(it),
+                    method = NotificationMethod.rowToNotificationMethodRecord(it),
+                    notification = Notification.rowToNotificationRecord(it),
+                    checkResult = CheckResult.rowToCheckResultRecord(it),
+                    monitor = Monitor.rowToMonitorRecord(it),
                 )
             }.orThrowNotFound()
 
     fun getByNotificationId(notificationId: ULong): List<SubNotificationJoinMethodRecord> =
-        SubNotificationTable.findByNotificationId(notificationId)
+        SubNotification.findByNotificationId(notificationId)
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -75,7 +75,7 @@ class SubNotificationService(
         userId: ULong?,
         methods: List<NotificationMethodType>?,
         statuses: List<MonitorStatus>?,
-    ): Page<SubNotificationJoinMethodAndNotificationRecord> = SubNotificationTable.findAll(
+    ): Page<SubNotificationJoinMethodAndNotificationRecord> = SubNotification.findAll(
         pageable = pageable,
         notificationId = notificationId,
         monitorId = monitorId,
@@ -86,7 +86,7 @@ class SubNotificationService(
     )
 
     @Transactional
-    fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int = SubNotificationTable.deleteByTeamIdAndOlderThan(
+    fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int = SubNotification.deleteByTeamIdAndOlderThan(
         teamId,
         than,
     )

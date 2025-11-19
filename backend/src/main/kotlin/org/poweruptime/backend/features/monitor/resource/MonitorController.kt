@@ -30,7 +30,7 @@ import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.poweruptime.backend.features.statusPage.service.StatusPageGroupService
 import org.poweruptime.backend.features.tag.TagService
-import org.poweruptime.backend.features.team.model.TeamTable
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -272,7 +272,7 @@ class MonitorController(
                 permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
             }
 
-            return monitorService.getTeamDashboard(TeamTable.findIdByPublicIdOrThrow(publicTeamId))
+            return monitorService.getTeamDashboard(Team.findIdByPublicIdOrThrow(publicTeamId))
         }
 
         return monitorService.getUserDashboard(auth.userId())

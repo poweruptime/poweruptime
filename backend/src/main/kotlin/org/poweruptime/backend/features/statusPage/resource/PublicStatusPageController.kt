@@ -12,7 +12,7 @@ import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.statusPage.domain.findByStatusPage
 import org.poweruptime.backend.features.statusPage.dto.PublicStatusPageResponse
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
 import org.poweruptime.backend.features.statusPage.service.StatusPageGroupService
 import org.poweruptime.backend.features.statusPage.service.StatusPageService
 import org.springdoc.core.annotations.ParameterObject
@@ -41,7 +41,7 @@ class PublicStatusPageController(
         statusPageService.findBySlug(slug)?.let {
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = StatusPageGroupTable.findByStatusPage(it.id),
+                groups = StatusPageGroup.findByStatusPage(it.id),
             )
         }.orThrowNotFound("Status page not found")
 
@@ -54,7 +54,7 @@ class PublicStatusPageController(
         statusPageService.findByDomainName(domain)?.let {
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = StatusPageGroupTable.findByStatusPage(it.id),
+                groups = StatusPageGroup.findByStatusPage(it.id),
             )
         }.orThrowNotFound("Status page not found")
 

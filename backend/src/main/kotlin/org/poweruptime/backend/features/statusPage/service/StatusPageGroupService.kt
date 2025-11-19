@@ -5,18 +5,18 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.findIdsByPublicIdsOrThrow
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
+import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
 import org.springframework.stereotype.Service
 
 @Service
 class StatusPageGroupService {
-    fun getIdsByPublicIds(publicIds: List<String>): List<ULong> = StatusPageGroupTable.findIdsByPublicIdsOrThrow(
+    fun getIdsByPublicIds(publicIds: List<String>): List<ULong> = StatusPageGroup.findIdsByPublicIdsOrThrow(
         publicIds,
     )
 
     fun ensureAllStatusGroupsInTeam(statusPageGroupIds: List<ULong>, teamId: ULong): Boolean =
-        StatusPageGroupTable.innerJoin(StatusPageTable).selectAll().where {
-            (StatusPageTable.teamId eq teamId) and (StatusPageGroupTable.id inList statusPageGroupIds)
+        StatusPageGroup.innerJoin(StatusPage).selectAll().where {
+            (StatusPage.teamId eq teamId) and (StatusPageGroup.id inList statusPageGroupIds)
         }.count() == statusPageGroupIds.size.toLong()
 }

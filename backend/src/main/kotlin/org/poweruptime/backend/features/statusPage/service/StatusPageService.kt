@@ -12,19 +12,19 @@ import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.includeDeleted
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.fileUpload.FileService
-import org.poweruptime.backend.features.fileUpload.FileTable
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.ensureAllMonitorsInTeam
 import org.poweruptime.backend.features.statusPage.domain.findAll
 import org.poweruptime.backend.features.statusPage.domain.findByDomainName
 import org.poweruptime.backend.features.statusPage.dto.CreateStatusPageDto
 import org.poweruptime.backend.features.statusPage.dto.UpdateStatusPageDto
-import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
+import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageDomainNameRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
@@ -44,38 +44,38 @@ class StatusPageService(
 ) {
 
     fun getIdByPublicId(publicId: String, includeDeleted: Boolean = false): ULong =
-        StatusPageTable.findIdByPublicIdOrThrow(publicId, includeDeleted)
+        StatusPage.findIdByPublicIdOrThrow(publicId, includeDeleted)
 
     fun getById(id: ULong, includeDeleted: Boolean = false): StatusPageRecord =
-        StatusPageTable
-            .leftJoin(FileTable, { FileTable.id }, { StatusPageTable.imageId })
+        StatusPage
+            .leftJoin(File, { File.id }, { StatusPage.imageId })
             .selectAll()
-            .where { StatusPageTable.id eq id and StatusPageTable.deleted.includeDeleted(includeDeleted) }
+            .where { StatusPage.id eq id and StatusPage.deleted.includeDeleted(includeDeleted) }
             .limit(1)
             .firstOrNull()
             ?.let {
-                StatusPageTable.rowToStatusPageRecord(it)
+                StatusPage.rowToStatusPageRecord(it)
             }.orThrowNotFound()
 
     fun findBySlug(slug: String, includeDeleted: Boolean = false): StatusPageRecord? =
-        StatusPageTable
-            .leftJoin(FileTable, { FileTable.id }, { StatusPageTable.imageId })
+        StatusPage
+            .leftJoin(File, { File.id }, { StatusPage.imageId })
             .selectAll()
-            .where { StatusPageTable.publicId eq slug and StatusPageTable.deleted.includeDeleted(includeDeleted) }
+            .where { StatusPage.publicId eq slug and StatusPage.deleted.includeDeleted(includeDeleted) }
             .limit(1)
             .firstOrNull()
             ?.let {
-                StatusPageTable.rowToStatusPageRecord(it)
+                StatusPage.rowToStatusPageRecord(it)
             }
 
-    fun findByDomainName(domainName: String): StatusPageRecord? = StatusPageTable.findByDomainName(domainName)
+    fun findByDomainName(domainName: String): StatusPageRecord? = StatusPage.findByDomainName(domainName)
 
     fun getAllPaginated(
         pageable: Pageable,
         teamId: ULong,
         name: String?,
         deleted: Boolean = false
-    ): Page<StatusPageRecord> = StatusPageTable.findAll(
+    ): Page<StatusPageRecord> = StatusPage.findAll(
         pageable = pageable,
         teamId = teamId,
         name = name,
@@ -105,37 +105,37 @@ class StatusPageService(
 
         val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
 
-        val statusPage = StatusPageTable.insertAndGetId {
-            it[StatusPageTable.name] = dto.name
-            it[StatusPageTable.publicId] = dto.slug
-            it[StatusPageTable.description] = dto.description
-            it[StatusPageTable.footer] = dto.footer
-            it[StatusPageTable.teamId] = teamId
-            it[StatusPageTable.imageId] = fileId
+        val statusPage = StatusPage.insertAndGetId {
+            it[StatusPage.name] = dto.name
+            it[StatusPage.publicId] = dto.slug
+            it[StatusPage.description] = dto.description
+            it[StatusPage.footer] = dto.footer
+            it[StatusPage.teamId] = teamId
+            it[StatusPage.imageId] = fileId
         }.let { getById(it.value) }
 
-        StatusPageDomainNameTable.batchInsert(dto.domainNames) { domainName ->
-            this[StatusPageDomainNameTable.name] = domainName
-            this[StatusPageDomainNameTable.statusPageId] = statusPage.id
-        }.map { StatusPageDomainNameTable.rowToStatusPageDomainNameRecord(it) }
+        StatusPageDomainName.batchInsert(dto.domainNames) { domainName ->
+            this[StatusPageDomainName.name] = domainName
+            this[StatusPageDomainName.statusPageId] = statusPage.id
+        }.map { StatusPageDomainName.rowToStatusPageDomainNameRecord(it) }
 
-        val groups = StatusPageGroupTable.batchInsert(
+        val groups = StatusPageGroup.batchInsert(
             dto.groups.mapIndexed { index, dto -> Pair(index, dto) },
         ) { (index, dto) ->
-            this[StatusPageGroupTable.position] = index
-            this[StatusPageGroupTable.statusPageId] = statusPage.id
-            this[StatusPageGroupTable.name] = dto.name
-            this[StatusPageGroupTable.description] = dto.description
-        }.map { StatusPageGroupTable.rowToStatusPageGroupRecord(it) }
+            this[StatusPageGroup.position] = index
+            this[StatusPageGroup.statusPageId] = statusPage.id
+            this[StatusPageGroup.name] = dto.name
+            this[StatusPageGroup.description] = dto.description
+        }.map { StatusPageGroup.rowToStatusPageGroupRecord(it) }
 
         dto.groups.forEachIndexed { groupIndex, groupDto ->
-            StatusPageGroupMonitorTable.batchInsert(
+            StatusPageGroupMonitor.batchInsert(
                 groupDto.monitorIds.mapIndexed { index, monitorId -> Pair(index, monitorId) },
             ) { (index, monitorId) ->
-                this[StatusPageGroupMonitorTable.position] = index
-                this[StatusPageGroupMonitorTable.statusPageId] = statusPage.id
-                this[StatusPageGroupMonitorTable.groupId] = groups[groupIndex].id
-                this[StatusPageGroupMonitorTable.monitorId] = monitors[monitorId].orThrowNotFound().id
+                this[StatusPageGroupMonitor.position] = index
+                this[StatusPageGroupMonitor.statusPageId] = statusPage.id
+                this[StatusPageGroupMonitor.groupId] = groups[groupIndex].id
+                this[StatusPageGroupMonitor.monitorId] = monitors[monitorId].orThrowNotFound().id
             }
         }
 
@@ -167,40 +167,40 @@ class StatusPageService(
 
         val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
 
-        val statusPage = StatusPageTable.update({ StatusPageTable.id eq oldStatusPage.id }) {
-            it[StatusPageTable.name] = dto.name
-            it[StatusPageTable.publicId] = dto.slug
-            it[StatusPageTable.description] = dto.description
-            it[StatusPageTable.footer] = dto.footer
-            it[StatusPageTable.imageId] = fileId
+        val statusPage = StatusPage.update({ StatusPage.id eq oldStatusPage.id }) {
+            it[StatusPage.name] = dto.name
+            it[StatusPage.publicId] = dto.slug
+            it[StatusPage.description] = dto.description
+            it[StatusPage.footer] = dto.footer
+            it[StatusPage.imageId] = fileId
         }.let { getById(oldStatusPage.id) }
 
-        StatusPageDomainNameTable.deleteWhere { StatusPageDomainNameTable.statusPageId eq oldStatusPage.id }
-        StatusPageGroupMonitorTable.deleteWhere { StatusPageGroupMonitorTable.statusPageId eq oldStatusPage.id }
-        StatusPageGroupTable.deleteWhere { StatusPageGroupTable.statusPageId eq oldStatusPage.id }
+        StatusPageDomainName.deleteWhere { StatusPageDomainName.statusPageId eq oldStatusPage.id }
+        StatusPageGroupMonitor.deleteWhere { StatusPageGroupMonitor.statusPageId eq oldStatusPage.id }
+        StatusPageGroup.deleteWhere { StatusPageGroup.statusPageId eq oldStatusPage.id }
 
-        StatusPageDomainNameTable.batchInsert(dto.domainNames) { domainName ->
-            this[StatusPageDomainNameTable.name] = domainName
-            this[StatusPageDomainNameTable.statusPageId] = statusPage.id
-        }.map { StatusPageDomainNameTable.rowToStatusPageDomainNameRecord(it) }
+        StatusPageDomainName.batchInsert(dto.domainNames) { domainName ->
+            this[StatusPageDomainName.name] = domainName
+            this[StatusPageDomainName.statusPageId] = statusPage.id
+        }.map { StatusPageDomainName.rowToStatusPageDomainNameRecord(it) }
 
-        val groups = StatusPageGroupTable.batchInsert(
+        val groups = StatusPageGroup.batchInsert(
             dto.groups.mapIndexed { index, dto -> Pair(index, dto) },
         ) { (index, dto) ->
-            this[StatusPageGroupTable.position] = index
-            this[StatusPageGroupTable.statusPageId] = statusPage.id
-            this[StatusPageGroupTable.name] = dto.name
-            this[StatusPageGroupTable.description] = dto.description
-        }.map { StatusPageGroupTable.rowToStatusPageGroupRecord(it) }
+            this[StatusPageGroup.position] = index
+            this[StatusPageGroup.statusPageId] = statusPage.id
+            this[StatusPageGroup.name] = dto.name
+            this[StatusPageGroup.description] = dto.description
+        }.map { StatusPageGroup.rowToStatusPageGroupRecord(it) }
 
         dto.groups.forEachIndexed { groupIndex, groupDto ->
-            StatusPageGroupMonitorTable.batchInsert(
+            StatusPageGroupMonitor.batchInsert(
                 groupDto.monitorIds.mapIndexed { index, monitorId -> Pair(index, monitorId) },
             ) { (index, monitorId) ->
-                this[StatusPageGroupMonitorTable.position] = index
-                this[StatusPageGroupMonitorTable.statusPageId] = statusPage.id
-                this[StatusPageGroupMonitorTable.groupId] = groups[groupIndex].id
-                this[StatusPageGroupMonitorTable.monitorId] = monitors[monitorId].orThrowNotFound().id
+                this[StatusPageGroupMonitor.position] = index
+                this[StatusPageGroupMonitor.statusPageId] = statusPage.id
+                this[StatusPageGroupMonitor.groupId] = groups[groupIndex].id
+                this[StatusPageGroupMonitor.monitorId] = monitors[monitorId].orThrowNotFound().id
             }
         }
 
@@ -210,7 +210,7 @@ class StatusPageService(
     @Transactional
     fun deleteById(id: ULong) {
         val statusPage = getById(id)
-        StatusPageTable.update({ StatusPageTable.id eq id }) {
+        StatusPage.update({ StatusPage.id eq id }) {
             it[deleted] = Instant.now()
             it[publicId] = statusPage.publicId + DELETED_SLUG_SUFFIX
         }
@@ -219,7 +219,7 @@ class StatusPageService(
     @Transactional
     fun undeleteById(id: ULong): StatusPageRecord {
         val statusPage = getById(id, includeDeleted = true)
-        StatusPageTable.update({ StatusPageTable.id eq id }) {
+        StatusPage.update({ StatusPage.id eq id }) {
             it[deleted] = null
             it[publicId] = statusPage.publicId.removeSuffix(DELETED_SLUG_SUFFIX)
         }

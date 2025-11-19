@@ -7,27 +7,27 @@ import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
-import org.poweruptime.backend.features.authentication.model.PasswordResetTokenTable
+import org.poweruptime.backend.features.authentication.model.PasswordResetToken
 import java.time.Instant
 
-fun PasswordResetTokenTable.deleteOlderThan(before: Instant): Int = deleteWhere {
+fun PasswordResetToken.deleteOlderThan(before: Instant): Int = deleteWhere {
     createdAt less before
 }
 
-fun PasswordResetTokenTable.countByUserIdAndCreatedAfter(
+fun PasswordResetToken.countByUserIdAndCreatedAfter(
     userId: ULong,
     createdAfter: Instant
 ): Long = selectAll().where {
-    (PasswordResetTokenTable.userId eq userId) and (PasswordResetTokenTable.createdAt greater createdAfter)
+    (PasswordResetToken.userId eq userId) and (PasswordResetToken.createdAt greater createdAfter)
 }.count()
 
-fun PasswordResetTokenTable.invalidateByUserIdTokenAndCreatedAfter(
+fun PasswordResetToken.invalidateByUserIdTokenAndCreatedAfter(
     userId: ULong,
     token: String,
     createdAfter: Instant
 ): Int = update({
-    (PasswordResetTokenTable.userId eq userId) and
-        (PasswordResetTokenTable.createdAt greater createdAfter) and
+    (PasswordResetToken.userId eq userId) and
+        (PasswordResetToken.createdAt greater createdAfter) and
         (id eq token) and
         (valid eq true)
 }) {

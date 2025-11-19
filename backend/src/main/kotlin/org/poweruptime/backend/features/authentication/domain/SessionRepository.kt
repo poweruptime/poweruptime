@@ -9,47 +9,47 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.model.RefreshTokenTable
+import org.poweruptime.backend.features.authentication.model.RefreshToken
+import org.poweruptime.backend.features.authentication.model.Session
 import org.poweruptime.backend.features.authentication.model.SessionJoinUserRecord
 import org.poweruptime.backend.features.authentication.model.SessionRecord
-import org.poweruptime.backend.features.authentication.model.SessionTable
-import org.poweruptime.backend.features.authentication.model.UserTable
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.rowToSessionRecord
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-fun SessionTable.findByRefreshToken(refreshToken: String): SessionRecord? =
-    innerJoin(RefreshTokenTable).selectAll().where {
-        RefreshTokenTable.token eq refreshToken
+fun Session.findByRefreshToken(refreshToken: String): SessionRecord? =
+    innerJoin(RefreshToken).selectAll().where {
+        RefreshToken.token eq refreshToken
     }.firstOrNull()?.let {
         rowToSessionRecord(it)
     }
 
-fun SessionTable.findJoinUserByRefreshToken(refreshToken: String): SessionJoinUserRecord? =
-    innerJoin(RefreshTokenTable).innerJoin(UserTable).selectAll().where {
-        RefreshTokenTable.token eq refreshToken
+fun Session.findJoinUserByRefreshToken(refreshToken: String): SessionJoinUserRecord? =
+    innerJoin(RefreshToken).innerJoin(User).selectAll().where {
+        RefreshToken.token eq refreshToken
     }.firstOrNull()?.let {
         SessionJoinUserRecord(
             session = rowToSessionRecord(it),
-            user = UserTable.rowToUserRecord(it),
+            user = User.rowToUserRecord(it),
         )
     }
 
-fun SessionTable.findAllByUserId(
+fun Session.findAllByUserId(
     userId: ULong
-): List<SessionRecord> = selectAll().where { SessionTable.userId eq userId }.map {
+): List<SessionRecord> = selectAll().where { Session.userId eq userId }.map {
     rowToSessionRecord(it)
 }
 
-fun SessionTable.findAll(
+fun Session.findAll(
     pageable: Pageable,
     userId: ULong,
     valid: Boolean = true
 ): Page<SessionRecord> {
     val query = selectAll().where {
-        (SessionTable.userId eq userId) and (SessionTable.valid eq valid)
+        (Session.userId eq userId) and (Session.valid eq valid)
     }
 
     return pageQuery(
@@ -57,8 +57,8 @@ fun SessionTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "createdAt" -> SessionTable.createdAt
-                "updatedAt" -> SessionTable.createdAt
+                "createdAt" -> Session.createdAt
+                "updatedAt" -> Session.createdAt
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )
@@ -70,40 +70,40 @@ fun SessionTable.findAll(
     )
 }
 
-fun SessionTable.deleteAllUpdatedAtBefore(
+fun Session.deleteAllUpdatedAtBefore(
     updatedAt: Instant
 ): Int = deleteWhere {
-    SessionTable.updatedAt lessEq updatedAt
+    Session.updatedAt lessEq updatedAt
 }
 
-fun SessionTable.deleteByPublicId(
+fun Session.deleteByPublicId(
     publicId: String
 ): Int = deleteWhere {
-    SessionTable.publicId eq publicId
+    Session.publicId eq publicId
 }
 
-fun SessionTable.existsByRefreshToken(refreshToken: String): Boolean =
-    innerJoin(RefreshTokenTable).selectAll().where {
-        RefreshTokenTable.token eq refreshToken
+fun Session.existsByRefreshToken(refreshToken: String): Boolean =
+    innerJoin(RefreshToken).selectAll().where {
+        RefreshToken.token eq refreshToken
     }.count() > 0
 
-fun SessionTable.existsByPublicSessionAndUserId(
+fun Session.existsByPublicSessionAndUserId(
     publicSessionId: String,
     userId: ULong
 ): Boolean =
     selectAll().where {
-        SessionTable.publicId eq publicSessionId
-        SessionTable.userId eq userId
+        Session.publicId eq publicSessionId
+        Session.userId eq userId
     }.count() > 0
 
-fun SessionTable.invalidateSession(
+fun Session.invalidateSession(
     sessionId: ULong
-) = update({ SessionTable.id eq sessionId }) {
-    it[SessionTable.valid] = false
+) = update({ Session.id eq sessionId }) {
+    it[Session.valid] = false
 }
 
-fun SessionTable.invalidateSessions(
+fun Session.invalidateSessions(
     sessionIds: List<ULong>
-) = update({ SessionTable.id inList sessionIds }) {
-    it[SessionTable.valid] = false
+) = update({ Session.id inList sessionIds }) {
+    it[Session.valid] = false
 }

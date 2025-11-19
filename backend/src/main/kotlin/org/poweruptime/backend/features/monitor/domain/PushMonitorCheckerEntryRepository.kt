@@ -5,8 +5,8 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
 import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryRecord
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryTable
 import org.poweruptime.backend.features.monitor.checker.push.rowToPushMonitorCheckerEntryRecord
 import java.time.Instant
 
@@ -22,14 +22,14 @@ class PushMonitorCheckerEntryRepository : IPushMonitorCheckerEntryRepository {
         pushId: String,
         then: Instant
     ): PushMonitorCheckerEntryRecord? =
-        PushMonitorCheckerEntryTable.selectAll().where {
-            (PushMonitorCheckerEntryTable.publicId eq pushId) and
-                (PushMonitorCheckerEntryTable.createdAt greaterEq then)
+        PushMonitorCheckerEntry.selectAll().where {
+            (PushMonitorCheckerEntry.publicId eq pushId) and
+                (PushMonitorCheckerEntry.createdAt greaterEq then)
         }
-            .orderBy(PushMonitorCheckerEntryTable.createdAt, SortOrder.DESC)
+            .orderBy(PushMonitorCheckerEntry.createdAt, SortOrder.DESC)
             .limit(1)
             .firstOrNull()
             ?.let {
-                PushMonitorCheckerEntryTable.rowToPushMonitorCheckerEntryRecord(it)
+                PushMonitorCheckerEntry.rowToPushMonitorCheckerEntryRecord(it)
             }
 }

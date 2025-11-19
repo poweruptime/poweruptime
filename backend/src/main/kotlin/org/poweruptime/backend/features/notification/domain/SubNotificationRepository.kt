@@ -11,53 +11,53 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.model.NotificationMethodTable
-import org.poweruptime.backend.features.notification.model.NotificationTable
+import org.poweruptime.backend.features.notification.model.Notification
+import org.poweruptime.backend.features.notification.model.NotificationMethod
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationTable
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
 import org.poweruptime.backend.features.notification.model.rowToSubNotificationRecord
-import org.poweruptime.backend.features.team.model.TeamTable
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-fun SubNotificationTable.findByNotificationId(
+fun SubNotification.findByNotificationId(
     notificationId: ULong
 ): List<SubNotificationJoinMethodRecord> =
-    innerJoin(NotificationMethodTable).selectAll().where {
-        SubNotificationTable.notificationId eq notificationId
+    innerJoin(NotificationMethod).selectAll().where {
+        SubNotification.notificationId eq notificationId
     }.map {
         SubNotificationJoinMethodRecord(
             subNotification = rowToSubNotificationRecord(it),
-            method = NotificationMethodTable.rowToNotificationMethodRecord(it),
+            method = NotificationMethod.rowToNotificationMethodRecord(it),
         )
     }
 
-fun SubNotificationTable.deleteByTeamIdAndOlderThan(
+fun SubNotification.deleteByTeamIdAndOlderThan(
     teamId: ULong,
     before: Instant
 ): Int = deleteWhere {
-    SubNotificationTable.notificationId inSubQuery (
-        NotificationTable
-            .innerJoin(CheckResultTable)
-            .innerJoin(MonitorTable)
-            .select(NotificationTable.id)
+    SubNotification.notificationId inSubQuery (
+        Notification
+            .innerJoin(CheckResult)
+            .innerJoin(Monitor)
+            .select(Notification.id)
             .where {
-                MonitorTable.teamId eq teamId
+                Monitor.teamId eq teamId
             }
         ) and (createdAt less before)
 }
 
 @Suppress("LongMethod")
-fun SubNotificationTable.findAll(
+fun SubNotification.findAll(
     pageable: Pageable,
     notificationId: ULong?,
     monitorId: ULong?,
@@ -70,61 +70,61 @@ fun SubNotificationTable.findAll(
         "notificationId or teamId or monitorId or userId needs to be provided"
     }
 
-    var selectColumns = columns + NotificationTable.columns + NotificationMethodTable.columns
+    var selectColumns = columns + Notification.columns + NotificationMethod.columns
 
-    val query = innerJoin(NotificationTable)
-        .innerJoin(NotificationMethodTable)
+    val query = innerJoin(Notification)
+        .innerJoin(NotificationMethod)
         .select(selectColumns)
 
     notificationId?.let {
-        query.andWhere { SubNotificationTable.notificationId eq it }
+        query.andWhere { SubNotification.notificationId eq it }
     }
     teamId?.let {
-        query.andWhere { NotificationMethodTable.teamId eq it }
+        query.andWhere { NotificationMethod.teamId eq it }
     }
 
     if (monitorId != null || statuses?.takeIf { it.isNotEmpty() } != null) {
         query.adjustColumnSet {
-            innerJoin(CheckResultTable)
+            innerJoin(CheckResult)
         }.adjustSelect {
-            selectColumns = selectColumns + CheckResultTable.monitorId + CheckResultTable.status
+            selectColumns = selectColumns + CheckResult.monitorId + CheckResult.status
             select(selectColumns)
         }
     }
 
     monitorId?.let {
-        query.andWhere { CheckResultTable.monitorId eq it }
+        query.andWhere { CheckResult.monitorId eq it }
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { CheckResultTable.status inList it }
+        query.andWhere { CheckResult.status inList it }
     }
 
     userId?.let {
         query.adjustColumnSet {
-            innerJoin(TeamTable)
+            innerJoin(Team)
         }.adjustColumnSet {
-            innerJoin(TeamUserTable)
+            innerJoin(TeamUser)
         }.adjustSelect {
-            selectColumns = selectColumns + TeamUserTable.userId
+            selectColumns = selectColumns + TeamUser.userId
             select(selectColumns)
         }.andWhere {
-            TeamUserTable.userId eq it
+            TeamUser.userId eq it
         }
     }
 
     methods?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { NotificationMethodTable.type inList it }
+        query.andWhere { NotificationMethod.type inList it }
     }
 
     if (teamId != null || userId != null) {
         query.adjustColumnSet {
-            innerJoin(MonitorTable)
+            innerJoin(Monitor)
         }.adjustSelect {
-            selectColumns = selectColumns + MonitorTable.deleted
+            selectColumns = selectColumns + Monitor.deleted
             select(selectColumns)
         }.andWhere {
-            MonitorTable.deleted.isNull()
+            Monitor.deleted.isNull()
         }
     }
 
@@ -133,17 +133,17 @@ fun SubNotificationTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "notification.checkResult.status" -> CheckResultTable.status
-                "method" -> NotificationMethodTable.type
-                "createdAt" -> SubNotificationTable.createdAt
+                "notification.checkResult.status" -> CheckResult.status
+                "method" -> NotificationMethod.type
+                "createdAt" -> SubNotification.createdAt
                 else -> null
             }
         },
         map = {
             SubNotificationJoinMethodAndNotificationRecord(
                 subNotification = rowToSubNotificationRecord(it),
-                notification = NotificationTable.rowToNotificationRecord(it),
-                method = NotificationMethodTable.rowToNotificationMethodRecord(it),
+                notification = Notification.rowToNotificationRecord(it),
+                method = NotificationMethod.rowToNotificationMethodRecord(it),
             )
         },
     )

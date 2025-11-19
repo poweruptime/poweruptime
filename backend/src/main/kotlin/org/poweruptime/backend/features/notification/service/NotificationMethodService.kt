@@ -28,16 +28,16 @@ import org.poweruptime.backend.features.notification.domain.findAll
 import org.poweruptime.backend.features.notification.domain.findByMonitorId
 import org.poweruptime.backend.features.notification.dto.CreateNotificationMethodDto
 import org.poweruptime.backend.features.notification.dto.UpdateNotificationMethodDto
-import org.poweruptime.backend.features.notification.model.MonitorNotificationMethodTable
+import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
+import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
-import org.poweruptime.backend.features.notification.model.NotificationMethodTable
 import org.poweruptime.backend.features.notification.model.NotificationMethodWithDataRecord
 import org.poweruptime.backend.features.notification.model.NotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRecord
-import org.poweruptime.backend.features.team.model.TeamTable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -53,22 +53,22 @@ class NotificationMethodService(
     private val appriseSender: AppriseSender,
 ) {
     fun getIdByPublicId(publicId: String, includeDeleted: Boolean = false): ULong =
-        NotificationMethodTable.findIdByPublicIdOrThrow(publicId, includeDeleted)
-    fun getIdsByPublicIds(publicIds: List<String>): List<ULong> = NotificationMethodTable.findIdsByPublicIdsOrThrow(
+        NotificationMethod.findIdByPublicIdOrThrow(publicId, includeDeleted)
+    fun getIdsByPublicIds(publicIds: List<String>): List<ULong> = NotificationMethod.findIdsByPublicIdsOrThrow(
         publicIds,
     )
 
-    fun getById(id: ULong): NotificationMethodRecord = NotificationMethodTable.findByIdOrThrow(id) {
-        NotificationMethodTable.rowToNotificationMethodRecord(it)
+    fun getById(id: ULong): NotificationMethodRecord = NotificationMethod.findByIdOrThrow(id) {
+        NotificationMethod.rowToNotificationMethodRecord(it)
     }
-    fun getByPublicId(publicIds: List<String>): List<NotificationMethodRecord> = NotificationMethodTable.findByPublicId(
+    fun getByPublicId(publicIds: List<String>): List<NotificationMethodRecord> = NotificationMethod.findByPublicId(
         publicIds,
     ) {
-        NotificationMethodTable.rowToNotificationMethodRecord(it)
+        NotificationMethod.rowToNotificationMethodRecord(it)
     }
 
     fun getByMonitorId(monitorId: ULong): List<NotificationMethodRecord> =
-        NotificationMethodTable.findByMonitorId(monitorId)
+        NotificationMethod.findByMonitorId(monitorId)
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -77,7 +77,7 @@ class NotificationMethodService(
         types: List<NotificationMethodType>?,
         useByDefault: Boolean?,
         deleted: Boolean = false,
-    ): Page<NotificationMethodRecord> = NotificationMethodTable.findAll(
+    ): Page<NotificationMethodRecord> = NotificationMethod.findAll(
         pageable = pageable,
         teamId = teamId,
         name = name,
@@ -88,20 +88,20 @@ class NotificationMethodService(
 
     @Transactional
     fun create(dto: CreateNotificationMethodDto): NotificationMethodWithDataRecord {
-        val teamId = TeamTable.findIdByPublicIdOrThrow(dto.teamId)
+        val teamId = Team.findIdByPublicIdOrThrow(dto.teamId)
 
         val monitorIds = monitorService.getByPublicId(dto.monitorIds)
             .ensureAllInTeam(teamId) { monitor -> monitor.teamId }
             .map { monitor -> monitor.id }
 
-        return NotificationMethodTable.insertAndGetId {
-            it[NotificationMethodTable.teamId] = teamId
-            it[NotificationMethodTable.type] = dto.data._type
-            it[NotificationMethodTable.name] = dto.name
-            it[NotificationMethodTable.useByDefault] = dto.useByDefault
-            it[NotificationMethodTable.titleTemplate] =
+        return NotificationMethod.insertAndGetId {
+            it[NotificationMethod.teamId] = teamId
+            it[NotificationMethod.type] = dto.data._type
+            it[NotificationMethod.name] = dto.name
+            it[NotificationMethod.useByDefault] = dto.useByDefault
+            it[NotificationMethod.titleTemplate] =
                 dto.titleTemplate?.nullIfNoDifference(dto.data._type.titleTemplate)
-            it[NotificationMethodTable.bodyTemplate] =
+            it[NotificationMethod.bodyTemplate] =
                 dto.bodyTemplate?.nullIfNoDifference(dto.data._type.bodyTemplate)
         }.let {
             getById(it.value)
@@ -111,9 +111,9 @@ class NotificationMethodService(
                 data = notificationMethodDataService.insert(it, dto.data),
             )
         }.also {
-            MonitorNotificationMethodTable.batchInsert(monitorIds) { monitorId ->
-                this[MonitorNotificationMethodTable.notificationMethodId] = it.notificationMethod.id
-                this[MonitorNotificationMethodTable.monitorId] = monitorId
+            MonitorNotificationMethod.batchInsert(monitorIds) { monitorId ->
+                this[MonitorNotificationMethod.notificationMethodId] = it.notificationMethod.id
+                this[MonitorNotificationMethod.monitorId] = monitorId
             }
 
             if (dto.testSend) {
@@ -124,30 +124,30 @@ class NotificationMethodService(
 
     @Transactional
     fun update(dto: UpdateNotificationMethodDto): NotificationMethodWithDataRecord =
-        NotificationMethodTable.findByPublicIdOrThrow(dto.id) {
-            NotificationMethodTable.rowToNotificationMethodRecord(it)
+        NotificationMethod.findByPublicIdOrThrow(dto.id) {
+            NotificationMethod.rowToNotificationMethodRecord(it)
         }.let { notificationMethod ->
             val monitorIds = monitorService.getByPublicId(dto.monitorIds)
                 .ensureAllInTeam(notificationMethod.teamId) { monitor -> monitor.teamId }
                 .map { monitor -> monitor.id }
-            MonitorNotificationMethodTable.deleteWhere {
-                MonitorNotificationMethodTable.notificationMethodId eq notificationMethod.id
+            MonitorNotificationMethod.deleteWhere {
+                MonitorNotificationMethod.notificationMethodId eq notificationMethod.id
             }
 
-            MonitorNotificationMethodTable.batchInsert(monitorIds) { monitorId ->
-                this[MonitorNotificationMethodTable.notificationMethodId] = notificationMethod.id
-                this[MonitorNotificationMethodTable.monitorId] = monitorId
+            MonitorNotificationMethod.batchInsert(monitorIds) { monitorId ->
+                this[MonitorNotificationMethod.notificationMethodId] = notificationMethod.id
+                this[MonitorNotificationMethod.monitorId] = monitorId
             }
 
-            NotificationMethodTable.update({ NotificationMethodTable.id eq notificationMethod.id }) {
-                it[NotificationMethodTable.name] = dto.name
-                it[NotificationMethodTable.type] = dto.data._type
-                it[NotificationMethodTable.useByDefault] = dto.useByDefault
-                it[NotificationMethodTable.titleTemplate] = dto
+            NotificationMethod.update({ NotificationMethod.id eq notificationMethod.id }) {
+                it[NotificationMethod.name] = dto.name
+                it[NotificationMethod.type] = dto.data._type
+                it[NotificationMethod.useByDefault] = dto.useByDefault
+                it[NotificationMethod.titleTemplate] = dto
                     .titleTemplate
                     ?.nullIfNoDifference(dto.data._type.titleTemplate)
 
-                it[NotificationMethodTable.bodyTemplate] = dto
+                it[NotificationMethod.bodyTemplate] = dto
                     .bodyTemplate
                     ?.nullIfNoDifference(dto.data._type.bodyTemplate)
             }.let {
@@ -170,19 +170,19 @@ class NotificationMethodService(
 
     @Transactional
     fun clone(publicNotificationMethodId: String, teamId: ULong? = null): NotificationMethodWithDataRecord =
-        NotificationMethodTable.findByPublicIdOrThrow(publicNotificationMethodId) {
-            NotificationMethodTable.rowToNotificationMethodRecord(it)
+        NotificationMethod.findByPublicIdOrThrow(publicNotificationMethodId) {
+            NotificationMethod.rowToNotificationMethodRecord(it)
         }.let { notificationMethod ->
             val data = notificationMethodDataService.findByIdAndType(notificationMethod.id, notificationMethod.type)
 
-            NotificationMethodTable.insertAndGetId {
-                it[NotificationMethodTable.teamId] = teamId ?: notificationMethod.teamId
-                it[NotificationMethodTable.type] = data._type
-                it[NotificationMethodTable.name] = "${notificationMethod.name} (Copy)"
-                it[NotificationMethodTable.useByDefault] = notificationMethod.useByDefault
-                it[NotificationMethodTable.titleTemplate] =
+            NotificationMethod.insertAndGetId {
+                it[NotificationMethod.teamId] = teamId ?: notificationMethod.teamId
+                it[NotificationMethod.type] = data._type
+                it[NotificationMethod.name] = "${notificationMethod.name} (Copy)"
+                it[NotificationMethod.useByDefault] = notificationMethod.useByDefault
+                it[NotificationMethod.titleTemplate] =
                     notificationMethod.titleTemplate?.nullIfNoDifference(data._type.titleTemplate)
-                it[NotificationMethodTable.bodyTemplate] =
+                it[NotificationMethod.bodyTemplate] =
                     notificationMethod.bodyTemplate?.nullIfNoDifference(data._type.bodyTemplate)
             }.let {
                 getById(notificationMethod.id)
@@ -196,21 +196,21 @@ class NotificationMethodService(
                 )
             }.also { (updatedNotificationMethod) ->
                 if (teamId == null) {
-                    MonitorNotificationMethodTable.batchInsert(
+                    MonitorNotificationMethod.batchInsert(
                         monitorService.getByNotificationMethodId(notificationMethod.id),
                     ) { monitor ->
-                        this[MonitorNotificationMethodTable.monitorId] = monitor.id
-                        this[MonitorNotificationMethodTable.notificationMethodId] = updatedNotificationMethod.id
+                        this[MonitorNotificationMethod.monitorId] = monitor.id
+                        this[MonitorNotificationMethod.notificationMethodId] = updatedNotificationMethod.id
                     }
                 }
             }
         }
 
     @Transactional
-    fun deleteById(id: ULong): Int = NotificationMethodTable.deleteById(id)
+    fun deleteById(id: ULong): Int = NotificationMethod.deleteById(id)
 
     @Transactional
-    fun undeleteById(id: ULong): NotificationMethodRecord = NotificationMethodTable.undeleteById(id).let {
+    fun undeleteById(id: ULong): NotificationMethodRecord = NotificationMethod.undeleteById(id).let {
         getById(id)
     }
 }

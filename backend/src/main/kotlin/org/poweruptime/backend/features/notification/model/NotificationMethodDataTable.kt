@@ -15,7 +15,7 @@ abstract class NotificationMethodDataTable(
     HasModifiers {
     override val id: Column<EntityID<ULong>> = ulong("id")
         .entityId()
-        .references(NotificationMethodTable.id)
+        .references(NotificationMethod.id)
         .uniqueIndex()
 
     override val createdAt = createdAt()

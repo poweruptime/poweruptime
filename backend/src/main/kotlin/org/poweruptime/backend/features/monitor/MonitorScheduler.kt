@@ -6,8 +6,8 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.core.utils.RandomGenerator
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
@@ -59,8 +59,8 @@ class MonitorScheduler(
         schedules[monitor.id] = taskScheduler.scheduleAtFixedRate(
             {
                 val checkResultId = transaction {
-                    CheckResultTable.insertAndGetId {
-                        it[CheckResultTable.monitorId] = monitor.id
+                    CheckResult.insertAndGetId {
+                        it[CheckResult.monitorId] = monitor.id
                     }.value
                 }
                 logger.debug {

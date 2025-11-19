@@ -11,55 +11,55 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.model.UserTable
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
+import org.poweruptime.backend.features.team.model.TeamJoinToken
 import org.poweruptime.backend.features.team.model.TeamJoinTokenJoinInviteeAndInviter
 import org.poweruptime.backend.features.team.model.TeamJoinTokenRecord
-import org.poweruptime.backend.features.team.model.TeamJoinTokenTable
 import org.poweruptime.backend.features.team.model.rowToTeamJoinTokenRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-fun TeamJoinTokenTable.countByTeamAndInviteeId(
+fun TeamJoinToken.countByTeamAndInviteeId(
     teamId: ULong,
     inviteeId: ULong
 ): Long = selectAll().where {
-    (TeamJoinTokenTable.teamId eq teamId) and (TeamJoinTokenTable.inviteeId eq inviteeId)
+    (TeamJoinToken.teamId eq teamId) and (TeamJoinToken.inviteeId eq inviteeId)
 }.count()
 
-fun TeamJoinTokenTable.findValidByInviteeIdTokenAndCreatedAfter(
+fun TeamJoinToken.findValidByInviteeIdTokenAndCreatedAfter(
     inviteeId: ULong,
     token: String,
     createdAfter: Instant
 ): TeamJoinTokenRecord? = selectAll().where {
-    (TeamJoinTokenTable.inviteeId eq inviteeId) and
-        (TeamJoinTokenTable.id eq token) and
-        (TeamJoinTokenTable.createdAt greater createdAfter) and
-        (TeamJoinTokenTable.valid eq true)
+    (TeamJoinToken.inviteeId eq inviteeId) and
+        (TeamJoinToken.id eq token) and
+        (TeamJoinToken.createdAt greater createdAfter) and
+        (TeamJoinToken.valid eq true)
 }.firstOrNull()?.let {
-    TeamJoinTokenTable.rowToTeamJoinTokenRecord(it)
+    TeamJoinToken.rowToTeamJoinTokenRecord(it)
 }
 
-fun TeamJoinTokenTable.invalidateByInviteeId(
+fun TeamJoinToken.invalidateByInviteeId(
     inviteeId: ULong
 ): Int = update({
-    (TeamJoinTokenTable.inviteeId eq inviteeId) and (TeamJoinTokenTable.valid eq true)
+    (TeamJoinToken.inviteeId eq inviteeId) and (TeamJoinToken.valid eq true)
 }) {
     it[valid] = false
 }
 
-fun TeamJoinTokenTable.findAll(
+fun TeamJoinToken.findAll(
     pageable: Pageable,
     teamId: ULong
 ): Page<TeamJoinTokenJoinInviteeAndInviter> {
-    val invitee = UserTable.alias("invitee")
-    val inviter = UserTable.alias("inviter")
+    val invitee = User.alias("invitee")
+    val inviter = User.alias("inviter")
 
-    val query = innerJoin(invitee, { TeamJoinTokenTable.inviteeId }, { invitee[UserTable.id] })
-        .innerJoin(inviter, { TeamJoinTokenTable.inviterId }, { inviter[UserTable.id] })
+    val query = innerJoin(invitee, { TeamJoinToken.inviteeId }, { invitee[User.id] })
+        .innerJoin(inviter, { TeamJoinToken.inviterId }, { inviter[User.id] })
         .selectAll().where {
-            (TeamJoinTokenTable.teamId eq teamId) and (TeamJoinTokenTable.valid eq true)
+            (TeamJoinToken.teamId eq teamId) and (TeamJoinToken.valid eq true)
         }
 
     return pageQuery(
@@ -67,10 +67,10 @@ fun TeamJoinTokenTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "invitee.email" -> invitee[UserTable.email]
-                "inviter.email" -> inviter[UserTable.email]
-                "role" -> TeamJoinTokenTable.role
-                "createdAt" -> TeamJoinTokenTable.createdAt
+                "invitee.email" -> invitee[User.email]
+                "inviter.email" -> inviter[User.email]
+                "role" -> TeamJoinToken.role
+                "createdAt" -> TeamJoinToken.createdAt
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )
@@ -78,16 +78,16 @@ fun TeamJoinTokenTable.findAll(
         },
         map = {
             TeamJoinTokenJoinInviteeAndInviter(
-                teamJoinToken = TeamJoinTokenTable.rowToTeamJoinTokenRecord(it),
-                invitee = UserTable.rowToUserRecord(it, invitee),
-                inviter = UserTable.rowToUserRecord(it, inviter),
+                teamJoinToken = TeamJoinToken.rowToTeamJoinTokenRecord(it),
+                invitee = User.rowToUserRecord(it, invitee),
+                inviter = User.rowToUserRecord(it, inviter),
             )
         },
     )
 }
 
-fun TeamJoinTokenTable.deleteOlderThan(
+fun TeamJoinToken.deleteOlderThan(
     before: Instant
 ): Int = deleteWhere {
-    TeamJoinTokenTable.createdAt less before
+    TeamJoinToken.createdAt less before
 }

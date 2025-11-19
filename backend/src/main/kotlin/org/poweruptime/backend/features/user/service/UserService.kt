@@ -11,8 +11,8 @@ import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.SystemRole
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.UserRecord
-import org.poweruptime.backend.features.authentication.model.UserTable
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import org.poweruptime.backend.features.mail.emails.InviteUserEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -39,48 +39,48 @@ class UserService(
     val systemEmailService: SystemEmailService,
     val teamService: TeamService,
 ) {
-    fun getById(id: ULong): UserRecord = UserTable
+    fun getById(id: ULong): UserRecord = User
         .selectAll()
-        .where { UserTable.id eq id }
+        .where { User.id eq id }
         .limit(1)
         .firstOrNull()
         ?.let {
-            UserTable.rowToUserRecord(it)
+            User.rowToUserRecord(it)
         }.orThrowNotFound()
 
-    fun getByPublicId(publicId: String): UserRecord = UserTable
+    fun getByPublicId(publicId: String): UserRecord = User
         .selectAll()
-        .where { UserTable.publicId eq publicId }
+        .where { User.publicId eq publicId }
         .limit(1)
         .firstOrNull()
         ?.let {
-            UserTable.rowToUserRecord(it)
+            User.rowToUserRecord(it)
         }.orThrowNotFound()
 
-    fun getIdByPublicId(publicId: String): ULong = UserTable.findIdByPublicIdOrThrow(publicId)
+    fun getIdByPublicId(publicId: String): ULong = User.findIdByPublicIdOrThrow(publicId)
 
     fun getByEmail(email: String): UserRecord =
-        UserTable.findByEmail(email).orThrowNotFound("""${javaClass.simpleName} not found""")
+        User.findByEmail(email).orThrowNotFound("""${javaClass.simpleName} not found""")
 
-    fun findByEmail(email: String): UserRecord? = UserTable.findByEmail(email)
+    fun findByEmail(email: String): UserRecord? = User.findByEmail(email)
 
     fun getAll(
         pageable: Pageable,
         search: String?,
         activated: Boolean?,
         role: SystemRole?,
-    ): Page<UserRecord> = UserTable.findAll(
+    ): Page<UserRecord> = User.findAll(
         pageable = pageable,
         search = search,
         activated = activated,
         role = role,
     )
 
-    fun isSetup(): Boolean = UserTable.isSetup()
+    fun isSetup(): Boolean = User.isSetup()
 
     @Transactional
     fun create(dto: CreateUserDto, inviter: UserRecord? = null, forcePasswordChange: Boolean = true): UserRecord {
-        if (UserTable.existsByEmail(dto.email)) {
+        if (User.existsByEmail(dto.email)) {
             throw BadRequestException("User email already taken", "USER_EMAIL_ALREADY_TAKEN")
         }
 
@@ -92,13 +92,13 @@ class UserService(
             dto.activated
         }
 
-        return UserTable.insertAndGetId {
-            it[UserTable.name] = dto.name
-            it[UserTable.email] = dto.email
-            it[UserTable.passwordHash] = passwordEncoder.encode(onetimePassword)
-            it[UserTable.activated] = activated
-            it[UserTable.role] = dto.role
-            it[UserTable.forcePasswordChange] = forcePasswordChange
+        return User.insertAndGetId {
+            it[User.name] = dto.name
+            it[User.email] = dto.email
+            it[User.passwordHash] = passwordEncoder.encode(onetimePassword)
+            it[User.activated] = activated
+            it[User.role] = dto.role
+            it[User.forcePasswordChange] = forcePasswordChange
         }
             .let { getById(it.value) }
             .also { user ->
@@ -123,20 +123,20 @@ class UserService(
                 dto.password
             }
 
-            UserTable.update({ UserTable.id eq id }) {
-                it[UserTable.name] = dto.name
-                it[UserTable.email] = dto.email
+            User.update({ User.id eq id }) {
+                it[User.name] = dto.name
+                it[User.email] = dto.email
 
                 if (newPassword != null) {
-                    it[UserTable.passwordHash] = passwordEncoder.encode(newPassword)
+                    it[User.passwordHash] = passwordEncoder.encode(newPassword)
                 }
 
                 val activated = if (dto.sendInvitation) true else dto.activated
                 val forcePasswordChange = if (dto.sendInvitation) true else dto.forcePasswordChange
 
-                it[UserTable.activated] = activated
-                it[UserTable.role] = dto.role
-                it[UserTable.forcePasswordChange] = forcePasswordChange
+                it[User.activated] = activated
+                it[User.role] = dto.role
+                it[User.forcePasswordChange] = forcePasswordChange
             }.let {
                 getById(id)
             }.also { user ->
@@ -152,11 +152,11 @@ class UserService(
 
     @Transactional
     fun deleteById(id: ULong): Int {
-        return UserTable.deleteById(id)
+        return User.deleteById(id)
     }
 
     @Transactional
-    fun undeleteById(id: ULong): UserRecord = UserTable.undeleteById(
+    fun undeleteById(id: ULong): UserRecord = User.undeleteById(
         id,
     ).let { getById(id) }
 }

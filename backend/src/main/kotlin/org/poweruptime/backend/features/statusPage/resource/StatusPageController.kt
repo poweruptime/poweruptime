@@ -18,12 +18,12 @@ import org.poweruptime.backend.features.statusPage.domain.findByStatusPage
 import org.poweruptime.backend.features.statusPage.dto.CreateStatusPageDto
 import org.poweruptime.backend.features.statusPage.dto.StatusPageResponse
 import org.poweruptime.backend.features.statusPage.dto.UpdateStatusPageDto
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
 import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameRecord
-import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameTable
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorJoinMonitorRecord
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorTable
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupTable
 import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
 import org.poweruptime.backend.features.statusPage.service.StatusPageService
 import org.poweruptime.backend.features.team.service.TeamService
@@ -88,11 +88,11 @@ class StatusPageController(
         val statusPageIds = statusPages.map { it.id }.toList()
 
         val domainNamesPerStatusPage =
-            StatusPageDomainNameTable.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
+            StatusPageDomainName.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
         val groupsPerStatusPage =
-            StatusPageGroupTable.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
+            StatusPageGroup.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
         val groupMonitorsPerStatusPage =
-            StatusPageGroupMonitorTable.findByStatusPage(statusPageIds).groupBy { it.groupMonitor.statusPageId }
+            StatusPageGroupMonitor.findByStatusPage(statusPageIds).groupBy { it.groupMonitor.statusPageId }
 
         return statusPages.toDto {
             it.toResponse(
@@ -178,9 +178,9 @@ class StatusPageController(
         ).toResponse()
 
     private fun StatusPageRecord.toResponse(
-        domainNames: List<StatusPageDomainNameRecord> = StatusPageDomainNameTable.findByStatusPage(this.id),
-        groups: List<StatusPageGroupRecord> = StatusPageGroupTable.findByStatusPage(this.id),
-        statusPageGroupMonitors: List<StatusPageGroupMonitorJoinMonitorRecord> = StatusPageGroupMonitorTable
+        domainNames: List<StatusPageDomainNameRecord> = StatusPageDomainName.findByStatusPage(this.id),
+        groups: List<StatusPageGroupRecord> = StatusPageGroup.findByStatusPage(this.id),
+        statusPageGroupMonitors: List<StatusPageGroupMonitorJoinMonitorRecord> = StatusPageGroupMonitor
             .findByStatusPage(this.id)
     ): StatusPageResponse = StatusPageResponse(
         statusPage = this,

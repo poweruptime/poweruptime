@@ -6,22 +6,22 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
-import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeTable
 import org.poweruptime.backend.features.monitor.model.rowToHistoricalDayUptimeRecord
 import java.time.LocalDate
 
-fun HistoricalDayUptimeTable.findByMonitorIdBetweenDates(
+fun HistoricalDayUptime.findByMonitorIdBetweenDates(
     monitorId: ULong,
     start: LocalDate,
     end: LocalDate,
 ): List<HistoricalDayUptimeRecord> =
     selectAll()
         .where {
-            (HistoricalDayUptimeTable.monitorId eq monitorId) and (date greaterEq start) and (date lessEq end)
+            (HistoricalDayUptime.monitorId eq monitorId) and (date greaterEq start) and (date lessEq end)
         }.orderBy(
             date,
             SortOrder.DESC,
         ).map {
-            HistoricalDayUptimeTable.rowToHistoricalDayUptimeRecord(it)
+            HistoricalDayUptime.rowToHistoricalDayUptimeRecord(it)
         }

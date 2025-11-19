@@ -14,11 +14,11 @@ import org.poweruptime.backend.features.monitor.dto.MonitorFullResponse
 import org.poweruptime.backend.features.monitor.dto.PushCheckResultDto
 import org.poweruptime.backend.features.monitor.dto.PushMonitorDto
 import org.poweruptime.backend.features.monitor.dto.PushNotificationDto
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorRecord
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.resource.LAST_CHECK_RESULTS_COUNT
@@ -186,15 +186,15 @@ class MonitorListener(
         requireNotNull(checkResult.pickedUpAt) { "Check result pickedUpAt must not be null." }
         requireNotNull(checkResult.previousStatus) { "Check result previousStatus must not be null." }
 
-        val updatedCheck = CheckResultTable.update({ CheckResultTable.id eq checkResult.id }) {
-            it[CheckResultTable.status] = checkResult.status
-            it[CheckResultTable.timesRetried] = checkResult.timesRetried
-            it[CheckResultTable.previousStatus] = checkResult.previousStatus
-            it[CheckResultTable.pickedUpAt] = checkResult.pickedUpAt
-            it[CheckResultTable.checkedAt] = checkResult.checkedAt
-            it[CheckResultTable.pingMs] = checkResult.pingMs
-            it[CheckResultTable.title] = checkResult.title
-            it[CheckResultTable.message] = checkResult.message
+        val updatedCheck = CheckResult.update({ CheckResult.id eq checkResult.id }) {
+            it[CheckResult.status] = checkResult.status
+            it[CheckResult.timesRetried] = checkResult.timesRetried
+            it[CheckResult.previousStatus] = checkResult.previousStatus
+            it[CheckResult.pickedUpAt] = checkResult.pickedUpAt
+            it[CheckResult.checkedAt] = checkResult.checkedAt
+            it[CheckResult.pingMs] = checkResult.pingMs
+            it[CheckResult.title] = checkResult.title
+            it[CheckResult.message] = checkResult.message
         }.let {
             checkResultService.getByIdJoinMonitorAndTeam(checkResult.id)
         }

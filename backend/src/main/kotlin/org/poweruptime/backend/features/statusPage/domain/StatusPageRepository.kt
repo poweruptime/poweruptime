@@ -10,43 +10,43 @@ import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.features.fileUpload.FileTable
-import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameTable
+import org.poweruptime.backend.features.fileUpload.File
+import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
 import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
-import org.poweruptime.backend.features.statusPage.model.StatusPageTable
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun StatusPageTable.findByDomainName(domainName: String): StatusPageRecord? =
+fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? =
     innerJoin(
-        StatusPageDomainNameTable,
-        { StatusPageTable.id },
-        { StatusPageDomainNameTable.statusPageId },
+        StatusPageDomainName,
+        { StatusPage.id },
+        { StatusPageDomainName.statusPageId },
     )
-        .leftJoin(FileTable, { FileTable.id }, { StatusPageTable.imageId })
+        .leftJoin(File, { File.id }, { StatusPage.imageId })
         .selectAll()
-        .where { StatusPageDomainNameTable.name eq domainName }
-        .withDistinctOn(StatusPageTable.id)
+        .where { StatusPageDomainName.name eq domainName }
+        .withDistinctOn(StatusPage.id)
         .limit(1)
         .firstOrNull()
         ?.let {
-            StatusPageTable.rowToStatusPageRecord(it)
+            StatusPage.rowToStatusPageRecord(it)
         }
 
-fun StatusPageTable.findAll(
+fun StatusPage.findAll(
     pageable: Pageable,
     teamId: ULong,
     name: String?,
     deleted: Boolean = false
 ): Page<StatusPageRecord> {
-    var condition: Op<Boolean> = StatusPageTable.deleted.deletedFilter(deleted) and (StatusPageTable.teamId eq teamId)
+    var condition: Op<Boolean> = StatusPage.deleted.deletedFilter(deleted) and (StatusPage.teamId eq teamId)
 
     name?.let {
-        condition = condition and (StatusPageTable.name.lowerCase() like "%${it.lowercase()}%")
+        condition = condition and (StatusPage.name.lowerCase() like "%${it.lowercase()}%")
     }
 
-    val query = leftJoin(FileTable, { StatusPageTable.imageId }, { FileTable.id })
+    val query = leftJoin(File, { StatusPage.imageId }, { File.id })
         .selectAll().where(condition)
 
     return pageQuery(
@@ -54,11 +54,11 @@ fun StatusPageTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "name" -> StatusPageTable.name
-                "slug" -> StatusPageTable.publicId
-                "createdAt" -> StatusPageTable.createdAt
-                "updatedAt" -> StatusPageTable.updatedAt
-                "deleted" -> StatusPageTable.deleted
+                "name" -> StatusPage.name
+                "slug" -> StatusPage.publicId
+                "createdAt" -> StatusPage.createdAt
+                "updatedAt" -> StatusPage.updatedAt
+                "deleted" -> StatusPage.deleted
                 else -> null
             }
         },

@@ -3,7 +3,7 @@ package org.poweruptime.backend.features.info.versionChecker
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.poweruptime.backend.features.authentication.model.UserTable
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.mail.emails.NewVersionEmail
@@ -36,7 +36,7 @@ class VersionChecker(
             return
         }
 
-        val existingVersionCheckMail = VersionCheckMailTable.findByVersion(latestVersion)
+        val existingVersionCheckMail = VersionCheckMail.findByVersion(latestVersion)
         if (existingVersionCheckMail != null) {
             logger.debug { "New version available but email already sent" }
             return
@@ -44,7 +44,7 @@ class VersionChecker(
 
         val to =
             instanceSettingService.getVersionCheckAdminMailTo()
-                ?: UserTable.findByRole(SystemRole.ADMIN).map { it.email }
+                ?: User.findByRole(SystemRole.ADMIN).map { it.email }
 
         if (to.isEmpty()) {
             logger.error { "New version available but no recipients found." }
@@ -52,7 +52,7 @@ class VersionChecker(
         }
 
         systemEmailService.queueEmail(NewVersionEmail(to.toSet(), latestVersion))
-        VersionCheckMailTable.insert {
+        VersionCheckMail.insert {
             it[puVersion] = latestVersion
         }
     }

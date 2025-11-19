@@ -8,14 +8,14 @@ import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.domain.findByStatusUpMonitorIdAndPickedUpBetween
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
-import org.poweruptime.backend.features.team.model.TeamTable
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -26,22 +26,22 @@ import java.time.Instant
 @Service
 @Transactional(readOnly = true)
 class CheckResultService {
-    fun getById(id: ULong): CheckResultRecord = CheckResultTable.findByIdOrThrow(id) {
-        CheckResultTable.rowToCheckResultRecord(it)
+    fun getById(id: ULong): CheckResultRecord = CheckResult.findByIdOrThrow(id) {
+        CheckResult.rowToCheckResultRecord(it)
     }
 
     fun getByIdJoinMonitorAndTeam(id: ULong): CheckResultJoinMonitorAndTeamRecord =
-        CheckResultTable.innerJoin(MonitorTable).innerJoin(TeamTable).selectAll().where {
-            CheckResultTable.id eq id
+        CheckResult.innerJoin(Monitor).innerJoin(Team).selectAll().where {
+            CheckResult.id eq id
         }.limit(1).firstOrNull()?.let {
             CheckResultJoinMonitorAndTeamRecord(
-                checkResult = CheckResultTable.rowToCheckResultRecord(it),
-                monitor = MonitorTable.rowToMonitorRecord(it),
-                team = TeamTable.rowToTeamRecord(it),
+                checkResult = CheckResult.rowToCheckResultRecord(it),
+                monitor = Monitor.rowToMonitorRecord(it),
+                team = Team.rowToTeamRecord(it),
             )
         }.orThrowNotFound()
 
-    fun getIdByPublicId(publicId: String): ULong = CheckResultTable.findIdByPublicIdOrThrow(publicId)
+    fun getIdByPublicId(publicId: String): ULong = CheckResult.findIdByPublicIdOrThrow(publicId)
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -53,7 +53,7 @@ class CheckResultService {
         hasNotification: Boolean?,
         start: Instant?,
         end: Instant?,
-    ): Page<CheckResultJoinMonitorAndTeamRecord> = CheckResultTable.findAll(
+    ): Page<CheckResultJoinMonitorAndTeamRecord> = CheckResult.findAll(
         pageable = pageable,
         onlyChanges = onlyChanges,
         monitorId = monitorId,
@@ -69,9 +69,9 @@ class CheckResultService {
         monitorId: ULong,
         start: Instant,
         end: Instant
-    ): List<CheckResultRecord> = CheckResultTable.findByStatusUpMonitorIdAndPickedUpBetween(monitorId, start, end)
+    ): List<CheckResultRecord> = CheckResult.findByStatusUpMonitorIdAndPickedUpBetween(monitorId, start, end)
 
     @Transactional
     fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int =
-        CheckResultTable.deleteByTeamIdAndOlderThan(teamId, than)
+        CheckResult.deleteByTeamIdAndOlderThan(teamId, than)
 }

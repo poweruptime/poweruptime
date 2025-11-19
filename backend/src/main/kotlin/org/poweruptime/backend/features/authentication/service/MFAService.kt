@@ -16,12 +16,12 @@ import org.poweruptime.backend.features.authentication.MFACodeIncorrectException
 import org.poweruptime.backend.features.authentication.MFACodeRequiredException
 import org.poweruptime.backend.features.authentication.domain.findByMFAId
 import org.poweruptime.backend.features.authentication.domain.invalidateCodeById
+import org.poweruptime.backend.features.authentication.model.MFA
+import org.poweruptime.backend.features.authentication.model.MFABackupCode
 import org.poweruptime.backend.features.authentication.model.MFABackupCodeRecord
-import org.poweruptime.backend.features.authentication.model.MFABackupCodeTable
 import org.poweruptime.backend.features.authentication.model.MFARecord
-import org.poweruptime.backend.features.authentication.model.MFATable
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.UserRecord
-import org.poweruptime.backend.features.authentication.model.UserTable
 import org.poweruptime.backend.features.authentication.model.rowToMFARecord
 import org.poweruptime.backend.features.mail.emails.MFALowBackupCodesEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -36,12 +36,12 @@ class MFAService(
     private val passwordEncoder: PasswordEncoder,
     private val systemEmailService: SystemEmailService,
 ) {
-    fun findById(id: ULong): MFARecord? = MFATable.findById(id) {
-        MFATable.rowToMFARecord(it)
+    fun findById(id: ULong): MFARecord? = MFA.findById(id) {
+        MFA.rowToMFARecord(it)
     }
 
-    fun getById(id: ULong): MFARecord = MFATable.findByIdOrThrow(id) {
-        MFATable.rowToMFARecord(it)
+    fun getById(id: ULong): MFARecord = MFA.findByIdOrThrow(id) {
+        MFA.rowToMFARecord(it)
     }
 
     @Throws(MFACodeIncorrectException::class, MFACodeRequiredException::class)
@@ -59,10 +59,10 @@ class MFAService(
             }
 
             if (!isValid(mfa.secret, code)) {
-                val backupCodes = MFABackupCodeTable.findByMFAId(mfa.id)
+                val backupCodes = MFABackupCode.findByMFAId(mfa.id)
                 val backupCode = backupCodes.matches(rawCode = code) ?: throw MFACodeIncorrectException()
 
-                MFABackupCodeTable.invalidateCodeById(backupCode.id)
+                MFABackupCode.invalidateCodeById(backupCode.id)
 
                 val remainingBackupCodes = backupCodes.size - 1
 
@@ -90,9 +90,9 @@ class MFAService(
             return mfa
         }
 
-        return getById(MFATable.insertAndGetId {}.value).also { mfa ->
-            UserTable.update({ UserTable.id eq userId }) {
-                it[UserTable.mfaId] = mfa.id
+        return getById(MFA.insertAndGetId {}.value).also { mfa ->
+            User.update({ User.id eq userId }) {
+                it[User.mfaId] = mfa.id
             }
         }
     }
@@ -109,18 +109,18 @@ class MFAService(
             throw BadRequestException("Code invalid")
         }
 
-        MFATable.update({ MFATable.id eq mfa.id }) {
-            it[MFATable.active] = true
+        MFA.update({ MFA.id eq mfa.id }) {
+            it[MFA.active] = true
         }
 
         val rawBackupCodes = buildList { repeat(10) { add(RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)) } }
 
         assert(rawBackupCodes.size == 10)
 
-        MFABackupCodeTable.batchInsert(rawBackupCodes) { rawBackupCode ->
-            this[MFABackupCodeTable.mfaId] = mfa.id
-            this[MFABackupCodeTable.codeHash] = passwordEncoder.encode(rawBackupCode)
-            this[MFABackupCodeTable.valid] = true
+        MFABackupCode.batchInsert(rawBackupCodes) { rawBackupCode ->
+            this[MFABackupCode.mfaId] = mfa.id
+            this[MFABackupCode.codeHash] = passwordEncoder.encode(rawBackupCode)
+            this[MFABackupCode.valid] = true
         }
 
         return rawBackupCodes
@@ -128,12 +128,12 @@ class MFAService(
 
     @Transactional
     fun delete(mfaId: ULong) {
-        MFABackupCodeTable.deleteWhere { MFABackupCodeTable.mfaId eq mfaId }
-        UserTable.update({ UserTable.mfaId eq mfaId }) {
-            it[UserTable.mfaId] = null
+        MFABackupCode.deleteWhere { MFABackupCode.mfaId eq mfaId }
+        User.update({ User.mfaId eq mfaId }) {
+            it[User.mfaId] = null
         }
 
-        MFATable.deleteWhere { MFATable.id eq mfaId }
+        MFA.deleteWhere { MFA.id eq mfaId }
     }
 
     private fun isValid(secret: String, code: String): Boolean {

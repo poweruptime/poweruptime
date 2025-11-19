@@ -17,10 +17,10 @@ import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
 import org.poweruptime.backend.features.monitor.dto.PingTimelineDataEntryResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorUptimeStatistics
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
-import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeTable
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.PRECISION_SCALE
 import org.springframework.cache.annotation.Cacheable
@@ -49,10 +49,10 @@ fun BigDecimal.myFormat(): String {
 class CheckResultStatisticsService {
 
     fun getLastByMonitorId(monitorId: ULong, limit: Int): List<CheckResultRecord> =
-        CheckResultTable.findLastByMonitorId(monitorId, limit)
+        CheckResult.findLastByMonitorId(monitorId, limit)
 
     fun getLastByMonitorIds(monitorIds: List<ULong>, limit: Int): Map<ULong, List<CheckResultRecord>> =
-        CheckResultTable.findLastByMonitorIds(monitorIds, limit).groupBy { it.monitorId }
+        CheckResult.findLastByMonitorIds(monitorIds, limit).groupBy { it.monitorId }
 
     @Cacheable(value = [MONITOR_YEARLY_UPTIME_CACHE_KEY])
     fun calculateYearlyUptime(monitorId: ULong): List<DayUptimeStatistics> {
@@ -87,7 +87,7 @@ class CheckResultStatisticsService {
     @Cacheable(value = [MONITOR_UPTIME_STATISTICS_CACHE_KEY])
     fun uptimeStatisticsDto(monitorId: ULong): PublicMonitorUptimeStatistics {
         val now = Instant.now()
-        val checkResults = CheckResultTable.findByMonitorIdAndPickedUpBetween(
+        val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
             monitorId,
             now.minus(TimeOption.ONE_DAY.hours, ChronoUnit.HOURS),
             now,
@@ -145,7 +145,7 @@ class CheckResultStatisticsService {
     @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: ULong, timeOption: TimeOption): BigDecimal {
         val now = Instant.now()
-        val checkResults = CheckResultTable.findByMonitorIdAndPickedUpBetween(
+        val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
             monitorId,
             now.minus(timeOption.hours, ChronoUnit.HOURS),
             now,
@@ -158,7 +158,7 @@ class CheckResultStatisticsService {
     fun syncCheckResultsToHistoricalDayUptime(monitorId: ULong) {
         val currentDate = LocalDate.now()
         val startOfYearAgo = currentDate.minusYears(1)
-        val existing = HistoricalDayUptimeTable.findByMonitorIdBetweenDates(
+        val existing = HistoricalDayUptime.findByMonitorIdBetweenDates(
             monitorId,
             startOfYearAgo,
             currentDate,
@@ -181,10 +181,10 @@ class CheckResultStatisticsService {
             .toList() // Convert the sequence to a list for saveAll
 
         if (newEntries.isNotEmpty()) {
-            HistoricalDayUptimeTable.batchInsert(newEntries) { (date, uptime) ->
-                this[HistoricalDayUptimeTable.monitorId] = monitorId
-                this[HistoricalDayUptimeTable.date] = date
-                this[HistoricalDayUptimeTable.uptime] = uptime
+            HistoricalDayUptime.batchInsert(newEntries) { (date, uptime) ->
+                this[HistoricalDayUptime.monitorId] = monitorId
+                this[HistoricalDayUptime.date] = date
+                this[HistoricalDayUptime.uptime] = uptime
             }
         }
     }
@@ -207,7 +207,7 @@ class CheckResultStatisticsService {
                 ),
             )
             addAll(
-                HistoricalDayUptimeTable.findByMonitorIdBetweenDates(
+                HistoricalDayUptime.findByMonitorIdBetweenDates(
                     monitorId,
                     currentDate.minusYears(1),
                     currentDate,
@@ -217,7 +217,7 @@ class CheckResultStatisticsService {
     }
 
     private fun calculateUptimeByMonitorId(monitorId: ULong, start: Instant, end: Instant): BigDecimal {
-        val results = CheckResultTable.findByMonitorIdAndPickedUpBetween(monitorId, start, end)
+        val results = CheckResult.findByMonitorIdAndPickedUpBetween(monitorId, start, end)
         return calculateUptimeFromCheckResults(results, start, end) ?: BigDecimal(FULL_PERCENT)
     }
 }
@@ -229,7 +229,7 @@ fun calculateHistoricalUptime(
     val daysCount = (timeOption.hours / HOURS_PER_DAY).toInt()
     // Ensure the list is large enough
     if (daysCount > historicalDayUptimes.size) {
-        return BigDecimal("100.0000")
+        return BigDecimal("100.000")
     }
     val days = historicalDayUptimes.take(daysCount)
     val totalUptime = days.fold(BigDecimal.ZERO) { acc, day -> acc + day.uptime }

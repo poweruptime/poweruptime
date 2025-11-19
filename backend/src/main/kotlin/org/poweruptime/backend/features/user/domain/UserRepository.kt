@@ -12,47 +12,47 @@ import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.model.SystemRole
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.UserRecord
-import org.poweruptime.backend.features.authentication.model.UserTable
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun UserTable.findByEmail(email: String): UserRecord? =
-    selectAll().where { UserTable.email eq email }.limit(1).firstOrNull()?.let {
-        UserTable.rowToUserRecord(it)
+fun User.findByEmail(email: String): UserRecord? =
+    selectAll().where { User.email eq email }.limit(1).firstOrNull()?.let {
+        User.rowToUserRecord(it)
     }
 
-fun UserTable.existsByEmail(email: String): Boolean =
-    select(id).where { UserTable.email eq email }.limit(1).count() > 0
+fun User.existsByEmail(email: String): Boolean =
+    select(id).where { User.email eq email }.limit(1).count() > 0
 
-fun UserTable.findByRole(role: SystemRole): List<UserRecord> =
-    selectAll().where { UserTable.role eq role }.map { UserTable.rowToUserRecord(it) }
+fun User.findByRole(role: SystemRole): List<UserRecord> =
+    selectAll().where { User.role eq role }.map { User.rowToUserRecord(it) }
 
-fun UserTable.isSetup(): Boolean = selectAll().count() == 0L
+fun User.isSetup(): Boolean = selectAll().count() == 0L
 
-fun UserTable.findAll(
+fun User.findAll(
     pageable: Pageable,
     search: String?,
     activated: Boolean?,
     role: SystemRole?,
     deleted: Boolean = false
 ): Page<UserRecord> {
-    var condition: Op<Boolean> = UserTable.deleted.deletedFilter(deleted)
+    var condition: Op<Boolean> = User.deleted.deletedFilter(deleted)
 
     search?.let {
         val searchExpr =
-            (UserTable.name.lowerCase() like "%${it.lowercase()}%") or
-                (UserTable.email.lowerCase() like "%${it.lowercase()}%")
+            (User.name.lowerCase() like "%${it.lowercase()}%") or
+                (User.email.lowerCase() like "%${it.lowercase()}%")
         condition = condition and searchExpr
     }
 
     activated?.let {
-        condition = condition and (UserTable.activated eq it)
+        condition = condition and (User.activated eq it)
     }
 
     role?.let {
-        condition = condition and (UserTable.role eq it)
+        condition = condition and (User.role eq it)
     }
 
     val query = selectAll().where(condition)
@@ -62,10 +62,10 @@ fun UserTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "name" -> UserTable.name
-                "activated" -> UserTable.activated
-                "role" -> UserTable.role
-                "createdAt" -> UserTable.createdAt
+                "name" -> User.name
+                "activated" -> User.activated
+                "role" -> User.role
+                "createdAt" -> User.createdAt
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )

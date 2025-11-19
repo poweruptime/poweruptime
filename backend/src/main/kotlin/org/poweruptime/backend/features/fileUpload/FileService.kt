@@ -36,11 +36,11 @@ class FileService(
     fun store(uploadFile: MultipartFile): FileRecord {
         isAllowedToUpload(uploadFile)
 
-        val dbFile = FileTable.insertAndGetId {
-            it[FileTable.name] = uploadFile.resource.filename!!
+        val dbFile = File.insertAndGetId {
+            it[File.name] = uploadFile.resource.filename!!
         }.let { id ->
-            FileTable.findByIdOrThrow(id.value) {
-                FileTable.rowToFileRecord(it)
+            File.findByIdOrThrow(id.value) {
+                File.rowToFileRecord(it)
             }
         }
 
@@ -82,12 +82,12 @@ class FileService(
         null
     }
 
-    fun getByFileId(fileId: String): FileRecord = FileTable.findByPublicId(fileId) {
-        FileTable.rowToFileRecord(it)
+    fun getByFileId(fileId: String): FileRecord = File.findByPublicId(fileId) {
+        File.rowToFileRecord(it)
     }.orThrowNotFound("File not found: $fileId")
 
     fun getIdByFileId(fileId: String): ULong =
-        FileTable.findIdByPublicId(fileId).orThrowNotFound("File not found: $fileId")
+        File.findIdByPublicId(fileId).orThrowNotFound("File not found: $fileId")
 
     fun init() {
         Files.createDirectories(rootLocation)
@@ -95,7 +95,7 @@ class FileService(
 
     @Transactional
     fun deleteOlderThan(past: Instant): List<FileRecord> {
-        val filesToDelete = FileTable.findUnusedCreatedAfterThan(past)
+        val filesToDelete = File.findUnusedCreatedAfterThan(past)
 
         filesToDelete.forEach { file ->
             try {
@@ -116,11 +116,11 @@ class FileService(
             }
         }
 
-        FileTable.deleteById(filesToDelete.map { it.id })
+        File.deleteById(filesToDelete.map { it.id })
 
         // Find files on disk without a database entry
         val filesOnDisk = getAllFilesOnDisk()
-        val fileIdsInDatabase = FileTable.selectAll().map { it[FileTable.publicId] }.toSet()
+        val fileIdsInDatabase = File.selectAll().map { it[File.publicId] }.toSet()
 
         val filesToDeleteFromDisk = filesOnDisk.filter { file ->
             !fileIdsInDatabase.contains(file.fileName.toString())

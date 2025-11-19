@@ -28,7 +28,7 @@ import org.poweruptime.backend.features.team.dto.InviteTeamUserDto
 import org.poweruptime.backend.features.team.dto.TeamJoinTokenResponse
 import org.poweruptime.backend.features.team.dto.TeamUserResponse
 import org.poweruptime.backend.features.team.dto.UpdateTeamUserDto
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.service.MAX_TEAM_JOIN_TOKENS_PER_USER_AND_TEAM_IN_3_DAYS
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
@@ -71,7 +71,7 @@ class TeamUserController(
         @ParameterObject @PageableDefault pageable: Pageable,
         @PathVariable("teamId") publicTeamId: String,
     ): PaginatedResponse<TeamUserResponse> =
-        TeamUserTable.findAll(pageable, teamService.getIdByPublicId(publicTeamId))
+        TeamUser.findAll(pageable, teamService.getIdByPublicId(publicTeamId))
             .toDto { TeamUserResponse(it) }
 
     @Operation(
@@ -114,7 +114,7 @@ class TeamUserController(
             throw BadRequestException("Other users can only be added to non-personal teams.", "PERSONAL_TEAM")
         }
 
-        if (TeamUserTable.findByTeamAndUserId(team.id, invitee.id) != null) {
+        if (TeamUser.findByTeamAndUserId(team.id, invitee.id) != null) {
             throw BadRequestException("User already in team", "ALREADY_IN_TEAM")
         }
 
@@ -149,19 +149,19 @@ class TeamUserController(
     ): TeamUserResponse {
         val teamId = teamService.getIdByPublicId(publicTeamId)
         val userId = userService.getIdByPublicId(dto.userId)
-        TeamUserTable.findByTeamAndUserId(
+        TeamUser.findByTeamAndUserId(
             teamId = teamId,
             userId = userId,
         ).orThrowNotFound("User not in team")
 
-        TeamUserTable.update({
-            (TeamUserTable.teamId eq teamId) and (TeamUserTable.userId eq userId)
+        TeamUser.update({
+            (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
         }) {
             it[role] = dto.role
         }
 
         return TeamUserResponse(
-            TeamUserTable.findJoinUserAndInviterByTeamAndUserId(teamId, userId)!!,
+            TeamUser.findJoinUserAndInviterByTeamAndUserId(teamId, userId)!!,
         )
     }
 
@@ -182,7 +182,7 @@ class TeamUserController(
         val teamId = teamService.getIdByPublicId(publicTeamId)
         val userId = userService.getIdByPublicId(publicUserId)
 
-        val toBeRemovedTeamUser = TeamUserTable.findByTeamAndUserId(teamId, userId)
+        val toBeRemovedTeamUser = TeamUser.findByTeamAndUserId(teamId, userId)
             ?: throw ForbiddenException()
 
         if (toBeRemovedTeamUser.inviterId == null) {
@@ -195,12 +195,12 @@ class TeamUserController(
             throw BadRequestException("Can't remove yourself")
         }
 
-        val actorTeamUser = TeamUserTable.findByTeamAndUserId(teamId, actorUserId)
+        val actorTeamUser = TeamUser.findByTeamAndUserId(teamId, actorUserId)
         // If actorTeamUser is null the actor is an admin
         if (actorTeamUser?.inviterId == userId) {
             throw BadRequestException("Can't remove the person who invited you")
         }
 
-        TeamUserTable.deleteByTeamAndUserId(teamId, userId)
+        TeamUser.deleteByTeamAndUserId(teamId, userId)
     }
 }

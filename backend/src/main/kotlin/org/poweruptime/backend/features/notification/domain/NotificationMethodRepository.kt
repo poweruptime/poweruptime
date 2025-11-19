@@ -9,22 +9,22 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.model.MonitorNotificationMethodTable
+import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
+import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
-import org.poweruptime.backend.features.notification.model.NotificationMethodTable
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun NotificationMethodTable.findByMonitorId(
+fun NotificationMethod.findByMonitorId(
     monitorId: ULong
-): List<NotificationMethodRecord> = innerJoin(MonitorNotificationMethodTable).selectAll().where {
-    MonitorNotificationMethodTable.monitorId eq monitorId
+): List<NotificationMethodRecord> = innerJoin(MonitorNotificationMethod).selectAll().where {
+    MonitorNotificationMethod.monitorId eq monitorId
 }.map {
     rowToNotificationMethodRecord(it)
 }
 
-fun NotificationMethodTable.findAll(
+fun NotificationMethod.findAll(
     pageable: Pageable,
     teamId: ULong,
     name: String?,
@@ -34,19 +34,19 @@ fun NotificationMethodTable.findAll(
 ): Page<NotificationMethodRecord> {
     val query = selectAll()
 
-    query.andWhere { NotificationMethodTable.deleted.deletedFilter(deleted) }
-    query.andWhere { NotificationMethodTable.teamId eq teamId }
+    query.andWhere { NotificationMethod.deleted.deletedFilter(deleted) }
+    query.andWhere { NotificationMethod.teamId eq teamId }
 
     name?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { NotificationMethodTable.name.lowerCase() like "%${it.lowercase()}%" }
+        query.andWhere { NotificationMethod.name.lowerCase() like "%${it.lowercase()}%" }
     }
 
     types?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { NotificationMethodTable.type inList it }
+        query.andWhere { NotificationMethod.type inList it }
     }
 
     useByDefault?.let {
-        query.andWhere { NotificationMethodTable.useByDefault eq it }
+        query.andWhere { NotificationMethod.useByDefault eq it }
     }
 
     return pageQuery(
@@ -54,11 +54,11 @@ fun NotificationMethodTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "name" -> NotificationMethodTable.name
-                "useByDefault" -> NotificationMethodTable.useByDefault
-                "type" -> NotificationMethodTable.type
-                "createdAt" -> NotificationMethodTable.createdAt
-                "deleted" -> NotificationMethodTable.deleted
+                "name" -> NotificationMethod.name
+                "useByDefault" -> NotificationMethod.useByDefault
+                "type" -> NotificationMethod.type
+                "createdAt" -> NotificationMethod.createdAt
+                "deleted" -> NotificationMethod.deleted
                 else -> null
             }
         },

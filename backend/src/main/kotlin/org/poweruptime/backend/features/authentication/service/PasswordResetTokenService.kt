@@ -4,7 +4,7 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.poweruptime.backend.features.authentication.domain.countByUserIdAndCreatedAfter
 import org.poweruptime.backend.features.authentication.domain.deleteOlderThan
 import org.poweruptime.backend.features.authentication.domain.invalidateByUserIdTokenAndCreatedAfter
-import org.poweruptime.backend.features.authentication.model.PasswordResetTokenTable
+import org.poweruptime.backend.features.authentication.model.PasswordResetToken
 import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.mail.emails.PasswordResetEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -21,7 +21,7 @@ class PasswordResetTokenService(
 ) {
 
     fun create(user: UserRecord) {
-        if (PasswordResetTokenTable.countByUserIdAndCreatedAfter(
+        if (PasswordResetToken.countByUserIdAndCreatedAfter(
                 user.id,
                 Instant.now().minusSeconds(60 * 60), // 1 hour
             ) > 2
@@ -29,8 +29,8 @@ class PasswordResetTokenService(
             return
         }
 
-        val resetToken = PasswordResetTokenTable.insertAndGetId {
-            it[PasswordResetTokenTable.userId] = user.id
+        val resetToken = PasswordResetToken.insertAndGetId {
+            it[PasswordResetToken.userId] = user.id
         }.value
 
         systemEmailService.queueEmail(
@@ -39,11 +39,11 @@ class PasswordResetTokenService(
     }
 
     fun validateToken(userId: ULong, token: String): Boolean =
-        PasswordResetTokenTable.invalidateByUserIdTokenAndCreatedAfter(
+        PasswordResetToken.invalidateByUserIdTokenAndCreatedAfter(
             userId,
             token,
             Instant.now().minusSeconds(THREE_HOURS_IN_SECONDS), // 3 hours
         ) == 1
 
-    fun clearOlderThan(past: Instant): Int = PasswordResetTokenTable.deleteOlderThan(past)
+    fun clearOlderThan(past: Instant): Int = PasswordResetToken.deleteOlderThan(past)
 }

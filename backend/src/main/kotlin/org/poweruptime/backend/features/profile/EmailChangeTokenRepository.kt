@@ -6,43 +6,43 @@ import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import java.time.Instant
 
-fun EmailChangeTokenTable.findByUserIdAndCreatedAfter(
+fun EmailChangeToken.findByUserIdAndCreatedAfter(
     userId: ULong,
     createdAfter: Instant
 ): List<EmailChangeTokenRecord> =
     selectAll().where {
-        (EmailChangeTokenTable.userId eq userId) and (EmailChangeTokenTable.createdAt greater createdAfter)
+        (EmailChangeToken.userId eq userId) and (EmailChangeToken.createdAt greater createdAfter)
     }.map {
-        EmailChangeTokenTable.rowToEmailChangeTokenRecord(it)
+        EmailChangeToken.rowToEmailChangeTokenRecord(it)
     }
 
-fun EmailChangeTokenTable.countInvalidByUserIdAndCreatedAfter(
+fun EmailChangeToken.countInvalidByUserIdAndCreatedAfter(
     userId: ULong,
     createdAfter: Instant
 ): Long =
     selectAll().where {
-        (EmailChangeTokenTable.userId eq userId) and (EmailChangeTokenTable.createdAt greater createdAfter) and
-            (EmailChangeTokenTable.valid eq false)
+        (EmailChangeToken.userId eq userId) and (EmailChangeToken.createdAt greater createdAfter) and
+            (EmailChangeToken.valid eq false)
     }.count()
 
-fun EmailChangeTokenTable.findValidByTokenAndCreatedAfter(
+fun EmailChangeToken.findValidByTokenAndCreatedAfter(
     token: String,
     createdAfter: Instant
 ): EmailChangeTokenRecord? =
     selectAll().where {
-        (EmailChangeTokenTable.publicId eq token) and
-            (EmailChangeTokenTable.createdAt greater createdAfter) and
-            (EmailChangeTokenTable.valid eq true)
+        (EmailChangeToken.publicId eq token) and
+            (EmailChangeToken.createdAt greater createdAfter) and
+            (EmailChangeToken.valid eq true)
     }.limit(1).firstOrNull()?.let {
-        EmailChangeTokenTable.rowToEmailChangeTokenRecord(it)
+        EmailChangeToken.rowToEmailChangeTokenRecord(it)
     }
 
-fun EmailChangeTokenTable.findByTokenAndCreatedAfter(
+fun EmailChangeToken.findByTokenAndCreatedAfter(
     token: String,
     createdAfter: Instant
 ): EmailChangeTokenRecord? =
     selectAll().where {
-        (EmailChangeTokenTable.publicId eq token) and (EmailChangeTokenTable.createdAt greater createdAfter)
+        (EmailChangeToken.publicId eq token) and (EmailChangeToken.createdAt greater createdAfter)
     }.limit(1).firstOrNull()?.let {
-        EmailChangeTokenTable.rowToEmailChangeTokenRecord(it)
+        EmailChangeToken.rowToEmailChangeTokenRecord(it)
     }

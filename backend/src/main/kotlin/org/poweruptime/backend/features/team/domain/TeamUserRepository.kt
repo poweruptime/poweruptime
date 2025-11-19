@@ -9,26 +9,26 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.features.authentication.model.UserTable
+import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.TeamUserJoinUserAndInviterRecord
 import org.poweruptime.backend.features.team.model.TeamUserRecord
-import org.poweruptime.backend.features.team.model.TeamUserTable
 import org.poweruptime.backend.features.team.model.rowToTeamUserJoinUserAndInviterRecord
 import org.poweruptime.backend.features.team.model.rowToTeamUserRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun TeamUserTable.findAll(
+fun TeamUser.findAll(
     pageable: Pageable,
     teamId: ULong
 ): Page<TeamUserJoinUserAndInviterRecord> {
-    val user = UserTable.alias("user")
-    val inviter = UserTable.alias("inviter")
+    val user = User.alias("user")
+    val inviter = User.alias("inviter")
 
-    val query = leftJoin(user, { TeamUserTable.userId }, { user[UserTable.id] })
-        .leftJoin(inviter, { TeamUserTable.inviterId }, { inviter[UserTable.id] })
+    val query = leftJoin(user, { TeamUser.userId }, { user[User.id] })
+        .leftJoin(inviter, { TeamUser.inviterId }, { inviter[User.id] })
         .selectAll().where {
-            (TeamUserTable.teamId eq teamId)
+            (TeamUser.teamId eq teamId)
         }
 
     return pageQuery(
@@ -36,17 +36,17 @@ fun TeamUserTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "id.user.name" -> user[UserTable.name]
-                "id.user.id" -> user[UserTable.publicId]
-                "role" -> TeamUserTable.role
-                "invitedBy.name" -> inviter[UserTable.name]
-                "invitedBy.email" -> inviter[UserTable.email]
-                "createdAt" -> TeamUserTable.createdAt
+                "id.user.name" -> user[User.name]
+                "id.user.id" -> user[User.publicId]
+                "role" -> TeamUser.role
+                "invitedBy.name" -> inviter[User.name]
+                "invitedBy.email" -> inviter[User.email]
+                "createdAt" -> TeamUser.createdAt
                 else -> null
             }
         },
         map = {
-            TeamUserTable.rowToTeamUserJoinUserAndInviterRecord(
+            TeamUser.rowToTeamUserJoinUserAndInviterRecord(
                 it,
                 user,
                 inviter,
@@ -55,37 +55,37 @@ fun TeamUserTable.findAll(
     )
 }
 
-fun TeamUserTable.findByTeamAndUserId(teamId: ULong, userId: ULong): TeamUserRecord? =
+fun TeamUser.findByTeamAndUserId(teamId: ULong, userId: ULong): TeamUserRecord? =
     selectAll().where {
-        (TeamUserTable.teamId eq teamId) and (TeamUserTable.userId eq userId)
+        (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
     }.firstOrNull()?.let {
-        TeamUserTable.rowToTeamUserRecord(it)
+        TeamUser.rowToTeamUserRecord(it)
     }
 
-fun TeamUserTable.findJoinUserAndInviterByTeamAndUserId(
+fun TeamUser.findJoinUserAndInviterByTeamAndUserId(
     teamId: ULong,
     userId: ULong
 ): TeamUserJoinUserAndInviterRecord? {
-    val user = UserTable.alias("user")
-    val inviter = UserTable.alias("inviter")
+    val user = User.alias("user")
+    val inviter = User.alias("inviter")
 
-    return innerJoin(user, { TeamUserTable.userId }, { user[UserTable.id] })
-        .innerJoin(inviter, { TeamUserTable.inviterId }, { inviter[UserTable.id] })
+    return innerJoin(user, { TeamUser.userId }, { user[User.id] })
+        .innerJoin(inviter, { TeamUser.inviterId }, { inviter[User.id] })
         .selectAll().where {
-            (TeamUserTable.teamId eq teamId) and (TeamUserTable.userId eq userId)
+            (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
         }.firstOrNull()?.let {
-            TeamUserTable.rowToTeamUserJoinUserAndInviterRecord(it, user, inviter)
+            TeamUser.rowToTeamUserJoinUserAndInviterRecord(it, user, inviter)
         }
 }
 
-fun TeamUserTable.findTeamIdsByUserId(userId: ULong): List<ULong> =
-    select(TeamUserTable.teamId).where {
-        TeamUserTable.userId eq userId
-    }.map { it[TeamUserTable.teamId] }
+fun TeamUser.findTeamIdsByUserId(userId: ULong): List<ULong> =
+    select(TeamUser.teamId).where {
+        TeamUser.userId eq userId
+    }.map { it[TeamUser.teamId] }
 
-fun TeamUserTable.deleteByTeamAndUserId(
+fun TeamUser.deleteByTeamAndUserId(
     teamId: ULong,
     userId: ULong
 ) = deleteWhere {
-    (TeamUserTable.teamId eq teamId) and (TeamUserTable.userId eq userId)
+    (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
 }

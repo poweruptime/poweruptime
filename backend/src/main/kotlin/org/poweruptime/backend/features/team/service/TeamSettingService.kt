@@ -7,8 +7,8 @@ import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.poweruptime.backend.features.team.domain.findValueByKeyAndTeamId
 import org.poweruptime.backend.features.team.model.SettingKey
+import org.poweruptime.backend.features.team.model.TeamSetting
 import org.poweruptime.backend.features.team.model.TeamSettingRecord
-import org.poweruptime.backend.features.team.model.TeamSettingTable
 import org.poweruptime.backend.features.team.model.rowToTeamSettingRecord
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -66,19 +66,19 @@ class TeamSettingService(
         teamId: ULong,
         value: String
     ): TeamSettingRecord {
-        val teamSetting = TeamSettingTable.findValueByKeyAndTeamId(key, teamId)
-            ?: return TeamSettingTable.insertAndGetId {
-                it[TeamSettingTable.key] = key
-                it[TeamSettingTable.value] = value
-                it[TeamSettingTable.teamId] = teamId
+        val teamSetting = TeamSetting.findValueByKeyAndTeamId(key, teamId)
+            ?: return TeamSetting.insertAndGetId {
+                it[TeamSetting.key] = key
+                it[TeamSetting.value] = value
+                it[TeamSetting.teamId] = teamId
             }.let { id ->
-                TeamSettingTable.findByIdOrThrow(id.value) {
-                    TeamSettingTable.rowToTeamSettingRecord(it)
+                TeamSetting.findByIdOrThrow(id.value) {
+                    TeamSetting.rowToTeamSettingRecord(it)
                 }
             }
 
-        TeamSettingTable.update({ TeamSettingTable.id eq teamSetting.id }) {
-            it[TeamSettingTable.value] = value
+        TeamSetting.update({ TeamSetting.id eq teamSetting.id }) {
+            it[TeamSetting.value] = value
         }
 
         return teamSetting.apply {
@@ -90,5 +90,5 @@ class TeamSettingService(
         key: SettingKey,
         teamId: ULong,
         default: String,
-    ): String = TeamSettingTable.findValueByKeyAndTeamId(key, teamId)?.value ?: default
+    ): String = TeamSetting.findValueByKeyAndTeamId(key, teamId)?.value ?: default
 }

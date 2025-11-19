@@ -20,10 +20,10 @@ import org.poweruptime.backend.features.authentication.domain.invalidateAllToken
 import org.poweruptime.backend.features.authentication.domain.invalidateAllTokensBySessionIds
 import org.poweruptime.backend.features.authentication.domain.invalidateSession
 import org.poweruptime.backend.features.authentication.domain.invalidateSessions
+import org.poweruptime.backend.features.authentication.model.RefreshToken
 import org.poweruptime.backend.features.authentication.model.RefreshTokenRecord
-import org.poweruptime.backend.features.authentication.model.RefreshTokenTable
+import org.poweruptime.backend.features.authentication.model.Session
 import org.poweruptime.backend.features.authentication.model.SessionRecord
-import org.poweruptime.backend.features.authentication.model.SessionTable
 import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.authentication.model.rowToRefreshTokenRecord
 import org.springframework.data.domain.Page
@@ -40,13 +40,13 @@ class SessionService(
     val refreshTokenGenerationService: RefreshTokenGenerationService
 ) {
     fun existsByPublicSessionAndUserId(sessionId: String, userId: ULong) =
-        SessionTable.existsByPublicSessionAndUserId(sessionId, userId)
+        Session.existsByPublicSessionAndUserId(sessionId, userId)
 
     fun getAllPaginated(
         pageable: Pageable,
         userId: ULong,
         valid: Boolean = true
-    ): Page<SessionRecord> = SessionTable.findAll(
+    ): Page<SessionRecord> = Session.findAll(
         pageable = pageable,
         userId = userId,
         valid = valid,
@@ -60,12 +60,12 @@ class SessionService(
         description: String
     ): RefreshTokenRecord {
         val (session, user) = getJoinUserByTokenOrThrow(token)
-        val refreshToken = RefreshTokenTable.findByToken(token) ?: throw SessionTokenIncorrectException()
+        val refreshToken = RefreshToken.findByToken(token) ?: throw SessionTokenIncorrectException()
 
         // If refresh token was already used once, it can't be reused again
         // The whole session will be deactivated because it may be malicious
         if (!refreshToken.valid) {
-            SessionTable.invalidateSession(session.id)
+            Session.invalidateSession(session.id)
             throw SessionTokenIncorrectException()
         }
 
@@ -74,12 +74,12 @@ class SessionService(
         }
 
         // Update session to mark as active
-        SessionTable.update({ SessionTable.id eq session.id }) {
-            it[SessionTable.description] = description
+        Session.update({ Session.id eq session.id }) {
+            it[Session.description] = description
         }
 
         // invalidate all previous tokens for this session
-        RefreshTokenTable.invalidateAllTokensBySessionId(session.id)
+        RefreshToken.invalidateAllTokensBySessionId(session.id)
 
         return createRefreshToken(
             token = generateNewRefreshToken(
@@ -92,51 +92,51 @@ class SessionService(
 
     @Transactional
     fun invalidateSessionByRefreshToken(refreshToken: String) = getByTokenOrThrow(refreshToken).run {
-        SessionTable.invalidateSession(id)
-        RefreshTokenTable.invalidateAllTokensBySessionId(id)
+        Session.invalidateSession(id)
+        RefreshToken.invalidateAllTokensBySessionId(id)
     }
 
     @Transactional
-    fun invalidateSessionByPublicId(publicSessionId: String): Unit = SessionTable.findIdByPublicIdOrThrow(
+    fun invalidateSessionByPublicId(publicSessionId: String): Unit = Session.findIdByPublicIdOrThrow(
         publicSessionId,
     ).let { id ->
-        SessionTable.invalidateSession(id)
-        RefreshTokenTable.invalidateAllTokensBySessionId(id)
+        Session.invalidateSession(id)
+        RefreshToken.invalidateAllTokensBySessionId(id)
     }
 
     @Transactional
-    fun invalidateSessionsByUserId(userId: ULong): Unit = SessionTable.findAllByUserId(userId).map {
+    fun invalidateSessionsByUserId(userId: ULong): Unit = Session.findAllByUserId(userId).map {
         it.id
     }.let { id ->
-        SessionTable.invalidateSessions(id)
-        RefreshTokenTable.invalidateAllTokensBySessionIds(id)
+        Session.invalidateSessions(id)
+        RefreshToken.invalidateAllTokensBySessionIds(id)
     }
 
     @Transactional
-    fun clearSessionsOlderThan(past: Instant): Int = SessionTable.deleteAllUpdatedAtBefore(past)
+    fun clearSessionsOlderThan(past: Instant): Int = Session.deleteAllUpdatedAtBefore(past)
 
     @Transactional
-    fun deleteByPublicId(publicSessionId: String) = SessionTable.deleteByPublicId(publicSessionId)
+    fun deleteByPublicId(publicSessionId: String) = Session.deleteByPublicId(publicSessionId)
 
     @Throws(SessionTokenIncorrectException::class)
     fun getByTokenOrThrow(
         refreshToken: String
-    ) = SessionTable.findByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
+    ) = Session.findByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
 
     @Throws(SessionTokenIncorrectException::class)
     fun getJoinUserByTokenOrThrow(
         refreshToken: String
-    ) = SessionTable.findJoinUserByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
+    ) = Session.findJoinUserByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
 
     private fun createRefreshToken(
         token: String,
         sessionId: ULong
-    ): RefreshTokenRecord = RefreshTokenTable.insertAndGetId {
-        it[RefreshTokenTable.sessionId] = sessionId
-        it[RefreshTokenTable.token] = token
+    ): RefreshTokenRecord = RefreshToken.insertAndGetId {
+        it[RefreshToken.sessionId] = sessionId
+        it[RefreshToken.token] = token
     }.let { id ->
-        RefreshTokenTable.findByIdOrThrow(id.value) {
-            RefreshTokenTable.rowToRefreshTokenRecord(it)
+        RefreshToken.findByIdOrThrow(id.value) {
+            RefreshToken.rowToRefreshTokenRecord(it)
         }
     }
 
@@ -144,9 +144,9 @@ class SessionService(
         user: UserRecord,
         sessionInformation: String,
     ): RefreshTokenRecord {
-        val sessionId = SessionTable.insertAndGetId {
-            it[SessionTable.userId] = user.id
-            it[SessionTable.description] = sessionInformation
+        val sessionId = Session.insertAndGetId {
+            it[Session.userId] = user.id
+            it[Session.description] = sessionInformation
         }.value
 
         return createRefreshToken(
@@ -170,9 +170,9 @@ class SessionService(
             throw SessionInformationMissingException()
         }
 
-        val sessionId = SessionTable.insertAndGetId {
-            it[SessionTable.userId] = user.id
-            it[SessionTable.description] = sessionInformation
+        val sessionId = Session.insertAndGetId {
+            it[Session.userId] = user.id
+            it[Session.description] = sessionInformation
         }.value
 
         return createRefreshToken(
@@ -183,7 +183,7 @@ class SessionService(
 
     private fun generateNewRefreshToken(publicUserId: String, authorities: Collection<GrantedAuthority>): String {
         var refreshToken = refreshTokenGenerationService.createToken(publicUserId, authorities)
-        while (SessionTable.existsByRefreshToken(refreshToken)) {
+        while (Session.existsByRefreshToken(refreshToken)) {
             refreshToken = refreshTokenGenerationService.createToken(publicUserId, authorities)
         }
         return refreshToken

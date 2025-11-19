@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryTable
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -30,12 +30,12 @@ class PushMonitorCheckerEntryController {
         when (status) {
             MonitorStatus.UP,
             MonitorStatus.DOWN -> {
-                PushMonitorCheckerEntryTable.insert {
-                    it[PushMonitorCheckerEntryTable.publicId] = pushId
-                    it[PushMonitorCheckerEntryTable.status] = status
-                    it[PushMonitorCheckerEntryTable.title] = title
-                    it[PushMonitorCheckerEntryTable.message] = message
-                    it[PushMonitorCheckerEntryTable.pingMs] = pingMs
+                PushMonitorCheckerEntry.insert {
+                    it[PushMonitorCheckerEntry.publicId] = pushId
+                    it[PushMonitorCheckerEntry.status] = status
+                    it[PushMonitorCheckerEntry.title] = title
+                    it[PushMonitorCheckerEntry.message] = message
+                    it[PushMonitorCheckerEntry.pingMs] = pingMs
                 }
             }
             else -> throw BadRequestException("Status has to be UP or DOWN")

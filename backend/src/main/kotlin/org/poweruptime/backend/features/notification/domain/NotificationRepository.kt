@@ -13,34 +13,34 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.features.monitor.model.CheckResultTable
+import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.MonitorTable
 import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
+import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
-import org.poweruptime.backend.features.notification.model.NotificationTable
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
-import org.poweruptime.backend.features.team.model.TeamTable
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-fun NotificationTable.deleteByTeamIdAndOlderThan(
+fun Notification.deleteByTeamIdAndOlderThan(
     teamId: ULong,
     before: Instant
 ): Int = deleteWhere {
-    NotificationTable.checkResultId inSubQuery (
-        CheckResultTable.innerJoin(MonitorTable).select(CheckResultTable.id).where {
-            MonitorTable.teamId eq teamId
+    Notification.checkResultId inSubQuery (
+        CheckResult.innerJoin(Monitor).select(CheckResult.id).where {
+            Monitor.teamId eq teamId
         }
         ) and (createdAt less before)
 }
 
 @Suppress("LongMethod")
-fun NotificationTable.findAll(
+fun Notification.findAll(
     pageable: Pageable,
     monitorId: ULong?,
     teamId: ULong?,
@@ -53,44 +53,44 @@ fun NotificationTable.findAll(
         "teamId or monitorId or userId needs to be provided"
     }
 
-    var selectColumns = columns + CheckResultTable.columns + MonitorTable.columns + TeamTable.columns
+    var selectColumns = columns + CheckResult.columns + Monitor.columns + Team.columns
 
-    val query = innerJoin(CheckResultTable)
-        .innerJoin(MonitorTable)
-        .innerJoin(TeamTable, { MonitorTable.teamId }, { TeamTable.id })
+    val query = innerJoin(CheckResult)
+        .innerJoin(Monitor)
+        .innerJoin(Team, { Monitor.teamId }, { Team.id })
         .select(selectColumns)
 
     teamId?.let {
-        query.andWhere { TeamTable.id eq teamId }
+        query.andWhere { Team.id eq teamId }
     }
 
     monitorId?.let {
-        query.andWhere { MonitorTable.id eq monitorId }
+        query.andWhere { Monitor.id eq monitorId }
     }
 
     userId?.let {
         query.adjustColumnSet {
-            innerJoin(TeamUserTable)
+            innerJoin(TeamUser)
         }.adjustSelect {
-            selectColumns = selectColumns + TeamUserTable.userId
+            selectColumns = selectColumns + TeamUser.userId
             select(selectColumns)
-        }.andWhere { TeamUserTable.userId eq userId }
+        }.andWhere { TeamUser.userId eq userId }
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { CheckResultTable.status inList it }
+        query.andWhere { CheckResult.status inList it }
     }
 
     start?.let {
-        query.andWhere { NotificationTable.createdAt greaterEq it }
+        query.andWhere { Notification.createdAt greaterEq it }
     }
 
     end?.let {
-        query.andWhere { NotificationTable.createdAt lessEq it }
+        query.andWhere { Notification.createdAt lessEq it }
     }
 
     if (teamId != null || userId != null) {
-        query.andWhere { MonitorTable.deleted.isNull() }
+        query.andWhere { Monitor.deleted.isNull() }
     }
 
     return pageQuery(
@@ -98,17 +98,17 @@ fun NotificationTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "checkResult.status" -> CheckResultTable.status
-                "createdAt" -> NotificationTable.createdAt
+                "checkResult.status" -> CheckResult.status
+                "createdAt" -> Notification.createdAt
                 else -> null
             }
         },
         map = {
             NotificationJoinCheckResultMonitorAndTeamRecord(
                 notification = rowToNotificationRecord(it),
-                checkResult = CheckResultTable.rowToCheckResultRecord(it),
-                monitor = MonitorTable.rowToMonitorRecord(it),
-                team = TeamTable.rowToTeamRecord(it),
+                checkResult = CheckResult.rowToCheckResultRecord(it),
+                monitor = Monitor.rowToMonitorRecord(it),
+                team = Team.rowToTeamRecord(it),
             )
         },
     )

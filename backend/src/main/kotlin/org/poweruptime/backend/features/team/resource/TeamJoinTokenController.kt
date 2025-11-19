@@ -11,7 +11,7 @@ import org.poweruptime.backend.core.exceptions.UnauthorizedException
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.domain.findByTeamAndUserId
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springframework.http.HttpStatus
@@ -48,11 +48,11 @@ class TeamJoinTokenController(
             token = token,
         ) ?: throw UnauthorizedException()
 
-        if (TeamUserTable.findByTeamAndUserId(joinToken.teamId, inviteeId) != null) {
+        if (TeamUser.findByTeamAndUserId(joinToken.teamId, inviteeId) != null) {
             throw UnauthorizedException()
         }
 
-        TeamUserTable.insert {
+        TeamUser.insert {
             it[teamId] = joinToken.teamId
             it[userId] = inviteeId
             it[role] = joinToken.role

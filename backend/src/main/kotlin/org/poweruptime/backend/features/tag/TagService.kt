@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional
 class TagService {
 
     fun getByMonitorId(monitorIds: List<ULong>): Map<ULong, List<TagRecord>> =
-        TagTable.findByMonitorId(monitorIds)
+        Tag.findByMonitorId(monitorIds)
             .groupBy { it.monitorTag.monitorId }
             .mapValues {
                 it.value.map { tagJoinMonitor -> tagJoinMonitor.tag }
             }
 
-    fun getByMonitorId(monitorId: ULong): List<TagRecord> = TagTable.findByMonitorId(monitorId)
+    fun getByMonitorId(monitorId: ULong): List<TagRecord> = Tag.findByMonitorId(monitorId)
 
     @Transactional
     fun getByTeamIdAndNames(
@@ -30,7 +30,7 @@ class TagService {
         val tags = unsafeTags.distinctBy { it.name }
 
         // 1) fetch all existing tags for this team & name set
-        val existingByName = TagTable.findByTeamIdAndNames(
+        val existingByName = Tag.findByTeamIdAndNames(
             teamId,
             tags.map(TagDto::name),
         )
@@ -49,13 +49,13 @@ class TagService {
                 val dto = tagDtosByName[tag.name]!!
                 tag.variant = dto.variant
             }.map { tag ->
-                TagTable.update({ TagTable.id eq tag.id }) {
-                    it[TagTable.variant] = tag.variant
+                Tag.update({ Tag.id eq tag.id }) {
+                    it[Tag.variant] = tag.variant
                 }
                 tag.id
             }.let { tagIds ->
-                TagTable.findById(tagIds) {
-                    TagTable.rowToTagRecord(it)
+                Tag.findById(tagIds) {
+                    Tag.rowToTagRecord(it)
                 }
             }
 
@@ -63,13 +63,13 @@ class TagService {
         val createdTags = tags
             .filter { it.name !in existingByName }
             .let { tags ->
-                TagTable.batchInsert(tags) { tag ->
-                    this[TagTable.teamId] = teamId
-                    this[TagTable.name] = tag.name
-                    this[TagTable.variant] = tag.variant
+                Tag.batchInsert(tags) { tag ->
+                    this[Tag.teamId] = teamId
+                    this[Tag.name] = tag.name
+                    this[Tag.variant] = tag.variant
                 }
             }.map { tag ->
-                TagTable.rowToTagRecord(tag)
+                Tag.rowToTagRecord(tag)
             }
 
         // 6) return unchanged existing + updated + newly created
@@ -88,7 +88,7 @@ class TagService {
         userId: ULong?,
         name: String?,
         deleted: Boolean = false
-    ): Page<TagRecord> = TagTable.findAll(
+    ): Page<TagRecord> = Tag.findAll(
         pageable = pageable,
         teamId = teamId,
         userId = userId,

@@ -32,10 +32,10 @@ class DeadLetterListener {
             "Received dead letter dto from queue: '$queue' and exchange: '$exchange'"
         }
 
-        DeadLetterTable.insert {
-            it[DeadLetterTable.queue] = queue
-            it[DeadLetterTable.exchange] = exchange
-            it[DeadLetterTable.body] = body
+        DeadLetter.insert {
+            it[DeadLetter.queue] = queue
+            it[DeadLetter.exchange] = exchange
+            it[DeadLetter.body] = body
         }
     }
 }

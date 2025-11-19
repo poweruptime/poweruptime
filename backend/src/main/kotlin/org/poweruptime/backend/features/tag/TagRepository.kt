@@ -10,36 +10,36 @@ import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.features.team.model.TeamTable
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-fun TagTable.findByTeamIdAndNames(teamId: ULong, names: List<String>): List<TagRecord> =
-    selectAll().where { (TagTable.teamId eq teamId) and (TagTable.name inList names) }.map {
-        TagTable.rowToTagRecord(it)
+fun Tag.findByTeamIdAndNames(teamId: ULong, names: List<String>): List<TagRecord> =
+    selectAll().where { (Tag.teamId eq teamId) and (Tag.name inList names) }.map {
+        Tag.rowToTagRecord(it)
     }
 
-fun TagTable.findByMonitorId(monitorIds: List<ULong>): List<TagJoinMonitorRecord> =
-    innerJoin(MonitorTagTable, { TagTable.id }, { MonitorTagTable.tagId })
+fun Tag.findByMonitorId(monitorIds: List<ULong>): List<TagJoinMonitorRecord> =
+    innerJoin(MonitorTag, { Tag.id }, { MonitorTag.tagId })
         .selectAll()
-        .where { MonitorTagTable.monitorId inList monitorIds }
+        .where { MonitorTag.monitorId inList monitorIds }
         .map {
             TagJoinMonitorRecord(
-                tag = TagTable.rowToTagRecord(it),
-                monitorTag = MonitorTagTable.rowToMonitorTagRecord(it),
+                tag = Tag.rowToTagRecord(it),
+                monitorTag = MonitorTag.rowToMonitorTagRecord(it),
             )
         }
 
-fun TagTable.findByMonitorId(monitorId: ULong): List<TagRecord> =
-    innerJoin(MonitorTagTable, { TagTable.id }, { MonitorTagTable.tagId })
+fun Tag.findByMonitorId(monitorId: ULong): List<TagRecord> =
+    innerJoin(MonitorTag, { Tag.id }, { MonitorTag.tagId })
         .selectAll()
-        .where { MonitorTagTable.monitorId eq monitorId }
+        .where { MonitorTag.monitorId eq monitorId }
         .map {
-            TagTable.rowToTagRecord(it)
+            Tag.rowToTagRecord(it)
         }
 
-fun TagTable.findAll(
+fun Tag.findAll(
     pageable: Pageable,
     teamId: ULong?,
     userId: ULong?,
@@ -48,29 +48,29 @@ fun TagTable.findAll(
 ): Page<TagRecord> {
     require(teamId != null || userId != null) { "teamId or userId needs to be provided" }
 
-    var condition: Op<Boolean> = TagTable.deleted.deletedFilter(deleted)
+    var condition: Op<Boolean> = Tag.deleted.deletedFilter(deleted)
 
     teamId?.let {
-        condition = condition and (TagTable.teamId eq it)
+        condition = condition and (Tag.teamId eq it)
     }
 
     userId?.let {
-        condition = condition and (TeamUserTable.userId eq it)
+        condition = condition and (TeamUser.userId eq it)
     }
 
     name?.let {
-        condition = condition and (TagTable.name.lowerCase() like "%${it.lowercase()}%")
+        condition = condition and (Tag.name.lowerCase() like "%${it.lowercase()}%")
     }
 
-    val query = innerJoin(TeamTable).innerJoin(TeamUserTable).selectAll().where(condition)
+    val query = innerJoin(Team).innerJoin(TeamUser).selectAll().where(condition)
 
     return pageQuery(
         query,
         pageable,
         sort = {
             when (it) {
-                "name" -> TagTable.name
-                "variant" -> TagTable.variant
+                "name" -> Tag.name
+                "variant" -> Tag.variant
                 else -> null
             }
         },

@@ -11,9 +11,9 @@ import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
+import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationTable
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -79,8 +79,8 @@ class NotificationListener(
                     "Notification '${subNotificationJoin.subNotification.id}' was picked up too late"
                 }
 
-                SubNotificationTable.update({ SubNotificationTable.id eq subNotificationJoin.subNotification.id }) {
-                    it[SubNotificationTable.error] = "Notification picked up to late"
+                SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
+                    it[SubNotification.error] = "Notification picked up to late"
                 }
 
                 return
@@ -88,11 +88,11 @@ class NotificationListener(
 
             val sentSubNotification = appriseSender.send(subNotificationJoin)
 
-            SubNotificationTable.update({ SubNotificationTable.id eq subNotificationJoin.subNotification.id }) {
-                it[SubNotificationTable.title] = sentSubNotification.title
-                it[SubNotificationTable.message] = sentSubNotification.message
-                it[SubNotificationTable.error] = sentSubNotification.error
-                it[SubNotificationTable.sentAt] = sentSubNotification.sentAt
+            SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
+                it[SubNotification.title] = sentSubNotification.title
+                it[SubNotification.message] = sentSubNotification.message
+                it[SubNotification.error] = sentSubNotification.error
+                it[SubNotification.sentAt] = sentSubNotification.sentAt
             }
 
             checkResultLogEntryService.action(
@@ -118,8 +118,8 @@ class NotificationListener(
                 ),
             )
         } catch (e: Throwable) {
-            SubNotificationTable.update({ SubNotificationTable.id eq subNotificationJoin.subNotification.id }) {
-                it[SubNotificationTable.error] = (e.message ?: e.cause?.message ?: "Unknown error")
+            SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
+                it[SubNotification.error] = (e.message ?: e.cause?.message ?: "Unknown error")
                     .abbreviate(Database.MAX_MESSAGE_LENGTH)
             }
         }

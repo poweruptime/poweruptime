@@ -7,16 +7,16 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.poweruptime.backend.features.team.model.TeamTable
-import org.poweruptime.backend.features.team.model.TeamUserTable
+import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import kotlin.collections.plus
 
-fun TeamTable.findAll(
+fun Team.findAll(
     pageable: Pageable,
     userId: ULong?,
     name: String?,
@@ -25,23 +25,23 @@ fun TeamTable.findAll(
 ): Page<TeamRecord> {
     var selectColumns = columns
 
-    val query = select(selectColumns).where { TeamTable.deleted.deletedFilter(deleted) }
+    val query = select(selectColumns).where { Team.deleted.deletedFilter(deleted) }
 
     userId?.let {
         query.adjustColumnSet {
-            innerJoin(TeamUserTable)
+            innerJoin(TeamUser)
         }.adjustSelect {
-            selectColumns = selectColumns + TeamUserTable.userId
+            selectColumns = selectColumns + TeamUser.userId
             select(selectColumns)
-        }.andWhere { TeamUserTable.userId eq it }
+        }.andWhere { TeamUser.userId eq it }
     }
 
     if (userId != null && role != null) {
-        query.andWhere { TeamUserTable.role eq role }
+        query.andWhere { TeamUser.role eq role }
     }
 
     name?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { (TeamTable.name.lowerCase() like "%${it.lowercase()}%") }
+        query.andWhere { (Team.name.lowerCase() like "%${it.lowercase()}%") }
     }
 
     return pageQuery(
@@ -49,9 +49,9 @@ fun TeamTable.findAll(
         pageable,
         sort = {
             when (it) {
-                "name" -> TeamTable.name
-                "personalUser.id" -> TeamTable.personalUserId
-                "createdAt" -> TeamTable.createdAt
+                "name" -> Team.name
+                "personalUser.id" -> Team.personalUserId
+                "createdAt" -> Team.createdAt
                 else -> null
             }
         },
