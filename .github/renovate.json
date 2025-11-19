@@ -13,7 +13,7 @@
   "extends": [
     "config:recommended",
     ":pinVersions",
-    "npm:unpublishSafe",
+    "security:minimumReleaseAgeNpm",
     ":preserveSemverRanges",
     ":rebaseStalePrs",
     ":semanticCommitTypeAll(chore)"
