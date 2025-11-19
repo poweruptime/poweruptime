@@ -24,7 +24,6 @@ import org.poweruptime.backend.features.authentication.model.RefreshTokenRecord
 import org.poweruptime.backend.features.authentication.model.RefreshTokenTable
 import org.poweruptime.backend.features.authentication.model.SessionRecord
 import org.poweruptime.backend.features.authentication.model.SessionTable
-import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.authentication.model.rowToRefreshTokenRecord
 import org.springframework.data.domain.Page
@@ -151,7 +150,7 @@ class SessionService(
         }.value
 
         return createRefreshToken(
-            token = generateNewRefreshToken(user.publicId, SystemRole.USER.grantedAuthorities),
+            token = generateNewRefreshToken(user.publicId, user.role.grantedAuthorities),
             sessionId = sessionId,
         )
     }

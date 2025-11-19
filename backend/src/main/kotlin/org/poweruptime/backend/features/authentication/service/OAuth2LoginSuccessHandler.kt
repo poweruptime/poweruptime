@@ -60,7 +60,7 @@ class OAuth2LoginSuccessHandler(
             user = user,
         )
 
-        val accessToken = accessTokenService.createToken(user.publicId, SystemRole.USER.grantedAuthorities)
+        val accessToken = accessTokenService.createToken(user.publicId, user.role.grantedAuthorities)
 
         // Build the redirect URL with tokens as query params
         val redirectUri = UriComponentsBuilder
