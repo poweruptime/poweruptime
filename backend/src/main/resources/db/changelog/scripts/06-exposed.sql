@@ -428,6 +428,9 @@ create table check_result_log_entry
 create index check_result_log_entry_check_result_id
     on check_result_log_entry (check_result_id);
 
+create index check_result_log_entry_check_result_created_at
+    on check_result_log_entry (check_result_id, created_at asc);
+
 create table historical_day_uptime
 (
     id         bigserial
