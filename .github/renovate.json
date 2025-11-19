@@ -7,9 +7,7 @@
       "customType": "regex",
       "datasourceTemplate": "docker",
       "managerFilePatterns": ["infrastructure/versions.env"],
-      "matchStrings": [
-        "IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"
-      ]
+      "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
     }
   ],
   "extends": [
