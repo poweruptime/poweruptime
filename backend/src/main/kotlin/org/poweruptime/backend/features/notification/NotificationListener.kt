@@ -70,7 +70,7 @@ class NotificationListener(
                         subNotificationJoin.subNotification.createdAt,
                         subNotificationJoin.subNotification.pickedUpAt!!,
                     ).toMillis().toString(),
-                    "subNotificationId" to subNotificationId,
+                    "subNotificationId" to subNotificationJoin.subNotification.publicId,
                 ),
             )
 
@@ -101,7 +101,7 @@ class NotificationListener(
                 message = """"${subNotificationJoin.method.name}" sent""",
                 properties = mapOf(
                     "result" to (sentSubNotification.error == null).toString(),
-                    "subNotificationId" to subNotificationId,
+                    "subNotificationId" to subNotificationJoin.subNotification.publicId,
                 ),
             )
 
