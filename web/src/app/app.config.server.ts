@@ -11,7 +11,7 @@ import {appConfig} from './app.config';
 
 const serverRedirectInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.startsWith('/')) {
-    const newUrl = `http://127.0.0.1:4200${req.url}`;
+    const newUrl = `http://0.0.0.0:4200${req.url}`;
     return next(req.clone({url: newUrl}));
   }
 
@@ -19,15 +19,15 @@ const serverRedirectInterceptor: HttpInterceptorFn = (req, next) => {
     try {
       // Parse the URL to preserve query params, path, etc.
       // We provide a dummy base in case the incoming URL was somehow relative
-      const urlObj = new URL(req.url, 'http://127.0.0.1:4200');
+      const urlObj = new URL(req.url, 'http://0.0.0.0:4200');
 
       // Force the request to stay inside the container
       urlObj.protocol = 'http:';
-      urlObj.hostname = '127.0.0.1';
+      urlObj.hostname = '0.0.0.0';
       urlObj.port = '4200';
 
       return next(req.clone({url: urlObj.toString()}));
-    } catch (error) {
+    } catch {
       // If URL parsing fails, let the request proceed as-is
       return next(req);
     }
