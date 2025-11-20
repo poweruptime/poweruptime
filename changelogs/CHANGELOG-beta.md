@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0-beta-1763644742 - 2025-11-20
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Try to fix angular reverse proxy by Dafnik ([f874c13](https://github.com/poweruptime/poweruptime/commit/f874c13397744c06a710835e26c652eb9046c6a4))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1763642110...0.5.0-beta-1763644742)
+
 ## 0.5.0-beta-1763642110 - 2025-11-20
 
 ### <!-- 1 -->🐛 Bug Fixes
