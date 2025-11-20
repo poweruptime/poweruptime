@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.0-beta-1763642110 - 2025-11-20
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Try to downgrade fastify again by Dafnik ([b6b004f](https://github.com/poweruptime/poweruptime/commit/b6b004f2ea627994c065bed80508d2a0408cf4d3))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set test LOG_LEVEL to INFO by Dafnik ([bf8f1cd](https://github.com/poweruptime/poweruptime/commit/bf8f1cd58aa0ad728bf5d4056611447e07615925))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1763628805...0.5.0-beta-1763642110)
+
 ## 0.5.0-beta-1763628805 - 2025-11-20
 
 ### <!-- 0 -->🚀 Features
