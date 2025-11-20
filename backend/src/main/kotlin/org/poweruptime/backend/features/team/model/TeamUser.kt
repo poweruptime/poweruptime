@@ -1,75 +1,68 @@
 package org.poweruptime.backend.features.team.model
 
-import jakarta.persistence.*
-import org.hibernate.Hibernate
-import org.hibernate.annotations.ColumnDefault
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.models.Timestamps
+import org.jetbrains.exposed.v1.core.Alias
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.Table
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.features.authentication.model.User
-import java.io.Serializable
+import org.poweruptime.backend.features.authentication.model.UserRecord
+import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import java.time.Instant
-import java.util.*
 
-@Embeddable
-data class TeamUserId(
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: Team,
+object TeamUser : Table("team_user"), HasModifiers {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var user: User,
-) : Serializable
+    val role = enumerationByCode<TeamRole>("role")
 
-@Entity
-@Table(
-    name = "team_user",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["team_id", "user_id"])],
-)
-class TeamUser(
-    @EmbeddedId
-    var id: TeamUserId,
+    val teamId = ulong("team_id").references(Team.id).index()
+    val userId = ulong("user_id").references(User.id).index()
 
-    /**
-     * Usage of UserTeamRoleConverter to minify enum to 1 char
-     * @see TeamRoleDatabaseConverter
-     */
-    @Column(name = "role", nullable = false, length = 1)
-    var role: TeamRole = TeamRole.MEMBER,
+    val inviterId = ulong("inviter_id").references(User.id).nullable()
 
-    @JoinColumn(name = "inviter_id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var invitedBy: User? = null,
+    override val primaryKey: PrimaryKey = PrimaryKey(teamId, userId)
 
-    @ColumnDefault("0")
-    @Version
-    var version: Long = 0,
-
-) : Timestamps() {
-    override fun hashCode(): Int {
-        return Objects.hash(id)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as TeamUser
-
-        return id == other.id
-    }
-
-    /**
-     * Update an entity without changing its data
-     */
-    fun touch() {
-        updatedAt = Instant.now()
-    }
-
-    override fun toString(): String {
-        return """Id: "$id""""
+    init {
+        index(true, userId, teamId)
     }
 }
+
+data class TeamUserRecord(
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val teamId: ULong,
+    val userId: ULong,
+    val inviterId: ULong?,
+    val role: TeamRole
+)
+
+fun TeamUser.rowToTeamUserRecord(row: ResultRow): TeamUserRecord =
+    TeamUserRecord(
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        teamId = row[teamId],
+        userId = row[userId],
+        inviterId = row[inviterId],
+        role = row[role],
+    )
+
+data class TeamUserJoinUserAndInviterRecord(
+    val user: UserRecord,
+    val inviter: UserRecord?,
+    val teamUser: TeamUserRecord
+)
+
+@Suppress("SENSELESS_COMPARISON")
+fun TeamUser.rowToTeamUserJoinUserAndInviterRecord(
+    row: ResultRow,
+    userAlias: Alias<User>,
+    inviterAlias: Alias<User>
+): TeamUserJoinUserAndInviterRecord =
+    TeamUserJoinUserAndInviterRecord(
+        user = User.rowToUserRecord(row, userAlias),
+        inviter = if (row[inviterAlias[User.id]] != null) User.rowToUserRecord(row, inviterAlias) else null,
+        teamUser = rowToTeamUserRecord(row),
+    )

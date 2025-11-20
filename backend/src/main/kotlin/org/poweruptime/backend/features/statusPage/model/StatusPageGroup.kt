@@ -1,38 +1,49 @@
 package org.poweruptime.backend.features.statusPage.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
 import org.poweruptime.backend.core.models.HasPosition
-import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.position
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import java.time.Instant
 
-@Entity
-@Table(name = "status_page_group")
-class StatusPageGroup(
-    @JoinColumn(name = "status_page_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var statusPage: StatusPage,
+object StatusPageGroup : ULongIdTable("status_page_group"), HasPublicId, HasModifiers, HasPosition {
+    override val publicId = nanoId("public_id", NANO_ID_DEFAULT_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val position = position()
 
-    @Column(nullable = true, length = Database.MAX_NAME_LENGTH)
-    var name: String? = null,
+    val statusPageId = ulong("status_page_id").references(StatusPage.id).index()
 
-    @Column(nullable = true, columnDefinition = "text")
-    var description: String? = null,
-
-    @OneToMany(mappedBy = "connection.group", fetch = FetchType.LAZY)
-    var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),
-
-    @Column(name = "position", nullable = true)
-    override var position: Int? = null,
-) : AEntity(), HasPosition {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val name = name().nullable()
+    val description = text("description").nullable()
 }
+
+data class StatusPageGroupRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val name: String?,
+    val position: Int?,
+    val statusPageId: ULong,
+    val description: String?,
+)
+
+fun StatusPageGroup.rowToStatusPageGroupRecord(row: ResultRow): StatusPageGroupRecord =
+    StatusPageGroupRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        name = row[name],
+        position = row[position],
+        statusPageId = row[statusPageId],
+        description = row[description],
+    )

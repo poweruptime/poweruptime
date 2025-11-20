@@ -1,40 +1,38 @@
 package org.poweruptime.backend.features.authentication.model
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import org.hibernate.annotations.ColumnDefault
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.updatedAt
+import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.RandomGenerator
-import java.util.ArrayList
+import java.time.Instant
 
-@Entity
-@Table(name = "mfa")
-class MFA(
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+object MFA : ULongIdTable("mfa"), HasModifiers {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @Column(name = "secret", nullable = false, length = 10)
-    val secret: String = RandomGenerator.nanoId(10),
+    val secret = varchar("secret", Database.MAX_MFA_SECRET_LENGTH).clientDefault {
+        RandomGenerator.nanoId(Database.MAX_MFA_SECRET_LENGTH)
+    }
 
-    @ColumnDefault("false")
-    @Column(nullable = false, columnDefinition = "boolean")
-    var active: Boolean = false,
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "mfa")
-    val backupCodes: List<MFABackupCode> = ArrayList()
-) : AEntity() {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
+    val active = bool("active").clientDefault { false }
 }
+
+data class MFARecord(
+    val id: ULong,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val secret: String,
+    val active: Boolean,
+)
+
+fun MFA.rowToMFARecord(row: ResultRow): MFARecord =
+    MFARecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        secret = row[secret],
+        active = row[active],
+    )

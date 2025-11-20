@@ -1,29 +1,38 @@
 package org.poweruptime.backend.features.statusPage.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.models.EntityWithName
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import java.time.Instant
 
-@Entity
-@Table(name = "status_page_domain_name")
-class StatusPageDomainName(
-    @Column(nullable = false, length = Database.MAX_DOMAIN_LENGTH, unique = true)
-    override var name: String,
+object StatusPageDomainName : ULongIdTable("status_page_domain_name"), HasModifiers, HasName {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val name = name(
+        length = Database.MAX_DOMAIN_LENGTH,
+    ).uniqueIndex()
 
-    @JoinColumn(name = "status_page_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var statusPage: StatusPage,
-) : AEntity(), EntityWithName {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val statusPageId = ulong("status_page_id").references(StatusPage.id).index()
 }
+
+data class StatusPageDomainNameRecord(
+    val id: ULong,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val name: String,
+    val statusPageId: ULong,
+)
+
+fun StatusPageDomainName.rowToStatusPageDomainNameRecord(row: ResultRow): StatusPageDomainNameRecord =
+    StatusPageDomainNameRecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        name = row[name],
+        statusPageId = row[statusPageId],
+    )

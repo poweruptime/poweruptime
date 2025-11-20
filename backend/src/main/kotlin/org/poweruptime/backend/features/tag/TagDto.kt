@@ -8,5 +8,5 @@ data class TagDto(
     @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
     @get:NotNull val variant: TagVariant,
 ) {
-    constructor(it: Tag) : this(it.name, it.variant)
+    constructor(it: TagRecord) : this(it.name, it.variant)
 }

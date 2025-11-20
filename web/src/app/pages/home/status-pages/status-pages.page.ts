@@ -18,7 +18,8 @@ import {linkedQueryParam} from 'ngxtension/linked-query-param';
 import {TableLoadingBar} from '@app/components';
 import {IsTeamAdmin} from '@app/directives';
 import {SelectedTeamStore, StatusPagesStore} from '@app/services';
-import {trackBy} from '@app/util';
+
+import {BackendType} from '../../../api';
 
 @Component({
   template: `
@@ -73,7 +74,7 @@ import {trackBy} from '@app/util';
         <td *matCellDef="let element" mat-cell>
           <div class="flex gap-2" *isTeamAdmin>
             <a
-              [routerLink]="element.id"
+              [routerLink]="element.slug"
               [matTooltip]="'statusPage.list.edit' | transloco"
               [attr.aria-label]="'statusPage.list.edit' | transloco"
               mat-icon-button
@@ -81,7 +82,7 @@ import {trackBy} from '@app/util';
               <bi name="pencil-square" />
             </a>
             <a
-              [routerLink]="element.id"
+              [routerLink]="element.slug"
               [queryParams]="{preview: 1}"
               [matTooltip]="'statusPage.list.preview' | transloco"
               [attr.aria-label]="'statusPage.list.preview' | transloco"
@@ -95,7 +96,7 @@ import {trackBy} from '@app/util';
             <button
               [matTooltip]="'statusPage.list.delete' | transloco"
               [attr.aria-label]="'statusPage.list.delete' | transloco"
-              (click)="statusPagesStore.delete(element.id)"
+              (click)="statusPagesStore.delete(element.slug)"
               type="button"
               mat-icon-button
               stopPropagation>
@@ -109,7 +110,7 @@ import {trackBy} from '@app/util';
       <tr
         class="hover:cursor-pointer"
         *matRowDef="let element; columns: statusPagesStore.columnsToDisplay()"
-        [routerLink]="element.id"
+        [routerLink]="element.slug"
         mat-row></tr>
     </table>
 
@@ -175,5 +176,5 @@ export class StatusPagesPage {
     );
   }
 
-  protected readonly trackBy = trackBy;
+  protected readonly trackBy = (_: number, it: BackendType['StatusPageResponse']) => it.slug;
 }

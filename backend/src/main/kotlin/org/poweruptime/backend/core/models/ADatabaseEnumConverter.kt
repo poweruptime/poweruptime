@@ -1,22 +1,43 @@
 package org.poweruptime.backend.core.models
 
-import jakarta.persistence.AttributeConverter
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.ColumnType
+import org.jetbrains.exposed.v1.core.Table
 
 interface ADatabaseEnumConvertable {
     val code: String
 }
 
-@Suppress("com.haulmont.jpb.ConverterNotAnnotatedInspection", "ConverterNotAnnotatedInspection")
-abstract class ADatabaseEnumConverter<T : ADatabaseEnumConvertable> : AttributeConverter<T, String> {
-    abstract fun getKeys(): Array<T>
+inline fun <reified T> maxCodeLength(): Int
+    where T : Enum<T>, T : ADatabaseEnumConvertable =
+    enumValues<T>().maxOf { it.code.length }
 
-    override fun convertToDatabaseColumn(it: T?): String? = it?.code
+inline fun <reified T> Table.enumerationByCode(
+    name: String,
+    maxCodeLength: Int = maxCodeLength<T>()
+): Column<T>
+    where T : Enum<T>, T : ADatabaseEnumConvertable {
+    return registerColumn(name, EnumColumnType(maxCodeLength, enumValues<T>()))
+}
 
-    override fun convertToEntityAttribute(code: String?): T? =
-        if (code == null) {
-            null
-        } else {
-            getKeys().firstOrNull { c -> c.code == code }
-                ?: throw IllegalArgumentException("Enum does not have member with code '$code'")
-        }
+/**
+ * ColumnType implementation that handles enums implementing [ADatabaseEnumConvertable].
+ */
+class EnumColumnType<T>(
+    private val length: Int,
+    private val enumValues: Array<T>
+) : ColumnType<T>()
+    where T : Enum<T>, T : ADatabaseEnumConvertable {
+
+    override fun sqlType(): String = "VARCHAR($length)"
+
+    override fun notNullValueToDB(value: T): Any = value.code
+
+    override fun valueFromDB(value: Any): T = when (value) {
+        is String -> enumValues.firstOrNull { it.code == value }
+            ?: error("Unknown enum code '$value'")
+        else -> error(
+            "Cannot convert ${value::class.qualifiedName} to enum",
+        )
+    }
 }

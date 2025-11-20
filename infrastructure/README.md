@@ -216,10 +216,12 @@ These configuration values only effect the System E-Mail service.
 
 ## Good to know
 
-|                           **Container Registries**                           |
-| :--------------------------------------------------------------------------: |
-|     [Web](https://github.com/poweruptime/poweruptime/pkgs/container/web)     |
-| [Backend](https://github.com/poweruptime/poweruptime/pkgs/container/backend) |
+## Container Registries
+
+|                               GitHub Registry                                |                           Docker Hub                           |
+| :--------------------------------------------------------------------------: | :------------------------------------------------------------: |
+|     [Web](https://github.com/poweruptime/poweruptime/pkgs/container/web)     |     [Web](https://hub.docker.com/r/dafnik/poweruptime-web)     |
+| [Backend](https://github.com/poweruptime/poweruptime/pkgs/container/backend) | [Backend](https://hub.docker.com/r/dafnik/poweruptime-backend) |
 
 ### Get merged docker compose config
 

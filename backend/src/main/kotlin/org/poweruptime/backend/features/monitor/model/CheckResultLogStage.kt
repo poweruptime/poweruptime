@@ -1,8 +1,6 @@
 package org.poweruptime.backend.features.monitor.model
 
-import jakarta.persistence.Converter
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
-import org.poweruptime.backend.core.models.ADatabaseEnumConverter
 
 const val CHECK_RESULT_LOG_STAGE_SETUP = "S"
 const val CHECK_RESULT_LOG_STAGE_CHECK = "C"
@@ -22,9 +20,4 @@ enum class CheckResultLogStage : ADatabaseEnumConvertable {
     NOTIFICATION {
         override val code = CHECK_RESULT_LOG_STAGE_NOTIFICATION
     },
-}
-
-@Converter(autoApply = true)
-class CheckResultLogStageDatabaseConverter : ADatabaseEnumConverter<CheckResultLogStage>() {
-    override fun getKeys(): Array<CheckResultLogStage> = CheckResultLogStage.entries.toTypedArray()
 }

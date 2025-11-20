@@ -1,48 +1,51 @@
 package org.poweruptime.backend.features.team.service
 
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.findByIdOrThrow
-import org.poweruptime.backend.core.service.AEntityService
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
-import org.poweruptime.backend.features.team.domain.TeamRepository
-import org.poweruptime.backend.features.team.domain.TeamSettingRepository
+import org.poweruptime.backend.features.team.domain.findValueByKeyAndTeamId
 import org.poweruptime.backend.features.team.model.SettingKey
 import org.poweruptime.backend.features.team.model.TeamSetting
+import org.poweruptime.backend.features.team.model.TeamSettingRecord
+import org.poweruptime.backend.features.team.model.rowToTeamSettingRecord
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZoneId
 
 @Service
+@Transactional(readOnly = true)
 class TeamSettingService(
-    private val teamSettingRepository: TeamSettingRepository,
     private val instanceSettingService: InstanceSettingService,
-    private val teamRepository: TeamRepository,
-) : AEntityService<TeamSetting>(
-    teamSettingRepository,
 ) {
-    fun getCheckResultRetentionPeriodInDays(teamId: String): Int = getValueByKeyAndTeamId(
+    fun getCheckResultRetentionPeriodInDays(teamId: ULong): Int = getValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
         teamId,
         instanceSettingService.getCheckResultRetentionPeriodInDays().toString(),
     ).toInt()
 
-    fun setCheckResultRetentionPeriodInDays(teamId: String, value: Int) = setValueByKeyAndTeamId(
+    @Transactional
+    fun setCheckResultRetentionPeriodInDays(teamId: ULong, value: Int) = setValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
         teamId,
         value.toString(),
     )
 
-    fun getCheckResultLogRetentionPeriodInDays(teamId: String): Int = getValueByKeyAndTeamId(
+    fun getCheckResultLogRetentionPeriodInDays(teamId: ULong): Int = getValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_LOG_RETENTION_PERIOD_IN_DAYS,
         teamId,
         instanceSettingService.getCheckResultLogRetentionPeriodInDays().toString(),
     ).toInt()
 
-    fun setCheckResultLogRetentionPeriodInDays(teamId: String, value: Int) = setValueByKeyAndTeamId(
+    @Transactional
+    fun setCheckResultLogRetentionPeriodInDays(teamId: ULong, value: Int) = setValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_LOG_RETENTION_PERIOD_IN_DAYS,
         teamId,
         value.toString(),
     )
 
-    fun getTimeZone(teamId: String): ZoneId = ZoneId.of(
+    fun getTimeZone(teamId: ULong): ZoneId = ZoneId.of(
         getValueByKeyAndTeamId(
             SettingKey.TIMEZONE,
             teamId,
@@ -50,31 +53,42 @@ class TeamSettingService(
         ),
     )
 
-    fun setTimeZone(teamId: String, value: ZoneId) = setValueByKeyAndTeamId(
+    @Transactional
+    fun setTimeZone(teamId: ULong, value: ZoneId) = setValueByKeyAndTeamId(
         SettingKey.TIMEZONE,
         teamId,
         value.id,
     )
 
+    @Transactional
     private fun setValueByKeyAndTeamId(
         key: SettingKey,
-        teamId: String,
+        teamId: ULong,
         value: String
-    ): TeamSetting {
-        val teamSetting = teamSettingRepository.findValueByKeyAndTeamId(key, teamId)?.apply {
-            this.value = value
-        } ?: TeamSetting(
-            key = key,
-            value = value,
-            team = teamRepository.findByIdOrThrow(teamId),
-        )
+    ): TeamSettingRecord {
+        val teamSetting = TeamSetting.findValueByKeyAndTeamId(key, teamId)
+            ?: return TeamSetting.insertAndGetId {
+                it[TeamSetting.key] = key
+                it[TeamSetting.value] = value
+                it[TeamSetting.teamId] = teamId
+            }.let { id ->
+                TeamSetting.findByIdOrThrow(id.value) {
+                    TeamSetting.rowToTeamSettingRecord(it)
+                }
+            }
 
-        return teamSettingRepository.save(teamSetting)
+        TeamSetting.update({ TeamSetting.id eq teamSetting.id }) {
+            it[TeamSetting.value] = value
+        }
+
+        return teamSetting.apply {
+            this.value = value
+        }
     }
 
     private fun getValueByKeyAndTeamId(
         key: SettingKey,
-        teamId: String,
+        teamId: ULong,
         default: String,
-    ): String = teamSettingRepository.findValueByKeyAndTeamId(key, teamId)?.value ?: default
+    ): String = TeamSetting.findValueByKeyAndTeamId(key, teamId)?.value ?: default
 }

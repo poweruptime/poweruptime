@@ -1,33 +1,29 @@
 package org.poweruptime.backend.features.team.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.utils.Database
 
-@Entity
-@Table(name = "team_setting")
-class TeamSetting(
-    /**
-     * Usage of TeamSettingKeyConverter to minify enum to 1 char
-     */
-    @Column(name = "setting_key", nullable = false, length = 2)
-    val key: SettingKey,
+object TeamSetting : ULongIdTable("team_setting") {
+    val key = enumerationByCode<SettingKey>("setting_key")
 
-    @Column(nullable = false, length = 60)
-    var value: String,
+    val value = varchar("value", Database.MAX_SETTING_VALUE_LENGTH)
 
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val team: Team,
-
-) : AEntity() {
-
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
+    val teamId = ulong("team_id").references(Team.id).index()
 }
+
+data class TeamSettingRecord(
+    val id: ULong,
+    val key: SettingKey,
+    var value: String,
+    val teamId: ULong
+)
+
+fun TeamSetting.rowToTeamSettingRecord(row: ResultRow): TeamSettingRecord =
+    TeamSettingRecord(
+        id = row[id].value,
+        key = row[key],
+        value = row[value],
+        teamId = row[teamId],
+    )

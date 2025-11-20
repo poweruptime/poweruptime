@@ -89,7 +89,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               (ngSubmit)="submit()">
               <mat-form-field>
                 <mat-label>{{ 'instanceSettings.sponsorship.githubHandle' | transloco }}</mat-label>
-                <input matInput formControlName="supportLookup" />
+                <input matInput formControlName="supportLookup" autocomplete="off" />
 
                 @let supportLookup = form.controls.supportLookup.errors;
                 @if (supportLookup?.['minlength']; as minlength) {

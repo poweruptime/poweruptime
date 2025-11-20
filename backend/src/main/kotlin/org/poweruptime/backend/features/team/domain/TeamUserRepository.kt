@@ -1,28 +1,96 @@
 package org.poweruptime.backend.features.team.domain
 
+import org.jetbrains.exposed.v1.core.alias
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
+import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.team.model.TeamUser
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
+import org.poweruptime.backend.features.team.model.TeamUserJoinUserAndInviterRecord
+import org.poweruptime.backend.features.team.model.TeamUserRecord
+import org.poweruptime.backend.features.team.model.rowToTeamUserJoinUserAndInviterRecord
+import org.poweruptime.backend.features.team.model.rowToTeamUserRecord
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
-interface TeamUserRepository : JpaRepository<TeamUser, String>, JpaSpecificationExecutor<TeamUser> {
-    @Query(
-        """
-        select ou from TeamUser ou join ou.id.team o
-        where ou.id.team.id=:tId and ou.id.user.id = :uId
-        """,
-    )
-    fun findByTeamAndUserId(
-        @Param("tId") teamId: String,
-        @Param("uId") userId: String
-    ): TeamUser?
+fun TeamUser.findAll(
+    pageable: Pageable,
+    teamId: ULong
+): Page<TeamUserJoinUserAndInviterRecord> {
+    val user = User.alias("user")
+    val inviter = User.alias("inviter")
 
-    @Query(
-        """
-        select ou.id.team.id from TeamUser ou join ou.id.team o
-        where ou.id.user.id = :uId
-        """,
+    val query = leftJoin(user, { TeamUser.userId }, { user[User.id] })
+        .leftJoin(inviter, { TeamUser.inviterId }, { inviter[User.id] })
+        .selectAll().where {
+            (TeamUser.teamId eq teamId)
+        }
+
+    return pageQuery(
+        query,
+        pageable,
+        sort = {
+            when (it) {
+                "id.user.name" -> user[User.name]
+                "id.user.id" -> user[User.publicId]
+                "role" -> TeamUser.role
+                "invitedBy.name" -> inviter[User.name]
+                "invitedBy.email" -> inviter[User.email]
+                "createdAt" -> TeamUser.createdAt
+                else -> null
+            }
+        },
+        map = {
+            TeamUser.rowToTeamUserJoinUserAndInviterRecord(
+                it,
+                user,
+                inviter,
+            )
+        },
     )
-    fun findTeamIdsByUserId(@Param("uId") userId: String): List<String>
+}
+
+fun TeamUser.findByTeamAndUserId(teamId: ULong, userId: ULong): TeamUserRecord? =
+    selectAll().where {
+        (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
+    }
+        .limit(1)
+        .firstOrNull()
+        ?.let {
+            rowToTeamUserRecord(it)
+        }
+
+fun TeamUser.findJoinUserAndInviterByTeamAndUserId(
+    teamId: ULong,
+    userId: ULong
+): TeamUserJoinUserAndInviterRecord? {
+    val user = User.alias("user")
+    val inviter = User.alias("inviter")
+
+    return innerJoin(user, { TeamUser.userId }, { user[User.id] })
+        .innerJoin(inviter, { TeamUser.inviterId }, { inviter[User.id] })
+        .selectAll().where {
+            (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
+        }.limit(1)
+        .firstOrNull()
+        ?.let {
+            rowToTeamUserJoinUserAndInviterRecord(it, user, inviter)
+        }
+}
+
+fun TeamUser.findTeamIdsByUserId(userId: ULong): List<ULong> =
+    select(teamId).where {
+        TeamUser.userId eq userId
+    }.map { it[TeamUser.teamId] }
+
+fun TeamUser.deleteByTeamAndUserId(
+    teamId: ULong,
+    userId: ULong
+) = deleteWhere {
+    (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
 }

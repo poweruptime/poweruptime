@@ -1,28 +1,61 @@
 package org.poweruptime.backend.features.monitor.domain
 
+import org.jetbrains.exposed.v1.core.Op
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.inSubQuery
+import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogEntry
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.stereotype.Repository
+import org.poweruptime.backend.features.monitor.model.CheckResultLogEntryRecord
+import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
+import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.rowToCheckResultLogEntry
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-@Repository
-interface CheckResultLogEntryRepository :
-    org.poweruptime.backend.core.domain.Repository<CheckResultLogEntry>,
-    JpaSpecificationExecutor<CheckResultLogEntry> {
+fun CheckResultLogEntry.deleteByTeamIdAndOlderThan(
+    teamId: ULong,
+    before: Instant
+): Int =
+    deleteWhere {
+        checkResultId inSubQuery (
+            CheckResult.innerJoin(Monitor).select(CheckResult.id).where {
+                Monitor.teamId eq teamId
+            }
+            ) and (CheckResult.createdAt less before)
+    }
 
-    @Query(
-        """
-        select crlge from CheckResultLogEntry crlge
-        join crlge.checkResult cr join cr.monitor m
-        where crlge.createdAt < :before and m.team.id = :teamId
-        """,
+fun CheckResultLogEntry.findAll(
+    pageable: Pageable,
+    checkResultId: ULong,
+    stages: List<CheckResultLogStage>? = null,
+): Page<CheckResultLogEntryRecord> {
+    var condition: Op<Boolean> = (CheckResultLogEntry.checkResultId eq checkResultId)
+
+    stages?.ifEmpty { null }?.let {
+        condition = condition and (CheckResultLogEntry.stage inList it)
+    }
+
+    val query = selectAll().where(condition)
+
+    return pageQuery(
+        query,
+        pageable,
+        {
+            when (it) {
+                "stage" -> CheckResultLogEntry.stage
+                "level" -> CheckResultLogEntry.level
+                "createdAt" -> CheckResultLogEntry.createdAt
+                else -> null
+            }
+        },
+        { rowToCheckResultLogEntry(it) },
     )
-    fun findByTeamIdAndOlderThan(
-        @Param(
-            "teamId",
-        ) teamId: String,
-        @Param("before") before: Instant
-    ): List<CheckResultLogEntry>
 }

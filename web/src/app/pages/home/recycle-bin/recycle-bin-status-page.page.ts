@@ -19,7 +19,8 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {StatusPagesStore} from '@app/services';
-import {trackBy} from '@app/util';
+
+import {BackendType} from '../../../api';
 
 @Component({
   template: `
@@ -132,5 +133,5 @@ export class RecycleBinStatusPagePage {
     );
   }
 
-  protected readonly trackBy = trackBy;
+  protected readonly trackBy = (_: number, it: BackendType['StatusPageResponse']) => it.slug;
 }

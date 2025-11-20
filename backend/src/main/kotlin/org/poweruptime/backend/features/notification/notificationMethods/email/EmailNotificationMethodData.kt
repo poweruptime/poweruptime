@@ -1,30 +1,98 @@
 package org.poweruptime.backend.features.notification.notificationMethods.email
 
-import jakarta.persistence.Column
-import jakarta.persistence.DiscriminatorValue
-import jakarta.persistence.Entity
-import jakarta.validation.constraints.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Size
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.mail.EmailSecurity
 import org.poweruptime.backend.features.mail.EmailSender
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
-import org.poweruptime.backend.features.notification.core.NotificationMethodTypes
-import org.poweruptime.backend.features.notification.model.NOTIFICATION_METHOD_DATA_TABLE_NAME
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
+import org.poweruptime.backend.features.notification.model.NotificationMethodDataTable
+import kotlin.collections.toList
 
-private const val TYPE = NotificationMethodTypes.EMAIL
+object EmailNotificationMethodData : NotificationMethodDataTable(NotificationMethodType.EMAIL) {
+    val to = array<String>("mail_to")
 
-@Entity(name = "${NOTIFICATION_METHOD_DATA_TABLE_NAME}_$TYPE")
-@DiscriminatorValue(TYPE)
-class EmailNotificationMethodData(
-    @Suppress("JpaAttributeTypeInspection") @Column(
-        name = "mail_to",
-        nullable = false,
-        columnDefinition = "text[]",
+    val host = varchar("mail_host", Database.MAX_DOMAIN_LENGTH)
+    val port = integer("mail_port")
+
+    val username = varchar("mail_username", Database.MAX_BASIC_AUTH_LENGTH)
+    val password = varchar("mail_password", Database.MAX_BASIC_AUTH_LENGTH)
+
+    val security = enumerationByCode<EmailSecurity>("mail_security")
+    val ignoreTLSErrors = bool("mail_ignore_tls_errors")
+
+    val cc = array<String>("mail_cc").nullable()
+    val bcc = array<String>("mail_bcc").nullable()
+
+    override fun rowToRecord(row: ResultRow): EmailNotificationMethodDataRecord = EmailNotificationMethodDataRecord(
+        to = row[to].toSet(),
+        host = row[host],
+        port = row[port],
+        username = row[username],
+        password = row[password],
+        security = row[security],
+        ignoreTLSErrors = row[ignoreTLSErrors],
+        cc = row[cc]?.toSet(),
+        bcc = row[bcc]?.toSet(),
     )
+
+    override fun insert(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as EmailNotificationMethodDataRecord
+
+        insert {
+            it[id] = notificationMethodId
+            it[to] = data.to.toList()
+            it[host] = data.host
+            it[port] = data.port
+            it[username] = data.username
+            it[password] = data.password
+            it[security] = data.security
+            it[ignoreTLSErrors] = data.ignoreTLSErrors
+            it[cc] = data.cc?.toList()
+            it[bcc] = data.bcc?.toList()
+        }
+    }
+
+    override fun update(
+        notificationMethodId: ULong,
+        data: NotificationMethodData
+    ) {
+        data as EmailNotificationMethodDataRecord
+
+        update({ id eq notificationMethodId }) {
+            it[to] = data.to.toList()
+            it[host] = data.host
+            it[port] = data.port
+            it[username] = data.username
+            it[password] = data.password
+            it[security] = data.security
+            it[ignoreTLSErrors] = data.ignoreTLSErrors
+            it[cc] = data.cc?.toList()
+            it[bcc] = data.bcc?.toList()
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
+}
+
+data class EmailNotificationMethodDataRecord(
     val to: Set<String>,
 
-    @Column(name = "mail_host", length = Database.MAX_DOMAIN_LENGTH)
     @get:NotBlank
     @get:Size(
         min = Database.MIN_DOMAIN_LENGTH,
@@ -33,68 +101,25 @@ class EmailNotificationMethodData(
     @get:Pattern(regexp = Database.DOMAIN_REGEX)
     override val host: String,
 
-    @Column(name = "mail_port")
     @get:NotNull
     @get:Min(Database.MIN_PORT)
     @get:Max(Database.MAX_PORT)
     override val port: Int,
 
-    @Column(name = "mail_username", length = Database.MAX_BASIC_AUTH_LENGTH)
     @get:NotBlank
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     override val username: String,
 
-    @Column(name = "mail_password", length = Database.MAX_BASIC_AUTH_LENGTH)
     @get:NotBlank
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     override val password: String,
 
-    /**
-     * Usage of `EmailSecurityDatabaseConverter` to minify enum to 1 char
-     * @see org.poweruptime.backend.features.mail.EmailSecurityDatabaseConverter
-     */
-    @Column(name = "mail_security", nullable = false, length = 1)
     @get:NotNull
     override val security: EmailSecurity,
 
-    @Column(name = "mail_ignore_tls_errors", columnDefinition = "boolean")
     @get:NotNull
     override val ignoreTLSErrors: Boolean,
 
-    @Suppress("JpaAttributeTypeInspection") @Column(
-        name = "mail_cc",
-        nullable = true,
-        columnDefinition = "text[]",
-    )
-    val cc: Set<String>? = null,
-
-    @Suppress("JpaAttributeTypeInspection") @Column(
-        name = "mail_bcc",
-        nullable = true,
-        columnDefinition = "text[]",
-    )
-    val bcc: Set<String>? = null,
-) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender {
-    // ObjectMapper needs an empty constructor
-    constructor() : this(
-        setOf(""),
-        "",
-        1234,
-        "",
-        "",
-        EmailSecurity.NONE_STARTTLS,
-        false,
-    )
-
-    override fun clone() = EmailNotificationMethodData(
-        to,
-        host,
-        port,
-        username,
-        password,
-        security,
-        ignoreTLSErrors,
-        cc,
-        bcc,
-    )
-}
+    val cc: Set<String>?,
+    val bcc: Set<String>?,
+) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender

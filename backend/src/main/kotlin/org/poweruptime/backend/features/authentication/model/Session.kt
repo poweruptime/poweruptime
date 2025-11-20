@@ -1,62 +1,77 @@
 package org.poweruptime.backend.features.authentication.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
-import org.hibernate.annotations.ColumnDefault
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import java.time.Instant
 
-@Table(name = "session")
-@Entity
-class Session(
-    @Column(nullable = false, length = Database.MAX_SESSION_DESCRIPTION_LENGTH)
-    var description: String,
+object Session : ULongIdTable("session"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("public_id", NANO_ID_DEFAULT_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var user: User,
+    val userId = ulong("user_id").references(User.id).index()
 
-    @ColumnDefault("true")
-    @Column(nullable = false, columnDefinition = "boolean")
-    var valid: Boolean = true,
-
-    @OneToMany(mappedBy = "session")
-    val tokens: List<RefreshToken> = emptyList(),
-) : AEntity() {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
+    val description = varchar("description", Database.MAX_SESSION_DESCRIPTION_LENGTH)
+    val valid = bool("valid").clientDefault { true }
 }
 
-@Table(name = "refresh_token")
-@Entity
-class RefreshToken(
-    @Column(nullable = false, unique = true, length = Database.MAX_REFRESH_TOKEN_LENGTH)
+data class SessionRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val userId: ULong,
+    val description: String,
+    val valid: Boolean,
+)
+
+data class SessionJoinUserRecord(
+    val session: SessionRecord,
+    val user: UserRecord,
+)
+
+fun Session.rowToSessionRecord(row: ResultRow): SessionRecord =
+    SessionRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        userId = row[userId],
+        description = row[description],
+        valid = row[valid],
+    )
+
+object RefreshToken : ULongIdTable("refresh_token"), HasModifiers {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+
+    val sessionId = ulong("session_id").references(Session.id).index()
+
+    val token = varchar("token", Database.MAX_REFRESH_TOKEN_LENGTH)
+    val valid = bool("valid").clientDefault { true }
+}
+
+data class RefreshTokenRecord(
+    val id: ULong,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val sessionId: ULong,
     val token: String,
-
-    @JoinColumn(name = "session_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val session: Session,
-
-    @ColumnDefault("true")
-    @Column(nullable = false, columnDefinition = "boolean")
-    val valid: Boolean = true,
-) : AEntity() {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
-}
+    val valid: Boolean,
+)
+fun RefreshToken.rowToRefreshTokenRecord(row: ResultRow): RefreshTokenRecord =
+    RefreshTokenRecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        sessionId = row[sessionId],
+        token = row[token],
+        valid = row[valid],
+    )

@@ -13,6 +13,7 @@ import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.monitor.dto.CheckResultLogEntryResponse
 import org.poweruptime.backend.features.monitor.model.CheckResultLogStage
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
+import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -30,22 +31,23 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Check Result API")
 class CheckResultLogEntryController(
     private val checkResultLogEntryService: CheckResultLogEntryService,
+    private val checkResultService: CheckResultService,
 ) {
     @Operation(
         summary = "Get check result logs",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
-    @PreAuthorize("hasPermission(#checkResultId, '$CHECK_RESULT_MEMBER')")
+    @PreAuthorize("hasPermission(#publicCheckResultId, '$CHECK_RESULT_MEMBER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         @ParameterObject @PageableDefault pageable: Pageable,
-        @PathVariable("checkResultId") checkResultId: String,
+        @PathVariable("checkResultId") publicCheckResultId: String,
         @RequestParam("stages") stage: List<CheckResultLogStage>? = null,
     ): PaginatedResponse<CheckResultLogEntryResponse> = checkResultLogEntryService.getAllPaginated(
         pageable = pageable,
-        checkResultId = checkResultId,
+        checkResultId = checkResultService.getIdByPublicId(publicCheckResultId),
         stages = stage,
     ).toDto {
         CheckResultLogEntryResponse(it)

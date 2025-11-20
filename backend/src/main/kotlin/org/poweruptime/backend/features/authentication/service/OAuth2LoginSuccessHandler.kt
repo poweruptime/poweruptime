@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.HostService
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.poweruptime.backend.features.user.dto.CreateUserDto
+import org.poweruptime.backend.features.user.CreateUserDto
 import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -31,13 +31,9 @@ class OAuth2LoginSuccessHandler(
         // the principal is the DefaultOAuth2User we returned above
         val oauthUser = authentication.principal as OAuth2User
 
-        val email = oauthUser.attributes["email"] as String?
+        val email: String = oauthUser.attributes["email"] as String? ?: throw BadRequestException("Email required")
 
-        if (email == null) {
-            throw BadRequestException("Email required")
-        }
-
-        val user = authService.getByEmail(email) ?: userService.create(
+        val user = authService.findByEmail(email) ?: userService.create(
             dto = CreateUserDto(
                 name = email,
                 email = email,
@@ -64,7 +60,7 @@ class OAuth2LoginSuccessHandler(
             user = user,
         )
 
-        val accessToken = accessTokenService.createToken(user.id, SystemRole.USER.grantedAuthorities)
+        val accessToken = accessTokenService.createToken(user.publicId, user.role.grantedAuthorities)
 
         // Build the redirect URL with tokens as query params
         val redirectUri = UriComponentsBuilder

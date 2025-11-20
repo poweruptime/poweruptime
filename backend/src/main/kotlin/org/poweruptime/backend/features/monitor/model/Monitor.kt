@@ -1,83 +1,83 @@
 package org.poweruptime.backend.features.monitor.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.hibernate.annotations.SQLRestriction
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.ASoftDeleteEntity
-import org.poweruptime.backend.core.models.EntityWithName
-import org.poweruptime.backend.core.utils.Database
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.HasSoftDelete
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.softDelete
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
-import org.poweruptime.backend.features.notification.model.NotificationMethod
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
-import org.poweruptime.backend.features.tag.Tag
 import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRecord
+import java.time.Instant
 
-@Entity
-@Table(name = "monitor")
-class Monitor(
-    @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
-    override var name: String,
+object Monitor : ULongIdTable("monitor"), HasPublicId, HasModifiers, HasSoftDelete, HasName {
+    override val publicId = nanoId("public_id", NANO_ID_SMALL_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val deleted = softDelete()
+    override val name = name()
 
-    @Column(name = "test_interval_seconds", nullable = false, columnDefinition = "bigint")
-    var testIntervalSeconds: Long,
+    val teamId = ulong("team_id").references(Team.id).index()
 
-    @Column(name = "upside_down", nullable = false, columnDefinition = "boolean")
-    var upsideDown: Boolean,
+    val type = enumerationByCode<MonitorType>("type")
 
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: Team,
+    val testIntervalSeconds = long("test_interval_seconds")
+    val upsideDown = bool("upside_down")
+    val retries = long("retries").nullable()
+    val resendAfter = long("resend_after").nullable()
+    val description = text("description").nullable()
 
-    @JoinColumn(name = "monitor_checker_id", nullable = false)
-    @OneToOne(fetch = FetchType.EAGER)
-    var checker: MonitorData,
-
-    @Column(name = "retries", nullable = true, columnDefinition = "bigint")
-    var retries: Long? = null,
-
-    @Column(name = "resend_after", nullable = true, columnDefinition = "bigint")
-    var resendAfter: Long? = null,
-
-    @Column(name = "description", nullable = true, columnDefinition = "text")
-    var description: String? = null,
-
-    /**
-     * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
-     */
-    @Column(name = "status", nullable = false, length = 1)
-    var status: MonitorStatus = MonitorStatus.PENDING,
-
-    @OneToMany(mappedBy = "monitor")
-    var checkResults: List<CheckResult> = ArrayList(),
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @SQLRestriction("deleted IS null")
-    @JoinTable(
-        name = "monitor_notification_method",
-        joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "notification_method_id", referencedColumnName = "id")],
-    )
-    var enabledNotificationMethods: List<NotificationMethod> = ArrayList(),
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "monitor_tag",
-        joinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "tag_id", referencedColumnName = "id")],
-    )
-    var selectedTags: List<Tag> = ArrayList(),
-
-    @OneToMany(mappedBy = "connection.monitor")
-    var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),
-) : ASoftDeleteEntity(), EntityWithName {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val status = enumerationByCode<MonitorStatus>("status").clientDefault {
+        MonitorStatus.PENDING
+    }
 }
+
+data class MonitorRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val deleted: Instant?,
+    val name: String,
+    val teamId: ULong,
+    val type: MonitorType,
+    val testIntervalSeconds: Long,
+    val upsideDown: Boolean,
+    val retries: Long?,
+    val resendAfter: Long?,
+    val description: String?,
+    var status: MonitorStatus,
+)
+
+fun Monitor.rowToMonitorRecord(row: ResultRow): MonitorRecord =
+    MonitorRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        deleted = row[deleted],
+        name = row[name],
+        teamId = row[teamId],
+        type = row[type],
+        testIntervalSeconds = row[testIntervalSeconds],
+        upsideDown = row[upsideDown],
+        retries = row[retries],
+        resendAfter = row[resendAfter],
+        description = row[description],
+        status = row[status],
+    )
+
+open class MonitorRecordJoinTeamRecord(open val monitor: MonitorRecord, open val team: TeamRecord)
+
+data class MonitorRecordWithDataJoinTeamRecord(
+    override val monitor: MonitorRecord,
+    override val team: TeamRecord,
+    val data: MonitorData
+) : MonitorRecordJoinTeamRecord(monitor, team)

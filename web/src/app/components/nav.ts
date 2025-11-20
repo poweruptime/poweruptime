@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {toSignal} from '@angular/core/rxjs-interop';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatIconButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -17,9 +17,9 @@ import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
-import {IsSystemAdmin} from '@app/directives';
+import {IsSystemAdmin, MonitorStatusText} from '@app/directives';
 import {IsTeamAdmin} from '@app/directives';
-import {AuthStore, ProfileStore, SelectedTeamStore} from '@app/services';
+import {AuthStore, InfoStore, ProfileStore, SelectedTeamStore} from '@app/services';
 import {isMobileBreakpoints} from '@app/services/util';
 import {themeOptions} from '@app/util';
 
@@ -33,8 +33,10 @@ import {TeamSelect} from './team-select';
       <div class="flex flex-col gap-3 px-2 py-2">
         <div class="px-4">
           <pu-team-select [teamId]="teamId()" (teamIdSelected)="navigateToTeamDashboard($event)">
-            <button class="w-full" type="button" mat-stroked-button>
-              <span>
+            <button
+              class="relative flex w-full items-center justify-center rounded-full border border-gray-400 bg-white px-4 py-3 transition-all hover:cursor-pointer hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 active:bg-gray-200 dark:border-gray-600 dark:bg-black dark:hover:bg-gray-900 dark:focus-visible:outline-green-400 dark:active:bg-gray-800"
+              type="button">
+              <span class="text-center font-medium" [monitor-status-text]="'UP'">
                 @if (teamId()) {
                   @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
                     {{ selectedTeam.name }}
@@ -45,7 +47,9 @@ import {TeamSelect} from './team-select';
                   {{ 'nav.teamSelect.select' | transloco }}
                 }
               </span>
-              <bi name="chevron-expand" />
+              <span class="absolute right-4 pt-1">
+                <bi name="chevron-expand" />
+              </span>
             </button>
           </pu-team-select>
         </div>
@@ -95,7 +99,7 @@ import {TeamSelect} from './team-select';
 
           @if (selectedTeam; as selectedTeam) {
             <div class="mt-4 mb-2 flex items-center gap-3">
-              <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-10" />
+              <hr class="border-reef-gray-200 dark:border-reef-gray-500 w-full" />
               <span class="break-keep whitespace-nowrap">
                 {{ selectedTeam.name }}
               </span>
@@ -139,74 +143,107 @@ import {TeamSelect} from './team-select';
         <hr class="border-reef-gray-200 dark:border-reef-gray-500" />
         <div class="flex min-h-16 items-center justify-between pt-2">
           <mat-nav-list>
-            <a *isSystemAdmin mat-list-item routerLink="/settings" routerLinkActive="active">
-              <bi name="building-gear" />
-              <span class="nav-text">{{ 'nav.instanceSettings' | transloco }}</span>
-            </a>
-          </mat-nav-list>
-          <div
-            class="hover:cursor-pointer"
-            [matTooltip]="profileStore.email()"
-            [matMenuTriggerFor]="menu"
-            matTooltipPosition="left">
-            @if (profileInitials(); as initials) {
+            <a
+              [matTooltip]="'profile.settings' | transloco"
+              routerLink="/profile"
+              routerLinkActive="active"
+              mat-list-item
+              style="padding-left: 0 !important;">
               <div
                 class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-300 p-4 text-sm tracking-widest text-black dark:bg-slate-800 dark:text-white">
-                {{ initials }}
+                {{ profileInitials() ?? 'UK' }}
               </div>
-            } @else {
-              <bi name="gear" />
-            }
+              <div class="ms-2 inline-flex gap-2">
+                <span>{{ profileStore.name() ?? 'Unknown' }}</span>
+                @if (infoStore.support(); as support) {
+                  @if (support.showSupportBadge && support.supportsSince) {
+                    <svg
+                      [monitor-status-text]="'UP'"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24">
+                      <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+                      <path
+                        fill="currentColor"
+                        d="M5 20v-2h14v2zm0-3.5L3.725 8.475q-.05 0-.113.013T3.5 8.5q-.625 0-1.062-.438T2 7t.438-1.062T3.5 5.5t1.063.438T5 7q0 .175-.038.325t-.087.275L8 9l3.125-4.275q-.275-.2-.45-.525t-.175-.7q0-.625.438-1.063T12 2t1.063.438T13.5 3.5q0 .375-.175.7t-.45.525L16 9l3.125-1.4q-.05-.125-.088-.275T19 7q0-.625.438-1.063T20.5 5.5t1.063.438T22 7t-.437 1.063T20.5 8.5q-.05 0-.112-.012t-.113-.013L19 16.5z" />
+                    </svg>
+                  }
+                }
+              </div>
+            </a>
+          </mat-nav-list>
+
+          <div class="inline-flex gap-1">
+            <mat-nav-list>
+              <a
+                *isSystemAdmin
+                [matTooltip]="'nav.instanceSettings' | transloco"
+                mat-list-item
+                routerLink="/settings"
+                routerLinkActive="active">
+                <bi class="mt-1" name="building-gear" />
+              </a>
+            </mat-nav-list>
+
+            <mat-nav-list>
+              <a
+                [matMenuTriggerFor]="menu"
+                [matTooltip]="'general.settings' | transloco"
+                mat-list-item>
+                <bi class="mt-1" name="gear" />
+              </a>
+            </mat-nav-list>
+
+            <mat-menu #menu="matMenu" yPosition="above" xPosition="before">
+              <button (click)="authStore.logout()" type="button" mat-menu-item>
+                <bi name="box-arrow-left" />
+                {{ 'general.logout' | transloco }}
+              </button>
+              <button (click)="openAbout()" type="button" mat-menu-item>
+                <bi name="info-circle" />
+                {{ 'general.about' | transloco }}
+              </button>
+              <button [matMenuTriggerFor]="themeMenu" type="button" mat-menu-item>
+                <bi name="paint-bucket" />
+                {{ 'general.theme' | transloco }}
+              </button>
+              <button [matMenuTriggerFor]="languageMenu" type="button" mat-menu-item>
+                <bi name="translate" />
+                {{ 'general.language' | transloco }}
+              </button>
+            </mat-menu>
+
+            @let selectedTheme = themeService.theme();
+            <mat-menu #themeMenu="matMenu" yPosition="above">
+              @for (theme of themeOptions; track theme.value) {
+                <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
+                  <div class="inline-flex items-center gap-2">
+                    <bi
+                      [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'"
+                      size="16" />
+                    <span>{{ theme.viewValue }}</span>
+
+                    <bi [name]="theme.icon" />
+                  </div>
+                </button>
+              }
+            </mat-menu>
+
+            @let selectedLang = translocoService.getActiveLang();
+            <mat-menu #languageMenu="matMenu" yPosition="above">
+              @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
+                @let lang = $any(language);
+                <button
+                  (click)="translocoService.setActiveLang(lang.id)"
+                  type="button"
+                  mat-menu-item>
+                  <bi [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'" />
+                  <span>{{ lang.label }}</span>
+                </button>
+              }
+            </mat-menu>
           </div>
-          <mat-menu #menu="matMenu" yPosition="above" xPosition="before">
-            <button (click)="authStore.logout()" type="button" mat-menu-item>
-              <bi name="box-arrow-left" />
-              {{ 'general.logout' | transloco }}
-            </button>
-            <button (click)="openAbout()" type="button" mat-menu-item>
-              <bi name="info-circle" />
-              {{ 'general.about' | transloco }}
-            </button>
-            <button [matMenuTriggerFor]="themeMenu" type="button" mat-menu-item>
-              <bi name="paint-bucket" />
-              {{ 'general.theme' | transloco }}
-            </button>
-            <button [matMenuTriggerFor]="languageMenu" type="button" mat-menu-item>
-              <bi name="translate" />
-              {{ 'general.language' | transloco }}
-            </button>
-            <button type="button" mat-menu-item routerLink="/profile/overview">
-              <bi name="gear" />
-              {{ 'profile.settings' | transloco }}
-            </button>
-          </mat-menu>
-
-          @let selectedTheme = themeService.theme();
-          <mat-menu #themeMenu="matMenu" yPosition="above">
-            @for (theme of themeOptions; track theme.value) {
-              <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
-                <div class="inline-flex items-center gap-2">
-                  <bi
-                    [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'"
-                    size="16" />
-                  <span>{{ theme.viewValue }}</span>
-
-                  <bi [name]="theme.icon" />
-                </div>
-              </button>
-            }
-          </mat-menu>
-
-          @let selectedLang = translocoService.getActiveLang();
-          <mat-menu #languageMenu="matMenu" yPosition="above">
-            @for (language of translocoService.getAvailableLangs(); track $any(language).id) {
-              @let lang = $any(language);
-              <button (click)="translocoService.setActiveLang(lang.id)" type="button" mat-menu-item>
-                <bi [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'" />
-                <span>{{ lang.label }}</span>
-              </button>
-            }
-          </mat-menu>
         </div>
       </div>
     </div>
@@ -239,7 +276,6 @@ import {TeamSelect} from './team-select';
     MatNavList,
     IsSystemAdmin,
     BiComponent,
-    MatTooltip,
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
@@ -247,8 +283,9 @@ import {TeamSelect} from './team-select';
     MatIconButton,
     StopPropagationDirective,
     TeamSelect,
-    MatButton,
     IsTeamAdmin,
+    MonitorStatusText,
+    MatTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -260,6 +297,7 @@ export class Nav {
   readonly dialog = inject(MatDialog);
   readonly translocoService = inject(TranslocoService);
   readonly router = inject(Router);
+  readonly infoStore = inject(InfoStore);
 
   readonly themeOptions = themeOptions;
 

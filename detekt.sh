@@ -1,91 +1,114 @@
 #!/usr/bin/env bash
 
-# Fancy spinner using braille Unicode characters.
+# Fancy spinner using braille Unicode characters
 spinner() {
   local spinner_chars=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
   local i=0
+  local pids=("${!1}")   # array ref trick for bash 3
+  local names=("${!2}")
+  local colors=("${!3}")
 
-  # Loop while any of the three processes is still running.
-  while kill -0 "$detekt_pid"   2>/dev/null \
-     || kill -0 "$prettier_pid" 2>/dev/null \
-     || kill -0 "$pnpm_pid"     2>/dev/null; do
-    printf "\r%s Running detekt, prettier, and web lint..." \
-      "${spinner_chars[i]}"
+  # Build label string with colors
+  local label=""
+  for idx in "${!names[@]}"; do
+    label+="${colors[$idx]}${names[$idx]}\033[0m"
+    if [ "$idx" -lt $((${#names[@]} - 1)) ]; then
+      label+=", "
+    fi
+  done
+
+  while :; do
+    local alive=false
+    for pid in "${pids[@]}"; do
+      if kill -0 "$pid" 2>/dev/null; then
+        alive=true
+        break
+      fi
+    done
+    if [ "$alive" = false ]; then
+      break
+    fi
+    printf "\r%s Running %b..." "${spinner_chars[i]}" "$label"
     i=$(( (i + 1) % ${#spinner_chars[@]} ))
     sleep 0.1
   done
-  printf "\r"  # Clear spinner line.
+  printf "\r"
 }
 
-# Return ANSI color based on exit code: green if 0, red otherwise.
-color() {
-  if [ "$1" -eq 0 ]; then
-    echo -e "\033[32m"
-  else
-    echo -e "\033[31m"
-  fi
+# Map color name to ANSI escape code
+ansi_color() {
+  case $1 in
+    red)     echo "\033[31m" ;;
+    green)   echo "\033[32m" ;;
+    yellow)  echo "\033[33m" ;;
+    blue)    echo "\033[34m" ;;
+    magenta) echo "\033[35m" ;;
+    cyan)    echo "\033[36m" ;;
+    white)   echo "\033[37m" ;;
+    *)       echo "\033[0m"  ;;
+  esac
 }
 
-# Create temporary files to capture output.
-detekt_output=$(mktemp)
-prettier_output=$(mktemp)
-pnpm_output=$(mktemp)
+# Define tools: (name|color|command...)
+tools=(
+  "Prettier|green|prettier --write ."
+  "eslint|yellow|pnpm -C web lint"
+  "Detekt|cyan|./gradlew detekt"
+)
 
-# Start Detekt, Prettier and Web Lint concurrently.
-./gradlew detekt            > "$detekt_output"   2>&1 &
-detekt_pid=$!
-prettier --write .          > "$prettier_output" 2>&1 &
-prettier_pid=$!
-pnpm -C web lint            > "$pnpm_output"     2>&1 &
-pnpm_pid=$!
+names=()
+colors=()
+outputs=()
+pids=()
+exit_codes=()
 
-# Launch the fancy spinner in the background.
-spinner & spinner_pid=$!
+# Start all tools
+for tool in "${tools[@]}"; do
+  name=${tool%%|*}
+  rest=${tool#*|}
+  color=${rest%%|*}
+  cmd=${rest#*|}
 
-# Wait for each process to finish.
-wait "$detekt_pid";   detekt_exit_code=$?
-wait "$prettier_pid"; prettier_exit_code=$?
-wait "$pnpm_pid";     pnpm_exit_code=$?
+  names+=("$name")
+  colors+=("$(ansi_color "$color")")
 
-# Stop the spinner.
+  output=$(mktemp)
+  outputs+=("$output")
+
+  eval "$cmd" >"$output" 2>&1 &
+  pids+=($!)
+done
+
+# Run spinner
+spinner pids[@] names[@] colors[@] & spinner_pid=$!
+
+# Wait for each process
+for idx in "${!pids[@]}"; do
+  wait "${pids[$idx]}"
+  exit_codes[$idx]=$?
+done
+
 kill "$spinner_pid" 2>/dev/null
 echo ""
 
-# Print Prettier output.
-echo -e "\033[1;32mOutput from prettier:\033[0m"
-while IFS= read -r line; do
-  printf "\033[32m%s\033[0m\n" "$line"
-done < "$prettier_output"
+# Print outputs with colors
+for idx in "${!names[@]}"; do
+  echo -e "\033[1mOutput from ${names[$idx]}:\033[0m"
+  while IFS= read -r line; do
+    printf "%b%s\033[0m\n" "${colors[$idx]}" "$line"
+  done <"${outputs[$idx]}"
+  echo ""
+  rm "${outputs[$idx]}"
+done
 
-# Print Web Lint output.
-echo -e "\n\033[1;33mOutput from web lint:\033[0m"
-while IFS= read -r line; do
-  printf "\033[33m%s\033[0m\n" "$line"
-done < "$pnpm_output"
-
-# Print Detekt output.
-echo -e "\n\033[1;34mOutput from detekt:\033[0m"
-while IFS= read -r line; do
-  printf "\033[34m%s\033[0m\n" "$line"
-done < "$detekt_output"
-
-
-# Clean up temporary files.
-rm "$detekt_output" "$prettier_output" "$pnpm_output"
-
-# Determine final status messages.
-detekt_status="Success"
-prettier_status="Success"
-pnpm_status="Success"
-[ "$detekt_exit_code"   -ne 0 ] && detekt_status="Error (Code: $detekt_exit_code)"
-[ "$prettier_exit_code" -ne 0 ] && prettier_status="Error (Code: $prettier_exit_code)"
-[ "$pnpm_exit_code"     -ne 0 ] && pnpm_status="Error (Code: $pnpm_exit_code)"
-
-# Print summary.
-printf "\nSummary:\n"
-printf "  Prettier: $(color "$prettier_exit_code")%s\033[0m\n" \
-  "$prettier_status"
-printf "  Web Lint: $(color "$pnpm_exit_code")%s\033[0m\n" \
-  "$pnpm_status"
-printf "  Detekt:   $(color "$detekt_exit_code")%s\033[0m\n" \
-  "$detekt_status"
+# Print summary
+echo -e "\nSummary:"
+for idx in "${!names[@]}"; do
+  name=${names[$idx]}
+  code=${exit_codes[$idx]}
+  if [ "$code" -eq 0 ]; then
+    printf "  %s: \033[32mSuccess\033[0m\n" "$name"
+  else
+    printf "  %s: \033[31mError (Code: %d)\033[0m\n" "$name" "$code"
+  fi
+done

@@ -1,8 +1,16 @@
-import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  viewChild,
+} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatCheckbox} from '@angular/material/checkbox';
 import {MatPrefix} from '@angular/material/form-field';
 import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import {MatPaginator} from '@angular/material/paginator';
@@ -22,8 +30,22 @@ import {trackBy} from '@app/util';
 
 @Component({
   template: `
+    @let _deleted = deletedFilter();
+
     <div class="flex flex-col items-end justify-between gap-2 pt-1 md:flex-row md:items-center">
-      <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
+      <div class="inline-flex gap-2">
+        <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
+        @if (_deleted) {
+          <button
+            [disabled]="!teamsStore.hasValue() || teamsStore.isPending()"
+            (click)="teamsStore.restoreSelection()"
+            type="button"
+            mat-stroked-button>
+            <bi name="arrow-counterclockwise" />
+            {{ 'general.restore' | transloco }}
+          </button>
+        }
+      </div>
 
       <div class="flex flex-col items-end gap-2 md:flex-row md:items-center">
         <mat-form-field subscriptSizing="dynamic">
@@ -43,7 +65,6 @@ import {trackBy} from '@app/util';
           }
         </mat-form-field>
 
-        @let _deleted = deletedFilter();
         <mat-slide-toggle
           [checked]="_deleted ?? false"
           (toggleChange)="deletedFilter.set(_deleted ? null : true)"
@@ -61,6 +82,21 @@ import {trackBy} from '@app/util';
         [trackBy]="trackBy"
         mat-table
         matSort>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th *matHeaderCellDef mat-header-cell>
+            <mat-checkbox
+              [checked]="teamsStore.hasValue() && teamsStore.isAllSelected()"
+              [indeterminate]="teamsStore.hasValue() && !teamsStore.isAllSelected()"
+              (change)="$event ? teamsStore.toggleAll() : null"></mat-checkbox>
+          </th>
+          <td *matCellDef="let row" mat-cell>
+            <mat-checkbox
+              [checked]="teamsStore.isSelected(row)"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? teamsStore.toggle(row) : null"></mat-checkbox>
+          </td>
+        </ng-container>
         <ng-container matColumnDef="name">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.name' | transloco }}
@@ -89,22 +125,24 @@ import {trackBy} from '@app/util';
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell></th>
           <td *matCellDef="let element" mat-cell>
-            <a
-              [routerLink]="'/t/' + element.id + '/edit'"
-              mat-icon-button
-              matTooltip="Edit"
-              stopPropagation>
-              <bi name="gear" />
-            </a>
-            @if (!element.personal) {
-              <button
-                (click)="teamsStore.delete(element.id)"
+            @if (!_deleted) {
+              <a
+                [routerLink]="'/t/' + element.id + '/edit'"
                 mat-icon-button
-                type="button"
-                matTooltip="Delete"
+                matTooltip="Edit"
                 stopPropagation>
-                <bi name="trash" />
-              </button>
+                <bi name="gear" />
+              </a>
+              @if (!element.personal) {
+                <button
+                  (click)="teamsStore.delete(element.id)"
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Delete"
+                  stopPropagation>
+                  <bi name="trash" />
+                </button>
+              }
             }
           </td>
         </ng-container>
@@ -164,6 +202,7 @@ import {trackBy} from '@app/util';
     MatSuffix,
     MatFormField,
     MatLabel,
+    MatCheckbox,
   ],
 })
 export class InstanceSettingsTeamsPage {
@@ -193,6 +232,20 @@ export class InstanceSettingsTeamsPage {
         ...this.teamsStore.pageable(),
       })),
     );
+
+    effect(() => {
+      if (this.teamsStore.deleted()) {
+        this.teamsStore.setColumnsToDisplay([
+          'select',
+          'name',
+          'personalUser.id',
+          'monitorCount',
+          'actions',
+        ]);
+      } else {
+        this.teamsStore.setColumnsToDisplay(['name', 'personalUser.id', 'monitorCount', 'actions']);
+      }
+    });
   }
 
   protected readonly trackBy = trackBy;

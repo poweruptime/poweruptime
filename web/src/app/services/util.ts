@@ -84,10 +84,10 @@ export function toBackendDateTime(dateString: Date | string): string {
 
 export function dateToDateTime(
   dateString: string | Date,
-  hours: number,
-  minutes: number,
-  seconds: number,
-  milliseconds: number,
+  hours = 0,
+  minutes = 0,
+  seconds = 0,
+  milliseconds = 0,
 ): string {
   const date = new Date(dateString);
 

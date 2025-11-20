@@ -5,10 +5,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
+import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.core.utils.toBase32EncodedString
-import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
+import org.poweruptime.backend.features.authentication.service.user
 import org.poweruptime.backend.features.profile.dto.ConfirmMFADto
 import org.poweruptime.backend.features.profile.dto.ConfirmMFAResponse
 import org.poweruptime.backend.features.profile.dto.MFAState
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1/profile/mfa")
 @Tag(name = "MFA API")
 class MFAController(
-    private val authService: AuthService,
     private val mfaService: MFAService,
 ) {
     @Operation(
@@ -37,11 +37,13 @@ class MFAController(
     )
     @GetMapping("state")
     @ResponseStatus(HttpStatus.OK)
-    fun getState(authentication: Authentication): MFAState {
-        val mfa = mfaService.getByUserId(authentication.name)
+    fun getState(auth: Authentication): MFAState {
+        val mfa = auth.user().mfaId?.let { mfaId ->
+            mfaService.findById(mfaId)
+        }
 
-        return if (mfa != null) {
-            if (mfa.active) MFAState.ENABLED else MFAState.DISABLED
+        return if (mfa != null && mfa.active) {
+            MFAState.ENABLED
         } else {
             MFAState.DISABLED
         }
@@ -53,10 +55,9 @@ class MFAController(
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun setup(authentication: Authentication): SetupMFAResponse {
-        val user = authService.getByAuthOrThrow(authentication)
-
-        val mfa = mfaService.create(user)
+    fun setup(auth: Authentication): SetupMFAResponse {
+        val user = auth.user()
+        val mfa = mfaService.create(user.id, user.mfaId)
 
         return SetupMFAResponse(base32Secret = mfa.secret.toBase32EncodedString())
     }
@@ -67,10 +68,10 @@ class MFAController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    fun confirm(authentication: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse =
+    fun confirm(auth: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse =
         ConfirmMFAResponse(
             backupCodes = mfaService.activate(
-                userId = authService.getByAuthOrThrow(authentication).id,
+                mfaId = auth.user().mfaId ?: throw BadRequestException("Setup MFA first"),
                 code = dto.code,
             ),
         )
@@ -82,13 +83,11 @@ class MFAController(
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     fun delete(
-        authentication: Authentication,
+        auth: Authentication,
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
     ) {
-        val user = authService.getByAuthOrThrow(authentication)
+        mfaService.validate(auth.user(), mfaCode)
 
-        mfaService.validate(user.id, mfaCode)
-
-        mfaService.delete(user)
+        mfaService.delete(auth.user().mfaId!!)
     }
 }

@@ -60,7 +60,7 @@ class OAuth2ClientRegistrationsConfig(
                             it.userInfoUri.isNullBlankOrEmpty() ||
                             it.userNameAttribute.isNullBlankOrEmpty()
                         ) {
-                            null
+                            return@let null
                         }
 
                         ClientRegistration

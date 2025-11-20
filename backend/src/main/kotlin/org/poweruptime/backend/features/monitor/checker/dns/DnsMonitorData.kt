@@ -1,20 +1,68 @@
 package org.poweruptime.backend.features.monitor.checker.dns
 
-import jakarta.persistence.Column
-import jakarta.persistence.DiscriminatorValue
-import jakarta.persistence.Entity
-import jakarta.validation.constraints.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Size
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.model.MONITOR_CHECKER_DATA_TABLE_NAME
 import org.poweruptime.backend.features.monitor.model.MonitorData
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
+import org.poweruptime.backend.features.monitor.model.MonitorDataTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
-@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorDataTypes.DNS}")
-@DiscriminatorValue(MonitorDataTypes.DNS)
-class DnsMonitorData(
-    // Domain max length is 253
-    @Column(name = "dns_host", length = Database.MAX_DOMAIN_LENGTH)
+object DnsMonitorData : MonitorDataTable(MonitorType.DNS) {
+    val host = varchar("dns_host", Database.MAX_DOMAIN_LENGTH)
+    val server = varchar("dns_server", Database.MAX_IPV4_LENGTH)
+    val port = integer("dns_port")
+    val type = enumerationByCode<DnsMonitorDataType>("dns_type")
+
+    val matches = array<String>("dns_matches").nullable()
+
+    override fun rowToRecord(row: ResultRow): DnsMonitorDataRecord = DnsMonitorDataRecord(
+        host = row[host],
+        server = row[server],
+        port = row[port],
+        type = row[type],
+        matches = row[matches],
+    )
+
+    override fun insert(monitorId: ULong, data: MonitorData) {
+        data as DnsMonitorDataRecord
+
+        insert {
+            it[id] = monitorId
+            it[host] = data.host
+            it[server] = data.server
+            it[port] = data.port
+            it[type] = data.type
+            it[matches] = data.matches
+        }
+    }
+
+    override fun update(monitorId: ULong, data: MonitorData) {
+        data as DnsMonitorDataRecord
+
+        update({ id eq monitorId }) {
+            it[host] = data.host
+            it[server] = data.server
+            it[port] = data.port
+            it[type] = data.type
+            it[matches] = data.matches
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
+}
+
+data class DnsMonitorDataRecord(
     @get:NotBlank
     @get:Size(
         min = Database.MIN_DOMAIN_LENGTH,
@@ -22,8 +70,6 @@ class DnsMonitorData(
     )
     @get:Pattern(regexp = Database.DOMAIN_REGEX)
     val host: String,
-
-    @Column(name = "dns_server", length = Database.MAX_IPV4_LENGTH)
     @get:NotBlank
     @get:Size(
         min = Database.MIN_IPV4_LENGTH,
@@ -31,32 +77,11 @@ class DnsMonitorData(
     )
     @get:Pattern(regexp = Database.IPV4_REGEX)
     val server: String,
-
-    @Column(name = "dns_port")
     @get:NotNull
     @get:Min(Database.MIN_PORT)
     @get:Max(Database.MAX_PORT)
     val port: Int,
-
-    @Column(name = "dns_type", length = 5)
     @get:NotNull
     val type: DnsMonitorDataType,
-
-    @Suppress("JpaAttributeTypeInspection")
-    @Column(
-        name = "dns_matches",
-        columnDefinition = "text[]",
-    )
-    val matches: List<String>? = null,
-) : MonitorData(MonitorType.DNS) {
-    // ObjectMapper needs an empty constructor
-    constructor() : this("1.2.3.4", "1.2.3.4", 1, DnsMonitorDataType.TXT, null)
-
-    override fun clone() = DnsMonitorData(
-        host,
-        server,
-        port,
-        type,
-        matches,
-    )
-}
+    val matches: List<String>?,
+) : MonitorData(MonitorType.DNS)

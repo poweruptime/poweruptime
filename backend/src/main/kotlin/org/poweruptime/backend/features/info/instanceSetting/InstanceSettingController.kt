@@ -11,11 +11,11 @@ import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.info.dto.SettingBooleanDto
 import org.poweruptime.backend.features.info.dto.SettingStringDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceAvailableTimezonesResponse
-import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingRetentionDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingSupportDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingVersionCheckDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingsResponse
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSupportSettingsResponse
+import org.poweruptime.backend.features.info.instanceSetting.dto.SettingRetentionDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.VersionCheckResponse
 import org.poweruptime.backend.features.info.supporter.SupporterService
 import org.poweruptime.backend.features.info.versionChecker.VersionChecker
@@ -144,7 +144,7 @@ class InstanceSettingController(
     @PutMapping("retention")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setRetention(
-        @RequestBody @Valid dto: InstanceSettingRetentionDto
+        @RequestBody @Valid dto: SettingRetentionDto
     ): InstanceSettingsResponse {
         instanceSettingService.setCheckResultRetentionPeriodInDays(dto.checkResultRetentionPeriodInDays)
         instanceSettingService.setCheckResultLogRetentionPeriodInDays(dto.checkResultLogRetentionPeriodInDays)

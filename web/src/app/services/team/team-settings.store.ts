@@ -63,42 +63,14 @@ export const TeamSettingsStore = signalStore(
         ),
       ),
     ),
-    setCheckResultRetentionPeriodInDays: rxMethod<number | null>(
+    setRetention: rxMethod<BackendType['SettingRetentionDto']>(
       pipe(
-        filter((it): it is number => !!it),
         tap(() => patchState(store, setPending())),
-        switchMap((it) =>
+        switchMap((body) =>
           api
-            .put('/v1/team/{teamId}/setting/checkResultRetentionPeriodInDays', {
-              params: {
-                path: {
-                  teamId: store.teamId()!!,
-                },
-              },
-              body: {it},
-            })
-            .pipe(
-              tapResponse({
-                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
-                error: (error) => patchState(store, setError(error)),
-              }),
-            ),
-        ),
-      ),
-    ),
-    setCheckResultLogRetentionPeriodInDays: rxMethod<number | null>(
-      pipe(
-        filter((it): it is number => !!it),
-        tap(() => patchState(store, setPending())),
-        switchMap((it) =>
-          api
-            .put('/v1/team/{teamId}/setting/checkResultLogRetentionPeriodInDays', {
-              params: {
-                path: {
-                  teamId: store.teamId()!!,
-                },
-              },
-              body: {it},
+            .put('/v1/team/{teamId}/setting/retention', {
+              body,
+              params: {path: {teamId: store.teamId()!!}},
             })
             .pipe(
               tapResponse({

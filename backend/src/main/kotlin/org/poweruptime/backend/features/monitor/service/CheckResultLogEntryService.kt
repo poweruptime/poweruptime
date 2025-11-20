@@ -1,76 +1,78 @@
 package org.poweruptime.backend.features.monitor.service
 
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
-import org.poweruptime.backend.core.dto.validateSort
-import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.features.monitor.domain.CheckResultLogEntryRepository
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
+import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.model.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 @Service
-class CheckResultLogEntryService(
-    private val checkResultLogEntryRepository: CheckResultLogEntryRepository,
-) : AEntityService<CheckResultLogEntry>(checkResultLogEntryRepository) {
+@Transactional(readOnly = true)
+class CheckResultLogEntryService {
+    @Transactional
     fun info(
         stage: CheckResultLogStage,
-        checkResult: CheckResult,
+        checkResultId: ULong,
         message: String,
         properties: Map<String, String>? = null
     ) {
         save(
-            CheckResultLogEntry(
-                stage = stage,
-                level = CheckResultLogEntryLevel.INFO,
-                checkResult = checkResult,
-                message = message,
-                properties = properties,
-            ),
+            level = CheckResultLogEntryLevel.INFO,
+            stage = stage,
+            checkResultId = checkResultId,
+            message = message,
+            properties = properties,
         )
     }
 
+    @Transactional
     fun action(
         stage: CheckResultLogStage,
-        checkResult: CheckResult,
+        checkResultId: ULong,
         message: String,
         properties: Map<String, String>? = null
     ) {
         save(
-            CheckResultLogEntry(
-                stage = stage,
-                level = CheckResultLogEntryLevel.ACTION,
-                checkResult = checkResult,
-                message = message,
-                properties = properties,
-            ),
+            level = CheckResultLogEntryLevel.ACTION,
+            stage = stage,
+            checkResultId = checkResultId,
+            message = message,
+            properties = properties,
         )
     }
 
-    fun deleteByTeamIdAndOlderThan(teamId: String, than: Instant) =
-        checkResultLogEntryRepository.findByTeamIdAndOlderThan(
-            teamId,
-            than,
-        ).apply {
-            deleteAll(this)
+    @Transactional
+    private fun save(
+        level: CheckResultLogEntryLevel,
+        stage: CheckResultLogStage,
+        checkResultId: ULong,
+        message: String,
+        properties: Map<String, String>? = null,
+    ) {
+        CheckResultLogEntry.insert {
+            it[CheckResultLogEntry.level] = level
+            it[CheckResultLogEntry.checkResultId] = checkResultId
+            it[CheckResultLogEntry.stage] = stage
+            it[CheckResultLogEntry.message] = message
+            it[CheckResultLogEntry.properties] = properties
         }
+    }
+
+    @Transactional
+    fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant) =
+        CheckResultLogEntry.deleteByTeamIdAndOlderThan(teamId, than)
 
     fun getAllPaginated(
         pageable: Pageable,
-        checkResultId: String,
+        checkResultId: ULong,
         stages: List<CheckResultLogStage>? = null,
-    ): Page<CheckResultLogEntry> = checkResultLogEntryRepository.findAll(
-        buildSpecification {
-            distinct = true
-
-            where {
-                and {
-                    col("checkResult.id") eq checkResultId
-                    stages?.ifEmpty { null }?.let { col(CheckResultLogEntry::stage) inList it }
-                }
-            }
-        },
-        pageable.validateSort("stage", "level", "createdAt"),
+    ): Page<CheckResultLogEntryRecord> = CheckResultLogEntry.findAll(
+        pageable = pageable,
+        checkResultId = checkResultId,
+        stages = stages,
     )
 }

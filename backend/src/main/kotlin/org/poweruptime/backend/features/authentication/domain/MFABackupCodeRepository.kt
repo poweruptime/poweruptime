@@ -1,26 +1,18 @@
 package org.poweruptime.backend.features.authentication.domain
 
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.features.authentication.model.MFABackupCode
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.transaction.annotation.Transactional
+import org.poweruptime.backend.features.authentication.model.MFABackupCodeRecord
+import org.poweruptime.backend.features.authentication.model.rowToMFABackupCodeRecord
 
-interface MFABackupCodeRepository : JpaRepository<MFABackupCode, String> {
-    @Query(
-        """
-        select mfabc from MFABackupCode mfabc where mfabc.mfa.id = :mfaId
-    """,
-    )
-    fun findByMFAId(@Param("mfaId") mfaId: String): List<MFABackupCode>
+fun MFABackupCode.findByMFAId(mfaId: ULong): List<MFABackupCodeRecord> = selectAll().where {
+    MFABackupCode.mfaId eq mfaId
+}.map {
+    rowToMFABackupCodeRecord(it)
+}
 
-    @Modifying
-    @Transactional
-    @Query(
-        """
-        update MFABackupCode mfabc set mfabc.valid = false where mfabc.id = :id
-    """,
-    )
-    fun invalidateCode(@Param("id") id: String)
+fun MFABackupCode.invalidateCodeById(id: ULong) = update({ MFABackupCode.id eq id }) {
+    it[valid] = false
 }

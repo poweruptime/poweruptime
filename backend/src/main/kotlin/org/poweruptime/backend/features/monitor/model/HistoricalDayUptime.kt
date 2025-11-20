@@ -1,32 +1,43 @@
 package org.poweruptime.backend.features.monitor.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.jetbrains.exposed.v1.javatime.date
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@Entity
-@Table(
-    name = "historical_day_uptime",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["date", "monitor_id"])],
-)
-class HistoricalDayUptime(
-    @JoinColumn(name = "monitor_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val monitor: Monitor,
+/*
+|--6--| <- PRECISION
+100.000
+    |3| <- SCALE
+ */
 
-    @Column(name = "date", columnDefinition = "date", nullable = false)
-    var date: LocalDate,
+const val PRECISION = 6
+const val PRECISION_SCALE = 3
 
-    @Column(name = "uptime", nullable = false, columnDefinition = "numeric")
-    var uptime: BigDecimal,
-) {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    lateinit var id: String
+object HistoricalDayUptime : ULongIdTable("historical_day_uptime") {
+    val monitorId = ulong("monitor_id").references(Monitor.id).index()
+
+    val date = date("date")
+
+    val uptime = decimal("uptime", PRECISION, PRECISION_SCALE)
+
+    init {
+        index(true, date, monitorId)
+    }
 }
+
+data class HistoricalDayUptimeRecord(
+    val id: ULong,
+    val monitorId: ULong,
+    val date: LocalDate,
+    val uptime: BigDecimal
+)
+
+fun HistoricalDayUptime.rowToHistoricalDayUptimeRecord(row: ResultRow): HistoricalDayUptimeRecord =
+    HistoricalDayUptimeRecord(
+        id = row[id].value,
+        monitorId = row[monitorId],
+        date = row[date],
+        uptime = row[uptime],
+    )

@@ -185,9 +185,9 @@ export const SelectedTeamStore = signalStore(
     onceSelectedTeamsCut: computed(() => onceSelectedTeams().slice(0, 5)),
     sortedEntities: computed(() =>
       entities().sort((a, b) => {
-        if (a.personal && !b.personal) {
+        if (a.yourPersonal && !b.yourPersonal) {
           return -1;
-        } else if (!a.personal && b.personal) {
+        } else if (!a.yourPersonal && b.yourPersonal) {
           return 1;
         } else {
           return a.name.toLowerCase().localeCompare(b.name.toLowerCase(), undefined, {

@@ -23,14 +23,16 @@ import {
 export const NotificationsStore = signalStore(
   withState<{
     monitorId: string | undefined;
+    teamId: string | undefined;
   }>({
+    teamId: undefined,
     monitorId: undefined,
   }),
   withRequestStatus(),
   withEntities<BackendType['NotificationResponse']>(),
   withPaginatedTable<BackendType['NotificationResponse']>({
     paramPrefix: 'notifi.',
-    columnsToDisplay: ['status', 'title', 'createdAt', 'actions'],
+    columnsToDisplay: ['checkResult.status', 'title', 'createdAt', 'actions'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',
   }),
@@ -52,17 +54,20 @@ export const NotificationsStore = signalStore(
       {
         teamId?: string;
         monitorId?: string;
-        methods?: BackendType['NotificationMethodData']['_type'][];
         statuses?: BackendType['MonitorResponse']['status'][];
+        start?: string;
+        end?: string;
       } & PaginationDto
     >(
       pipe(
-        tap(({monitorId}) =>
+        tap(({teamId, monitorId}) =>
           patchState(
             store,
             setPending(),
-            store.monitorId() !== monitorId ? removeAllEntities() : () => ({}),
-            () => ({monitorId}),
+            store.monitorId() !== monitorId || store.teamId() !== teamId
+              ? removeAllEntities()
+              : () => ({}),
+            () => ({teamId, monitorId}),
           ),
         ),
         debounceTime(275),

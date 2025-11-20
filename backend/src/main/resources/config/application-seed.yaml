@@ -16,25 +16,14 @@ spring:
     banner-mode: off
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/poweruptime
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/poweruptime?reWriteBatchedInserts=true
     username: poweruptime
     password: poweruptime
 
   sql:
     init:
       mode: never
-
-  jpa:
-    generate-ddl: false
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        format_sql: true
 
   servlet:
     multipart:
@@ -80,9 +69,9 @@ springdoc:
 logging:
   level:
     org.poweruptime: DEBUG
+#    Exposed: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.web: DEBUG
-#    org.hibernate: ERROR
 
 management:
   endpoints:
@@ -122,3 +111,5 @@ poweruptime:
     tries: 20
   push:
     enabled: true
+  database:
+    ddl-auto: validate

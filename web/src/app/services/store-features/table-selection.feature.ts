@@ -9,16 +9,16 @@ import {
   withState,
 } from '@ngrx/signals';
 import {EntityState} from '@ngrx/signals/entities';
-import {IHasID} from 'dfts-helper';
 
 interface TableWithSelectionState<EntityType> {
   selection: EntityType[];
 }
-interface withSelectionTableOptions<EntityType extends IHasID<EntityType['id']>> {
-  find?: (o: EntityType) => EntityType['id'];
+interface withSelectionTableOptions<EntityType> {
+  find?: (o: EntityType) => string;
 }
 
-export function withSelection<EntityType extends IHasID<EntityType['id']>>({
+export function withSelection<EntityType>({
+  // @ts-expect-error Id not found
   find = (it) => it.id,
 }: withSelectionTableOptions<EntityType>) {
   return signalStoreFeature(
@@ -60,31 +60,29 @@ export function withSelection<EntityType extends IHasID<EntityType['id']>>({
   );
 }
 
-export function resetSelection<
-  EntityType extends IHasID<EntityType['id']>,
->(): TableWithSelectionState<EntityType> {
+export function resetSelection<EntityType>(): TableWithSelectionState<EntityType> {
   return {selection: []};
 }
 
-function isEntitySelected<EntityType extends IHasID<EntityType['id']>>(
+function isEntitySelected<EntityType>(
   selection: EntityType[],
   o: EntityType,
-  find: (o: EntityType) => EntityType['id'],
+  find: (o: EntityType) => string,
 ): boolean {
   return selection.findIndex((it) => find(it) === find(o)) !== -1;
 }
 
-export function selectEntity<EntityType extends IHasID<EntityType['id']>>(
+export function selectEntity<EntityType>(
   selection: EntityType[],
   o: EntityType,
 ): TableWithSelectionState<EntityType> {
   return {selection: [...selection, o]};
 }
 
-export function deselectEntity<EntityType extends IHasID<EntityType['id']>>(
+export function deselectEntity<EntityType>(
   selection: EntityType[],
   o: EntityType,
-  find: (o: EntityType) => EntityType['id'],
+  find: (o: EntityType) => string,
 ): TableWithSelectionState<EntityType> {
   return {selection: [...selection.filter((it) => find(it) !== find(o))]};
 }

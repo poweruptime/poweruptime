@@ -7,11 +7,18 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import {MatIconAnchor} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatIconAnchor, MatIconButton} from '@angular/material/button';
+import {
+  MatDateRangeInput,
+  MatDateRangePicker,
+  MatDatepickerToggle,
+  MatEndDate,
+  MatStartDate,
+} from '@angular/material/datepicker';
+import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/select';
@@ -35,18 +42,33 @@ import {CheckResultsStore} from '@app/services';
 import {arrayToParam, paramToArray, trackBy} from '@app/util';
 
 import {BackendType} from '../../../api';
+import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../services/util';
 
 @Component({
   template: `
     <div class="mt-4 flex flex-wrap justify-end">
-      <div class="flex flex-wrap items-center justify-end gap-2">
+      <div class="grid grid-cols-2 items-center justify-end gap-4 lg:grid-cols-4">
         @let _showDuplicates = showDuplicates();
-        <mat-slide-toggle
-          [checked]="_showDuplicates ?? false"
-          (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
-          labelPosition="before">
-          {{ 'general.showDuplicates' | transloco }}
-        </mat-slide-toggle>
+        <div class="flex justify-end">
+          <mat-slide-toggle
+            [checked]="_showDuplicates ?? false"
+            (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
+            labelPosition="before">
+            {{ 'general.showDuplicates' | transloco }}
+          </mat-slide-toggle>
+        </div>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'checkResult.list.hasNotification' | transloco }}</mat-label>
+          <bi name="arrow-down-up" matIconPrefix />
+          <mat-select [(ngModel)]="hasNotification">
+            @for (states of availableHasNotificationStates(); track states.hasNotification) {
+              <mat-option [value]="states.hasNotification">
+                {{ states.name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
 
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.status' | transloco }}</mat-label>
@@ -58,6 +80,22 @@ import {BackendType} from '../../../api';
               </mat-option>
             }
           </mat-select>
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>{{ 'general.startEnd' | transloco }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [max]="max">
+            <input
+              [(ngModel)]="start"
+              [placeholder]="'monitor.details.pingChart.startDate' | transloco"
+              matStartDate />
+            <input
+              [(ngModel)]="end"
+              [placeholder]="'monitor.details.pingChart.endDate' | transloco"
+              matEndDate />
+          </mat-date-range-input>
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
       </div>
     </div>
@@ -190,9 +228,19 @@ import {BackendType} from '../../../api';
     MatLabel,
     MatOption,
     MatSelect,
+    MatDateRangeInput,
+    MatDateRangePicker,
+    MatDatepickerToggle,
+    MatEndDate,
+    MatStartDate,
+    MatSuffix,
+    ReactiveFormsModule,
+    MatIconButton,
   ],
 })
 export class CheckResultList {
+  protected readonly max = new Date();
+
   readonly checkResultsStore = inject(CheckResultsStore);
 
   readonly monitorId = input<string>();
@@ -205,9 +253,22 @@ export class CheckResultList {
     parse: paramToBoolean(),
   });
 
+  hasNotification = linkedQueryParam('checks.hasNotification', {
+    parse: paramToBoolean(),
+  });
+
   statuses = linkedQueryParam('checks.status', {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
     stringify: arrayToParam(),
+  });
+
+  start = linkedQueryParam('checks.start', {
+    parse: (it) => (it ? toBackendDate(it) : undefined),
+    stringify: (it) => (it ? toBackendDate(it) : undefined),
+  });
+  end = linkedQueryParam('checks.end', {
+    parse: (it) => (it ? toBackendDate(it) : undefined),
+    stringify: (it) => (it ? toBackendDate(it) : undefined),
   });
 
   readonly availableStatuses = signal([
@@ -217,20 +278,32 @@ export class CheckResultList {
     {status: 'PAUSED' as const, name: 'Paused'},
   ]);
 
+  readonly availableHasNotificationStates = signal([
+    {hasNotification: null, name: 'Ignore'},
+    {hasNotification: true, name: 'Has'},
+    {hasNotification: false, name: 'Has not'},
+  ]);
+
   constructor() {
+    this.checkResultsStore.setShowDuplicates(this.showDuplicates);
     this.checkResultsStore.setPaginator(this.paginator);
     this.checkResultsStore.setSort(this.sort);
-    this.checkResultsStore.setShowDuplicates(this.showDuplicates);
-    this.checkResultsStore.setStatuses(this.statuses);
 
     this.checkResultsStore.load(
-      computed(() => ({
-        teamId: this.teamId(),
-        monitorId: this.monitorId(),
-        statuses: this.checkResultsStore.statuses(),
-        onlyChanges: !this.checkResultsStore.showDuplicates(),
-        ...this.checkResultsStore.pageable(),
-      })),
+      computed(() => {
+        const start = this.start();
+        const end = this.end();
+        return {
+          teamId: this.teamId(),
+          monitorId: this.monitorId(),
+          statuses: this.statuses(),
+          hasNotification: this.hasNotification() ?? undefined,
+          onlyChanges: !this.checkResultsStore.showDuplicates(),
+          start: start ? toBackendDateTime(dateToDateTime(start)) : undefined,
+          end: end ? toBackendDateTime(dateToDateTime(end)) : undefined,
+          ...this.checkResultsStore.pageable(),
+        };
+      }),
     );
 
     const setColumnsToDisplay = rxMethod<boolean>(

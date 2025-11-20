@@ -36,6 +36,7 @@ import {TeamsStore} from '@app/services';
       [position]="['below', 'after']"
       [closeOnPanelClick]="false"
       [closeOnBackdropClick]="true"
+      [yOffset]="5"
       [hideArrow]="true">
       <div class="flex max-w-80 flex-col">
         <mat-form-field class="mat-select-search-input" subscriptSizing="dynamic">
@@ -54,7 +55,7 @@ import {TeamsStore} from '@app/services';
             </mat-radio-button>
           }
 
-          @let entities = teamsStore.sortedEntitiesWithoutPersonal();
+          @let entities = teamsStore.sortedEntitiesWithoutYourPersonal();
           @if (entities.length > 0) {
             <h2 class="font-bold">{{ 'general.teams' | transloco }}</h2>
             @for (team of entities; track team.id) {

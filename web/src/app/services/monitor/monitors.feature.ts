@@ -58,21 +58,6 @@ export function withMonitorsLoad() {
       updateMonitor(it: BackendType['MonitorResponse']): void {
         patchState(store, updateEntity({id: it.id, changes: it}));
       },
-      addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-        const monitor = store.entities().find((it) => it.id === checkResult.monitor.id);
-
-        if (monitor) {
-          patchState(
-            store,
-            updateEntity({
-              id: monitor.id,
-              changes: {
-                lastCheckResults: [checkResult, ...monitor.lastCheckResults.slice(0, 19)],
-              },
-            }),
-          );
-        }
-      },
       load: rxMethod<
         {
           teamId?: string;
@@ -85,6 +70,10 @@ export function withMonitorsLoad() {
       >(
         pipe(
           distinctUntilChanged((prev, cur) => {
+            if (cur.deleted !== undefined) {
+              return false;
+            }
+
             if (
               prev.search !== cur.search ||
               prev.statuses !== cur.statuses ||
@@ -138,10 +127,6 @@ export function withMonitorsLoad() {
         pushService.monitorStatusChange$
           .pipe(takeUntilDestroyed())
           .subscribe((it) => store.updateMonitor(it));
-
-        pushService.checkResults$
-          .pipe(takeUntilDestroyed())
-          .subscribe((it) => store.addCheckResult(it));
       },
     }),
   );

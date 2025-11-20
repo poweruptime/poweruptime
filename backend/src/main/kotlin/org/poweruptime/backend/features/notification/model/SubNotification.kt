@@ -1,44 +1,80 @@
 package org.poweruptime.backend.features.notification.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.jetbrains.exposed.v1.javatime.timestamp
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import java.time.Instant
 
-@Entity
-@Table(name = "sub_notification")
-class SubNotification(
-    @JoinColumn(name = "notification_id", nullable = false, referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val notification: Notification,
+object SubNotification : ULongIdTable("sub_notification"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("public_id", NANO_ID_MAX_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @JoinColumn(name = "notification_method_id", nullable = false, referencedColumnName = "id")
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val method: NotificationMethod,
+    val notificationId = ulong("notification_id").references(Notification.id).index()
+    val methodId = ulong("notification_method_id").references(NotificationMethod.id).index()
 
-    @Column(name = "title", nullable = false, length = Database.MAX_TITLE_LENGTH)
-    var title: String,
+    val title = varchar("title", Database.MAX_TITLE_LENGTH)
+    val message = varchar("message", Database.MAX_MESSAGE_LENGTH).nullable()
 
-    @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
-    var message: String? = null,
+    val pickedUpAt = timestamp("picked_up_at").nullable()
+    val sentAt = timestamp("sent_at").nullable()
 
-    @Column(name = "picked_up_at", columnDefinition = "timestamptz", nullable = true)
-    var pickedUpAt: Instant? = null,
-
-    @Column(name = "sent_at", columnDefinition = "timestamptz", nullable = true)
-    var sentAt: Instant? = null,
-
-    @Column(name = "error", length = Database.MAX_MESSAGE_LENGTH, nullable = true)
-    var error: String? = null,
-) : AEntity() {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    override lateinit var id: String
+    val error = varchar("error", Database.MAX_MESSAGE_LENGTH).nullable()
 }
+
+data class SubNotificationRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val notificationId: ULong,
+    val methodId: ULong,
+    var title: String,
+    var message: String?,
+    var pickedUpAt: Instant?,
+    var sentAt: Instant?,
+    var error: String?,
+)
+
+fun SubNotification.rowToSubNotificationRecord(row: ResultRow): SubNotificationRecord =
+    SubNotificationRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        notificationId = row[notificationId],
+        methodId = row[methodId],
+        title = row[title],
+        message = row[message],
+        pickedUpAt = row[pickedUpAt],
+        sentAt = row[sentAt],
+        error = row[error],
+    )
+
+open class SubNotificationJoinMethodRecord(
+    open val subNotification: SubNotificationRecord,
+    open val method: NotificationMethodRecord,
+)
+
+open class SubNotificationJoinMethodAndNotificationRecord(
+    override val subNotification: SubNotificationRecord,
+    override val method: NotificationMethodRecord,
+    open val notification: NotificationRecord,
+) : SubNotificationJoinMethodRecord(subNotification, method)
+
+open class SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord(
+    override val subNotification: SubNotificationRecord,
+    override val method: NotificationMethodRecord,
+    override val notification: NotificationRecord,
+    val checkResult: CheckResultRecord,
+    val monitor: MonitorRecord,
+) : SubNotificationJoinMethodAndNotificationRecord(subNotification, method, notification)

@@ -1,50 +1,61 @@
 package org.poweruptime.backend.features.tag
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.ASoftDeleteEntity
-import org.poweruptime.backend.core.models.EntityWithName
-import org.poweruptime.backend.core.utils.Database
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.HasSoftDelete
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.softDelete
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
-import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.team.model.Team
+import java.time.Instant
 
-@Entity
-@Table(
-    name = "tag",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["team_id", "name"])],
-)
-class Tag(
-    @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
-    override var name: String,
+object Tag : ULongIdTable("tag"), HasPublicId, HasModifiers, HasSoftDelete, HasName {
+    override val publicId = nanoId("public_id", NANO_ID_DEFAULT_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val deleted = softDelete()
+    override val name = name()
 
-    /**
-     * Usage of `TagVariantDatabaseConverter` to minify enum to 1 char
-     * @see TagVariantDatabaseConverter
-     */
-    @Column(nullable = false, length = 1)
-    var variant: TagVariant,
+    val teamId = ulong("team_id").references(Team.id).index()
 
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: Team,
+    val variant = enumerationByCode<TagVariant>("variant")
 
-    @ManyToMany
-    @JoinTable(
-        name = "monitor_tag",
-        joinColumns = [JoinColumn(name = "tag_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "monitor_id", referencedColumnName = "id")],
-    )
-    var usedByMonitors: List<Monitor> = ArrayList(),
-
-) : ASoftDeleteEntity(), EntityWithName {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    init {
+        index(true, teamId, name)
+    }
 }
+
+data class TagRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val deleted: Instant?,
+    val teamId: ULong,
+    val name: String,
+    var variant: TagVariant,
+)
+
+data class TagJoinMonitorRecord(
+    val tag: TagRecord,
+    val monitorTag: MonitorTagRecord
+)
+
+fun Tag.rowToTagRecord(row: ResultRow): TagRecord =
+    TagRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        deleted = row[deleted],
+        teamId = row[teamId],
+        name = row[name],
+        variant = row[variant],
+    )

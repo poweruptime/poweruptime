@@ -1,30 +1,52 @@
 package org.poweruptime.backend.features.notification.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
 import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
+import org.poweruptime.backend.features.team.model.TeamRecord
+import java.time.Instant
 
-@Entity
-@Table(name = "notification")
-class Notification(
-    @JoinColumn(name = "check_result_id", nullable = false, referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.EAGER)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val checkResult: CheckResult,
+object Notification : ULongIdTable("notification"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("public_id", NANO_ID_DEFAULT_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @Column(name = "title", nullable = false, length = Database.MAX_TITLE_LENGTH)
-    var title: String,
+    val checkResultId = ulong("check_result_id").references(CheckResult.id).index().uniqueIndex()
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "notification")
-    var subNotifications: List<SubNotification> = ArrayList(),
-) : AEntity() {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
+    val title = varchar("title", Database.MAX_TITLE_LENGTH)
 }
+
+data class NotificationRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val checkResultId: ULong,
+    var title: String,
+)
+
+fun Notification.rowToNotificationRecord(row: ResultRow): NotificationRecord =
+    NotificationRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        checkResultId = row[checkResultId],
+        title = row[title],
+    )
+
+data class NotificationJoinCheckResultMonitorAndTeamRecord(
+    val notification: NotificationRecord,
+    val checkResult: CheckResultRecord,
+    val monitor: MonitorRecord,
+    val team: TeamRecord,
+)

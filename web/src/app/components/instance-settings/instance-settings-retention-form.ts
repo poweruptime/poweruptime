@@ -87,8 +87,8 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstanceSettingsRetentionForm extends AbstractModelEditFormComponent<
-  BackendType['InstanceSettingRetentionDto'],
-  BackendType['InstanceSettingRetentionDto']
+  BackendType['SettingRetentionDto'],
+  BackendType['SettingRetentionDto']
 > {
   override form = this.fb.nonNullable.group({
     checkResultRetentionPeriodInDays: [
@@ -114,7 +114,10 @@ export class InstanceSettingsRetentionForm extends AbstractModelEditFormComponen
   readonly isValid = injectIsValid(this.form);
 
   settings = input.required({
-    transform: (it: BackendType['InstanceSettingsResponse']) => {
+    transform: (it: {
+      checkResultRetentionPeriodInDays: number;
+      checkResultLogRetentionPeriodInDays: number;
+    }) => {
       this.form.patchValue(it);
 
       return it;

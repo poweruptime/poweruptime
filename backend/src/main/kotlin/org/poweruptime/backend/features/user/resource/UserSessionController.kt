@@ -10,6 +10,7 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.SessionResponse
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.user.service.UserService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -21,7 +22,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/v1/user/session")
 @Tag(name = "User Session API")
 class UserSessionController(
-    val sessionService: SessionService
+    val sessionService: SessionService,
+    val userService: UserService,
 ) {
 
     @Operation(
@@ -37,7 +39,7 @@ class UserSessionController(
         @RequestParam("userId") userId: String,
     ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
         pageable = pageable,
-        userId = userId,
+        userId = userService.getIdByPublicId(userId),
     ).toDto { SessionResponse(it) }
 
     @Operation(
@@ -48,5 +50,5 @@ class UserSessionController(
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteSession(@PathVariable("id") id: String): Unit = sessionService.invalidateSessionById(id)
+    fun deleteSession(@PathVariable("id") publicId: String): Unit = sessionService.invalidateSessionByPublicId(publicId)
 }

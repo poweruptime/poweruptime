@@ -47,12 +47,12 @@ export const NotificationMethodEditStore = signalStore(
                 }),
               ),
           ),
-          switchMap(({sender}) =>
+          switchMap(({data}) =>
             api
               .get('/v1/notification-method/template/{type}', {
                 params: {
                   path: {
-                    type: sender._type,
+                    type: data._type,
                   },
                 },
               })

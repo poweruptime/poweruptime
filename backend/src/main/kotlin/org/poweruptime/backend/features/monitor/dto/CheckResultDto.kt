@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.monitor.dto
 
-import org.poweruptime.backend.features.monitor.model.CheckResult
+import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
+import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
@@ -12,7 +13,7 @@ data class CheckResultMinResponse(
     val pingMs: Long?,
     val createdAt: Instant,
 ) {
-    constructor(it: CheckResult) : this(it.id, it.status, it.pingMs, it.createdAt)
+    constructor(it: CheckResultRecord) : this(it.publicId, it.status, it.pingMs, it.createdAt)
 }
 
 data class CheckResultResponse(
@@ -28,18 +29,18 @@ data class CheckResultResponse(
     val monitor: MonitorMinResponse,
     val team: TeamMinResponse,
 ) {
-    constructor(it: CheckResult) : this(
-        id = it.id,
-        status = it.status,
-        pingMs = it.pingMs,
-        createdAt = it.createdAt,
-        pickedUpAt = it.pickedUpAt,
-        checkedAt = it.checkedAt,
-        previousStatus = it.previousStatus,
-        title = it.title,
-        message = it.message,
+    constructor(it: CheckResultJoinMonitorAndTeamRecord) : this(
+        id = it.checkResult.publicId,
+        status = it.checkResult.status,
+        pingMs = it.checkResult.pingMs,
+        createdAt = it.checkResult.createdAt,
+        pickedUpAt = it.checkResult.pickedUpAt,
+        checkedAt = it.checkResult.checkedAt,
+        previousStatus = it.checkResult.previousStatus,
+        title = it.checkResult.title,
+        message = it.checkResult.message,
         monitor = MonitorMinResponse(it.monitor),
-        team = TeamMinResponse(it.monitor.team),
+        team = TeamMinResponse(it.team),
     )
 }
 

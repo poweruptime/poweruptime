@@ -14,56 +14,93 @@ import org.poweruptime.backend.features.authentication.permission.STATUS_PAGE_AD
 import org.poweruptime.backend.features.authentication.permission.STATUS_PAGE_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
-import org.poweruptime.backend.features.statusPage.domain.StatusPageGroupMonitorRepository
+import org.poweruptime.backend.features.statusPage.domain.findByStatusPage
 import org.poweruptime.backend.features.statusPage.dto.CreateStatusPageDto
 import org.poweruptime.backend.features.statusPage.dto.StatusPageResponse
 import org.poweruptime.backend.features.statusPage.dto.UpdateStatusPageDto
-import org.poweruptime.backend.features.statusPage.model.StatusPage
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
+import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorJoinMonitorRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
+import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
 import org.poweruptime.backend.features.statusPage.service.StatusPageService
+import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1/status-page")
 @Tag(name = "Status Page API")
+@Transactional(readOnly = true)
 class StatusPageController(
     private val statusPageService: StatusPageService,
-    private val statusPageGroupMonitorRepository: StatusPageGroupMonitorRepository,
+    private val teamService: TeamService
 ) {
     @Operation(
         summary = "Get status page",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $STATUS_PAGE_MEMBER",
     )
-    @PreAuthorize("hasPermission(#id, '$STATUS_PAGE_MEMBER')")
+    @PreAuthorize("hasPermission(#publicId, '$STATUS_PAGE_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(@PathVariable id: String): StatusPageResponse = statusPageService.getByIdOrThrow(id).toResponse()
+    fun get(@PathVariable("id") publicId: String): StatusPageResponse =
+        statusPageService.getById(statusPageService.getIdByPublicId(publicId)).toResponse()
 
     @Operation(
         summary = "Get all status pages of team",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
-    @PreAuthorize("hasPermission(#teamId, '$TEAM_MEMBER')")
+    @PreAuthorize("hasPermission(#publicTeamId, '$TEAM_MEMBER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = true)
     fun getAll(
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("teamId") teamId: String,
+        @RequestParam("teamId") publicTeamId: String,
         @RequestParam("name") name: String?,
         @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<StatusPageResponse> {
-        return statusPageService.getAllPaginated(
+        val statusPages = statusPageService.getAllPaginated(
             pageable = pageable,
-            teamId = teamId,
+            teamId = teamService.getIdByPublicId(publicTeamId),
             name = name,
             deleted = deleted,
-        ).toDto { it.toResponse() }
+        )
+
+        val statusPageIds = statusPages.map { it.id }.toList()
+
+        val domainNamesPerStatusPage =
+            StatusPageDomainName.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
+        val groupsPerStatusPage =
+            StatusPageGroup.findByStatusPage(statusPageIds).groupBy { it.statusPageId }
+        val groupMonitorsPerStatusPage =
+            StatusPageGroupMonitor.findByStatusPage(statusPageIds).groupBy { it.groupMonitor.statusPageId }
+
+        return statusPages.toDto {
+            it.toResponse(
+                domainNames = domainNamesPerStatusPage[it.id] ?: emptyList(),
+                groups = groupsPerStatusPage[it.id] ?: emptyList(),
+                statusPageGroupMonitors = groupMonitorsPerStatusPage[it.id] ?: emptyList(),
+            )
+        }
     }
 
     @Operation(
@@ -73,7 +110,7 @@ class StatusPageController(
     @GetMapping("/free/slug/{slug}")
     @ResponseStatus(HttpStatus.OK)
     fun freeSlug(@PathVariable slug: String): BooleanResponse = BooleanResponse(
-        statusPageService.getBySlug(slug) == null,
+        statusPageService.findBySlug(slug) == null,
     )
 
     @Operation(
@@ -86,7 +123,7 @@ class StatusPageController(
         @PathVariable domainNames: String
     ): List<BooleanResponse> = domainNames.split(
         ",",
-    ).map { BooleanResponse(statusPageService.getByDomainName(it) == null) }
+    ).map { BooleanResponse(statusPageService.findByDomainName(it) == null) }
 
     @Operation(
         summary = "Add status page",
@@ -96,6 +133,7 @@ class StatusPageController(
     @PreAuthorize("hasPermission(#dto.teamId, '$TEAM_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     fun create(
         @RequestBody @Valid dto: CreateStatusPageDto
     ): StatusPageResponse = statusPageService.create(dto).toResponse()
@@ -105,9 +143,10 @@ class StatusPageController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $STATUS_PAGE_ADMIN",
     )
-    @PreAuthorize("hasPermission(#dto.id, '$STATUS_PAGE_ADMIN')")
+    @PreAuthorize("hasPermission(#dto.slug, '$STATUS_PAGE_ADMIN')")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     fun update(@RequestBody @Valid dto: UpdateStatusPageDto): StatusPageResponse =
         statusPageService.update(dto).toResponse()
 
@@ -116,26 +155,37 @@ class StatusPageController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $STATUS_PAGE_ADMIN",
     )
-    @PreAuthorize("hasPermission(#id, '$STATUS_PAGE_ADMIN')")
+    @PreAuthorize("hasPermission(#publicId, '$STATUS_PAGE_ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun delete(@PathVariable("id") id: String): Unit = statusPageService.deleteByIdOrThrow(id)
+    @Transactional
+    fun delete(@PathVariable("id") publicId: String) {
+        statusPageService.deleteById(statusPageService.getIdByPublicId(publicId))
+    }
 
     @Operation(
         summary = "Undelete status page",
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $STATUS_PAGE_ADMIN",
     )
-    @PreAuthorize("hasPermission(#id, '$STATUS_PAGE_ADMIN')")
+    @PreAuthorize("hasPermission(#publicId, '$STATUS_PAGE_ADMIN')")
     @DeleteMapping("/{id}/undo")
     @ResponseStatus(HttpStatus.OK)
-    fun undelete(@PathVariable("id") id: String): StatusPageResponse =
-        statusPageService.undeleteById(id).toResponse()
+    @Transactional
+    fun undelete(@PathVariable("id") publicId: String): StatusPageResponse =
+        statusPageService.undeleteById(
+            statusPageService.getIdByPublicId(publicId, includeDeleted = true),
+        ).toResponse()
 
-    private fun StatusPage.toResponse(): StatusPageResponse = StatusPageResponse(
-        statusPage = this,
-        statusPageGroupMonitors = statusPageGroupMonitorRepository
+    private fun StatusPageRecord.toResponse(
+        domainNames: List<StatusPageDomainNameRecord> = StatusPageDomainName.findByStatusPage(this.id),
+        groups: List<StatusPageGroupRecord> = StatusPageGroup.findByStatusPage(this.id),
+        statusPageGroupMonitors: List<StatusPageGroupMonitorJoinMonitorRecord> = StatusPageGroupMonitor
             .findByStatusPage(this.id)
-            .groupBy { it.connection.group.id },
+    ): StatusPageResponse = StatusPageResponse(
+        statusPage = this,
+        domainNames = domainNames,
+        groups = groups,
+        statusPageGroupMonitors = statusPageGroupMonitors.groupBy { it.groupMonitor.groupId },
     )
 }

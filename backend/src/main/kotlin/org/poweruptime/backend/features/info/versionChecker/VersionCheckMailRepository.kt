@@ -1,10 +1,9 @@
 package org.poweruptime.backend.features.info.versionChecker
 
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
 
-interface VersionCheckMailRepository : JpaRepository<VersionCheckMail, String> {
-    @Query("select puVersion from VersionCheckMail puVersion where puVersion.puVersion = :puVersion")
-    fun findByVersion(@Param("puVersion") version: String): VersionCheckMail?
-}
+fun VersionCheckMail.findByVersion(version: String): VersionCheckMailRecord? =
+    selectAll().where { puVersion eq version }.limit(1).firstOrNull()?.let {
+        rowToVersionCheckMailRecord(it)
+    }

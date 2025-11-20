@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.stereotype.Component
 import java.time.Instant
+import java.time.ZoneId
 
 @Component
 class StartupApplicationListener(
@@ -22,6 +23,7 @@ class StartupApplicationListener(
     private val infoService: InfoService,
     private val fileService: FileService,
     private val instanceSettingService: InstanceSettingService,
+    private val schemaHelper: SchemaHelper,
     @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
     @Value(Config.MONITOR_AUTOSTART_ENABLED) private val monitorAutostartEnabled: Boolean = true,
 ) : ApplicationListener<ContextRefreshedEvent> {
@@ -31,13 +33,16 @@ class StartupApplicationListener(
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
         logger.info {
             "Server setup time: ${DateTimeUtils.simpleDateTimeFormatter.format(
-                instanceSettingService.serverSetupTime,
+                instanceSettingService.getServerSetupTime().atZone(ZoneId.systemDefault()),
             )}"
         }
+
+        schemaHelper.execute()
 
         fileService.init()
         setupTempNotification()
 
+        logger.info { "Monitor autostart enabled: $monitorAutostartEnabled" }
         if (monitorAutostartEnabled) {
             monitorService.startAll()
         }
@@ -60,7 +65,7 @@ class StartupApplicationListener(
             }
         }
 
-        logger.info { "Temp tempNotification enabled: $tempNotificationsEnabled" }
+        logger.info { "Temp notifications enabled: $tempNotificationsEnabled" }
         if (tempNotificationsEnabled) {
             addTempNotification()
         }

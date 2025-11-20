@@ -72,7 +72,7 @@ class InfoController(
     fun getTime(): InfoTimeResponse = InfoTimeResponse(
         serverTime = infoService.getTime(),
         serverStartTime = infoService.startTime,
-        serverSetupTime = instanceSettingService.serverSetupTime,
+        serverSetupTime = instanceSettingService.getServerSetupTime(),
     )
 
     @Operation(summary = "Get isUserAllowedToCreateTeams")

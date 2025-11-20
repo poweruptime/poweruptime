@@ -84,38 +84,38 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
           <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="data._type">
+        <ng-container matColumnDef="type">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.type' | transloco }}
           </th>
           <td *matCellDef="let element" mat-cell>
-            {{ element.sender._type | notificationSenderDataValueLabel | transloco }}
+            {{ element.type | notificationSenderDataValueLabel | transloco }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="sender">
           <th *matHeaderCellDef mat-header-cell></th>
           <td *matCellDef="let element" mat-cell>
-            @switch (element.sender._type) {
+            @switch (element.data._type) {
               @case ('EMAIL') {
                 <div class="inline-flex items-center gap-1">
                   <span>{{ 'notificationMethod.list.email.recipient' | transloco }}</span>
                   <a
                     class="font-extrabold underline"
-                    [href]="'mailto:' + $any(element.sender)['to']"
+                    [href]="'mailto:' + $any(element.data)['to']"
                     stopPropagation
                     target="_blank"
                     rel="noopener noreferrer">
-                    {{ $any(element.sender)['to'] | s_implode: ', ' : 40 : '...' }}
+                    {{ $any(element.data)['to'] | s_implode: ', ' : 40 : '...' }}
                   </a>
                   <span>{{ 'notificationMethod.list.email.via' | transloco }}</span>
                   <a
                     class="font-extrabold underline"
-                    [href]="'https://' + $any(element.sender)['host']"
+                    [href]="'https://' + $any(element.data)['host']"
                     stopPropagation
                     target="_blank"
                     rel="noopener noreferrer">
-                    {{ $any(element.sender)['host'] }}
+                    {{ $any(element.data)['host'] }}
                   </a>
                 </div>
               }
@@ -192,7 +192,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
     .mat-column-name {
       @apply w-52 text-nowrap;
     }
-    .mat-column-sender-_type {
+    .mat-column-type {
       @apply w-20;
     }
     .mat-column-useByDefault {
@@ -241,7 +241,7 @@ export class NotificationMethodsPage {
     stringify: (value) => (value.length > 0 ? value : null),
   });
   typesFilter = linkedQueryParam('type', {
-    parse: paramToArray<BackendType['NotificationMethodResponse']['sender']['_type']>(),
+    parse: paramToArray<BackendType['NotificationMethodResponse']['data']['_type']>(),
     stringify: arrayToParam(),
   });
   useByDefaultFilter = linkedQueryParam('useByDefault', {

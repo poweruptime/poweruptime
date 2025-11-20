@@ -17,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
@@ -48,10 +46,9 @@ class WebSecurityConfig(
         return http.build()
     }
 
-    // 2) Your existing resource-server chain
     @Bean
     @Order(2)
-    fun filterChainUser(http: HttpSecurity): SecurityFilterChain {
+    fun filterChainUser(http: HttpSecurity, jwtToUserConverter: JwtToUserConverter): SecurityFilterChain {
         http {
             cors { }
             csrf { disable() }
@@ -72,14 +69,7 @@ class WebSecurityConfig(
 
             oauth2ResourceServer {
                 jwt {
-                    val jwtGrantedAuthoritiesConverter = JwtGrantedAuthoritiesConverter()
-                    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope")
-                    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("")
-
-                    val customJwtAuthenticationConverter = JwtAuthenticationConverter()
-                    customJwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter)
-
-                    jwtAuthenticationConverter = customJwtAuthenticationConverter
+                    jwtAuthenticationConverter = jwtToUserConverter
                     jwtDecoder = accessTokenDecoder
                 }
             }

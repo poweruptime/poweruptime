@@ -11,8 +11,8 @@ data class CheckResultLogEntryResponse(
     val properties: Map<String, String>?,
     val createdAt: Instant
 ) {
-    constructor(it: CheckResultLogEntry) : this(
-        id = it.id,
+    constructor(it: CheckResultLogEntryRecord) : this(
+        id = it.publicId,
         stage = it.stage,
         level = it.level,
         message = it.message,

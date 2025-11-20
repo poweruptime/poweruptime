@@ -50,6 +50,7 @@ export const InstanceSettingsSupportStore = signalStore(
                   instanceSettingsStore.setSettings(response.instanceSettings);
                   patchState(store, setFulfilled());
                   infoStore.resetSupport();
+                  infoStore.loadSupport();
                 },
                 error: (error) => patchState(store, setError(error)),
               }),

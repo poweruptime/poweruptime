@@ -30,10 +30,10 @@ import {MonitorCard} from './monitor-card';
 
       @if (isPending()) {
         @for (i of 8 | repeat; track i) {
-          <div style="height: 150px">
+          <div style="height: 130px">
             <a
               class="flex animate-pulse flex-col items-start space-y-4 rounded-lg border border-solid border-black p-4 dark:border-gray-500"
-              style="height: 140px">
+              style="height: 120px">
               <div class="grid grid-cols-3 gap-6">
                 <pu-placeholder class="col-span-8 h-5" />
               </div>

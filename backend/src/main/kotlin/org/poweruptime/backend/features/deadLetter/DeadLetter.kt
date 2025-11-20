@@ -1,27 +1,43 @@
 package org.poweruptime.backend.features.deadLetter
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
+import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import java.time.Instant
 
-@Entity
-@Table(name = "dead_letter")
-class DeadLetter(
-    @Column(nullable = false, length = 255)
-    val queue: String,
+object DeadLetter : ULongIdTable("dead_letter"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("public_id", NANO_ID_DEFAULT_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @Column(nullable = false, length = 255)
-    val exchange: String,
-
-    @Column(nullable = false, columnDefinition = "text")
-    val body: String,
-) : AEntity() {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
+    val queue = varchar("queue", Database.MAX_QUEUE_LENGTH)
+    val exchange = varchar("exchange", Database.MAX_EXCHANGE_LENGTH)
+    val body = text("body")
 }
+
+data class DeadLetterRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val queue: String,
+    val exchange: String,
+    val body: String
+)
+
+fun DeadLetter.rowToDeadLetterRecord(row: ResultRow): DeadLetterRecord =
+    DeadLetterRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        queue = row[queue],
+        exchange = row[exchange],
+        body = row[body],
+    )

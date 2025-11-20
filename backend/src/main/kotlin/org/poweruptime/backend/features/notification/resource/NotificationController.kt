@@ -9,18 +9,21 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.domain.PermissionRepository
+import org.poweruptime.backend.core.utils.DATETIME_FORMAT
+import org.poweruptime.backend.features.authentication.domain.PermissionsService
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.NOTIFICATION_MEMBER
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.notification.core.NotificationMethodType
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.service.NotificationService
+import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -30,13 +33,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.ZonedDateTime
 
 @RestController
 @RequestMapping("/v1/notification")
 @Tag(name = "Notification API")
 class NotificationController(
-    val notificationService: NotificationService,
-    val permissionRepository: PermissionRepository
+    private val notificationService: NotificationService,
+    private val monitorService: MonitorService,
+    private val teamService: TeamService,
+    private val permissionsService: PermissionsService,
 ) {
     @Operation(
         summary = "Get notifications",
@@ -48,34 +54,36 @@ class NotificationController(
     fun getAll(
         auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("monitorId") monitorId: String?,
-        @RequestParam("teamId") teamId: String?,
-        @RequestParam("methods") methods: List<NotificationMethodType>?,
+        @RequestParam("monitorId") publicMonitorId: String?,
+        @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
+        @RequestParam("start") @DateTimeFormat(pattern = DATETIME_FORMAT) start: ZonedDateTime?,
+        @RequestParam("end") @DateTimeFormat(pattern = DATETIME_FORMAT) end: ZonedDateTime?,
     ): PaginatedResponse<NotificationResponse> {
-        if (monitorId != null && teamId != null) {
+        if (publicMonitorId != null && publicTeamId != null) {
             throw BadRequestException("Monitor or Team id required")
         }
 
-        monitorId?.let { monitorId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByMonitorId(userId, monitorId)
+        publicMonitorId?.let { publicMonitorId ->
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByMonitorId(publicUserId, publicMonitorId)
             }
         }
 
-        teamId?.let { teamId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByTeamId(userId, teamId)
+        publicTeamId?.let { teamId ->
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByTeamId(publicUserId, teamId)
             }
         }
 
         return notificationService.getAllPaginated(
             pageable = pageable,
-            monitorId = monitorId,
-            teamId = teamId,
-            userId = if (teamId == null && monitorId == null) auth.userId() else null,
-            methods = methods,
+            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+            userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
             statuses = statuses,
+            start = start?.toInstant(),
+            end = end?.plusDays(1)?.toInstant(),
         ).toDto {
             NotificationResponse(it)
         }
@@ -86,10 +94,12 @@ class NotificationController(
         security = [SecurityRequirement(name = BEARER_AUTH)],
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN | $TEAM_MEMBER",
     )
-    @PreAuthorize("hasPermission(#id, '$NOTIFICATION_MEMBER')")
+    @PreAuthorize("hasPermission(#publicId, '$NOTIFICATION_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun get(
-        @PathVariable id: String
-    ): NotificationResponse = NotificationResponse(notificationService.getByIdOrThrow(id))
+        @PathVariable("id") publicId: String
+    ): NotificationResponse = NotificationResponse(
+        notificationService.getByIdJoinCheckResultMonitorAndTeam(notificationService.getIdByPublicId(publicId)),
+    )
 }

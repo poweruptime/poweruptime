@@ -1,7 +1,7 @@
 import {inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {debounceTime, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, filter, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
@@ -25,12 +25,10 @@ export const CheckResultsStore = signalStore(
     monitorId: string | undefined;
     teamId: string | undefined;
     showDuplicates: boolean;
-    statuses: BackendType['CheckResultResponse']['status'][] | undefined;
   }>({
     monitorId: undefined,
     teamId: undefined,
     showDuplicates: true,
-    statuses: undefined,
   }),
   withRequestStatus(),
   withEntities<BackendType['CheckResultResponse']>(),
@@ -43,9 +41,6 @@ export const CheckResultsStore = signalStore(
   withMethods((store, api = injectAPI()) => ({
     setShowDuplicates: rxMethod<boolean | null>(
       tap((showDuplicates) => patchState(store, () => ({showDuplicates: showDuplicates ?? false}))),
-    ),
-    setStatuses: rxMethod<BackendType['CheckResultResponse']['status'][]>(
-      tap((statuses) => patchState(store, () => ({statuses}))),
     ),
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       // 1) must be the right monitor (or, if no monitor selected, the right team)
@@ -71,7 +66,10 @@ export const CheckResultsStore = signalStore(
         teamId?: string;
         monitorId?: string;
         onlyChanges: boolean;
+        hasNotification?: boolean;
         statuses?: BackendType['CheckResultResponse']['status'][];
+        start?: string;
+        end?: string;
       } & PaginationDto
     >(
       pipe(
@@ -99,6 +97,88 @@ export const CheckResultsStore = signalStore(
               error: (error) => patchState(store, setError(error)),
             }),
           ),
+        ),
+      ),
+    ),
+  })),
+  withHooks({
+    onInit(store, pushService = inject(PushService)) {
+      pushService.checkResults$
+        .pipe(takeUntilDestroyed())
+        .subscribe((it) => store.addCheckResult(it));
+    },
+  }),
+);
+
+const CACHE_DURATION_MS = 60_000; // 1 minute
+
+export const LastCheckResultsStore = signalStore(
+  {providedIn: 'root'},
+  withState<{
+    resultsMap: Map<string, BackendType['CheckResultResponse'][]>;
+    loading: Set<string>;
+    cacheTimestamps: Map<string, number>;
+  }>({
+    resultsMap: new Map(),
+    loading: new Set<string>(),
+    cacheTimestamps: new Map(),
+  }),
+  withMethods((store, api = injectAPI()) => ({
+    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
+      const monitorId = checkResult.monitor.id;
+      const currentResults = store.resultsMap().get(monitorId) ?? [];
+      const updated = [
+        checkResult,
+        ...currentResults.slice(0, Math.max(0, currentResults.length - 1)),
+      ];
+
+      patchState(store, () => ({
+        resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
+        cacheTimestamps: new Map(store.cacheTimestamps()).set(monitorId, Date.now()),
+      }));
+    },
+    load: rxMethod<string>(
+      pipe(
+        filter((monitorId) => {
+          const timestamp = store.cacheTimestamps().get(monitorId);
+          const hasValidCache =
+            store.resultsMap().has(monitorId) &&
+            timestamp !== undefined &&
+            Date.now() - timestamp < CACHE_DURATION_MS;
+          return !hasValidCache;
+        }),
+        tap((monitorId) =>
+          patchState(store, () => ({
+            loading: new Set(store.loading()).add(monitorId),
+          })),
+        ),
+        mergeMap((monitorId) =>
+          api
+            .get('/v1/check-result', {
+              params: {
+                query: {
+                  monitorId,
+                  page: 0,
+                  size: 22,
+                  sort: [`createdAt,desc`],
+                },
+              },
+            })
+            .pipe(
+              tapResponse({
+                next: (response) => {
+                  const loading = new Set(store.loading());
+                  loading.delete(monitorId);
+
+                  patchState(store, () => ({
+                    resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
+                    cacheTimestamps: new Map(store.cacheTimestamps()).set(monitorId, Date.now()),
+                    loading,
+                  }));
+                },
+                error: () => {},
+              }),
+            ),
         ),
       ),
     ),

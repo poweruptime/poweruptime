@@ -65,99 +65,111 @@ class HasTemplateFeatureEnabled implements PipeTransform {
       (ngSubmit)="submit()">
       @let _typeValue = typeValue();
 
-      <div class="grid-cols-6">
-        <div class="flex flex-col gap-8">
-          <div class="grid grid-cols-12 gap-2">
-            <mat-form-field class="col-span-8 md:col-span-6">
-              <mat-label>{{ 'general.name' | transloco }}</mat-label>
-              <input matInput formControlName="name" />
+      <div class="flex flex-col gap-8">
+        <div class="grid grid-cols-12 gap-2">
+          <mat-form-field class="col-span-8 md:col-span-6">
+            <mat-label>{{ 'general.name' | transloco }}</mat-label>
+            <input matInput formControlName="name" />
 
-              @let nameErrors = form.controls.name.errors;
-              @if (nameErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (nameErrors?.['minlength']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-              }
-              @if (nameErrors?.['maxlength']; as maxlength) {
-                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-              }
-            </mat-form-field>
+            @let nameErrors = form.controls.name.errors;
+            @if (nameErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+            @if (nameErrors?.['minlength']; as minlength) {
+              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            }
+            @if (nameErrors?.['maxlength']; as maxlength) {
+              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            }
+          </mat-form-field>
 
-            <mat-form-field class="col-span-4 md:col-span-3">
-              <mat-label>{{ 'general.type' | transloco }}</mat-label>
-              <mat-select formControlName="type">
-                <mat-option class="pt-1">
-                  <ngx-mat-select-search [formControl]="typeFilterControl">
-                    <bi name="x-lg" ngxMatSelectSearchClear />
-                  </ngx-mat-select-search>
-                </mat-option>
-                @for (type of filteredTypes(); track type.value) {
-                  <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
-                }
-              </mat-select>
-              @let typeErrors = form.controls.type.errors;
-              @if (typeErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <mat-form-field class="col-span-4 md:col-span-3">
+            <mat-label>{{ 'general.type' | transloco }}</mat-label>
+            <mat-select formControlName="type">
+              <mat-option class="pt-1">
+                <ngx-mat-select-search [formControl]="typeFilterControl">
+                  <bi name="x-lg" ngxMatSelectSearchClear />
+                </ngx-mat-select-search>
+              </mat-option>
+              @for (type of filteredTypes(); track type.value) {
+                <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
               }
-            </mat-form-field>
+            </mat-select>
+            @let typeErrors = form.controls.type.errors;
+            @if (typeErrors?.['required']) {
+              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            }
+          </mat-form-field>
 
-            <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
-              {{ 'notificationMethod.edit.useByDefault' | transloco }}
-            </mat-slide-toggle>
-          </div>
+          <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
+            {{ 'notificationMethod.edit.useByDefault' | transloco }}
+          </mat-slide-toggle>
+        </div>
 
-          <mat-card class="col-span-6" appearance="outlined">
-            <mat-card-header>
-              <mat-card-title>
-                @if (_typeValue !== '') {
-                  {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
-                }
-                {{ 'general.data' | transloco }}
-              </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="h-4"></div>
+        <mat-card class="col-span-6" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>
               @if (_typeValue !== '') {
-                @defer (when _typeValue === 'APPRISE') {
-                  @if (_typeValue === 'APPRISE') {
-                    <pu-notification-method-edit-form-apprise-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'DISCORD') {
-                  @if (_typeValue === 'DISCORD') {
-                    <pu-notification-method-edit-form-discord-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'EMAIL') {
-                  @if (_typeValue === 'EMAIL') {
-                    <pu-notification-method-edit-form-email-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'SLACK') {
-                  @if (_typeValue === 'SLACK') {
-                    <pu-notification-method-edit-form-slack-data />
-                  }
-                }
-              } @else {
-                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
+                {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
               }
-            </mat-card-content>
-          </mat-card>
+              {{ 'general.data' | transloco }}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-4"></div>
+            @if (_typeValue !== '') {
+              @defer (when _typeValue === 'APPRISE') {
+                @if (_typeValue === 'APPRISE') {
+                  <pu-notification-method-edit-form-apprise-data />
+                }
+              }
 
-          <mat-card class="col-span-6" appearance="outlined">
-            <mat-card-content>
-              <div class="h-4"></div>
-              <pu-monitor-selector
-                [(searchMonitor)]="searchMonitors"
-                [monitors]="allMonitors()"
-                [isPending]="isMonitorsSearchPending()"
-                formControlName="monitors" />
-            </mat-card-content>
-          </mat-card>
+              @defer (when _typeValue === 'DISCORD') {
+                @if (_typeValue === 'DISCORD') {
+                  <pu-notification-method-edit-form-discord-data />
+                }
+              }
+
+              @defer (when _typeValue === 'EMAIL') {
+                @if (_typeValue === 'EMAIL') {
+                  <pu-notification-method-edit-form-email-data />
+                }
+              }
+
+              @defer (when _typeValue === 'SLACK') {
+                @if (_typeValue === 'SLACK') {
+                  <pu-notification-method-edit-form-slack-data />
+                }
+              }
+            } @else {
+              <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
+            }
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="col-span-6" appearance="outlined">
+          <mat-card-content>
+            <div class="h-4"></div>
+            <pu-monitor-selector
+              [(searchMonitor)]="searchMonitors"
+              [monitors]="allMonitors()"
+              [isPending]="isMonitorsSearchPending()"
+              formControlName="monitors" />
+          </mat-card-content>
+        </mat-card>
+
+        <div class="col-span-6 flex gap-4">
+          <pu-save-button [valid]="isValid()" />
+          <pu-save-button
+            [valid]="isValid()"
+            (buttonClick)="
+              form.controls.testSend.patchValue(true);
+              submit();
+              form.controls.testSend.patchValue(false)
+            "
+            text="Save (and test)"
+            type="button"
+            icon="send-check" />
         </div>
       </div>
 
@@ -213,20 +225,6 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             </div>
           </mat-card-content>
         </mat-card>
-      </div>
-
-      <div class="flex gap-4">
-        <pu-save-button [valid]="isValid()" />
-        <pu-save-button
-          [valid]="isValid()"
-          (buttonClick)="
-            form.controls.testSend.patchValue(true);
-            submit();
-            form.controls.testSend.patchValue(false)
-          "
-          text="Save (and test)"
-          type="button"
-          icon="send-check" />
       </div>
     </form>
   `,
@@ -305,12 +303,12 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
         this.formDisabled = true;
       }
 
-      this.setFormCheckerType(it.sender._type);
+      this.setFormCheckerType(it.data._type);
 
       this.form.patchValue(
         {
           ...it,
-          type: it.sender._type,
+          type: it.data._type,
         },
         {emitEvent: true},
       );
@@ -382,12 +380,12 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
   private setFormCheckerType(type: BackendType['NotificationMethodData']['_type']) {
     // @ts-expect-error Sender Form Control
     this.form.setControl(
-      'sender',
+      'data',
       this.notificationMethodFormDataService.formSenderDataFactory(type),
     );
 
     // @ts-expect-error Sender Form Control
-    this.form.controls['sender'].patchValue({
+    this.form.controls['data'].patchValue({
       _type: type,
     });
   }

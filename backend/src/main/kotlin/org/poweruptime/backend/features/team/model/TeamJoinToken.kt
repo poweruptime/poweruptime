@@ -1,51 +1,53 @@
 package org.poweruptime.backend.features.team.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.DefaultNanoId
-import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.NanoIdTable
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.updatedAt
+import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.UserRecord
+import java.time.Instant
 
-@Entity
-@Table(name = "team_join_token")
-class TeamJoinToken(
-    @Column(name = "token", nullable = false, length = Database.MAX_TEAM_JOIN_TOKEN_LENGTH, unique = true)
-    val token: String,
+object TeamJoinToken : NanoIdTable("team_join_token", NANO_ID_MAX_LENGTH), HasModifiers {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @JoinColumn(name = "invitee_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var invitee: User,
+    val inviteeId = ulong("invitee_id").references(User.id).index()
+    val inviterId = ulong("inviter_id").references(User.id).index()
+    val teamId = ulong("team_id").references(Team.id).index()
 
-    @JoinColumn(name = "inviter_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var inviter: User,
-
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: Team,
-
-    /**
-     * Usage of UserTeamRoleConverter to minify enum to 1 char
-     * @see TeamRoleDatabaseConverter
-     */
-    @Column(name = "role", nullable = false, length = 1)
-    var role: TeamRole = TeamRole.MEMBER,
-
-) : AEntity() {
-    @Id
-    @DefaultNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_DEFAULT_LENGTH)
-    override lateinit var id: String
+    val role = enumerationByCode<TeamRole>("role")
+    val valid = bool("valid").clientDefault { true }
 }
+
+data class TeamJoinTokenRecord(
+    val id: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val inviteeId: ULong,
+    val inviterId: ULong,
+    val teamId: ULong,
+    val role: TeamRole,
+    val valid: Boolean,
+)
+
+fun TeamJoinToken.rowToTeamJoinTokenRecord(row: ResultRow): TeamJoinTokenRecord =
+    TeamJoinTokenRecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        inviteeId = row[inviteeId],
+        inviterId = row[inviterId],
+        teamId = row[teamId],
+        role = row[role],
+        valid = row[valid],
+    )
+
+data class TeamJoinTokenJoinInviteeAndInviter(
+    val teamJoinToken: TeamJoinTokenRecord,
+    val invitee: UserRecord,
+    val inviter: UserRecord,
+)

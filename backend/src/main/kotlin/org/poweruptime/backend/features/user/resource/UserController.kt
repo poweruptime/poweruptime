@@ -7,14 +7,13 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
-import org.poweruptime.backend.core.dto.IdResponse
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.poweruptime.backend.features.authentication.service.AuthService
-import org.poweruptime.backend.features.user.dto.CreateUserDto
-import org.poweruptime.backend.features.user.dto.UpdateUserDto
-import org.poweruptime.backend.features.user.dto.UserResponse
+import org.poweruptime.backend.features.authentication.service.user
+import org.poweruptime.backend.features.user.CreateUserDto
+import org.poweruptime.backend.features.user.UpdateUserDto
+import org.poweruptime.backend.features.user.UserResponse
 import org.poweruptime.backend.features.user.service.UserService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -29,21 +28,7 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "User API")
 class UserController(
     val userService: UserService,
-    val authService: AuthService
 ) {
-
-    @Operation(
-        summary = "Create user",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    fun create(auth: Authentication, @RequestBody @Valid dto: CreateUserDto) = IdResponse(
-        userService.create(dto, authService.getByAuthOrThrow(auth)),
-    )
-
     @Operation(
         summary = "Get user",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -52,7 +37,8 @@ class UserController(
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    fun get(@PathVariable id: String) = UserResponse(userService.getByIdOrThrow(id))
+    fun get(@PathVariable("id") publicId: String): UserResponse =
+        UserResponse(userService.getById(userService.getIdByPublicId(publicId)))
 
     @Operation(
         summary = "Get all users",
@@ -67,12 +53,24 @@ class UserController(
         @RequestParam("search") search: String?,
         @RequestParam("activated") activated: Boolean?,
         @RequestParam("role") role: SystemRole?,
-    ): PaginatedResponse<UserResponse> = userService.getAllPaginated(
+    ): PaginatedResponse<UserResponse> = userService.getAll(
         pageable = pageable,
         search = search,
         activated = activated,
         role = role,
     ).toDto { UserResponse(it) }
+
+    @Operation(
+        summary = "Create user",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    fun create(auth: Authentication, @RequestBody @Valid dto: CreateUserDto): UserResponse = UserResponse(
+        userService.create(dto, auth.user()),
+    )
 
     @Operation(
         summary = "Update user",
@@ -82,17 +80,19 @@ class UserController(
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    fun update(auth: Authentication, @RequestBody @Valid dto: UpdateUserDto) = IdResponse(
-        userService.update(dto, authService.getByAuthOrThrow(auth)),
+    fun update(auth: Authentication, @RequestBody @Valid dto: UpdateUserDto) = UserResponse(
+        userService.update(dto, auth.user()),
     )
 
-    @Operation(
-        summary = "Delete a user by id",
-        security = [SecurityRequirement(name = BEARER_AUTH)],
-        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun delete(@PathVariable("id") id: String): Unit = userService.deleteByIdOrThrow(id)
+//    @Operation(
+//        summary = "Delete a user by id",
+//        security = [SecurityRequirement(name = BEARER_AUTH)],
+//        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+//    )
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    fun delete(@PathVariable("id") publicId: String) {
+//        userService.deleteById(userService.getIdByPublicId(publicId))
+//    }
 }

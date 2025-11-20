@@ -9,8 +9,9 @@ import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.core.exceptions.ServiceUnavailableException
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.features.authentication.config.AuthUtils
-import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
+import org.poweruptime.backend.features.authentication.service.publicUserId
+import org.poweruptime.backend.features.authentication.service.user
 import org.poweruptime.backend.features.info.InfoService
 import org.poweruptime.backend.features.profile.dto.UpdateEmailDto
 import org.poweruptime.backend.features.profile.service.EmailChangeTokenService
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1")
 @Tag(name = "Email change token API")
 class EmailChangeTokenController(
-    private val authService: AuthService,
     private val mfaService: MFAService,
     private val emailChangeTokenService: EmailChangeTokenService,
     private val infoService: InfoService,
@@ -47,7 +47,7 @@ class EmailChangeTokenController(
     @ResponseStatus(HttpStatus.OK)
     fun requestEmailChangeToken(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-        authentication: Authentication,
+        auth: Authentication,
         @RequestBody @Valid dto: UpdateEmailDto
     ) {
         if (infoService.oAuth2Enabled) {
@@ -58,7 +58,7 @@ class EmailChangeTokenController(
         try {
             authenticationProvider.authenticate(
                 UsernamePasswordAuthenticationToken(
-                    authentication.name,
+                    auth.publicUserId(),
                     dto.password,
                 ),
             )
@@ -66,9 +66,9 @@ class EmailChangeTokenController(
             throw ForbiddenException()
         }
 
-        val user = authService.getByAuthOrThrow(authentication)
+        val user = auth.user()
 
-        mfaService.validate(user.id, mfaCode)
+        mfaService.validate(user, mfaCode)
 
         emailChangeTokenService.create(user, dto.email)
     }

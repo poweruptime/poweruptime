@@ -1,8 +1,5 @@
 package org.poweruptime.backend.features.monitor.checker.http
 
-import jakarta.persistence.Column
-import jakarta.persistence.DiscriminatorValue
-import jakarta.persistence.Entity
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
@@ -13,33 +10,111 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.ListItemRegex
+import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.model.MONITOR_CHECKER_DATA_TABLE_NAME
 import org.poweruptime.backend.features.monitor.model.MonitorData
-import org.poweruptime.backend.features.monitor.model.MonitorDataTypes
+import org.poweruptime.backend.features.monitor.model.MonitorDataTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 
-@Entity(name = "${MONITOR_CHECKER_DATA_TABLE_NAME}_${MonitorDataTypes.HTTP}")
-@DiscriminatorValue(MonitorDataTypes.HTTP)
-class HttpMonitorData(
-    @Column(name = "http_url", length = Database.MAX_URL_LENGTH)
+object HttpMonitorData : MonitorDataTable(MonitorType.HTTP) {
+    val url = varchar("http_url", Database.MAX_URL_LENGTH)
+    val method = enumerationByCode<HttpMonitorDataMethod>("http_method")
+    val contentType = enumerationByCode<HttpMonitorDataContentType>("http_content_type")
+
+    val allowedStatusCodeRanges = array<String>("http_allowed_status_code_ranges")
+
+    val maxRedirects = long("http_max_redirects").nullable()
+    val ignoreTLS = bool("http_ignore_tls").clientDefault { false }
+    val certificateExpiry = bool("http_certificate_expiry").clientDefault { false }
+    val certificateValidDaysLeft = long("http_certificate_valid_days_left").nullable()
+
+    val body = text("http_body").nullable()
+    val searchTerm = text("http_search_term").nullable()
+    val authType = enumerationByCode<HttpMonitorDataAuthType>("http_auth_type").nullable()
+
+    val basicAuthDataUsername = varchar("http_basic_auth_username", Database.MAX_BASIC_AUTH_LENGTH).nullable()
+    val basicAuthDataPassword = varchar("http_basic_auth_password", Database.MAX_BASIC_AUTH_LENGTH).nullable()
+
+    override fun rowToRecord(row: ResultRow): HttpMonitorDataRecord = HttpMonitorDataRecord(
+        url = row[url],
+        method = row[method],
+        contentType = row[contentType],
+        allowedStatusCodeRanges = row[allowedStatusCodeRanges],
+        maxRedirects = row[maxRedirects],
+        ignoreTLS = row[ignoreTLS],
+        certificateExpiry = row[certificateExpiry],
+        certificateValidDaysLeft = row[certificateValidDaysLeft],
+        body = row[body],
+        searchTerm = row[searchTerm],
+        authType = row[authType],
+        basicAuthDataUsername = row[basicAuthDataUsername],
+        basicAuthDataPassword = row[basicAuthDataPassword],
+    )
+
+    override fun insert(monitorId: ULong, data: MonitorData) {
+        data as HttpMonitorDataRecord
+
+        insert {
+            it[id] = monitorId
+            it[url] = data.url
+            it[method] = data.method
+            it[contentType] = data.contentType
+            it[allowedStatusCodeRanges] = data.allowedStatusCodeRanges
+            it[maxRedirects] = data.maxRedirects
+            it[ignoreTLS] = data.ignoreTLS
+            it[certificateExpiry] = data.certificateExpiry
+            it[certificateValidDaysLeft] = data.certificateValidDaysLeft
+            it[body] = data.body
+            it[searchTerm] = data.searchTerm
+            it[authType] = data.authType
+            it[basicAuthDataUsername] = data.basicAuthDataUsername
+            it[basicAuthDataPassword] = data.basicAuthDataPassword
+        }
+    }
+
+    override fun update(monitorId: ULong, data: MonitorData) {
+        data as HttpMonitorDataRecord
+
+        update({ id eq monitorId }) {
+            it[url] = data.url
+            it[method] = data.method
+            it[contentType] = data.contentType
+            it[allowedStatusCodeRanges] = data.allowedStatusCodeRanges
+            it[maxRedirects] = data.maxRedirects
+            it[ignoreTLS] = data.ignoreTLS
+            it[certificateExpiry] = data.certificateExpiry
+            it[certificateValidDaysLeft] = data.certificateValidDaysLeft
+            it[body] = data.body
+            it[searchTerm] = data.searchTerm
+            it[authType] = data.authType
+            it[basicAuthDataUsername] = data.basicAuthDataUsername
+            it[basicAuthDataPassword] = data.basicAuthDataPassword
+        }
+    }
+
+    init {
+        registerTable(this)
+    }
+}
+
+data class HttpMonitorDataRecord(
     @get:NotBlank
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
     @get:Pattern(regexp = Database.URL_REGEX)
     val url: String,
 
-    @Column(name = "http_method", length = 7)
     @get:NotNull
     val method: HttpMonitorDataMethod,
 
-    @Column(name = "http_content_type", length = 4)
     @get:NotNull
     val contentType: HttpMonitorDataContentType,
 
-    @Suppress("JpaAttributeTypeInspection")
-    @Column(name = "http_allowed_status_code_ranges", columnDefinition = "text[]")
     @get:NotNull
     @get:Size(min = Database.MIN_STATUS_CODES)
     @get:ListItemRegex(
@@ -49,80 +124,37 @@ class HttpMonitorData(
     @get:StatusCodeRangeOrder
     val allowedStatusCodeRanges: List<String>,
 
-    @Column(name = "http_max_redirects", columnDefinition = "bigint")
     @get:Min(Database.MIN_REDIRECTS)
     @get:Max(Database.MAX_REDIRECTS)
     val maxRedirects: Long? = null,
 
-    @Column(name = "http_ignore_tls", columnDefinition = "boolean")
     @get:NotNull
     val ignoreTLS: Boolean = false,
 
-    @Column(name = "http_certificate_expiry", columnDefinition = "boolean")
     @get:NotNull
     val certificateExpiry: Boolean = false,
 
-    @Column(name = "http_certificate_valid_days_left", columnDefinition = "bigint")
     @get:Min(Database.MIN_VALID_DAYS_LEFT)
     @get:Max(Database.MAX_VALID_DAYS_LEFT)
     val certificateValidDaysLeft: Long? = null,
 
-    @Column(name = "http_body", columnDefinition = "text")
     val body: String? = null,
 
-    @Column(name = "http_search_term", columnDefinition = "text")
     val searchTerm: String? = null,
 
-    @Column(name = "http_auth_type", length = 5)
     val authType: HttpMonitorDataAuthType? = null,
 
-    @Column(name = "http_basic_auth_username", length = 512)
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     val basicAuthDataUsername: String? = null,
-
-    @Column(name = "http_basic_auth_password", length = 512)
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     val basicAuthDataPassword: String? = null,
 ) : MonitorData(MonitorType.HTTP) {
-    // ObjectMapper needs an empty constructor
-    constructor() : this(
-        "1.2.3.4",
-        HttpMonitorDataMethod.GET,
-        HttpMonitorDataContentType.JSON,
-        listOf(""),
-        10,
-        false,
-        false,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-    )
-
     fun getAllowedStatusCodesRanges(): List<IntRange> = allowedStatusCodeRanges.map { statusCodeRange ->
         val parts = statusCodeRange.split("-").map(String::trim)
         require(parts.size == 2)
 
         parts[0].toInt()..parts[1].toInt()
     }
-
-    override fun clone() = HttpMonitorData(
-        url,
-        method,
-        contentType,
-        allowedStatusCodeRanges,
-        maxRedirects,
-        ignoreTLS,
-        certificateExpiry,
-        certificateValidDaysLeft,
-        body,
-        searchTerm,
-        authType,
-        basicAuthDataUsername,
-        basicAuthDataPassword,
-    )
 }
 
 @Target(

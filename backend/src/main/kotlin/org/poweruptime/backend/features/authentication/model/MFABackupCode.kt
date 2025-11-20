@@ -1,39 +1,43 @@
 package org.poweruptime.backend.features.authentication.model
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
-import org.hibernate.annotations.ColumnDefault
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import java.time.Instant
 
-@Entity
-@Table(
-    name = "mfa_backup_code",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["mfa_id", "code_hash"])],
-)
-class MFABackupCode(
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "mfa_id", nullable = false)
-    val mfa: MFA,
+object MFABackupCode : ULongIdTable("mfa_backup_code"), HasModifiers {
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @Column(name = "code_hash", nullable = false, length = Database.MAX_BCRYPT_LENGTH)
-    val codeHash: String,
+    val mfaId = ulong("mfa_id").references(MFA.id).index()
 
-    @ColumnDefault("true")
-    @Column(nullable = false, columnDefinition = "boolean")
-    var valid: Boolean = true,
-) : AEntity() {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    override lateinit var id: String
+    val codeHash = varchar("code_hash", Database.MAX_BCRYPT_LENGTH)
+
+    val valid = bool("valid")
+
+    init {
+        index(isUnique = true, mfaId, codeHash)
+    }
 }
+
+data class MFABackupCodeRecord(
+    val id: ULong,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val mfaId: ULong,
+    val codeHash: String,
+    val valid: Boolean,
+)
+
+fun MFABackupCode.rowToMFABackupCodeRecord(row: ResultRow): MFABackupCodeRecord =
+    MFABackupCodeRecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        mfaId = row[mfaId],
+        codeHash = row[codeHash],
+        valid = row[valid],
+    )

@@ -2,7 +2,8 @@ package org.poweruptime.backend.features.monitor.checker.ssl
 
 import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import java.io.IOException
@@ -22,17 +23,17 @@ import javax.net.ssl.HttpsURLConnection
 
 class SSLCertificateMonitorChecker(
     private val teamSettingService: TeamSettingService
-) : MonitorChecker {
-    override val type = MonitorType.SSL_CERTIFICATE
+) : MonitorChecker(MonitorType.SSL_CERTIFICATE) {
 
     @Suppress("ReturnCount")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val sslData = monitor.checker as SSLCertificateMonitorData
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        data as SSLCertificateMonitorDataRecord
+
         val result = MonitoringResultHandler()
         val now = Instant.now()
 
         try {
-            val certs = makeRequest(sslData.url)
+            val certs = makeRequest(data.url)
 
             if (certs.isEmpty()) {
                 return result.error("No certificates found")
@@ -41,7 +42,7 @@ class SSLCertificateMonitorChecker(
             // group by “still within your expected days‐left” vs. “too close/expired”
             val grouped = certs.groupBy { cert ->
                 val expiresAt = cert.notAfter.toInstant()
-                val validDaysLeft = sslData.validDaysLeft
+                val validDaysLeft = data.validDaysLeft
                 if (validDaysLeft != null) {
                     Duration.between(now, expiresAt).toDays() >= validDaysLeft
                 } else {
@@ -50,7 +51,7 @@ class SSLCertificateMonitorChecker(
                 }
             }
 
-            val tz = teamSettingService.getTimeZone(monitor.team.id)
+            val tz = teamSettingService.getTimeZone(monitor.teamId)
 
             return when {
                 grouped[false]?.isNotEmpty() == true -> result.error(

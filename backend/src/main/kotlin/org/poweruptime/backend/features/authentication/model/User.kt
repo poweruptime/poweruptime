@@ -1,76 +1,79 @@
 package org.poweruptime.backend.features.authentication.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
-import org.hibernate.annotations.ColumnDefault
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.Alias
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.HasSoftDelete
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.softDelete
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
-import org.poweruptime.backend.features.team.model.TeamJoinToken
-import org.poweruptime.backend.features.team.model.TeamUser
+import java.time.Instant
 
-@Entity
-// \" is needed as tables are not allowed to be called user in Postgres
-@Table(name = "\"user\"")
-class User(
-    /**
-     * Google recommends 70 for combined input fields (firstname + surname)
-     */
-    @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
-    var name: String,
+object User : ULongIdTable(""""user""""), HasPublicId, HasModifiers, HasSoftDelete, HasName {
+    override val publicId = nanoId("public_id", NANO_ID_SMALL_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val deleted = softDelete()
+    override val name = name()
 
-    /**
-     * Email addresses are allowed to have 254 chars maximal
-     */
-    @Column(nullable = false, unique = true, length = Database.MAX_MAIL_LENGTH)
-    var email: String,
+    val email = varchar("email", Database.MAX_MAIL_LENGTH).uniqueIndex()
+    val passwordHash = varchar("password_hash", Database.MAX_BCRYPT_LENGTH)
 
-    @Column(name = "password_hash", nullable = false, length = Database.MAX_BCRYPT_LENGTH)
-    var passwordHash: String,
+    val mfaId = ulong("mfa_id").references(MFA.id).nullable()
 
-    @ColumnDefault("true")
-    @Column(nullable = false, columnDefinition = "boolean")
-    var activated: Boolean = true,
-
-    @ColumnDefault("false")
-    @Column(name = "force_password_change", nullable = false, columnDefinition = "boolean")
-    var forcePasswordChange: Boolean = false,
-
-    /**
-     * Usage of UserGlobalRoleConverter to minify enum to 1 char
-     */
-    @Column(nullable = false, length = 1)
-    var role: SystemRole = SystemRole.USER,
-
-    @OneToMany(mappedBy = "invitee", fetch = FetchType.LAZY)
-    var invitedTo: List<TeamJoinToken> = ArrayList(),
-
-    @OneToMany(mappedBy = "inviter", fetch = FetchType.LAZY)
-    var invitedUsers: List<TeamJoinToken> = ArrayList(),
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    var passwordResetToken: List<PasswordResetToken> = ArrayList(),
-
-    @OneToMany(mappedBy = "invitedBy", fetch = FetchType.LAZY)
-    var teamUsersInvited: List<TeamUser> = ArrayList(),
-
-    @OneToMany(mappedBy = "id.user", fetch = FetchType.LAZY)
-    var teamUsers: List<TeamUser> = ArrayList(),
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    var sessions: List<Session> = ArrayList(),
-) : AEntity() {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
-
-    override fun toString(): String = "Id: '$id', Name: '$name', Email: '$email', role: '$role'"
-
-    companion object
+    val activated = bool("activated")
+    val forcePasswordChange = bool("force_password_change")
+    val role = enumerationByCode<SystemRole>("role")
 }
+
+data class UserRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val name: String,
+    val email: String,
+    val passwordHash: String,
+    val mfaId: ULong?,
+    val activated: Boolean,
+    val forcePasswordChange: Boolean,
+    val role: SystemRole
+)
+
+fun User.rowToUserRecord(row: ResultRow): UserRecord =
+    UserRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        name = row[name],
+        email = row[email],
+        passwordHash = row[passwordHash],
+        mfaId = row[mfaId],
+        activated = row[activated],
+        forcePasswordChange = row[forcePasswordChange],
+        role = row[role],
+    )
+
+fun User.rowToUserRecord(row: ResultRow, alias: Alias<User>): UserRecord =
+    UserRecord(
+        id = row[alias[id]].value,
+        publicId = row[alias[publicId]],
+        createdAt = row[alias[createdAt]],
+        updatedAt = row[alias[updatedAt]],
+        name = row[alias[name]],
+        email = row[alias[email]],
+        passwordHash = row[alias[passwordHash]],
+        mfaId = row[alias[mfaId]],
+        activated = row[alias[activated]],
+        forcePasswordChange = row[alias[forcePasswordChange]],
+        role = row[alias[role]],
+    )

@@ -9,14 +9,17 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.domain.PermissionRepository
+import org.poweruptime.backend.features.authentication.domain.PermissionsService
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
+import org.poweruptime.backend.features.notification.service.NotificationService
 import org.poweruptime.backend.features.notification.service.SubNotificationService
+import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -32,8 +35,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1/sub-notification")
 @Tag(name = "Sub Notification API")
 class SubNotificationController(
-    val subNotificationService: SubNotificationService,
-    val permissionRepository: PermissionRepository
+    private val subNotificationService: SubNotificationService,
+    private val notificationService: NotificationService,
+    private val monitorService: MonitorService,
+    private val teamService: TeamService,
+    private val permissionsService: PermissionsService,
 ) {
     @Operation(
         summary = "Get sub notifications",
@@ -45,40 +51,44 @@ class SubNotificationController(
     fun getAll(
         auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
-        @RequestParam("notificationId") notificationId: String?,
-        @RequestParam("monitorId") monitorId: String?,
-        @RequestParam("teamId") teamId: String?,
+        @RequestParam("notificationId") publicNotificationId: String?,
+        @RequestParam("monitorId") publicMonitorId: String?,
+        @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("methods") methods: List<NotificationMethodType>?,
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
     ): PaginatedResponse<SubNotificationResponse> {
-        if (monitorId != null && teamId != null) {
+        if (publicMonitorId != null && publicTeamId != null) {
             throw BadRequestException("Monitor or Team id required")
         }
 
-        monitorId?.let { monitorId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByMonitorId(userId, monitorId)
+        publicMonitorId?.let { publicMonitorId ->
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByMonitorId(publicUserId, publicMonitorId)
             }
         }
 
-        teamId?.let { teamId ->
-            auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByTeamId(userId, teamId)
+        publicTeamId?.let { publicTeamId ->
+            auth.throwIfNotPartOf { publicUserId ->
+                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
             }
         }
 
-        notificationId?.let { notificationId ->
+        publicNotificationId?.let { notificationId ->
             auth.throwIfNotPartOf { userId ->
-                permissionRepository.isPartOfByNotificationId(userId, notificationId)
+                permissionsService.isPartOfByNotificationId(userId, notificationId)
             }
         }
 
         return subNotificationService.getAllPaginated(
             pageable = pageable,
-            notificationId = notificationId,
-            monitorId = monitorId,
-            teamId = teamId,
-            userId = if (teamId == null && monitorId == null && notificationId == null) auth.userId() else null,
+            notificationId = publicNotificationId?.let { notificationService.getIdByPublicId(it) },
+            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+            userId = if (publicTeamId == null && publicMonitorId == null && publicNotificationId == null) {
+                auth.userId()
+            } else {
+                null
+            },
             methods = methods,
             statuses = statuses,
         ).toDto {

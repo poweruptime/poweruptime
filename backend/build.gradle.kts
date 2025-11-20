@@ -8,7 +8,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    kotlin("plugin.jpa")
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
     id ("com.github.jk1.dependency-license-report") version "3.0.1"
@@ -61,27 +60,39 @@ dependencies {
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.1")
     runtimeOnly("org.postgresql:postgresql:42.7.8")
-    // Postgres Arrays
-    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.12.0")
+
+    implementation("com.zaxxer:HikariCP:7.0.2")
+
+    val exposedVersion = "1.0.0-rc-3"
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-json:${exposedVersion}")
+    implementation("org.jetbrains.exposed:spring-transaction:$exposedVersion")
 
     // Spring
+    implementation("org.aspectj:aspectjweaver")
+
+    implementation("org.springframework.data:spring-data-commons")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // Spring SSE
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Spring Mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+    // Spring Cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
-
-    implementation("me.dafnik:kotlin-jpa-specification-builder:0.3.3")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.12")
@@ -243,7 +254,7 @@ tasks.test {
 tasks.register<BootRun>("seed") {
     group = "application"
     description = "Seed the database and exit"
-    mainClass.set("org.poweruptime.backend.MonolithApplication")
+    mainClass.set("org.poweruptime.backend.MainKt")
     // pick up your normal runtime classpath
     classpath = sourceSets["main"].runtimeClasspath
     // activate only the seed profile

@@ -1,14 +1,14 @@
 package org.poweruptime.backend.features.mail.emails
 
-import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.mail.Email
-import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRecord
 import org.thymeleaf.context.Context
 
 data class JoinTeamEmail(
-    val inviterTeam: Team,
-    val inviter: User,
-    val invitee: User,
+    val inviterTeam: TeamRecord,
+    val inviter: UserRecord,
+    val invitee: UserRecord,
     val token: String,
     override val cc: Set<String>? = null,
     override val bcc: Set<String>? = null

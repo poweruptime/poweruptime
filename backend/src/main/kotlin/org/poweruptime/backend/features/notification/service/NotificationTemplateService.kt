@@ -4,7 +4,7 @@ import org.poweruptime.backend.core.utils.DateTimeUtils
 import org.poweruptime.backend.features.HostService
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
-import org.poweruptime.backend.features.notification.model.SubNotification
+import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -21,13 +21,16 @@ class NotificationTemplateService(
     private val teamSettingService: TeamSettingService,
     private val hostService: HostService,
 ) {
-    fun getRenderedNotification(subNotification: SubNotification): NotificationTemplate {
-        val context = Context().applyContext(subNotification)
+    fun getRenderedNotification(
+        subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
+    ): NotificationTemplate {
+        val context = Context().applyContext(subNotificationJoin)
+
         return NotificationTemplate(
-            title = (subNotification.method.titleTemplate ?: subNotification.method.data._type.titleTemplate).render(
+            title = (subNotificationJoin.method.titleTemplate ?: subNotificationJoin.method.type.titleTemplate).render(
                 context,
             ),
-            body = (subNotification.method.bodyTemplate ?: subNotification.method.data._type.bodyTemplate).render(
+            body = (subNotificationJoin.method.bodyTemplate ?: subNotificationJoin.method.type.bodyTemplate).render(
                 context,
             ),
         )
@@ -37,31 +40,33 @@ class NotificationTemplateService(
         .process(replaceCustomVariablesWithThymeleafVariables(context), context)
         .replaceThymeleafReplacementSquareBrackets()
 
-    private fun Context.applyContext(subNotification: SubNotification) = apply {
-        setVariable("monitorName", subNotification.notification.checkResult.monitor.name)
+    private fun Context.applyContext(
+        subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
+    ) = apply {
+        setVariable("monitorName", subNotificationJoin.monitor.name)
         setVariable(
             "status",
-            when (subNotification.notification.checkResult.status) {
+            when (subNotificationJoin.checkResult.status) {
                 MonitorStatus.UP -> """✅ UP"""
                 MonitorStatus.DOWN -> """🔴 DOWN"""
                 else -> throw InvalidAttributesException(
-                    "Check result status not allowed to be ${subNotification.notification.checkResult.status}",
+                    "Check result status not allowed to be ${subNotificationJoin.checkResult.status}",
                 )
             },
         )
-        setVariable("title", subNotification.title)
+        setVariable("title", subNotificationJoin.subNotification.title)
         setVariable(
             "checkStartedAt",
-            subNotification.notification.checkResult.pickedUpAt
-                ?.atZone(teamSettingService.getTimeZone(subNotification.method.team.id))
+            subNotificationJoin.checkResult.pickedUpAt
+                ?.atZone(teamSettingService.getTimeZone(subNotificationJoin.monitor.teamId))
                 ?.format(DateTimeUtils.dateTimeFormatter),
         )
-        setVariable("pingMs", subNotification.notification.checkResult.pingMs)
-        setVariable("message", subNotification.message)
+        setVariable("pingMs", subNotificationJoin.checkResult.pingMs)
+        setVariable("message", subNotificationJoin.subNotification.message)
         setVariable(
             "checkResultLink",
-            "${hostService.urlHost}/m/${subNotification.notification.checkResult.monitor.id}/c/${
-                subNotification.notification.checkResult.id}/logs",
+            "${hostService.urlHost}/m/${subNotificationJoin.monitor.id}/c/${
+                subNotificationJoin.notification.id}/logs",
         )
     }
 

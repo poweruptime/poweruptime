@@ -39,7 +39,9 @@ export const StatusPagesStore = signalStore(
     columnsToDisplay: ['name', 'slug', 'actions'],
     defaultSortBy: 'name',
   }),
-  withSelection<BackendType['StatusPageResponse']>({}),
+  withSelection<BackendType['StatusPageResponse']>({
+    find: (it) => it.slug,
+  }),
   withComputed(({search}) => ({
     isSearching: computed(() => search().length > 0),
   })),
@@ -73,7 +75,7 @@ export const StatusPagesStore = signalStore(
                     store,
                     removeAllEntities(),
                     resetSelection(),
-                    setEntities(response.data),
+                    setEntities(response.data, {selectId: (it) => it.slug}),
                     setTotalElements(response.numberOfItems),
                     setFulfilled(),
                   ),
@@ -102,7 +104,7 @@ export const StatusPagesStore = signalStore(
             translate('general.confirmRestore.description'),
           ).pipe(
             tap(() => patchState(store, setPending())),
-            map(() => store.selection().map((it) => it.id)),
+            map(() => store.selection().map((it) => it.slug)),
             switchMap((ids) =>
               forkJoin(
                 ids.map((id) => api.delete('/v1/status-page/{id}/undo', {params: {path: {id}}})),

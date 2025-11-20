@@ -6,7 +6,9 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/mat
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
+import {BackendType} from '@app/api';
 import {Placeholder} from '@app/components';
+import {InstanceSettingsRetentionForm} from '@app/components/instance-settings';
 import {TeamEditForm, TeamInvitesList, TeamSettings, TeamUsersList} from '@app/components/team';
 import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from '@app/services';
 
@@ -18,7 +20,7 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
       @if (team; as team) {
         <h2 class="mb-4 text-3xl">{{ 'team.edit.edit' | transloco: team }}</h2>
 
-        <div class="mt-4 grid gap-4 md:grid-cols-6">
+        <div class="mt-4 grid gap-4 md:grid-cols-4 lg:grid-cols-6">
           <mat-card class="col-span-2" appearance="outlined">
             <mat-card-header>
               <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
@@ -29,20 +31,25 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
             </mat-card-content>
           </mat-card>
 
-          <mat-card class="col-span-2" appearance="outlined">
-            <mat-card-header>
-              <mat-card-title>{{ 'general.settings' | transloco }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              @if (teamSettingsStore.settings(); as settings) {
+          @if (teamSettingsStore.settings(); as settings) {
+            <mat-card class="col-span-2" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title>{{ 'general.settings' | transloco }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
                 <div class="h-4"></div>
                 <pu-team-settings
                   [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
                   [settings]="settings"
                   (submitCreate)="teamSettingsStore.setTimezone($event.timezone)" />
-              }
-            </mat-card-content>
-          </mat-card>
+              </mat-card-content>
+            </mat-card>
+
+            <pu-instance-settings-retention-form
+              class="col-span-2"
+              [settings]="settings"
+              (submitCreate)="submitRetentionForm($event)" />
+          }
 
           @defer (when !team.personal) {
             @if (!team.personal) {
@@ -106,6 +113,7 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
     TeamInvitesList,
     TranslocoPipe,
     MatButton,
+    InstanceSettingsRetentionForm,
   ],
   providers: [TeamEditStore, TeamSettingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -121,5 +129,9 @@ export class TeamEditPage {
     this.instanceAvailableTimezonesStore.load();
     this.teamEditStore.loadById(this.teamId);
     this.teamSettingsStore.load(this.teamId);
+  }
+
+  submitRetentionForm(it: BackendType['SettingRetentionDto']) {
+    this.teamSettingsStore.setRetention(it);
   }
 }

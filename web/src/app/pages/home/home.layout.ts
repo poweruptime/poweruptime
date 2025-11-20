@@ -23,7 +23,7 @@ import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BiComponent} from 'dfx-bootstrap-icons';
 
-import {BackendOfflineAlert, Nav, SupporterBadge} from '@app/components';
+import {BackendOfflineAlert, Nav} from '@app/components';
 import {
   BackendOfflineService,
   ChangelogStore,
@@ -40,53 +40,40 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     @let _collapseNav = collapseNav();
 
     <mat-drawer-container autosize>
-      <mat-drawer
-        class="border-r border-solid border-r-gray-400"
-        #drawer
-        [mode]="_collapseNav ? 'over' : 'side'"
-        [opened]="!_collapseNav">
+      <mat-drawer #drawer [mode]="_collapseNav ? 'over' : 'side'" [opened]="!_collapseNav">
         <pu-nav [teamId]="selectedTeamStore.storageSelectedTeamId()" />
       </mat-drawer>
 
       <mat-drawer-content>
         <div class="flex h-screen max-h-screen flex-col gap-2">
           <mat-toolbar>
-            <div class="flex w-full justify-between pt-2">
-              <div class="flex items-center gap-2">
-                @if (_collapseNav) {
-                  <button
-                    [matTooltip]="'nav.toggle' | transloco"
-                    [attr.aria-label]="'nav.toggle' | transloco"
-                    (click)="drawer.toggle()"
-                    type="button"
-                    mat-icon-button>
-                    <bi name="list" size="24" />
-                  </button>
-                }
-                <a class="inline-flex items-center gap-2 text-2xl" routerLink="/">
-                  <img
-                    class="rounded-full"
-                    ngSrc="/assets/logo.webp"
-                    alt="logo"
-                    width="48"
-                    height="48" />
-                  <span class="mb-1">poweruptime</span>
-                </a>
-              </div>
-              <div>
-                @if (infoStore.support(); as support) {
-                  <pu-supporter-badge
-                    [hide]="!support.showSupportBadge"
-                    [supportsSince]="support.supportsSince" />
-                }
-              </div>
+            <div class="flex items-center gap-2 pt-2">
+              @if (_collapseNav) {
+                <button
+                  [matTooltip]="'nav.toggle' | transloco"
+                  [attr.aria-label]="'nav.toggle' | transloco"
+                  (click)="drawer.toggle()"
+                  type="button"
+                  mat-icon-button>
+                  <bi name="list" size="24" />
+                </button>
+              }
+              <a class="inline-flex items-center gap-2 text-2xl" routerLink="/">
+                <img
+                  class="rounded-full"
+                  ngSrc="/assets/logo.webp"
+                  alt="logo"
+                  width="48"
+                  height="48" />
+                <span class="mb-1">poweruptime</span>
+              </a>
             </div>
           </mat-toolbar>
 
           <main class="main w-full overflow-y-scroll px-2 pb-2">
             @defer (when backendOfflineService.isOffline()) {
               @if (backendOfflineService.isOffline()) {
-                <pu-backend-offline-alert class="mb-4" />
+                <pu-backend-offline-alert />
               }
             }
 
@@ -117,6 +104,11 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     .main::-webkit-scrollbar {
       display: none; /* Chrome, Safari, Edge */
     }
+
+    .mat-drawer {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
   `,
   imports: [
     RouterOutlet,
@@ -131,7 +123,6 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     MatToolbar,
     RouterLink,
     NgOptimizedImage,
-    SupporterBadge,
   ],
 })
 export class HomeLayout {

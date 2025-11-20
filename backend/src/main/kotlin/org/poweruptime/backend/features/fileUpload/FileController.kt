@@ -23,7 +23,7 @@ class FileController(
     @Operation(summary = "Download file")
     @GetMapping("/v1/public/file/{fileId}")
     fun serveFile(@PathVariable("fileId") fileId: String): ResponseEntity<Resource> {
-        val dbFile = fileService.getByFileId(fileId).orThrowNotFound("File not found: $fileId")
+        val dbFile = fileService.getByFileId(fileId)
         val file = fileService.loadAsResource(fileId).orThrowNotFound("File not found: $fileId")
 
         return ResponseEntity.ok().header(

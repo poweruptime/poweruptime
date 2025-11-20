@@ -1,60 +1,96 @@
 package org.poweruptime.backend.features.monitor.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.ColumnDefault
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.QueryAlias
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.jetbrains.exposed.v1.javatime.timestamp
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.features.team.model.TeamRecord
 import java.time.Instant
 
-@Entity
-@Table(name = "check_result")
-class CheckResult(
-    /**
-     * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
-     */
-    @ColumnDefault("'$MONITOR_STATUS_PENDING'")
-    @Column(name = "status", nullable = false, length = 1)
-    var status: MonitorStatus = MonitorStatus.PENDING,
+object CheckResult : ULongIdTable("check_result"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("public_id", NANO_ID_MAX_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @JoinColumn(name = "monitor_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val monitor: Monitor,
+    val monitorId = ulong("monitor_id").references(Monitor.id).index()
 
-    @Column(name = "times_retried", columnDefinition = "bigint")
-    var timesRetried: Long? = null,
+    val status = enumerationByCode<MonitorStatus>("status")
+        .clientDefault { MonitorStatus.PENDING }
 
-    /**
-     * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
-     */
-    @Column(name = "previous_status", nullable = true, length = 1)
-    var previousStatus: MonitorStatus? = null,
+    val timesRetried = long("times_retried").nullable()
 
-    @Column(name = "picked_up_at", columnDefinition = "timestamptz", nullable = true)
-    var pickedUpAt: Instant? = null,
+    val previousStatus = enumerationByCode<MonitorStatus>("previous_status").nullable()
 
-    @Column(name = "checked_at", columnDefinition = "timestamptz", nullable = true)
-    var checkedAt: Instant? = null,
+    val pickedUpAt = timestamp("picked_up_at").nullable()
+    val checkedAt = timestamp("checked_at").nullable()
 
-    @Column(name = "ping", nullable = true)
-    var pingMs: Long? = null,
-
-    @Column(name = "title", nullable = true, length = Database.MAX_TITLE_LENGTH)
-    var title: String? = null,
-
-    @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
-    var message: String? = null,
-) : AEntity() {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val pingMs = long("ping").nullable()
+    val title = varchar("title", Database.MAX_TITLE_LENGTH).nullable()
+    val message = varchar("message", Database.MAX_MESSAGE_LENGTH).nullable()
 }
+
+data class CheckResultRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val monitorId: ULong,
+    var status: MonitorStatus,
+    var timesRetried: Long?,
+    var previousStatus: MonitorStatus?,
+    var pickedUpAt: Instant?,
+    var checkedAt: Instant?,
+    var pingMs: Long?,
+    var title: String?,
+    var message: String?,
+)
+
+fun CheckResult.rowToCheckResultRecord(row: ResultRow): CheckResultRecord =
+    CheckResultRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        monitorId = row[monitorId],
+        status = row[status],
+        timesRetried = row[timesRetried],
+        previousStatus = row[previousStatus],
+        pickedUpAt = row[pickedUpAt],
+        checkedAt = row[checkedAt],
+        pingMs = row[pingMs],
+        title = row[title],
+        message = row[message],
+    )
+
+fun CheckResult.rowToCheckResultRecord(row: ResultRow, alias: QueryAlias): CheckResultRecord =
+    CheckResultRecord(
+        id = row[alias[id]].value,
+        publicId = row[alias[publicId]],
+        createdAt = row[alias[createdAt]],
+        updatedAt = row[alias[updatedAt]],
+        monitorId = row[alias[monitorId]],
+        status = row[alias[status]],
+        timesRetried = row[alias[timesRetried]],
+        previousStatus = row[alias[previousStatus]],
+        pickedUpAt = row[alias[pickedUpAt]],
+        checkedAt = row[alias[checkedAt]],
+        pingMs = row[alias[pingMs]],
+        title = row[alias[title]],
+        message = row[alias[message]],
+    )
+
+open class CheckResultJoinMonitorRecord(open val checkResult: CheckResultRecord, open val monitor: MonitorRecord)
+
+data class CheckResultJoinMonitorAndTeamRecord(
+    override val checkResult: CheckResultRecord,
+    override val monitor: MonitorRecord,
+    val team: TeamRecord
+) : CheckResultJoinMonitorRecord(checkResult, monitor)

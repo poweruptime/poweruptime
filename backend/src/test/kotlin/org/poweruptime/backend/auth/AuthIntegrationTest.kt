@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.AuthTestUtils
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
+import org.poweruptime.backend.core.ClearInitDatabase
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.core.setMFACode
@@ -134,6 +135,7 @@ class AuthIntegrationTest(
         }
 
         @Test
+        @ClearInitDatabase
         fun `test unsuccessful login with deactivated account`() {
             mvc.post("/v1/auth/login") {
                 contentType = MediaType.APPLICATION_JSON
@@ -450,8 +452,7 @@ class AuthIntegrationTest(
 
             // When
             val userSession = sessionService.getByTokenOrThrow(response.refreshToken!!)
-            userSession.valid = false
-            sessionService.save(userSession)
+            sessionService.invalidateSessionByPublicId(userSession.publicId)
 
             // Then
             mvc.post("/v1/auth/refresh") {

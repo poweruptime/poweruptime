@@ -3,7 +3,6 @@ package org.poweruptime.backend.features.user.resource
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.poweruptime.backend.core.dto.IdResponse
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.core.utils.RandomGenerator
@@ -11,7 +10,8 @@ import org.poweruptime.backend.features.authentication.SetupDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.mail.emails.SetupTestEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
-import org.poweruptime.backend.features.user.dto.CreateUserDto
+import org.poweruptime.backend.features.user.CreateUserDto
+import org.poweruptime.backend.features.user.UserResponse
 import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -41,12 +41,12 @@ class SetupController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    fun setup(@Valid @RequestBody request: SetupDto): IdResponse {
+    fun setup(@Valid @RequestBody request: SetupDto): UserResponse {
         if (!userService.isSetup()) {
             throw SetupCompletedException()
         }
 
-        return IdResponse(
+        return UserResponse(
             userService.create(
                 dto = CreateUserDto(
                     name = request.name,
@@ -72,8 +72,8 @@ class SetupController(
 
         try {
             emailService.sendEmail(SetupTestEmail(email, setupCode))
-        } catch (_: Throwable) {
-            throw BadRequestException("Failed to send e-mail.", "EMAIL_SEND_FAILED")
+        } catch (e: Throwable) {
+            throw BadRequestException(e.message ?: e.cause?.message ?: "Failed to send email", "EMAIL_SEND_FAILED")
         }
     }
 

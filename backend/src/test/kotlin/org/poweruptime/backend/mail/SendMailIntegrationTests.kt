@@ -66,9 +66,11 @@ class SendMailIntegrationTests(
         @Test
         fun `test password reset`() = testEmail(
             PasswordResetEmail(
-                email = "test@test.org",
+                user = ModelFactory.getTestUser(
+                    email = "test@test.org",
+                    name = "Peter Perger",
+                ),
                 resetToken = "token1234",
-                name = "Peter Perger",
             ),
         )
 

@@ -1,44 +1,51 @@
 package org.poweruptime.backend.features.monitor.checker.dns
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.core.CheckResultDto
+import org.poweruptime.backend.features.monitor.core.MonitorChecker
+import org.poweruptime.backend.features.monitor.core.MonitoringResultHandler
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
-import org.xbill.DNS.*
+import org.xbill.DNS.DClass
+import org.xbill.DNS.Message
+import org.xbill.DNS.Name
+import org.xbill.DNS.Record
+import org.xbill.DNS.Resolver
+import org.xbill.DNS.SimpleResolver
+import org.xbill.DNS.Type
 import java.net.InetAddress
 import java.net.InetSocketAddress
 
 private const val DNS_ANSWER_SECTION = 1
 
-class DnsMonitorChecker : MonitorChecker {
+class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
     private final val logger = KotlinLogging.logger {}
 
-    override val type = MonitorType.DNS
-
     @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val dnsMonitorCheckerData = monitor.checker as DnsMonitorData
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        data as DnsMonitorDataRecord
 
         val result = MonitoringResultHandler()
         try {
             val resolver = SimpleResolver().apply {
                 address = InetSocketAddress(
-                    InetAddress.getByName(dnsMonitorCheckerData.server),
+                    InetAddress.getByName(data.server),
                     port,
                 )
             }
 
             logger.debug {
                 "Sending dns request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                    "host: '${dnsMonitorCheckerData.host}', type: '$type', " +
-                    "checking for matches: '${dnsMonitorCheckerData.matches != null}'"
+                    "host: '${data.host}', type: '${data.type}', " +
+                    "checking for matches: '${data.matches != null}'"
             }
 
-            val answerSection = getDNSAnswerSection(resolver, dnsMonitorCheckerData.host, dnsMonitorCheckerData.type)
+            val answerSection = getDNSAnswerSection(resolver, data.host, data.type)
 
             logger.debug { "Monitor '${monitor.id}', dns response '$answerSection'" }
 
-            if (dnsMonitorCheckerData.matches == null) {
+            if (data.matches == null) {
                 return if (answerSection.isEmpty()) {
                     result.error("DNS record(s) not found")
                 } else {
@@ -46,7 +53,7 @@ class DnsMonitorChecker : MonitorChecker {
                 }
             }
 
-            val answers = parseAnswerSection(answerSection, dnsMonitorCheckerData.type)
+            val answers = parseAnswerSection(answerSection, data.type)
 
             logger.info { "Mapped answers '${answers.joinToString()}'" }
 
@@ -54,7 +61,7 @@ class DnsMonitorChecker : MonitorChecker {
                 return result.error("DNS record(s) not found")
             }
 
-            if (!dnsMonitorCheckerData.matches.all { answers.contains(it) }) {
+            if (!data.matches.all { answers.contains(it) }) {
                 return result.error(
                     title = "DNS record(s) not corresponding with specified matches",
                     message = """
@@ -62,7 +69,7 @@ class DnsMonitorChecker : MonitorChecker {
                         |
                         |=========
                         |Specified matches
-                        |${dnsMonitorCheckerData.matches.joinToString("\n")}
+                        |${data.matches.joinToString("\n")}
                     """.trimMargin(),
                 )
             }

@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
@@ -27,6 +28,12 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             [availableTimezones]="availableTimezones()"
             formControlName="timezone" />
 
+          <hr />
+
+          <mat-slide-toggle formControlName="showNewVersionDialog">
+            {{ 'instanceSettings.showNewVersionDialog' | transloco }}
+          </mat-slide-toggle>
+
           <pu-save-button [valid]="isValid()" form="general-form" />
         </form>
       </mat-card-content>
@@ -43,6 +50,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     SaveButton,
     TranslocoPipe,
     TimezoneInput,
+    MatSlideToggle,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -52,6 +60,7 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
 > {
   override form = this.fb.nonNullable.group({
     timezone: ['', [Validators.required]],
+    showNewVersionDialog: [true, [Validators.required]],
   });
 
   readonly isValid = injectIsValid(this.form);

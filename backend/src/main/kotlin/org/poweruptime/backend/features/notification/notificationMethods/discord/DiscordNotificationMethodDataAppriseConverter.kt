@@ -5,13 +5,13 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodData
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.NotificationMethodData
 
-class DiscordNotificationMethodDataAppriseConverter(
-    override val type: NotificationMethodType = NotificationMethodType.DISCORD,
-) : NotificationMethodDataAppriseConverter {
+class DiscordNotificationMethodDataAppriseConverter :
+    NotificationMethodDataAppriseConverter(NotificationMethodType.DISCORD) {
+
     override fun convert(
         notificationMethodData: NotificationMethodData,
     ): NotificationMethodDataAppriseDto {
-        val data = notificationMethodData as DiscordNotificationMethodData
+        val data = notificationMethodData as DiscordNotificationMethodDataRecord
 
         return NotificationMethodDataAppriseDto(
             url = data.url,

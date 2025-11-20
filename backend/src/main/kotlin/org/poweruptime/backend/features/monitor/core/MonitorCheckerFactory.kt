@@ -6,26 +6,29 @@ import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorChecker
 import org.poweruptime.backend.features.monitor.checker.push.PushMonitorChecker
 import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
 import org.poweruptime.backend.features.monitor.domain.PushMonitorCheckerEntryRepository
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
+import org.poweruptime.backend.features.monitor.service.MonitorDataService
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.stereotype.Service
 
 @Service
 class MonitorCheckerFactory(
     teamSettingService: TeamSettingService,
-    pushMonitorCheckerEntryRepository: PushMonitorCheckerEntryRepository,
+    val monitorDataService: MonitorDataService,
 ) {
     private val checkers = listOf(
         DnsMonitorChecker(),
         HttpMonitorChecker(teamSettingService),
         PingMonitorChecker(),
-        PushMonitorChecker(pushMonitorCheckerEntryRepository, teamSettingService),
+        PushMonitorChecker(
+            pushMonitorCheckerEntryRepository = PushMonitorCheckerEntryRepository(),
+            teamSettingService,
+        ),
         SSLCertificateMonitorChecker(teamSettingService),
     ).associateBy { it.type }
 
-    fun execute(monitor: Monitor): CheckResultDto {
-        val checker = checkers[monitor.checker._type] ?: throw IllegalArgumentException("Unknown monitor: $monitor")
-
-        return checker.execute(monitor)
+    fun execute(monitor: MonitorRecord): CheckResultDto {
+        val checker = checkers[monitor.type] ?: throw IllegalArgumentException("Unknown monitor type: ${monitor.type}")
+        return checker.execute(monitor, data = monitorDataService.findByIdAndType(monitor.id, monitor.type))
     }
 }

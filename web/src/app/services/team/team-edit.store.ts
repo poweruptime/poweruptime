@@ -70,6 +70,7 @@ export const TeamEditStore = signalStore(
             tapResponse({
               next: (team) => {
                 selectedTeamStore.updateTeam(team);
+                patchState(store, () => ({team}));
               },
               error: () => {},
             }),

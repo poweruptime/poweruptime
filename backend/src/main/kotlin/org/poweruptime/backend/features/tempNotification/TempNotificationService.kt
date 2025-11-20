@@ -31,4 +31,8 @@ class TempNotificationService {
         val date1HourAgo = Instant.now().minusSeconds(60 * 60)
         tempNotifications = tempNotifications.filter { it.createdAt > date1HourAgo }.toMutableList()
     }
+
+    fun removeAll() {
+        tempNotifications = mutableListOf()
+    }
 }

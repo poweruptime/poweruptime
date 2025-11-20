@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.features.monitor.checker.push.PushMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorData
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryRecord
+import org.poweruptime.backend.features.monitor.checker.push.PushMonitorDataRecord
 import org.poweruptime.backend.features.monitor.domain.IPushMonitorCheckerEntryRepository
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
@@ -20,25 +20,27 @@ class PushMonitorCheckerTest(
     @Autowired private val teamSettingService: TeamSettingService
 ) : BaseTestWithReusingContainers() {
     inner class PushMonitorCheckerEntryRepositoryMock : IPushMonitorCheckerEntryRepository {
-        private val pushes = mutableListOf<PushMonitorCheckerEntry>()
+        private val pushes = mutableListOf<PushMonitorCheckerEntryRecord>()
 
         override fun getLatestByPushIdAndBetweenNowAndThen(
             pushId: String,
             then: Instant
-        ): PushMonitorCheckerEntry? = pushes.filter {
+        ): PushMonitorCheckerEntryRecord? = pushes.filter {
             it.pushId == pushId && (it.createdAt.isAfter(then) || it.createdAt == then)
         }.maxByOrNull { it.createdAt }
 
         fun save(pushId: String, status: MonitorStatus, createdAt: Instant = Instant.now()) {
             pushes.add(
-                PushMonitorCheckerEntry(
+                PushMonitorCheckerEntryRecord(
                     pushId = pushId,
                     status = status,
+                    createdAt = createdAt,
                     title = if (status == MonitorStatus.UP) "OK" else "Error",
-                ).apply {
-                    id = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH)
-                    this.createdAt = createdAt
-                },
+                    id = ModelFactory.getId(),
+                    updatedAt = Instant.now(),
+                    message = null,
+                    pingMs = null,
+                ),
             )
         }
     }
@@ -53,7 +55,8 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
+            ModelFactory.getTestMonitor(MonitorType.PUSH),
+            PushMonitorDataRecord(pushId = pushId),
         ).let {
             assertThat(it.isUp).isTrue()
             assertThat(it.title).isEqualTo("OK")
@@ -68,7 +71,8 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
+            ModelFactory.getTestMonitor(MonitorType.PUSH),
+            PushMonitorDataRecord(pushId = pushId),
         ).let {
             assertThat(it.isUp).isFalse()
             assertThat(it.title).isEqualTo("Error")
@@ -77,14 +81,17 @@ class PushMonitorCheckerTest(
 
     @Test
     fun `test if at time border works`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(MonitorType.PUSH)
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
                 save(pushId, MonitorStatus.UP, Instant.now().minusSeconds(monitor.testIntervalSeconds - 1L))
             },
             teamSettingService,
-        ).execute(monitor).let {
+        ).execute(
+            monitor,
+            PushMonitorDataRecord(pushId = pushId),
+        ).let {
             assertThat(it.isUp).isTrue()
             assertThat(it.title).isEqualTo("OK")
         }
@@ -92,28 +99,34 @@ class PushMonitorCheckerTest(
 
     @Test
     fun `test if at time border works with down`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(MonitorType.PUSH)
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
                 save(pushId, MonitorStatus.DOWN, Instant.now().minusSeconds(monitor.testIntervalSeconds - 1L))
             },
             teamSettingService,
-        ).execute(monitor).let {
+        ).execute(
+            monitor,
+            PushMonitorDataRecord(pushId = pushId),
+        ).let {
             assertThat(it.isUp).isFalse()
         }
     }
 
     @Test
     fun `test if at time border fails`(): Unit = getPushId().let { pushId ->
-        val monitor = ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId))
+        val monitor = ModelFactory.getTestMonitor(MonitorType.PUSH)
 
         PushMonitorChecker(
             PushMonitorCheckerEntryRepositoryMock().apply {
                 save(pushId, MonitorStatus.UP, Instant.now().minusSeconds(monitor.testIntervalSeconds))
             },
             teamSettingService,
-        ).execute(monitor).let {
+        ).execute(
+            monitor,
+            PushMonitorDataRecord(pushId = pushId),
+        ).let {
             assertThat(it.isUp).isFalse()
             assertThat(it.title).isEqualTo("No push detected since last run")
         }
@@ -130,7 +143,8 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
+            ModelFactory.getTestMonitor(MonitorType.PUSH),
+            PushMonitorDataRecord(pushId = pushId),
         ).let {
             assertThat(it.isUp).isTrue()
             assertThat(it.title).isEqualTo("OK")
@@ -148,7 +162,8 @@ class PushMonitorCheckerTest(
             },
             teamSettingService,
         ).execute(
-            ModelFactory.getTestMonitor(PushMonitorData(pushId = pushId)),
+            ModelFactory.getTestMonitor(MonitorType.PUSH),
+            PushMonitorDataRecord(pushId = pushId),
         ).let {
             assertThat(it.isUp).isFalse()
             assertThat(it.title).isEqualTo("Error")

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.features.authentication.model.SystemRole
-import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.UserRecord
 
 data class UpdatePasswordDto(
     @get:NotBlank @get:Size(min = 6) val newPassword: String,
@@ -39,8 +39,8 @@ data class ProfileResponse(
     val name: String,
     val role: SystemRole,
 ) {
-    constructor(user: User) : this(
-        id = user.id,
+    constructor(user: UserRecord) : this(
+        id = user.publicId,
         email = user.email,
         name = user.name,
         role = user.role,

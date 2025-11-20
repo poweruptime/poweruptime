@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
@@ -9,6 +9,8 @@ import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 import type {BackendType} from '@app/api';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
 
+import {LastCheckResultsStore} from '../../../services';
+import {Placeholder} from '../../placeholder';
 import {UptimeTimeline} from '../uptime-timeline';
 
 @Component({
@@ -32,13 +34,26 @@ import {UptimeTimeline} from '../uptime-timeline';
 
           @let _isHovering = isHovering();
           @let hasTags = _monitor.tags.length > 0;
-          <pu-uptime-timeline
-            class="min-w-full"
-            [hideLabel]="hasTags && !_isHovering"
-            [checkResults]="_monitor.lastCheckResults"
-            [size]="2"
-            (mouseenter)="hoveringTrigger.set(true)"
-            (mouseleave)="hoveringTrigger.set(false)" />
+          @if (isLoading()) {
+            <div class="flex w-full flex-col gap-2 px-2 pt-2">
+              <pu-placeholder class="h-6 w-full" />
+
+              @if (!hasTags) {
+                <div class="flex w-full justify-between">
+                  <pu-placeholder class="h-6 w-16" />
+                  <pu-placeholder class="h-6 w-16" />
+                </div>
+              }
+            </div>
+          } @else {
+            <pu-uptime-timeline
+              class="min-w-full"
+              [hideLabel]="hasTags && !_isHovering"
+              [checkResults]="entities()"
+              [size]="2"
+              (mouseenter)="hoveringTrigger.set(true)"
+              (mouseleave)="hoveringTrigger.set(false)" />
+          }
 
           @if (!_isHovering && hasTags) {
             <div
@@ -79,10 +94,13 @@ import {UptimeTimeline} from '../uptime-timeline';
     UptimeTimeline,
     MonitorStatusTextBackground,
     Tag,
+    Placeholder,
   ],
 })
 export class MonitorCard {
   monitor = input.required<BackendType['MonitorResponse']>();
+
+  protected checkResultsStore = inject(LastCheckResultsStore);
 
   hoveringTrigger = signal(false);
   hoveringTrigger$ = toObservable(this.hoveringTrigger);
@@ -101,4 +119,11 @@ export class MonitorCard {
     ),
     {initialValue: false},
   );
+
+  entities = computed(() => this.checkResultsStore.resultsMap().get(this.monitor().id) ?? []);
+  isLoading = computed(() => this.checkResultsStore.loading().has(this.monitor().id));
+
+  constructor() {
+    this.checkResultsStore.load(computed(() => this.monitor().id));
+  }
 }

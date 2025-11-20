@@ -2,8 +2,9 @@ package org.poweruptime.backend.features.notification.dto
 
 import org.poweruptime.backend.features.monitor.dto.CheckResultMinResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorMinResponse
-import org.poweruptime.backend.features.notification.model.Notification
-import org.poweruptime.backend.features.notification.model.SubNotification
+import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
+import org.poweruptime.backend.features.notification.model.NotificationRecord
+import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import java.time.Instant
 
@@ -12,7 +13,7 @@ data class NotificationTemplate(val title: String, val body: String)
 data class NotificationMinResponse(
     val id: String,
 ) {
-    constructor(it: Notification) : this(it.id)
+    constructor(it: NotificationRecord) : this(it.publicId)
 }
 
 data class NotificationResponse(
@@ -23,13 +24,13 @@ data class NotificationResponse(
     val monitor: MonitorMinResponse,
     val team: TeamMinResponse,
 ) {
-    constructor(it: Notification) : this(
-        id = it.id,
+    constructor(it: NotificationJoinCheckResultMonitorAndTeamRecord) : this(
+        id = it.notification.publicId,
         checkResult = CheckResultMinResponse(it.checkResult),
-        title = it.title,
-        createdAt = it.createdAt,
-        monitor = MonitorMinResponse(it.checkResult.monitor),
-        team = TeamMinResponse(it.checkResult.monitor.team),
+        title = it.notification.title,
+        createdAt = it.notification.createdAt,
+        monitor = MonitorMinResponse(it.monitor),
+        team = TeamMinResponse(it.team),
     )
 }
 
@@ -42,13 +43,13 @@ data class SubNotificationResponse(
     val error: String?,
     val notification: NotificationMinResponse,
 ) {
-    constructor(it: SubNotification) : this(
-        id = it.id,
-        title = it.title,
-        message = it.message,
+    constructor(it: SubNotificationJoinMethodAndNotificationRecord) : this(
+        id = it.subNotification.publicId,
+        title = it.subNotification.title,
+        message = it.subNotification.message,
         method = NotificationMethodMinResponse(it.method),
-        sentAt = it.sentAt,
-        error = it.error,
+        sentAt = it.subNotification.sentAt,
+        error = it.subNotification.error,
         notification = NotificationMinResponse(it.notification),
     )
 }

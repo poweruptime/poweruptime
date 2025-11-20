@@ -1,36 +1,37 @@
 package org.poweruptime.backend.features.fileUpload
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
-import org.poweruptime.backend.core.utils.RandomGenerator
-import org.poweruptime.backend.features.statusPage.model.StatusPage
+import java.time.Instant
 
-@Entity
-@Table(name = "file")
-class File(
-    @Column(nullable = false, length = Database.MAX_FILE_NAME_LENGTH)
-    @get:NotBlank
-    @get:Size(min = Database.MIN_FILE_NAME_LENGTH, max = Database.MAX_FILE_NAME_LENGTH)
-    val name: String,
+object File : ULongIdTable("file"), HasPublicId, HasModifiers {
+    override val publicId = nanoId("file_id", NANO_ID_MAX_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    @Column(nullable = false, unique = true, length = NANO_ID_MAX_LENGTH)
-    val fileId: String = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
-
-    @OneToOne(mappedBy = "image", fetch = FetchType.LAZY)
-    val statusPage: StatusPage? = null,
-) : AEntity() {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    override lateinit var id: String
+    val name = varchar("name", Database.MAX_FILE_NAME_LENGTH)
 }
+
+data class FileRecord(
+    val id: ULong,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val name: String,
+    val fileId: String,
+)
+
+fun File.rowToFileRecord(row: ResultRow): FileRecord =
+    FileRecord(
+        id = row[id].value,
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        name = row[name],
+        fileId = row[publicId],
+    )

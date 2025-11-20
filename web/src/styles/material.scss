@@ -128,3 +128,17 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
     )
   );
 }
+
+/* Mat Tab overflow scrolling bar fix */
+.mat-mdc-tab-body-content {
+  overflow: hidden !important;
+}
+
+/* Mat Paginator icon alignment */
+.mat-mdc-paginator-range-actions {
+  button {
+    svg {
+      vertical-align: 10px;
+    }
+  }
+}

@@ -1,19 +1,24 @@
 package org.poweruptime.backend.features.profile.service
 
-import jakarta.transaction.Transactional
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.user.domain.UserRepository
+import org.poweruptime.backend.features.authentication.model.UserRecord
+import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ProfileUserService(
-    private val userRepository: UserRepository,
-) {
-
+@Transactional(readOnly = true)
+class ProfileUserService {
     @Transactional
-    fun updateEmail(user: User, email: String): User {
-        user.email = email
-
-        return userRepository.save(user)
+    fun updateEmail(id: ULong, email: String): UserRecord = User.update({ User.id eq id }) {
+        it[User.email] = email
+    }.let {
+        User.selectAll().where { User.id eq id }.limit(1).firstOrNull()?.let {
+            User.rowToUserRecord(it)
+        }.orThrowNotFound()
     }
 }

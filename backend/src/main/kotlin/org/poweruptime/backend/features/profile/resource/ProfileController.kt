@@ -15,6 +15,9 @@ import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.authentication.service.publicUserId
+import org.poweruptime.backend.features.authentication.service.user
+import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.profile.dto.ProfileResponse
 import org.poweruptime.backend.features.profile.dto.UpdatePasswordDto
 import org.springdoc.core.annotations.ParameterObject
@@ -51,10 +54,7 @@ class ProfileController(
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getProfile(authentication: Authentication): ProfileResponse {
-        val user = authService.getByAuthOrThrow(authentication)
-        return ProfileResponse(user)
-    }
+    fun getProfile(auth: Authentication): ProfileResponse = ProfileResponse(auth.user())
 
     @Operation(
         summary = "Update password of authenticated user",
@@ -63,7 +63,7 @@ class ProfileController(
     @PutMapping("password")
     @ResponseStatus(HttpStatus.OK)
     fun updatePassword(
-        authentication: Authentication,
+        auth: Authentication,
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
         @RequestBody @Valid dto: UpdatePasswordDto
     ) {
@@ -71,7 +71,7 @@ class ProfileController(
         try {
             authenticationProvider.authenticate(
                 UsernamePasswordAuthenticationToken(
-                    authentication.name,
+                    auth.publicUserId(),
                     dto.oldPassword,
                 ),
             )
@@ -79,11 +79,9 @@ class ProfileController(
             throw ForbiddenException()
         }
 
-        val user = authService.getByAuthOrThrow(authentication)
+        mfaService.validate(auth.user(), mfaCode)
 
-        mfaService.validate(user.id, mfaCode)
-
-        authService.updateCredentials(user, dto.newPassword)
+        authService.updateCredentials(auth.userId(), dto.newPassword)
     }
 
     @Operation(
@@ -93,11 +91,11 @@ class ProfileController(
     @GetMapping("sessions")
     @ResponseStatus(HttpStatus.OK)
     fun getSessions(
-        authentication: Authentication,
+        auth: Authentication,
         @ParameterObject @PageableDefault pageable: Pageable,
     ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
         pageable = pageable,
-        userId = authentication.name,
+        userId = auth.userId(),
     ).toDto { SessionResponse(it) }
 
     @Operation(
@@ -106,11 +104,11 @@ class ProfileController(
     )
     @DeleteMapping("sessions/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteSession(authentication: Authentication, @PathVariable("id") id: String) {
-        if (!sessionService.existsBySessionAndUserId(id, authentication.name)) {
+    fun deleteSession(auth: Authentication, @PathVariable("id") publicSessionId: String) {
+        if (!sessionService.existsByPublicSessionAndUserId(publicSessionId, auth.userId())) {
             throw NotFoundException("User session not found")
         }
 
-        sessionService.deleteById(id)
+        sessionService.deleteByPublicId(publicSessionId)
     }
 }

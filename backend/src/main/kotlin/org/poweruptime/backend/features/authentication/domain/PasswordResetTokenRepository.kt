@@ -1,40 +1,35 @@
 package org.poweruptime.backend.features.authentication.domain
 
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.greater
+import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.features.authentication.model.PasswordResetToken
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import java.time.Instant
 
-interface PasswordResetTokenRepository : JpaRepository<PasswordResetToken, String> {
+fun PasswordResetToken.deleteOlderThan(before: Instant): Int = deleteWhere {
+    createdAt less before
+}
 
-    @Query("""select urt from PasswordResetToken urt where urt.createdAt < :before""")
-    fun findOlderThan(@Param("before") before: Instant): List<PasswordResetToken>
+fun PasswordResetToken.countByUserIdAndCreatedAfter(
+    userId: ULong,
+    createdAfter: Instant
+): Long = selectAll().where {
+    (PasswordResetToken.userId eq userId) and (PasswordResetToken.createdAt greater createdAfter)
+}.count()
 
-    @Query(
-        """
-        select count(urt)
-            from PasswordResetToken urt
-        where urt.user.id = :userId and urt.createdAt > :createdAfter""",
-    )
-    fun countByUserIdAndCreatedAfter(
-        @Param("userId") userId: String,
-        @Param("createdAfter") createdAfter: Instant
-    ): Int
-
-    @Query(
-        """
-        select urt from PasswordResetToken urt
-        where
-            urt.user.id = :userId and
-            urt.id = :token and
-            urt.createdAt > :createdAfter and
-            urt.version = 0
-        """,
-    )
-    fun findValidByUserIdTokenAndCreatedAfter(
-        @Param("userId") userId: String,
-        @Param("token") token: String,
-        @Param("createdAfter") createdAfter: Instant
-    ): PasswordResetToken?
+fun PasswordResetToken.invalidateByUserIdTokenAndCreatedAfter(
+    userId: ULong,
+    token: String,
+    createdAfter: Instant
+): Int = update({
+    (PasswordResetToken.userId eq userId) and
+        (PasswordResetToken.createdAt greater createdAfter) and
+        (id eq token) and
+        (valid eq true)
+}) {
+    it[valid] = false
 }

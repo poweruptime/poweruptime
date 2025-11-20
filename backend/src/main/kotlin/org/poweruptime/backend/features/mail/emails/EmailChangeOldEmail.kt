@@ -1,11 +1,11 @@
 package org.poweruptime.backend.features.mail.emails
 
-import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
 data class EmailChangeOldEmail(
-    val user: User,
+    val user: UserRecord,
     val cancelToken: String,
     override val cc: Set<String>? = null,
     override val bcc: Set<String>? = null

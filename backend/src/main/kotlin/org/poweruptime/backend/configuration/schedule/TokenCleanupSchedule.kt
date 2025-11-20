@@ -26,38 +26,20 @@ class TokenCleanupSchedule(
     @Suppress("LongMethod")
     fun cleanup() {
         val dateNineMonthAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 30 * 9) // 9 months
-        logger.info { "Removing sessions older than $dateNineMonthAgo" }
 
-        for (session in sessionService.clearSessionsOlderThan(dateNineMonthAgo)) {
-            logger.info {
-                "Removed session '${session.id}' from user '${session.user.id}', last used at: '${session.updatedAt}'"
-            }
-        }
+        logger.info { "Removing sessions older than $dateNineMonthAgo" }
+        sessionService.clearSessionsOlderThan(dateNineMonthAgo)
 
         val date1DayAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 1) // 1 day
+
         logger.info { "Removing reset password token older than $date1DayAgo" }
-        for (resetToken in passwordResetTokenService.clearOlderThan(date1DayAgo)) {
-            logger.info {
-                "Removed reset token '${resetToken.id}' from user '${resetToken.user.id}', " +
-                    "createdAt: '${resetToken.createdAt}'"
-            }
-        }
+        passwordResetTokenService.clearOlderThan(date1DayAgo)
 
         val date3DayAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 3) // 3 days
         logger.info { "Removing email change token older than $date3DayAgo" }
-        for (emailChangeToken in emailChangeTokenService.clearOlderThan(date3DayAgo)) {
-            logger.info {
-                "Removed email change token '${emailChangeToken.id}' from user '${emailChangeToken.user.id}', " +
-                    "createdAt: '${emailChangeToken.createdAt}'"
-            }
-        }
+        emailChangeTokenService.clearOlderThan(date3DayAgo)
 
         logger.info { "Removing team join token older than $date3DayAgo" }
-        for (teamJoinToken in teamJoinTokenService.deleteOlderThan(date3DayAgo)) {
-            logger.info {
-                "Removed team join token '${teamJoinToken.id}' from invitee '${teamJoinToken.invitee.id}', " +
-                    "into team '${teamJoinToken.team.id}' createdAt: '${teamJoinToken.createdAt}'"
-            }
-        }
+        teamJoinTokenService.deleteOlderThan(date3DayAgo)
     }
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
-import org.poweruptime.backend.features.team.model.Team
+import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import java.time.Instant
 
@@ -13,8 +13,8 @@ data class TeamMinResponse(
     val id: String,
     val name: String,
 ) {
-    constructor(team: Team) : this(
-        id = team.id,
+    constructor(team: TeamRecord) : this(
+        id = team.publicId,
         name = team.name,
     )
 }
@@ -24,13 +24,15 @@ data class TeamResponse(
     val name: String,
     val deleted: Instant?,
     val personal: Boolean,
+    val yourPersonal: Boolean,
     val dashboard: MonitorDashboardResponse,
 ) {
-    constructor(team: Team, personal: Boolean, dashboard: MonitorDashboardResponse) : this(
-        team.id,
-        team.name,
-        team.deleted,
-        personal,
+    constructor(team: TeamRecord, yourPersonal: Boolean, dashboard: MonitorDashboardResponse) : this(
+        id = team.publicId,
+        name = team.name,
+        deleted = team.deleted,
+        personal = team.personalUserId != null,
+        yourPersonal = yourPersonal,
         dashboard,
     )
 }
@@ -40,14 +42,16 @@ data class TeamMaxResponse(
     val name: String,
     val deleted: Instant?,
     val personal: Boolean,
+    val yourPersonal: Boolean,
     val dashboard: MonitorDashboardResponse,
     val role: TeamRole,
 ) {
-    constructor(team: Team, personal: Boolean, dashboard: MonitorDashboardResponse, role: TeamRole) : this(
-        team.id,
-        team.name,
-        team.deleted,
-        personal,
+    constructor(team: TeamRecord, yourPersonal: Boolean, dashboard: MonitorDashboardResponse, role: TeamRole) : this(
+        id = team.publicId,
+        name = team.name,
+        deleted = team.deleted,
+        personal = team.personalUserId != null,
+        yourPersonal = yourPersonal,
         dashboard,
         role,
     )

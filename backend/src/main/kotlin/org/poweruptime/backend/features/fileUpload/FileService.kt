@@ -1,12 +1,20 @@
 package org.poweruptime.backend.features.fileUpload
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.deleteById
+import org.poweruptime.backend.core.domain.findByIdOrThrow
+import org.poweruptime.backend.core.domain.findByPublicId
+import org.poweruptime.backend.core.domain.findIdByPublicId
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.Config
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.net.MalformedURLException
@@ -17,19 +25,24 @@ import java.nio.file.StandardCopyOption
 import java.time.Instant
 
 @Service
+@Transactional(readOnly = true)
 class FileService(
-    private val fileRepository: FileRepository,
     @Value(Config.STORAGE_DIRECTORY) private val directoryPath: String,
 ) {
     private val rootLocation = Path.of(directoryPath)
     private final val logger = KotlinLogging.logger {}
 
-    fun store(uploadFile: MultipartFile): File {
+    @Transactional
+    fun store(uploadFile: MultipartFile): FileRecord {
         isAllowedToUpload(uploadFile)
 
-        val dbFile = File(
-            name = uploadFile.resource.filename!!, // gets checked by isAllowedToUpload
-        )
+        val dbFile = File.insertAndGetId {
+            it[File.name] = uploadFile.resource.filename!!
+        }.let { id ->
+            File.findByIdOrThrow(id.value) {
+                File.rowToFileRecord(it)
+            }
+        }
 
         val destinationFile: Path = rootLocation
             .resolve(Paths.get(dbFile.fileId))
@@ -54,7 +67,7 @@ class FileService(
             throw BadRequestException()
         }
 
-        return fileRepository.save(dbFile)
+        return dbFile
     }
 
     fun loadAsResource(fileId: String): Resource? = try {
@@ -69,16 +82,20 @@ class FileService(
         null
     }
 
-    fun getByFileId(fileId: String): File? {
-        return fileRepository.findByFileId(fileId)
-    }
+    fun getByFileId(fileId: String): FileRecord = File.findByPublicId(fileId) {
+        File.rowToFileRecord(it)
+    }.orThrowNotFound("File not found: $fileId")
+
+    fun getIdByFileId(fileId: String): ULong =
+        File.findIdByPublicId(fileId).orThrowNotFound("File not found: $fileId")
 
     fun init() {
         Files.createDirectories(rootLocation)
     }
 
-    fun deleteOlderThan(past: Instant): List<File> {
-        val filesToDelete = fileRepository.findUnusedCreatedAfterThan(past)
+    @Transactional
+    fun deleteOlderThan(past: Instant): List<FileRecord> {
+        val filesToDelete = File.findUnusedCreatedAfterThan(past)
 
         filesToDelete.forEach { file ->
             try {
@@ -99,11 +116,11 @@ class FileService(
             }
         }
 
-        fileRepository.deleteAll(filesToDelete)
+        File.deleteById(filesToDelete.map { it.id })
 
         // Find files on disk without a database entry
         val filesOnDisk = getAllFilesOnDisk()
-        val fileIdsInDatabase = fileRepository.findAll().map { it.fileId }.toSet()
+        val fileIdsInDatabase = File.selectAll().map { it[File.publicId] }.toSet()
 
         val filesToDeleteFromDisk = filesOnDisk.filter { file ->
             !fileIdsInDatabase.contains(file.fileName.toString())

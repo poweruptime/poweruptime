@@ -19,18 +19,6 @@ spring:
     init:
       mode: never
 
-  jpa:
-    generate-ddl: true
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        format_sql: true
-
   servlet:
     multipart:
       enabled: true
@@ -74,10 +62,7 @@ springdoc:
 logging:
   level:
     org.poweruptime: DEBUG
-    org.hibernate:
-      SQL: DEBUG
-      type.descriptor.sql.BasicBinder: Trace
-      orm.jdbc.bind: TRACE
+    Exposed: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.web: DEBUG
 #    org.hibernate: ERROR
@@ -92,13 +77,14 @@ management:
       enabled: false
 
 poweruptime:
+  swagger: true
+  host: localhost:4200
   apprise:
     url: http://localhost:8000
   mail:
     enabled: false
     security: NONE_STARTTLS
     ignore-tls-errors: true
-  host: localhost:4200
   notification-temp:
     enabled: true
   monitor-autostart:
@@ -119,3 +105,5 @@ poweruptime:
     tries: 40
   push:
     enabled: false
+  database:
+    ddl-auto: validate

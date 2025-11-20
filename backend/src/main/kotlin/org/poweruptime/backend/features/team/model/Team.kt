@@ -1,61 +1,47 @@
 package org.poweruptime.backend.features.team.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
-import org.hibernate.annotations.SQLRestriction
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.ASoftDeleteEntity
-import org.poweruptime.backend.core.models.EntityWithName
-import org.poweruptime.backend.core.utils.Database
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.HasSoftDelete
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.nanoId
+import org.poweruptime.backend.core.models.softDelete
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.authentication.model.User
-import org.poweruptime.backend.features.monitor.model.Monitor
-import org.poweruptime.backend.features.notification.model.NotificationMethod
-import org.poweruptime.backend.features.statusPage.model.StatusPage
-import org.poweruptime.backend.features.tag.Tag
+import java.time.Instant
 
-@Entity
-@Table(name = "team")
-class Team(
-    @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
-    override var name: String,
+object Team : ULongIdTable("team"), HasPublicId, HasModifiers, HasSoftDelete, HasName {
+    override val publicId = nanoId("public_id", NANO_ID_SMALL_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val deleted = softDelete()
+    override val name = name()
 
-    @SQLRestriction("deleted IS null")
-    @OneToMany(mappedBy = "team")
-    var monitors: List<Monitor> = ArrayList(),
-
-    @SQLRestriction("deleted IS null")
-    @OneToMany(mappedBy = "team")
-    var statusPages: List<StatusPage> = ArrayList(),
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", unique = true)
-    var personalUser: User? = null,
-
-    @OneToMany(mappedBy = "id.team")
-    var teamUsers: List<TeamUser> = ArrayList(),
-
-    @SQLRestriction("deleted IS null")
-    @OneToMany(mappedBy = "team")
-    var notificationMethods: List<NotificationMethod> = ArrayList(),
-
-    @OneToMany(mappedBy = "team")
-    var teamSettings: List<TeamSetting> = ArrayList(),
-
-    @SQLRestriction("deleted IS null")
-    @OneToMany(mappedBy = "team")
-    var tags: List<Tag> = ArrayList(),
-) : ASoftDeleteEntity(), EntityWithName {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val personalUserId = ulong("user_id").references(User.id).nullable().index().uniqueIndex()
 }
+
+data class TeamRecord(
+    val id: ULong,
+    val publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val deleted: Instant?,
+    val personalUserId: ULong?,
+    val name: String,
+)
+
+fun Team.rowToTeamRecord(row: ResultRow): TeamRecord =
+    TeamRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        deleted = row[deleted],
+        personalUserId = row[personalUserId],
+        name = row[name],
+    )

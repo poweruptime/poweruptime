@@ -1,26 +1,26 @@
 package org.poweruptime.backend.features.info.instanceSetting
 
-import jakarta.persistence.*
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.AEntity
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.team.model.SettingKey
 
-@Entity
-@Table(name = "instance_setting")
-class InstanceSetting(
-    /**
-     * Usage of TeamSettingKeyConverter to minify enum to 1 char
-     */
-    @Column(name = "setting_key", nullable = false, length = 2)
-    val key: SettingKey,
+object InstanceSetting : ULongIdTable("instance_setting") {
+    val key = enumerationByCode<SettingKey>("setting_key")
 
-    @Column(nullable = false, length = Database.MAX_INSTANCE_SETTING_LENGTH)
-    var value: String,
-) : AEntity() {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
+    val value = varchar("value", Database.MAX_SETTING_VALUE_LENGTH)
 }
+
+data class InstanceSettingRecord(
+    val id: ULong,
+    val key: SettingKey,
+    var value: String,
+)
+
+fun InstanceSetting.rowToInstanceSetting(row: ResultRow): InstanceSettingRecord =
+    InstanceSettingRecord(
+        id = row[id].value,
+        key = row[key],
+        value = row[value],
+    )

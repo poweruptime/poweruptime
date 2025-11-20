@@ -3,42 +3,47 @@ package org.poweruptime.backend.features.authentication.permission
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.features.authentication.domain.*
 import org.poweruptime.backend.features.authentication.model.SystemRole
+import org.poweruptime.backend.features.authentication.service.publicUserId
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
 
 @Component
-class PermissionEvaluator(val permissionRepository: PermissionRepository) : PermissionEvaluator {
+class PermissionEvaluator(
+    private val permissionsService: PermissionsService,
+) : PermissionEvaluator {
     private final val logger = KotlinLogging.logger {}
 
     override fun hasPermission(
         authentication: Authentication,
-        targetEntityId: Any,
+        publicTargetId: Any,
         permissionName: Any
     ): Boolean {
         if (authentication.authorities.any { it.authority == SystemRole.ADMIN.grantedAuthority.authority }) {
             return true
         }
 
-        if (permissionName !is String || targetEntityId !is String) {
+        if (permissionName !is String || publicTargetId !is String) {
             logger.warn {
-                "Error permission no string or targetEntityId no long: $permissionName, targetEntityId: $targetEntityId"
+                """Permission or publicTargetId wasn't passed correctly: "$permissionName",""" +
+                    """publicTargetId: "$publicTargetId""""
             }
             return false
         }
 
         val parsedPermission = Permission.entries.find { it.permissionName == permissionName } ?: run {
-            logger.error { "Error unknown permission: $permissionName" }
+            logger.error { """Unknown permission: "$permissionName"""" }
 
             return false
         }
 
-        val userId = authentication.name
+        val publicUserId = authentication.publicUserId()
 
-        return checkPermission(parsedPermission, userId, targetEntityId).apply {
+        return checkPermission(parsedPermission, publicUserId, publicTargetId).apply {
             logger.debug {
-                "Checker: '$permissionName' user: '$userId' value: '$targetEntityId' result: $this"
+                "Checker: '${parsedPermission.name}' user: '$publicUserId' target: '$publicTargetId' result: $this"
             }
         }
     }
@@ -52,62 +57,67 @@ class PermissionEvaluator(val permissionRepository: PermissionRepository) : Perm
         return false
     }
 
-    fun checkPermission(permission: Permission, userId: String, targetEntityId: String): Boolean = when (permission) {
-        Permission.TeamAdmin -> permissionRepository.isAdminOfByTeamId(
-            userId,
-            targetEntityId,
+    @Transactional(readOnly = true)
+    fun checkPermission(
+        permission: Permission,
+        publicUserId: String,
+        publicTargetId: String
+    ): Boolean = when (permission) {
+        Permission.TeamAdmin -> permissionsService.isAdminOfByTeamId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.TeamMember -> permissionRepository.isPartOfByTeamId(
-            userId,
-            targetEntityId,
+        Permission.TeamMember -> permissionsService.isPartOfByTeamId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.MonitorAdmin -> permissionRepository.isAdminOfByMonitorId(
-            userId,
-            targetEntityId,
+        Permission.MonitorAdmin -> permissionsService.isAdminOfByMonitorId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.MonitorMember -> permissionRepository.isPartOfByMonitorId(
-            userId,
-            targetEntityId,
+        Permission.MonitorMember -> permissionsService.isPartOfByMonitorId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.CheckResultAdmin -> permissionRepository.isAdminOfByCheckResultId(
-            userId,
-            targetEntityId,
+        Permission.CheckResultAdmin -> permissionsService.isAdminOfByCheckResultId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.CheckResultMember -> permissionRepository.isPartOfByCheckResultId(
-            userId,
-            targetEntityId,
+        Permission.CheckResultMember -> permissionsService.isPartOfByCheckResultId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.NotificationMethodAdmin -> permissionRepository.isAdminOfByNotificationMethodId(
-            userId,
-            targetEntityId,
+        Permission.NotificationMethodAdmin -> permissionsService.isAdminOfByNotificationMethodId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.NotificationMethodMember -> permissionRepository.isPartOfByNotificationMethodId(
-            userId,
-            targetEntityId,
+        Permission.NotificationMethodMember -> permissionsService.isPartOfByNotificationMethodId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.NotificationAdmin -> permissionRepository.isAdminOfByNotificationId(
-            userId,
-            targetEntityId,
+        Permission.NotificationAdmin -> permissionsService.isAdminOfByNotificationId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.NotificationMember -> permissionRepository.isPartOfByNotificationId(
-            userId,
-            targetEntityId,
+        Permission.NotificationMember -> permissionsService.isPartOfByNotificationId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.StatusPageAdmin -> permissionRepository.isAdminOfByStatusPageId(
-            userId,
-            targetEntityId,
+        Permission.StatusPageAdmin -> permissionsService.isAdminOfByStatusPageId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.StatusPageMember -> permissionRepository.isPartOfByStatusPageId(
-            userId,
-            targetEntityId,
+        Permission.StatusPageMember -> permissionsService.isPartOfByStatusPageId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.StatusPageGroupAdmin -> permissionRepository.isAdminOfByStatusPageGroupId(
-            userId,
-            targetEntityId,
+        Permission.StatusPageGroupAdmin -> permissionsService.isAdminOfByStatusPageGroupId(
+            publicUserId,
+            publicTargetId,
         )
-        Permission.StatusPageGroupMember -> permissionRepository.isPartOfByStatusPageGroupId(
-            userId,
-            targetEntityId,
+        Permission.StatusPageGroupMember -> permissionsService.isPartOfByStatusPageGroupId(
+            publicUserId,
+            publicTargetId,
         )
     }
 }

@@ -45,7 +45,7 @@ export const StatusPageEditStore = signalStore(
           api.post('/v1/status-page', {body}).pipe(
             tapResponse({
               next: (statusPage) => {
-                void router.navigate(['../', statusPage.id], {
+                void router.navigate(['../', statusPage.slug], {
                   relativeTo,
                 });
               },

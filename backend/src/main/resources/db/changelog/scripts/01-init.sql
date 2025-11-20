@@ -646,4 +646,3 @@ create table team_user
             on delete cascade,
     primary key (team_id, user_id)
 );
-

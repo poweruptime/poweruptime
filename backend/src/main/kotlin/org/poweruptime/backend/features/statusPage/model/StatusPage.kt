@@ -1,55 +1,61 @@
 package org.poweruptime.backend.features.statusPage.model
 
-import jakarta.persistence.*
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import org.poweruptime.backend.core.SmallNanoId
-import org.poweruptime.backend.core.models.ASoftDeleteEntity
-import org.poweruptime.backend.core.models.EntityWithName
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasName
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.HasSoftDelete
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.name
+import org.poweruptime.backend.core.models.softDelete
+import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.fileUpload.File
+import org.poweruptime.backend.features.fileUpload.FileRecord
+import org.poweruptime.backend.features.fileUpload.rowToFileRecord
 import org.poweruptime.backend.features.team.model.Team
+import java.time.Instant
 
-@Entity
-@Table(name = "status_page")
-class StatusPage(
-    @Column(nullable = false, length = Database.MAX_NAME_LENGTH)
-    override var name: String,
+object StatusPage : ULongIdTable("status_page"), HasPublicId, HasModifiers, HasSoftDelete, HasName {
+    override val publicId = varchar("slug", Database.MAX_SLUG_LENGTH).uniqueIndex()
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
+    override val deleted = softDelete()
+    override val name = name()
 
-    @Column(nullable = false, length = Database.MAX_SLUG_LENGTH, unique = true)
-    var slug: String,
+    val teamId = ulong("team_id").references(Team.id).index()
+    val imageId = ulong("image_id").references(File.id).nullable()
 
-    @JoinColumn(name = "team_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: Team,
-
-    @Column(nullable = true, columnDefinition = "text")
-    var description: String? = null,
-
-    @Column(nullable = true, columnDefinition = "text")
-    var footer: String? = null,
-
-    @JoinColumn(name = "image_id", nullable = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    var image: File? = null,
-
-    @OneToMany(mappedBy = "statusPage", fetch = FetchType.EAGER)
-    var domainNames: List<StatusPageDomainName> = ArrayList(),
-
-    @OneToMany(mappedBy = "statusPage", fetch = FetchType.LAZY)
-    var groupMonitors: List<StatusPageGroupMonitor> = ArrayList(),
-
-    @OrderBy("position ASC")
-    @OneToMany(mappedBy = "statusPage", fetch = FetchType.EAGER)
-    var groups: List<StatusPageGroup> = ArrayList(),
-
-) : ASoftDeleteEntity(), EntityWithName {
-    @Id
-    @SmallNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_SMALL_LENGTH)
-    override lateinit var id: String
-
-    companion object
+    val description = text("description").nullable()
+    val footer = text("footer").nullable()
 }
+
+data class StatusPageRecord(
+    val id: ULong,
+    var publicId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    var deleted: Instant?,
+    val name: String,
+    val teamId: ULong,
+    val imageId: ULong?,
+    val image: FileRecord?,
+    val description: String?,
+    val footer: String?,
+)
+
+fun StatusPage.rowToStatusPageRecord(row: ResultRow): StatusPageRecord =
+    StatusPageRecord(
+        id = row[id].value,
+        publicId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        deleted = row[deleted],
+        name = row[name],
+        teamId = row[teamId],
+        imageId = row[imageId],
+        image = if (row[imageId] != null) File.rowToFileRecord(row) else null,
+        description = row[description],
+        footer = row[footer],
+    )

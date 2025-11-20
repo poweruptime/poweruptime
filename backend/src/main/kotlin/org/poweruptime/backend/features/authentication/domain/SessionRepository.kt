@@ -1,74 +1,109 @@
 package org.poweruptime.backend.features.authentication.domain
 
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.lessEq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.exceptions.BadRequestException
+import org.poweruptime.backend.features.authentication.model.RefreshToken
 import org.poweruptime.backend.features.authentication.model.Session
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
-import org.springframework.transaction.annotation.Transactional
+import org.poweruptime.backend.features.authentication.model.SessionJoinUserRecord
+import org.poweruptime.backend.features.authentication.model.SessionRecord
+import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.rowToSessionRecord
+import org.poweruptime.backend.features.authentication.model.rowToUserRecord
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import java.time.Instant
 
-interface SessionRepository : JpaRepository<Session, String>, JpaSpecificationExecutor<Session> {
-    @Query(
-        """
-        select s from Session s join s.tokens st
-        where st.token = :token
-    """,
-    )
-    fun findByToken(@Param("token") token: String): List<Session>
+fun Session.findByRefreshToken(refreshToken: String): SessionRecord? =
+    innerJoin(RefreshToken).selectAll().where {
+        RefreshToken.token eq refreshToken
+    }.firstOrNull()?.let {
+        rowToSessionRecord(it)
+    }
 
-    @Query(
-        """
-        select s from Session s
-        where s.user.id = :eId
-    """,
-    )
-    fun findByUserId(@Param("eId") entityId: String): List<Session>
+fun Session.findJoinUserByRefreshToken(refreshToken: String): SessionJoinUserRecord? =
+    innerJoin(RefreshToken).innerJoin(User).selectAll().where {
+        RefreshToken.token eq refreshToken
+    }.firstOrNull()?.let {
+        SessionJoinUserRecord(
+            session = rowToSessionRecord(it),
+            user = User.rowToUserRecord(it),
+        )
+    }
 
-    @Query(
-        """
-        select s from Session s
-        where s.updatedAt <= :updatedDateTime
-    """,
-    )
-    fun findByUpdatedDateTimeBefore(@Param("updatedDateTime") updatedDateTime: Instant): List<Session>
+fun Session.findAllByUserId(
+    userId: ULong
+): List<SessionRecord> = selectAll().where { Session.userId eq userId }.map {
+    rowToSessionRecord(it)
+}
 
-    @Query(
-        """
-        select count(s)>0 from Session s join s.tokens st
-        where st.token = :token
-    """,
-    )
-    fun existsByToken(@Param("token") token: String): Boolean
+fun Session.findAll(
+    pageable: Pageable,
+    userId: ULong,
+    valid: Boolean = true
+): Page<SessionRecord> {
+    val query = selectAll().where {
+        (Session.userId eq userId) and (Session.valid eq valid)
+    }
 
-    @Query(
-        """
-        select count(s)>0 from Session s
-        where s.id = :sId and s.user.id = :uId
-    """,
+    return pageQuery(
+        query,
+        pageable,
+        sort = {
+            when (it) {
+                "createdAt" -> Session.createdAt
+                "updatedAt" -> Session.createdAt
+                else -> throw BadRequestException(
+                    """Sort parameter "$it" not found""",
+                )
+            }
+        },
+        map = {
+            rowToSessionRecord(it)
+        },
     )
-    fun existsBySessionAndUserId(@Param("sId") sessionId: String, @Param("uId") userId: String): Boolean
+}
 
-    @Modifying
-    @Transactional
-    @Query(
-        """
-        update Session s
-        set s.valid = false
-        where s.id = :sId
-    """,
-    )
-    fun invalidateSession(@Param("sId") sessionId: String)
+fun Session.deleteAllUpdatedAtBefore(
+    updatedAt: Instant
+): Int = deleteWhere {
+    Session.updatedAt lessEq updatedAt
+}
 
-    @Modifying
-    @Transactional
-    @Query(
-        """
-        update Session s
-        set s.valid = false
-        where s.id in :sIds
-    """,
-    )
-    fun invalidateSessions(@Param("sIds") sessionIds: List<String>)
+fun Session.deleteByPublicId(
+    publicId: String
+): Int = deleteWhere {
+    Session.publicId eq publicId
+}
+
+fun Session.existsByRefreshToken(refreshToken: String): Boolean =
+    innerJoin(RefreshToken).selectAll().where {
+        RefreshToken.token eq refreshToken
+    }.limit(1).count() > 0
+
+fun Session.existsByPublicSessionAndUserId(
+    publicSessionId: String,
+    userId: ULong
+): Boolean =
+    selectAll().where {
+        Session.publicId eq publicSessionId
+        Session.userId eq userId
+    }.limit(1).count() > 0
+
+fun Session.invalidateSession(
+    sessionId: ULong
+) = update({ Session.id eq sessionId }) {
+    it[valid] = false
+}
+
+fun Session.invalidateSessions(
+    sessionIds: List<ULong>
+) = update({ id inList sessionIds }) {
+    it[valid] = false
 }

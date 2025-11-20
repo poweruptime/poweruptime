@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component, computed, effect, inject} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
@@ -168,6 +176,8 @@ export class LoginPage {
 
     const queryParams = injectQueryParams();
 
+    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
     effect(() => {
       const _queryParams = queryParams();
       this.form.patchValue({
@@ -176,7 +186,7 @@ export class LoginPage {
         stayLoggedIn: _queryParams?.['stayLoggedIn'],
       });
 
-      if (this.form.valid) {
+      if (isBrowser && this.form.valid) {
         this.submit();
       }
     });

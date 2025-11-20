@@ -25,7 +25,7 @@ export function withNotificationMethodsLoad() {
     withState<{
       teamId: string | undefined;
       search: string | undefined;
-      types: BackendType['NotificationMethodResponse']['sender']['_type'][] | undefined;
+      types: BackendType['NotificationMethodResponse']['data']['_type'][] | undefined;
       usedByMonitorIds: string[] | undefined;
       useByDefault: boolean | undefined;
       deleted: boolean | undefined;
@@ -40,7 +40,7 @@ export function withNotificationMethodsLoad() {
     withRequestStatus(),
     withEntities<BackendType['NotificationMethodResponse']>(),
     withPaginatedTable<BackendType['NotificationMethodResponse']>({
-      columnsToDisplay: ['name', 'data._type', 'sender', 'useByDefault', 'actions'],
+      columnsToDisplay: ['name', 'type', 'sender', 'useByDefault', 'actions'],
       defaultSortBy: 'name',
     }),
     withSelection<BackendType['NotificationMethodResponse']>({}),
@@ -59,7 +59,7 @@ export function withNotificationMethodsLoad() {
           tap((search) => patchState(store, () => ({search}))),
         ),
       ),
-      setTypes: rxMethod<BackendType['NotificationMethodResponse']['sender']['_type'][] | null>(
+      setTypes: rxMethod<BackendType['NotificationMethodResponse']['data']['_type'][] | null>(
         pipe(
           map((it) => it ?? []),
           tap((types) => patchState(store, () => ({types}))),
@@ -80,7 +80,7 @@ export function withNotificationMethodsLoad() {
         {
           teamId: string | undefined;
           search?: string;
-          types?: BackendType['NotificationMethodResponse']['sender']['_type'][];
+          types?: BackendType['NotificationMethodResponse']['data']['_type'][];
           usedByMonitorIds?: string[];
           useByDefault?: boolean;
           deleted?: boolean;

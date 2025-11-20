@@ -17,7 +17,8 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {TeamInvitesStore} from '@app/services';
-import {trackBy} from '@app/util';
+
+import {BackendType} from '../../api';
 
 @Component({
   template: `
@@ -138,5 +139,6 @@ export class TeamInvitesList {
     );
   }
 
-  protected readonly trackBy = trackBy;
+  protected readonly trackBy = (_: number, it: BackendType['TeamJoinTokenResponse']) =>
+    `${it.inviter.id}-${it.inviteeEmail}-${new Date(it.createdAt).getTime().toString()}`;
 }

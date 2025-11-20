@@ -13,7 +13,7 @@ import {SelectedTeamStore} from '@app/services';
   ],
 })
 export class IsTeamAdmin {
-  teamId = input<string>(undefined, {
+  teamId = input<string | undefined>(undefined, {
     alias: 'isTeamAdmin',
   });
 

@@ -1,39 +1,47 @@
 package org.poweruptime.backend.features.monitor.checker.push
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import org.poweruptime.backend.core.MaxNanoId
-import org.poweruptime.backend.core.models.AEntity
-import org.poweruptime.backend.core.utils.*
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
+import org.poweruptime.backend.core.models.HasModifiers
+import org.poweruptime.backend.core.models.HasPublicId
+import org.poweruptime.backend.core.models.createdAt
+import org.poweruptime.backend.core.models.enumerationByCode
+import org.poweruptime.backend.core.models.updatedAt
+import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.converter.MonitorStatusDatabaseConverter
+import java.time.Instant
 
-@Entity
-@Table(name = "monitor_push_entry")
-class PushMonitorCheckerEntry(
-    @Column(name = "push_id", nullable = false, length = NANO_ID_SMALL_LENGTH)
-    val pushId: String,
+object PushMonitorCheckerEntry : ULongIdTable("monitor_push_entry"), HasPublicId, HasModifiers {
+    override val publicId = varchar("push_id", Database.MAX_PUSH_ID_LENGTH)
+    override val createdAt = createdAt()
+    override val updatedAt = updatedAt()
 
-    /**
-     * Usage of `MonitorStatusDatabaseConverter` to minify enum to 1 char
-     * @see MonitorStatusDatabaseConverter
-     */
-    @Column(name = "status", nullable = false, length = 1)
-    val status: MonitorStatus,
+    val status = enumerationByCode<MonitorStatus>("status").clientDefault { MonitorStatus.PENDING }
 
-    @Column(name = "title", nullable = false, length = Database.MAX_TITLE_LENGTH)
-    val title: String,
-
-    @Column(name = "message", nullable = true, length = Database.MAX_MESSAGE_LENGTH)
-    val message: String? = null,
-
-    @Column(name = "ping", nullable = true)
-    var pingMs: Long? = null,
-) : AEntity() {
-    @Id
-    @MaxNanoId
-    @Column(name = "id", unique = true, length = NANO_ID_MAX_LENGTH)
-    override lateinit var id: String
+    val title = varchar("title", Database.MAX_TITLE_LENGTH)
+    val message = varchar("message", Database.MAX_MESSAGE_LENGTH).nullable()
+    val pingMs = long("ping").nullable()
 }
+
+fun PushMonitorCheckerEntry.rowToPushMonitorCheckerEntryRecord(row: ResultRow): PushMonitorCheckerEntryRecord =
+    PushMonitorCheckerEntryRecord(
+        id = row[id].value,
+        pushId = row[publicId],
+        createdAt = row[createdAt],
+        updatedAt = row[updatedAt],
+        status = row[status],
+        title = row[title],
+        message = row[message],
+        pingMs = row[pingMs],
+    )
+
+data class PushMonitorCheckerEntryRecord(
+    val id: ULong,
+    val pushId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val status: MonitorStatus,
+    val title: String,
+    val message: String?,
+    val pingMs: Long?,
+)

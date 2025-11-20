@@ -4,6 +4,8 @@ import {isLoggedIn} from '@app/guards/is-logged-in.guard';
 import {isSetupGuard} from '@app/guards/is-setup.guard';
 import {statusPageGuard} from '@app/guards/status-page.guard';
 
+import {environment} from '../util';
+
 export const ROUTES: Routes = [
   {
     path: '',
@@ -45,8 +47,5 @@ export const ROUTES: Routes = [
     path: 'not-found',
     loadComponent: () => import('./not-found.page').then((c) => c.NotFoundPage),
   },
-  {
-    path: '**',
-    redirectTo: 'not-found',
-  },
+  ...(environment.production ? [{path: '**', redirectTo: 'not-found'}] : []),
 ];

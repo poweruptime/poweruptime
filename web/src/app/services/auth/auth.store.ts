@@ -105,6 +105,9 @@ export const AuthStore = signalStore(
                     error: 'NONE' as const,
                     enteredPassword: body.password,
                   }));
+                  console.log(
+                    `submitted password - ${body.password} - state - ${store.enteredPassword()}`,
+                  );
 
                   void router.navigate(['', 'auth', 'password-change'], {
                     queryParams: {

@@ -79,9 +79,9 @@ class RabbitMQConfiguration {
     fun notificationBinding(): Binding = BindingBuilder.bind(notificationQueue()).to(notificationExchange())
 
     // PUSH NOTIFICATIONS
-    fun getPushQueueName(teamId: String) = "push-$teamId-queue"
+    fun getPushQueueName(teamId: ULong) = "push-$teamId-queue"
 
-    fun getPushRoutingKey(teamId: String) = "push-$teamId"
+    fun getPushRoutingKey(teamId: ULong) = "push-$teamId"
 
     /**
      * An exchange which assigns the messages based on a routing key

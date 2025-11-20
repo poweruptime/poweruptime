@@ -1,35 +1,22 @@
 package org.poweruptime.backend.features.statusPage.service
 
-import me.dafnik.JpaSpecificationBuilder.buildSpecification
-import org.poweruptime.backend.core.dto.validateSort
-import org.poweruptime.backend.core.service.AEntityService
-import org.poweruptime.backend.features.statusPage.domain.StatusPageGroupRepository
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.findIdsByPublicIdsOrThrow
+import org.poweruptime.backend.features.statusPage.model.StatusPage
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class StatusPageGroupService(
-    private val statusPageGroupRepository: StatusPageGroupRepository,
-) : AEntityService<StatusPageGroup>(statusPageGroupRepository) {
-    fun getAllPaginated(
-        pageable: Pageable,
-        statusPageId: String,
-        name: String?,
-    ): Page<StatusPageGroup> = statusPageGroupRepository.findAll(
-        buildSpecification {
-            where {
-                and {
-                    col("statusPage.id") eq statusPageId
-                    col("deleted").isNull()
-                    name?.let { col("name") lowercaseLike "%$it%" }
-                }
-            }
-        },
-        pageable.validateSort("name", "position", "createdAt", "updatedAt"),
+class StatusPageGroupService {
+    fun getIdsByPublicIds(publicIds: List<String>): List<ULong> = StatusPageGroup.findIdsByPublicIdsOrThrow(
+        publicIds,
     )
 
-    fun ensureAllStatusGroupsInTeam(statusPageGroups: List<StatusPageGroup>, teamId: String) =
-        statusPageGroups.all { it.statusPage.team.id == teamId }
+    fun ensureAllStatusGroupsInTeam(statusPageGroupIds: List<ULong>, teamId: ULong): Boolean =
+        StatusPageGroup.innerJoin(StatusPage).selectAll().where {
+            (StatusPage.teamId eq teamId) and (StatusPageGroup.id inList statusPageGroupIds)
+        }.count() == statusPageGroupIds.size.toLong()
 }

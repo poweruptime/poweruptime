@@ -4,27 +4,26 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.DatabindContext
 import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase
+import org.poweruptime.backend.features.monitor.model.MonitorData
 
 class MonitorDataTypeResolver : TypeIdResolverBase() {
-    private val monitorDataTypeFactory = MonitorDataTypeFactory()
-
     private lateinit var superType: JavaType
 
     override fun init(baseType: JavaType) {
         superType = baseType
     }
 
-    override fun getMechanism() = JsonTypeInfo.Id.NAME
+    override fun getMechanism(): JsonTypeInfo.Id = JsonTypeInfo.Id.NAME
 
     override fun typeFromId(context: DatabindContext, id: String): JavaType =
         context.constructSpecializedType(
             superType,
-            monitorDataTypeFactory.toClass(id),
+            MonitorData.forType(id).java,
         )
 
     override fun idFromValue(value: Any?): String =
-        monitorDataTypeFactory.toStringRepresentation(value?.javaClass)
+        MonitorData.forClass(value?.javaClass?.kotlin)
 
     override fun idFromValueAndType(value: Any?, suggestedType: Class<*>?): String =
-        monitorDataTypeFactory.toStringRepresentation(value?.javaClass)
+        MonitorData.forClass(value?.javaClass?.kotlin)
 }

@@ -18,6 +18,7 @@ import {environment} from '@app/util';
 import * as licensesJson from '../../assets/licenses.json';
 import {ChangelogStore, InfoStore} from '../services';
 import {BACKEND_API_URL} from '../util';
+import {SupporterBadge} from './supporter-badge';
 
 interface BackendEntry {
   project: {
@@ -59,11 +60,12 @@ interface BackendEntry {
 
         @if (infoStore.support(); as support) {
           @if (support.supportsSince) {
-            <p>
-              This server supports the development of poweruptime.
-              <br />
-              Thank you ❤️
-            </p>
+            <div class="mt-7 mb-5 flex flex-col items-center gap-4">
+              <pu-supporter-badge
+                [hide]="!support.showSupportBadge"
+                [supportsSince]="support.supportsSince" />
+              <p>This server supports the development of poweruptime.</p>
+            </div>
           } @else {
             <p>
               Please consider supporting the development of poweruptime.
@@ -135,6 +137,7 @@ interface BackendEntry {
     MatExpansionPanel,
     MatAccordion,
     MatButtonLoading,
+    SupporterBadge,
   ],
 })
 export class AboutDialog {

@@ -11,9 +11,10 @@ import org.apache.hc.core5.util.Timeout
 import org.poweruptime.backend.configuration.puRestTemplate
 import org.poweruptime.backend.core.utils.addBasicAuthString
 import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorData
+import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.http.HttpEntity
@@ -31,21 +32,20 @@ import java.time.Duration
 
 class HttpMonitorChecker(
     private val teamSettingService: TeamSettingService
-) : MonitorChecker {
+) : MonitorChecker(MonitorType.HTTP) {
     private final val logger = KotlinLogging.logger {}
 
-    override val type = MonitorType.HTTP
-
     @Suppress("ReturnCount")
-    override fun execute(monitor: Monitor): CheckResultDto {
-        val httpMonitorCheckerData = monitor.checker as HttpMonitorData
-        if (httpMonitorCheckerData.certificateExpiry) {
-            monitor.checker = SSLCertificateMonitorData(
-                url = httpMonitorCheckerData.url,
-                validDaysLeft = httpMonitorCheckerData.certificateValidDaysLeft,
-            )
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
+        data as HttpMonitorDataRecord
+
+        if (data.certificateExpiry) {
             val certificateExpiryResult = SSLCertificateMonitorChecker(teamSettingService).execute(
                 monitor,
+                data = SSLCertificateMonitorDataRecord(
+                    url = data.url,
+                    validDaysLeft = data.certificateValidDaysLeft,
+                ),
             )
             if (!certificateExpiryResult.isUp) {
                 return certificateExpiryResult
@@ -54,25 +54,25 @@ class HttpMonitorChecker(
 
         logger.debug {
             "Sending http request for monitor '${monitor.name}' with id '${monitor.id}', " +
-                "url: '${httpMonitorCheckerData.url}'"
+                "url: '${data.url}'"
         }
 
         val result = MonitoringResultHandler()
 
         try {
-            val httpResponse = makeHttpRequest(httpMonitorCheckerData)
+            val httpResponse = makeHttpRequest(data)
 
-            if (!httpMonitorCheckerData.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
+            if (!data.getAllowedStatusCodesRanges().isStatusCodeAllowed(httpResponse.statusCode)) {
                 return result.error(httpResponse.title, httpResponse.message)
             }
 
-            if (httpMonitorCheckerData.searchTerm == null) {
+            if (data.searchTerm == null) {
                 return result.success(httpResponse.title, httpResponse.message)
             }
 
             val responseBody = httpResponse.responseBody ?: return result.error("HTTP Body not found")
 
-            if (!(responseBody as String).contains(httpMonitorCheckerData.searchTerm)) {
+            if (!(responseBody as String).contains(data.searchTerm)) {
                 return result.error("Search term not found in body", responseBody)
             }
 
@@ -94,13 +94,13 @@ class HttpMonitorChecker(
     )
 
     @Suppress("LongMethod")
-    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorData): HttpResponse {
+    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorDataRecord): HttpResponse {
         val requestConfig = RequestConfig.custom().apply {
             if (httpMonitorCheckerData.maxRedirects == null) {
                 setRedirectsEnabled(false)
             } else {
                 setRedirectsEnabled(true)
-                setMaxRedirects(httpMonitorCheckerData.maxRedirects!!.toInt())
+                setMaxRedirects(httpMonitorCheckerData.maxRedirects.toInt())
             }
             setResponseTimeout(Timeout.of(Duration.ofSeconds(8)))
         }.build()

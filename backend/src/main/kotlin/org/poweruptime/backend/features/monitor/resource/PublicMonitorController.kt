@@ -21,11 +21,11 @@ class PublicMonitorController(
     )
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(@PathVariable id: String): PublicMonitorResponse =
-        monitorService.getByIdOrThrow(id).let {
+    fun get(@PathVariable("id") publicId: String): PublicMonitorResponse =
+        monitorService.getByPublicId(publicId).let {
             PublicMonitorResponse(
                 monitor = it,
-                uptime = checkResultStatisticsService.uptimeStatisticsDto(it),
+                uptime = checkResultStatisticsService.uptimeStatisticsDto(it.id),
                 lastCheckResults = checkResultStatisticsService.getLastByMonitorId(it.id, 100),
             )
         }
@@ -35,8 +35,8 @@ class PublicMonitorController(
     )
     @GetMapping("/{id}/yearly")
     @ResponseStatus(HttpStatus.OK)
-    fun getYearlyUptime(@PathVariable id: String): List<DayUptimeStatistics> =
-        monitorService.getByIdOrThrow(id).let {
+    fun getYearlyUptime(@PathVariable("id") publicId: String): List<DayUptimeStatistics> =
+        monitorService.getIdByPublicId(publicId).let {
             checkResultStatisticsService.calculateYearlyUptime(it)
         }
 }

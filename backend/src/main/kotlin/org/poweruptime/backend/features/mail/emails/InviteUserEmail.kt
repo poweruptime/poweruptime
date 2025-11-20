@@ -1,12 +1,12 @@
 package org.poweruptime.backend.features.mail.emails
 
-import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.mail.Email
 import org.thymeleaf.context.Context
 
 data class InviteUserEmail(
-    val inviter: User?,
-    val invitee: User,
+    val inviter: UserRecord?,
+    val invitee: UserRecord,
     val onetimePassword: String,
     override val cc: Set<String>? = null,
     override val bcc: Set<String>? = null
