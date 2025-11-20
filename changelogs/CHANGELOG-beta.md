@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.5.0-beta-1763628805 - 2025-11-20
+
+### <!-- 0 -->🚀 Features
+
+- Add monitor auto start env variable by Dafnik ([8950785](https://github.com/poweruptime/poweruptime/commit/89507854df98364491838d8cc252b8f73fdc4726)), test:add check result and notification integration tests
+- Add playwright (#371) by Dominik ([e9d150c](https://github.com/poweruptime/poweruptime/commit/e9d150c5f4cebdfb1835a0ffb5cb9d04fbc95c71))
+- Compressed Images (#396) by github-actions[bot] ([7ac5e72](https://github.com/poweruptime/poweruptime/commit/7ac5e722f2727fe7fe13b45bd60dd4656d6d6781)), Co-authored-by:Dafnik <16242839+Dafnik@users.noreply.github.com>
+- Exposed rewrite (#440) by Dominik ([defed34](https://github.com/poweruptime/poweruptime/commit/defed343be403301c9a960675093f7fd1573e889)), feat:web exposed migration
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Add USER nobody to Dockerfiles by Dafnik ([960d887](https://github.com/poweruptime/poweruptime/commit/960d88779e4a757026dee4ffb28f2f122a1ef455))
+- Do not load user MFA or personal team always when loading user by Dafnik ([c61c707](https://github.com/poweruptime/poweruptime/commit/c61c707a81120f42f664ef90a2327bbd4e646b00)), fix:auth user loading twice even when not necessary, fix:get teams n+1 query issue, load personal user instantly
+- Docker user by Dafnik ([0d98777](https://github.com/poweruptime/poweruptime/commit/0d98777a10ce331e23047a6215be2678d31b4c04))
+- Use amazoncorretto jdk image (#442) by Dominik ([c13e93a](https://github.com/poweruptime/poweruptime/commit/c13e93af0c793c975a2febc3914803e55be1c212))
+
+### <!-- 6 -->🧪 Testing
+
+- Try to fix playwright by Dafnik ([2e6ce05](https://github.com/poweruptime/poweruptime/commit/2e6ce05fde5e662c5932edc62c2c529d5780e551))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Split react and react-email updates by Dafnik ([5033e77](https://github.com/poweruptime/poweruptime/commit/5033e778f77540ab7c3134fdc28096294ac613b2))
+- Renovate package patterns by Dafnik ([a71fcd9](https://github.com/poweruptime/poweruptime/commit/a71fcd96689ed39055c5f1ba73e198db23d60b7a))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0-beta-1755356737...0.5.0-beta-1763628805)
+
 ## 0.4.0-beta-1755356737 - 2025-08-16
 
 ### <!-- 1 -->🐛 Bug Fixes
