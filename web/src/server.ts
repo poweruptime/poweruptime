@@ -75,7 +75,7 @@ if (isMainModule(import.meta.url)) {
     const port = 4200;
     await server.listen({host, port});
     console.log(
-      `Listening on http://localhost:${port}; Using environment backendHost: "${environment.backendHost}"`,
+      `Listening on http://${host}:${port}; Using environment backendHost: "${environment.backendHost}"`,
     );
   })();
 }
