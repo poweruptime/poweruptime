@@ -30,6 +30,7 @@ services:
       - MAIL_PORT=1234
       - MAIL_USERNAME=test
       - MAIL_PASSWORD=test
+      - LOG_LEVEL=INFO
     networks:
       - poweruptime-local-backend-dev-network
 
