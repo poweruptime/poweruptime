@@ -1,4 +1,4 @@
-name: poweruptime-local-backend-dev
+name: poweruptime-local-dev
 
 services:
   poweruptime-db:
@@ -14,7 +14,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - poweruptime-local-backend-dev-network
+      - poweruptime-local-dev-network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
       interval: 30s
@@ -35,7 +35,7 @@ services:
       - '5672:5672'
       - '15672:15672'
     networks:
-      - poweruptime-local-backend-dev-network
+      - poweruptime-local-dev-network
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
@@ -54,7 +54,7 @@ services:
     ports:
       - '8000:8000'
     networks:
-      - poweruptime-local-backend-dev-network
+      - poweruptime-local-dev-network
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:8000/status']
       interval: 30s
@@ -63,7 +63,7 @@ services:
       start_period: 60s
 
 networks:
-  poweruptime-local-backend-dev-network:
+  poweruptime-local-dev-network:
 
 volumes:
   db:

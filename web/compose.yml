@@ -1,4 +1,4 @@
-name: poweruptime-local-backend-dev
+name: poweruptime-local-dev
 
 services:
   poweruptime-web:
@@ -12,10 +12,10 @@ services:
     ports:
       - '4200:4200'
     networks:
-      - poweruptime-local-backend-dev-network
+      - poweruptime-local-dev-network
 
 networks:
-  poweruptime-local-backend-dev-network:
+  poweruptime-local-dev-network:
 
 volumes:
   db:
