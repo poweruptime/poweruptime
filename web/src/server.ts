@@ -70,13 +70,21 @@ export async function app() {
 
 if (isMainModule(import.meta.url)) {
   (async () => {
-    const server = await app();
     const host = process.env['HOST'] || '0.0.0.0';
-    const port = 4200;
-    await server.listen({host, port});
-    console.log(
-      `Listening on http://${host}:${port}; Using environment backendHost: "${environment.backendHost}"`,
-    );
+    const ports = [4200, 80]; // Add as many as you need
+
+    for (const port of ports) {
+      const server = await app();
+      try {
+        await server.listen({ host, port });
+        // noinspection HttpUrlsUsage
+        console.log(
+          `✅ Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
+        );
+      } catch (err) {
+        console.error(`❌ Failed to start server on port ${port}:`, err);
+      }
+    }
   })();
 }
 
