@@ -1,4 +1,4 @@
-name: poweruptime-local-backend-dev
+name: poweruptime-local-dev
 
 services:
   poweruptime-backend:
@@ -32,10 +32,10 @@ services:
       - MAIL_PASSWORD=test
       - LOG_LEVEL=INFO
     networks:
-      - poweruptime-local-backend-dev-network
+      - poweruptime-local-dev-network
 
 networks:
-  poweruptime-local-backend-dev-network:
+  poweruptime-local-dev-network:
 
 volumes:
   db:
