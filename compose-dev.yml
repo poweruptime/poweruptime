@@ -3,7 +3,7 @@ name: poweruptime-local-dev
 services:
   poweruptime-db:
     container_name: poweruptime-db
-    image: postgres:17.6-bookworm
+    image: postgres:17.7-bookworm
     restart: unless-stopped
     volumes:
       - db:/var/lib/postgresql/data:z
