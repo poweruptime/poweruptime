@@ -45,7 +45,7 @@ services:
 
   poweruptime-apprise:
     container_name: poweruptime-apprise
-    image: caronc/apprise:1.2.3
+    image: caronc/apprise:1.2.5
     restart: unless-stopped
     environment:
       - APPRISE_STATEFUL_MODE=disabled
