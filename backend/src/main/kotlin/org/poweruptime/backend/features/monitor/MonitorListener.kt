@@ -316,7 +316,7 @@ class MonitorListener(
             isFirstUpResultAfterBoot(oldStatus) -> {
                 logNoNotificationNeeded(
                     checkResult.id,
-                    reason = "First up result after server start, not queuing notifications",
+                    reason = "First up result after monitor or server start, not queuing notifications",
                 )
 
                 null
@@ -330,7 +330,12 @@ class MonitorListener(
 
                 val notificationAndSubNotifications = if (resendNotification) sendNotification() else null
 
-                logResendDownNotification(checkResult.id, resendNotification, notificationAndSubNotifications?.first)
+                logResendDownNotification(
+                    checkResult,
+                    resendAfter,
+                    resendNotification,
+                    notificationAndSubNotifications?.first,
+                )
 
                 notificationAndSubNotifications?.second
             }
@@ -448,14 +453,25 @@ class MonitorListener(
     }
 
     private fun logResendDownNotification(
-        checkResultId: ULong,
+        checkResult: CheckResultRecord,
+        resendAfter: Long,
         resendNotification: Boolean,
         notification: NotificationRecord?
     ) {
+        requireNotNull(checkResult.timesRetried)
+
+        val remaining = resendAfter - (checkResult.timesRetried!! % resendAfter) - 1
+
         checkResultLogEntryService.action(
             stage = CheckResultLogStage.NOTIFICATION,
-            checkResultId = checkResultId,
-            message = "Re-queuing DOWN notifications",
+            checkResultId = checkResult.id,
+            message = buildString {
+                append(if (resendNotification) "R" else "Not r")
+                append("e-queuing DOWN notifications")
+                if (!resendNotification) {
+                    append(" ($remaining× checks left until next resend)")
+                }
+            },
             properties = buildMap {
                 set("result", resendNotification.toString())
                 notification?.publicId?.let {

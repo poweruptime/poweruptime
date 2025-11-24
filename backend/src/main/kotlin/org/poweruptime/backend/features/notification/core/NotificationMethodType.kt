@@ -29,6 +29,8 @@ enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethod
         |Check started at
         |!checkStartedAt
         |
+        |!previousStatusLabel for !previousStatusDuration
+        |
         |Link to detailed information: !checkResultLink.
         """.trimMargin()
     },
@@ -45,6 +47,7 @@ enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethod
         |<p>!pingMsms</p>
         |<p><strong>Check started at</strong></p>
         |<p>!checkStartedAt</p>
+        |<p><i>!previousStatusLabel</i> for <i>!previousStatusDuration</i></p>
         |<p><a href="!checkResultLink">Link to detailed information</a>.</p>
         """.trimMargin()
     },
@@ -61,6 +64,7 @@ enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethod
         |<p>!pingMsms</p>
         |<p><strong>Check started at</strong></p>
         |<p>!checkStartedAt</p>
+        |<p><i>!previousStatusLabel</i> for <i>!previousStatusDuration</i></p>
         |<p><a href="!checkResultLink">Link to detailed information</a>.</p>
         """.trimMargin()
     },
@@ -77,6 +81,7 @@ enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethod
         |<p>!pingMsms</p>
         |<p><strong>Check started at</strong></p>
         |<p>!checkStartedAt</p>
+        |<p><i>!previousStatusLabel</i> for <i>!previousStatusDuration</i></p>
         |<p><a href="!checkResultLink">Link to detailed information</a>.</p>
         """.trimMargin()
     },

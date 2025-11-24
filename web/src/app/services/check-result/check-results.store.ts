@@ -1,7 +1,7 @@
 import {inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {debounceTime, filter, mergeMap, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, filter, forkJoin, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
@@ -137,49 +137,64 @@ export const LastCheckResultsStore = signalStore(
         cacheTimestamps: new Map(store.cacheTimestamps()).set(monitorId, Date.now()),
       }));
     },
-    load: rxMethod<string>(
+    loadAll: rxMethod<string[]>(
       pipe(
-        filter((monitorId) => {
-          const timestamp = store.cacheTimestamps().get(monitorId);
-          const hasValidCache =
-            store.resultsMap().has(monitorId) &&
-            timestamp !== undefined &&
-            Date.now() - timestamp < CACHE_DURATION_MS;
-          return !hasValidCache;
-        }),
-        tap((monitorId) =>
-          patchState(store, () => ({
-            loading: new Set(store.loading()).add(monitorId),
-          })),
-        ),
-        mergeMap((monitorId) =>
-          api
-            .get('/v1/check-result', {
-              params: {
-                query: {
-                  monitorId,
-                  page: 0,
-                  size: 22,
-                  sort: [`createdAt,desc`],
-                },
-              },
-            })
-            .pipe(
-              tapResponse({
-                next: (response) => {
-                  const loading = new Set(store.loading());
-                  loading.delete(monitorId);
+        filter((ids) => ids.length > 0),
+        mergeMap((monitorIds) => {
+          const idsToLoad = monitorIds.filter((monitorId) => {
+            const timestamp = store.cacheTimestamps().get(monitorId);
+            const hasValidCache =
+              store.resultsMap().has(monitorId) &&
+              timestamp !== undefined &&
+              Date.now() - timestamp < CACHE_DURATION_MS;
+            return !hasValidCache;
+          });
 
-                  patchState(store, () => ({
-                    resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
-                    cacheTimestamps: new Map(store.cacheTimestamps()).set(monitorId, Date.now()),
-                    loading,
-                  }));
-                },
-                error: () => {},
-              }),
+          if (idsToLoad.length === 0) return [];
+
+          const newLoading = new Set(store.loading());
+          idsToLoad.forEach((id) => newLoading.add(id));
+
+          patchState(store, () => ({loading: newLoading}));
+
+          return forkJoin(
+            idsToLoad.map((monitorId) =>
+              api
+                .get('/v1/check-result', {
+                  params: {
+                    query: {
+                      monitorId,
+                      page: 0,
+                      size: 22,
+                      sort: ['createdAt,desc'],
+                    },
+                  },
+                })
+                .pipe(
+                  tapResponse({
+                    next: (response) => {
+                      const loading = new Set(store.loading());
+                      loading.delete(monitorId);
+
+                      patchState(store, () => ({
+                        resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
+                        cacheTimestamps: new Map(store.cacheTimestamps()).set(
+                          monitorId,
+                          Date.now(),
+                        ),
+                        loading,
+                      }));
+                    },
+                    error: () => {
+                      const loading = new Set(store.loading());
+                      loading.delete(monitorId);
+                      patchState(store, () => ({loading}));
+                    },
+                  }),
+                ),
             ),
-        ),
+          );
+        }),
       ),
     ),
   })),

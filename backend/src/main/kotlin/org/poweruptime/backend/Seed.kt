@@ -33,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import kotlin.system.exitProcess
 
+private const val CHECK_RESULT_SEED_LENGTH = 1_000L
+
 @Configuration
 class Seed(
     private val teamService: TeamService,
@@ -178,7 +180,7 @@ class Seed(
                 tags = listOf(),
             ),
         ).let {
-            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id, 700_000)
+            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id)
         }
 
         monitorService.create(
@@ -198,7 +200,7 @@ class Seed(
                 tags = listOf(),
             ),
         ).let {
-            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id, 700_000)
+            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id)
         }
 
         monitorService.create(
@@ -226,7 +228,7 @@ class Seed(
                 tags = listOf(),
             ),
         ).let {
-            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id, 700_000)
+            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id)
         }
 
         monitorService.create(
@@ -249,7 +251,7 @@ class Seed(
                 tags = listOf(),
             ),
         ).let {
-            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id, 700_000)
+            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id)
         }
 
         monitorService.create(
@@ -272,7 +274,7 @@ class Seed(
                 tags = listOf(),
             ),
         ).let {
-            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id, 700_000)
+            checkResultSeedService.seedCheckResultForMonitor(it.monitor.id)
         }
 
         // shut down the app once seeding is done
@@ -285,7 +287,7 @@ class CheckResultSeedService {
     private final val logger = KotlinLogging.logger {}
 
     @Transactional
-    fun seedCheckResultForMonitor(monitorId: ULong, length: Long) {
+    fun seedCheckResultForMonitor(monitorId: ULong, length: Long = CHECK_RESULT_SEED_LENGTH) {
         val now = Instant.now()
 
         logger.info { "Creating check results for $monitorId" }

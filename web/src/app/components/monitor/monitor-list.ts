@@ -23,10 +23,10 @@ import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {MonitorStatusTextBackground} from '@app/directives';
-import {MonitorsStore} from '@app/services';
+import {LastCheckResultsStore, MonitorsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
-import {TableLoadingBar} from '../';
+import {Placeholder, TableLoadingBar} from '../';
 import {InfiniteUptimeTimeline} from './uptime-timeline';
 
 @Component({
@@ -81,10 +81,14 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
                 </th>
                 <td *matCellDef="let element" mat-cell>
                   <div class="pt-1">
-                    <pu-infinite-uptime-timeline
-                      [checkResults]="element.lastCheckResults"
-                      [size]="2"
-                      hideLabel />
+                    @if (checkResultsStore.loading().has(element.id)) {
+                      <pu-placeholder class="h-6 w-full" />
+                    } @else {
+                      <pu-infinite-uptime-timeline
+                        [checkResults]="checkResultsStore.resultsMap().get(element.id) ?? []"
+                        [size]="2"
+                        hideLabel />
+                    }
                   </div>
                 </td>
               </ng-container>
@@ -159,10 +163,12 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     MatTooltip,
     InfiniteUptimeTimeline,
     MonitorStatusTextBackground,
+    Placeholder,
   ],
 })
 export class MonitorList {
   readonly monitorsStore = inject(MonitorsStore);
+  protected readonly checkResultsStore = inject(LastCheckResultsStore);
 
   readonly teamId = input<string>();
 
@@ -192,6 +198,10 @@ export class MonitorList {
     );
 
     setColumnsToDisplay(computed(() => !this.teamId()));
+
+    this.checkResultsStore.loadAll(
+      computed(() => this.monitorsStore.entities().map((it) => it.id)),
+    );
   }
 
   protected readonly trackBy = trackBy;

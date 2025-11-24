@@ -35,6 +35,7 @@ import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.Instant
+import javax.naming.directory.InvalidAttributesException
 
 @Suppress("LongMethod")
 fun CheckResult.findAll(
@@ -181,6 +182,26 @@ fun CheckResult.findByMonitorIdAndPickedUpBetween(
 }.orderBy(pickedUpAt, SortOrder.ASC).map {
     rowToCheckResultRecord(it)
 }
+
+fun CheckResult.findLastOppositeByMonitorIdAndStatus(
+    monitorId: ULong,
+    status: MonitorStatus,
+): CheckResultRecord? = selectAll().where {
+    (
+        CheckResult.status eq when (status) {
+            MonitorStatus.UP -> MonitorStatus.DOWN
+            MonitorStatus.DOWN -> MonitorStatus.UP
+            else -> throw InvalidAttributesException(
+                "Check result status not allowed to be $status",
+            )
+        }
+        ) and (CheckResult.monitorId eq monitorId) and (CheckResult.status neq CheckResult.previousStatus)
+}.orderBy(createdAt, SortOrder.DESC_NULLS_LAST)
+    .limit(1)
+    .firstOrNull()
+    ?.let {
+        rowToCheckResultRecord(it)
+    }
 
 fun CheckResult.findByStatusUpMonitorIdAndPickedUpBetween(
     monitorId: ULong,

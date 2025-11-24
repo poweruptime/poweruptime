@@ -35,7 +35,10 @@ import {Editor} from '@app/components/editor';
 
     <div class="flex flex-col">
       @if (_html) {
-        <pu-editor [(ngModel)]="value" [placeholder]="_label" [autocompleteVariables]="variables" />
+        <pu-editor
+          [(ngModel)]="value"
+          [placeholder]="_label"
+          [autocompleteVariables]="variableKeys" />
       } @else {
         <mat-form-field>
           <mat-label>{{ _label }}</mat-label>
@@ -54,7 +57,7 @@ import {Editor} from '@app/components/editor';
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
           @for (option of filteredItems(); track option) {
-            <mat-option [value]="option">{{ option }}</mat-option>
+            <mat-option [value]="option.key">{{ option.key }}</mat-option>
           }
         </mat-autocomplete>
       }
@@ -130,33 +133,36 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   isDisabled = signal(false);
   onChange?: (it: string | null) => void;
 
-  variables = [
-    'monitorName',
-    'status',
-    'title',
-    'pingMs',
-    'checkStartedAt',
-    'message',
-    'checkResultLink',
+  readonly variables = [
+    {key: 'monitorName', default: 'First monitor'},
+    {key: 'status', default: '✅UP'},
+    {key: 'title', default: '200 - OK'},
+    {key: 'pingMs', default: '420'},
+    {key: 'checkStartedAt', default: this.now ?? ''},
+    {key: 'message', default: 'Detailed message :)'},
+    {key: 'checkResultLink', default: `https://${this.document.location.host}/m/1234/c/5678/logs`},
+    {key: 'previousStatusLabel', default: 'Online'},
+    {key: 'previousStatusDuration', default: '4d 20h 69m 12s'},
   ];
+
+  readonly variableKeys = this.variables.map((it) => it.key);
 
   mentionFilter = signal('');
   filteredItems = computed(() => {
     const filter = this.mentionFilter().trim().toLowerCase();
-    return this.variables.filter((it) => it.trim().toLowerCase().includes(filter)).sort();
+    return this.variables.filter((it) => it.key.trim().toLowerCase().includes(filter)).sort();
   });
 
-  preview = computed(
-    () =>
-      this.value()
-        ?.replaceAll('!monitorName', 'First monitor')
-        .replaceAll('!status', '✅UP')
-        .replaceAll('!title', '200 - OK')
-        .replaceAll('!pingMs', '420')
-        .replaceAll('!checkStartedAt', this.now ?? '')
-        .replaceAll('!checkResultLink', `https://${this.document.location.host}/m/1234/c/5678/logs`)
-        .replaceAll('!message', 'Detailed message :)') ?? '',
-  );
+  preview = computed(() => {
+    let value = this.value();
+    if (!value) {
+      return '';
+    }
+
+    this.variables.forEach((it) => (value = value!!.replaceAll('!' + it.key, it.default)));
+
+    return value;
+  });
 
   constructor() {
     effect(() => {

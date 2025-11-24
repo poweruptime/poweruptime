@@ -122,8 +122,4 @@ export class MonitorCard {
 
   entities = computed(() => this.checkResultsStore.resultsMap().get(this.monitor().id) ?? []);
   isLoading = computed(() => this.checkResultsStore.loading().has(this.monitor().id));
-
-  constructor() {
-    this.checkResultsStore.load(computed(() => this.monitor().id));
-  }
 }

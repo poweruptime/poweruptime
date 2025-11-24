@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, Component, input, viewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 
 import {
@@ -13,6 +20,7 @@ import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import type {BackendType} from '@app/api';
 import {Placeholder} from '@app/components';
+import {LastCheckResultsStore} from '@app/services';
 
 import {MonitorCard} from './monitor-card';
 
@@ -81,6 +89,8 @@ import {MonitorCard} from './monitor-card';
   ],
 })
 export class MonitorCardList {
+  protected readonly checkResultsStore = inject(LastCheckResultsStore);
+
   entities = input.required<BackendType['MonitorResponse'][]>();
 
   isPending = input.required<boolean>();
@@ -103,5 +113,9 @@ export class MonitorCardList {
 
   protected trackById(_: number, it: {id: unknown}) {
     return it?.id;
+  }
+
+  constructor() {
+    this.checkResultsStore.loadAll(computed(() => this.entities().map((it) => it.id)));
   }
 }

@@ -8,6 +8,7 @@ import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.domain.findByStatusUpMonitorIdAndPickedUpBetween
+import org.poweruptime.backend.features.monitor.domain.findLastOppositeByMonitorIdAndStatus
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
@@ -42,6 +43,11 @@ class CheckResultService {
         }.orThrowNotFound()
 
     fun getIdByPublicId(publicId: String): ULong = CheckResult.findIdByPublicIdOrThrow(publicId)
+
+    fun getLastOppositeByMonitorIdAndStatus(
+        monitorId: ULong,
+        status: MonitorStatus,
+    ): CheckResultRecord? = CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId, status)
 
     fun getAllPaginated(
         pageable: Pageable,

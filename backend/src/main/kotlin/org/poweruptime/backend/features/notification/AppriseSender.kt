@@ -6,6 +6,7 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
 import org.poweruptime.backend.core.utils.emptyToNull
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.notification.core.AppriseNotificationFormat
 import org.poweruptime.backend.features.notification.core.AppriseNotificationRequest
 import org.poweruptime.backend.features.notification.core.AppriseNotificationType
@@ -26,6 +27,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import java.time.Instant
 
@@ -40,11 +42,13 @@ class AppriseSender(
     private val restTemplate: RestTemplate,
     private val notificationMethodDataService: NotificationMethodDataService,
     private val notificationTemplateService: NotificationTemplateService,
+    private val checkResultService: CheckResultService,
     private val tempNotificationService: TempNotificationService,
 ) {
     private final val logger = KotlinLogging.logger {}
     private final val htmlConverterFactory = HtmlConverterFactory()
 
+    @Transactional(readOnly = true)
     fun send(
         subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
     ): SubNotificationRecord {
@@ -55,7 +59,13 @@ class AppriseSender(
         }
 
         val notificationTemplate =
-            notificationTemplateService.getRenderedNotification(subNotificationJoin)
+            notificationTemplateService.getRenderedNotification(
+                subNotificationJoin,
+                previousOppositeCheckResult = checkResultService.getLastOppositeByMonitorIdAndStatus(
+                    subNotificationJoin.monitor.id,
+                    subNotificationJoin.checkResult.status,
+                ),
+            )
         logger.debug {
             "Rendered template: title='${notificationTemplate.title}', " +
                 "body='${notificationTemplate.body.take(100)}...'"
