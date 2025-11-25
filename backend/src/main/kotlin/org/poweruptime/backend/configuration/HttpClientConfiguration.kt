@@ -12,7 +12,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.RestTemplate
 
 private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
     val connectionConfig = ConnectionConfig.custom()
@@ -54,16 +53,8 @@ fun configureJacksonConverter(
     }
 }
 
-fun puRestTemplate() = RestTemplate().apply {
-    requestFactory = clientHttpRequestFactory()
-    configureJacksonConverter(messageConverters)
-}
-
 @Configuration
 class HttpClientConfiguration {
-    @Bean
-    fun restTemplate(): RestTemplate = puRestTemplate()
-
     @Bean
     fun restClientBuilder(): RestClient.Builder = RestClient.builder()
         .requestFactory(clientHttpRequestFactory())

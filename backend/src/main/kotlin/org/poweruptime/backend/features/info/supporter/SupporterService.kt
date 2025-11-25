@@ -1,21 +1,17 @@
 package org.poweruptime.backend.features.info.supporter
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import java.time.Instant
 import java.util.Calendar
 import java.util.Locale
 
 @Service
 class SupporterService(
-    private val restTemplate: RestTemplate,
-    private val objectMapper: ObjectMapper,
+    private val restClient: RestClient,
     private val instanceSettingService: InstanceSettingService,
 ) {
     private final val logger = KotlinLogging.logger {}
@@ -44,18 +40,13 @@ class SupporterService(
         return isSupporter
     }
 
-    private fun fetchSponsors(): GitHubSponsorsResponse {
-        val response = restTemplate.exchange(
-            "https://sponsors.trnck.dev/sponsors/dafnik",
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            String::class.java,
-        )
-        val body = response.body
-            .takeUnless { it.isNullOrBlank() }
-            ?: throw NotFoundException("Empty sponsors response")
-        return objectMapper.readValue(body, GitHubSponsorsResponse::class.java)
-    }
+    private fun fetchSponsors(): GitHubSponsorsResponse = restClient
+        .get()
+        .uri("https://sponsors.trnck.dev/sponsors/dafnik")
+        .retrieve()
+        .toEntity(GitHubSponsorsResponse::class.java)
+        .body
+        ?: throw NotFoundException("Empty sponsors response")
 
     private fun isSupporter(
         handle: String,

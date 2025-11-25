@@ -9,18 +9,14 @@ import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingServ
 import org.poweruptime.backend.features.mail.emails.NewVersionEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
 import org.poweruptime.backend.features.user.domain.findByRole
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import java.time.Duration
 import java.time.Instant
 
 @Service
 class VersionChecker(
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
     private val infoService: InfoService,
     private val instanceSettingService: InstanceSettingService,
     private val systemEmailService: SystemEmailService,
@@ -60,7 +56,7 @@ class VersionChecker(
     // Single cache entry with 30-minute expiration
     @Volatile
     private var cachedResult: CachedVersionResult? = null
-    private val cacheExpirationMinutes = 30L
+    private val cacheExpirationMinutes = 60L
 
     fun checkForLatestVersion(skipCache: Boolean = false): String? {
         logger.debug { "Starting version check (skipCache: $skipCache)" }
@@ -133,14 +129,13 @@ class VersionChecker(
             pageCount++
             logger.debug { "Fetching GitHub tags page $pageCount from: $url" }
 
-            val response = try {
+            val (tags, linkHeader) = try {
                 makeRequest(url)
             } catch (e: Exception) {
                 logger.error { "Failed to fetch GitHub tags from URL: $url, ex: $e" }
                 break
             }
 
-            val tags = response.body ?: emptyArray()
             logger.debug { "Retrieved ${tags.size} tags from page $pageCount" }
 
             // Filter and parse versions based on channel
@@ -168,7 +163,7 @@ class VersionChecker(
             }
 
             // Check for next page
-            url = extractNextPageUrl(response.headers)
+            url = extractNextPageUrl(linkHeader)
             if (url != null) {
                 logger.debug { "Found next page URL, continuing pagination" }
             } else {
@@ -199,29 +194,28 @@ class VersionChecker(
         }
     }
 
-    private fun makeRequest(url: String): ResponseEntity<Array<GitHubTag>> {
-        val headers = HttpHeaders().apply {
-            set("Accept", "application/vnd.github.v3+json")
-            set("User-Agent", "Version-Checker")
-        }
-
-        val entity = HttpEntity<String>(headers)
-
+    private fun makeRequest(url: String): Pair<Array<GitHubTag>, String?> {
         logger.debug { "Making GitHub API request to: $url" }
-        return restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            entity,
-            Array<GitHubTag>::class.java,
-        ).also { response ->
-            logger.debug {
-                "GitHub API response: status=${response.statusCode}, body_size=${response.body?.size ?: 0}"
-            }
+
+        val response = restClient
+            .get()
+            .uri(url)
+            .header("Accept", "application/vnd.github.v3+json")
+            .header("User-Agent", "poweruptime-${infoService.version}-versionChecker")
+            .retrieve()
+            .toEntity(Array<GitHubTag>::class.java)
+
+        logger.debug {
+            "GitHub API response: status=${response.statusCode}, " +
+                "body_size=${response.body?.size ?: 0}"
         }
+
+        val linkHeader = response.headers.getFirst("Link")
+        return Pair(response.body ?: emptyArray(), linkHeader)
     }
 
-    private fun extractNextPageUrl(headers: HttpHeaders): String? {
-        val linkHeader = headers.getFirst("Link") ?: return null
+    private fun extractNextPageUrl(linkHeader: String?): String? {
+        if (linkHeader == null) return null
 
         return linkHeader
             .split(",")
@@ -286,7 +280,6 @@ class VersionChecker(
         }
     }
 
-    // Optional: Method to clear cache manually if needed
     fun clearCache() {
         logger.info { "Clearing version check cache" }
         cachedResult = null
