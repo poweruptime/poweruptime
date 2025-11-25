@@ -8,7 +8,7 @@ src/test/**/build/
 
 src/main/resources/templates/html/
 src/main/resources/db/db.changelog-test.yaml
-src/main/resources/static/backend.xml
+src/main/resources/static/licenses.json
 src/main/resources/static/CHANGELOG.md
 src/main/resources/static/CHANGELOG-beta.md
 src/test/resources/db/

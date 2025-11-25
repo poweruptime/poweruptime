@@ -1,5 +1,5 @@
 import {httpResource} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, computed, inject, resource} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
 import {MatButton} from '@angular/material/button';
 import {MatDialogActions, MatDialogClose, MatDialogContent} from '@angular/material/dialog';
@@ -15,21 +15,26 @@ import {MatButtonLoading} from '@ng-matero/extensions/button';
 
 import {environment} from '@app/util';
 
-import * as licensesJson from '../../assets/licenses.json';
 import {ChangelogStore, InfoStore} from '../services';
 import {BACKEND_API_URL} from '../util';
 import {SupporterBadge} from './supporter-badge';
 
-interface BackendEntry {
-  project: {
-    name: string;
-    url: string;
-  };
-  version: string;
-  license: {
-    name: string;
-    url: string;
-  };
+interface Dependency {
+  moduleName: string;
+  moduleUrl: string;
+  moduleVersion: string;
+  moduleLicense: string;
+  moduleLicenseUrl: string;
+}
+
+interface ImportedModule {
+  moduleName: string;
+  dependencies: Dependency[];
+}
+
+interface LicenseData {
+  dependencies: Dependency[];
+  importedModules: ImportedModule[];
 }
 
 @Component({
@@ -81,7 +86,7 @@ interface BackendEntry {
 
         <h3 class="text-xl">Licenses ❤️</h3>
 
-        <mat-accordion class="max-w-80" multi>
+        <mat-accordion multi>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>Web</mat-panel-title>
@@ -89,15 +94,17 @@ interface BackendEntry {
 
             <div class="grid gap-4">
               @for (license of feLicenses(); track $index) {
-                <a class="grid" [href]="license.link" rel="noreferrer" target="_blank">
-                  <div class="flex w-100 justify-between">
-                    <h6>{{ license.name }}</h6>
-                    <small>{{ license.licenseType }}</small>
-                  </div>
-                  @if (license.author !== 'n/a') {
-                    <small class="mb-1">by {{ license.author }}</small>
-                  }
-                  <small>{{ license.installedVersion }}</small>
+                <a
+                  class="flex flex-col gap-2"
+                  [href]="license.moduleUrl"
+                  rel="noreferrer"
+                  target="_blank">
+                  <h6>{{ license.moduleName }}</h6>
+                  <small>{{ license.moduleLicense }}</small>
+
+                  <a [href]="license.moduleLicenseUrl" target="_blank" rel="noreferrer">
+                    <small>{{ license.moduleVersion }}</small>
+                  </a>
                 </a>
               }
             </div>
@@ -108,11 +115,18 @@ interface BackendEntry {
             </mat-expansion-panel-header>
 
             <div class="grid gap-4">
-              @for (license of beLicenses(); track $index) {
-                <a class="grid" [href]="license.project.url" rel="noreferrer" target="_blank">
-                  <h6>{{ license.project.name }}</h6>
-                  <small>{{ license.license.name }}</small>
-                  <small>{{ license.version }}</small>
+              @for (license of licenses.value()?.dependencies ?? []; track $index) {
+                <a
+                  class="flex flex-col gap-2"
+                  [href]="license.moduleUrl"
+                  rel="noreferrer"
+                  target="_blank">
+                  <h6>{{ license.moduleName }}</h6>
+                  <small>{{ license.moduleLicense }}</small>
+
+                  <a [href]="license.moduleLicenseUrl" target="_blank" rel="noreferrer">
+                    <small>{{ license.moduleVersion }}</small>
+                  </a>
                 </a>
               }
             </div>
@@ -146,52 +160,11 @@ export class AboutDialog {
 
   version = environment.version;
 
-  feLicenses$ = httpResource<typeof licensesJson>(() => '/assets/licenses.json');
-
-  feLicenses = computed(
-    () =>
-      this.feLicenses$.value()?.map((it) => {
-        it.link = it.link.replace('git+', '');
-        it.link = it.link.replace('git:', 'https:');
-        it.link = it.link.replace('ssh://git@', 'https:');
-        return it;
-      }) ?? [],
+  licenses = httpResource<LicenseData>(
+    () => `${BACKEND_API_URL}/v1/public/static-files/licenses.json`,
   );
 
-  baLicenses$ = resource({
-    loader: () =>
-      fetch(`${BACKEND_API_URL}/v1/public/static-files/backend.xml`).then((res) => res.text()),
-  });
-
-  beLicenses = computed(() => {
-    const xmlString = this.baLicenses$.value();
-
-    if (!xmlString) {
-      return [];
-    }
-
-    const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
-    const rows = Array.from(doc.querySelectorAll('table > tr'));
-
-    // drop header row
-    return rows.slice(1).map((tr) => {
-      const [projTd, verTd, licTd] = Array.from(tr.querySelectorAll('td'));
-      const aProj = projTd.querySelector('a');
-      const aLic = licTd.querySelector('a');
-
-      return {
-        project: {
-          name: aProj?.textContent?.trim() ?? 'Unknown',
-          url: aProj?.getAttribute('href') ?? 'Unknown',
-        },
-        version: verTd.textContent?.trim() ?? 'Unknown',
-        license: {
-          name: aLic?.textContent?.trim() ?? licTd.textContent?.trim() ?? 'Unknown',
-          url: aLic?.getAttribute('href') ?? 'Unknown',
-        },
-      } satisfies BackendEntry;
-    });
-  });
+  feLicenses = computed(() => this.licenses.value()?.importedModules?.[0]?.dependencies ?? []);
 
   constructor() {
     this.infoStore.loadSupport();

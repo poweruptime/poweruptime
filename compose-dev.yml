@@ -45,8 +45,9 @@ services:
 
   poweruptime-apprise:
     container_name: poweruptime-apprise
-    image: caronc/apprise:1.2.5
+    image: caronc/apprise:1.2.6
     restart: unless-stopped
+    user: '${UID}:${GID}'
     environment:
       - APPRISE_STATEFUL_MODE=disabled
       - APPRISE_WORKER_COUNT=1
