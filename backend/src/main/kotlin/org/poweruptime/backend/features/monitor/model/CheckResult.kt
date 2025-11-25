@@ -43,14 +43,14 @@ data class CheckResultRecord(
     val createdAt: Instant,
     val updatedAt: Instant,
     val monitorId: ULong,
-    var status: MonitorStatus,
-    var timesRetried: Long?,
-    var previousStatus: MonitorStatus?,
-    var pickedUpAt: Instant?,
-    var checkedAt: Instant?,
-    var pingMs: Long?,
-    var title: String?,
-    var message: String?,
+    val status: MonitorStatus,
+    val timesRetried: Long?,
+    val previousStatus: MonitorStatus?,
+    val pickedUpAt: Instant?,
+    val checkedAt: Instant?,
+    val pingMs: Long?,
+    val title: String?,
+    val message: String?,
 )
 
 fun CheckResult.rowToCheckResultRecord(row: ResultRow): CheckResultRecord =

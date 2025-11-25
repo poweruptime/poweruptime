@@ -1,10 +1,10 @@
-package org.poweruptime.backend.features.monitor.checker.dns
+package org.poweruptime.backend.features.monitor.checkers.dns
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.monitor.core.CheckResultDto
-import org.poweruptime.backend.features.monitor.core.MonitorChecker
-import org.poweruptime.backend.features.monitor.core.MonitoringResultHandler
-import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.checkers.CheckResultDto
+import org.poweruptime.backend.features.monitor.checkers.MonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.MonitoringResultHandler
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.xbill.DNS.DClass

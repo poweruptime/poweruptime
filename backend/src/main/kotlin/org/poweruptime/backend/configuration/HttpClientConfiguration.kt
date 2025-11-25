@@ -1,42 +1,75 @@
 package org.poweruptime.backend.configuration
 
+import org.apache.hc.client5.http.config.ConnectionConfig
+import org.apache.hc.client5.http.config.RequestConfig
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager
+import org.apache.hc.core5.util.Timeout
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
+import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 
-fun puRestTemplate() = RestTemplate().apply {
-    requestFactory = HttpComponentsClientHttpRequestFactory(
-        HttpClientBuilder.create().build(),
-    ).apply {
-        setConnectTimeout(4000)
-        setReadTimeout(4000)
+private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
+    val connectionConfig = ConnectionConfig.custom()
+        .setConnectTimeout(Timeout.ofMilliseconds(4000))
+        .setSocketTimeout(Timeout.ofMilliseconds(4000))
+        .build()
+
+    val connectionManager = PoolingHttpClientConnectionManager().apply {
+        setDefaultConnectionConfig(connectionConfig)
     }
 
-    // Now modify the default Jackson converter (if present) instead of adding a new one
-    val converters = messageConverters
-    val jacksonConverterIndex = converters.indexOfFirst { it is MappingJackson2HttpMessageConverter }
-
-    if (jacksonConverterIndex != -1) {
-        // Replace or update the existing converter
-        converters[jacksonConverterIndex] = MappingJackson2HttpMessageConverter().apply {
-            // Use your custom ObjectMapper here
-            objectMapper = puObjectMapper
-        }
-    } else {
-        // If, for some reason, there's no Jackson converter at all, add your own
-        converters.add(
-            MappingJackson2HttpMessageConverter().apply {
-                objectMapper = puObjectMapper
-            },
+    val httpClient = HttpClientBuilder.create()
+        .setConnectionManager(connectionManager)
+        .setDefaultRequestConfig(
+            RequestConfig.custom()
+                .setConnectionRequestTimeout(Timeout.ofMilliseconds(4000))
+                .setResponseTimeout(Timeout.ofMilliseconds(4000))
+                .build(),
         )
+        .build()
+
+    return HttpComponentsClientHttpRequestFactory(httpClient)
+}
+
+fun configureJacksonConverter(
+    converters: MutableList<HttpMessageConverter<*>>,
+) {
+    val jacksonIndex = converters.indexOfFirst {
+        it is MappingJackson2HttpMessageConverter
     }
+
+    val customConverter = MappingJackson2HttpMessageConverter().apply {
+        objectMapper = puObjectMapper
+    }
+
+    when {
+        jacksonIndex != -1 -> converters[jacksonIndex] = customConverter
+        else -> converters.add(customConverter)
+    }
+}
+
+fun puRestTemplate() = RestTemplate().apply {
+    requestFactory = clientHttpRequestFactory()
+    configureJacksonConverter(messageConverters)
 }
 
 @Configuration
 class HttpClientConfiguration {
     @Bean
     fun restTemplate(): RestTemplate = puRestTemplate()
+
+    @Bean
+    fun restClientBuilder(): RestClient.Builder = RestClient.builder()
+        .requestFactory(clientHttpRequestFactory())
+
+    @Bean
+    fun restClient(builder: RestClient.Builder): RestClient = builder
+        .messageConverters { converters -> configureJacksonConverter(converters) }
+        .build()
 }

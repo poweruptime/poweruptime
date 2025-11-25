@@ -2,22 +2,17 @@ package org.poweruptime.backend.features.monitor.model
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-const val CHECK_RESULT_LOG_STAGE_SETUP = "S"
-const val CHECK_RESULT_LOG_STAGE_CHECK = "C"
-const val CHECK_RESULT_LOG_STAGE_MONITOR_STATUS_UPDATE = "M"
-const val CHECK_RESULT_LOG_STAGE_NOTIFICATION = "N"
-
 enum class CheckResultLogStage : ADatabaseEnumConvertable {
     SETUP {
-        override val code = CHECK_RESULT_LOG_STAGE_SETUP
+        override val code = "S"
     },
     CHECK {
-        override val code = CHECK_RESULT_LOG_STAGE_CHECK
+        override val code = "C"
     },
     MONITOR_STATUS_UPDATE {
-        override val code = CHECK_RESULT_LOG_STAGE_MONITOR_STATUS_UPDATE
+        override val code = "M"
     },
     NOTIFICATION {
-        override val code = CHECK_RESULT_LOG_STAGE_NOTIFICATION
+        override val code = "N"
     },
 }

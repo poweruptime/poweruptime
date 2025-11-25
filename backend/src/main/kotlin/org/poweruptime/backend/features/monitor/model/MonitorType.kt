@@ -2,28 +2,20 @@ package org.poweruptime.backend.features.monitor.model
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-object MonitorDataTypes {
-    const val DNS = "DNS"
-    const val HTTP = "HTTP"
-    const val PING = "PING"
-    const val PUSH = "PUSH"
-    const val SSL_CERTIFICATE = "SSL_CERTIFICATE"
-}
-
 enum class MonitorType : ADatabaseEnumConvertable {
     DNS {
-        override val code = MonitorDataTypes.DNS
+        override val code = "DNS"
     },
     HTTP {
-        override val code = MonitorDataTypes.HTTP
+        override val code = "HTTP"
     },
     PING {
-        override val code = MonitorDataTypes.PING
+        override val code = "PING"
     },
     PUSH {
-        override val code = MonitorDataTypes.PUSH
+        override val code = "PUSH"
     },
     SSL_CERTIFICATE {
-        override val code = MonitorDataTypes.SSL_CERTIFICATE
+        override val code = "SSL_CERTIFICATE"
     },
 }

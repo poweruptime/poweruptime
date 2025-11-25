@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.checker.dns
+package org.poweruptime.backend.features.monitor.checkers.dns
 
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -12,8 +12,8 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.model.MonitorData
-import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.core.MonitorData
+import org.poweruptime.backend.features.monitor.core.MonitorDataTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 object DnsMonitorData : MonitorDataTable(MonitorType.DNS) {

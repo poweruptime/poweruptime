@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.checker.push
+package org.poweruptime.backend.features.monitor.checkers.push
 
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.dao.id.ULongIdTable

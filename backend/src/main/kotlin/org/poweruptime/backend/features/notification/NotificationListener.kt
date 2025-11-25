@@ -13,7 +13,7 @@ import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryServi
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationRecord
+import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -27,104 +27,129 @@ private const val QUEUE_NOTIFICATION_TIMEOUT_SECONDS = 20L
 @Component
 class NotificationListener(
     private val subNotificationService: SubNotificationService,
-    private val checkResultLogEntryService: CheckResultLogEntryService,
+    private val checkResultLogService: CheckResultLogEntryService,
     private val pushService: PushService,
     private val appriseSender: AppriseSender,
 ) {
-    private final val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
 
-    /**
-     * Consumer for "notification-queue"
-     */
-    @Suppress("LongMethod")
     @RabbitListener(queues = [NOTIFICATION_QUEUE])
     @Transactional
     fun notificationQueueConsumer(subNotificationId: String) {
-        val subNotificationJoin = subNotificationService.getByIdJoin(subNotificationId.toULong())
+        val join = subNotificationService.getByIdJoin(subNotificationId.toULong())
 
         try {
-            assert(
-                listOf(
-                    MonitorStatus.UP,
-                    MonitorStatus.DOWN,
-                ).contains(subNotificationJoin.checkResult.status),
-            )
+            validateNotification(join)
 
-            subNotificationJoin.subNotification.pickedUpAt = Instant.now()
+            val pickedUpAt = Instant.now()
+            handleLatePickup(join, pickedUpAt)
 
-            logger.debug {
-                "Received notification '${subNotificationJoin.subNotification.id}' of type " +
-                    "'${subNotificationJoin.method.type.name}' for monitor " +
-                    "'${subNotificationJoin.monitor.name}'"
-            }
-
-            val isPickedUpTooLate = subNotificationJoin.subNotification.pickedUpTooLate()
-
-            checkResultLogEntryService.action(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResultId = subNotificationJoin.checkResult.id,
-                message = """"${subNotificationJoin.method.name}" picked up in time""",
-                properties = mapOf(
-                    "result" to (!isPickedUpTooLate).toString(),
-                    "time" to Duration.between(
-                        subNotificationJoin.subNotification.createdAt,
-                        subNotificationJoin.subNotification.pickedUpAt!!,
-                    ).toMillis().toString(),
-                    "subNotificationId" to subNotificationJoin.subNotification.publicId,
-                ),
-            )
-
-            if (isPickedUpTooLate) {
-                logger.error {
-                    "Notification '${subNotificationJoin.subNotification.id}' was picked up too late"
-                }
-
-                SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
-                    it[SubNotification.error] = "Notification picked up to late"
-                }
-
-                return
-            }
-
-            val sentSubNotification = appriseSender.send(subNotificationJoin)
-
-            SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
-                it[SubNotification.title] = sentSubNotification.title
-                it[SubNotification.message] = sentSubNotification.message
-                it[SubNotification.error] = sentSubNotification.error
-                it[SubNotification.sentAt] = sentSubNotification.sentAt
-            }
-
-            checkResultLogEntryService.action(
-                stage = CheckResultLogStage.NOTIFICATION,
-                checkResultId = subNotificationJoin.checkResult.id,
-                message = """"${subNotificationJoin.method.name}" sent""",
-                properties = mapOf(
-                    "result" to (sentSubNotification.error == null).toString(),
-                    "subNotificationId" to subNotificationJoin.subNotification.publicId,
-                ),
-            )
-
-            pushService.send(
-                subNotificationJoin.monitor.teamId,
-                PushSubNotificationDto(
-                    subNotification = SubNotificationResponse(
-                        SubNotificationJoinMethodAndNotificationRecord(
-                            subNotification = sentSubNotification,
-                            method = subNotificationJoin.method,
-                            notification = subNotificationJoin.notification,
-                        ),
-                    ),
-                ),
-            )
+            val update = appriseSender.send(join)
+            applyUpdate(join, update)
+            logSentResult(join, update)
+            pushService.send(join.monitor.teamId, toPushDto(join, update))
         } catch (e: Throwable) {
-            SubNotification.update({ SubNotification.id eq subNotificationJoin.subNotification.id }) {
-                it[SubNotification.error] = (e.message ?: e.cause?.message ?: "Unknown error")
-                    .abbreviate(Database.MAX_MESSAGE_LENGTH)
-            }
+            logger.error(e) { "Failed to send notification $subNotificationId" }
+            applyErrorUpdate(join, e)
         }
     }
 
-    private fun SubNotificationRecord.pickedUpTooLate(): Boolean =
-        Instant.now().minusSeconds(QUEUE_NOTIFICATION_TIMEOUT_SECONDS).isAfter(createdAt)
+    private fun validateNotification(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+    ) {
+        require(join.checkResult.status in listOf(MonitorStatus.UP, MonitorStatus.DOWN)) {
+            "Invalid status: ${join.checkResult.status}"
+        }
+    }
+
+    private fun handleLatePickup(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        pickedUpAt: Instant,
+    ) {
+        val isLate = pickedUpAt
+            .minusSeconds(QUEUE_NOTIFICATION_TIMEOUT_SECONDS)
+            .isAfter(join.subNotification.createdAt)
+
+        val duration = Duration.between(
+            join.subNotification.createdAt,
+            pickedUpAt,
+        ).toMillis()
+
+        checkResultLogService.action(
+            stage = CheckResultLogStage.NOTIFICATION,
+            checkResultId = join.checkResult.id,
+            message = "${join.method.name} picked up in time",
+            properties = mapOf(
+                "result" to (!isLate).toString(),
+                "time" to duration.toString(),
+                "subNotificationId" to join.subNotification.publicId,
+            ),
+        )
+
+        if (isLate) {
+            error("Notification picked up too late")
+        }
+    }
+
+    private fun applyUpdate(
+        join: SubNotificationJoinMethodAndNotificationRecord,
+        update: SubNotificationUpdate,
+    ) {
+        SubNotification.update({ SubNotification.id eq join.subNotification.id }) {
+            update.title?.let { title -> it[SubNotification.title] = title }
+            update.message?.let { message -> it[SubNotification.message] = message }
+            update.error?.let { error -> it[SubNotification.error] = error }
+            update.sentAt?.let { sentAt -> it[SubNotification.sentAt] = sentAt }
+        }
+    }
+
+    private fun applyErrorUpdate(
+        join: SubNotificationJoinMethodAndNotificationRecord,
+        error: Throwable,
+    ) {
+        val message = (error.message ?: error.cause?.message ?: "Unknown error")
+            .abbreviate(Database.MAX_MESSAGE_LENGTH)
+
+        applyUpdate(join, SubNotificationUpdate(error = message))
+    }
+
+    private fun logSentResult(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        update: SubNotificationUpdate,
+    ) {
+        checkResultLogService.action(
+            stage = CheckResultLogStage.NOTIFICATION,
+            checkResultId = join.checkResult.id,
+            message = "${join.method.name} sent",
+            properties = mapOf(
+                "result" to (update.error == null).toString(),
+                "subNotificationId" to join.subNotification.publicId,
+            ),
+        )
+    }
+
+    private fun toPushDto(
+        join: SubNotificationJoinMethodAndNotificationRecord,
+        update: SubNotificationUpdate,
+    ): PushSubNotificationDto = PushSubNotificationDto(
+        subNotification = SubNotificationResponse(
+            SubNotificationJoinMethodAndNotificationRecord(
+                subNotification = join.subNotification.copy(
+                    title = update.title ?: join.subNotification.title,
+                    message = update.message ?: join.subNotification.message,
+                    error = update.error,
+                    sentAt = update.sentAt ?: join.subNotification.sentAt,
+                ),
+                method = join.method,
+                notification = join.notification,
+            ),
+        ),
+    )
 }
+
+data class SubNotificationUpdate(
+    val title: String? = null,
+    val message: String? = null,
+    val error: String? = null,
+    val sentAt: Instant? = null,
+)

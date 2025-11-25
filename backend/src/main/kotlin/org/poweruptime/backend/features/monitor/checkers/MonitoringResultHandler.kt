@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.core
+package org.poweruptime.backend.features.monitor.checkers
 
 import java.time.Duration
 import java.time.Instant

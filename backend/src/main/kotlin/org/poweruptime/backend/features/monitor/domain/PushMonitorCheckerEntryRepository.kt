@@ -5,9 +5,9 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryRecord
-import org.poweruptime.backend.features.monitor.checker.push.rowToPushMonitorCheckerEntryRecord
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorCheckerEntry
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorCheckerEntryRecord
+import org.poweruptime.backend.features.monitor.checkers.push.rowToPushMonitorCheckerEntryRecord
 import java.time.Instant
 
 interface IPushMonitorCheckerEntryRepository {

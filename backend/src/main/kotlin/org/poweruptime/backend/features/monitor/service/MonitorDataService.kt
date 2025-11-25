@@ -4,8 +4,8 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.monitor.model.MonitorData
-import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.core.MonitorData
+import org.poweruptime.backend.features.monitor.core.MonitorDataTable
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.springframework.stereotype.Service

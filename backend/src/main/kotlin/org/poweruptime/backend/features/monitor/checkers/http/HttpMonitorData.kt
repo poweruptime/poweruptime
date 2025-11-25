@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.checker.http
+package org.poweruptime.backend.features.monitor.checkers.http
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
@@ -17,8 +17,8 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.ListItemRegex
 import org.poweruptime.backend.core.models.enumerationByCode
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.model.MonitorData
-import org.poweruptime.backend.features.monitor.model.MonitorDataTable
+import org.poweruptime.backend.features.monitor.core.MonitorData
+import org.poweruptime.backend.features.monitor.core.MonitorDataTable
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 

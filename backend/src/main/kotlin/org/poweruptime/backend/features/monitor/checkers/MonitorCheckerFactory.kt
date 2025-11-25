@@ -1,10 +1,10 @@
-package org.poweruptime.backend.features.monitor.core
+package org.poweruptime.backend.features.monitor.checkers
 
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.dns.DnsMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.ping.PingMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.ssl.SSLCertificateMonitorChecker
 import org.poweruptime.backend.features.monitor.domain.PushMonitorCheckerEntryRepository
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.service.MonitorDataService

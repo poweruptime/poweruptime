@@ -3,9 +3,9 @@ package org.poweruptime.backend.monitor.checker
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataRecord
-import org.poweruptime.backend.features.monitor.checker.dns.DnsMonitorDataType
+import org.poweruptime.backend.features.monitor.checkers.dns.DnsMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.dns.DnsMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.dns.DnsMonitorDataType
 import org.poweruptime.backend.features.monitor.model.MonitorType
 
 class DNSMonitorCheckerTest {

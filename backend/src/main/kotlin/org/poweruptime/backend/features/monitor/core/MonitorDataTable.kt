@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.model
+package org.poweruptime.backend.features.monitor.core
 
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -7,6 +7,8 @@ import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.poweruptime.backend.core.models.HasModifiers
 import org.poweruptime.backend.core.models.createdAt
 import org.poweruptime.backend.core.models.updatedAt
+import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorType
 
 abstract class MonitorDataTable(
     @Suppress("PropertyName", "ConstructorParameterNaming") val _type: MonitorType

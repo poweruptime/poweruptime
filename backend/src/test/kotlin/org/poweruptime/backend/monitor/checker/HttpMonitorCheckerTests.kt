@@ -4,11 +4,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataAuthType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataContentType
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataMethod
-import org.poweruptime.backend.features.monitor.checker.http.HttpMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorDataAuthType
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorDataContentType
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorDataMethod
+import org.poweruptime.backend.features.monitor.checkers.http.HttpMonitorDataRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Autowired

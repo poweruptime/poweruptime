@@ -6,9 +6,9 @@ import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.RandomGenerator
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntryRecord
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorCheckerEntryRecord
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorDataRecord
 import org.poweruptime.backend.features.monitor.domain.IPushMonitorCheckerEntryRepository
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType

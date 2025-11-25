@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.poweruptime.backend.core.ModelFactory
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ssl.SSLCertificateMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.ssl.SSLCertificateMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.ssl.SSLCertificateMonitorDataRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.checker.dns
+package org.poweruptime.backend.features.monitor.checkers.dns
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 

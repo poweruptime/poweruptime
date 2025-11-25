@@ -1,8 +1,10 @@
-package org.poweruptime.backend.features.monitor.checker.ssl
+package org.poweruptime.backend.features.monitor.checkers.ssl
 
 import org.poweruptime.backend.core.utils.DateTimeUtils
-import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.checkers.CheckResultDto
+import org.poweruptime.backend.features.monitor.checkers.MonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.MonitoringResultHandler
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService

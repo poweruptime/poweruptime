@@ -3,8 +3,8 @@ package org.poweruptime.backend.monitor.checker
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.core.ModelFactory
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorChecker
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.ping.PingMonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.ping.PingMonitorDataRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import java.time.Duration
 import java.time.Instant

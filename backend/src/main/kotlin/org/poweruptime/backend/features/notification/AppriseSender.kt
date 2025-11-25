@@ -17,168 +17,149 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.htmlConverter.HtmlConverterFactory
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationRecord
 import org.poweruptime.backend.features.notification.service.NotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import java.time.Instant
 
 @Service
 class AppriseSender(
     @Value(Config.NOTIFICATION_TEMP_ENABLED)
     private val tempNotificationsEnabled: Boolean = false,
-
     @Value(Config.APPRISE_URL)
     private val appriseUrl: String,
-
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
     private val notificationMethodDataService: NotificationMethodDataService,
     private val notificationTemplateService: NotificationTemplateService,
     private val checkResultService: CheckResultService,
     private val tempNotificationService: TempNotificationService,
 ) {
-    private final val logger = KotlinLogging.logger {}
-    private final val htmlConverterFactory = HtmlConverterFactory()
+    private val logger = KotlinLogging.logger {}
 
     @Transactional(readOnly = true)
     fun send(
         subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
-    ): SubNotificationRecord {
-        val subNotification = subNotificationJoin.subNotification
-        val method = subNotificationJoin.method
-        logger.info {
-            "Starting send() for SubNotification(id=${subNotification.id}, type=${method.type})"
-        }
-
-        val notificationTemplate =
-            notificationTemplateService.getRenderedNotification(
-                subNotificationJoin,
-                previousOppositeCheckResult = checkResultService.getLastOppositeByMonitorIdAndStatus(
-                    subNotificationJoin.monitor.id,
-                    subNotificationJoin.checkResult.status,
-                ),
-            )
-        logger.debug {
-            "Rendered template: title='${notificationTemplate.title}', " +
-                "body='${notificationTemplate.body.take(100)}...'"
-        }
-
-        subNotification.title = notificationTemplate.title
-        subNotification.message = notificationTemplate.body
-
-        val appriseDto = NotificationMethodDataAppriseConverter
-            .getByType(method.type)
-            .convert(
-                notificationMethodDataService.findByIdAndType(method.id, method.type),
-            )
-
-        val request = getAppriseNotificationRequest(
-            appriseDto,
-            notificationTemplate,
-            method.type,
-            subNotificationJoin.checkResult.status,
-        )
-        logger.debug {
-            "Built AppriseNotificationRequest: $request"
-        }
+    ): SubNotificationUpdate {
+        val template = renderTemplate(subNotificationJoin)
 
         if (tempNotificationsEnabled) {
-            logger.info { "Temp notifications enabled, storing temp notification" }
-            tempNotificationService.addNotification(
-                TempNotification(
-                    to = method.type.name,
-                    subject = notificationTemplate.title,
-                    bodyHTML = notificationTemplate.body,
-                    appriseDto = request,
-                ),
+            return handleTempNotification(subNotificationJoin, template)
+        }
+
+        val appriseRequest = buildAppriseRequest(subNotificationJoin, template)
+        val error = sendToApprise(appriseRequest)
+
+        return if (error != null) {
+            logger.error { "Apprise error: $error" }
+            SubNotificationUpdate(
+                title = template.title,
+                message = template.body,
+                error = error.abbreviate(Database.MAX_MESSAGE_LENGTH),
             )
-            subNotification.sentAt = Instant.now()
-            logger.info { "Temp notification saved, returning without calling Apprise" }
-            return subNotification
-        }
-
-        val errorMessage = sendToApprise(request)
-        if (errorMessage != null) {
-            logger.error { "Error sending to Apprise: $errorMessage" }
-            subNotification.error = errorMessage.abbreviate(Database.MAX_MESSAGE_LENGTH)
         } else {
-            subNotification.sentAt = Instant.now()
-            logger.info { "Notification sent successfully at ${subNotification.sentAt}" }
+            SubNotificationUpdate(
+                title = template.title,
+                message = template.body,
+                sentAt = Instant.now(),
+            )
         }
-
-        return subNotification
     }
 
-    fun getAppriseNotificationRequest(
-        dto: NotificationMethodDataAppriseDto,
-        tpl: NotificationTemplate,
-        type: NotificationMethodType,
-        status: MonitorStatus
-    ) = AppriseNotificationRequest(
-        urls = listOf(
-            buildString {
-                append(dto.url)
-                append("?footer=no&image=no&format=")
-                append(
-                    when (type.bodyType) {
-                        NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
-                        NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
-                        NotificationMethodTemplateType.MARKDOWN,
-                        NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
-                    },
-                )
-                dto.extras
-                    ?.map { (k, v) -> "$k=$v" }
-                    ?.joinToString("&", "&")
-                    ?.let { append(it) }
-            },
-        ),
-        title = tpl.title.emptyToNull(),
-        body = htmlConverterFactory
-            .getConverter(type.bodyType)
-            .convert(tpl.body),
-        type = when (status) {
-            MonitorStatus.UP -> AppriseNotificationType.INFO
-            MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
-            else -> throw IllegalArgumentException(
-                "Status not allowed at this point: $status",
-            )
-        },
-        format = when (type.bodyType) {
-            NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
-            NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
-            NotificationMethodTemplateType.MARKDOWN,
-            NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
-        },
-    )
-
-    fun sendToApprise(
-        request: AppriseNotificationRequest
-    ): String? = try {
-        logger.info { "Posting to Apprise URL: '$appriseUrl/notify' " }
-        restTemplate.exchange(
-            "$appriseUrl/notify",
-            HttpMethod.POST,
-            HttpEntity(
-                request,
-                HttpHeaders().apply {
-                    add("Accept", "*/*")
-                    add("Content-Type", "application/json")
-                },
+    private fun handleTempNotification(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        template: NotificationTemplate,
+    ): SubNotificationUpdate {
+        tempNotificationService.addNotification(
+            TempNotification(
+                to = join.method.type.name,
+                subject = template.title,
+                bodyHTML = template.body,
+                appriseDto = buildAppriseRequest(join, template),
             ),
-            String::class.java,
         )
+        return SubNotificationUpdate(
+            title = template.title,
+            message = template.body,
+            sentAt = Instant.now(),
+        )
+    }
+
+    private fun buildAppriseRequest(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        template: NotificationTemplate,
+    ): AppriseNotificationRequest {
+        val method = join.method
+        val appriseDto = NotificationMethodDataAppriseConverter
+            .getByType(method.type)
+            .convert(notificationMethodDataService.findByIdAndType(method.id, method.type))
+
+        return AppriseNotificationRequest(
+            urls = listOf(buildAppriseUrl(appriseDto, method.type)),
+            title = template.title.emptyToNull(),
+            body = convertBody(template.body, method.type),
+            type = mapStatusToNotificationType(join.checkResult.status),
+            format = mapFormatType(method.type.bodyType),
+        )
+    }
+
+    private fun buildAppriseUrl(
+        dto: NotificationMethodDataAppriseDto,
+        type: NotificationMethodType,
+    ): String = buildString {
+        append(dto.url)
+        append("?footer=no&image=no&format=${mapFormatType(type.bodyType).value}")
+        dto.extras?.forEach { (k, v) -> append("&$k=$v") }
+    }
+
+    private fun convertBody(body: String, type: NotificationMethodType): String =
+        HtmlConverterFactory()
+            .getConverter(type.bodyType)
+            .convert(body)
+
+    private fun mapStatusToNotificationType(
+        status: MonitorStatus,
+    ): AppriseNotificationType = when (status) {
+        MonitorStatus.UP -> AppriseNotificationType.INFO
+        MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
+        else -> throw IllegalArgumentException("Invalid status: $status")
+    }
+
+    private fun mapFormatType(
+        templateType: NotificationMethodTemplateType,
+    ): AppriseNotificationFormat = when (templateType) {
+        NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+        NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+        NotificationMethodTemplateType.MARKDOWN,
+        NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
+    }
+
+    private fun renderTemplate(
+        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+    ): NotificationTemplate =
+        notificationTemplateService.getRenderedNotification(
+            join,
+            previousOppositeCheckResult = checkResultService
+                .getLastOppositeByMonitorIdAndStatus(
+                    join.monitor.id,
+                    join.checkResult.status,
+                ),
+        )
+
+    private fun sendToApprise(request: AppriseNotificationRequest): String? = try {
+        restClient.post()
+            .uri("$appriseUrl/notify")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .retrieve()
+            .toEntity(String::class.java)
         null
     } catch (e: Throwable) {
-        logger.error { "Exception while calling Apprise, $e" }
         e.message ?: "Unknown error"
     }
 }

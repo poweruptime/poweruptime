@@ -38,11 +38,11 @@ data class SubNotificationRecord(
     val updatedAt: Instant,
     val notificationId: ULong,
     val methodId: ULong,
-    var title: String,
-    var message: String?,
-    var pickedUpAt: Instant?,
-    var sentAt: Instant?,
-    var error: String?,
+    val title: String,
+    val message: String?,
+    val pickedUpAt: Instant?,
+    val sentAt: Instant?,
+    val error: String?,
 )
 
 fun SubNotification.rowToSubNotificationRecord(row: ResultRow): SubNotificationRecord =

@@ -10,11 +10,11 @@ import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingSupportDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingVersionCheckDto
 import org.poweruptime.backend.features.info.instanceSetting.dto.SettingRetentionDto
-import org.poweruptime.backend.features.monitor.checker.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.checkers.ping.PingMonitorDataRecord
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.monitor.dto.CreateMonitorDto
 import org.poweruptime.backend.features.monitor.dto.UpdateMonitorDto
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType

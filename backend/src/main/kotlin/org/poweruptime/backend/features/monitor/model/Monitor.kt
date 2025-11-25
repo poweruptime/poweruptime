@@ -13,6 +13,7 @@ import org.poweruptime.backend.core.models.nanoId
 import org.poweruptime.backend.core.models.softDelete
 import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRecord
 import java.time.Instant

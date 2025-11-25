@@ -1,8 +1,10 @@
-package org.poweruptime.backend.features.monitor.checker.ping
+package org.poweruptime.backend.features.monitor.checkers.ping
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.monitor.core.*
-import org.poweruptime.backend.features.monitor.model.MonitorData
+import org.poweruptime.backend.features.monitor.checkers.CheckResultDto
+import org.poweruptime.backend.features.monitor.checkers.MonitorChecker
+import org.poweruptime.backend.features.monitor.checkers.MonitoringResultHandler
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import java.net.InetSocketAddress

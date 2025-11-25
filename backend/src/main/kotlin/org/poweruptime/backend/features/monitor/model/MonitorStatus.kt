@@ -2,26 +2,20 @@ package org.poweruptime.backend.features.monitor.model
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
-const val MONITOR_STATUS_UP = "U"
-const val MONITOR_STATUS_DOWN = "D"
-const val MONITOR_STATUS_PENDING = "P"
-const val MONITOR_STATUS_MAINTENANCE = "M"
-const val MONITOR_STATUS_PAUSED = "R"
-
 enum class MonitorStatus : ADatabaseEnumConvertable {
     UP {
-        override val code = MONITOR_STATUS_UP
+        override val code = "U"
     },
     DOWN {
-        override val code = MONITOR_STATUS_DOWN
+        override val code = "D"
     },
     PENDING {
-        override val code = MONITOR_STATUS_PENDING
+        override val code = "P"
     },
     MAINTENANCE {
-        override val code = MONITOR_STATUS_MAINTENANCE
+        override val code = "M"
     },
     PAUSED {
-        override val code = MONITOR_STATUS_PAUSED
+        override val code = "R"
     },
 }

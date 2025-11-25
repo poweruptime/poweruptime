@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.monitor.core.MonitorData
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.MonitorData
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType

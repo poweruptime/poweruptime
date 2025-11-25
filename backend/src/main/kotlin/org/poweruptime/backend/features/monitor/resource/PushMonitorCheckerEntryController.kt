@@ -8,9 +8,10 @@ import jakarta.validation.constraints.Size
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.Database
-import org.poweruptime.backend.features.monitor.checker.push.PushMonitorCheckerEntry
+import org.poweruptime.backend.features.monitor.checkers.push.PushMonitorCheckerEntry
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -20,6 +21,7 @@ class PushMonitorCheckerEntryController {
     @Operation(summary = "Add push monitor entry")
     @GetMapping("/{pushId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     fun create(
         @PathVariable("pushId") pushId: String,
         @RequestParam("status") @NotNull status: MonitorStatus,

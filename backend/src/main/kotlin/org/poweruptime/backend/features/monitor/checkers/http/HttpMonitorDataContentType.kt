@@ -1,4 +1,4 @@
-package org.poweruptime.backend.features.monitor.checker.http
+package org.poweruptime.backend.features.monitor.checkers.http
 
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 
