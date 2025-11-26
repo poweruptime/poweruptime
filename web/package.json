@@ -60,7 +60,7 @@
     "eventsource": "4.1.0",
     "fastify": "5.4.0",
     "nanoid": "5.1.6",
-    "ngx-mat-select-search": "8.0.3",
+    "ngx-mat-select-search": "8.0.4",
     "ngx-sonner": "3.1.0",
     "ngx-transloco-markup": "6.0.2",
     "ngxtension": "6.0.0",
