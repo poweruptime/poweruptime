@@ -134,7 +134,7 @@ importers:
         version: 4.1.16
       '@tinymce/tinymce-angular':
         specifier: 9.1.1
-        version: 9.1.1(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/forms@20.3.13(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/platform-browser@20.3.13(@angular/animations@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tinymce@8.2.1)
+        version: 9.1.1(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/forms@20.3.13(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/platform-browser@20.3.13(@angular/animations@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tinymce@8.2.2)
       bootstrap-icons:
         specifier: 1.13.1
         version: 1.13.1
@@ -187,8 +187,8 @@ importers:
         specifier: 7.8.2
         version: 7.8.2
       tinymce:
-        specifier: 8.2.1
-        version: 8.2.1
+        specifier: 8.2.2
+        version: 8.2.2
       tslib:
         specifier: 2.8.1
         version: 2.8.1
@@ -4977,8 +4977,8 @@ packages:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
-  tinymce@8.2.1:
-    resolution: {integrity: sha512-gbZJH91f91jLfD39juLt/oiAMoaxwTquJMJZR0A1uzcOVrddo8hI/2Y+Uji0/vPudmbDxatnmfIG/9/j3KzP0g==}
+  tinymce@8.2.2:
+    resolution: {integrity: sha512-CFDSZwciMvFGW2czK/Xig1HcOGpXI0qcQMIqaIcG2F4RuuTdf+LQTreyEZunAJoFTQ9L0KAugOqL7OA5TJkoAA==}
 
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
@@ -7167,7 +7167,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.1.16
 
-  '@tinymce/tinymce-angular@9.1.1(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/forms@20.3.13(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/platform-browser@20.3.13(@angular/animations@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tinymce@8.2.1)':
+  '@tinymce/tinymce-angular@9.1.1(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/forms@20.3.13(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(@angular/platform-browser@20.3.13(@angular/animations@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(@angular/common@20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tinymce@8.2.2)':
     dependencies:
       '@angular/common': 20.3.13(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2)
@@ -7175,7 +7175,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
     optionalDependencies:
-      tinymce: 8.2.1
+      tinymce: 8.2.2
 
   '@trivago/prettier-plugin-sort-imports@6.0.0(prettier@3.6.2)':
     dependencies:
@@ -10064,7 +10064,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
-  tinymce@8.2.1: {}
+  tinymce@8.2.2: {}
 
   to-regex-range@5.0.1:
     dependencies:
