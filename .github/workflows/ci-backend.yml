@@ -47,6 +47,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Required for gradle license report
+      - uses: dafnik/setup-node-pnpm@v5
+        with:
+          install-ignore-scripts: true
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:

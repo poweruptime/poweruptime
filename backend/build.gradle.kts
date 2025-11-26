@@ -2,8 +2,9 @@ import com.github.gradle.node.pnpm.task.PnpmInstallTask
 import com.github.gradle.node.pnpm.task.PnpmTask
 import com.github.jk1.license.filter.DependencyFilter
 import com.github.jk1.license.filter.LicenseBundleNormalizer
+import com.github.jk1.license.importer.PnpmLicenseImporter
+import com.github.jk1.license.render.JsonReportRenderer
 import com.github.jk1.license.render.ReportRenderer
-import com.github.jk1.license.render.XmlReportRenderer
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.springframework.boot.gradle.tasks.run.BootRun
 
@@ -144,11 +145,11 @@ configurations.detekt {
 val licenseReportPath: String = project.layout.buildDirectory.dir("reports/dependency-license").get().asFile.path
 
 licenseReport {
-    renderers = arrayOf<ReportRenderer>(XmlReportRenderer("backend.xml", "Backend Licenses"))
+    importers = arrayOf(PnpmLicenseImporter("Frontend Licenses", listOf("web")))
+    renderers = arrayOf<ReportRenderer>(JsonReportRenderer("licenses.json"))
     filters = arrayOf<DependencyFilter>(LicenseBundleNormalizer())
     outputDir = licenseReportPath
 }
-
 
 node {
     download = true
@@ -172,7 +173,7 @@ val exportEmails = tasks.register<PnpmTask>("exportEmails") {
 
 val copyLicenseReport = tasks.register<Copy>("copyLicenseReport") {
     dependsOn("generateLicenseReport")
-    from("$licenseReportPath/backend.xml")
+    from("$licenseReportPath/licenses.json")
     into(project.layout.projectDirectory.dir("src/main/resources/static").asFile.path)
 }
 
@@ -186,7 +187,7 @@ val copyChangelogs = tasks.register<Copy>("copyChangelogs") {
  * For more details: https://www.baeldung.com/spring-boot-auto-property-expansion
  */
 tasks.processResources {
-    dependsOn(exportEmails, copyLicenseReport, copyChangelogs)
+    dependsOn(copyLicenseReport, exportEmails, copyChangelogs)
 
     copySpec {
         from("src/main/resources")
