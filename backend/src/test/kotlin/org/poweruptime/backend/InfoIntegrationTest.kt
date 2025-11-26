@@ -108,7 +108,6 @@ class InfoIntegrationTest(
                     contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$.javaRuntimeVersion") { exists() }
                     jsonPath("$.osName") { exists() }
-                    jsonPath("$.host") { exists() }
                     jsonPath("$.port") { exists() }
                     jsonPath("$.swaggerEnabled") { exists() }
                     jsonPath("$.mailEnabled") { exists() }

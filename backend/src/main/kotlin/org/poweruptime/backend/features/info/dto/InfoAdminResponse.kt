@@ -5,7 +5,6 @@ data class InfoAdminResponse(
     val osName: String,
     val osArch: String,
     val osVersion: String,
-    val host: String,
     val port: String,
     val swaggerEnabled: String,
     val mailEnabled: String,
@@ -17,4 +16,5 @@ data class InfoAdminResponse(
     val rateLimitEnabled: String,
     val rateLimitDurationInSeconds: String,
     val rateLimitTries: String,
+    val monitorAutoStartEnabled: String,
 )

@@ -99,7 +99,6 @@ class InfoController(
         osName = infoService.osName,
         osArch = infoService.osArch,
         osVersion = infoService.osVersion,
-        host = infoService.host,
         port = infoService.port,
         swaggerEnabled = infoService.swaggerEnabled,
         mailEnabled = infoService.mailEnabled,
@@ -111,5 +110,6 @@ class InfoController(
         rateLimitEnabled = infoService.rateLimitEnabled,
         rateLimitDurationInSeconds = infoService.rateLimitDurationInSeconds,
         rateLimitTries = infoService.rateLimitTries,
+        monitorAutoStartEnabled = infoService.monitorAutoStartEnabled,
     )
 }
