@@ -46,7 +46,7 @@
     "@ngx-dropzone/material": "20.0.0",
     "@ngxpert/input-otp": "1.0.3",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
-    "@tailwindcss/postcss": "4.1.16",
+    "@tailwindcss/postcss": "4.1.17",
     "@tinymce/tinymce-angular": "9.1.1",
     "bootstrap-icons": "1.13.1",
     "canvas-confetti": "1.9.4",
@@ -88,7 +88,7 @@
     "openapi-typescript": "7.10.1",
     "playwright-ng-schematics": "2.1.1",
     "postcss": "8.5.6",
-    "tailwindcss": "4.1.16",
+    "tailwindcss": "4.1.17",
     "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.3"
