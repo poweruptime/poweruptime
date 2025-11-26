@@ -163,8 +163,8 @@ importers:
         specifier: 20.0.0
         version: 20.0.0(@angular/core@20.3.13(@angular/compiler@20.3.13)(rxjs@7.8.2))
       eventsource:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.1.0
+        version: 4.1.0
       fastify:
         specifier: 5.4.0
         version: 5.4.0
@@ -3217,8 +3217,8 @@ packages:
     resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
     engines: {node: '>=18.0.0'}
 
-  eventsource@4.0.0:
-    resolution: {integrity: sha512-fvIkb9qZzdMxgZrEQDyll+9oJsyaVvY92I2Re+qK0qEJ+w5s0X3dtz+M0VAPOjP1gtU3iqWyjQ0G3nvd5CLZ2g==}
+  eventsource@4.1.0:
+    resolution: {integrity: sha512-2GuF51iuHX6A9xdTccMTsNb7VO0lHZihApxhvQzJB5A03DvHDd2FQepodbMaztPBmBcE/ox7o2gqaxGhYB9LhQ==}
     engines: {node: '>=20.0.0'}
 
   execa@9.6.0:
@@ -8212,7 +8212,7 @@ snapshots:
     dependencies:
       eventsource-parser: 3.0.6
 
-  eventsource@4.0.0:
+  eventsource@4.1.0:
     dependencies:
       eventsource-parser: 3.0.6
 
