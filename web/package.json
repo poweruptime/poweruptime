@@ -81,7 +81,7 @@
     "@types/canvas-confetti": "1.9.0",
     "@types/d3-shape": "3.1.7",
     "@types/node": "22.18.13",
-    "angular-eslint": "20.5.1",
+    "angular-eslint": "20.7.0",
     "autoprefixer": "10.4.22",
     "esbuild-visualizer": "0.7.0",
     "eslint": "9.39.1",
@@ -91,7 +91,7 @@
     "tailwindcss": "4.1.16",
     "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.3"
+    "typescript-eslint": "8.47.0"
   },
   "imports": {
     "#styles.css": "./src/styles.css"
