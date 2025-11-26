@@ -42,6 +42,8 @@ class InfoService(
     val rateLimitDurationInSeconds = getEnvProperty("poweruptime.rate-limit.duration-in-seconds")
     val rateLimitTries = getEnvProperty("poweruptime.rate-limit.tries")
 
+    val monitorAutoStartEnabled = getEnvProperty("poweruptime.monitor-autostart.enabled")
+
     val enabledOAuth2Providers = oAuth2ClientRegistrationService.getProviders().map { OAuth2ProviderResponse(it) }
     val oAuth2Enabled = enabledOAuth2Providers.isNotEmpty()
 

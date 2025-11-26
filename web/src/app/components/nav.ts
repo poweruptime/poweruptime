@@ -24,6 +24,7 @@ import {isMobileBreakpoints} from '@app/services/util';
 import {themeOptions} from '@app/util';
 
 import {AboutDialog} from './about-dialog';
+import {HelpDialog} from './help-dialog';
 import {TeamSelect} from './team-select';
 
 @Component({
@@ -187,6 +188,16 @@ import {TeamSelect} from './team-select';
             </mat-nav-list>
 
             <mat-nav-list>
+              <button
+                [matTooltip]="'general.help' | transloco"
+                (click)="openHelp()"
+                type="button"
+                mat-list-item>
+                <bi class="mt-1" name="question-circle" />
+              </button>
+            </mat-nav-list>
+
+            <mat-nav-list>
               <a
                 [matMenuTriggerFor]="menu"
                 [matTooltip]="'general.settings' | transloco"
@@ -315,6 +326,10 @@ export class Nav {
 
   openAbout() {
     this.dialog.open(AboutDialog);
+  }
+
+  openHelp() {
+    this.dialog.open(HelpDialog);
   }
 
   navigateToTeamDashboard(newTeamId: string) {
