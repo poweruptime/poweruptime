@@ -8,15 +8,15 @@ import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.TeamUserJoinUserAndInviterRecord
 import org.poweruptime.backend.features.team.model.TeamUserRecord
 import org.poweruptime.backend.features.team.model.rowToTeamUserJoinUserAndInviterRecord
 import org.poweruptime.backend.features.team.model.rowToTeamUserRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 fun TeamUser.findAll(
     pageable: Pageable,

@@ -85,7 +85,7 @@ export const InfiniteCheckResultsStore = signalStore(
                 query: {
                   ...query,
                   size: 100,
-                  sort: ['createdAt,desc'],
+                  sort: ['createdAt_desc'],
                 },
               },
             })

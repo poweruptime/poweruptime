@@ -5,6 +5,11 @@ object Config {
     const val RATE_LIMIT_DURATION_IN_SECONDS = "\${poweruptime.rate-limit.duration-in-seconds}"
     const val RATE_LIMIT_TRIES = "\${poweruptime.rate-limit.tries}"
 
+    const val DATASOURCE_DRIVER_CLASS_NAME = "\${spring.datasource.driver-class-name}"
+    const val DATASOURCE_URL = "\${spring.datasource.url}"
+    const val DATASOURCE_USERNAME = "\${spring.datasource.username}"
+    const val DATASOURCE_PASSWORD = "\${spring.datasource.password}"
+
     const val HOST = "\${poweruptime.host}"
     const val NOTIFICATION_TEMP_ENABLED = "\${poweruptime.notification-temp.enabled}"
     const val MONITOR_AUTOSTART_ENABLED = "\${poweruptime.monitor-autostart.enabled}"

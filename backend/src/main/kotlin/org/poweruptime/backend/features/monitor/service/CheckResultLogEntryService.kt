@@ -1,11 +1,11 @@
 package org.poweruptime.backend.features.monitor.service
 
 import org.jetbrains.exposed.v1.jdbc.insert
+import org.poweruptime.backend.core.domain.Page
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.model.*
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant

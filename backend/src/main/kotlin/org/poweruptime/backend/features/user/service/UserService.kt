@@ -4,9 +4,11 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.RandomGenerator
 import org.poweruptime.backend.core.utils.orThrowNotFound
@@ -24,8 +26,6 @@ import org.poweruptime.backend.features.user.domain.existsByEmail
 import org.poweruptime.backend.features.user.domain.findAll
 import org.poweruptime.backend.features.user.domain.findByEmail
 import org.poweruptime.backend.features.user.domain.isSetup
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -95,7 +95,7 @@ class UserService(
         return User.insertAndGetId {
             it[User.name] = dto.name
             it[User.email] = dto.email
-            it[User.passwordHash] = passwordEncoder.encode(onetimePassword)
+            it[User.passwordHash] = passwordEncoder.encode(onetimePassword)!!
             it[User.activated] = activated
             it[User.role] = dto.role
             it[User.forcePasswordChange] = forcePasswordChange
@@ -128,7 +128,7 @@ class UserService(
                 it[User.email] = dto.email
 
                 if (newPassword != null) {
-                    it[User.passwordHash] = passwordEncoder.encode(newPassword)
+                    it[User.passwordHash] = passwordEncoder.encode(newPassword)!!
                 }
 
                 val activated = if (dto.sendInvitation) true else dto.activated

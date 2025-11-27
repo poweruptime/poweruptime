@@ -3,9 +3,9 @@ package org.poweruptime.backend.features.tag
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.findById
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.poweruptime.backend.core.dto.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

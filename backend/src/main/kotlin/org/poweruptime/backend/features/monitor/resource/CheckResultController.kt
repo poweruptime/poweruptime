@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
@@ -31,9 +32,6 @@ import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.buildPingTimelineResponse
 import org.poweruptime.backend.features.monitor.service.generatePingTimelineEntries
 import org.poweruptime.backend.features.team.service.TeamService
-import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -61,7 +59,7 @@ class CheckResultController(
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         auth: Authentication,
-        @ParameterObject @PageableDefault pageable: Pageable,
+        pageable: Pageable,
         @RequestParam("monitorId") publicMonitorId: String?,
         @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("onlyChanges") onlyChanges: Boolean = false,

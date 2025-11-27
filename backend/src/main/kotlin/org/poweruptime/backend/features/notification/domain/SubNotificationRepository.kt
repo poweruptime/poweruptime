@@ -10,7 +10,9 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -25,8 +27,6 @@ import org.poweruptime.backend.features.notification.model.rowToNotificationReco
 import org.poweruptime.backend.features.notification.model.rowToSubNotificationRecord
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import java.time.Instant
 
 fun SubNotification.findByNotificationId(

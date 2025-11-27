@@ -127,7 +127,7 @@ export function withPaginatedTable<EntityType>({
           ({
             page: store.page(),
             size: store.size(),
-            sort: [`${store.sortBy()},${store.sortDirection()}`],
+            sort: [`${store.sortBy()}${store.sortDirection() ? `_${store.sortDirection()}` : ''}`],
           }) satisfies PaginationDto,
       ),
     })),

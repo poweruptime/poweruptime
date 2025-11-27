@@ -166,7 +166,7 @@ export const LastCheckResultsStore = signalStore(
                       monitorId,
                       page: 0,
                       size: 22,
-                      sort: ['createdAt,desc'],
+                      sort: ['createdAt_desc'],
                     },
                   },
                 })

@@ -1,8 +1,11 @@
 package org.poweruptime.backend.configuration
 
+import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.spring.transaction.SpringTransactionManager
+import org.poweruptime.backend.core.utils.Config
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor
@@ -13,8 +16,25 @@ private typealias PlatformDataSource = HikariDataSource
 @Configuration
 @EnableTransactionManagement
 class Exposed {
-
     private final val logger = KotlinLogging.logger {}
+
+    @Bean
+    fun dataSource(
+        @Value(Config.DATASOURCE_DRIVER_CLASS_NAME) dataSourceDriverClassName: String?,
+        @Value(Config.DATASOURCE_URL) url: String,
+        @Value(Config.DATASOURCE_USERNAME) dataSourceUsername: String,
+        @Value(Config.DATASOURCE_PASSWORD) dataSourcePassword: String,
+    ): PlatformDataSource = HikariDataSource(
+        HikariConfig().apply {
+            jdbcUrl = url
+            username = dataSourceUsername
+            password = dataSourcePassword
+            driverClassName = dataSourceDriverClassName
+            poolName = "poweruptimePool"
+            maximumPoolSize = 10
+            minimumIdle = 5
+        },
+    )
 
     @Bean
     fun transactionManager(dataSource: PlatformDataSource): SpringTransactionManager =

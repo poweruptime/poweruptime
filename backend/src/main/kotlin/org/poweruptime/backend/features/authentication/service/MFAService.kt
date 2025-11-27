@@ -119,7 +119,7 @@ class MFAService(
 
         MFABackupCode.batchInsert(rawBackupCodes) { rawBackupCode ->
             this[MFABackupCode.mfaId] = mfa.id
-            this[MFABackupCode.codeHash] = passwordEncoder.encode(rawBackupCode)
+            this[MFABackupCode.codeHash] = passwordEncoder.encode(rawBackupCode)!!
             this[MFABackupCode.valid] = true
         }
 

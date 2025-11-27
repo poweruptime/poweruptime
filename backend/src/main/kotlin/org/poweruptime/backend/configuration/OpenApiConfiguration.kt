@@ -30,7 +30,7 @@ class OpenApiConfiguration(
             description = ""
             contact = Contact().apply {
                 name = "poweruptime"
-                url = "https://github.com/poweruptime"
+                url = "https://poweruptime.org"
             }
         },
     ).servers(

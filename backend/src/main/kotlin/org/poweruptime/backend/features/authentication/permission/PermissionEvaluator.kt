@@ -49,13 +49,11 @@ class PermissionEvaluator(
     }
 
     override fun hasPermission(
-        authentication: Authentication?,
-        targetId: Serializable?,
-        targetType: String?,
-        permission: Any?
-    ): Boolean {
-        return false
-    }
+        authentication: Authentication,
+        targetId: Serializable,
+        targetType: String,
+        permission: Any
+    ): Boolean = false
 
     @Transactional(readOnly = true)
     fun checkPermission(

@@ -6,15 +6,15 @@ import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 fun NotificationMethod.findByMonitorId(
     monitorId: ULong

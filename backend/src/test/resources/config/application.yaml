@@ -15,6 +15,9 @@ spring:
     allow-bean-definition-overriding: true
     banner-mode: off
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
   sql:
     init:
       mode: never
@@ -47,7 +50,7 @@ spring:
 
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+      - org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration
 
 springdoc:
   api-docs:

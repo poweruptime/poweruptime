@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.model.SystemRole
@@ -16,8 +17,6 @@ import org.poweruptime.backend.features.user.UpdateUserDto
 import org.poweruptime.backend.features.user.UserResponse
 import org.poweruptime.backend.features.user.service.UserService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -49,7 +48,7 @@ class UserController(
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     fun getAll(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("search") search: String?,
         @RequestParam("activated") activated: Boolean?,
         @RequestParam("role") role: SystemRole?,

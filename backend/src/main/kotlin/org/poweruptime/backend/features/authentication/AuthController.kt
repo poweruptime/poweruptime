@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.core.exceptions.*
 import org.poweruptime.backend.core.resource.CustomHttpHeader
+import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AccessTokenGenerationService
 import org.poweruptime.backend.features.authentication.service.AuthService
@@ -86,7 +87,7 @@ class AuthController(
     fun refresh(@Valid @RequestBody request: RefreshJwtWithSessionTokenDto): JwtResponse {
         val authentication = refreshTokenAuthProvider.authenticate(
             BearerTokenAuthenticationToken(request.refreshToken),
-        )
+        ).orThrowNotFound()
 
         val sessionToken = sessionService.refreshSession(
             token = request.refreshToken,

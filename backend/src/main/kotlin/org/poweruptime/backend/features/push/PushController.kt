@@ -19,13 +19,13 @@ import reactor.core.publisher.Flux
 
 @RestController
 @RequestMapping("/v1/sse")
-@Tag(name = "SSE API")
+@Tag(name = "Server Side Events API")
 class PushController(
     private val pushService: PushService,
 ) {
 
     @Operation(
-        summary = "Get push",
+        summary = "Get pushes",
         security = [SecurityRequirement(name = BEARER_AUTH)],
     )
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])

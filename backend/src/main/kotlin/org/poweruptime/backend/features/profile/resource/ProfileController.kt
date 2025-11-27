@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
@@ -22,8 +23,6 @@ import org.poweruptime.backend.features.profile.dto.ProfileResponse
 import org.poweruptime.backend.features.profile.dto.UpdatePasswordDto
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -92,7 +91,7 @@ class ProfileController(
     @ResponseStatus(HttpStatus.OK)
     fun getSessions(
         auth: Authentication,
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
     ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
         pageable = pageable,
         userId = auth.userId(),

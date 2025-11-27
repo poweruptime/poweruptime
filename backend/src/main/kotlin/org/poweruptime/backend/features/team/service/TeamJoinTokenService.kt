@@ -1,6 +1,8 @@
 package org.poweruptime.backend.features.team.service
 
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
+import org.poweruptime.backend.core.domain.Page
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.mail.emails.JoinTeamEmail
 import org.poweruptime.backend.features.mail.service.SystemEmailService
@@ -14,8 +16,6 @@ import org.poweruptime.backend.features.team.model.TeamJoinTokenJoinInviteeAndIn
 import org.poweruptime.backend.features.team.model.TeamJoinTokenRecord
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant

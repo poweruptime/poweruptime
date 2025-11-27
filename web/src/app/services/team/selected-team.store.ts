@@ -134,7 +134,7 @@ export const SelectedTeamStore = signalStore(
                 query: {
                   ...query,
                   size: 60,
-                  sort: ['personalUser.id,ASC', 'name,ASC,ignorecase'],
+                  sort: ['personalUser.id_asc', 'name_asc'],
                 },
               },
             })

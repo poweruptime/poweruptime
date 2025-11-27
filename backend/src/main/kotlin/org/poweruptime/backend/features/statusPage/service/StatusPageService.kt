@@ -8,8 +8,10 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.includeDeleted
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.fileUpload.File
@@ -29,8 +31,6 @@ import org.poweruptime.backend.features.statusPage.model.rowToStatusPageDomainNa
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
 import org.poweruptime.backend.features.team.service.TeamService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant

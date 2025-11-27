@@ -8,6 +8,7 @@ import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.BooleanResponse
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.permission.STATUS_PAGE_ADMIN
@@ -28,8 +29,6 @@ import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
 import org.poweruptime.backend.features.statusPage.service.StatusPageService
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Transactional
@@ -73,7 +72,7 @@ class StatusPageController(
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
     fun getAll(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("teamId") publicTeamId: String,
         @RequestParam("name") name: String?,
         @RequestParam("deleted") deleted: Boolean = false,
@@ -85,7 +84,7 @@ class StatusPageController(
             deleted = deleted,
         )
 
-        val statusPageIds = statusPages.map { it.id }.toList()
+        val statusPageIds = statusPages.map { it.id }.content
 
         val domainNamesPerStatusPage =
             StatusPageDomainName.findByStatusPage(statusPageIds).groupBy { it.statusPageId }

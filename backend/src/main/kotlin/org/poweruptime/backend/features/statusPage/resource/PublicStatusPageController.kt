@@ -2,6 +2,7 @@ package org.poweruptime.backend.features.statusPage.resource
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.utils.orThrowNotFound
@@ -16,8 +17,6 @@ import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
 import org.poweruptime.backend.features.statusPage.service.StatusPageGroupService
 import org.poweruptime.backend.features.statusPage.service.StatusPageService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -64,7 +63,7 @@ class PublicStatusPageController(
     @GetMapping("/{slug}/monitor")
     @ResponseStatus(HttpStatus.OK)
     fun getAllByStatusPage(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @PathVariable("slug") statusPageSlug: String,
         @RequestParam("usedInStatusPageGroupIds") usedInStatusPageGroupIds: Set<String>?,
     ): PaginatedResponse<PublicMonitorMinResponse> {
@@ -77,7 +76,7 @@ class PublicStatusPageController(
         )
 
         val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(
-            monitors.toList().map { it.monitor.id },
+            monitors.map { it.monitor.id }.content,
             35,
         )
 

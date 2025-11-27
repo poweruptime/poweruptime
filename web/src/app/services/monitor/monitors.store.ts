@@ -120,7 +120,7 @@ export const InfiniteMonitorsStore = signalStore(
                   teamId,
                   page,
                   size: pageSize,
-                  sort: ['status,ASC', 'name,ASC,ignorecase'],
+                  sort: ['status_asc', 'name_asc'],
                 },
               },
             })

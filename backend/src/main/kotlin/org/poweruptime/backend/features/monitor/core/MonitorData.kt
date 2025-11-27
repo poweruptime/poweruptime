@@ -11,7 +11,11 @@ import org.poweruptime.backend.features.monitor.checkers.ssl.SSLCertificateMonit
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import kotlin.reflect.KClass
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "_type",
+)
 @JsonTypeIdResolver(MonitorDataTypeResolver::class)
 abstract class MonitorData(
     @Suppress("PropertyName", "ConstructorParameterNaming")

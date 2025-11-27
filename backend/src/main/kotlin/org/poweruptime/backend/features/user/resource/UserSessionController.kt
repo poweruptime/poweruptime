@@ -6,14 +6,13 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.SessionResponse
 import org.poweruptime.backend.features.authentication.service.SessionService
 import org.poweruptime.backend.features.user.service.UserService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -35,7 +34,7 @@ class UserSessionController(
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getSessions(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("userId") userId: String,
     ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
         pageable = pageable,

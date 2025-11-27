@@ -72,7 +72,7 @@ export class NotificationMethodEditPage {
         search: this.searchMonitor(),
         page: 0,
         size: 40,
-        sort: ['name,ASC,ignorecase'],
+        sort: ['name_asc'],
       })),
     );
   }

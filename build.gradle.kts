@@ -156,6 +156,10 @@ tasks.register("releaseBeta") {
             )
         }
 
+        println("""Confirm changelog changes""")
+
+        System.`in`.bufferedReader().readLine()
+
         commitChanges(
             "chore: set POWERUPTIME_VERSION to $tagName",
             listOf(
@@ -201,6 +205,10 @@ tasks.register("releaseProd") {
                 "./changelogs/CHANGELOG.md"
             )
         }
+
+        println("""Confirm changelog changes""")
+
+        System.`in`.bufferedReader().readLine()
 
         commitChanges(
             "chore: set POWERUPTIME_VERSION to $version",

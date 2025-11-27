@@ -6,11 +6,13 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.domain.findIdsByTeamId
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.team.domain.findAll
@@ -21,8 +23,6 @@ import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

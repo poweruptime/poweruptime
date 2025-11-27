@@ -137,7 +137,7 @@ export class TeamSelect {
         size: 10,
         name: this.teamsStore.name(),
         role: this.teamsStore.role(),
-        sort: ['personalUser.id,ASC', 'name,ASC,ignorecase'],
+        sort: ['personalUser.id_asc', 'name_asc'],
       })),
     );
   }
