@@ -18,6 +18,7 @@ import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsSer
 import org.poweruptime.backend.features.monitor.service.MonitorDataService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.dto.NotificationResponse
+import org.poweruptime.backend.features.notification.model.NotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodRecord
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
 import org.poweruptime.backend.features.notification.service.NotificationService
@@ -96,12 +97,12 @@ class MonitorNotificationHandler(
     ): List<SubNotificationJoinMethodRecord>? {
         val decision = decideNotificationAction(monitor, checkResult, oldMonitorStatus, context)
 
-        logNotificationDecision(checkResult.id, decision)
-
         return when (decision) {
             is NotificationAction.Send -> createAndSendNotification(monitor, checkResult, team, decision)
             is NotificationAction.Skip -> null
-        }
+        }.also { pair ->
+            logNotificationDecision(checkResult.id, decision, pair?.first?.publicId)
+        }?.second
     }
 
     private fun decideNotificationAction(
@@ -152,7 +153,7 @@ class MonitorNotificationHandler(
         checkResult: CheckResultRecord,
         team: TeamRecord,
         decision: NotificationAction.Send
-    ): List<SubNotificationJoinMethodRecord> {
+    ): Pair<NotificationRecord, List<SubNotificationJoinMethodRecord>> {
         val notificationJoin = notificationService.send(monitor.id, checkResult)
         val subNotifications = subNotificationService.getByNotificationId(notificationJoin.notification.id)
 
@@ -166,7 +167,7 @@ class MonitorNotificationHandler(
                 "sending ${if (decision.isResend) "resend" else "normal"} notifications"
         }
 
-        return subNotifications
+        return notificationJoin.notification to subNotifications
     }
 
     private fun MonitorRecord.toFullResponse(team: TeamRecord) = MonitorFullResponse(
@@ -183,7 +184,11 @@ class MonitorNotificationHandler(
         ).myFormat(),
     )
 
-    private fun logNotificationDecision(checkResultId: ULong, decision: NotificationAction) {
+    private fun logNotificationDecision(
+        checkResultId: ULong,
+        decision: NotificationAction,
+        notificationId: String?
+    ) {
         when (decision) {
             is NotificationAction.Send -> {
                 checkResultLogEntryService.action(
@@ -194,7 +199,10 @@ class MonitorNotificationHandler(
                     } else {
                         "Queuing notifications (${decision.reason})"
                     },
-                    properties = mapOf("result" to true.toString()),
+                    properties = buildMap {
+                        put("result", true.toString())
+                        notificationId?.let { put("notificationId", it) }
+                    },
                 )
             }
             is NotificationAction.Skip -> {
