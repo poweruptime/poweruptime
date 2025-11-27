@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.5.0-beta-1764246432 - 2025-11-27
+
+### <!-- 0 -->🚀 Features
+
+- Help center (#465) by Dominik ([974d957](https://github.com/poweruptime/poweruptime/commit/974d95747f98d3f6dcd5105d6393f1e4c872caf4))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Run fastify on 80 and 4200 port (#456) by Dominik ([b978d82](https://github.com/poweruptime/poweruptime/commit/b978d82ba6393f2bb246d8ad232ab0b4097abd39))
+- Mobile monitor table by Dafnik ([b30db12](https://github.com/poweruptime/poweruptime/commit/b30db1299854f3247a3450f7d27635465d394e68)), feat:add new template variables
+  previousStatusLabel and previousStatusDuration
+- NotificationId missing in check result logs by Dafnik ([f1bf51a](https://github.com/poweruptime/poweruptime/commit/f1bf51ac8e4c23a860e7f744280b6cc8f7fbd8c6))
+
+### <!-- 2 -->🚜 Refactor
+
+- MonitorListener and NotificationListener by Dafnik ([ebf7cde](https://github.com/poweruptime/poweruptime/commit/ebf7cdeb2c0dde53c4ac192fb52c4ef3479a9d82))
+- SupporterService and VersionChecker to RestClient by Dafnik ([878ba51](https://github.com/poweruptime/poweruptime/commit/878ba5112db3e356c5c7437091e7d14e4237d12e))
+- Frontend license reporter (#464) by Dominik ([2381305](https://github.com/poweruptime/poweruptime/commit/2381305eede09ffab3ea0d8bafeec51b98ead633))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1763646171...0.5.0-beta-1764246432)
+
 ## 0.5.0-beta-1763646171 - 2025-11-20
 
 ### <!-- 1 -->🐛 Bug Fixes
