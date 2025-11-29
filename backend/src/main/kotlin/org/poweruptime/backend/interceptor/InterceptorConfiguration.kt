@@ -1,9 +1,11 @@
 package org.poweruptime.backend.interceptor
 
 import org.poweruptime.backend.Routes
+import org.poweruptime.backend.core.dto.PageableArgumentResolver
 import org.poweruptime.backend.core.utils.Config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
@@ -15,7 +17,12 @@ class InterceptorConfiguration(
     @Value(Config.HOST) val host: String,
     private val ipBasedRateLimitService: IPBasedRateLimitService,
     private val userIdBasedRateLimitService: UserIdBasedRateLimitService,
+    private val pageableArgumentResolver: PageableArgumentResolver
 ) : WebMvcConfigurer {
+
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(pageableArgumentResolver)
+    }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry

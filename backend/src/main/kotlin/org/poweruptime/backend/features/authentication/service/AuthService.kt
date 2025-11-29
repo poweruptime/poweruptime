@@ -48,7 +48,7 @@ class AuthService(
     @Transactional
     fun updateCredentials(userId: ULong, credentials: String, forcePasswordChange: Boolean? = null): UserRecord =
         User.update({ User.id eq userId }) {
-            it[User.passwordHash] = passwordEncoder.encode(credentials)
+            it[User.passwordHash] = passwordEncoder.encode(credentials)!!
             if (forcePasswordChange != null) {
                 it[User.forcePasswordChange] = forcePasswordChange
             }

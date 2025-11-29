@@ -5,6 +5,7 @@ import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findAll
 import org.poweruptime.backend.core.domain.findByIdOrThrow
@@ -12,6 +13,7 @@ import org.poweruptime.backend.core.domain.findByPublicId
 import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.MonitorScheduler
@@ -38,8 +40,6 @@ import org.poweruptime.backend.features.notification.model.rowToNotificationMeth
 import org.poweruptime.backend.features.tag.MonitorTag
 import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.model.Team
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

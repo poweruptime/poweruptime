@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
@@ -27,8 +28,6 @@ import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -74,7 +73,7 @@ class TeamController(
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         authentication: Authentication,
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("name") name: String?,
         @RequestParam("role") role: TeamRole?,
         @RequestParam("deleted") deleted: Boolean = false,
@@ -91,7 +90,7 @@ class TeamController(
             role = role,
         )
 
-        val dashboards = monitorService.getTeamDashboards(teams.map { it.id }.toList())
+        val dashboards = monitorService.getTeamDashboards(teams.map { it.id }.content)
 
         return teams.toDto {
             it.toResponse(

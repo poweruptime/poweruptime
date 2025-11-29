@@ -120,17 +120,11 @@ class HttpMonitorChecker(
             .requestFactory(requestFactory)
             .build()
 
-        val headers = buildHeaders(httpMonitorCheckerData)
-
         return try {
             val entity = customRestClient
                 .method(httpMonitorCheckerData.method.toHttpMethod())
                 .uri(httpMonitorCheckerData.url)
-                .headers { headersConsumer ->
-                    headers.forEach { (key, values) ->
-                        headersConsumer[key] = values.first()
-                    }
-                }
+                .headers { it.applyHeaders(httpMonitorCheckerData) }
                 .body(httpMonitorCheckerData.body ?: "")
                 .retrieve()
                 .toEntity(String::class.java)
@@ -202,28 +196,26 @@ class HttpMonitorChecker(
         return HttpComponentsClientHttpRequestFactory(httpClient)
     }
 
-    private fun buildHeaders(
+    private fun HttpHeaders.applyHeaders(
         httpMonitorCheckerData: HttpMonitorDataRecord,
-    ): HttpHeaders {
-        return HttpHeaders().apply {
-            add("Accept", "*/*")
-            add(
-                "Content-Type",
-                when (httpMonitorCheckerData.contentType) {
-                    HttpMonitorDataContentType.HTML -> "text/html"
-                    HttpMonitorDataContentType.JSON ->
-                        "application/json"
-                    HttpMonitorDataContentType.XML -> "application/xml"
-                },
-            )
+    ) {
+        add("Accept", "*/*")
+        add(
+            "Content-Type",
+            when (httpMonitorCheckerData.contentType) {
+                HttpMonitorDataContentType.HTML -> "text/html"
+                HttpMonitorDataContentType.JSON ->
+                    "application/json"
+                HttpMonitorDataContentType.XML -> "application/xml"
+            },
+        )
 
-            httpMonitorCheckerData.authType?.let {
-                when (it) {
-                    HttpMonitorDataAuthType.BASIC -> addBasicAuthString(
-                        httpMonitorCheckerData.basicAuthDataUsername!!,
-                        httpMonitorCheckerData.basicAuthDataPassword!!,
-                    )
-                }
+        httpMonitorCheckerData.authType?.let {
+            when (it) {
+                HttpMonitorDataAuthType.BASIC -> addBasicAuthString(
+                    httpMonitorCheckerData.basicAuthDataUsername!!,
+                    httpMonitorCheckerData.basicAuthDataPassword!!,
+                )
             }
         }
     }

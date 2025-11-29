@@ -11,6 +11,7 @@ import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.IdResponse
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
@@ -34,8 +35,6 @@ import org.poweruptime.backend.features.team.service.TeamJoinTokenService
 import org.poweruptime.backend.features.team.service.TeamService
 import org.poweruptime.backend.features.user.service.UserService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -68,7 +67,7 @@ class TeamUserController(
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
     fun getUsers(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @PathVariable("teamId") publicTeamId: String,
     ): PaginatedResponse<TeamUserResponse> =
         TeamUser.findAll(pageable, teamService.getIdByPublicId(publicTeamId))
@@ -83,7 +82,7 @@ class TeamUserController(
     @GetMapping("/invites")
     @ResponseStatus(HttpStatus.OK)
     fun getInvites(
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @PathVariable("teamId") publicTeamId: String,
     ): PaginatedResponse<TeamJoinTokenResponse> = teamJoinTokenService.getByTeamIdPaginated(
         pageable,

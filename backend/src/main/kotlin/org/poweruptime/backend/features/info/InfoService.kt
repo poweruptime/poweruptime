@@ -14,8 +14,8 @@ class InfoService(
     private val environment: Environment,
 ) {
     val name: String = getEnvProperty("spring.application.name")
-    val version: String = buildProperties.version
-    val buildTime: Instant = buildProperties.time
+    val version: String = buildProperties.version!!
+    val buildTime: Instant = buildProperties.time!!
 
     val javaRuntimeVersion = getEnvProperty("java.version")
 

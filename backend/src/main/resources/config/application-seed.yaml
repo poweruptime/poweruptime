@@ -54,7 +54,7 @@ spring:
 
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+      - org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration
 
 springdoc:
   api-docs:

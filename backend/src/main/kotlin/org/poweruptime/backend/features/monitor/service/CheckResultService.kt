@@ -2,8 +2,10 @@ package org.poweruptime.backend.features.monitor.service
 
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
@@ -18,8 +20,6 @@ import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant

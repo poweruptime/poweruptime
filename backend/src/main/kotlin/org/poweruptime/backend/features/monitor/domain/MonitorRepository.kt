@@ -13,8 +13,10 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
@@ -30,8 +32,6 @@ import org.poweruptime.backend.features.tag.Tag
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 fun Monitor.updateStatus(ids: List<ULong>, newStatus: MonitorStatus): Int =
     update({ id inList ids }) {

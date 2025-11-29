@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.configuration.BEARER_AUTH
 import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.features.authentication.domain.PermissionsService
@@ -14,8 +15,6 @@ import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -37,7 +36,7 @@ class TagController(
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         auth: Authentication,
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("name") name: String?,
     ): PaginatedResponse<TagDto> {

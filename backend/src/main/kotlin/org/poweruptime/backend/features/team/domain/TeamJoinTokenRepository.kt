@@ -9,7 +9,9 @@ import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
@@ -17,8 +19,6 @@ import org.poweruptime.backend.features.team.model.TeamJoinToken
 import org.poweruptime.backend.features.team.model.TeamJoinTokenJoinInviteeAndInviter
 import org.poweruptime.backend.features.team.model.TeamJoinTokenRecord
 import org.poweruptime.backend.features.team.model.rowToTeamJoinTokenRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import java.time.Instant
 
 fun TeamJoinToken.countByTeamAndInviteeId(

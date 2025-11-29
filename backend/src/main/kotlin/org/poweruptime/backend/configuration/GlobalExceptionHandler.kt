@@ -137,7 +137,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         webRequest,
     )
 
-    private fun <T> buildResponse(
+    private fun <T : Any> buildResponse(
         ex: Exception,
         status: HttpStatusCode,
         body: T,

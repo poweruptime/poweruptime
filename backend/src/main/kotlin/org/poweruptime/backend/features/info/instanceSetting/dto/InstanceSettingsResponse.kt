@@ -1,10 +1,12 @@
 package org.poweruptime.backend.features.info.instanceSetting.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class InstanceSettingsResponse(
     val supportLookup: String?,
     val showSupportBadge: Boolean,
     val timezone: String,
-    val isUserAllowedToCreateTeams: Boolean,
+    @JsonProperty("isUserAllowedToCreateTeams") val isUserAllowedToCreateTeams: Boolean,
     val checkResultRetentionPeriodInDays: Int,
     val checkResultLogRetentionPeriodInDays: Int,
     val versionCheckEnabled: Boolean,

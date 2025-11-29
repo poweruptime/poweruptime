@@ -5,6 +5,7 @@ import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deleteById
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findByPublicId
@@ -12,6 +13,7 @@ import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.findIdsByPublicIdsOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
@@ -38,8 +40,6 @@ import org.poweruptime.backend.features.notification.model.SubNotificationRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.MessageDigest

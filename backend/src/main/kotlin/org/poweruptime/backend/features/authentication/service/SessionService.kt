@@ -3,8 +3,10 @@ package org.poweruptime.backend.features.authentication.service
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.authentication.SessionInformationMissingException
 import org.poweruptime.backend.features.authentication.SessionTokenIncorrectException
 import org.poweruptime.backend.features.authentication.domain.deleteAllUpdatedAtBefore
@@ -26,8 +28,6 @@ import org.poweruptime.backend.features.authentication.model.Session
 import org.poweruptime.backend.features.authentication.model.SessionRecord
 import org.poweruptime.backend.features.authentication.model.UserRecord
 import org.poweruptime.backend.features.authentication.model.rowToRefreshTokenRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

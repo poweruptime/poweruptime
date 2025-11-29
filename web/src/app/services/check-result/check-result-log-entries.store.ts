@@ -87,7 +87,7 @@ export const CheckResultLogEntriesStore = signalStore(
                 query: {
                   page: 0,
                   size: 100,
-                  sort: ['createdAt,asc'],
+                  sort: ['createdAt_asc'],
                 },
               },
             })

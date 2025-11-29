@@ -8,12 +8,12 @@ import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 fun Tag.findByTeamIdAndNames(teamId: ULong, names: List<String>): List<TagRecord> =
     selectAll().where { (Tag.teamId eq teamId) and (Tag.name inList names) }.map {

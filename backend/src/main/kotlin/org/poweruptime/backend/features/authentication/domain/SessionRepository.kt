@@ -7,7 +7,9 @@ import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.model.RefreshToken
 import org.poweruptime.backend.features.authentication.model.Session
@@ -16,8 +18,6 @@ import org.poweruptime.backend.features.authentication.model.SessionRecord
 import org.poweruptime.backend.features.authentication.model.User
 import org.poweruptime.backend.features.authentication.model.rowToSessionRecord
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import java.time.Instant
 
 fun Session.findByRefreshToken(refreshToken: String): SessionRecord? =

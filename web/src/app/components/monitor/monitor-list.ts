@@ -181,7 +181,7 @@ export class MonitorList {
       computed(() => ({
         ...this.monitorsStore.pageable(),
         teamId: this.teamId(),
-        sort: ['status,ASC', 'name,ASC,ignorecase'],
+        sort: ['status_asc', 'name_asc'],
       })),
     );
 

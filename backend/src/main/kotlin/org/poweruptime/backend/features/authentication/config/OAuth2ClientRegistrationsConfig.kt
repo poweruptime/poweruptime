@@ -2,8 +2,8 @@ package org.poweruptime.backend.features.authentication.config
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.capitalize
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider
@@ -47,7 +47,7 @@ class OAuth2ClientRegistrationsConfig(
                             .getBuilder(registrationId)
                             .clientId(registration.clientId!!)
                             .clientSecret(registration.clientSecret!!)
-                            .scope(*registration.scope.toTypedArray())
+                            .scope(*registration.scope!!.toTypedArray())
                             .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
                             .build()
 
@@ -74,7 +74,7 @@ class OAuth2ClientRegistrationsConfig(
                                 registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
                             )
                             .clientName(registration.clientName ?: registrationId.capitalize())
-                            .scope(*registration.scope.toTypedArray())
+                            .scope(*registration.scope!!.toTypedArray())
                             .authorizationUri(it.authorizationUri)
                             .issuerUri(it.issuerUri)
                             .jwkSetUri(it.jwkSetUri)

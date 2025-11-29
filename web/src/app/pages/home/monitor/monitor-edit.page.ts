@@ -83,7 +83,7 @@ export class MonitorEditPage {
         teamId: this.selectedTeamStore.selectedTeamId(),
         page: 0,
         size: 200,
-        sort: ['name,ASC,ignorecase'],
+        sort: ['name_asc'],
         useByDefault: true,
       })),
     );
@@ -94,7 +94,7 @@ export class MonitorEditPage {
         search: this.searchNotificationMethod(),
         page: 0,
         size: 40,
-        sort: ['name,ASC,ignorecase'],
+        sort: ['name_asc'],
       })),
     );
 

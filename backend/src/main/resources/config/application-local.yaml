@@ -54,7 +54,7 @@ spring:
 
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+      - org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration
 
   security:
     oauth2:
@@ -103,9 +103,9 @@ springdoc:
 logging:
   level:
     org.poweruptime: DEBUG
-    Exposed: DEBUG
+#    Exposed: DEBUG
 #    org.springframework.security: DEBUG
-#    org.springframework.web: DEBUG
+    org.springframework.web: DEBUG
 
 management:
   endpoints:

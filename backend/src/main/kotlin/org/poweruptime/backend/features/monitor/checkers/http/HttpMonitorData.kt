@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor.checkers.http
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
@@ -149,6 +150,7 @@ data class HttpMonitorDataRecord(
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     val basicAuthDataPassword: String? = null,
 ) : MonitorData(MonitorType.HTTP) {
+    @JsonIgnore
     fun getAllowedStatusCodesRanges(): List<IntRange> = allowedStatusCodeRanges.map { statusCodeRange ->
         val parts = statusCodeRange.split("-").map(String::trim)
         require(parts.size == 2)

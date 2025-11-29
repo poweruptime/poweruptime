@@ -8,15 +8,15 @@ import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.statusPage.model.StatusPage
 import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
 import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? =
     innerJoin(

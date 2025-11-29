@@ -29,7 +29,7 @@ export const TagsStore = signalStore(
                   ...query,
                   page: query.page ?? 0,
                   size: query.size ?? 10,
-                  sort: ['name,ASC,ignorecase'],
+                  sort: ['name_asc'],
                 },
               },
             })

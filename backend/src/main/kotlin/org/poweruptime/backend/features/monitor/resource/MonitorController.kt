@@ -9,6 +9,7 @@ import org.poweruptime.backend.core.REQUIRED_AUTH
 import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.dto.CloneDto
+import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
@@ -33,8 +34,6 @@ import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -80,7 +79,7 @@ class MonitorController(
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         auth: Authentication,
-        @ParameterObject @PageableDefault pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("name") name: String?,
         @RequestParam("enabledNotificationMethodIds") publicEnabledNotificationMethodIds: Set<String>?,
@@ -137,7 +136,7 @@ class MonitorController(
 
         val monitorIds = monitors.map {
             it.monitor.id
-        }.toList()
+        }.content
 
         val tagsPerMonitor = tagService.getByMonitorId(monitorIds)
 
