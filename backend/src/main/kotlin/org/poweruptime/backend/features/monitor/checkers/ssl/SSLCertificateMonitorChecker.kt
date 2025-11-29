@@ -9,7 +9,7 @@ import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.team.service.TeamSettingService
 import java.io.IOException
-import java.net.URL
+import java.net.URI
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertPathValidatorException
@@ -119,7 +119,7 @@ private fun makeRequest(url: String): List<X509Certificate> {
         init(null, arrayOf<TrustManager>(permissiveTm), SecureRandom())
     }
 
-    val url = URL(url)
+    val url = URI(url).toURL()
     val conn = (url.openConnection() as HttpsURLConnection).apply {
         sslSocketFactory = sslContext.socketFactory
         connectTimeout = 4_000
