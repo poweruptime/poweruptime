@@ -157,7 +157,7 @@ class AppriseSender(
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .toEntity(String::class.java)
+            .toBodilessEntity()
         null
     } catch (e: Throwable) {
         e.message ?: "Unknown error"

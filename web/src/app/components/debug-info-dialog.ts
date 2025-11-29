@@ -72,7 +72,7 @@ Is-Setup: ${this.infoStore.isSetup()}
 Is Supporter: ${this.infoStore.support()?.supportsSince != null}
 
 ${this.header('Instance settings')}
-isUserAllowedToCreateTeams: ${this.infoStore.isUserAllowedToCreateTeams()}
+isUserAllowedToCreateTeams: ${instanceSettings?.isUserAllowedToCreateTeams}
 Show supporter badge: ${this.infoStore.support()?.showSupportBadge}
 Timezone: ${instanceSettings?.timezone}
 

@@ -89,6 +89,18 @@ class NotificationTemplateService(
                 ).toHumanReadableString(),
             )
         }
+
+        if (previousOppositeCheckResult == null) {
+            setVariable(
+                "previousStatusLabel",
+                checkResult.status.toStatusLabel(),
+            )
+
+            setVariable(
+                "previousStatusDuration",
+                "unknown amount of time",
+            )
+        }
     }
 
     private fun CheckResultRecord.isResend(monitor: MonitorRecord): Boolean = monitor.resendAfter != null &&

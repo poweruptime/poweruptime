@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
-import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.client.RestClient
 
@@ -36,23 +35,6 @@ private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
     return HttpComponentsClientHttpRequestFactory(httpClient)
 }
 
-fun configureJacksonConverter(
-    converters: MutableList<HttpMessageConverter<*>>,
-) {
-    val jacksonIndex = converters.indexOfFirst {
-        it is MappingJackson2HttpMessageConverter
-    }
-
-    val customConverter = MappingJackson2HttpMessageConverter().apply {
-        objectMapper = puObjectMapper
-    }
-
-    when {
-        jacksonIndex != -1 -> converters[jacksonIndex] = customConverter
-        else -> converters.add(customConverter)
-    }
-}
-
 @Configuration
 class HttpClientConfiguration {
     @Bean
@@ -61,6 +43,11 @@ class HttpClientConfiguration {
 
     @Bean
     fun restClient(builder: RestClient.Builder): RestClient = builder
-        .messageConverters { converters -> configureJacksonConverter(converters) }
+        .messageConverters { converters ->
+            val jacksonConverter = MappingJackson2HttpMessageConverter()
+            jacksonConverter.setPrettyPrint(false)
+            jacksonConverter.setObjectMapper(puObjectMapper)
+            converters.add(jacksonConverter)
+        }
         .build()
 }

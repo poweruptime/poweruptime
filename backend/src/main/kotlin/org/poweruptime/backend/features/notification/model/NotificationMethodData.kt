@@ -10,7 +10,7 @@ import org.poweruptime.backend.features.notification.notificationMethods.discord
 import org.poweruptime.backend.features.notification.notificationMethods.email.EmailNotificationMethodDataRecord
 import org.poweruptime.backend.features.notification.notificationMethods.slack.SlackNotificationMethodDataRecord
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "_type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = AppriseNotificationMethodDataRecord::class, name = NotificationMethodTypes.APPRISE),
     JsonSubTypes.Type(value = DiscordNotificationMethodDataRecord::class, name = NotificationMethodTypes.DISCORD),

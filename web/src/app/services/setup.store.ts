@@ -15,6 +15,8 @@ interface SetupStoreState {
   state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted';
 }
 
+// TODO: Email verify confirm tooltip not translated
+
 export const SetupStore = signalStore(
   {providedIn: 'root'},
   withState<SetupStoreState>({state: 'setupTestEmail'}),
