@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.client.RestClient
 
 private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
@@ -42,12 +41,5 @@ class HttpClientConfiguration {
         .requestFactory(clientHttpRequestFactory())
 
     @Bean
-    fun restClient(builder: RestClient.Builder): RestClient = builder
-        .messageConverters { converters ->
-            val jacksonConverter = MappingJackson2HttpMessageConverter()
-            jacksonConverter.setPrettyPrint(false)
-            jacksonConverter.setObjectMapper(puObjectMapper)
-            converters.add(jacksonConverter)
-        }
-        .build()
+    fun restClient(builder: RestClient.Builder): RestClient = builder.build()
 }

@@ -9,23 +9,26 @@ import org.poweruptime.backend.amqp.RabbitMQ.MONITOR_QUEUE
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_EXCHANGE
 import org.poweruptime.backend.amqp.RabbitMQ.NOTIFICATION_QUEUE
 import org.poweruptime.backend.amqp.RabbitMQ.PUSH_EXCHANGE
-import org.poweruptime.backend.configuration.puObjectMapper
 import org.springframework.amqp.core.*
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.rabbit.core.RabbitTemplate
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import tools.jackson.databind.json.JsonMapper
 
 @Configuration
 @Suppress("TooManyFunctions")
 class RabbitMQConfiguration {
 
     @Bean
-    fun rabbitTemplate(connectionFactory: ConnectionFactory): RabbitTemplate {
+    fun rabbitTemplate(
+        connectionFactory: ConnectionFactory,
+        producerJacksonJsonMessageConverter: JacksonJsonMessageConverter
+    ): RabbitTemplate {
         val rabbitTemplate = RabbitTemplate(connectionFactory)
-        rabbitTemplate.messageConverter = producerJackson2MessageConverter()
+        rabbitTemplate.messageConverter = producerJacksonJsonMessageConverter
         return rabbitTemplate
     }
 
@@ -33,7 +36,9 @@ class RabbitMQConfiguration {
     fun rabbitAdmin(connectionFactory: ConnectionFactory) = RabbitAdmin(connectionFactory)
 
     @Bean
-    fun producerJackson2MessageConverter() = Jackson2JsonMessageConverter(puObjectMapper)
+    fun producerJacksonJsonMessageConverter(
+        jsonMapper: JsonMapper
+    ): JacksonJsonMessageConverter = JacksonJsonMessageConverter(jsonMapper)
 
     // DEAD LETTER
     @Bean

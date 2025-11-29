@@ -1,8 +1,7 @@
 package org.poweruptime.backend.core
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
-import org.poweruptime.backend.configuration.puObjectMapper
+import org.poweruptime.backend.configuration.puJsonMapper
 import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.resource.CustomHttpHeader
 import org.poweruptime.backend.core.utils.toBase32EncodedByteArray
@@ -14,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import tools.jackson.module.kotlin.readValue
 import java.util.Date
 
 @Component
@@ -40,7 +40,7 @@ class AuthTestUtils(
             }
         }.andReturn()
 
-        return puObjectMapper.readValue(response.response.contentAsByteArray)
+        return puJsonMapper.readValue(response.response.contentAsByteArray)
     }
 }
 
