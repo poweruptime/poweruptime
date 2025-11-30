@@ -12,7 +12,6 @@ import {
   withEventReplay,
   withIncrementalHydration,
 } from '@angular/platform-browser';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
@@ -71,7 +70,6 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
-    provideAnimationsAsync(),
     provideUiTheme({
       strategy: 'class',
       storageKey: 'pu_theme',

@@ -248,7 +248,8 @@ export class MentionAutocompleteTrigger
   /**
    * Keydown: we watch for the mention trigger char, arrow keys, or ESC, etc.
    */
-  _handleKeydown(event: KeyboardEvent): void {
+  _handleKeydown(inputEvent: Event): void {
+    const event = inputEvent as KeyboardEvent;
     const keyCode = event.keyCode;
     const wasPanelOpen = this.panelOpen;
 
@@ -320,7 +321,7 @@ export class MentionAutocompleteTrigger
    * Input: we check for changes in the typed text, handle normal form updates,
    * and if we’re in mention mode, we update mention text or exit mention mode if user backspaced.
    */
-  _handleInput(event: KeyboardEvent): void {
+  _handleInput(event: Event): void {
     const inputEl = event.target as HTMLInputElement;
     let currentValue: string | number | undefined = inputEl.value;
 

@@ -136,7 +136,7 @@ export class MonitorsPage {
   });
 
   @HostListener('window:keydown.control.f', ['$event'])
-  toggleSearch(event: KeyboardEvent) {
+  toggleSearch(event: Event) {
     event.preventDefault();
     this.showFilter.set(!this.showFilter());
   }
