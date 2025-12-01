@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {inject} from '@angular/core';
 
-import {createOpenAPIHttpClient} from 'dfx-openapi';
+import {createOpenAPIHttpClient, createOpenAPIResource} from 'dfx-openapi';
 import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BACKEND_API_URL} from '../util';
@@ -17,4 +17,14 @@ export const APIService = createInjectable(() => {
 
 export function injectAPI() {
   return inject(APIService);
+}
+
+export const APIResourceService = createInjectable(() => {
+  return createOpenAPIResource<paths>({
+    baseUrl: BACKEND_API_URL,
+  });
+});
+
+export function injectAPIResource() {
+  return inject(APIResourceService);
 }

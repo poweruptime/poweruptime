@@ -1,7 +1,7 @@
 import {DOCUMENT, inject} from '@angular/core';
 import {CanActivateFn, Router} from '@angular/router';
 
-import {catchError, map, of, take, tap} from 'rxjs';
+import {map, take, tap} from 'rxjs';
 
 import {InfoStore} from '@app/services';
 
@@ -12,6 +12,7 @@ export const statusPageGuard: CanActivateFn = () => {
 
   infoStore.loadHost();
 
+  // Can't error directly
   return infoStore.host$.pipe(
     take(1),
     map((host) => {
@@ -26,6 +27,5 @@ export const statusPageGuard: CanActivateFn = () => {
       }
     }),
     map((isStatusPageDomain) => isStatusPageDomain || router.parseUrl('/m')),
-    catchError(() => of(true)),
   );
 };
