@@ -20,9 +20,10 @@ const focuses = ['input', 'select', 'textarea'];
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export abstract class AbstractModelEditFormComponent<CreateDTOType, UpdateDTOType>
-  implements AfterViewInit
-{
+export abstract class AbstractModelEditFormComponent<
+  CreateDTOType,
+  UpdateDTOType,
+> implements AfterViewInit {
   lumber = loggerOf('AModelEditForm');
 
   fb = inject(FormBuilder);
