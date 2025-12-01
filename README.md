@@ -3,6 +3,11 @@
 </p>
 <h3 align="center">uptime monitoring tool</h3>
 
+> [!WARNING]
+> ⚠️ The project is in **alpha** and under **very active** development.  
+> ⚠️ Expect bugs and breaking changes.  
+> ⚠️ **Do not use the app as the only way to check your services.**
+
 ## 🚀 Features
 
 - Uptime monitoring for HTTP(s) / HTTP(s) Keyword / Ping / DNS Record / Push / SSL Certificates
