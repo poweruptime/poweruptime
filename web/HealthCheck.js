@@ -3,7 +3,7 @@
 // healthcheck.js
 // Exit 0 if GET / responds 2xx, else exit 1.
 
-const url = 'http://127.0.0.1:4200';
+const url = 'http://0.0.0.0:4200';
 const timeoutMs = 10_000;
 const controller = new AbortController();
 
