@@ -245,8 +245,8 @@ importers:
         specifier: 7.10.1
         version: 7.10.1(typescript@5.9.3)
       playwright-ng-schematics:
-        specifier: 2.1.1
-        version: 2.1.1(@angular-devkit/architect@0.2003.12(chokidar@4.0.3))(@angular-devkit/core@20.3.12(chokidar@4.0.3))(@angular-devkit/schematics@20.3.12(chokidar@4.0.3))
+        specifier: 21.0.1
+        version: 21.0.1(@angular-devkit/architect@0.2003.12(chokidar@4.0.3))(@angular-devkit/core@20.3.12(chokidar@4.0.3))(@angular-devkit/schematics@20.3.12(chokidar@4.0.3))
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -4425,12 +4425,12 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright-ng-schematics@2.1.1:
-    resolution: {integrity: sha512-RJdBPKmH0CB93TWIKgTclRMMSjRPrbfbHo9Md6uuV5sxSuxxT5JXq1u8JWlO/G7zlKfbAYpqBiGKiJ+SL9XAZA==}
+  playwright-ng-schematics@21.0.1:
+    resolution: {integrity: sha512-Eb95JKRiSIKPTvEZT63PdgrwL2BuIqoFtxWe2+Qj9/0p21bJ09zo1RWxwIFbm1kVSGLYc3zly1wUrEZD4adO7g==}
     peerDependencies:
-      '@angular-devkit/architect': '>= 0.2000.0 < 0.2100.0'
-      '@angular-devkit/core': ^20.0.0
-      '@angular-devkit/schematics': ^20.0.0
+      '@angular-devkit/architect': '>= 0.2100.0 < 0.2200.0'
+      '@angular-devkit/core': ^21.0.0
+      '@angular-devkit/schematics': ^21.0.0
 
   playwright@1.57.0:
     resolution: {integrity: sha512-ilYQj1s8sr2ppEJ2YVadYBN0Mb3mdo9J0wQ+UuDhzYqURwSoW4n1Xs5vs7ORwgDGmyEh33tRMeS8KhdkMoLXQw==}
@@ -9489,7 +9489,7 @@ snapshots:
 
   playwright-core@1.57.0: {}
 
-  playwright-ng-schematics@2.1.1(@angular-devkit/architect@0.2003.12(chokidar@4.0.3))(@angular-devkit/core@20.3.12(chokidar@4.0.3))(@angular-devkit/schematics@20.3.12(chokidar@4.0.3)):
+  playwright-ng-schematics@21.0.1(@angular-devkit/architect@0.2003.12(chokidar@4.0.3))(@angular-devkit/core@20.3.12(chokidar@4.0.3))(@angular-devkit/schematics@20.3.12(chokidar@4.0.3)):
     dependencies:
       '@angular-devkit/architect': 0.2003.12(chokidar@4.0.3)
       '@angular-devkit/core': 20.3.12(chokidar@4.0.3)
