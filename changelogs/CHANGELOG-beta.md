@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.5.0-beta-1764681957 - 2025-12-02
+
+### <!-- 0 -->🚀 Features
+
+- Jackson v3 by Dafnik ([6b9953c](https://github.com/poweruptime/poweruptime/commit/6b9953cdda61d99213191adca7da87e41282cbf9))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Apprise payload problem by Dafnik ([77d0c64](https://github.com/poweruptime/poweruptime/commit/77d0c6428aa2ee5facb1f2697733bbfeecfeb0d2)), fix:isUserAllowedToCreateTeams debug info null
+- Health check triggering error by Dafnik ([743179d](https://github.com/poweruptime/poweruptime/commit/743179de60b6ef5dd09dffc56f22e9ea10068b34))
+- Status page guard can never error by Dafnik ([8c985c7](https://github.com/poweruptime/poweruptime/commit/8c985c72ef84131bf085e149a74eb1613257c8af))
+
+### <!-- 2 -->🚜 Refactor
+
+- Update CheckResult, CheckResultLog and Notification findAll calls by Dafnik ([0cd2017](https://github.com/poweruptime/poweruptime/commit/0cd201799d97f529879335fe15177d208ee91ece))
+
+### <!-- 3 -->📚 Documentation
+
+- Add alpha disclaimer by Dafnik ([2893746](https://github.com/poweruptime/poweruptime/commit/289374646eacf4c802f31d6e9ad385cabbc2b7b3))
+- Update README, DEVELOPER and CONTRIBUTING guides by Dafnik ([bacfc64](https://github.com/poweruptime/poweruptime/commit/bacfc64b444cf0deb23f85e9c3b26bec5c1d7d32))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Change run config by Dafnik ([84e3ceb](https://github.com/poweruptime/poweruptime/commit/84e3ceb957e88d308e29345e3a856e8a24749723))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1764246432...0.5.0-beta-1764681957)
+
 ## 0.5.0-beta-1764246432 - 2025-11-27
 
 ### <!-- 0 -->🚀 Features
