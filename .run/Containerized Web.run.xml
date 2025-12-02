@@ -8,14 +8,26 @@
             <option value="" />
           </list>
         </option>
+        <option name="commandLineOptions" value="--build" />
         <option name="secondarySourceFiles">
           <list>
+            <option value="backend/compose.yml" />
             <option value="web/compose.yml" />
           </list>
         </option>
         <option name="sourceFilePath" value="compose-dev.yml" />
       </settings>
     </deployment>
-    <method v="2" />
+    <method v="2">
+      <option name="NpmBeforeRunTask" enabled="true">
+        <package-json value="$PROJECT_DIR$/package.json" />
+        <command value="run" />
+        <scripts>
+          <script value="web:build:docker" />
+        </scripts>
+        <node-interpreter value="project" />
+        <envs />
+      </option>
+    </method>
   </configuration>
 </component>
