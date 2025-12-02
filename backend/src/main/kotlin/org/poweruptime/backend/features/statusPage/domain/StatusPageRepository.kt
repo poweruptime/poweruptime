@@ -26,7 +26,7 @@ fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? =
     )
         .leftJoin(File, { File.id }, { imageId })
         .selectAll()
-        .where { name eq domainName }
+        .where { StatusPageDomainName.name eq domainName }
         .withDistinctOn(StatusPage.id)
         .limit(1)
         .firstOrNull()
