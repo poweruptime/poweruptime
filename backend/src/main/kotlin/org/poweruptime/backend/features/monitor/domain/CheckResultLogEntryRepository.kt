@@ -1,11 +1,11 @@
 package org.poweruptime.backend.features.monitor.domain
 
-import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.inSubQuery
 import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -37,13 +37,11 @@ fun CheckResultLogEntry.findAll(
     checkResultId: ULong,
     stages: List<CheckResultLogStage>? = null,
 ): Page<CheckResultLogEntryRecord> {
-    var condition: Op<Boolean> = (CheckResultLogEntry.checkResultId eq checkResultId)
+    val query = selectAll().where { CheckResultLogEntry.checkResultId eq checkResultId }
 
     stages?.ifEmpty { null }?.let {
-        condition = condition and (CheckResultLogEntry.stage inList it)
+        query.andWhere { CheckResultLogEntry.stage inList it }
     }
-
-    val query = selectAll().where(condition)
 
     return pageQuery(
         query,

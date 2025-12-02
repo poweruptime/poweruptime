@@ -31,8 +31,8 @@ class Exposed {
             password = dataSourcePassword
             driverClassName = dataSourceDriverClassName
             poolName = "poweruptimePool"
-            maximumPoolSize = 10
-            minimumIdle = 5
+            maximumPoolSize = 20
+            minimumIdle = 10
         },
     )
 

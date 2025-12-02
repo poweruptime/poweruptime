@@ -49,45 +49,44 @@ fun Notification.findAll(
     start: Instant?,
     end: Instant?,
 ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> {
-    require(userId != null || teamId != null || monitorId !== null) {
-        "teamId or monitorId or userId needs to be provided"
-    }
-
     var selectColumns = columns + CheckResult.columns + Monitor.columns + Team.columns
 
-    val query = innerJoin(CheckResult)
-        .innerJoin(Monitor)
-        .innerJoin(Team, { Monitor.teamId }, { Team.id })
-        .select(selectColumns)
-
-    teamId?.let {
-        query.andWhere { Team.id eq teamId }
-    }
-
-    monitorId?.let {
-        query.andWhere { Monitor.id eq monitorId }
-    }
-
-    userId?.let {
-        query.adjustColumnSet {
-            innerJoin(TeamUser)
-        }.adjustSelect {
+    val query = when {
+        monitorId != null -> {
+            innerJoin(CheckResult)
+                .innerJoin(Monitor)
+                .innerJoin(Team, { Monitor.teamId }, { Team.id })
+                .select(selectColumns)
+        }
+        teamId != null -> {
+            Team.innerJoin(Monitor)
+                .innerJoin(CheckResult)
+                .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
+                .select(selectColumns)
+        }
+        userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
-            select(selectColumns)
-        }.andWhere { TeamUser.userId eq userId }
+            TeamUser.innerJoin(Team)
+                .innerJoin(Monitor)
+                .innerJoin(CheckResult)
+                .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
+                .select(selectColumns)
+        }
+        else -> error("teamId or monitorId or userId needs to be provided")
+    }
+
+    when {
+        monitorId != null -> query.andWhere { Monitor.id eq monitorId }
+        teamId != null -> query.andWhere { Team.id eq teamId }
+        userId != null -> query.andWhere { TeamUser.userId eq userId }
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
         query.andWhere { CheckResult.status inList it }
     }
 
-    start?.let {
-        query.andWhere { Notification.createdAt greaterEq it }
-    }
-
-    end?.let {
-        query.andWhere { Notification.createdAt lessEq it }
-    }
+    start?.let { query.andWhere { Notification.createdAt greaterEq it } }
+    end?.let { query.andWhere { Notification.createdAt lessEq it } }
 
     if (teamId != null || userId != null) {
         query.andWhere { Monitor.deleted.isNull() }

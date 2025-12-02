@@ -49,29 +49,28 @@ fun CheckResult.findAll(
     start: Instant?,
     end: Instant?,
 ): Page<CheckResultJoinMonitorAndTeamRecord> {
-    require(
-        userId != null || monitorId != null || teamId != null,
-    ) { "teamId or monitorId or userId needs to be provided" }
-
     var selectColumns = columns + Monitor.columns + Team.columns
 
-    val query = innerJoin(Monitor)
-        .innerJoin(Team)
-        .select(selectColumns)
-
-    teamId?.let {
-        query.andWhere { Team.id eq teamId }
-    }
-    monitorId?.let {
-        query.andWhere { Monitor.id eq monitorId }
-    }
-    userId?.let {
-        query.adjustColumnSet {
-            innerJoin(TeamUser)
-        }.adjustSelect {
+    val query = when {
+        monitorId != null -> {
+            innerJoin(Monitor).innerJoin(Team).select(selectColumns)
+        }
+        teamId != null -> {
+            Team.innerJoin(Monitor).innerJoin(CheckResult)
+                .select(selectColumns)
+        }
+        userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
-            select(selectColumns)
-        }.andWhere { TeamUser.userId eq userId }
+            TeamUser.innerJoin(Team).innerJoin(Monitor)
+                .innerJoin(CheckResult).select(selectColumns)
+        }
+        else -> error("teamId or monitorId or userId needs to be provided")
+    }
+
+    when {
+        monitorId != null -> query.andWhere { Monitor.id eq monitorId }
+        teamId != null -> query.andWhere { Team.id eq teamId }
+        userId != null -> query.andWhere { TeamUser.userId eq userId }
     }
 
     statuses?.ifEmpty { null }?.let {
@@ -89,21 +88,12 @@ fun CheckResult.findAll(
             selectColumns = selectColumns + Notification.id
             select(selectColumns)
         }.andWhere {
-            if (it) {
-                Notification.id.isNotNull()
-            } else {
-                Notification.id.isNull()
-            }
+            if (it) Notification.id.isNotNull() else Notification.id.isNull()
         }
     }
 
-    start?.let {
-        query.andWhere { CheckResult.createdAt greaterEq it }
-    }
-
-    end?.let {
-        query.andWhere { CheckResult.createdAt lessEq it }
-    }
+    start?.let { query.andWhere { CheckResult.createdAt greaterEq it } }
+    end?.let { query.andWhere { CheckResult.createdAt lessEq it } }
 
     if (teamId != null || userId != null) {
         query.andWhere { Monitor.deleted.isNull() }
