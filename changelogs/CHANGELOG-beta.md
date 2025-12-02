@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0-beta-1764683635 - 2025-12-02
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Status page findByDomainName by Dafnik ([d93ce1b](https://github.com/poweruptime/poweruptime/commit/d93ce1b2e6bf7eb53e74629efe8d09320e89952d))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1764681957...0.5.0-beta-1764683635)
+
 ## 0.5.0-beta-1764681957 - 2025-12-02
 
 ### <!-- 0 -->🚀 Features
