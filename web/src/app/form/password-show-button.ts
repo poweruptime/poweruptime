@@ -4,7 +4,7 @@ import {MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 @Component({
   template: `
@@ -19,15 +19,15 @@ import {BiComponent} from 'dfx-bootstrap-icons';
       type="button"
       mat-icon-button>
       @if (_show) {
-        <bi name="eye-fill" />
+        <ng-icon name="bootstrapEyeFill" />
       } @else {
-        <bi name="eye-slash-fill" />
+        <ng-icon name="bootstrapEyeSlashFill" />
       }
     </button>
   `,
   selector: 'pu-password-show-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BiComponent, MatIconButton, TranslocoPipe, MatTooltip],
+  imports: [NgIcon, MatIconButton, TranslocoPipe, MatTooltip],
 })
 export class PasswordShowButton {
   readonly show = signal(false);

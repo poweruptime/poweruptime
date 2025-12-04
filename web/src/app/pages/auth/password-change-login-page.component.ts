@@ -8,7 +8,7 @@ import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {DfxAutofocus} from 'dfx-helper';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
@@ -107,7 +107,7 @@ import {AuthStore} from '@app/services';
             <mat-slide-toggle formControlName="stayLoggedIn">Stay logged in</mat-slide-toggle>
 
             <button [disabled]="!formValid()" mat-flat-button type="submit">
-              <bi class="mr-2" name="envelope" />
+              <ng-icon class="mr-2" name="bootstrapEnvelope" />
               Login
             </button>
           </div>
@@ -118,7 +118,7 @@ import {AuthStore} from '@app/services';
   selector: 'password-change-login-page',
   imports: [
     ReactiveFormsModule,
-    BiComponent,
+    NgIcon,
     MatError,
     MatLabel,
     MatFormField,

@@ -24,7 +24,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
@@ -44,7 +44,7 @@ import {BackendType} from '@app/api';
               type="button"
               matChipRemove
               stopPropagation>
-              <bi name="x-circle" aria-hidden="true" />
+              <ng-icon name="bootstrapXCircle" aria-hidden="true" />
             </button>
           </a>
         }
@@ -85,7 +85,7 @@ import {BackendType} from '@app/api';
     MatAutocomplete,
     MatOption,
     MatProgressBar,
-    BiComponent,
+    NgIcon,
     StopPropagationDirective,
     TranslocoPipe,
   ],

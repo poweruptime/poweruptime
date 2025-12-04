@@ -18,8 +18,8 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {MonitorStatusTextBackground} from '@app/directives';
@@ -105,7 +105,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
                     matTooltipPosition="left"
                     mat-icon-button
                     stopPropagation>
-                    <bi name="arrow-right" />
+                    <ng-icon name="bootstrapArrowRight" />
                   </a>
                 </td>
               </ng-container>
@@ -157,7 +157,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     RouterLink,
     TableLoadingBar,
     StopPropagationDirective,
-    BiComponent,
+    NgIcon,
     MatIconAnchor,
     TranslocoPipe,
     MatTooltip,

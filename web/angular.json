@@ -52,11 +52,6 @@
                 "output": "/assets"
               },
               {
-                "glob": "*",
-                "input": "node_modules/bootstrap-icons/icons",
-                "output": "/assets/icons"
-              },
-              {
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"

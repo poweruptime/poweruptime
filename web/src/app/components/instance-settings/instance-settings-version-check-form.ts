@@ -20,7 +20,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {BackendType, Database} from '@app/api';
 import {Tag} from '@app/directives';
@@ -68,14 +68,14 @@ import {TableLoadingBar} from '../table-loading-bar';
             ) {
               <div class="grid gap-3">
                 <div class="inline-flex items-center gap-4">
-                  <bi class="text-blue-500" name="download" />
+                  <ng-icon class="text-blue-500" name="bootstrapDownload" />
                   <b>New version available</b>
                 </div>
                 <div class="inline-flex items-center gap-4">
                   <span class="break-keep" pu-tag="GHOST">
                     {{ currentVersion }}
                   </span>
-                  <bi name="arrow-right" />
+                  <ng-icon name="bootstrapArrowRight" />
 
                   <span class="break-keep" pu-tag="BLUE">
                     {{ latestVersion }}
@@ -86,7 +86,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                     ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
                     : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
                 <a [href]="link" mat-stroked-button target="_blank" rel="noopener">
-                  <bi name="box-arrow-up-right" />
+                  <ng-icon name="bootstrapBoxArrowUpRight" />
                   View on GitHub
                 </a>
                 <div class="rounded-md bg-gray-200 p-3 dark:bg-gray-800">
@@ -102,7 +102,7 @@ import {TableLoadingBar} from '../table-loading-bar';
             } @else {
               <div
                 class="inline-flex items-center gap-2 font-medium text-green-600 dark:text-green-400">
-                <bi name="check2-circle" />
+                <ng-icon name="bootstrapCheck2Circle" />
                 <span>You're running the latest version</span>
               </div>
               <button
@@ -114,7 +114,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                 "
                 type="button"
                 mat-stroked-button>
-                <bi name="arrow-clockwise" />
+                <ng-icon name="bootstrapArrowClockwise" />
                 Check for updates
               </button>
             }
@@ -163,7 +163,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                             "
                             type="button"
                             matChipRemove>
-                            <bi name="x-circle" aria-hidden="true" />
+                            <ng-icon name="bootstrapXCircle" aria-hidden="true" />
                           </button>
                         </mat-chip-row>
                       }
@@ -207,7 +207,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                 "
                 type="button"
                 mat-flat-button>
-                <bi name="x-circle-fill" />
+                <ng-icon name="bootstrapXCircleFill" />
                 <span class="text-lg">{{ 'general.disable' | transloco }}</span>
               </button>
             </div>
@@ -268,7 +268,7 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatLabel,
     MatButton,
     TranslocoPipe,
-    BiComponent,
+    NgIcon,
     Tag,
     CopyIconButton,
     TableLoadingBar,

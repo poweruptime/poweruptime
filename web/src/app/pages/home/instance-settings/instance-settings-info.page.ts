@@ -18,7 +18,7 @@ import {
   MatCardTitle,
 } from '@angular/material/card';
 
-import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {InfoStore} from '@app/services';
 import {environment} from '@app/util';
@@ -63,7 +63,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="display" />
+                <ng-icon size="20" name="bootstrapDisplay" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   System Information
                 </h3>
@@ -114,7 +114,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="server" />
+                <ng-icon size="20" name="bootstrapServer" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   Network and service
                 </h3>
@@ -172,7 +172,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="envelope" />
+                <ng-icon size="20" name="bootstrapEnvelope" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   Mail Configuration
                 </h3>
@@ -213,7 +213,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="stars" />
+                <ng-icon size="20" name="bootstrapStars" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Features</h3>
               </div>
             </mat-card-title>
@@ -241,7 +241,7 @@ class StatusText implements PipeTransform {
                     href="/api/swagger/docs"
                     target="_blank">
                     {{ environmentInfo.swaggerEnabled | statusText }}
-                    <bi size="12" name="box-arrow-up-right" />
+                    <ng-icon size="12" name="bootstrapBoxArrowUpRight" />
                   </a>
                 } @else {
                   <span [puStatusBadge]="environmentInfo.swaggerEnabled">
@@ -260,7 +260,7 @@ class StatusText implements PipeTransform {
                     href="/api/v1/public/temp-notification"
                     target="_blank">
                     {{ environmentInfo.tempNotificationsEnabled | statusText }}
-                    <bi size="12" name="box-arrow-up-right" />
+                    <ng-icon size="12" name="bootstrapBoxArrowUpRight" />
                   </a>
                 } @else {
                   <span [puStatusBadge]="environmentInfo.tempNotificationsEnabled">
@@ -277,7 +277,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="shield-shaded" />
+                <ng-icon size="20" name="bootstrapShieldShaded" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Rate Limiting</h3>
               </div>
             </mat-card-title>
@@ -316,7 +316,7 @@ class StatusText implements PipeTransform {
           <mat-card-header>
             <mat-card-title>
               <div class="mb-2 flex items-center gap-2">
-                <bi name="person-circle" />
+                <ng-icon size="20" name="bootstrapPersonCircle" />
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   OAuth2 Providers
                 </h3>
@@ -350,7 +350,7 @@ class StatusText implements PipeTransform {
                       "
                       target="_blank"
                       rel="noopener">
-                      <bi size="16" name="box-arrow-up-right" />
+                      <ng-icon name="bootstrapBoxArrowUpRight" />
                       Docs
                     </a>
                   </div>
@@ -373,7 +373,7 @@ class StatusText implements PipeTransform {
                     target="_blank"
                     rel="noopener"
                     href="https://github.com/poweruptime/poweruptime/blob/main/infrastructure/README.md#oauth2-guide">
-                    <bi name="box-arrow-up-right" />
+                    <ng-icon name="bootstrapBoxArrowUpRight" />
                     Learn more
                   </a>
                 </div>
@@ -386,9 +386,8 @@ class StatusText implements PipeTransform {
   `,
   selector: 'pu-instance-settings-info-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideBi(withSize('20'))],
   imports: [
-    BiComponent,
+    NgIcon,
     MatButton,
     StatusBadge,
     StatusText,

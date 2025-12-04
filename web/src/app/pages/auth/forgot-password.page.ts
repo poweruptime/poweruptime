@@ -7,7 +7,7 @@ import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/for
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {DfxAutofocus} from 'dfx-helper';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
@@ -51,7 +51,7 @@ import {ForgotPasswordStore} from '@app/services';
               </mat-form-field>
 
               <button [disabled]="!isRequestPasswordResetFormValid()" mat-flat-button type="submit">
-                <bi class="mr-2" name="box-arrow-in-right" />
+                <ng-icon class="mr-2" name="bootstrapBoxArrowInRight" />
                 {{ 'auth.requestPasswordReset' | transloco }}
               </button>
             </form>
@@ -114,7 +114,7 @@ import {ForgotPasswordStore} from '@app/services';
               </ng-container>
 
               <button [disabled]="!isResetPasswordFormValid()" mat-flat-button type="submit">
-                <bi class="mr-2" name="box-arrow-in-right" />
+                <ng-icon class="mr-2" name="bootstrapBoxArrowInRight" />
                 {{ 'auth.resetPassword' | transloco }}
               </button>
             </form>
@@ -127,7 +127,7 @@ import {ForgotPasswordStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    BiComponent,
+    NgIcon,
     MatLabel,
     MatFormField,
     MatInput,

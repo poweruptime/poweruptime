@@ -17,7 +17,7 @@ import {MatInput} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
@@ -78,7 +78,7 @@ import {AuthStore, InfoStore} from '@app/services';
             </div>
 
             <button [disabled]="!isValid()" mat-flat-button type="submit">
-              <bi class="mr-2" name="box-arrow-in-right" />
+              <ng-icon class="mr-2" name="bootstrapBoxArrowInRight" />
               {{ 'auth.login' | transloco }}
             </button>
 
@@ -98,7 +98,7 @@ import {AuthStore, InfoStore} from '@app/services';
                       <div class="inline-flex items-center gap-2">
                         @switch (provider.registrationId) {
                           @case ('google') {
-                            <bi name="google" />
+                            <ng-icon name="bootstrapGoogle" />
                           }
                           @case ('keycloak') {
                             <svg
@@ -128,7 +128,7 @@ import {AuthStore, InfoStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    BiComponent,
+    NgIcon,
     MatLabel,
     MatFormField,
     MatInput,

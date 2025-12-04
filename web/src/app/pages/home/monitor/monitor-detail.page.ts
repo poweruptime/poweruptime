@@ -7,8 +7,8 @@ import {MatChip} from '@angular/material/chips';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {format} from '@std/fmt/duration';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {DfxCutPipe} from 'dfx-helper';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
@@ -50,7 +50,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                 (click)="monitorActionStore.start(monitor.id)"
                 type="button"
                 mat-flat-button>
-                <bi name="play-btn" />
+                <ng-icon name="bootstrapPlayBtn" />
                 {{ 'general.start' | transloco }}
               </button>
             } @else {
@@ -59,7 +59,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                 (click)="monitorActionStore.pause(monitor.id)"
                 type="button"
                 mat-flat-button>
-                <bi name="pause-btn" />
+                <ng-icon name="bootstrapPauseBtn" />
                 {{ 'general.pause' | transloco }}
               </button>
             }
@@ -67,27 +67,27 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
               [routerLink]="'/t/' + monitor.team.id + '/m/' + monitor.id + '/edit'"
               queryParamsHandling="merge"
               mat-flat-button>
-              <bi name="pencil-square" />
+              <ng-icon name="bootstrapPencilSquare" />
               {{ 'general.edit' | transloco }}
             </a>
             <button [matMenuTriggerFor]="menu" type="button" mat-icon-button>
               <span class="hidden">{{ 'general.menu' | transloco }}</span>
-              <bi name="three-dots-vertical" />
+              <ng-icon name="bootstrapThreeDotsVertical" />
             </button>
             <mat-menu #menu="matMenu">
               <a href="/public/m/{{ monitor.id }}" target="_blank" type="button" mat-menu-item>
-                <bi name="box-arrow-up-right" />
+                <ng-icon name="bootstrapBoxArrowUpRight" />
                 {{ 'monitor.details.openPublic' | transloco }}
               </a>
               <button
                 (click)="monitorActionStore.clone({id: monitor.id})"
                 type="button"
                 mat-menu-item>
-                <bi name="copy" />
+                <ng-icon name="bootstrapCopy" />
                 {{ 'general.copy' | transloco }}
               </button>
               <button (click)="monitorActionStore.delete(monitor.id)" type="button" mat-menu-item>
-                <bi name="trash" />
+                <ng-icon name="bootstrapTrash" />
                 {{ 'general.delete' | transloco }}
               </button>
             </mat-menu>
@@ -154,7 +154,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
           @if (monitor.retries; as retries) {
             <mat-chip class="flex items-center">
-              <bi class="mr-1" name="arrow-repeat" />
+              <ng-icon class="mr-1" name="bootstrapArrowRepeat" />
               <span>{{ 'monitor.details.retries' | transloco: {retries} }}</span>
             </mat-chip>
           }
@@ -167,7 +167,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
           @if (monitor.upsideDown) {
             <mat-chip class="flex items-center">
-              <bi class="mr-1" name="emoji-smile-upside-down" />
+              <ng-icon class="mr-1" name="bootstrapEmojiSmileUpsideDown" />
               {{ 'monitor.edit.upsideDown' | transloco }}
             </mat-chip>
           }
@@ -183,14 +183,14 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                 '/t/' + monitor.team.id + '/notification-methods/' + notificationMethod.id
               ">
               <mat-chip class="flex items-center">
-                <bi class="mr-1" name="bell" />
+                <ng-icon class="mr-1" name="bootstrapBell" />
                 {{ notificationMethod.name }}
               </mat-chip>
             </a>
           }
           @if (monitor.notificationMethods.length > maxNotificationMethods) {
             <mat-chip class="flex items-center">
-              <bi class="mr-1" name="bell" />
+              <ng-icon class="mr-1" name="bootstrapBell" />
               And more...
             </mat-chip>
           }
@@ -306,7 +306,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatCard,
     MatCardContent,
     MatChip,
-    BiComponent,
+    NgIcon,
     MonitorStatus,
     InfiniteUptimeTimeline,
     PingChart,

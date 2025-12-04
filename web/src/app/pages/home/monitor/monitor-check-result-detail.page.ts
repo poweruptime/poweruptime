@@ -8,8 +8,8 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {format} from '@std/fmt/duration';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
@@ -33,7 +33,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
         @if (checkResultDetailStore.checkResult(); as checkResult) {
           <div>
             <a mat-stroked-button routerLink="../../../" queryParamsHandling="merge">
-              <bi class="me-1" name="arrow-left" />
+              <ng-icon class="me-1" name="bootstrapArrowLeft" />
               <span>{{ checkResult.monitor.name }}</span>
             </a>
           </div>
@@ -89,7 +89,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
           <mat-card>
             <mat-card-content>
               <div class="flex flex-col items-center gap-2">
-                <bi size="24" name="calendar-x" />
+                <ng-icon size="24" name="bootstrapCalendarX" />
                 <code>{{ 'checkResult.details.expired' | transloco }}</code>
               </div>
             </mat-card-content>
@@ -191,7 +191,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
   selector: 'monitor-check-result-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    BiComponent,
+    NgIcon,
     RouterLink,
     MatCard,
     MatCardContent,

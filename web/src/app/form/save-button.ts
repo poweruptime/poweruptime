@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {MatFabButton} from '@angular/material/button';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent, BiName, provideBi, withSize} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 @Component({
   template: `
@@ -15,7 +15,8 @@ import {BiComponent, BiName, provideBi, withSize} from 'dfx-bootstrap-icons';
       (click)="buttonClick.emit()"
       mat-fab
       extended>
-      <bi [name]="icon()" />
+      <!-- i(bootstrapSave) -->
+      <ng-icon [name]="icon()" size="20" />
       <!-- t(general.save) -->
       <span class="ms-2 text-lg">{{ text() ?? ('general.save' | transloco) }}</span>
     </button>
@@ -23,15 +24,14 @@ import {BiComponent, BiName, provideBi, withSize} from 'dfx-bootstrap-icons';
   selector: 'pu-save-button',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BiComponent, TranslocoPipe, MatFabButton],
-  providers: [provideBi(withSize('20'))],
+  imports: [NgIcon, TranslocoPipe, MatFabButton, NgIcon],
 })
 export class SaveButton {
   valid = input(false);
   text = input<string>();
   form = input('form');
   type = input('submit');
-  icon = input<BiName>('save');
+  icon = input<string>('bootstrapSave');
 
   buttonClick = output();
 }

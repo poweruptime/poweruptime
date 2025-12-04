@@ -156,9 +156,6 @@ importers:
       dfts-helper:
         specifier: 2.0.0
         version: 2.0.0
-      dfx-bootstrap-icons:
-        specifier: 20.0.0
-        version: 20.0.0(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(bootstrap-icons@1.13.1)(rxjs@7.8.2)
       dfx-helper:
         specifier: 20.1.0
         version: 20.1.0(f7dc6d1e83fd7e0611c3dd8a0273d4aa)
@@ -254,8 +251,8 @@ importers:
         specifier: 13.0.0
         version: 13.0.0
       ng-icons-manager:
-        specifier: 1.0.14
-        version: 1.0.14(chokidar@5.0.0)(glob@13.0.0)
+        specifier: 1.1.1
+        version: 1.1.1(chokidar@5.0.0)(glob@13.0.0)
       openapi-typescript:
         specifier: 7.10.1
         version: 7.10.1(typescript@5.9.3)
@@ -3025,14 +3022,6 @@ packages:
   dfts-qrcode@1.1.0:
     resolution: {integrity: sha512-c7xF090SLAgzTfD+gXsyCdx+RK7VNUW5/+ZohO0PfY/VmKs9Osq73ETBC04slw9NfU/Ww4VzpvILwno2hWQjtw==}
 
-  dfx-bootstrap-icons@20.0.0:
-    resolution: {integrity: sha512-HCgr/YJvjdTwT6ZDU5FS2GDRYglSabpq01lHBK2x51kTdZAW06LQI6yEEpJroTPeVwAxb7gH5rF6W3SrOhxIhw==}
-    peerDependencies:
-      '@angular/common': '20'
-      '@angular/core': '20'
-      bootstrap-icons: '1'
-      rxjs: '7'
-
   dfx-helper@20.1.0:
     resolution: {integrity: sha512-16wVOgxM1VOtxL/j0yrB137C/+nWhbRmJvSLtwmjhjUvopOVNuk7B9dqfHYuWNd3Z2gT6qbDWZjUkYtdestcAw==}
     peerDependencies:
@@ -4149,8 +4138,8 @@ packages:
       sass:
         optional: true
 
-  ng-icons-manager@1.0.14:
-    resolution: {integrity: sha512-5DJvESWSOVCOvEDBRrwV5hwAZkAgXUWa+HxCBHx6nwR/kRizbdBSvIRfH22Pp6XVS+YCiK1L1zrU/8boCn/4pw==}
+  ng-icons-manager@1.1.1:
+    resolution: {integrity: sha512-TxI0BrA0lKV01NtTN7FUGqbtHvPl/FQ6gkAdzgohdqUFw2yb+KfvVmxFsaRtwGl/1mnTMZPSvfwXHFvakxhfWQ==}
     hasBin: true
     peerDependencies:
       chokidar: '5'
@@ -8000,14 +7989,6 @@ snapshots:
       dfts-helper: 1.1.1(tslib@2.6.2)
       tslib: 2.6.2
 
-  dfx-bootstrap-icons@20.0.0(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(bootstrap-icons@1.13.1)(rxjs@7.8.2):
-    dependencies:
-      '@angular/common': 20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@angular/core': 20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)
-      bootstrap-icons: 1.13.1
-      rxjs: 7.8.2
-      tslib: 2.8.1
-
   dfx-helper@20.1.0(f7dc6d1e83fd7e0611c3dd8a0273d4aa):
     dependencies:
       '@angular/cdk': 20.2.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -9180,7 +9161,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  ng-icons-manager@1.0.14(chokidar@5.0.0)(glob@13.0.0):
+  ng-icons-manager@1.1.1(chokidar@5.0.0)(glob@13.0.0):
     dependencies:
       chokidar: 5.0.0
       glob: 13.0.0

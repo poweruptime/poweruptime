@@ -15,7 +15,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
@@ -79,7 +79,7 @@ import {TeamUsersStore} from '@app/services';
               mat-icon-button
               type="button"
               matTooltip="Remove from team">
-              <bi name="trash" />
+              <ng-icon name="bootstrapTrash" />
             </button>
           }
         </td>
@@ -131,7 +131,7 @@ import {TeamUsersStore} from '@app/services';
     TableLoadingBar,
     MatChip,
     MatIconButton,
-    BiComponent,
+    NgIcon,
     MatTooltip,
     TranslocoPipe,
     RelativeTimeWithTooltip,

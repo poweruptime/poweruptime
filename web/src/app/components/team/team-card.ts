@@ -7,8 +7,8 @@ import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {a_hashFrom} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
@@ -74,7 +74,7 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
               [matTooltip]="'team.settings.settings' | transloco"
               stopPropagation
               mat-icon-button>
-              <bi name="gear" size="24" aria-hidden="true" />
+              <ng-icon name="bootstrapGear" size="24" aria-hidden="true" />
             </a>
           </div>
 
@@ -88,7 +88,7 @@ function getBgImage(pattern: string, hex: string, alpha = '1') {
     MatChipSet,
     MatChip,
     RouterLink,
-    BiComponent,
+    NgIcon,
     MatIconAnchor,
     StopPropagationDirective,
     MatTooltip,

@@ -26,7 +26,6 @@ import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {provideNgIconLoader} from '@ng-icons/core';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
-import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
   BoldTextTranspiler,
@@ -70,12 +69,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([
-        biCacheInterceptor,
-        backendOfflineInterceptor,
-        authInterceptor,
-        mfaInterceptor,
-      ]),
+      withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
     provideAnimationsAsync(),
     provideUiTheme({
@@ -105,7 +99,6 @@ export const appConfig: ApplicationConfig = {
     provideTranslationMarkupTranspiler(LinkTranspiler),
     provideLinkRenderer(CustomLinkRenderer),
     provideLinkRenderer(CustomExternalLinkObjectLinkRenderer),
-    provideBi(withCDN('/assets/icons')),
     provideNgIconLoader((name) => {
       const http = inject(HttpClient);
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});

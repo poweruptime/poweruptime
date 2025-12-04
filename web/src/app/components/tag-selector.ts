@@ -31,7 +31,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {DfxLowerCaseExceptFirstLettersPipe, StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
@@ -51,13 +51,17 @@ import {Tag} from '../directives';
               type="button"
               matChipRemove
               stopPropagation>
-              <bi name="x-circle" aria-hidden="true" />
+              <ng-icon name="bootstrapXCircle" aria-hidden="true" />
             </button>
           </a>
           <mat-menu #menu="matMenu">
             @for (tagVariant of tagVariants; track tagVariant) {
               <button (click)="updateTagVariant(tag, tagVariant)" mat-menu-item type="button">
-                <bi [name]="tag.variant === tagVariant ? 'check-circle-fill' : 'circle'" />
+                <!-- i(bootstrapCheckCircleFill, bootstrapCircle) -->
+                <ng-icon
+                  [name]="
+                    tag.variant === tagVariant ? 'bootstrapCheckCircleFill' : 'bootstrapCircle'
+                  " />
                 <span>
                   {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
                 </span>
@@ -103,7 +107,7 @@ import {Tag} from '../directives';
     MatAutocomplete,
     MatOption,
     MatProgressBar,
-    BiComponent,
+    NgIcon,
     StopPropagationDirective,
     TranslocoPipe,
     MatMenu,

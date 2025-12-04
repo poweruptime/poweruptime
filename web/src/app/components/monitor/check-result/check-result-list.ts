@@ -30,8 +30,8 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -60,7 +60,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
 
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'checkResult.list.hasNotification' | transloco }}</mat-label>
-          <bi name="arrow-down-up" matIconPrefix />
+          <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
           <mat-select [(ngModel)]="hasNotification">
             @for (states of availableHasNotificationStates(); track states.hasNotification) {
               <mat-option [value]="states.hasNotification">
@@ -72,7 +72,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
 
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.status' | transloco }}</mat-label>
-          <bi name="arrow-down-up" matIconPrefix />
+          <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
           <mat-select [(ngModel)]="statuses" multiple>
             @for (status of availableStatuses(); track status.status) {
               <mat-option [value]="status.status">
@@ -160,7 +160,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
               matTooltipPosition="left"
               mat-icon-button
               stopPropagation>
-              <bi name="arrow-right" />
+              <ng-icon name="bootstrapArrowRight" />
             </a>
           </td>
         </ng-container>
@@ -218,7 +218,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
     TableLoadingBar,
     RelativeTimeWithTooltip,
     StopPropagationDirective,
-    BiComponent,
+    NgIcon,
     MatIconAnchor,
     TranslocoPipe,
     MatTooltip,

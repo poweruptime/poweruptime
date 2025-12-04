@@ -14,8 +14,8 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {s_cut} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
@@ -46,10 +46,16 @@ import {BACKEND_API_URL} from '../../util';
             <mat-card-content>
               <div class="inline-flex items-center gap-2">
                 @if (publicStatusPageMonitorsStore.status() === 'UP') {
-                  <bi [monitor-status-color]="'UP'" size="24" name="check-circle-fill" />
+                  <ng-icon
+                    [monitor-status-color]="'UP'"
+                    size="24"
+                    name="bootstrapCheckCircleFill" />
                   <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
                 } @else {
-                  <bi [monitor-status-color]="'DOWN'" size="24" name="exclamation-circle-fill" />
+                  <ng-icon
+                    [monitor-status-color]="'DOWN'"
+                    size="24"
+                    name="bootstrapExclamationCircleFill" />
                   <span class="text-xl">{{ 'statusPage.public.issues' | transloco }}</span>
                 }
               </div>
@@ -103,7 +109,7 @@ import {BACKEND_API_URL} from '../../util';
     MatCard,
     MatCardContent,
     StatusPageMonitorList,
-    BiComponent,
+    NgIcon,
     BackendImage,
     MonitorStatusColor,
     ShadowRender,

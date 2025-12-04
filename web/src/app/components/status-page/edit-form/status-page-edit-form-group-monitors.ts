@@ -34,7 +34,7 @@ import {
 } from '@angular/cdk/drag-drop';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType} from '@app/api';
@@ -57,7 +57,7 @@ interface DragEventType {
           <mat-select [formControl]="selectedMonitor" (selectionChange)="onAdd($event)">
             <mat-option class="pt-1">
               <ngx-mat-select-search [(ngModel)]="monitorSearch" noEntriesFoundLabel="">
-                <bi name="x-lg" ngxMatSelectSearchClear />
+                <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
               </ngx-mat-select-search>
             </mat-option>
             @if (monitorSearchPending()) {
@@ -104,7 +104,7 @@ interface DragEventType {
               <mat-card-content>
                 <div class="flex items-center justify-between text-xl">
                   <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
-                    <bi name="grip-vertical" size="20" />
+                    <ng-icon name="bootstrapGripVertical" size="20" />
                     <h3>{{ monitor.name }}</h3>
                   </div>
                   <div>
@@ -113,7 +113,7 @@ interface DragEventType {
                       (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
                       type="button"
                       mat-icon-button>
-                      <bi name="trash-fill" />
+                      <ng-icon name="bootstrapTrashFill" />
                     </button>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ interface DragEventType {
     MatLabel,
     MatOption,
     NgxMatSelectSearchModule,
-    BiComponent,
+    NgIcon,
     MatProgressBar,
     CdkDragPlaceholder,
     TranslocoPipe,

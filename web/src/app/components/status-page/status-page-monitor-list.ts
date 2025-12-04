@@ -4,7 +4,7 @@ import {RouterLink} from '@angular/router';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {UptimeTimeline} from '@app/components/monitor';
 import {MonitorStatusTextBackground} from '@app/directives';
@@ -34,7 +34,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
               class="inline-flex items-center gap-2 text-xl"
               [routerLink]="'/public/m/' + monitor.id">
               {{ monitor.name }}
-              <bi size="16" name="box-arrow-up-right" />
+              <ng-icon size="16" name="bootstrapBoxArrowUpRight" />
             </a>
           </div>
           <div class="tl-container">
@@ -59,7 +59,7 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PublicStatusPageMonitorsStore],
   imports: [
-    BiComponent,
+    NgIcon,
     RouterLink,
     MatTooltip,
     TranslocoPipe,

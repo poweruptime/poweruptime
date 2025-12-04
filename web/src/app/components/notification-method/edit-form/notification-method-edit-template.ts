@@ -23,7 +23,7 @@ import {MatInput} from '@angular/material/input';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
@@ -68,7 +68,7 @@ import {Editor} from '@app/components/editor';
             (click)="resetClick.emit()"
             type="button"
             mat-stroked-button>
-            <bi name="arrow-counterclockwise" />
+            <ng-icon name="bootstrapArrowCounterclockwise" />
             Reset
           </button>
         </div>
@@ -113,7 +113,7 @@ import {Editor} from '@app/components/editor';
     ShadowRender,
     TranslocoPipe,
     MatButton,
-    BiComponent,
+    NgIcon,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {

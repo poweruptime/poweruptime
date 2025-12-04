@@ -8,7 +8,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
@@ -30,7 +30,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                 [attr.aria-label]="'notificationMethod.edit.email.to.remove' | transloco: {email}"
                 type="button"
                 matChipRemove>
-                <bi name="x-circle" aria-hidden="true" />
+                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
               </button>
             </mat-chip-row>
           }
@@ -137,7 +137,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                 [attr.aria-label]="'notificationMethod.edit.email.cc.remove' | transloco: {email}"
                 type="button"
                 matChipRemove>
-                <bi name="x-circle" aria-hidden="true" />
+                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
               </button>
             </mat-chip-row>
           }
@@ -169,7 +169,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                 [attr.aria-label]="'notificationMethod.edit.email.bcc.remove' | transloco: {email}"
                 type="button"
                 matChipRemove>
-                <bi name="x-circle" aria-hidden="true" />
+                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
               </button>
             </mat-chip-row>
           }
@@ -200,7 +200,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     MatChipRow,
     MatChipRemove,
     MatChipInput,
-    BiComponent,
+    NgIcon,
     TranslocoPipe,
     MatSelect,
     MatOption,

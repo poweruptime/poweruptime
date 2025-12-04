@@ -21,7 +21,7 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {BackendOfflineAlert, Nav} from '@app/components';
 import {
@@ -55,7 +55,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
                   (click)="drawer.toggle()"
                   type="button"
                   mat-icon-button>
-                  <bi name="list" size="24" />
+                  <ng-icon name="bootstrapList" size="24" />
                 </button>
               }
               <a class="inline-flex items-center gap-2 text-2xl" routerLink="/">
@@ -114,7 +114,7 @@ import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
     RouterOutlet,
     ReactiveFormsModule,
     MatSidenavModule,
-    BiComponent,
+    NgIcon,
     MatIconButton,
     Nav,
     MatTooltip,

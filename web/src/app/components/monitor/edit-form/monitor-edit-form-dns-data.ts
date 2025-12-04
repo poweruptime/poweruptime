@@ -13,8 +13,8 @@ import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {cl_copy} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {toast} from 'ngx-sonner';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -109,7 +109,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                 [attr.aria-label]="'monitor.edit.dns.matches.remove' | transloco: {match}"
                 type="button"
                 matChipRemove>
-                <bi name="x" />
+                <ng-icon name="bootstrapX" />
               </button>
             </mat-chip-row>
           }
@@ -134,7 +134,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatChipInput,
     MatChipRemove,
     MatChipRow,
-    BiComponent,
+    NgIcon,
     TranslocoPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

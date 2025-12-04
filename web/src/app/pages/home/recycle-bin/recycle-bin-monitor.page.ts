@@ -14,7 +14,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
@@ -28,7 +28,7 @@ import {trackBy} from '@app/util';
       (click)="monitorsStore.restoreSelection()"
       type="button"
       mat-flat-button>
-      <bi name="arrow-counterclockwise" />
+      <ng-icon name="bootstrapArrowCounterclockwise" />
       {{ 'general.restore' | transloco }}
     </button>
     <div class="table-responsive">
@@ -103,7 +103,7 @@ import {trackBy} from '@app/util';
     RelativeTimeWithTooltip,
     MatCheckbox,
     MatButton,
-    BiComponent,
+    NgIcon,
   ],
   providers: [MonitorsStore],
 })

@@ -4,30 +4,34 @@ import {MatMiniFabButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {ThemeService} from '@angularui/theme';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {themeOptions} from '@app/util';
 
 @Component({
   template: `
     <button [matMenuTriggerFor]="menu" type="button" mat-mini-fab>
-      <bi name="paint-bucket" size="20" />
+      <ng-icon name="bootstrapPaintBucket" size="20" />
     </button>
     @let selectedTheme = themeService.theme();
     <mat-menu #menu="matMenu">
       @for (theme of themeOptions; track theme.value) {
         <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
-          <bi [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'" />
+          <!-- i(bootstrapCheckCircleFill, bootstrapCircle) -->
+          <ng-icon
+            [name]="
+              selectedTheme === theme.value ? 'bootstrapCheckCircleFill' : 'bootstrapCircle'
+            " />
           <span>{{ theme.viewValue }}</span>
 
-          <bi [name]="theme.icon" />
+          <ng-icon [name]="theme.icon" />
         </button>
       }
     </mat-menu>
   `,
   selector: 'pu-outside-theme-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatMenuTrigger, MatMenu, BiComponent, MatMenuItem, MatMiniFabButton],
+  imports: [MatMenuTrigger, MatMenu, NgIcon, MatMenuItem, MatMiniFabButton],
 })
 export class OutsideThemeSwitch {
   readonly themeOptions = themeOptions;

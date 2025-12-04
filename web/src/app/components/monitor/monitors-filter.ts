@@ -10,7 +10,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {DfxAutofocus} from 'dfx-helper';
 
 import {BackendType, MonitorDataType} from '@app/api';
@@ -21,7 +21,7 @@ import {MonitorSearchParams} from '@app/services';
     <form class="motion-preset-slide-down motion-duration-300 grid gap-2" [formGroup]="form">
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.search' | transloco }}</mat-label>
-        <bi name="search" matIconPrefix />
+        <ng-icon name="bootstrapSearch" matIconPrefix />
         <input formControlName="search" matInput focus />
         @if (form.controls.search.getRawValue().length > 0) {
           <button
@@ -31,14 +31,14 @@ import {MonitorSearchParams} from '@app/services';
             type="button"
             matSuffix
             mat-icon-button>
-            <bi name="x-lg" aria-hidden="true" />
+            <ng-icon name="bootstrapXLg" aria-hidden="true" />
           </button>
         }
       </mat-form-field>
 
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.status' | transloco }}</mat-label>
-        <bi name="arrow-down-up" matIconPrefix />
+        <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
         <mat-select formControlName="statuses" multiple>
           @for (status of availableStatuses(); track status.status) {
             <mat-option [value]="status.status">
@@ -50,7 +50,7 @@ import {MonitorSearchParams} from '@app/services';
 
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.type' | transloco }}</mat-label>
-        <bi name="list-check" matIconPrefix />
+        <ng-icon name="bootstrapListCheck" matIconPrefix />
         <mat-select formControlName="types" multiple>
           @for (type of types; track type.value) {
             <mat-option [value]="type.value">
@@ -62,7 +62,7 @@ import {MonitorSearchParams} from '@app/services';
 
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>{{ 'general.tags' | transloco }}</mat-label>
-        <bi name="tag" matIconPrefix />
+        <ng-icon name="bootstrapTag" matIconPrefix />
         <mat-select formControlName="tags" multiple>
           @for (tag of tags(); track tag.name) {
             <mat-option [value]="tag.name">
@@ -77,7 +77,7 @@ import {MonitorSearchParams} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    BiComponent,
+    NgIcon,
     MatFormField,
     MatLabel,
     MatSelect,
