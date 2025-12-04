@@ -13,7 +13,7 @@ import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
@@ -50,7 +50,7 @@ import {
             matTooltip="Ctrl + F"
             matTooltipPosition="after">
             <mat-chip-option [selected]="_showFilter">
-              <bi name="filter" />
+              <ng-icon name="bootstrapFilter" />
             </mat-chip-option>
           </mat-chip-listbox>
         </div>
@@ -107,7 +107,6 @@ import {
   imports: [
     RouterOutlet,
     RouterLink,
-    BiComponent,
     MonitorCardList,
     MatChipListbox,
     MatChipOption,
@@ -117,6 +116,7 @@ import {
     TeamSelect,
     IsTeamAdmin,
     MatTooltip,
+    NgIcon,
   ],
   selector: 'pu-monitors-page',
 })

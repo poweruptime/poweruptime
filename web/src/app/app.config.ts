@@ -1,7 +1,8 @@
-import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {
   ApplicationConfig,
   LOCALE_ID,
+  inject,
   isDevMode,
   provideZonelessChangeDetection,
 } from '@angular/core';
@@ -23,6 +24,7 @@ import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
 import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
+import {provideNgIconLoader} from '@ng-icons/core';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {biCacheInterceptor, provideBi, withCDN} from 'dfx-bootstrap-icons';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
@@ -104,6 +106,10 @@ export const appConfig: ApplicationConfig = {
     provideLinkRenderer(CustomLinkRenderer),
     provideLinkRenderer(CustomExternalLinkObjectLinkRenderer),
     provideBi(withCDN('/assets/icons')),
+    provideNgIconLoader((name) => {
+      const http = inject(HttpClient);
+      return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
+    }),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

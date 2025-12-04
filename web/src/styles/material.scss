@@ -108,6 +108,40 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   margin-right: 0.5rem;
 }
 
+/* Fix vertical text alignment with icons */
+.mdc-icon-button > ng-icon {
+  vertical-align: 7px;
+}
+
+.mdc-fab > .mdc-button__label > ng-icon {
+  vertical-align: -0.26rem !important;
+}
+
+.mdc-button > .mdc-button__label > ng-icon {
+  margin-right: 0.3em;
+  vertical-align: -0.15em;
+}
+
+.mat-mdc-chip-action-label > ng-icon {
+  vertical-align: -0.19em;
+}
+
+.mat-mdc-menu-item-text > ng-icon {
+  vertical-align: -0.275em;
+  margin-right: 0.4em;
+}
+
+.mdc-list-item__primary-text > ng-icon {
+  vertical-align: -0.26rem;
+  margin-right: 0.7em;
+}
+
+.mat-mdc-form-field-icon-prefix > ng-icon {
+  margin-top: 0.15rem;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+}
+
 /* Material Table Column Width */
 .table-responsive {
   width: 100%;
