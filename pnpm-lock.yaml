@@ -114,6 +114,12 @@ importers:
       '@ng-icons/core':
         specifier: ^32.5.0
         version: 32.5.0(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@ng-icons/lucide':
+        specifier: ^33.0.0
+        version: 33.0.0
+      '@ng-icons/material-icons':
+        specifier: ^33.0.0
+        version: 33.0.0
       '@ng-matero/extensions':
         specifier: 20.3.1
         version: 20.3.1(@angular/cdk@20.2.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/forms@20.3.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/platform-browser@20.3.14(@angular/animations@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)))(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.14(fc8fbd14e0ffdd8d4cf749792ac641d7))
@@ -248,8 +254,8 @@ importers:
         specifier: 13.0.0
         version: 13.0.0
       ng-icons-manager:
-        specifier: 1.1.1
-        version: 1.1.1(chokidar@5.0.0)(glob@13.0.0)
+        specifier: 1.1.3
+        version: 1.1.3(chokidar@5.0.0)(glob@13.0.0)
       openapi-typescript:
         specifier: 7.10.1
         version: 7.10.1(typescript@5.9.3)
@@ -1685,6 +1691,12 @@ packages:
       '@angular/common': '>=20.0.0'
       '@angular/core': '>=20.0.0'
       rxjs: ^6.5.3 || ^7.4.0
+
+  '@ng-icons/lucide@33.0.0':
+    resolution: {integrity: sha512-HX4tAihCPE3jYgzrlPpM8O/6d/1hbHNHW37GtCQOcY8JFeBc3v5a2MCwFQQwqFm74zBnQbY6iJeGIP6dsaMnuA==}
+
+  '@ng-icons/material-icons@33.0.0':
+    resolution: {integrity: sha512-SzLEEdJob61sFwTeHowvllqTCeW0nz2FY2h4jH95TgVt9PDILsWq2GWchGpx3iprQ78Z+41mjm7bo83uxPb2bw==}
 
   '@ng-matero/extensions@20.3.1':
     resolution: {integrity: sha512-eR0A88Yj+CSjCgrV/m+rHPtGwThPWTWjUxdZL9T8dz+j9FmrLBjJGbm4QVw47tu69ZHl0epBFjpHEXmxqaZTdA==}
@@ -4132,8 +4144,8 @@ packages:
       sass:
         optional: true
 
-  ng-icons-manager@1.1.1:
-    resolution: {integrity: sha512-TxI0BrA0lKV01NtTN7FUGqbtHvPl/FQ6gkAdzgohdqUFw2yb+KfvVmxFsaRtwGl/1mnTMZPSvfwXHFvakxhfWQ==}
+  ng-icons-manager@1.1.3:
+    resolution: {integrity: sha512-oS6hU6gWRoCbwixuyZ9nZAk5czFcJZY+YVdRoTukbYu+YvYg0DIUJBDSKAw29ZsRLia0Hy/RWUW1pdR2sOlN9w==}
     hasBin: true
     peerDependencies:
       chokidar: '5'
@@ -6661,6 +6673,14 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
+  '@ng-icons/lucide@33.0.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@ng-icons/material-icons@33.0.0':
+    dependencies:
+      tslib: 2.8.1
+
   '@ng-matero/extensions@20.3.1(@angular/cdk@20.2.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/forms@20.3.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/platform-browser@20.3.14(@angular/animations@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)))(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/material@20.2.14(fc8fbd14e0ffdd8d4cf749792ac641d7))':
     dependencies:
       '@angular/cdk': 20.2.14(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -9153,7 +9173,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  ng-icons-manager@1.1.1(chokidar@5.0.0)(glob@13.0.0):
+  ng-icons-manager@1.1.3(chokidar@5.0.0)(glob@13.0.0):
     dependencies:
       chokidar: 5.0.0
       glob: 13.0.0

@@ -24,7 +24,7 @@ import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
 import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
-import {provideNgIconLoader} from '@ng-icons/core';
+import {provideNgIconLoader, withCaching} from '@ng-icons/core';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
@@ -102,7 +102,7 @@ export const appConfig: ApplicationConfig = {
     provideNgIconLoader((name) => {
       const http = inject(HttpClient);
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
-    }),
+    }, withCaching()),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

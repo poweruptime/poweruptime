@@ -5,6 +5,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 
 import {Subject, throttleTime} from 'rxjs';
 
+import {NgIcon} from '@ng-icons/core';
 import {format} from '@std/fmt/duration';
 import confetti from 'canvas-confetti';
 import {n_generate_float, n_generate_int} from 'dfts-helper';
@@ -20,12 +21,7 @@ import {n_generate_float, n_generate_int} from 'dfts-helper';
           type="button">
           <div
             class="flex items-center gap-2 rounded bg-gray-900 px-2 py-1.5 font-semibold text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
-              <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-              <path
-                fill="currentColor"
-                d="m9.675 13.7l.875-2.85L8.25 9h2.85l.9-2.8l.9 2.8h2.85l-2.325 1.85l.875 2.85l-2.3-1.775zM6 23v-7.725q-.95-1.05-1.475-2.4T4 10q0-3.35 2.325-5.675T12 2t5.675 2.325T20 10q0 1.525-.525 2.875T18 15.275V23l-6-2zm6-7q2.5 0 4.25-1.75T18 10t-1.75-4.25T12 4T7.75 5.75T6 10t1.75 4.25T12 16" />
-            </svg>
+            <ng-icon name="matWorkspacePremium" size="26" />
             <span class="hidden sm:inline">Supporter</span>
           </div>
         </button>
@@ -68,7 +64,7 @@ import {n_generate_float, n_generate_int} from 'dfts-helper';
   `,
   selector: 'pu-supporter-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTooltip],
+  imports: [MatTooltip, NgIcon],
 })
 export class SupporterBadge {
   supportsSince = input<string | undefined>();
