@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0-beta-1764955224 - 2025-12-05
+
+### <!-- 0 -->🚀 Features
+
+- Migrate svgs to icons by Dafnik ([a88c461](https://github.com/poweruptime/poweruptime/commit/a88c461d3b8ab32e5f23bde12b6247cc70397991))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Apprise sender (#507) by Dominik ([d005547](https://github.com/poweruptime/poweruptime/commit/d00554773e460fdbf7bef386ba3e823b15b3cfd7))
+
+### <!-- 2 -->🚜 Refactor
+
+- Ng-icons (#506) by Dominik ([9042d10](https://github.com/poweruptime/poweruptime/commit/9042d10af30502b6854e2ef77c92cc60be040ede))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1764683635...0.5.0-beta-1764955224)
+
 ## 0.5.0-beta-1764683635 - 2025-12-02
 
 ### <!-- 1 -->🐛 Bug Fixes
