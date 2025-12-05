@@ -160,6 +160,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
 
         <div class="col-span-6 flex gap-4">
           <pu-save-button [valid]="isValid()" />
+          <!-- i(bootstrapSendCheck) -->
           <pu-save-button
             [valid]="isValid()"
             (buttonClick)="
@@ -169,7 +170,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             "
             text="Save (and test)"
             type="button"
-            icon="send-check" />
+            icon="bootstrapSendCheck" />
         </div>
       </div>
 
