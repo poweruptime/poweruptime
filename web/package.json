@@ -50,7 +50,6 @@
     "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
     "@tailwindcss/postcss": "4.1.17",
     "@tinymce/tinymce-angular": "9.1.1",
-    "bootstrap-icons": "1.13.1",
     "canvas-confetti": "1.9.4",
     "chart.js": "^4.4.9",
     "date-fns": "4.1.0",
