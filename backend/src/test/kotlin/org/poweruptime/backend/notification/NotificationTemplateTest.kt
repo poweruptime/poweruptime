@@ -25,7 +25,7 @@ class NotificationTemplateTest(
             SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord(
                 subNotification = ModelFactory.getTestSubNotification(
                     notificationId = notification.id,
-                    notificationMethodId = method.id,
+                    methodId = method.id,
                     title = title,
                 ),
                 method = method,
