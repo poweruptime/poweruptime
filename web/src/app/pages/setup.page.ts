@@ -8,8 +8,8 @@ import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
@@ -85,7 +85,7 @@ import {SetupStore} from '../services';
                   </mat-form-field>
 
                   <button [disabled]="!isTestEmailFormValid()" mat-flat-button type="submit">
-                    <bi class="mr-2" name="envelope-plus" />
+                    <ng-icon class="mr-2" name="bootstrapEnvelopePlus" />
                     {{ 'auth.setup.testEmail.send' | transloco }}
                   </button>
                 </form>
@@ -96,7 +96,7 @@ import {SetupStore} from '../services';
                     type="button"
                     mat-stroked-button>
                     {{ 'auth.setup.skip' | transloco }}
-                    <bi class="ml-2" name="arrow-right" />
+                    <ng-icon class="ml-2" name="bootstrapArrowRight" />
                   </button>
                 }
               }
@@ -157,7 +157,7 @@ import {SetupStore} from '../services';
                     [disabled]="!isConfirmEmailFormValid()"
                     mat-flat-button
                     type="submit">
-                    <bi class="mr-2" name="send-check" />
+                    <ng-icon class="mr-2" name="bootstrapSendCheck" />
                     {{ 'auth.setup.confirmEmail.verify' | transloco }}
                   </button>
 
@@ -168,7 +168,7 @@ import {SetupStore} from '../services';
                         (click)="submitTestEmail()"
                         mat-stroked-button
                         type="button">
-                        <bi class="mr-2" name="envelope-plus" />
+                        <ng-icon class="mr-2" name="bootstrapEnvelopePlus" />
                         {{ 'auth.setup.confirmEmail.resend' | transloco }}
                       </button>
                       <button
@@ -177,7 +177,7 @@ import {SetupStore} from '../services';
                         type="button"
                         mat-button>
                         {{ 'auth.setup.skip' | transloco }}
-                        <bi class="ml-2" name="arrow-right" />
+                        <ng-icon class="ml-2" name="bootstrapArrowRight" />
                       </button>
                     </div>
                   }
@@ -230,14 +230,17 @@ import {SetupStore} from '../services';
                   </mat-form-field>
 
                   <button [disabled]="!isSetupFormValid()" mat-flat-button type="submit">
-                    <bi class="mr-2" name="envelope-plus" />
+                    <ng-icon class="mr-2" name="bootstrapEnvelopePlus" />
                     {{ 'auth.setup.sendInvitation' | transloco }}
                   </button>
                 </form>
               }
               @case ('setupCompleted') {
                 <div class="flex h-40 items-center justify-center">
-                  <bi name="check-circle-fill" size="64" style="color: var(--mat-sys-primary)" />
+                  <ng-icon
+                    name="bootstrapCheckCircleFill"
+                    size="64"
+                    style="color: var(--mat-sys-primary)" />
                 </div>
 
                 <div puAlert type="INFO">
@@ -260,7 +263,7 @@ import {SetupStore} from '../services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    BiComponent,
+    NgIcon,
     MatLabel,
     MatFormField,
     MatInput,

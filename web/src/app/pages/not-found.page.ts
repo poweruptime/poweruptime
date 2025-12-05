@@ -5,7 +5,7 @@ import {RouterLink} from '@angular/router';
 import {MatButton} from '@angular/material/button';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {BottomActionBar} from '@app/components';
 
@@ -14,7 +14,7 @@ import {BottomActionBar} from '@app/components';
     <div class="flex min-h-screen flex-col items-center justify-center">
       <div
         class="container flex max-w-md flex-col items-center justify-center gap-14 px-4 py-16 text-center md:py-24">
-        <bi name="question-octagon-fill" size="100" />
+        <ng-icon name="bootstrapQuestionOctagonFill" size="100" />
         <div class="flex flex-col gap-4 space-y-3">
           <h1 class="text-4xl font-bold tracking-tighter sm:text-5xl">
             {{ 'notFound.title' | transloco }}
@@ -23,11 +23,11 @@ import {BottomActionBar} from '@app/components';
         </div>
         <div class="flex flex-col gap-2 min-[400px]:flex-row">
           <a mat-button routerLink="/">
-            <bi class="me-2" name="house" />
+            <ng-icon class="me-2" name="bootstrapHouse" />
             {{ 'notFound.home' | transloco }}
           </a>
           <button (click)="goBack()" type="button" mat-flat-button>
-            <bi class="me-2" name="arrow-left" />
+            <ng-icon class="me-2" name="bootstrapArrowLeft" />
             {{ 'notFound.back' | transloco }}
           </button>
         </div>
@@ -38,7 +38,7 @@ import {BottomActionBar} from '@app/components';
   `,
   selector: 'not-found-page',
   standalone: true,
-  imports: [RouterLink, BiComponent, MatButton, TranslocoPipe, BottomActionBar],
+  imports: [RouterLink, NgIcon, MatButton, TranslocoPipe, BottomActionBar],
 })
 export class NotFoundPage {
   private readonly location = inject(Location);

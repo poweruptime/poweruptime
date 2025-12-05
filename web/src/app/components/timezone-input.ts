@@ -22,7 +22,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {map, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 @Component({
@@ -32,7 +32,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
       <mat-select [(ngModel)]="value">
         <mat-option class="pt-1">
           <ngx-mat-select-search [(ngModel)]="timezoneFilter">
-            <bi name="x-lg" ngxMatSelectSearchClear />
+            <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
           </ngx-mat-select-search>
         </mat-option>
         @for (timeZone of filteredTimezones(); track timeZone) {
@@ -64,7 +64,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
     MatOption,
     MatLabel,
     NgxMatSelectSearchModule,
-    BiComponent,
+    NgIcon,
     TranslocoPipe,
     DatePipe,
   ],

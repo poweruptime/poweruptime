@@ -1,8 +1,8 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, booleanAttribute, computed, input} from '@angular/core';
 
+import {NgIcon} from '@ng-icons/core';
 import {format} from '@std/fmt/duration';
-import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
 import {MonitorStatusColor} from '@app/directives';
@@ -17,12 +17,12 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
       @if (_logEntry.level === 'ACTION') {
         @let result = _logEntry.properties?.['result'] ?? 'true';
         @if (result === 'true') {
-          <bi [monitor-status-color]="'UP'" name="check-circle"></bi>
+          <ng-icon [monitor-status-color]="'UP'" name="bootstrapCheckCircle"></ng-icon>
         } @else {
-          <bi [monitor-status-color]="'DOWN'" name="x-circle"></bi>
+          <ng-icon [monitor-status-color]="'DOWN'" name="bootstrapXCircle"></ng-icon>
         }
       } @else {
-        <bi name="info-circle"></bi>
+        <ng-icon name="bootstrapInfoCircle"></ng-icon>
       }
       <div class="flex flex-1 items-center justify-between">
         <span class="font-medium">
@@ -45,7 +45,7 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
   `,
   selector: 'pu-check-result-log-entry',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RelativeTimeWithTooltip, BiComponent, DatePipe, MonitorStatusColor],
+  imports: [RelativeTimeWithTooltip, NgIcon, DatePipe, MonitorStatusColor],
 })
 export class CheckResultLogEntry {
   readonly logEntry = input.required<BackendType['CheckResultLogEntryResponse']>();

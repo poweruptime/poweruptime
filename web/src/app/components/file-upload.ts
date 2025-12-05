@@ -16,9 +16,9 @@ import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/for
 import {filter, switchMap} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {FileInputDirective, FileInputValidators} from '@ngx-dropzone/cdk';
 import {MatDropzone} from '@ngx-dropzone/material';
-import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType} from '@app/api';
 
@@ -36,12 +36,12 @@ import {BackendImage} from './backend-image';
           <mat-chip-row>
             {{ fileToShow.name }}
             <button (click)="remove()" matChipRemove type="button">
-              <bi name="x-circle" />
+              <ng-icon name="bootstrapXCircle" />
             </button>
           </mat-chip-row>
         }
       </ngx-mat-dropzone>
-      <bi matSuffix size="24" name="cloud-arrow-up-fill" />
+      <ng-icon matSuffix size="24" name="bootstrapCloudArrowUpFill" />
 
       @if (fileCtrl.errors?.['accept']) {
         <mat-error>{{ 'form.validation.file' | transloco }}</mat-error>
@@ -63,7 +63,7 @@ import {BackendImage} from './backend-image';
     MatSuffix,
     MatChipRemove,
     MatChipRow,
-    BiComponent,
+    NgIcon,
     MatDropzone,
     FileInputDirective,
     TranslocoPipe,

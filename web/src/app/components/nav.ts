@@ -14,7 +14,7 @@ import {map} from 'rxjs';
 
 import {ThemeService} from '@angularui/theme';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {BiComponent, provideBi, withSize} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {IsSystemAdmin, MonitorStatusText} from '@app/directives';
@@ -49,14 +49,14 @@ import {TeamSelect} from './team-select';
                 }
               </span>
               <span class="absolute right-4 pt-1">
-                <bi name="chevron-expand" />
+                <ng-icon size="20" name="bootstrapChevronExpand" />
               </span>
             </button>
           </pu-team-select>
         </div>
         <mat-nav-list>
           <a [routerLink]="_isMobile ? '/mm' : '/m'" mat-list-item routerLinkActive="active">
-            <bi name="lightning" />
+            <ng-icon size="20" name="bootstrapLightning" />
             <span class="nav-text">{{ 'nav.personalDashboard' | transloco }}</span>
           </a>
 
@@ -65,7 +65,7 @@ import {TeamSelect} from './team-select';
             mat-list-item
             routerLink="/t"
             routerLinkActive="active">
-            <bi name="people" />
+            <ng-icon size="20" name="bootstrapPeople" />
             <span class="nav-text">
               {{ 'general.teams' | transloco }}
             </span>
@@ -91,7 +91,7 @@ import {TeamSelect} from './team-select';
                     type="button"
                     mat-icon-button
                     stopPropagation>
-                    <bi name="x" />
+                    <ng-icon size="20" name="bootstrapX" />
                   </button>
                 </div>
               </a>
@@ -111,14 +111,14 @@ import {TeamSelect} from './team-select';
               mat-list-item
               routerLink="/t/{{ selectedTeamId() }}/notification-methods"
               routerLinkActive="active">
-              <bi name="bell" />
+              <ng-icon size="20" name="bootstrapBell" />
               <span class="nav-text">{{ 'general.notificationMethods' | transloco }}</span>
             </a>
             <a
               mat-list-item
               routerLink="/t/{{ selectedTeamId() }}/status-pages"
               routerLinkActive="active">
-              <bi name="chat-left-quote" />
+              <ng-icon size="20" name="bootstrapChatLeftQuote" />
               <span class="nav-text">{{ 'general.statusPages' | transloco }}</span>
             </a>
             <ng-container *isTeamAdmin>
@@ -126,14 +126,14 @@ import {TeamSelect} from './team-select';
                 mat-list-item
                 routerLink="/t/{{ selectedTeamId() }}/recycle-bin"
                 routerLinkActive="active">
-                <bi name="trash3" />
+                <ng-icon size="20" name="bootstrapTrash3" />
                 <span class="nav-text">{{ 'general.recycleBin' | transloco }}</span>
               </a>
               <a
                 mat-list-item
                 routerLink="/t/{{ selectedTeamId() }}/edit"
                 routerLinkActive="active">
-                <bi name="gear-wide" />
+                <ng-icon size="20" name="bootstrapGearWide" />
                 <span class="nav-text">{{ 'general.settings' | transloco }}</span>
               </a>
             </ng-container>
@@ -183,7 +183,7 @@ import {TeamSelect} from './team-select';
                 mat-list-item
                 routerLink="/settings"
                 routerLinkActive="active">
-                <bi class="mt-1" name="building-gear" />
+                <ng-icon class="mt-1" size="20" name="bootstrapBuildingGear" />
               </a>
             </mat-nav-list>
 
@@ -193,7 +193,7 @@ import {TeamSelect} from './team-select';
                 (click)="openHelp()"
                 type="button"
                 mat-list-item>
-                <bi class="mt-1" name="question-circle" />
+                <ng-icon class="mt-1" size="20" name="bootstrapQuestionCircle" />
               </button>
             </mat-nav-list>
 
@@ -202,25 +202,25 @@ import {TeamSelect} from './team-select';
                 [matMenuTriggerFor]="menu"
                 [matTooltip]="'general.settings' | transloco"
                 mat-list-item>
-                <bi class="mt-1" name="gear" />
+                <ng-icon class="mt-1" size="20" name="bootstrapGear" />
               </a>
             </mat-nav-list>
 
             <mat-menu #menu="matMenu" yPosition="above" xPosition="before">
               <button (click)="authStore.logout()" type="button" mat-menu-item>
-                <bi name="box-arrow-left" />
+                <ng-icon name="bootstrapBoxArrowLeft" />
                 {{ 'general.logout' | transloco }}
               </button>
               <button (click)="openAbout()" type="button" mat-menu-item>
-                <bi name="info-circle" />
+                <ng-icon name="bootstrapInfoCircle" />
                 {{ 'general.about' | transloco }}
               </button>
               <button [matMenuTriggerFor]="themeMenu" type="button" mat-menu-item>
-                <bi name="paint-bucket" />
+                <ng-icon name="bootstrapPaintBucket" />
                 {{ 'general.theme' | transloco }}
               </button>
               <button [matMenuTriggerFor]="languageMenu" type="button" mat-menu-item>
-                <bi name="translate" />
+                <ng-icon name="bootstrapTranslate" />
                 {{ 'general.language' | transloco }}
               </button>
             </mat-menu>
@@ -230,12 +230,17 @@ import {TeamSelect} from './team-select';
               @for (theme of themeOptions; track theme.value) {
                 <button (click)="themeService.setTheme(theme.value)" type="button" mat-menu-item>
                   <div class="inline-flex items-center gap-2">
-                    <bi
-                      [name]="selectedTheme === theme.value ? 'check-circle-fill' : 'circle'"
+                    <!-- i(bootstrapCheckCircleFill, bootstrapCircle) -->
+                    <ng-icon
+                      [name]="
+                        selectedTheme === theme.value
+                          ? 'bootstrapCheckCircleFill'
+                          : 'bootstrapCircle'
+                      "
                       size="16" />
                     <span>{{ theme.viewValue }}</span>
 
-                    <bi [name]="theme.icon" />
+                    <ng-icon [name]="theme.icon" />
                   </div>
                 </button>
               }
@@ -249,7 +254,11 @@ import {TeamSelect} from './team-select';
                   (click)="translocoService.setActiveLang(lang.id)"
                   type="button"
                   mat-menu-item>
-                  <bi [name]="selectedLang === lang.id ? 'check-circle-fill' : 'circle'" />
+                  <!-- i(bootstrapCheckCircleFill, bootstrapCircle) -->
+                  <ng-icon
+                    [name]="
+                      selectedLang === lang.id ? 'bootstrapCheckCircleFill' : 'bootstrapCircle'
+                    " />
                   <span>{{ lang.label }}</span>
                 </button>
               }
@@ -279,14 +288,13 @@ import {TeamSelect} from './team-select';
     }
   `,
   selector: 'pu-nav',
-  providers: [provideBi(withSize('20'))],
   imports: [
     MatListItem,
     RouterLink,
     RouterLinkActive,
     MatNavList,
     IsSystemAdmin,
-    BiComponent,
+    NgIcon,
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
@@ -297,6 +305,7 @@ import {TeamSelect} from './team-select';
     IsTeamAdmin,
     MonitorStatusText,
     MatTooltip,
+    NgIcon,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

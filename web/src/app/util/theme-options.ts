@@ -1,20 +1,24 @@
 import {Theme} from '@angularui/theme';
-import {BiName} from 'dfx-bootstrap-icons';
 
+/**
+ * i(bootstrapLaptop)
+ * i(bootstrapSunFill)
+ * i(bootstrapMoonStarsFill)
+ */
 export const themeOptions = [
   {
     value: 'system',
     viewValue: 'System/Default',
-    icon: 'laptop',
+    icon: 'bootstrapLaptop',
   },
   {
     value: 'light',
     viewValue: 'Light',
-    icon: 'sun-fill',
+    icon: 'bootstrapSunFill',
   },
   {
     value: 'dark',
     viewValue: 'Dark',
-    icon: 'moon-stars-fill',
+    icon: 'bootstrapMoonStarsFill',
   },
-] satisfies {value: Theme; viewValue: string; icon: BiName}[];
+] satisfies {value: Theme; viewValue: string; icon: string}[];

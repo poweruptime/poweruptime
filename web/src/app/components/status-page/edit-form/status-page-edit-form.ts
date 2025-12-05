@@ -41,7 +41,7 @@ import {
 import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {BackendType, Database, injectAPI} from '@app/api';
 import {AlertDirective, FileUpload} from '@app/components';
@@ -130,7 +130,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       "
                       type="button"
                       matChipRemove>
-                      <bi name="x-circle" aria-hidden="true" />
+                      <ng-icon name="bootstrapXCircle" aria-hidden="true" />
                     </button>
                   </mat-chip-row>
                 }
@@ -194,9 +194,9 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             type="button"
             mat-icon-button>
             @if (isCollapsed) {
-              <bi name="arrows-expand" />
+              <ng-icon name="bootstrapArrowsExpand" />
             } @else {
-              <bi name="arrows-collapse" />
+              <ng-icon name="bootstrapArrowsCollapse" />
             }
           </button>
         </div>
@@ -223,7 +223,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                   <div class="flex items-center justify-between text-xl">
                     <div class="inline-flex items-center gap-2">
                       <div class="min-w-6 hover:cursor-move" cdkDragHandle>
-                        <bi name="grip-vertical" size="20" />
+                        <ng-icon name="bootstrapGripVertical" size="20" />
                       </div>
 
                       <mat-form-field subscriptSizing="dynamic">
@@ -244,7 +244,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       (click)="form.controls.groups.removeAt(index)"
                       type="button"
                       mat-icon-button>
-                      <bi name="trash-fill" />
+                      <ng-icon name="bootstrapTrashFill" />
                     </button>
                   </div>
 
@@ -302,7 +302,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    BiComponent,
+    NgIcon,
     SaveButton,
     Editor,
     StatusPageEditFormGroupMonitors,

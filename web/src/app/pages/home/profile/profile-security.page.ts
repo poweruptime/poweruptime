@@ -9,7 +9,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {TableLoadingBar} from '@app/components';
 import {ProfileMFAForm, ProfilePasswordEditForm} from '@app/components/profile';
@@ -93,7 +93,7 @@ import {trackBy} from '@app/util';
                   mat-icon-button
                   type="button"
                   matTooltip="Delete">
-                  <bi name="trash" />
+                  <ng-icon name="bootstrapTrash" />
                 </button>
               </td>
             </ng-container>
@@ -122,7 +122,7 @@ import {trackBy} from '@app/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [SessionsStore, ProfileEditStore],
   imports: [
-    BiComponent,
+    NgIcon,
     MatTableModule,
     MatSortModule,
     MatPaginator,

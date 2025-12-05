@@ -13,7 +13,7 @@ import {
 } from '@angular/material/expansion';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {AlertDirective, ShadowRender} from '@app/components';
@@ -28,7 +28,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
       @if (notificationDetailStore.notification(); as notification) {
         <div>
           <a mat-stroked-button routerLink="../../../" queryParamsHandling="merge">
-            <bi class="me-1" name="arrow-left" />
+            <ng-icon class="me-1" name="bootstrapArrowLeft" />
             <span>{{ notification.monitor.name }}</span>
           </a>
         </div>
@@ -38,7 +38,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
         </div>
         <div class="flex items-center gap-4">
           <span class="flex items-center gap-2 text-sm">
-            <bi name="clock" />
+            <ng-icon name="bootstrapClock" />
             <pu-relative-time [value]="notification.createdAt" format="yyyy.MM.dd HH:mm:ss" />
           </span>
 
@@ -47,7 +47,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
             [routerLink]="'../../c/' + notification.checkResult.id + '/logs'">
             <mat-chip-option>
               {{ 'notification.detail.openCheckResult' | transloco }}
-              <bi name="box-arrow-up-right" size="16" />
+              <ng-icon name="bootstrapBoxArrowUpRight" size="16" />
             </mat-chip-option>
           </a>
         </div>
@@ -61,7 +61,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
               @let _expandAll = expandAll();
               <mat-chip-listbox (change)="expandAll.set(!_expandAll)">
                 <mat-chip-option [selected]="_expandAll">
-                  <bi name="arrows-expand" />
+                  <ng-icon name="bootstrapArrowsExpand" />
                 </mat-chip-option>
               </mat-chip-listbox>
             </div>
@@ -104,7 +104,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
           </div>
         } @else {
           <div class="flex flex-col items-center justify-center gap-2 pt-4">
-            <bi size="28" name="bell" />
+            <ng-icon size="28" name="bootstrapBell" />
 
             <h2 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
               Stay in the loop — set up notifications
@@ -126,7 +126,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
   selector: 'monitor-check-result-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    BiComponent,
+    NgIcon,
     RouterLink,
     FormsModule,
     MonitorStatus,

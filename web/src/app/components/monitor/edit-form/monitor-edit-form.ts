@@ -17,7 +17,7 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
@@ -73,7 +73,7 @@ import {
           <mat-select formControlName="type">
             <mat-option class="pt-1">
               <ngx-mat-select-search [formControl]="typeFilterControl">
-                <bi name="x-lg" ngxMatSelectSearchClear />
+                <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
               </ngx-mat-select-search>
             </mat-option>
             @for (type of filteredTypes(); track type.value) {
@@ -232,7 +232,7 @@ import {
 
             <a mat-button routerLink="../../../notification-methods/new" target="_blank">
               {{ 'cmdk.groups.notificationMethod.create' | transloco }}
-              <bi class="ms-1" name="box-arrow-up-right" />
+              <ng-icon class="ms-1" name="bootstrapBoxArrowUpRight" />
             </a>
           </mat-card-content>
         </mat-card>
@@ -278,7 +278,7 @@ import {
     CdkTextareaAutosize,
     TranslocoPipe,
     NgxMatSelectSearchModule,
-    BiComponent,
+    NgIcon,
     SaveButton,
     NotificationMethodSelector,
     MonitorEditFormDnsData,

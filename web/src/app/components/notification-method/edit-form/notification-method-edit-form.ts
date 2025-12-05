@@ -22,8 +22,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {typeOfArrayElement} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, NOTIFICATION_METHOD_SENDER_DATA_TYPES} from '@app/api';
@@ -88,7 +88,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             <mat-select formControlName="type">
               <mat-option class="pt-1">
                 <ngx-mat-select-search [formControl]="typeFilterControl">
-                  <bi name="x-lg" ngxMatSelectSearchClear />
+                  <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
                 </ngx-mat-select-search>
               </mat-option>
               @for (type of filteredTypes(); track type.value) {
@@ -160,6 +160,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
 
         <div class="col-span-6 flex gap-4">
           <pu-save-button [valid]="isValid()" />
+          <!-- i(bootstrapSendCheck) -->
           <pu-save-button
             [valid]="isValid()"
             (buttonClick)="
@@ -169,7 +170,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             "
             text="Save (and test)"
             type="button"
-            icon="send-check" />
+            icon="bootstrapSendCheck" />
         </div>
       </div>
 
@@ -252,7 +253,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     MatCardContent,
     NotificationSenderDataValueLabelPipe,
     NgxMatSelectSearchModule,
-    BiComponent,
+    NgIcon,
     NotificationMethodEditFormSlackData,
     Placeholder,
     NotificationMethodEditFormAppriseData,

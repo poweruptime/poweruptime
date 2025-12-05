@@ -11,7 +11,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
@@ -31,7 +31,7 @@ import {BackendType} from '../../../api';
       <div class="flex flex-wrap items-center gap-2">
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.search' | transloco }}</mat-label>
-          <bi name="search" matIconPrefix />
+          <ng-icon name="bootstrapSearch" matIconPrefix />
           <input [(ngModel)]="searchFilter" matInput />
           @if ((searchFilter()?.length ?? 0) > 0) {
             <button
@@ -41,7 +41,7 @@ import {BackendType} from '../../../api';
               type="button"
               matSuffix
               mat-icon-button>
-              <bi name="x-lg" aria-hidden="true" />
+              <ng-icon name="bootstrapXLg" aria-hidden="true" />
             </button>
           }
         </mat-form-field>
@@ -79,7 +79,7 @@ import {BackendType} from '../../../api';
               [attr.aria-label]="'statusPage.list.edit' | transloco"
               mat-icon-button
               stopPropagation>
-              <bi name="pencil-square" />
+              <ng-icon name="bootstrapPencilSquare" />
             </a>
             <a
               [routerLink]="element.slug"
@@ -88,10 +88,10 @@ import {BackendType} from '../../../api';
               [attr.aria-label]="'statusPage.list.preview' | transloco"
               mat-icon-button
               stopPropagation>
-              <bi name="eye" />
+              <ng-icon name="bootstrapEye" />
             </a>
             <a [href]="'/public/s/' + element.slug" target="_blank" mat-icon-button stopPropagation>
-              <bi name="box-arrow-up-right" />
+              <ng-icon name="bootstrapBoxArrowUpRight" />
             </a>
             <button
               [matTooltip]="'statusPage.list.delete' | transloco"
@@ -100,7 +100,7 @@ import {BackendType} from '../../../api';
               type="button"
               mat-icon-button
               stopPropagation>
-              <bi name="trash-fill" />
+              <ng-icon name="bootstrapTrashFill" />
             </button>
           </div>
         </td>
@@ -142,7 +142,7 @@ import {BackendType} from '../../../api';
     MatIconButton,
     MatTooltip,
     StopPropagationDirective,
-    BiComponent,
+    NgIcon,
     TranslocoPipe,
     TableLoadingBar,
     IsTeamAdmin,

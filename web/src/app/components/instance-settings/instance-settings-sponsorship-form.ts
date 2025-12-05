@@ -17,8 +17,8 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {format} from '@std/fmt/duration';
-import {BiComponent} from 'dfx-bootstrap-icons';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -68,7 +68,7 @@ import {TableLoadingBar} from '../table-loading-bar';
             <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
               Dafnik's GitHub Sponsors Profile
             </a>
-            <bi name="box-arrow-up-right" />
+            <ng-icon name="bootstrapBoxArrowUpRight" />
           </b>
         </div>
 
@@ -118,7 +118,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                   "
                   type="button"
                   mat-flat-button>
-                  <bi name="x-circle-fill" />
+                  <ng-icon name="bootstrapXCircleFill" />
                   <span class="text-lg">{{ 'general.disable' | transloco }}</span>
                 </button>
               </div>
@@ -166,7 +166,7 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatLabel,
     MatTooltip,
     DatePipe,
-    BiComponent,
+    NgIcon,
     SupporterBadge,
     TableLoadingBar,
   ],

@@ -20,7 +20,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -41,7 +41,7 @@ import {trackBy} from '@app/util';
             (click)="teamsStore.restoreSelection()"
             type="button"
             mat-stroked-button>
-            <bi name="arrow-counterclockwise" />
+            <ng-icon name="bootstrapArrowCounterclockwise" />
             {{ 'general.restore' | transloco }}
           </button>
         }
@@ -50,7 +50,7 @@ import {trackBy} from '@app/util';
       <div class="flex flex-col items-end gap-2 md:flex-row md:items-center">
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.search' | transloco }}</mat-label>
-          <bi name="search" matIconPrefix />
+          <ng-icon name="bootstrapSearch" matIconPrefix />
           <input [(ngModel)]="searchFilter" matInput />
           @if ((searchFilter()?.length ?? 0) > 0) {
             <button
@@ -60,7 +60,7 @@ import {trackBy} from '@app/util';
               type="button"
               matSuffix
               mat-icon-button>
-              <bi name="x-lg" aria-hidden="true" />
+              <ng-icon name="bootstrapXLg" aria-hidden="true" />
             </button>
           }
         </mat-form-field>
@@ -131,7 +131,7 @@ import {trackBy} from '@app/util';
                 mat-icon-button
                 matTooltip="Edit"
                 stopPropagation>
-                <bi name="gear" />
+                <ng-icon name="bootstrapGear" />
               </a>
               @if (!element.personal) {
                 <button
@@ -140,7 +140,7 @@ import {trackBy} from '@app/util';
                   type="button"
                   matTooltip="Delete"
                   stopPropagation>
-                  <bi name="trash" />
+                  <ng-icon name="bootstrapTrash" />
                 </button>
               }
             }
@@ -182,7 +182,7 @@ import {trackBy} from '@app/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TeamsStore],
   imports: [
-    BiComponent,
+    NgIcon,
     MatTableModule,
     MatSortModule,
     MatPaginator,

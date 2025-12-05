@@ -13,7 +13,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -34,7 +34,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
       <div class="flex flex-col items-end gap-2 md:flex-row md:items-center">
         <mat-form-field subscriptSizing="dynamic">
           <mat-label>{{ 'general.search' | transloco }}</mat-label>
-          <bi name="search" matIconPrefix />
+          <ng-icon name="bootstrapSearch" matIconPrefix />
           <input [(ngModel)]="searchFilter" matInput />
           @if ((searchFilter()?.length ?? 0) > 0) {
             <button
@@ -44,7 +44,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
               type="button"
               matSuffix
               mat-icon-button>
-              <bi name="x-lg" aria-hidden="true" />
+              <ng-icon name="bootstrapXLg" aria-hidden="true" />
             </button>
           }
         </mat-form-field>
@@ -140,7 +140,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 [attr.aria-label]="'notificationMethod.list.edit' | transloco"
                 mat-icon-button
                 stopPropagation>
-                <bi name="pencil-square" />
+                <ng-icon name="bootstrapPencilSquare" />
               </a>
               <button
                 [matTooltip]="'notificationMethod.list.clone' | transloco"
@@ -149,7 +149,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 type="button"
                 mat-icon-button
                 stopPropagation>
-                <bi name="copy" />
+                <ng-icon name="bootstrapCopy" />
               </button>
               <button
                 [matTooltip]="'notificationMethod.list.delete' | transloco"
@@ -158,7 +158,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
                 type="button"
                 mat-icon-button
                 stopPropagation>
-                <bi name="trash-fill" />
+                <ng-icon name="bootstrapTrashFill" />
               </button>
             </ng-container>
           </td>
@@ -220,7 +220,7 @@ import {arrayToParam, paramToArray, trackBy} from '@app/util';
     MatFormField,
     MatSlideToggle,
     StopPropagationDirective,
-    BiComponent,
+    NgIcon,
     DfxImplodePipe,
     TranslocoPipe,
     IsTeamAdmin,

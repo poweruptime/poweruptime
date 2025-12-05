@@ -74,38 +74,49 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
   border-right: none;
 }
 
-/* Fix vertical text alignment in buttons with icons */
-.mdc-icon-button > bi {
+/* Fix vertical text alignment with icons */
+.mdc-icon-button > ng-icon {
   vertical-align: 7px;
 }
 
-.mdc-fab > .mdc-button__label > bi {
+.mdc-fab > .mdc-button__label > ng-icon {
   vertical-align: -0.26rem !important;
 }
 
-.mdc-button > .mdc-button__label > bi {
+.mdc-button > .mdc-button__label > ng-icon {
   margin-right: 0.3em;
   vertical-align: -0.15em;
 }
 
-.mat-mdc-chip-action-label > bi {
+.mat-mdc-chip-action-label > ng-icon {
   vertical-align: -0.19em;
 }
 
-.mat-mdc-menu-item-text > bi {
-  vertical-align: -0.275em;
+.mat-mdc-menu-item-text > ng-icon {
+  vertical-align: -0.15em;
   margin-right: 0.4em;
 }
 
-.mdc-list-item__primary-text > bi {
+.mdc-list-item__primary-text > ng-icon {
   vertical-align: -0.26rem;
   margin-right: 0.7em;
 }
 
-.mat-mdc-form-field-icon-prefix > bi {
+.mat-mdc-form-field-icon-prefix > ng-icon {
   margin-top: 0.15rem;
   margin-left: 1rem;
   margin-right: 0.5rem;
+}
+
+.mat-mdc-cell .mat-mdc-icon-button ng-icon {
+  vertical-align: -2px;
+  margin-left: 3px;
+}
+
+.mat-mdc-cell .mat-mdc-icon-button img,
+.mat-mdc-cell .mat-mdc-icon-button svg {
+  width: 16px !important;
+  height: 16px !important;
 }
 
 /* Material Table Column Width */

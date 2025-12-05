@@ -4,13 +4,13 @@ import {MatIconButton} from '@angular/material/button';
 import {MatTooltip, TooltipPosition} from '@angular/material/tooltip';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {cl_copy} from 'dfts-helper';
-import {BiComponent} from 'dfx-bootstrap-icons';
 import {toast} from 'ngx-sonner';
 
 @Component({
   selector: 'pu-copy-icon-button',
-  imports: [BiComponent, MatIconButton, MatTooltip, TranslocoPipe],
+  imports: [NgIcon, MatIconButton, MatTooltip, TranslocoPipe],
   template: `
     <button
       [matTooltip]="'general.copy' | transloco"
@@ -20,9 +20,9 @@ import {toast} from 'ngx-sonner';
       type="button"
       mat-icon-button>
       @if (state() === 'BUTTON') {
-        <bi name="clipboard" />
+        <ng-icon name="bootstrapClipboard" />
       } @else {
-        <bi class="text-blue-700 dark:text-blue-500" name="check-lg" />
+        <ng-icon class="text-blue-700 dark:text-blue-500" name="bootstrapCheckLg" />
       }
     </button>
   `,

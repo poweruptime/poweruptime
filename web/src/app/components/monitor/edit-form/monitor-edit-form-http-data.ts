@@ -24,7 +24,7 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BiComponent} from 'dfx-bootstrap-icons';
+import {NgIcon} from '@ng-icons/core';
 
 import {Database} from '../../../api';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -95,7 +95,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                 "
                 type="button"
                 matChipRemove>
-                <bi name="x-circle" aria-hidden="true" />
+                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
               </button>
             </mat-chip-row>
           }
@@ -267,7 +267,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatSlideToggle,
     TranslocoPipe,
     CdkTextareaAutosize,
-    BiComponent,
+    NgIcon,
     MatChipGrid,
     MatChipInput,
     MatChipRemove,
