@@ -43,11 +43,8 @@ val puJsonMapper = puObjectMapper as JsonMapper
 @Configuration
 class JacksonConfiguration {
     @Bean
-    fun objectMapper(): ObjectMapper = puObjectMapper
-
-    @Bean
     @Primary
     fun jsonMapper(): JsonMapper = puJsonMapper
 }
 
-fun Any.toJSON(): String = puObjectMapper.writeValueAsString(this)
+fun Any.toJSON(): String = puJsonMapper.writeValueAsString(this)

@@ -73,7 +73,8 @@ object ModelFactory {
 
     fun getTestMonitor(
         type: MonitorType = MonitorType.DNS,
-        name: String = "Test"
+        name: String = "Test",
+        status: MonitorStatus = MonitorStatus.PENDING
     ) = MonitorRecord(
         name = name,
         testIntervalSeconds = 30,
@@ -88,7 +89,7 @@ object ModelFactory {
         teamId = getTestTeam().id,
         type = type,
         resendAfter = null,
-        status = MonitorStatus.PENDING,
+        status = status,
     )
 
     fun getTestCheckResult(
@@ -118,11 +119,12 @@ object ModelFactory {
 
     fun getTestNotificationMethod(
         name: String = "Test",
-        type: NotificationMethodType = NotificationMethodType.APPRISE
+        type: NotificationMethodType = NotificationMethodType.APPRISE,
+        teamId: ULong = getTestTeam().id,
     ) = NotificationMethodRecord(
         name = name,
         type = type,
-        teamId = getTestTeam().id,
+        teamId = teamId,
         useByDefault = false,
         id = getId(),
         publicId = RandomGenerator.nanoId(NANO_ID_SMALL_LENGTH),
@@ -147,12 +149,12 @@ object ModelFactory {
 
     fun getTestSubNotification(
         notificationId: ULong = getTestNotification().id,
-        notificationMethodId: ULong = getTestNotificationMethod().id,
+        methodId: ULong = getTestNotificationMethod().id,
         pickedUpAt: Instant? = Instant.now(),
         title: String = "Test Title",
     ) = SubNotificationRecord(
         notificationId = notificationId,
-        methodId = notificationMethodId,
+        methodId = methodId,
         title = title,
         message = "Test Message",
         pickedUpAt = pickedUpAt,

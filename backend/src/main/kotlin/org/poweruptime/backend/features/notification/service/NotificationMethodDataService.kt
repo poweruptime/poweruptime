@@ -11,10 +11,14 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodRec
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+interface INotificationMethodDataService {
+    fun findByIdAndType(id: ULong, type: NotificationMethodType): NotificationMethodData
+}
+
 @Service
 @Transactional(readOnly = true)
-class NotificationMethodDataService {
-    fun findByIdAndType(id: ULong, type: NotificationMethodType): NotificationMethodData =
+class NotificationMethodDataService : INotificationMethodDataService {
+    override fun findByIdAndType(id: ULong, type: NotificationMethodType): NotificationMethodData =
         NotificationMethodDataTable.getByType(type).let { table ->
             table.selectAll()
                 .where {

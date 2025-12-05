@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.notification
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
@@ -17,7 +18,7 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.htmlConverter.HtmlConverterFactory
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
-import org.poweruptime.backend.features.notification.service.NotificationMethodDataService
+import org.poweruptime.backend.features.notification.service.INotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.poweruptime.backend.features.tempNotification.TempNotification
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
@@ -35,7 +36,7 @@ class AppriseSender(
     @Value(Config.APPRISE_URL)
     private val appriseUrl: String,
     private val restClient: RestClient,
-    private val notificationMethodDataService: NotificationMethodDataService,
+    private val notificationMethodDataService: INotificationMethodDataService,
     private val notificationTemplateService: NotificationTemplateService,
     private val checkResultService: CheckResultService,
     private val tempNotificationService: TempNotificationService,
@@ -155,7 +156,7 @@ class AppriseSender(
         restClient.post()
             .uri("$appriseUrl/notify")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(request)
+            .body(request.toJSON())
             .retrieve()
             .toBodilessEntity()
         null
