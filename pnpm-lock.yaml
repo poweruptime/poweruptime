@@ -109,16 +109,16 @@ importers:
         specifier: 7.0.2
         version: 7.0.2(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@jsverse/transloco@7.6.1(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(typescript@5.9.3))
       '@ng-icons/bootstrap-icons':
-        specifier: ^32.5.0
+        specifier: 32.5.0
         version: 32.5.0
       '@ng-icons/core':
-        specifier: ^32.5.0
+        specifier: 32.5.0
         version: 32.5.0(@angular/common@20.3.14(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2)
       '@ng-icons/lucide':
-        specifier: ^33.0.0
+        specifier: 33.0.0
         version: 33.0.0
       '@ng-icons/material-icons':
-        specifier: ^33.0.0
+        specifier: 33.0.0
         version: 33.0.0
       '@ng-matero/extensions':
         specifier: 20.3.1
@@ -151,7 +151,7 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       chart.js:
-        specifier: ^4.4.9
+        specifier: 4.5.1
         version: 4.5.1
       date-fns:
         specifier: 4.1.0
