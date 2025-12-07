@@ -1,10 +1,5 @@
 import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
-import {
-  ApplicationConfig,
-  LOCALE_ID,
-  inject,
-  isDevMode
-} from '@angular/core';
+import {ApplicationConfig, LOCALE_ID, inject, isDevMode} from '@angular/core';
 import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
 import {
   provideClientHydration,
