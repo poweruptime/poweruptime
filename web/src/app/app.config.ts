@@ -1,18 +1,11 @@
 import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
-import {
-  ApplicationConfig,
-  LOCALE_ID,
-  inject,
-  isDevMode,
-  provideZonelessChangeDetection,
-} from '@angular/core';
+import {ApplicationConfig, LOCALE_ID, inject, isDevMode} from '@angular/core';
 import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
 import {
   provideClientHydration,
   withEventReplay,
   withIncrementalHydration,
 } from '@angular/platform-browser';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
 
 import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
@@ -59,7 +52,6 @@ const MY_DATE_FNS_FORMATS: MatDateFormats = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZonelessChangeDetection(),
     provideRouter(
       ROUTES,
       withComponentInputBinding(),
@@ -71,7 +63,6 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
-    provideAnimationsAsync(),
     provideUiTheme({
       strategy: 'class',
       storageKey: 'pu_theme',
