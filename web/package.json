@@ -57,7 +57,7 @@
     "dfts-helper": "2.1.0",
     "dfx-helper": "20.1.0",
     "dfx-openapi": "21.0.0",
-    "dfx-qrcode": "20.0.0",
+    "dfx-qrcode": "21.0.0",
     "eventsource": "4.1.0",
     "fastify": "5.6.2",
     "nanoid": "5.1.6",
