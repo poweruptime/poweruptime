@@ -55,7 +55,7 @@
     "chart.js": "4.5.1",
     "date-fns": "4.1.0",
     "dfts-helper": "2.1.0",
-    "dfx-helper": "20.1.0",
+    "dfx-helper": "21.0.0",
     "dfx-openapi": "21.0.0",
     "dfx-qrcode": "21.0.0",
     "eventsource": "4.1.0",

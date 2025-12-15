@@ -157,8 +157,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       dfx-helper:
-        specifier: 20.1.0
-        version: 20.1.0(@angular/cdk@21.0.3(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(@angular/router@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(rxjs@7.8.2))(dfts-helper@2.1.0)(rxjs@7.8.2)
+        specifier: 21.0.0
+        version: 21.0.0(@angular/cdk@21.0.3(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(@angular/router@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(rxjs@7.8.2))(dfts-helper@2.1.0)(rxjs@7.8.2)
       dfx-openapi:
         specifier: 21.0.0
         version: 21.0.0(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(openapi-typescript-helpers@0.0.15)(rxjs@7.8.2)
@@ -3085,14 +3085,14 @@ packages:
   dfts-qrcode@1.1.1:
     resolution: {integrity: sha512-0uZI6KwkQ3h+ES6pC+jDkEA0kC2bGYNepyURxoOGgb+7NWeNFwFqv+Fc0ttZ2CpBrGWqNYRp6AyAWFHsLhYj7A==}
 
-  dfx-helper@20.1.0:
-    resolution: {integrity: sha512-16wVOgxM1VOtxL/j0yrB137C/+nWhbRmJvSLtwmjhjUvopOVNuk7B9dqfHYuWNd3Z2gT6qbDWZjUkYtdestcAw==}
+  dfx-helper@21.0.0:
+    resolution: {integrity: sha512-Tz56LVxpFaxjBfXTyCTOJUN3z6tyyNseOfELOILbUgG+cGfk0aqPxnzDBZ4BS6aeaBw6lxtFz6wUUXdMOtYsww==}
     peerDependencies:
-      '@angular/cdk': '20'
-      '@angular/common': '20'
-      '@angular/core': '20'
-      '@angular/platform-browser': '20'
-      '@angular/router': '20'
+      '@angular/cdk': '21'
+      '@angular/common': '21'
+      '@angular/core': '21'
+      '@angular/platform-browser': '21'
+      '@angular/router': '21'
       dfts-helper: '2'
       rxjs: '7'
 
@@ -8038,7 +8038,7 @@ snapshots:
 
   dfts-qrcode@1.1.1: {}
 
-  dfx-helper@20.1.0(@angular/cdk@21.0.3(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(@angular/router@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(rxjs@7.8.2))(dfts-helper@2.1.0)(rxjs@7.8.2):
+  dfx-helper@21.0.0(@angular/cdk@21.0.3(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(@angular/router@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(@angular/platform-browser@21.0.5(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2)))(rxjs@7.8.2))(dfts-helper@2.1.0)(rxjs@7.8.2):
     dependencies:
       '@angular/cdk': 21.0.3(@angular/common@21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 21.0.5(@angular/core@21.0.5(@angular/compiler@21.0.5)(rxjs@7.8.2))(rxjs@7.8.2)
