@@ -34,7 +34,7 @@
     "@angular/ssr": "21.0.3",
     "@angularui/theme": "0.1.4",
     "@davidlj95/ngx-meta": "20.0.1",
-    "@fastify/http-proxy": "11.3.0",
+    "@fastify/http-proxy": "11.4.1",
     "@fastify/static": "8.3.0",
     "@jsverse/transloco": "7.6.1",
     "@jsverse/transloco-persist-lang": "7.0.2",
