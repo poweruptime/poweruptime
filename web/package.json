@@ -73,7 +73,7 @@
     "@angular/build": "21.0.3",
     "@angular/cli": "21.0.3",
     "@angular/compiler-cli": "21.0.5",
-    "@jsverse/transloco-keys-manager": "7.0.2",
+    "@jsverse/transloco-keys-manager": "7.1.0",
     "@jsverse/transloco-optimize": "7.0.1",
     "@jsverse/transloco-utils": "7.0.2",
     "@jsverse/transloco-validator": "7.0.1",
