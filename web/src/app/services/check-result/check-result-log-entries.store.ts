@@ -84,17 +84,11 @@ export const CheckResultLogEntriesStore = signalStore(
                 path: {
                   checkResultId,
                 },
-                query: {
-                  page: 0,
-                  size: 100,
-                  sort: ['createdAt_asc'],
-                },
               },
             })
             .pipe(
               tapResponse({
-                next: (response) =>
-                  patchState(store, setAllEntities(response.data), setFulfilled()),
+                next: (entities) => patchState(store, setAllEntities(entities), setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

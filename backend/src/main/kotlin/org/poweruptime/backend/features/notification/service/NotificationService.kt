@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.notification.service
 
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
@@ -84,15 +85,17 @@ class NotificationService(
         statuses: List<MonitorStatus>?,
         start: Instant?,
         end: Instant?,
-    ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = Notification.findAll(
-        pageable = pageable,
-        monitorId = monitorId,
-        teamId = teamId,
-        userId = userId,
-        statuses = statuses,
-        start = start,
-        end = end,
-    )
+    ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = runBlocking {
+        Notification.findAll(
+            pageable = pageable,
+            monitorId = monitorId,
+            teamId = teamId,
+            userId = userId,
+            statuses = statuses,
+            start = start,
+            end = end,
+        )
+    }
 
     @Transactional
     fun deleteByTeamIdAndOlderThan(teamId: ULong, than: Instant): Int = Notification.deleteByTeamIdAndOlderThan(

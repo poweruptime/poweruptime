@@ -32,6 +32,7 @@ import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.buildPingTimelineResponse
 import org.poweruptime.backend.features.monitor.service.generatePingTimelineEntries
 import org.poweruptime.backend.features.team.service.TeamService
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -59,7 +60,7 @@ class CheckResultController(
     @ResponseStatus(HttpStatus.OK)
     fun getAll(
         auth: Authentication,
-        pageable: Pageable,
+        @ParameterObject pageable: Pageable,
         @RequestParam("monitorId") publicMonitorId: String?,
         @RequestParam("teamId") publicTeamId: String?,
         @RequestParam("onlyChanges") onlyChanges: Boolean = false,

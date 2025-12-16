@@ -868,7 +868,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get push */
+    /** Get pushes */
     get: operations['get_3'];
     put?: never;
     post?: never;
@@ -1903,14 +1903,50 @@ export interface components {
       /** Format: email */
       email: string;
     };
+    AppriseNotificationMethodDataRecord: {
+      _type: 'APPRISE';
+    } & {
+      url: string;
+    };
+    DiscordNotificationMethodDataRecord: {
+      _type: 'DISCORD';
+    } & {
+      url: string;
+      displayName?: string;
+    };
+    EmailNotificationMethodDataRecord: {
+      _type: 'EMAIL';
+    } & {
+      to: string[];
+      host: string;
+      /** Format: int32 */
+      port: number;
+      username: string;
+      password: string;
+      /** @enum {string} */
+      security: 'NONE_STARTTLS' | 'TLS';
+      ignoreTLSErrors: boolean;
+      cc?: string[];
+      bcc?: string[];
+    };
     NotificationMethodData: {
       /** @enum {string} */
       _type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
     };
+    SlackNotificationMethodDataRecord: {
+      _type: 'SLACK';
+    } & {
+      url: string;
+      displayName?: string;
+    };
     UpdateNotificationMethodDto: {
       id: string;
       name: string;
-      data: components['schemas']['NotificationMethodData'];
+      data:
+        | components['schemas']['AppriseNotificationMethodDataRecord']
+        | components['schemas']['DiscordNotificationMethodDataRecord']
+        | components['schemas']['EmailNotificationMethodDataRecord']
+        | components['schemas']['SlackNotificationMethodDataRecord'];
       useByDefault: boolean;
       monitorIds: string[];
       testSend: boolean;
@@ -1924,7 +1960,11 @@ export interface components {
       deleted?: string;
       /** @enum {string} */
       type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
-      data: components['schemas']['NotificationMethodData'];
+      data:
+        | components['schemas']['AppriseNotificationMethodDataRecord']
+        | components['schemas']['DiscordNotificationMethodDataRecord']
+        | components['schemas']['EmailNotificationMethodDataRecord']
+        | components['schemas']['SlackNotificationMethodDataRecord'];
       useByDefault: boolean;
       titleTemplate?: string;
       bodyTemplate?: string;
@@ -1933,9 +1973,61 @@ export interface components {
     CloneDto: {
       teamId?: string;
     };
+    DnsMonitorDataRecord: {
+      _type: 'DNS';
+    } & {
+      host: string;
+      server: string;
+      /** Format: int32 */
+      port: number;
+      /** @enum {string} */
+      type: 'A' | 'AAAA' | 'CAA' | 'CNAME' | 'MX' | 'NS' | 'PTR' | 'SOA' | 'SRV' | 'TXT';
+      matches?: string[];
+    };
+    HttpMonitorDataRecord: {
+      _type: 'HTTP';
+    } & {
+      url: string;
+      /** @enum {string} */
+      method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
+      /** @enum {string} */
+      contentType: 'JSON' | 'XML' | 'HTML';
+      allowedStatusCodeRanges: string[];
+      /** Format: int64 */
+      maxRedirects?: number;
+      ignoreTLS: boolean;
+      certificateExpiry: boolean;
+      /** Format: int64 */
+      certificateValidDaysLeft?: number;
+      body?: string;
+      searchTerm?: string;
+      /** @enum {string} */
+      authType?: 'BASIC';
+      basicAuthDataUsername?: string;
+      basicAuthDataPassword?: string;
+    };
     MonitorData: {
       /** @enum {string} */
       _type: 'DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE';
+    };
+    PingMonitorDataRecord: {
+      _type: 'PING';
+    } & {
+      ip: string;
+      /** Format: int32 */
+      port: number;
+    };
+    PushMonitorDataRecord: {
+      _type: 'PUSH';
+    } & {
+      pushId: string;
+    };
+    SSLCertificateMonitorDataRecord: {
+      _type: 'SSL_CERTIFICATE';
+    } & {
+      url: string;
+      /** Format: int64 */
+      validDaysLeft?: number;
     };
     TagDto: {
       name: string;
@@ -1953,7 +2045,12 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      data: components['schemas']['MonitorData'];
+      data:
+        | components['schemas']['DnsMonitorDataRecord']
+        | components['schemas']['HttpMonitorDataRecord']
+        | components['schemas']['PingMonitorDataRecord']
+        | components['schemas']['PushMonitorDataRecord']
+        | components['schemas']['SSLCertificateMonitorDataRecord'];
       notificationMethodIds: string[];
       tags: components['schemas']['TagDto'][];
     };
@@ -1986,7 +2083,12 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      data: components['schemas']['MonitorData'];
+      data:
+        | components['schemas']['DnsMonitorDataRecord']
+        | components['schemas']['HttpMonitorDataRecord']
+        | components['schemas']['PingMonitorDataRecord']
+        | components['schemas']['PushMonitorDataRecord']
+        | components['schemas']['SSLCertificateMonitorDataRecord'];
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
@@ -2090,7 +2192,11 @@ export interface components {
     CreateNotificationMethodDto: {
       teamId: string;
       name: string;
-      data: components['schemas']['NotificationMethodData'];
+      data:
+        | components['schemas']['AppriseNotificationMethodDataRecord']
+        | components['schemas']['DiscordNotificationMethodDataRecord']
+        | components['schemas']['EmailNotificationMethodDataRecord']
+        | components['schemas']['SlackNotificationMethodDataRecord'];
       useByDefault: boolean;
       monitorIds: string[];
       testSend: boolean;
@@ -2108,7 +2214,12 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      data: components['schemas']['MonitorData'];
+      data:
+        | components['schemas']['DnsMonitorDataRecord']
+        | components['schemas']['HttpMonitorDataRecord']
+        | components['schemas']['PingMonitorDataRecord']
+        | components['schemas']['PushMonitorDataRecord']
+        | components['schemas']['SSLCertificateMonitorDataRecord'];
       notificationMethodIds: string[];
       tags: components['schemas']['TagDto'][];
     };
@@ -2144,6 +2255,8 @@ export interface components {
       sessionInformation?: string;
       stayLoggedIn?: boolean;
     };
+    /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+    sort: string[];
     PaginatedResponseUserResponse: {
       /** Format: int64 */
       numberOfItems: number;
@@ -2405,7 +2518,12 @@ export interface components {
       /** Format: int64 */
       resendAfter?: number;
       upsideDown: boolean;
-      data: components['schemas']['MonitorData'];
+      data:
+        | components['schemas']['DnsMonitorDataRecord']
+        | components['schemas']['HttpMonitorDataRecord']
+        | components['schemas']['PingMonitorDataRecord']
+        | components['schemas']['PushMonitorDataRecord']
+        | components['schemas']['SSLCertificateMonitorDataRecord'];
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
     };
     VersionCheckResponse: {
@@ -2427,7 +2545,6 @@ export interface components {
       osName: string;
       osArch: string;
       osVersion: string;
-      host: string;
       port: string;
       swaggerEnabled: string;
       mailEnabled: string;
@@ -2439,6 +2556,7 @@ export interface components {
       rateLimitEnabled: string;
       rateLimitDurationInSeconds: string;
       rateLimitTries: string;
+      monitorAutoStartEnabled: string;
     };
     DeadLetterResponse: {
       id: string;
@@ -2489,13 +2607,6 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
-    PaginatedResponseCheckResultLogEntryResponse: {
-      /** Format: int64 */
-      numberOfItems: number;
-      /** Format: int32 */
-      numberOfPages: number;
-      data: components['schemas']['CheckResultLogEntryResponse'][];
-    };
     PingTimelineDataEntryResponse: {
       /** Format: date-time */
       name: string;
@@ -2521,12 +2632,18 @@ export interface operations {
   getAll: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         search?: string;
         activated?: boolean;
         role?: 'ADMIN' | 'USER';
@@ -2599,12 +2716,18 @@ export interface operations {
   getAll_1: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         name?: string;
         role?: 'ADMIN' | 'MEMBER';
         deleted?: boolean;
@@ -2677,12 +2800,18 @@ export interface operations {
   getUsers: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
       };
       header?: never;
       path: {
@@ -2810,12 +2939,18 @@ export interface operations {
   getAll_2: {
     parameters: {
       query: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         teamId: string;
         name?: string;
         deleted?: boolean;
@@ -2936,12 +3071,18 @@ export interface operations {
   getAll_3: {
     parameters: {
       query: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         teamId: string;
         name?: string;
         types?: ('APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK')[];
@@ -3042,12 +3183,18 @@ export interface operations {
   getAll_4: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         teamId?: string;
         name?: string;
         enabledNotificationMethodIds?: string[];
@@ -3684,12 +3831,18 @@ export interface operations {
   getSessions: {
     parameters: {
       query: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         userId: string;
       };
       header?: never;
@@ -3734,12 +3887,18 @@ export interface operations {
   getInvites: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
       };
       header?: never;
       path: {
@@ -3827,12 +3986,18 @@ export interface operations {
   getAll_5: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         teamId?: string;
         name?: string;
       };
@@ -3856,12 +4021,18 @@ export interface operations {
   getAll_6: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         notificationId?: string;
         monitorId?: string;
         teamId?: string;
@@ -4098,12 +4269,18 @@ export interface operations {
   getAllByStatusPage: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         usedInStatusPageGroupIds?: string[];
       };
       header?: never;
@@ -4444,12 +4621,18 @@ export interface operations {
   getSessions_1: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
       };
       header?: never;
       path?: never;
@@ -4491,12 +4674,18 @@ export interface operations {
   getAll_8: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         monitorId?: string;
         teamId?: string;
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
@@ -4813,12 +5002,18 @@ export interface operations {
   getAll_10: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
+        /**
+         * @description Zero-based page index (0..N)
+         * @example 0
+         */
         page?: number;
-        /** @description The size of the page to be returned */
+        /**
+         * @description The size of the page to be returned
+         * @example 10
+         */
         size?: number;
         /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
+        sort?: components['schemas']['sort'];
         monitorId?: string;
         teamId?: string;
         onlyChanges?: boolean;
@@ -4869,12 +5064,6 @@ export interface operations {
   getAll_11: {
     parameters: {
       query?: {
-        /** @description Zero-based page index (0..N) */
-        page?: number;
-        /** @description The size of the page to be returned */
-        size?: number;
-        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[];
         stages?: ('SETUP' | 'CHECK' | 'MONITOR_STATUS_UPDATE' | 'NOTIFICATION')[];
       };
       header?: never;
@@ -4891,7 +5080,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['PaginatedResponseCheckResultLogEntryResponse'];
+          '*/*': components['schemas']['CheckResultLogEntryResponse'][];
         };
       };
     };

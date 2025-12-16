@@ -21,7 +21,7 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.Page
-import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
@@ -38,7 +38,7 @@ import java.time.Instant
 import javax.naming.directory.InvalidAttributesException
 
 @Suppress("LongMethod")
-fun CheckResult.findAll(
+suspend fun CheckResult.findAll(
     pageable: Pageable,
     onlyChanges: Boolean,
     monitorId: ULong?,
@@ -48,22 +48,43 @@ fun CheckResult.findAll(
     hasNotification: Boolean?,
     start: Instant?,
     end: Instant?,
-): Page<CheckResultJoinMonitorAndTeamRecord> {
+): Page<CheckResultJoinMonitorAndTeamRecord> = pageQueryA(
+    pageable,
+    sort = {
+        when (it) {
+            "status" -> CheckResult.status
+            "pickedUpAt" -> CheckResult.pickedUpAt
+            "checkedAt" -> CheckResult.checkedAt
+            "createdAt" -> CheckResult.createdAt
+            else -> null
+        }
+    },
+    map = {
+        CheckResultJoinMonitorAndTeamRecord(
+            checkResult = rowToCheckResultRecord(it),
+            monitor = Monitor.rowToMonitorRecord(it),
+            team = Team.rowToTeamRecord(it),
+        )
+    },
+) {
     var selectColumns = columns + Monitor.columns + Team.columns
 
     val query = when {
         monitorId != null -> {
             innerJoin(Monitor).innerJoin(Team).select(selectColumns)
         }
+
         teamId != null -> {
             Team.innerJoin(Monitor).innerJoin(CheckResult)
                 .select(selectColumns)
         }
+
         userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
             TeamUser.innerJoin(Team).innerJoin(Monitor)
                 .innerJoin(CheckResult).select(selectColumns)
         }
+
         else -> error("teamId or monitorId or userId needs to be provided")
     }
 
@@ -99,26 +120,7 @@ fun CheckResult.findAll(
         query.andWhere { Monitor.deleted.isNull() }
     }
 
-    return pageQuery(
-        query,
-        pageable,
-        sort = {
-            when (it) {
-                "status" -> CheckResult.status
-                "pickedUpAt" -> CheckResult.pickedUpAt
-                "checkedAt" -> CheckResult.checkedAt
-                "createdAt" -> CheckResult.createdAt
-                else -> null
-            }
-        },
-        map = {
-            CheckResultJoinMonitorAndTeamRecord(
-                checkResult = rowToCheckResultRecord(it),
-                monitor = Monitor.rowToMonitorRecord(it),
-                team = Team.rowToTeamRecord(it),
-            )
-        },
-    )
+    query
 }
 
 fun CheckResult.findLastByMonitorId(

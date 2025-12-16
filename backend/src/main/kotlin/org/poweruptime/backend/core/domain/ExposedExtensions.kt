@@ -1,5 +1,8 @@
 package org.poweruptime.backend.core.domain
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Expression
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -7,6 +10,7 @@ import org.jetbrains.exposed.v1.core.isNotNull
 import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.Query
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import java.time.Instant
@@ -34,6 +38,37 @@ fun <U : Any> pageQuery(
         .map(map)
 
     return Page(
+        content = content,
+        pageable = pageable,
+        total = total,
+    )
+}
+
+suspend fun <U : Any> pageQueryA(
+    pageable: Pageable,
+    sort: (String) -> Column<*>?,
+    map: (ResultRow) -> U,
+    queryFn: () -> Query,
+): Page<U> = coroutineScope {
+    val totalDeferred = async(Dispatchers.IO) {
+        suspendTransaction {
+            queryFn().count()
+        }
+    }
+
+    val contentDeferred = async(Dispatchers.IO) {
+        suspendTransaction {
+            queryFn()
+                .sortBy(pageable, sort)
+                .paginate(pageable)
+                .map(map)
+        }
+    }
+
+    val total = totalDeferred.await()
+    val content = contentDeferred.await()
+
+    Page(
         content = content,
         pageable = pageable,
         total = total,

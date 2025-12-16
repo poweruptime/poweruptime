@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor.domain
 
+import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
@@ -9,9 +10,6 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.poweruptime.backend.core.domain.Page
-import org.poweruptime.backend.core.domain.pageQuery
-import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogEntry
 import org.poweruptime.backend.features.monitor.model.CheckResultLogEntryRecord
@@ -33,27 +31,16 @@ fun CheckResultLogEntry.deleteByTeamIdAndOlderThan(
     }
 
 fun CheckResultLogEntry.findAll(
-    pageable: Pageable,
     checkResultId: ULong,
     stages: List<CheckResultLogStage>? = null,
-): Page<CheckResultLogEntryRecord> {
+): List<CheckResultLogEntryRecord> {
     val query = selectAll().where { CheckResultLogEntry.checkResultId eq checkResultId }
 
     stages?.ifEmpty { null }?.let {
         query.andWhere { CheckResultLogEntry.stage inList it }
     }
 
-    return pageQuery(
-        query,
-        pageable,
-        {
-            when (it) {
-                "stage" -> CheckResultLogEntry.stage
-                "level" -> CheckResultLogEntry.level
-                "createdAt" -> CheckResultLogEntry.createdAt
-                else -> null
-            }
-        },
-        { rowToCheckResultLogEntry(it) },
-    )
+    return query.orderBy(CheckResultLogEntry.createdAt to SortOrder.DESC).map {
+        rowToCheckResultLogEntry(it)
+    }
 }

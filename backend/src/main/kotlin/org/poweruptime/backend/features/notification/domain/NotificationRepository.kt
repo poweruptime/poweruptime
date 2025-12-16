@@ -13,7 +13,7 @@ import org.jetbrains.exposed.v1.jdbc.andWhere
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.core.domain.Page
-import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
@@ -40,7 +40,7 @@ fun Notification.deleteByTeamIdAndOlderThan(
 }
 
 @Suppress("LongMethod")
-fun Notification.findAll(
+suspend fun Notification.findAll(
     pageable: Pageable,
     monitorId: ULong?,
     teamId: ULong?,
@@ -48,7 +48,24 @@ fun Notification.findAll(
     statuses: List<MonitorStatus>?,
     start: Instant?,
     end: Instant?,
-): Page<NotificationJoinCheckResultMonitorAndTeamRecord> {
+): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = pageQueryA(
+    pageable,
+    sort = {
+        when (it) {
+            "checkResult.status" -> CheckResult.status
+            "createdAt" -> Notification.createdAt
+            else -> null
+        }
+    },
+    map = {
+        NotificationJoinCheckResultMonitorAndTeamRecord(
+            notification = rowToNotificationRecord(it),
+            checkResult = CheckResult.rowToCheckResultRecord(it),
+            monitor = Monitor.rowToMonitorRecord(it),
+            team = Team.rowToTeamRecord(it),
+        )
+    },
+) {
     var selectColumns = columns + CheckResult.columns + Monitor.columns + Team.columns
 
     val query = when {
@@ -58,12 +75,14 @@ fun Notification.findAll(
                 .innerJoin(Team, { Monitor.teamId }, { Team.id })
                 .select(selectColumns)
         }
+
         teamId != null -> {
             Team.innerJoin(Monitor)
                 .innerJoin(CheckResult)
                 .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
                 .select(selectColumns)
         }
+
         userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
             TeamUser.innerJoin(Team)
@@ -72,6 +91,7 @@ fun Notification.findAll(
                 .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
                 .select(selectColumns)
         }
+
         else -> error("teamId or monitorId or userId needs to be provided")
     }
 
@@ -92,23 +112,5 @@ fun Notification.findAll(
         query.andWhere { Monitor.deleted.isNull() }
     }
 
-    return pageQuery(
-        query,
-        pageable,
-        sort = {
-            when (it) {
-                "checkResult.status" -> CheckResult.status
-                "createdAt" -> Notification.createdAt
-                else -> null
-            }
-        },
-        map = {
-            NotificationJoinCheckResultMonitorAndTeamRecord(
-                notification = rowToNotificationRecord(it),
-                checkResult = CheckResult.rowToCheckResultRecord(it),
-                monitor = Monitor.rowToMonitorRecord(it),
-                team = Team.rowToTeamRecord(it),
-            )
-        },
-    )
+    query
 }

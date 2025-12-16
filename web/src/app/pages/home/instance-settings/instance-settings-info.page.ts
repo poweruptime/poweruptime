@@ -129,7 +129,7 @@ class StatusText implements PipeTransform {
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Host</span>
                 <span class="font-mono text-sm text-gray-900 dark:text-gray-100">
-                  {{ environmentInfo.host }}
+                  {{ infoStore.host() }}
                 </span>
               </div>
               @if (environment.isBetaOrDevChannel) {

@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor.service
 
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.Page
@@ -59,17 +60,19 @@ class CheckResultService {
         hasNotification: Boolean?,
         start: Instant?,
         end: Instant?,
-    ): Page<CheckResultJoinMonitorAndTeamRecord> = CheckResult.findAll(
-        pageable = pageable,
-        onlyChanges = onlyChanges,
-        monitorId = monitorId,
-        teamId = teamId,
-        userId = userId,
-        statuses = statuses,
-        hasNotification = hasNotification,
-        start = start,
-        end = end,
-    )
+    ): Page<CheckResultJoinMonitorAndTeamRecord> = runBlocking {
+        CheckResult.findAll(
+            pageable = pageable,
+            onlyChanges = onlyChanges,
+            monitorId = monitorId,
+            teamId = teamId,
+            userId = userId,
+            statuses = statuses,
+            hasNotification = hasNotification,
+            start = start,
+            end = end,
+        )
+    }
 
     fun getByStatusUpMonitorIdAndPickedUpBetween(
         monitorId: ULong,

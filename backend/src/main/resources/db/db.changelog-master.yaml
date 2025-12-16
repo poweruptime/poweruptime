@@ -59,3 +59,26 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 7
+      author: Dafnik
+      changes:
+        - dropIndex:
+            indexName: check_result_monitor_id
+            tableName: check_result
+        - dropIndex:
+            indexName: check_result_monitor_id_id
+            tableName: check_result
+        - createIndex:
+            indexName: check_result_monitor_status
+            tableName: check_result
+            unique: false
+            columns:
+              - column:
+                  name: monitor_id
+              - column:
+                  name: status
+              - column:
+                  name: previous_status
+              - column:
+                  name: id

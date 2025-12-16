@@ -1,8 +1,6 @@
 package org.poweruptime.backend.features.monitor.service
 
 import org.jetbrains.exposed.v1.jdbc.insert
-import org.poweruptime.backend.core.domain.Page
-import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.model.*
@@ -67,11 +65,9 @@ class CheckResultLogEntryService {
         CheckResultLogEntry.deleteByTeamIdAndOlderThan(teamId, than)
 
     fun getAllPaginated(
-        pageable: Pageable,
         checkResultId: ULong,
         stages: List<CheckResultLogStage>? = null,
-    ): Page<CheckResultLogEntryRecord> = CheckResultLogEntry.findAll(
-        pageable = pageable,
+    ): List<CheckResultLogEntryRecord> = CheckResultLogEntry.findAll(
         checkResultId = checkResultId,
         stages = stages,
     )

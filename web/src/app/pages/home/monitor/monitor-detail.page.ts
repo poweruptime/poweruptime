@@ -107,7 +107,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         }
 
         <div class="flex flex-wrap gap-4">
-          @switch (monitor.data._type) {
+          @switch (monitor.type) {
             @case ('HTTP') {
               <a
                 class="font-extrabold text-emerald-700 dark:text-green-500"
