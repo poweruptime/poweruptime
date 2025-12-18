@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import {ThemeService} from '@angularui/theme';
+import {ThemeService} from '@slateui/theme';
 import Chart, {TooltipItem} from 'chart.js/auto';
 
 @Component({

@@ -11,13 +11,13 @@ import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angul
 import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
-import {provideUiTheme} from '@angularui/theme';
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
 import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {provideNgIconLoader, withCaching} from '@ng-icons/core';
+import {provideSlateUiTheme} from '@slateui/theme';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
@@ -26,7 +26,7 @@ import {
   LinkTranspiler,
   provideLinkRenderer,
   provideTranslationMarkupTranspiler,
-} from 'ngx-transloco-markup';
+} from 'dfx-transloco-markup';
 
 import {authInterceptor, backendOfflineInterceptor, mfaInterceptor} from '@app/interceptors';
 import {TranslocoHttpLoader} from '@app/services';
@@ -63,7 +63,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
-    provideUiTheme({
+    provideSlateUiTheme({
       strategy: 'class',
       storageKey: 'pu_theme',
     }),

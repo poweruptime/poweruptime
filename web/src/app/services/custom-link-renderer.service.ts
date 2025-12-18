@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 
-import {ExternalLink, LinkRenderer, isExternalLinkObject} from 'ngx-transloco-markup';
+import {ExternalLink, LinkRenderer, isExternalLinkObject} from 'dfx-transloco-markup';
 
 @Injectable()
 export class CustomLinkRenderer extends LinkRenderer<string> {
