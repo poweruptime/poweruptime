@@ -5,7 +5,7 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
+import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 

@@ -3,8 +3,8 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {MatMiniFabButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
-import {ThemeService} from '@angularui/theme';
 import {NgIcon} from '@ng-icons/core';
+import {ThemeService} from '@slateui/theme';
 
 import {themeOptions} from '@app/util';
 

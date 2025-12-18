@@ -1,6 +1,6 @@
 import {Directive, booleanAttribute, computed, inject, input} from '@angular/core';
 
-import {ThemeService} from '@angularui/theme';
+import {ThemeService} from '@slateui/theme';
 
 import {BackendType} from '../api';
 

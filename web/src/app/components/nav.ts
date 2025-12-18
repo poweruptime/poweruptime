@@ -12,9 +12,9 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 
 import {map} from 'rxjs';
 
-import {ThemeService} from '@angularui/theme';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {ThemeService} from '@slateui/theme';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {IsSystemAdmin, MonitorStatusText} from '@app/directives';

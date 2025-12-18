@@ -1,4 +1,4 @@
-import {Theme} from '@angularui/theme';
+import {Theme} from '@slateui/theme';
 
 /**
  * i(bootstrapLaptop)

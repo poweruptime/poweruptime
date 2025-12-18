@@ -10,7 +10,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
-import {TranslocoMarkupComponent} from 'ngx-transloco-markup';
+import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '../api';
