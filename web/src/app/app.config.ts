@@ -18,6 +18,7 @@ import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {provideNgIconLoader, withCaching} from '@ng-icons/core';
 import {provideSlateUiTheme} from '@slateui/theme';
+import {provideHlmSidebarConfig} from '@spartan-ng/helm/sidebar';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
@@ -95,6 +96,9 @@ export const appConfig: ApplicationConfig = {
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
     }, withCaching()),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
+    provideHlmSidebarConfig({
+      mobileBreakpoint: '1920px',
+    }),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {

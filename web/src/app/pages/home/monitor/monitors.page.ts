@@ -29,7 +29,7 @@ import {
 @Component({
   template: `
     <div class="flex gap-4">
-      <div class="flex h-[calc(100vh-76px)] flex-col gap-4" style="width: 21rem; min-width: 21rem;">
+      <div class="flex h-[calc(100vh-88px)] flex-col gap-4" style="width: 21rem; min-width: 21rem;">
         @let _showFilter = showFilter();
         @let dashboard = monitorsDashboardStore.dashboard();
         <div class="flex items-center justify-between">
@@ -97,7 +97,7 @@ import {
             (nextPage)="monitorsStore.nextPage(teamId())" />
         }
       </div>
-      <div class="h-[calc(100vh-76px)] grow overflow-x-hidden overflow-y-auto px-2 pb-24">
+      <div class="h-[calc(100vh-88px)] grow overflow-x-hidden overflow-y-auto px-2 pb-24">
         <router-outlet />
       </div>
     </div>
