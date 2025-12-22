@@ -1,11 +1,13 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
 import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
+import {createInjectable} from 'ngxtension/create-injectable';
 
 import {HelpDialog} from '@app/components/help-dialog';
 import {IsSystemAdmin} from '@app/directives';
@@ -32,30 +34,81 @@ import {IsSystemAdmin} from '@app/directives';
               Feedback
             </a>
           </li>
-          <li *isSystemAdmin hlmSidebarMenuItem>
-            <a
-              #rla="routerLinkActive"
-              [isActive]="rla.isActive"
-              routerLink="/settings"
-              routerLinkActive
-              hlmSidebarMenuButton
-              size="sm">
-              <ng-icon name="bootstrapBuildingGear" />
-              {{ 'nav.instanceSettings' | transloco }}
-            </a>
-          </li>
+          <hlm-collapsible *isSystemAdmin [(expanded)]="instanceSettwingsNavExpanded">
+            <li hlmSidebarMenuItem>
+              <a
+                #isRla="routerLinkActive"
+                [isActive]="isRla.isActive"
+                [routerLinkActiveOptions]="{exact: true}"
+                routerLinkActive
+                routerLink="/settings/overview"
+                hlmSidebarMenuButton>
+                <ng-icon name="bootstrapBuildingGear" />
+                {{ 'nav.instanceSettings' | transloco }}
+              </a>
+              <button
+                class="data-[state=open]:rotate-90"
+                type="button"
+                hlmCollapsibleTrigger
+                hlmSidebarMenuAction>
+                <ng-icon name="lucideChevronRight" />
+              </button>
+              <hlm-collapsible-content>
+                <ul hlmSidebarMenuSub>
+                  <li hlmSidebarMenuSubItem>
+                    <a
+                      #isURla="routerLinkActive"
+                      [isActive]="isURla.isActive"
+                      routerLinkActive
+                      routerLink="/settings/users"
+                      hlmSidebarMenuSubButton>
+                      {{ 'general.users' | transloco }}
+                    </a>
+                    <a
+                      #isTRla="routerLinkActive"
+                      [isActive]="isTRla.isActive"
+                      routerLink="/settings/teams"
+                      routerLinkActive
+                      hlmSidebarMenuSubButton>
+                      {{ 'general.teams' | transloco }}
+                    </a>
+                    <a
+                      #isIRla="routerLinkActive"
+                      [isActive]="isIRla.isActive"
+                      routerLink="/settings/info"
+                      routerLinkActive
+                      hlmSidebarMenuSubButton>
+                      {{ 'instanceSettings.info' | transloco }}
+                    </a>
+                  </li>
+                </ul>
+              </hlm-collapsible-content>
+            </li>
+          </hlm-collapsible>
         </ul>
       </div>
     </hlm-sidebar-group>
   `,
   selector: 'nav-secondary',
-  imports: [HlmSidebarImports, NgIcon, TranslocoPipe, RouterLink, IsSystemAdmin, RouterLinkActive],
+  imports: [
+    HlmSidebarImports,
+    NgIcon,
+    TranslocoPipe,
+    RouterLink,
+    IsSystemAdmin,
+    RouterLinkActive,
+    HlmCollapsibleImports,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavSecondary {
   private readonly dialog = inject(MatDialog);
 
-  openHelp() {
+  protected readonly instanceSettwingsNavExpanded = inject(instanceSettingsExpandedState);
+
+  protected openHelp() {
     this.dialog.open(HelpDialog);
   }
 }
+
+const instanceSettingsExpandedState = createInjectable(() => signal(false));

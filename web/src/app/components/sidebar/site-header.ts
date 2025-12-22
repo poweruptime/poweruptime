@@ -11,7 +11,9 @@ import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
   template: `
     <header class="flex h-16 shrink-0 items-center gap-2">
       <div class="flex items-center gap-2 px-4">
-        <button type="button" hlmSidebarTrigger><span class="sr-only">Toggle sidebar</span></button>
+        <button type="button" hlmSidebarTrigger>
+          <span class="sr-only">Toggle sidebar</span>
+        </button>
         <hlm-separator class="mr-2 data-[orientation=vertical]:h-4" orientation="vertical" />
         <nav hlmBreadcrumb>
           <ol hlmBreadcrumbList>

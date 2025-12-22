@@ -102,10 +102,10 @@ springdoc:
 
 logging:
   level:
-    org.poweruptime: DEBUG
-#    Exposed: DEBUG
-#    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
+    org.poweruptime: ERROR
+    Exposed: ERROR
+    org.springframework.security: ERROR
+    org.springframework.web: ERROR
 
 management:
   endpoints:
