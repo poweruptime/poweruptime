@@ -1,7 +1,10 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 
 import {MatDialog} from '@angular/material/dialog';
+
+import {filter, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
@@ -34,7 +37,10 @@ import {IsSystemAdmin} from '@app/directives';
               Feedback
             </a>
           </li>
-          <hlm-collapsible *isSystemAdmin [(expanded)]="instanceSettwingsNavExpanded">
+          <hlm-collapsible
+            *isSystemAdmin
+            [expanded]="instanceSettingsExpanded()"
+            (expandedChange)="instanceSettingsNavExpandedState.state.set($event)">
             <li hlmSidebarMenuItem>
               <a
                 #isRla="routerLinkActive"
@@ -104,11 +110,34 @@ import {IsSystemAdmin} from '@app/directives';
 export class NavSecondary {
   private readonly dialog = inject(MatDialog);
 
-  protected readonly instanceSettwingsNavExpanded = inject(instanceSettingsExpandedState);
+  protected readonly instanceSettingsNavExpandedState = inject(instanceSettingsExpandedState);
+
+  private router = inject(Router);
+  private hasActiveChild = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+      map((url) => instanceSettingRoutes.includes(url)),
+    ),
+    {initialValue: false},
+  );
+
+  protected instanceSettingsExpanded = computed(
+    () => this.instanceSettingsNavExpandedState.state() ?? this.hasActiveChild(),
+  );
 
   protected openHelp() {
     this.dialog.open(HelpDialog);
   }
 }
 
-const instanceSettingsExpandedState = createInjectable(() => signal(false));
+const instanceSettingRoutes = [
+  '/settings/users',
+  '/settings/teams',
+  '/settings/info',
+  '/settings/overview',
+];
+
+const instanceSettingsExpandedState = createInjectable(() => {
+  return {state: signal<boolean | undefined>(undefined)};
+});

@@ -6,16 +6,19 @@ export const ROUTES: Routes = [
     children: [
       {
         path: 'overview',
+        data: {breadcrumb: 'general.overview'},
         loadComponent: () =>
           import('./instance-settings-overview.page').then((c) => c.InstanceSettingsOverviewPage),
       },
       {
         path: 'info',
+        data: {breadcrumb: 'general.info'},
         loadComponent: () =>
           import('./instance-settings-info.page').then((c) => c.InstanceSettingsInfoPage),
       },
       {
         path: 'users',
+        data: {breadcrumb: 'general.users'},
         children: [
           {
             path: '',
@@ -45,6 +48,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'teams',
+        data: {breadcrumb: 'general.teams'},
         loadComponent: () =>
           import('./instance-settings-teams.page').then((c) => c.InstanceSettingsTeamsPage),
       },

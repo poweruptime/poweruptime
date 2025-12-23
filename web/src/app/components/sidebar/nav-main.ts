@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
-import {MatListItem} from '@angular/material/list';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
@@ -38,7 +36,7 @@ import {SelectedTeamStore} from '@app/services';
     </hlm-sidebar-group>
   `,
   selector: 'nav-main',
-  imports: [HlmSidebarImports, NgIcon, RouterLink, RouterLinkActive, TranslocoPipe, MatListItem],
+  imports: [HlmSidebarImports, NgIcon, RouterLink, RouterLinkActive, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavMain {

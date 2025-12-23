@@ -128,7 +128,7 @@ poweruptime:
   notification-temp:
     enabled: true
   monitor-autostart:
-    enabled: true
+    enabled: false
   storage:
     directory: storage
   keys:

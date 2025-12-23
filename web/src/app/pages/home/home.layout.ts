@@ -21,7 +21,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <pu-sidebar [teamId]="selectedTeamStore.storageSelectedTeamId()">
-      <main class="px-2" hlmSidebarInset>
+      <main class="ps-4 pe-2" hlmSidebarInset>
         <pu-site-header-inset />
 
         <div class="main-content max-w-full">
@@ -41,7 +41,7 @@ import {
 
     @media (min-width: 2283px) {
       .main-content {
-        @apply mx-auto;
+        @apply mx-auto min-w-[1960px];
       }
     }
   `,

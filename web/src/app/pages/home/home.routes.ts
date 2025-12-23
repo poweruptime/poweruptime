@@ -49,6 +49,9 @@ export const ROUTES: Routes = [
       {
         path: 'settings',
         canActivate: [isSystemAdmin],
+        data: {
+          breadcrumb: 'nav.instanceSettings',
+        },
         loadChildren: () =>
           import('./instance-settings/instance-settings.routes').then((r) => r.ROUTES),
       },
