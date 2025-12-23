@@ -178,6 +178,7 @@ export class InstanceSettingsSponsorshipForm extends AbstractModelEditFormCompon
 > {
   readonly infoStore = inject(InfoStore);
 
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     supportLookup: [
       null as string | null,

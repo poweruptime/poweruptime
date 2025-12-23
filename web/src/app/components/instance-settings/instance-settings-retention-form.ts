@@ -90,6 +90,7 @@ export class InstanceSettingsRetentionForm extends AbstractModelEditFormComponen
   BackendType['SettingRetentionDto'],
   BackendType['SettingRetentionDto']
 > {
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     checkResultRetentionPeriodInDays: [
       180,

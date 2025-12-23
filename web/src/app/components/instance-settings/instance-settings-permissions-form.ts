@@ -48,6 +48,7 @@ export class InstanceSettingsPermissionsForm extends AbstractModelEditFormCompon
   BackendType['InstanceSettingsResponse'],
   BackendType['InstanceSettingsResponse']
 > {
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     isUserAllowedToCreateTeams: [false, [Validators.required]],
   });

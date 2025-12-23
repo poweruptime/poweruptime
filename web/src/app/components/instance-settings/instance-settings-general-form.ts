@@ -58,6 +58,7 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
   BackendType['InstanceSettingsResponse'],
   BackendType['InstanceSettingsResponse']
 > {
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     timezone: ['', [Validators.required]],
     showNewVersionDialog: [true, [Validators.required]],

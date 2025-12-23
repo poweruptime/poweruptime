@@ -33,6 +33,7 @@ export abstract class AbstractModelEditFormComponent<
   readonly submitUpdate = output<UpdateDTOType>();
 
   isCreating = signal(true);
+  protected readonly disableInputFocus: boolean = false;
 
   abstract form: FormGroup;
   formRef = viewChild<ElementRef>('formRef');
@@ -47,7 +48,7 @@ export abstract class AbstractModelEditFormComponent<
   }
 
   ngAfterViewInit(): void {
-    if (this.isCreating()) {
+    if (this.isCreating() && !this.disableInputFocus) {
       this.setInputFocus();
     }
   }
