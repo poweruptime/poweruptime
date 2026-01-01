@@ -251,8 +251,8 @@ importers:
         specifier: 13.0.0
         version: 13.0.0
       ng-icons-manager:
-        specifier: 1.1.3
-        version: 1.1.3(chokidar@5.0.0)(glob@13.0.0)
+        specifier: 1.1.4
+        version: 1.1.4(chokidar@5.0.0)(glob@13.0.0)
       openapi-typescript:
         specifier: 7.10.1
         version: 7.10.1(typescript@5.9.3)
@@ -4135,8 +4135,8 @@ packages:
       sass:
         optional: true
 
-  ng-icons-manager@1.1.3:
-    resolution: {integrity: sha512-oS6hU6gWRoCbwixuyZ9nZAk5czFcJZY+YVdRoTukbYu+YvYg0DIUJBDSKAw29ZsRLia0Hy/RWUW1pdR2sOlN9w==}
+  ng-icons-manager@1.1.4:
+    resolution: {integrity: sha512-sAnIg93MX8gedvO5NE2l0/V7ww3gj0c3HEwHdP6AWU2J/O/69soNUbeGsXXSrPgPl7df4ReBhLCvEJQo1rQf9g==}
     hasBin: true
     peerDependencies:
       chokidar: '5'
@@ -9075,7 +9075,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  ng-icons-manager@1.1.3(chokidar@5.0.0)(glob@13.0.0):
+  ng-icons-manager@1.1.4(chokidar@5.0.0)(glob@13.0.0):
     dependencies:
       chokidar: 5.0.0
       glob: 13.0.0
