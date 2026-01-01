@@ -118,11 +118,11 @@ importers:
         specifier: 21.0.0
         version: 21.0.0(45013a04762c4f1c996f43e12d0f46fc)
       '@ngrx/operators':
-        specifier: 21.0.0
-        version: 21.0.0(rxjs@7.8.2)
+        specifier: 21.0.1
+        version: 21.0.1(rxjs@7.8.2)
       '@ngrx/signals':
-        specifier: 21.0.0
-        version: 21.0.0(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 21.0.1
+        version: 21.0.1(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2)
       '@ngx-dropzone/cdk':
         specifier: 21.0.0
         version: 21.0.0(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(@angular/forms@21.0.6(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(@angular/platform-browser@21.0.6(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)
@@ -1721,13 +1721,13 @@ packages:
       '@angular/core': ^21.0.0
       '@angular/forms': ^21.0.0
 
-  '@ngrx/operators@21.0.0':
-    resolution: {integrity: sha512-deqh1kkpOGEDjhwEIEMZTjpWUie5FazDPVxV610LNPSF/Kwtqpv0xjCeAZXojkWrncptnJ9l0KhklJcaCODQwg==}
+  '@ngrx/operators@21.0.1':
+    resolution: {integrity: sha512-CfSh9MzQoIjbipSJ4q1+ZhcY537I5th4hNdNiWHu/egx2+SgFUZlOcQ6E9c+DJMsVkYOoIYhKX1E/bYlFBqXJw==}
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ngrx/signals@21.0.0':
-    resolution: {integrity: sha512-GZaOcnt1MBzqRv+m4gvsusksveqkQQZwbfxBOofTjLj7V1JWz18kyC1R3ZI/aO/M++cqG/zqP+yh/33pFenZYw==}
+  '@ngrx/signals@21.0.1':
+    resolution: {integrity: sha512-krmZDhgHrnmZrxfEJ41bp/aM8Mc55k5B2N7oCLT5w4M3YbOkbnWPkP6bBWMv4XPI+2rqVgkLRW6DaWLwoESaBw==}
     peerDependencies:
       '@angular/core': ^21.0.0
       rxjs: ^6.5.3 || ^7.4.0
@@ -6665,12 +6665,12 @@ snapshots:
       '@angular/forms': 21.0.6(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(@angular/platform-browser@21.0.6(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)))(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@ngrx/operators@21.0.0(rxjs@7.8.2)':
+  '@ngrx/operators@21.0.1(rxjs@7.8.2)':
     dependencies:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ngrx/signals@21.0.0(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngrx/signals@21.0.1(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)
       tslib: 2.8.1
