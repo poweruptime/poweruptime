@@ -1,5 +1,5 @@
 # 1) Build stage: install certs + compile HealthCheck.java
-FROM amazoncorretto:21.0.9 AS builder
+FROM amazoncorretto:25.0.1 AS builder
 
 WORKDIR /app
 
@@ -8,18 +8,18 @@ COPY HealthCheck.java .
 RUN javac HealthCheck.java
 
 # 2) Runtime stage: distroless + nonroot + your server.jar
-FROM gcr.io/distroless/java21-debian12:nonroot
+FROM gcr.io/distroless/java25-debian13:nonroot
 LABEL org.opencontainers.image.source=https://github.com/poweruptime/poweruptime
 
 USER nonroot
 
 # distroless's JAVA_HOME
-ENV JAVA_HOME=/usr/local/openjdk-21
+ENV JAVA_HOME=/usr/local/openjdk-25
 WORKDIR /app
 
 # bring in the system certs & Java truststore from builder
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
-COPY --from=builder /usr/lib/jvm/java-21-amazon-corretto/lib/security/cacerts \
+COPY --from=builder /usr/lib/jvm/java-25-amazon-corretto/lib/security/cacerts \
                      $JAVA_HOME/lib/security/cacerts
 
 # bring in just the compiled health‐check class
