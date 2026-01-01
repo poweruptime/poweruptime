@@ -12,7 +12,7 @@
     {
       "customType": "regex",
       "datasourceTemplate": "docker",
-      "managerFilePatterns": ["backend/src/test/*/**.kt"],
+      "managerFilePatterns": ["backend/src/test/**/**.kt"],
       "matchStrings": ["DockerImageName.parse(\"(?<depName>.+?):(?<currentValue>.+)\") // renovate"]
     }
   ],
