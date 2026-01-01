@@ -45,7 +45,7 @@ class AppriseIntegrationTests(
 
     companion object {
         private val appriseImageName: DockerImageName =
-            DockerImageName.parse("caronc/apprise:1.2.6")
+            DockerImageName.parse("caronc/apprise:1.3.0") // renovate
 
         @Container
         @JvmStatic
