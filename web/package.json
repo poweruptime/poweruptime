@@ -86,7 +86,7 @@
     "autoprefixer": "10.4.23",
     "chokidar": "5.0.0",
     "esbuild-visualizer": "0.7.0",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "glob": "13.0.0",
     "ng-icons-manager": "1.1.4",
     "openapi-typescript": "7.10.1",
@@ -95,7 +95,7 @@
     "tailwindcss": "4.1.18",
     "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.49.0"
+    "typescript-eslint": "8.50.1"
   },
   "imports": {
     "#styles.css": "./src/styles.css"
