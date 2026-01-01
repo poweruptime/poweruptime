@@ -28,9 +28,9 @@ plugins {
 
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
 
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.spring") version "2.2.21"
-    kotlin("plugin.serialization") version "2.2.21"
+    kotlin("jvm") version "2.3.0"
+    kotlin("plugin.spring") version "2.3.0"
+    kotlin("plugin.serialization") version "2.3.0"
 }
 
 val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
