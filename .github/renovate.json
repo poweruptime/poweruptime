@@ -8,6 +8,12 @@
       "datasourceTemplate": "docker",
       "managerFilePatterns": ["infrastructure/versions.env"],
       "matchStrings": ["IMAGE=\"(?<depName>.+?):(?<currentValue>.+)\" # renovate"]
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "docker",
+      "managerFilePatterns": ["backend/src/test/*/**.kt"],
+      "matchStrings": ["DockerImageName.parse(\"(?<depName>.+?):(?<currentValue>.+)\") // renovate"]
     }
   ],
   "extends": [
