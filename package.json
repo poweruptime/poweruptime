@@ -17,7 +17,7 @@
   "private": true,
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "6.0.0",
-    "git-cliff": "2.10.1",
+    "git-cliff": "2.11.0",
     "prettier": "3.7.4",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-sort-json": "4.1.1",
