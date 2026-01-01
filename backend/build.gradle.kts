@@ -20,7 +20,7 @@ springBoot {
 
 dependencies {
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.14")
 
     // Jackson
     implementation("tools.jackson.module:jackson-module-kotlin:3.0.3")
