@@ -51,7 +51,7 @@ ansi_color() {
 
 # Define tools: (name|color|command...)
 tools=(
-  "Prettier|green|prettier --write ."
+  "Prettier|green|pnpm format"
   "eslint|yellow|pnpm -C web lint"
   "Detekt|cyan|./gradlew detekt"
 )

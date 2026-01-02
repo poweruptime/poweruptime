@@ -6,8 +6,7 @@
 /build
 /gradle
 
-/email/node_modules
-/email/package.json
+/emails/
 
 /web/.angular
 /web/node_modules
