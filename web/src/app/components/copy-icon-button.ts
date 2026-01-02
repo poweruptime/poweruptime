@@ -1,32 +1,48 @@
 import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
 
-import {MatIconButton} from '@angular/material/button';
-import {MatTooltip, TooltipPosition} from '@angular/material/tooltip';
+import {TooltipPosition} from '@angular/material/tooltip';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {cl_copy} from 'dfts-helper';
 import {toast} from 'ngx-sonner';
 
 @Component({
   selector: 'pu-copy-icon-button',
-  imports: [NgIcon, MatIconButton, MatTooltip, TranslocoPipe],
+  imports: [
+    TranslocoPipe,
+    HlmIconImports,
+    HlmTooltipImports,
+    HlmButtonImports,
+    BrnTooltipContentTemplate,
+  ],
   template: `
-    <button
-      [matTooltip]="'general.copy' | transloco"
-      [matTooltipPosition]="matTooltipPosition()"
-      [attr.aria-label]="'general.copy' | transloco"
-      (click)="copy()"
-      type="button"
-      mat-icon-button>
-      @if (state() === 'BUTTON') {
-        <ng-icon name="bootstrapClipboard" />
-      } @else {
-        <ng-icon class="text-blue-700 dark:text-blue-500" name="bootstrapCheckLg" />
-      }
-    </button>
+    <hlm-tooltip>
+      <button
+        [position]="matTooltipPosition()"
+        [attr.aria-label]="'general.copy' | transloco"
+        (click)="copy()"
+        hlmTooltipTrigger
+        size="icon"
+        type="button"
+        hlmBtn
+        variant="ghost">
+        @if (state() === 'BUTTON') {
+          <ng-icon hlm name="lucideClipboard" size="sm" />
+        } @else {
+          <ng-icon
+            class="text-blue-700 dark:text-blue-500"
+            hlm
+            name="lucideClipboardCheck"
+            size="sm" />
+        }
+      </button>
+      <span *brnTooltipContent>{{ 'general.copy' | transloco }}</span>
+    </hlm-tooltip>
   `,
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CopyIconButton {

@@ -62,13 +62,9 @@ import {TableLoadingBar} from '../table-loading-bar';
             [class.blur-lg]="!_versionCheckEnabled"
             [class.pointer-events-none]="!_versionCheckEnabled"
             [class.saturate-50]="!_versionCheckEnabled">
-            @if (
-              instanceSettingsVersionCheckStore.versionCheck()?.latestVersion;
-              as latestVersion
-            ) {
+            @if (instanceSettingsVersionCheckStore.versionCheck()?.version; as latestVersion) {
               <div class="grid gap-3">
-                <div class="inline-flex items-center gap-4">
-                  <ng-icon class="text-blue-500" name="bootstrapDownload" />
+                <div class="inline-flex items-center gap-2">
                   <b>New version available</b>
                 </div>
                 <div class="inline-flex items-center gap-4">
@@ -86,8 +82,8 @@ import {TableLoadingBar} from '../table-loading-bar';
                     ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
                     : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
                 <a [href]="link" mat-stroked-button target="_blank" rel="noopener">
-                  <ng-icon name="bootstrapBoxArrowUpRight" />
                   View on GitHub
+                  <ng-icon name="bootstrapBoxArrowUpRight" />
                 </a>
                 <div class="rounded-md bg-gray-200 p-3 dark:bg-gray-800">
                   <p class="text-muted-foreground mb-1 text-xs font-medium">Update via terminal:</p>

@@ -6,7 +6,8 @@ import {MatDialogActions, MatDialogClose, MatDialogContent} from '@angular/mater
 import {TranslocoPipe} from '@jsverse/transloco';
 import {MatButtonLoading} from '@ng-matero/extensions/button';
 
-import {ChangelogStore, InfoStore} from '../services';
+import {ChangelogStore, InfoStore} from '@app/services';
+
 import {SupporterBadge} from './supporter-badge';
 
 @Component({
@@ -16,7 +17,7 @@ import {SupporterBadge} from './supporter-badge';
         <h2 class="text-3xl">{{ 'general.about' | transloco }} poweruptime</h2>
         <button
           [loading]="changelogStore.isPending()"
-          (click)="changelogStore.load({version: undefined, newVersion: false})"
+          (click)="changelogStore.load(undefined)"
           type="button"
           mat-stroked-button>
           Changelog

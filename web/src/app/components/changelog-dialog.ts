@@ -6,12 +6,9 @@ import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogRef,
 } from '@angular/material/dialog';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-
-import {ChangelogStore} from '../services';
 
 @Component({
   template: `
@@ -19,14 +16,6 @@ import {ChangelogStore} from '../services';
       <div class="prose dark:prose-invert" [innerHTML]="data.changelog"></div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      @if (data.autoDialog) {
-        <button
-          (click)="changelogStore.showDialogOnNewVersion.set(false); dialogRef.close()"
-          type="button"
-          mat-button>
-          {{ 'changelog.closeAndDontShowAgain' | transloco }}
-        </button>
-      }
       <button type="button" mat-flat-button mat-dialog-close>
         {{ 'general.close' | transloco }}
       </button>
@@ -37,8 +26,5 @@ import {ChangelogStore} from '../services';
   imports: [MatDialogContent, MatDialogActions, MatButton, MatDialogClose, TranslocoPipe],
 })
 export class ChangelogDialog {
-  dialogRef = inject(MatDialogRef);
-  changelogStore = inject(ChangelogStore);
-
-  data = inject(MAT_DIALOG_DATA) as {changelog: string; newVersion: boolean; autoDialog: boolean};
+  data = inject(MAT_DIALOG_DATA) as {changelog: string; autoDialog: boolean};
 }

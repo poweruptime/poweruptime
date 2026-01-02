@@ -2527,7 +2527,8 @@ export interface components {
       uptime: components['schemas']['PublicMonitorUptimeStatistics'];
     };
     VersionCheckResponse: {
-      latestVersion?: string;
+      version: string;
+      date: string;
     };
     InstanceAvailableTimezonesResponse: {
       availableTimezones: string[];

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Router, RouterOutlet} from '@angular/router';
@@ -8,13 +8,7 @@ import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 import {BackendOfflineAlert} from '@app/components';
 import {Sidebar} from '@app/components/sidebar/sidebar';
 import {SiteHeader} from '@app/components/sidebar/site-header';
-import {
-  BackendOfflineService,
-  ChangelogStore,
-  InfoStore,
-  PushService,
-  SelectedTeamStore,
-} from '@app/services';
+import {BackendOfflineService, InfoStore, PushService, SelectedTeamStore} from '@app/services';
 
 @Component({
   selector: 'home-layout',
@@ -76,15 +70,6 @@ export class HomeLayout {
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
-
-    const changelogStore = inject(ChangelogStore);
-
-    changelogStore.showNewVersionDialog(
-      computed(() => ({
-        version: changelogStore.lastVersion(),
-        newVersion: true,
-      })),
-    );
 
     const router = inject(Router);
 
