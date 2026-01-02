@@ -95,7 +95,6 @@ class PermissionsService {
         .innerJoin(User, { TeamUser.userId }, { User.id })
         .innerJoin(Team, { TeamUser.teamId }, { Team.id })
         .innerJoin(Monitor)
-        .innerJoin(CheckResult)
         .innerJoin(Notification)
         .selectAll()
         .where {
@@ -192,7 +191,6 @@ class PermissionsService {
         .innerJoin(User, { TeamUser.userId }, { User.id })
         .innerJoin(Team, { TeamUser.teamId }, { Team.id })
         .innerJoin(Monitor)
-        .innerJoin(CheckResult)
         .innerJoin(Notification)
         .selectAll()
         .where {

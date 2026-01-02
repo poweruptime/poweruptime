@@ -2448,8 +2448,10 @@ export interface components {
     };
     NotificationResponse: {
       id: string;
-      checkResult: components['schemas']['CheckResultMinResponse'];
+      checkResultId: string;
       title: string;
+      /** @enum {string} */
+      status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       /** Format: date-time */
       createdAt: string;
       monitor: components['schemas']['MonitorMinResponse'];

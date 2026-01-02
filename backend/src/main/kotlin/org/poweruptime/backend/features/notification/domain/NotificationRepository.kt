@@ -15,13 +15,11 @@ import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
-import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.notification.model.Notification
-import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
+import org.poweruptime.backend.features.notification.model.NotificationJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
@@ -32,8 +30,8 @@ fun Notification.deleteByTeamIdAndOlderThan(
     teamId: ULong,
     before: Instant
 ): Int = deleteWhere {
-    checkResultId inSubQuery (
-        CheckResult.innerJoin(Monitor).select(CheckResult.id).where {
+    monitorId inSubQuery (
+        Monitor.select(Monitor.id).where {
             Monitor.teamId eq teamId
         }
         ) and (createdAt less before)
@@ -48,38 +46,35 @@ suspend fun Notification.findAll(
     statuses: List<MonitorStatus>?,
     start: Instant?,
     end: Instant?,
-): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = pageQueryA(
+): Page<NotificationJoinMonitorAndTeamRecord> = pageQueryA(
     pageable,
     sort = {
         when (it) {
-            "checkResult.status" -> CheckResult.status
+            "status" -> Notification.status
             "createdAt" -> Notification.createdAt
             else -> null
         }
     },
     map = {
-        NotificationJoinCheckResultMonitorAndTeamRecord(
+        NotificationJoinMonitorAndTeamRecord(
             notification = rowToNotificationRecord(it),
-            checkResult = CheckResult.rowToCheckResultRecord(it),
             monitor = Monitor.rowToMonitorRecord(it),
             team = Team.rowToTeamRecord(it),
         )
     },
 ) {
-    var selectColumns = columns + CheckResult.columns + Monitor.columns + Team.columns
+    var selectColumns = columns + Monitor.columns + Team.columns
 
     val query = when {
         monitorId != null -> {
-            innerJoin(CheckResult)
-                .innerJoin(Monitor)
+            innerJoin(Monitor)
                 .innerJoin(Team, { Monitor.teamId }, { Team.id })
                 .select(selectColumns)
         }
 
         teamId != null -> {
             Team.innerJoin(Monitor)
-                .innerJoin(CheckResult)
-                .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
+                .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)
         }
 
@@ -87,8 +82,7 @@ suspend fun Notification.findAll(
             selectColumns = selectColumns + TeamUser.userId
             TeamUser.innerJoin(Team)
                 .innerJoin(Monitor)
-                .innerJoin(CheckResult)
-                .innerJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
+                .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)
         }
 
@@ -102,7 +96,7 @@ suspend fun Notification.findAll(
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { CheckResult.status inList it }
+        query.andWhere { status inList it }
     }
 
     start?.let { query.andWhere { Notification.createdAt greaterEq it } }

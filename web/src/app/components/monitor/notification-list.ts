@@ -95,15 +95,15 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../services/u
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="checkResult.status">
+        <ng-container matColumnDef="status">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ 'general.status' | transloco }}
           </th>
           <td *matCellDef="let element" mat-cell>
             <span
               class="rounded-md px-2 py-1 font-bold"
-              [monitor-status-text-background]="element.checkResult.status">
-              {{ element.checkResult.status }}
+              [monitor-status-text-background]="element.status">
+              {{ element.status }}
             </span>
           </td>
         </ng-container>
@@ -133,8 +133,8 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../services/u
                 [attr.aria-label]="'notification.list.openCheckResult' | transloco"
                 [routerLink]="
                   teamId() || (!teamId() && !monitorId())
-                    ? element.monitor.id + '/c/' + element.checkResult.id + '/logs'
-                    : 'c/' + element.checkResult.id + '/logs'
+                    ? element.monitor.id + '/c/' + element.checkResultId + '/logs'
+                    : 'c/' + element.checkResultId + '/logs'
                 "
                 matTooltipPosition="left"
                 mat-icon-button
@@ -191,7 +191,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../services/u
     .mat-column-monitor {
       @apply w-64;
     }
-    .mat-column-checkResult-status {
+    .mat-column-status {
       @apply w-32;
     }
     .mat-column-actions {
@@ -239,7 +239,7 @@ export class NotificationList {
   private readonly sort = viewChild.required(MatSort);
 
   statuses = linkedQueryParam('notifi.status', {
-    parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
+    parse: paramToArray<BackendType['NotificationResponse']['status']>(),
     stringify: arrayToParam(),
   });
 
@@ -278,7 +278,7 @@ export class NotificationList {
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeMonitorColumn) => {
-        let it = ['checkResult.status', 'createdAt', 'title', 'actions'];
+        let it = ['status', 'createdAt', 'title', 'actions'];
 
         if (includeMonitorColumn) {
           it = ['monitor', ...it];

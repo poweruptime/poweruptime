@@ -50,11 +50,11 @@ class NotificationTemplateService(
         setVariable("monitorName", monitor.name)
         setVariable(
             "status",
-            when (checkResult.status) {
+            when (notification.status) {
                 MonitorStatus.UP -> """✅ UP"""
                 MonitorStatus.DOWN -> """🔴 DOWN"""
                 else -> throw InvalidAttributesException(
-                    "Check result status not allowed to be ${checkResult.status}",
+                    "Check result status not allowed to be ${notification.status}",
                 )
             },
         )

@@ -13,7 +13,6 @@ import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryServi
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
-import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.poweruptime.backend.features.push.PushService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -55,15 +54,15 @@ class NotificationListener(
     }
 
     private fun validateNotification(
-        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        join: SubNotificationJoinMethodAndNotificationRecord,
     ) {
-        require(join.checkResult.status in listOf(MonitorStatus.UP, MonitorStatus.DOWN)) {
-            "Invalid status: ${join.checkResult.status}"
+        require(join.notification.status in listOf(MonitorStatus.UP, MonitorStatus.DOWN)) {
+            "Invalid status: ${join.notification.status}"
         }
     }
 
     private fun handleLatePickup(
-        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        join: SubNotificationJoinMethodAndNotificationRecord,
         pickedUpAt: Instant,
     ) {
         val isLate = pickedUpAt
@@ -77,7 +76,7 @@ class NotificationListener(
 
         checkResultLogService.action(
             stage = CheckResultLogStage.NOTIFICATION,
-            checkResultId = join.checkResult.id,
+            checkResultId = join.notification.checkResultId,
             message = "${join.method.name} picked up in time",
             properties = mapOf(
                 "result" to (!isLate).toString(),
@@ -114,12 +113,12 @@ class NotificationListener(
     }
 
     private fun logSentResult(
-        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        join: SubNotificationJoinMethodAndNotificationRecord,
         update: SubNotificationUpdate,
     ) {
         checkResultLogService.action(
             stage = CheckResultLogStage.NOTIFICATION,
-            checkResultId = join.checkResult.id,
+            checkResultId = join.notification.checkResultId,
             message = "${join.method.name} sent",
             properties = mapOf(
                 "result" to (update.error == null).toString(),

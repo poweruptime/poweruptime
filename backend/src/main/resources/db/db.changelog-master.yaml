@@ -82,3 +82,14 @@ databaseChangeLog:
                   name: previous_status
               - column:
                   name: id
+  - changeSet:
+      id: 8
+      author: Dafnik
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: changelog/scripts/08-notification.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

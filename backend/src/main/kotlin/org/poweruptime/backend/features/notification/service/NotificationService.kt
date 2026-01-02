@@ -14,12 +14,11 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.model.rowToCheckResultRecord
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.notification.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.notification.domain.findAll
 import org.poweruptime.backend.features.notification.model.Notification
-import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
+import org.poweruptime.backend.features.notification.model.NotificationJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.notification.model.NotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotification
 import org.poweruptime.backend.features.notification.model.rowToNotificationRecord
@@ -40,7 +39,7 @@ class NotificationService(
 
     fun getIdByPublicId(publicId: String): ULong = Notification.findIdByPublicIdOrThrow(publicId)
 
-    fun getByIdJoinCheckResultMonitorAndTeam(id: ULong): NotificationJoinCheckResultMonitorAndTeamRecord =
+    fun getByIdJoinCheckResultMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord =
         Notification
             .innerJoin(CheckResult)
             .innerJoin(Monitor)
@@ -52,18 +51,22 @@ class NotificationService(
             .limit(1)
             .firstOrNull()
             ?.let {
-                NotificationJoinCheckResultMonitorAndTeamRecord(
+                NotificationJoinMonitorAndTeamRecord(
                     notification = Notification.rowToNotificationRecord(it),
-                    checkResult = CheckResult.rowToCheckResultRecord(it),
                     monitor = Monitor.rowToMonitorRecord(it),
                     team = Team.rowToTeamRecord(it),
                 )
             }.orThrowNotFound()
 
     @Transactional
-    fun send(monitorId: ULong, checkResult: CheckResultRecord): NotificationJoinCheckResultMonitorAndTeamRecord {
+    fun send(monitorId: ULong, checkResult: CheckResultRecord): NotificationJoinMonitorAndTeamRecord {
+        assert(listOf(MonitorStatus.UP, MonitorStatus.DOWN).contains(checkResult.status))
+
         val notificationId = Notification.insertAndGetId {
+            it[Notification.monitorId] = checkResult.monitorId
             it[Notification.checkResultId] = checkResult.id
+            it[Notification.publicCheckResultId] = checkResult.publicId
+            it[Notification.status] = checkResult.status
             it[Notification.title] = checkResult.title!!
         }.value
 
@@ -85,7 +88,7 @@ class NotificationService(
         statuses: List<MonitorStatus>?,
         start: Instant?,
         end: Instant?,
-    ): Page<NotificationJoinCheckResultMonitorAndTeamRecord> = runBlocking {
+    ): Page<NotificationJoinMonitorAndTeamRecord> = runBlocking {
         Notification.findAll(
             pageable = pageable,
             monitorId = monitorId,
