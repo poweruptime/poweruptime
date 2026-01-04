@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, booleanAttribute, computed, input} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {Subject, throttleTime} from 'rxjs';
 
 import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {format} from '@std/fmt/duration';
 import confetti from 'canvas-confetti';
 import {n_generate_float, n_generate_int} from 'dfts-helper';
@@ -14,17 +14,22 @@ import {n_generate_float, n_generate_int} from 'dfts-helper';
   template: `
     @if (supportDuration(); as supportDuration) {
       @if (!hide()) {
-        <button
-          class="rainbow-border glow inline-block rounded-lg p-1 hover:cursor-pointer"
-          [matTooltip]="'Supports poweruptime for atleast ' + supportDuration"
-          (click)="confetti.next(true)"
-          type="button">
-          <div
-            class="flex items-center gap-2 rounded bg-gray-900 px-2 py-1.5 font-semibold text-white">
-            <ng-icon name="matWorkspacePremium" size="26" />
-            <span class="hidden sm:inline">Supporter</span>
-          </div>
-        </button>
+        <hlm-tooltip>
+          <button
+            class="rainbow-border glow inline-block rounded-lg p-1 hover:cursor-pointer"
+            (click)="confetti.next(true)"
+            hlmTooltipTrigger
+            type="button">
+            <div
+              class="flex items-center gap-2 rounded bg-gray-900 px-2 py-1.5 font-semibold text-white">
+              <ng-icon name="lucideAward" size="26" />
+              <span class="hidden sm:inline">Supporter</span>
+            </div>
+          </button>
+          <span *brnTooltipContent>
+            {{ 'Supports poweruptime for atleast ' + supportDuration }}
+          </span>
+        </hlm-tooltip>
       }
     }
   `,
@@ -64,7 +69,7 @@ import {n_generate_float, n_generate_int} from 'dfts-helper';
   `,
   selector: 'pu-supporter-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTooltip, NgIcon],
+  imports: [NgIcon, HlmTooltipImports, BrnTooltipContentTemplate],
 })
 export class SupporterBadge {
   supportsSince = input<string | undefined>();

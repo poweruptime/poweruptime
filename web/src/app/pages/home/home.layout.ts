@@ -8,7 +8,7 @@ import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 import {BackendOfflineAlert} from '@app/components';
 import {Sidebar} from '@app/components/sidebar/sidebar';
 import {SiteHeader} from '@app/components/sidebar/site-header';
-import {BackendOfflineService, InfoStore, PushService, SelectedTeamStore} from '@app/services';
+import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
 
 @Component({
   selector: 'home-layout',
@@ -51,7 +51,6 @@ import {BackendOfflineService, InfoStore, PushService, SelectedTeamStore} from '
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly infoStore = inject(InfoStore);
 
   private readonly sidebarService = inject(HlmSidebarService);
 
@@ -65,8 +64,6 @@ export class HomeLayout {
   });
 
   constructor() {
-    this.infoStore.loadSupport();
-
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();

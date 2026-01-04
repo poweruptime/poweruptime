@@ -33,7 +33,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
           </a>
         </div>
         <div class="flex flex-wrap items-end gap-2 text-2xl">
-          <pu-monitor-status [status]="notification.checkResult.status" />
+          <pu-monitor-status [status]="notification.status" />
           <h1>{{ notification.title }}</h1>
         </div>
         <div class="flex items-center gap-4">
@@ -44,7 +44,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
           <a
             class="hover:cursor-pointer"
-            [routerLink]="'../../c/' + notification.checkResult.id + '/logs'">
+            [routerLink]="'../../c/' + notification.checkResultId + '/logs'">
             <mat-chip-option>
               {{ 'notification.detail.openCheckResult' | transloco }}
               <ng-icon name="bootstrapBoxArrowUpRight" size="16" />

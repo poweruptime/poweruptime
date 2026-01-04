@@ -114,9 +114,6 @@ importers:
       '@ng-icons/lucide':
         specifier: 33.0.0
         version: 33.0.0
-      '@ng-icons/material-icons':
-        specifier: 33.0.0
-        version: 33.0.0
       '@ng-matero/extensions':
         specifier: 21.1.2
         version: 21.1.2(45013a04762c4f1c996f43e12d0f46fc)
@@ -2449,9 +2446,6 @@ packages:
 
   '@ng-icons/lucide@33.0.0':
     resolution: {integrity: sha512-HX4tAihCPE3jYgzrlPpM8O/6d/1hbHNHW37GtCQOcY8JFeBc3v5a2MCwFQQwqFm74zBnQbY6iJeGIP6dsaMnuA==}
-
-  '@ng-icons/material-icons@33.0.0':
-    resolution: {integrity: sha512-SzLEEdJob61sFwTeHowvllqTCeW0nz2FY2h4jH95TgVt9PDILsWq2GWchGpx3iprQ78Z+41mjm7bo83uxPb2bw==}
 
   '@ng-matero/extensions@21.1.2':
     resolution: {integrity: sha512-720S+lGbjUNtqXFjMNHxxQfu3JmGjo0aR3Cdsxv/iP0b5N+9EBa1ddRbFTIDt/zWZDKivD7Q6cXmn6bZWTOmlA==}
@@ -10638,10 +10632,6 @@ snapshots:
       tslib: 2.8.1
 
   '@ng-icons/lucide@33.0.0':
-    dependencies:
-      tslib: 2.8.1
-
-  '@ng-icons/material-icons@33.0.0':
     dependencies:
       tslib: 2.8.1
 

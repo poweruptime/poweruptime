@@ -1,168 +1,106 @@
 import {httpResource} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
-
-import {MatButton} from '@angular/material/button';
-import {MatRipple} from '@angular/material/core';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-} from '@angular/material/dialog';
-import {
-  MatAccordion,
-  MatExpansionPanel,
-  MatExpansionPanelHeader,
-  MatExpansionPanelTitle,
-} from '@angular/material/expansion';
-import {MatDivider, MatList, MatListItem, MatListItemTitle} from '@angular/material/list';
+import {ChangeDetectionStrategy, Component, computed} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BrnDialogClose} from '@spartan-ng/brain/dialog';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDialogImports} from '@spartan-ng/helm/dialog';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {environment} from '@app/util';
 
 import {IsSystemAdmin} from '../directives';
 import {BACKEND_API_URL} from '../util';
 import {DebugInfoDialog} from './debug-info-dialog';
-
-interface Dependency {
-  moduleName: string;
-  moduleUrl: string;
-  moduleVersion: string;
-  moduleLicense: string;
-  moduleLicenseUrl?: string;
-}
+import {Dependency, LicenseDialog} from './license-dialog';
 
 interface ImportedModule {
   moduleName: string;
   dependencies: Dependency[];
 }
 
-interface LicenseData {
+export interface LicenseData {
   dependencies: Dependency[];
   importedModules: ImportedModule[];
 }
 
 @Component({
   template: `
-    <mat-dialog-content>
-      <h2 class="text-3xl">{{ 'general.help' | transloco }}</h2>
-      <div class="grid gap-4">
-        <div></div>
-        <mat-list role="list">
-          <a
-            class="hover:cursor-pointer!"
-            mat-list-item
-            href="https://github.com/poweruptime/poweruptime/discussions/categories/feature-requests-ideas"
-            target="_blank"
-            rel="noopener"
-            matRipple>
-            Feedback
-          </a>
-          <a
-            class="hover:cursor-pointer!"
-            mat-list-item
-            href="https://github.com/poweruptime/poweruptime/discussions"
-            target="_blank"
-            rel="noopener"
-            matRipple>
-            Forum
-          </a>
-          <mat-divider></mat-divider>
+    <div class="flex-1 overflow-y-auto">
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>{{ 'general.help' | transloco }}</h3>
+        <p hlmDialogDescription>Get support, view documentation, and system information</p>
+      </hlm-dialog-header>
 
-          <mat-list-item>
-            <span matListItemTitle>Version</span>
-            <span class="text-sm">{{ version }}</span>
-          </mat-list-item>
-          <button
-            class="hover:cursor-pointer!"
-            *isSystemAdmin
-            (click)="openDebugInfoDialog()"
-            type="button"
-            style="text-align: start"
-            mat-list-item
-            matRipple>
-            Debug information
-          </button>
-        </mat-list>
-
-        <h3 class="text-xl">Licenses ❤️</h3>
-
-        <mat-accordion multi>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>Web</mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <div class="grid gap-4">
-              @for (license of feLicenses(); track $index) {
-                <a class="grid gap-2" [href]="license.moduleUrl" rel="noreferrer" target="_blank">
-                  <div class="flex justify-between gap-2">
-                    <h6>{{ license.moduleName }}</h6>
-                    <small>{{ license.moduleVersion }}</small>
-                  </div>
-
-                  <a [href]="license.moduleLicenseUrl" target="_blank" rel="noreferrer">
-                    <small>{{ license.moduleLicense }}</small>
-                  </a>
-                </a>
-              }
-            </div>
-          </mat-expansion-panel>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>Backend</mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <div class="grid gap-4">
-              @for (license of licenses.value()?.dependencies ?? []; track $index) {
-                <a class="grid gap-2" [href]="license.moduleUrl" rel="noreferrer" target="_blank">
-                  <div class="flex justify-between gap-2">
-                    <h6>{{ license.moduleName }}</h6>
-                    <small>{{ license.moduleVersion }}</small>
-                  </div>
-
-                  @if (license.moduleLicenseUrl; as url) {
-                    <a [href]="url" target="_blank" rel="noreferrer">
-                      <small>{{ license.moduleLicense }}</small>
-                    </a>
-                  } @else {
-                    <small>{{ license.moduleLicense }}</small>
-                  }
-                </a>
-              }
-            </div>
-          </mat-expansion-panel>
-        </mat-accordion>
+      <div class="space-y-1 py-2">
+        <a
+          class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+          href="https://github.com/poweruptime/poweruptime/discussions/categories/feature-requests-ideas"
+          target="_blank"
+          rel="noopener"
+          hlmBtn
+          variant="ghost">
+          <ng-icon hlm name="lucideMessageCircle" size="sm" />
+          Feedback
+        </a>
+        <a
+          class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+          href="https://github.com/poweruptime/poweruptime/discussions"
+          target="_blank"
+          rel="noopener"
+          hlmBtn
+          variant="ghost">
+          <ng-icon hlm name="lucideMessageSquare" size="sm" />
+          Forum
+        </a>
+        <hr />
+        <button
+          class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+          type="button"
+          hlmBtn
+          variant="ghost">
+          <ng-icon hlm name="bootstrapInfoCircleFill" size="sm" />
+          <div class="flex items-center gap-2">
+            <span>Version</span>
+            <span class="bg-secondary rounded px-2 py-0.5 font-mono text-xs">{{ version }}</span>
+          </div>
+        </button>
+        <pu-debug-info-dialog *isSystemAdmin />
       </div>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button type="button" mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
-    </mat-dialog-actions>
+
+      <h2 class="text-xl font-bold">Licenses ❤</h2>
+
+      <div class="space-y-1 py-2">
+        <pu-license-dialog [licenses]="feLicenses()" btnText="Web" />
+        @if (licenses.value()?.dependencies; as beDependencies) {
+          <pu-license-dialog [licenses]="beDependencies" btnText="Backend" />
+        }
+      </div>
+    </div>
+    <hlm-dialog-footer>
+      <button type="button" hlmBtn variant="outline" brnDialogClose>
+        {{ 'general.close' | transloco }}
+      </button>
+    </hlm-dialog-footer>
   `,
   selector: 'pu-help-dialog',
+  host: {
+    class:
+      'max-h-[calc(100vh-2rem)] w-full max-w-[calc(100%-2rem)] sm:max-h-[min(640px,80vh)] sm:max-w-lg overflow-hidden',
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatDialogContent,
-    MatDialogActions,
-    MatButton,
-    MatDialogClose,
     TranslocoPipe,
-    MatExpansionPanelTitle,
-    MatExpansionPanelHeader,
-    MatExpansionPanel,
-    MatAccordion,
-    MatListItem,
-    MatList,
-    MatListItemTitle,
-    MatRipple,
-    MatDivider,
     IsSystemAdmin,
+    HlmDialogImports,
+    HlmButtonImports,
+    HlmIconImports,
+    BrnDialogClose,
+    LicenseDialog,
+    DebugInfoDialog,
   ],
 })
 export class HelpDialog {
-  private readonly dialog = inject(MatDialog);
-
   version = environment.version;
 
   licenses = httpResource<LicenseData>(
@@ -170,10 +108,4 @@ export class HelpDialog {
   );
 
   feLicenses = computed(() => this.licenses.value()?.importedModules?.[0]?.dependencies ?? []);
-
-  openDebugInfoDialog() {
-    this.dialog.open(DebugInfoDialog, {
-      width: '600px',
-    });
-  }
 }

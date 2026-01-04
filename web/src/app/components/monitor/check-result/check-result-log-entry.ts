@@ -32,14 +32,16 @@ import {RelativeTimeWithTooltip} from '@app/pipes';
           {{ _logEntry.message }}
         </span>
 
-        @if (_logEntry.properties?.['time']) {
-          <span class="text-sm text-gray-500 tabular-nums">{{ duration() }}</span>
+        @if (duration(); as duration) {
+          <span class="text-sm text-gray-500 tabular-nums">{{ duration }}</span>
         } @else if (!disableStartTimestamp()) {
           <pu-relative-time
             class="text-sm text-gray-500 tabular-nums"
             [value]="_logEntry.createdAt"
             format="yyyy.MM.dd HH:mm:ss" />
         }
+
+        <!--        {{_logEntry.properties | json}}-->
       </div>
     </div>
   `,
@@ -53,7 +55,14 @@ export class CheckResultLogEntry {
 
   readonly disableStartTimestamp = input(false, {transform: booleanAttribute});
 
-  readonly duration = computed(() =>
-    format(Number(this.logEntry().properties?.['time'] ?? 0), {ignoreZero: true}),
-  );
+  readonly duration = computed(() => {
+    const time = this.logEntry().properties?.['time'];
+    if (!time) {
+      return undefined;
+    }
+    if (time === '0') {
+      return '0ms';
+    }
+    return format(Number(time), {ignoreZero: true});
+  });
 }

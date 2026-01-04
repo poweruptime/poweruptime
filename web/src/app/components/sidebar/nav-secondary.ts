@@ -2,13 +2,12 @@ import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@ang
 import {toSignal} from '@angular/core/rxjs-interop';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 
-import {MatDialog} from '@angular/material/dialog';
-
 import {filter, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
 import {createInjectable} from 'ngxtension/create-injectable';
 
@@ -108,7 +107,7 @@ import {IsSystemAdmin} from '@app/directives';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavSecondary {
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(HlmDialogService);
 
   protected readonly instanceSettingsNavExpandedState = inject(instanceSettingsExpandedState);
 
@@ -127,7 +126,9 @@ export class NavSecondary {
   );
 
   protected openHelp() {
-    this.dialog.open(HelpDialog);
+    this.dialog.open(HelpDialog, {
+      contentClass: 'sm:!max-w-[750px]',
+    });
   }
 }
 

@@ -11,7 +11,7 @@ import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 
 import {AboutDialog} from '@app/components/about-dialog';
-import {AuthStore, ProfileStore} from '@app/services';
+import {AuthStore, InfoStore, ProfileStore} from '@app/services';
 import {themeOptions} from '@app/util';
 
 @Component({
@@ -35,11 +35,22 @@ import {themeOptions} from '@app/util';
           hlmSidebarMenuButton
           size="lg"
           align="end">
-          <hlm-avatar class="rounded-lg">
-            <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
-              {{ profileInitials() ?? 'UK' }}
-            </span>
-          </hlm-avatar>
+          <div class="relative">
+            <hlm-avatar class="rounded-lg">
+              <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
+                {{ profileInitials() ?? 'UK' }}
+              </span>
+            </hlm-avatar>
+            @if (infoStore.support(); as support) {
+              @if (support.supportsSince && support.showSupportBadge) {
+                <ng-icon
+                  class="absolute -top-2 -left-1 -rotate-20 text-yellow-500"
+                  size="16"
+                  name="lucideCrown"
+                  aria-label="Crown" />
+              }
+            }
+          </div>
           <div class="grid flex-1 text-left text-sm leading-tight">
             <span class="truncate font-medium">{{ profileStore.name() }}</span>
             <span class="truncate text-xs">{{ profileStore.email() }}</span>
@@ -148,11 +159,16 @@ export class NavUser {
   protected readonly translocoService = inject(TranslocoService);
   protected readonly profileStore = inject(ProfileStore);
   protected readonly authStore = inject(AuthStore);
+  protected readonly infoStore = inject(InfoStore);
 
   protected readonly themeOptions = themeOptions;
 
   protected readonly _menuSide = computed(() => (this.sidebarService.isMobile() ? 'top' : 'right'));
   protected profileInitials = computed(() => getInitials(this.profileStore.name()));
+
+  constructor() {
+    this.infoStore.loadSupport();
+  }
 
   openAbout() {
     this.dialog.open(AboutDialog);

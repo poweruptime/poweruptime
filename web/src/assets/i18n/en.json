@@ -179,7 +179,7 @@
     "restore": "Restore",
     "restoreSuccess": "Successfully restored item(s).",
     "role": "Role",
-    "save": "Save",
+    "save": "Save Changes",
     "search": "Search",
     "secret": "Secret",
     "security": "Security",
@@ -224,7 +224,7 @@
     "retention": {
       "checkResult": "Check retention",
       "logs": "Logs retention",
-      "title": "Individual check & log retention"
+      "title": "Data Retention"
     },
     "showNewVersionDialog": "Show new version changelog badge after update",
     "sponsorship": {

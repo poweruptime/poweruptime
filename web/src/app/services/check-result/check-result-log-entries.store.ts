@@ -15,28 +15,17 @@ export const CheckResultLogEntriesStore = signalStore(
   withRequestStatus(),
   withEntities<BackendType['CheckResultLogEntryResponse']>(),
   withComputed((store) => ({
-    setup: computed(() =>
-      store
-        .entities()
-        .map(mapEntriesWithTime)
-        .filter((it) => it.stage === 'SETUP'),
-    ),
-    check: computed(() =>
-      store
-        .entities()
-        .map(mapEntriesWithTime)
-        .filter((it) => it.stage === 'CHECK'),
-    ),
+    mappedEntities: computed(() => store.entities().map(mapEntriesWithTime)),
+  })),
+  withComputed((store) => ({
+    setup: computed(() => store.mappedEntities().filter((it) => it.stage === 'SETUP')),
+    check: computed(() => store.mappedEntities().filter((it) => it.stage === 'CHECK')),
     statusUpdate: computed(() =>
-      store
-        .entities()
-        .map(mapEntriesWithTime)
-        .filter((it) => it.stage === 'MONITOR_STATUS_UPDATE'),
+      store.mappedEntities().filter((it) => it.stage === 'MONITOR_STATUS_UPDATE'),
     ),
     notifications: computed(() =>
       store
-        .entities()
-        .map(mapEntriesWithTime)
+        .mappedEntities()
         .filter(
           (it) => it.stage === 'NOTIFICATION' && it.properties?.['subNotificationId'] === undefined,
         ),
@@ -107,10 +96,11 @@ const mapEntriesWithTime = (
   properties: {
     ...it.properties,
     time:
-      (it.properties?.['time'] ?? entries[index - 1])
+      it.properties?.['time'] ??
+      (entries[index - 1]
         ? (
             new Date(it.createdAt).getTime() - new Date(entries[index - 1]?.createdAt).getTime()
           ).toString()
-        : undefined,
+        : undefined),
   } as Record<string, string>,
 });

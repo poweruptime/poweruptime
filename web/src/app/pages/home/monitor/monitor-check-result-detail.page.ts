@@ -20,14 +20,11 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 @Component({
   template: `
     <div class="flex flex-col gap-4">
-      @if (checkResultDetailStore.isPending() || checkResultLogEntriesStore.isPending()) {
+      @if (checkResultDetailStore.isPending()) {
         <div class="flex animate-pulse flex-col gap-4">
           <pu-placeholder class="h-10 w-32" />
           <pu-placeholder class="h-12 w-96" />
           <pu-placeholder class="h-24 w-full" />
-          @for (i of 5 | repeat; track i) {
-            <pu-placeholder class="h-10 w-full" />
-          }
         </div>
       } @else {
         @if (checkResultDetailStore.checkResult(); as checkResult) {
@@ -84,7 +81,15 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             </mat-card>
           }
         }
+      }
 
+      @if (checkResultDetailStore.isPending() || checkResultLogEntriesStore.isPending()) {
+        <div class="flex animate-pulse flex-col gap-4">
+          @for (i of 5 | repeat; track i) {
+            <pu-placeholder class="h-10 w-full" />
+          }
+        </div>
+      } @else {
         @if (checkResultLogEntriesStore.entities().length === 0) {
           <mat-card>
             <mat-card-content>

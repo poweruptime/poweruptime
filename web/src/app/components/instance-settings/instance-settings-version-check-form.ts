@@ -11,19 +11,21 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MatTooltip} from '@angular/material/tooltip';
 
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database} from '@app/api';
-import {Tag} from '@app/directives';
 import {InfoStore, InstanceSettingsVersionCheckStore} from '@app/services';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
@@ -34,73 +36,100 @@ import {TableLoadingBar} from '../table-loading-bar';
 @Component({
   template: `
     @let currentVersion = infoStore.version();
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <div class="flex w-full items-center justify-between gap-2">
-          <h3 class="text-xl">
-            {{ 'instanceSettings.versionCheck.title' | transloco }}
-          </h3>
-          <span
-            [matTooltip]="'instanceSettings.versionCheck.currentVersion' | transloco"
-            pu-tag="GHOST">
-            {{ currentVersion }}
-          </span>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="mb-8 flex flex-col gap-2">
-          <pu-table-loading-bar [loading]="isLoading()" />
-          <span class="text-gray-600 dark:text-gray-300">
-            Check for application updates and manage notifications
-          </span>
+
+    <section hlmCard>
+      <div hlmCardHeader>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-2">
+            <h3 hlmCardTitle>{{ 'instanceSettings.versionCheck.title' | transloco }}</h3>
+            <p hlmCardDescription>Check for application updates and manage notifications</p>
+          </div>
+          <hlm-tooltip>
+            <span
+              class="bg-secondary text-secondary-foreground rounded px-2 py-1 text-lg font-semibold"
+              hlmTooltipTrigger>
+              {{ currentVersion }}
+            </span>
+            <span *brnTooltipContent>
+              {{ 'instanceSettings.versionCheck.currentVersion' | transloco }}
+            </span>
+          </hlm-tooltip>
         </div>
 
-        @let _versionCheckEnabled = versionCheckEnabled();
-        <div class="relative rounded">
-          <div
-            class="grid min-h-60 gap-8 transition-all duration-100"
-            [class.blur-lg]="!_versionCheckEnabled"
-            [class.pointer-events-none]="!_versionCheckEnabled"
-            [class.saturate-50]="!_versionCheckEnabled">
+        <pu-table-loading-bar [loading]="isLoading()" />
+      </div>
+      @let _versionCheckEnabled = versionCheckEnabled();
+      <div class="relative">
+        <div
+          class="flex min-h-64 flex-col justify-between gap-4 transition-all duration-100"
+          [class.blur-lg]="!_versionCheckEnabled"
+          [class.pointer-events-none]="!_versionCheckEnabled"
+          [class.saturate-50]="!_versionCheckEnabled">
+          <div class="space-y-4" hlmCardContent>
             @if (instanceSettingsVersionCheckStore.versionCheck()?.version; as latestVersion) {
-              <div class="grid gap-3">
-                <div class="inline-flex items-center gap-2">
-                  <b>New version available</b>
+              <section hlmCard>
+                <div class="flex items-center gap-2" hlmCardHeader>
+                  <div class="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
+                  <h4 class="text-sm font-medium" hlmCardTitle>New version available</h4>
                 </div>
-                <div class="inline-flex items-center gap-4">
-                  <span class="break-keep" pu-tag="GHOST">
-                    {{ currentVersion }}
-                  </span>
-                  <ng-icon name="bootstrapArrowRight" />
+                <div class="space-y-4" hlmCardContent>
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono" hlmBadge variant="outline">
+                      {{ currentVersion }}
+                    </span>
+                    <ng-icon hlm name="bootstrapArrowRight" size="sm" />
+                    <span
+                      class="bg-blue-500 font-mono text-white dark:bg-blue-600"
+                      variant="secondary"
+                      hlmBadge>
+                      {{ latestVersion }}
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button
+                      (click)="
+                        instanceSettingsVersionCheckStore.makeVersionCheck({
+                          versionCheckEnabled: true,
+                          skipCache: true,
+                        })
+                      "
+                      hlmBtn
+                      variant="outline"
+                      type="button">
+                      <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
+                      Check for Updates
+                    </button>
 
-                  <span class="break-keep" pu-tag="BLUE">
-                    {{ latestVersion }}
-                  </span>
+                    @let link =
+                      latestVersion.includes('beta')
+                        ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
+                        : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
+                    <a [href]="link" hlmBtn variant="outline" target="_blank" rel="noopener">
+                      View on GitHub
+                      <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                    </a>
+                  </div>
                 </div>
-                @let link =
-                  latestVersion.includes('beta')
-                    ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
-                    : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
-                <a [href]="link" mat-stroked-button target="_blank" rel="noopener">
-                  View on GitHub
-                  <ng-icon name="bootstrapBoxArrowUpRight" />
-                </a>
-                <div class="rounded-md bg-gray-200 p-3 dark:bg-gray-800">
-                  <p class="text-muted-foreground mb-1 text-xs font-medium">Update via terminal:</p>
+              </section>
+
+              <div class="space-y-2">
+                <span class="text-muted-foreground text-xs tracking-wide uppercase">
+                  Update via terminal
+                </span>
+                <div class="group relative">
                   <div
-                    class="dark:bg-bg-dark inline-flex items-center gap-2 rounded border bg-white px-2">
-                    <code class="font-mono text-xs" style="padding-top: 0.124rem">./pu update</code>
-
+                    class="bg-secondary/50 border-border/50 flex items-center justify-between rounded-md border px-4 py-3 font-mono text-sm">
+                    <code class="text-foreground">./pu update</code>
                     <pu-copy-icon-button [content]="'./pu update'" />
                   </div>
                 </div>
               </div>
             } @else {
-              <div
-                class="inline-flex items-center gap-2 font-medium text-green-600 dark:text-green-400">
-                <ng-icon name="bootstrapCheck2Circle" />
-                <span>You're running the latest version</span>
+              <div class="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
+                <ng-icon hlm name="bootstrapCheck2Circle" />
+                <span class="font-medium">You're running the latest version</span>
               </div>
+
               <button
                 (click)="
                   instanceSettingsVersionCheckStore.makeVersionCheck({
@@ -108,10 +137,11 @@ import {TableLoadingBar} from '../table-loading-bar';
                     skipCache: true,
                   })
                 "
-                type="button"
-                mat-stroked-button>
-                <ng-icon name="bootstrapArrowClockwise" />
-                Check for updates
+                hlmBtn
+                variant="outline"
+                type="button">
+                <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
+                Check for Updates
               </button>
             }
 
@@ -189,53 +219,53 @@ import {TableLoadingBar} from '../table-loading-bar';
                 </div>
               }
             </form>
-            <div class="mt-auto flex items-center justify-between gap-4">
-              <pu-save-button [valid]="isValid()" form="version-check-form" />
-
-              <button
-                class="error-button"
-                (click)="
-                  form.patchValue({
-                    versionCheckEnabled: false,
-                    versionCheckAdminMailSendToEveryone: true,
-                  });
-                  onSubmit()
-                "
-                type="button"
-                mat-flat-button>
-                <ng-icon name="bootstrapXCircleFill" />
-                <span class="text-lg">{{ 'general.disable' | transloco }}</span>
-              </button>
-            </div>
           </div>
+          <div class="flex flex-col justify-between gap-2 sm:flex-row" hlmCardFooter>
+            <pu-save-button [valid]="isValid()" form="version-check-form" />
 
-          <!-- Centered Material button, only when lookup is disabled -->
-          @if (!_versionCheckEnabled) {
-            <div class="absolute inset-0 z-10 bg-transparent"></div>
-            <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-4">
-              <div>
-                <strong>{{ 'instanceSettings.versionCheck.warning.1' | transloco }}</strong>
-                <div class="mt-4">
-                  <i>{{ 'instanceSettings.versionCheck.warning.2' | transloco }}</i>
-                </div>
-                <ul class="list-disc">
-                  <li>{{ 'instanceSettings.versionCheck.warning.3' | transloco }}</li>
-                  <li>{{ 'instanceSettings.versionCheck.warning.4' | transloco }}</li>
-                </ul>
-              </div>
-              <button
-                (click)="form.controls.versionCheckEnabled.patchValue(true); onSubmit()"
-                type="button"
-                mat-flat-button>
-                {{ 'general.enable' | transloco }}
-              </button>
-            </div>
-          }
-
-          <div class="mt-4 text-center"></div>
+            <button
+              (click)="
+                form.patchValue({
+                  versionCheckEnabled: false,
+                  versionCheckAdminMailSendToEveryone: true,
+                });
+                onSubmit()
+              "
+              type="button"
+              hlmBtn
+              variant="destructive">
+              <ng-icon hlm size="sm" name="bootstrapXCircleFill" />
+              <span class="text-lg">{{ 'general.disable' | transloco }}</span>
+            </button>
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+
+        <!-- Centered Material button, only when lookup is disabled -->
+        @if (!_versionCheckEnabled) {
+          <div class="absolute inset-0 z-10 bg-transparent"></div>
+          <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-20">
+            <div>
+              <strong>{{ 'instanceSettings.versionCheck.warning.1' | transloco }}</strong>
+              <div class="mt-4">
+                <i>{{ 'instanceSettings.versionCheck.warning.2' | transloco }}</i>
+              </div>
+              <ul class="list-disc">
+                <li>{{ 'instanceSettings.versionCheck.warning.3' | transloco }}</li>
+                <li>{{ 'instanceSettings.versionCheck.warning.4' | transloco }}</li>
+              </ul>
+            </div>
+            <button
+              (click)="form.controls.versionCheckEnabled.patchValue(true); onSubmit()"
+              type="button"
+              mat-flat-button>
+              {{ 'general.enable' | transloco }}
+            </button>
+          </div>
+        }
+
+        <div class="mt-4 text-center"></div>
+      </div>
+    </section>
   `,
   styles: `
     ::ng-deep mat-slide-toggle > .mdc-form-field.mdc-form-field--align-end {
@@ -252,9 +282,6 @@ import {TableLoadingBar} from '../table-loading-bar';
   imports: [
     ReactiveFormsModule,
     MatSlideToggle,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
     MatChipGrid,
     MatChipRow,
     MatChipRemove,
@@ -263,14 +290,17 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatError,
     MatLabel,
     MatButton,
+    MatChipInput,
     TranslocoPipe,
-    NgIcon,
-    Tag,
     CopyIconButton,
     TableLoadingBar,
-    MatChipInput,
-    MatTooltip,
     SaveButton,
+    HlmCardImports,
+    HlmButtonImports,
+    HlmTooltipImports,
+    HlmIconImports,
+    HlmBadgeImports,
+    BrnTooltipContentTemplate,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

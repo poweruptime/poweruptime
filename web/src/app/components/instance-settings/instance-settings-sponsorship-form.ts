@@ -11,13 +11,16 @@ import {
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButton} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIcon} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {format} from '@std/fmt/duration';
 
 import {BackendType, Database} from '@app/api';
@@ -31,56 +34,58 @@ import {TableLoadingBar} from '../table-loading-bar';
   template: `
     @let time = infoStore.time();
     @let support = infoStore.support();
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <div class="flex w-full flex-wrap items-center justify-between gap-2">
-          <h3 class="text-xl">
-            {{ 'general.sponsorship' | transloco }}
-          </h3>
-          @if (time?.serverSetupTime; as serverSetupTime) {
-            <span
-              class="text-gray-600 dark:text-gray-300"
-              [matTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.yyyy')">
-              Running poweruptime for {{ usingPoweruptimeFor() }}
+
+    <section class="h-full" hlmCard>
+      <div class="flex items-center justify-between" hlmCardHeader>
+        <div class="flex flex-col gap-2">
+          <h3 hlmCardTitle>{{ 'general.sponsorship' | transloco }}</h3>
+          <p hlmCardDescription>Support the project and show your appreciation</p>
+        </div>
+        @if (time?.serverSetupTime; as serverSetupTime) {
+          <hlm-tooltip>
+            <span class="text-gray-600 dark:text-gray-300" hlmTooltipTrigger>
+              {{ usingPoweruptimeFor() }} running
             </span>
-          }
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="mt-2 mb-6 flex flex-col gap-2">
-          <pu-table-loading-bar [loading]="isLoading()" />
-          @if (support?.supportsSince; as supportsSince) {
-            <p class="text-center">
-              <b class="text-xl">
-                Thank's for your support
-                <i>{{ settings().supportLookup }}</i>
-                <span class="motion-preset-pulse-sm">❤️</span>
-              </b>
-            </p>
-            <div class="mt-4 mb-4 flex justify-center">
-              <pu-supporter-badge [supportsSince]="supportsSince" />
-            </div>
-          } @else {
-            <h2 class="text-center text-3xl">We ❤️ our Supporters</h2>
-            <p><b>Please consider supporting poweruptime through GitHub Sponsors.</b></p>
-          }
-          <b class="flex items-center justify-center gap-2 underline">
-            <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
-              Dafnik's GitHub Sponsors Profile
-            </a>
-            <ng-icon name="bootstrapBoxArrowUpRight" />
-          </b>
-        </div>
+            <span *brnTooltipContent>{{ 'Since ' + (serverSetupTime | date: 'dd.MM.yyyy') }}</span>
+          </hlm-tooltip>
+        }
+      </div>
 
-        <hr />
+      <div class="mt-2 mb-6 flex flex-col gap-2">
+        <pu-table-loading-bar [loading]="isLoading()" />
+        @if (support?.supportsSince; as supportsSince) {
+          <p class="text-center">
+            <b class="text-xl">
+              Thank's for your support
+              <i>{{ settings().supportLookup }}</i>
+              <span class="motion-preset-pulse-sm">❤️</span>
+            </b>
+          </p>
+          <div class="mt-4 mb-4 flex justify-center">
+            <pu-supporter-badge [supportsSince]="supportsSince" />
+          </div>
+        } @else {
+          <h2 class="text-center text-3xl">We ❤️ our Supporters</h2>
+          <p><b>Please consider supporting poweruptime through GitHub Sponsors.</b></p>
+        }
+        <b class="flex items-center justify-center gap-2 underline">
+          <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
+            Dafnik's GitHub Sponsors Profile
+          </a>
+          <ng-icon name="bootstrapBoxArrowUpRight" />
+        </b>
+      </div>
 
-        @let _sponsorLookupEnabled = sponsorLookupEnabled();
-        <div class="relative rounded">
-          <div
-            class="transition-all duration-100"
-            [class.blur-lg]="!_sponsorLookupEnabled"
-            [class.pointer-events-none]="!_sponsorLookupEnabled"
-            [class.saturate-50]="!_sponsorLookupEnabled">
+      <hr />
+
+      @let _sponsorLookupEnabled = sponsorLookupEnabled();
+      <div class="relative">
+        <div
+          class="transition-all duration-100"
+          [class.blur-lg]="!_sponsorLookupEnabled"
+          [class.pointer-events-none]="!_sponsorLookupEnabled"
+          [class.saturate-50]="!_sponsorLookupEnabled">
+          <div class="space-y-4" hlmCardContent>
             <form
               class="mt-6 flex min-h-60 flex-col gap-4"
               id="sponsorship-form"
@@ -103,60 +108,57 @@ import {TableLoadingBar} from '../table-loading-bar';
               <mat-slide-toggle formControlName="showSupportBadge">
                 {{ 'instanceSettings.sponsorship.showBadge' | transloco }}
               </mat-slide-toggle>
-
-              <div class="mt-auto flex items-center justify-between gap-4">
-                <pu-save-button [valid]="isValid()" form="sponsorship-form" />
-
-                <button
-                  class="error-button"
-                  (click)="
-                    submitCreate.emit({
-                      showSupportBadge: form.controls.showSupportBadge.getRawValue(),
-                      supportLookup: undefined,
-                    });
-                    sponsorLookupEnabled.set(false)
-                  "
-                  type="button"
-                  mat-flat-button>
-                  <ng-icon name="bootstrapXCircleFill" />
-                  <span class="text-lg">{{ 'general.disable' | transloco }}</span>
-                </button>
-              </div>
             </form>
           </div>
 
-          <!-- Centered Material button, only when lookup is disabled -->
-          @if (!_sponsorLookupEnabled) {
-            <div class="absolute inset-0 z-10 bg-transparent"></div>
-            <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-4">
-              <div>
-                <strong>{{ 'instanceSettings.sponsorship.warning.1' | transloco }}</strong>
-                <div class="mt-4">
-                  <i>{{ 'instanceSettings.sponsorship.warning.2' | transloco }}</i>
-                </div>
-                <ul class="list-disc">
-                  <li>{{ 'instanceSettings.sponsorship.warning.3' | transloco }}</li>
-                  <li>{{ 'instanceSettings.sponsorship.warning.4' | transloco }}</li>
-                </ul>
-              </div>
-              <button (click)="sponsorLookupEnabled.set(true)" type="button" mat-flat-button>
-                {{ 'general.enable' | transloco }}
-              </button>
-            </div>
-          }
+          <div class="flex flex-col justify-between gap-2 sm:flex-row" hlmCardFooter>
+            <pu-save-button [valid]="isValid()" form="sponsorship-form" />
 
-          <div class="mt-4 text-center"></div>
+            <button
+              (click)="
+                submitCreate.emit({
+                  showSupportBadge: form.controls.showSupportBadge.getRawValue(),
+                  supportLookup: undefined,
+                });
+                sponsorLookupEnabled.set(false)
+              "
+              type="button"
+              hlmBtn
+              variant="destructive">
+              <ng-icon hlm size="sm" name="bootstrapXCircleFill" />
+              <span class="text-lg">{{ 'general.disable' | transloco }}</span>
+            </button>
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+
+        <!-- Centered Material button, only when lookup is disabled -->
+        @if (!_sponsorLookupEnabled) {
+          <div class="absolute inset-0 z-10 bg-transparent"></div>
+          <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-20">
+            <div>
+              <strong>{{ 'instanceSettings.sponsorship.warning.1' | transloco }}</strong>
+              <div class="mt-4">
+                <i>{{ 'instanceSettings.sponsorship.warning.2' | transloco }}</i>
+              </div>
+              <ul class="list-disc">
+                <li>{{ 'instanceSettings.sponsorship.warning.3' | transloco }}</li>
+                <li>{{ 'instanceSettings.sponsorship.warning.4' | transloco }}</li>
+              </ul>
+            </div>
+            <button (click)="sponsorLookupEnabled.set(true)" type="button" mat-flat-button>
+              {{ 'general.enable' | transloco }}
+            </button>
+          </div>
+        }
+
+        <div class="mt-4 text-center"></div>
+      </div>
+    </section>
   `,
   selector: 'pu-instance-settings-sponsorship-form',
   imports: [
     ReactiveFormsModule,
     MatSlideToggle,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
     SaveButton,
     TranslocoPipe,
     MatButton,
@@ -164,11 +166,15 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatFormField,
     MatInput,
     MatLabel,
-    MatTooltip,
     DatePipe,
     NgIcon,
     SupporterBadge,
     TableLoadingBar,
+    HlmCardImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmButton,
+    HlmIcon,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

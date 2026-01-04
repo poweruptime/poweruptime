@@ -1,51 +1,76 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
-import {MatButton} from '@angular/material/button';
-import {MatDialogActions, MatDialogClose, MatDialogContent} from '@angular/material/dialog';
 import {MatFormField, MatInput} from '@angular/material/input';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {cl_copy} from 'dfts-helper';
+import {BrnDialogClose, BrnDialogContent, BrnDialogTrigger} from '@spartan-ng/brain/dialog';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDialogImports} from '@spartan-ng/helm/dialog';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {environment} from '@app/util';
 
 import {InfoStore, InstanceSettingsStore} from '../services';
+import {CopyButton} from './copy-button';
 
 @Component({
   template: `
-    <mat-dialog-content>
-      <div class="flex justify-between gap-4">
-        <h2 class="text-3xl">Debug information</h2>
-        <button (click)="copy()" type="button" mat-stroked-button>Copy</button>
-      </div>
+    <hlm-dialog autoFocus="dialog">
+      <button
+        class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+        brnDialogTrigger
+        type="button"
+        hlmBtn
+        variant="ghost">
+        <ng-icon hlm name="bootstrapBug" size="sm" />
+        Debug information
+      </button>
+      <hlm-dialog-content
+        class="top-1/2 left-1/2 flex max-h-[calc(100vh-2rem)] w-[calc(100%-2rem)] w-full -translate-x-1/2 flex-col gap-0 overflow-hidden rounded-lg p-0 sm:max-h-[min(640px,80vh)] sm:w-lg"
+        *brnDialogContent="let ctx">
+        <div class="flex-1 overflow-y-auto">
+          @let _info = info();
+          <hlm-dialog-header>
+            <h2 class="mb-0 px-4 pt-6 text-lg font-semibold">Debug information</h2>
+          </hlm-dialog-header>
 
-      <mat-form-field class="mt-6 w-full">
-        <textarea
-          class="w-full"
-          #autosize="cdkTextareaAutosize"
-          [value]="info()"
-          matInput
-          cdkTextareaAutosize
-          readonly></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button type="button" mat-button mat-dialog-close>{{ 'general.close' | transloco }}</button>
-    </mat-dialog-actions>
+          <mat-form-field class="w-full px-4">
+            <textarea
+              class="w-full"
+              #autosize="cdkTextareaAutosize"
+              [value]="_info"
+              matInput
+              cdkTextareaAutosize
+              readonly></textarea>
+          </mat-form-field>
+        </div>
+        <hlm-dialog-footer class="flex items-center gap-3 border-t px-6 py-4 sm:space-x-0">
+          <pu-copy-button [content]="_info">
+            {{ 'general.copy' | transloco }}
+          </pu-copy-button>
+          <button type="button" hlmBtn variant="outline" brnDialogClose>
+            {{ 'general.close' | transloco }}
+          </button>
+        </hlm-dialog-footer>
+      </hlm-dialog-content>
+    </hlm-dialog>
   `,
   selector: 'pu-debug-info-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatDialogContent,
-    MatDialogActions,
-    MatButton,
-    MatDialogClose,
     TranslocoPipe,
     MatFormField,
     CdkTextareaAutosize,
     MatInput,
+    BrnDialogClose,
+    BrnDialogContent,
+    BrnDialogTrigger,
+    HlmButtonImports,
+    HlmDialogImports,
+    HlmIconImports,
+    CopyButton,
   ],
 })
 export class DebugInfoDialog {
@@ -97,9 +122,5 @@ ${JSON.stringify(this.infoStore.environment(), null, 2)}
     this.infoStore.loadEnvironment();
 
     this.instanceSettingsStore.load();
-  }
-
-  copy() {
-    cl_copy(this.info());
   }
 }
