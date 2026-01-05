@@ -8,11 +8,12 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
 import {DfxCutPipe} from 'dfx-helper';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
-import {ChartPlaceholder, Heatmap, Placeholder} from '@app/components';
+import {ChartPlaceholder, Heatmap} from '@app/components';
 import {
   InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
@@ -231,7 +232,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
                 {{ 'monitor.details.check' | transloco: {testIntervalDuration} }}
               </span>
             } @else {
-              <pu-placeholder class="h-6 w-40" />
+              <hlm-skeleton class="h-6 w-40" />
             }
           </div>
         </mat-card-content>
@@ -255,12 +256,12 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           </mat-card-content>
         </mat-card>
       } @else {
-        <pu-placeholder class="h-52 w-full" />
+        <hlm-skeleton class="h-52 w-full" />
       }
 
       @defer (on idle) {
         @if (monitorDetailYearlyUptimeStore.isPending()) {
-          <pu-placeholder class="h-60 w-full" />
+          <hlm-skeleton class="h-60 w-full" />
         } @else {
           <mat-card appearance="outlined">
             <mat-card-content>
@@ -269,7 +270,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           </mat-card>
         }
       } @placeholder {
-        <pu-placeholder class="h-60 w-full" />
+        <hlm-skeleton class="h-60 w-full" />
       }
 
       <mat-card appearance="outlined">
@@ -315,7 +316,7 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MatButton,
     RouterLink,
     DfxCutPipe,
-    Placeholder,
+    HlmSkeletonImports,
     TranslocoPipe,
     PingChartFilter,
     MonitorCheckerDataValueLabelPipe,

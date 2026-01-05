@@ -23,6 +23,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {typeOfArrayElement} from 'dfts-helper';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
@@ -31,7 +32,6 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 import {NotificationMethodTemplateStore} from '@app/services';
 
-import {Placeholder} from '../../placeholder';
 import {MonitorSelector} from '../monitor-selector';
 import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
@@ -188,10 +188,10 @@ class HasTemplateFeatureEnabled implements PipeTransform {
                 <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
               }
               @if (notificationMethodTemplateStore.isPending()) {
-                <pu-placeholder class="h-48 w-full" />
-                <pu-placeholder class="h-24 w-full" />
-                <pu-placeholder class="h-48 w-full" />
-                <pu-placeholder class="h-24 w-full" />
+                <hlm-skeleton class="h-48 w-full" />
+                <hlm-skeleton class="h-24 w-full" />
+                <hlm-skeleton class="h-48 w-full" />
+                <hlm-skeleton class="h-24 w-full" />
               } @else {
                 @let _isCreating = isCreating();
                 @if (notificationMethodTemplateStore.template(); as template) {
@@ -255,7 +255,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     NgxMatSelectSearchModule,
     NgIcon,
     NotificationMethodEditFormSlackData,
-    Placeholder,
+    HlmSkeletonImports,
     NotificationMethodEditFormAppriseData,
     MonitorSelector,
     HasTemplateFeatureEnabled,

@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
-import {Placeholder} from '@app/components';
 import {UserEditForm} from '@app/components/user';
 import {UserEditStore} from '@app/services';
 
@@ -16,7 +16,7 @@ import {UserEditStore} from '@app/services';
         @if (user; as user) {
           <h1 class="text-4xl">{{ 'instanceSettings.editUser' | transloco: user }}</h1>
         } @else {
-          <pu-placeholder class="h-12 w-64" />
+          <hlm-skeleton class="h-12 w-64" />
         }
       } @else {
         <h1 class="text-4xl">{{ 'instanceSettings.inviteUser' | transloco }}</h1>
@@ -32,12 +32,12 @@ import {UserEditStore} from '@app/services';
         } @else {
           <div class="animate-puls flex flex-col gap-3">
             <div class="flex justify-between gap-2">
-              <pu-placeholder class="h-14 w-64" />
-              <pu-placeholder class="h-14 w-64" />
+              <hlm-skeleton class="h-14 w-64" />
+              <hlm-skeleton class="h-14 w-64" />
             </div>
 
-            <pu-placeholder class="flex h-48" />
-            <pu-placeholder class="flex h-48" />
+            <hlm-skeleton class="flex h-48" />
+            <hlm-skeleton class="flex h-48" />
           </div>
         }
       } @else {
@@ -51,7 +51,7 @@ import {UserEditStore} from '@app/services';
   selector: 'pu-instance-settings-user-edit-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [UserEditStore],
-  imports: [UserEditForm, Placeholder, TranslocoPipe],
+  imports: [UserEditForm, HlmSkeletonImports, TranslocoPipe],
 })
 export class InstanceSettingsUserEditPage {
   readonly userEditStore = inject(UserEditStore);

@@ -4,9 +4,10 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {s_cut} from 'dfts-helper';
 
-import {Heatmap, Placeholder, RefreshInComponent} from '@app/components';
+import {Heatmap, RefreshInComponent} from '@app/components';
 import {MonitorStatus, PingChart, UptimeTimeline} from '@app/components/monitor';
 import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/services';
 
@@ -49,7 +50,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
 
       @defer (hydrate on hover) {
         @if (monitorDetailYearlyUptimeStore.isPending()) {
-          <pu-placeholder class="h-64 w-full" />
+          <hlm-skeleton class="h-64 w-full" />
         } @else {
           <mat-card appearance="outlined">
             <mat-card-content>
@@ -58,13 +59,13 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
           </mat-card>
         }
       } @placeholder {
-        <pu-placeholder class="h-64 w-full" />
+        <hlm-skeleton class="h-64 w-full" />
       }
 
       <!-- Hyrdate breaks the chart-->
       @defer (on idle) {
         @if (publicMonitorDetailStore.isPending()) {
-          <pu-placeholder class="w-full" style="height: 28rem" />
+          <hlm-skeleton class="w-full" style="height: 28rem" />
         } @else {
           <mat-card appearance="outlined">
             <mat-card-content>
@@ -73,7 +74,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
           </mat-card>
         }
       } @placeholder {
-        <pu-placeholder class="w-full" style="height: 28rem" />
+        <hlm-skeleton class="w-full" style="height: 28rem" />
       }
 
       <refresh-in />
@@ -90,7 +91,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
     UptimeTimeline,
     PingChart,
     MonitorStatus,
-    Placeholder,
+    HlmSkeletonImports,
   ],
 })
 export class PublicMonitorPage {

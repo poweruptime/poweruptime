@@ -9,7 +9,6 @@ export * from './chart-placeholder.component';
 export * from './confirm-dialog';
 export * from './file-upload';
 export * from './heatmap';
-export * from './placeholder';
 export * from './refresh-in';
 export * from './shadow-render.component';
 export * from './supporter-badge';

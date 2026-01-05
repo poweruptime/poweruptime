@@ -16,10 +16,10 @@ import {
 
 import {Subject, throttleTime} from 'rxjs';
 
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import type {BackendType} from '@app/api';
-import {Placeholder} from '@app/components';
 import {LastCheckResultsStore} from '@app/services';
 
 import {MonitorCard} from './monitor-card';
@@ -43,9 +43,9 @@ import {MonitorCard} from './monitor-card';
               class="flex animate-pulse flex-col items-start space-y-4 rounded-lg border border-solid border-black p-4 dark:border-gray-500"
               style="height: 120px">
               <div class="grid grid-cols-3 gap-6">
-                <pu-placeholder class="col-span-8 h-5" />
+                <hlm-skeleton class="col-span-8 h-5" />
               </div>
-              <pu-placeholder class="h-12 w-full" />
+              <hlm-skeleton class="h-12 w-full" />
             </a>
           </div>
         }
@@ -85,7 +85,7 @@ import {MonitorCard} from './monitor-card';
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,
     CdkVirtualForOf,
-    Placeholder,
+    HlmSkeletonImports,
   ],
 })
 export class MonitorCardList {

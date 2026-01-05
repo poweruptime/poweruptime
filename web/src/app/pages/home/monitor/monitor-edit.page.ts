@@ -1,8 +1,8 @@
 import {Component, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
-import {Placeholder} from '@app/components';
 import {MonitorEditForm, MonitorEditFormPlaceholder} from '@app/components/monitor';
 import {
   DefaultSelectedNotificationMethodsStore,
@@ -22,7 +22,7 @@ import {
             {{ 'monitor.edit.edit' | transloco: {name: monitorEditStore.monitor()?.name} }}
           </h1>
         } @else {
-          <pu-placeholder class="h-12 w-64" />
+          <hlm-skeleton class="h-12 w-64" />
         }
       } @else {
         <h1 class="text-4xl">{{ 'cmdk.groups.monitor.create' | transloco }}</h1>
@@ -57,7 +57,7 @@ import {
     DefaultSelectedNotificationMethodsStore,
     TagsStore,
   ],
-  imports: [MonitorEditForm, MonitorEditFormPlaceholder, Placeholder, TranslocoPipe],
+  imports: [MonitorEditForm, MonitorEditFormPlaceholder, HlmSkeletonImports, TranslocoPipe],
 })
 export class MonitorEditPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);

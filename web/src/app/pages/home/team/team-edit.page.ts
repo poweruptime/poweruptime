@@ -118,7 +118,6 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
         }
       } @else {
         <div class="flex flex-col gap-4">
-          <h1 class="text-4xl"></h1>
           <div class="mb-8">
             <h1 class="text-foreground text-3xl font-bold tracking-tight">
               {{ 'team.create.create' | transloco }}

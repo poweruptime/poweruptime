@@ -9,11 +9,12 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
-import {CopyIconButton, Placeholder} from '@app/components';
+import {CopyIconButton} from '@app/components';
 import {CheckResultLogEntry, MonitorStatus} from '@app/components/monitor';
 import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services';
 
@@ -22,9 +23,9 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     <div class="flex flex-col gap-4">
       @if (checkResultDetailStore.isPending()) {
         <div class="flex animate-pulse flex-col gap-4">
-          <pu-placeholder class="h-10 w-32" />
-          <pu-placeholder class="h-12 w-96" />
-          <pu-placeholder class="h-24 w-full" />
+          <hlm-skeleton class="h-10 w-32" />
+          <hlm-skeleton class="h-12 w-96" />
+          <hlm-skeleton class="h-24 w-full" />
         </div>
       } @else {
         @if (checkResultDetailStore.checkResult(); as checkResult) {
@@ -86,7 +87,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
       @if (checkResultDetailStore.isPending() || checkResultLogEntriesStore.isPending()) {
         <div class="flex animate-pulse flex-col gap-4">
           @for (i of 5 | repeat; track i) {
-            <pu-placeholder class="h-10 w-full" />
+            <hlm-skeleton class="h-10 w-full" />
           }
         </div>
       } @else {
@@ -204,7 +205,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     FormsModule,
     CheckResultLogEntry,
     KeyValuePipe,
-    Placeholder,
+    HlmSkeletonImports,
     CopyIconButton,
     RepeatPipe,
     TranslocoPipe,

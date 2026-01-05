@@ -20,13 +20,14 @@ import {map} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {MonitorStatusTextBackground} from '@app/directives';
 import {LastCheckResultsStore, MonitorsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
-import {Placeholder, TableLoadingBar} from '../';
+import {TableLoadingBar} from '../';
 import {InfiniteUptimeTimeline} from './uptime-timeline';
 
 @Component({
@@ -82,7 +83,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
                 <td *matCellDef="let element" mat-cell>
                   <div class="pt-1">
                     @if (checkResultsStore.loading().has(element.id)) {
-                      <pu-placeholder class="h-6 w-full" />
+                      <hlm-skeleton class="h-6 w-full" />
                     } @else {
                       <pu-infinite-uptime-timeline
                         [checkResults]="checkResultsStore.resultsMap().get(element.id) ?? []"
@@ -163,7 +164,7 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     MatTooltip,
     InfiniteUptimeTimeline,
     MonitorStatusTextBackground,
-    Placeholder,
+    HlmSkeletonImports,
   ],
 })
 export class MonitorList {

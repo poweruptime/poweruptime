@@ -3,9 +3,9 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {MatTab, MatTabContent, MatTabGroup} from '@angular/material/tabs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
-import {Placeholder} from '@app/components';
 import {StatusPageEditForm} from '@app/components/status-page';
 import {PublicStatusPagePage} from '@app/pages/public/public-status-page.page';
 import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
@@ -49,19 +49,19 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
           <div class="flex animate-pulse justify-between gap-12">
             <div class="flex flex-col gap-3">
               <div class="flex justify-between gap-2">
-                <pu-placeholder class="h-14 w-64" />
-                <pu-placeholder class="h-14 w-64" />
+                <hlm-skeleton class="h-14 w-64" />
+                <hlm-skeleton class="h-14 w-64" />
               </div>
 
-              <pu-placeholder class="flex h-48" />
-              <pu-placeholder class="flex h-48" />
+              <hlm-skeleton class="flex h-48" />
+              <hlm-skeleton class="flex h-48" />
             </div>
             <div class="flex flex-col gap-3">
-              <pu-placeholder class="flex h-14" />
+              <hlm-skeleton class="flex h-14" />
 
-              <pu-placeholder class="h-96" style="width: 36rem" />
-              <pu-placeholder class="h-96" style="width: 36rem" />
-              <pu-placeholder class="h-96" style="width: 36rem" />
+              <hlm-skeleton class="h-96" style="width: 36rem" />
+              <hlm-skeleton class="h-96" style="width: 36rem" />
+              <hlm-skeleton class="h-96" style="width: 36rem" />
             </div>
           </div>
         }
@@ -78,7 +78,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
   providers: [StatusPageEditStore],
   imports: [
     StatusPageEditForm,
-    Placeholder,
+    HlmSkeletonImports,
     TranslocoPipe,
     PublicStatusPagePage,
     MatTabGroup,
