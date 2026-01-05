@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, booleanAttribute, effect, inject, input} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
@@ -10,7 +10,6 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {DfxAutofocus} from 'dfx-helper';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
@@ -136,9 +135,11 @@ import {AuthStore} from '@app/services';
   ],
 })
 export class PasswordChangeLoginPage {
-  private readonly queryParams = injectQueryParams();
-  readonly authStore = inject(AuthStore);
-  readonly fb = inject(NonNullableFormBuilder);
+  email = input<string>();
+  stayLoggedIn = input(false, {transform: booleanAttribute});
+
+  private readonly fb = inject(NonNullableFormBuilder);
+  protected readonly authStore = inject(AuthStore);
 
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -162,10 +163,9 @@ export class PasswordChangeLoginPage {
 
   constructor() {
     effect(() => {
-      const queryParams = this.queryParams();
       this.form.patchValue({
-        email: queryParams?.['email'],
-        stayLoggedIn: queryParams?.['stayLoggedIn'],
+        email: this.email(),
+        stayLoggedIn: this.stayLoggedIn(),
       });
     });
 

@@ -511,8 +511,13 @@
       "paused": "Paused {{general.monitors}}",
       "up": "Up {{general.monitors}}"
     },
+    "create": {
+      "create": "New {{general.team}}",
+      "description": "You only need a {{general.name}} to start"
+    },
     "edit": {
-      "edit": "Edit {{name}}",
+      "description": "Manage your team preferences and configuration",
+      "edit": "Team Settings",
       "openInvites": "{{general.open}} {{general.invites}}"
     },
     "invite": "{{general.invite}} a new member",

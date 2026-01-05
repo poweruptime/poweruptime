@@ -13,56 +13,64 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 
 @Component({
   template: `
-    <form id="retention-form" #formRef [formGroup]="form" (ngSubmit)="submit()" hlmCard>
-      <div hlmCardHeader>
-        <div class="flex items-center gap-2">
-          <h3 hlmCardTitle>{{ 'instanceSettings.retention.title' | transloco }}</h3>
+    <form
+      class="flex h-full flex-col justify-between"
+      id="retention-form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      hlmCard>
+      <div class="flex flex-col gap-6">
+        <div hlmCardHeader>
+          <div class="flex items-center gap-2">
+            <h3 hlmCardTitle>{{ 'instanceSettings.retention.title' | transloco }}</h3>
+          </div>
+          <p hlmCardDescription>Configure how long data is stored</p>
         </div>
-        <p hlmCardDescription>Configure how long data is stored</p>
-      </div>
-      <div class="space-y-6" hlmCardContent>
-        <div class="flex items-center justify-between space-x-2">
-          <mat-form-field>
-            <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
-            <span matSuffix>days</span>
-            @let checkResultRetentionPeriodInDaysErrors =
-              form.controls.checkResultRetentionPeriodInDays.errors;
+        <div class="space-y-6" hlmCardContent>
+          <div class="flex items-center justify-between space-x-2">
+            <mat-form-field>
+              <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
+              <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
+              <span matSuffix>days</span>
+              @let checkResultRetentionPeriodInDaysErrors =
+                form.controls.checkResultRetentionPeriodInDays.errors;
 
-            @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
-              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-            }
-            @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+              @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
+                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
+                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+              }
+              @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
+                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+              }
+            </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ 'instanceSettings.retention.logs' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="checkResultLogRetentionPeriodInDays" />
-            <span matSuffix>days</span>
-            @let checkResultLogRetentionPeriodInDaysErrors =
-              form.controls.checkResultLogRetentionPeriodInDays.errors;
+            <mat-form-field>
+              <mat-label>{{ 'instanceSettings.retention.logs' | transloco }}</mat-label>
+              <input matInput type="number" formControlName="checkResultLogRetentionPeriodInDays" />
+              <span matSuffix>days</span>
+              @let checkResultLogRetentionPeriodInDaysErrors =
+                form.controls.checkResultLogRetentionPeriodInDays.errors;
 
-            @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
-              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-            }
-            @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
+                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
+                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
+                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+              }
+              @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
+                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
         </div>
       </div>
       <div hlmCardFooter>

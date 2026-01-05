@@ -9,13 +9,13 @@ import {
 
 import {MatIconButton} from '@angular/material/button';
 import {MatChip} from '@angular/material/chips';
-import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltip} from '@angular/material/tooltip';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
 
 import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
@@ -95,7 +95,7 @@ import {TeamUsersStore} from '@app/services';
       <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
     }
 
-    <mat-paginator
+    <hlm-paginator
       [pageSizeOptions]="[10, 20, 50, 100, 200]"
       [pageSize]="teamUsersStore.size()"
       [pageIndex]="teamUsersStore.page()"
@@ -126,7 +126,6 @@ import {TeamUsersStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTableModule,
-    MatPaginator,
     MatSortModule,
     TableLoadingBar,
     MatChip,
@@ -135,6 +134,7 @@ import {TeamUsersStore} from '@app/services';
     MatTooltip,
     TranslocoPipe,
     RelativeTimeWithTooltip,
+    HlmPaginatorImports,
   ],
 })
 export class TeamUsersList {
@@ -142,11 +142,11 @@ export class TeamUsersList {
 
   readonly teamId = input<string>();
 
-  private readonly paginator = viewChild.required(MatPaginator);
+  private readonly paginator = viewChild.required(HlmPaginator);
   private readonly sort = viewChild.required(MatSort);
 
   constructor() {
-    this.teamUsersStore.setPaginator(this.paginator);
+    this.teamUsersStore.setHlmPaginator(this.paginator);
     this.teamUsersStore.setSort(this.sort);
 
     this.teamUsersStore.load(

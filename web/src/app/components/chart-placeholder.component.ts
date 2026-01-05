@@ -16,7 +16,7 @@ import {Placeholder} from './placeholder';
         <pu-placeholder
           class="flex-1 rounded-t"
           [style.height]="bar.height"
-          [style.animation-delay]="bar.delay"></pu-placeholder>
+          [style.animation-delay]="bar.delay" />
       }
     </div>
   `,

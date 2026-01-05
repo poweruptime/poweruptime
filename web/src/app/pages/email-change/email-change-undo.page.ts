@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {EmailChangeStore} from '@app/services';
 
@@ -22,7 +21,7 @@ export class EmailChangeUndoPage {
   private readonly emailChangeStore = inject(EmailChangeStore);
   readonly cancelToken = input.required<string>();
 
-  readonly preview = injectQueryParams('preview', {transform: booleanAttribute});
+  protected readonly preview = input(false, {transform: booleanAttribute});
 
   constructor() {
     if (!this.preview()) {

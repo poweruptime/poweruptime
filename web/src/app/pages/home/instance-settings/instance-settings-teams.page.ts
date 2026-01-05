@@ -34,7 +34,7 @@ import {trackBy} from '@app/util';
 
     <div class="flex flex-col items-end justify-between gap-2 pt-1 md:flex-row md:items-center">
       <div class="inline-flex gap-2">
-        <a mat-flat-button routerLink="/t/new">{{ 'cmdk.groups.team.create' | transloco }}</a>
+        <a mat-flat-button routerLink="/t/new">{{ 'team.create.create' | transloco }}</a>
         @if (_deleted) {
           <button
             [disabled]="!teamsStore.hasValue() || teamsStore.isPending()"

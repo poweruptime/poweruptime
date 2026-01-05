@@ -19,7 +19,6 @@ import {
   MatStartDate,
 } from '@angular/material/datepicker';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatPaginator} from '@angular/material/paginator';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/select';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
@@ -32,6 +31,7 @@ import {map} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {HlmPaginator} from '@spartan-ng/helm/paginator';
 import {StopPropagationDirective} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -184,7 +184,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
       <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
     }
 
-    <mat-paginator
+    <hlm-paginator
       [pageSizeOptions]="[10, 20, 50, 100, 200]"
       [pageSize]="checkResultsStore.size()"
       [pageIndex]="checkResultsStore.page()"
@@ -211,7 +211,6 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTableModule,
-    MatPaginator,
     MatSortModule,
     MatSlideToggle,
     RouterLink,
@@ -236,6 +235,7 @@ import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../service
     MatSuffix,
     ReactiveFormsModule,
     MatIconButton,
+    HlmPaginator,
   ],
 })
 export class CheckResultList {
@@ -246,7 +246,7 @@ export class CheckResultList {
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
 
-  private readonly paginator = viewChild.required(MatPaginator);
+  private readonly paginator = viewChild.required(HlmPaginator);
   private readonly sort = viewChild.required(MatSort);
 
   readonly showDuplicates = linkedQueryParam('checks.showDuplicates', {
@@ -286,7 +286,7 @@ export class CheckResultList {
 
   constructor() {
     this.checkResultsStore.setShowDuplicates(this.showDuplicates);
-    this.checkResultsStore.setPaginator(this.paginator);
+    this.checkResultsStore.setHlmPaginator(this.paginator);
     this.checkResultsStore.setSort(this.sort);
 
     this.checkResultsStore.load(

@@ -26,7 +26,7 @@ import {TailwindBreakpoints} from '@app/services/util';
     <div class="flex items-center justify-between gap-4 px-4 py-2">
       @if (infoStore.isUserAllowedToCreateTeams()) {
         <a class="w-48" mat-flat-button routerLink="new">
-          {{ 'cmdk.groups.team.create' | transloco }}
+          {{ 'team.create.create' | transloco }}
         </a>
       }
 

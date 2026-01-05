@@ -19,7 +19,6 @@ import {
   template: `
     @if (instanceSettingsStore.settings(); as settings) {
       <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <!-- Header -->
         <div class="mb-8">
           <h1 class="text-foreground text-3xl font-bold tracking-tight">Settings</h1>
           <p class="text-muted-foreground mt-2">

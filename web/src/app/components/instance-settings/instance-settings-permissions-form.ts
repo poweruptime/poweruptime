@@ -12,19 +12,27 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 
 @Component({
   template: `
-    <form id="permissions-form" #formRef [formGroup]="form" (ngSubmit)="submit()" hlmCard>
-      <div hlmCardHeader>
-        <div class="flex items-center gap-2">
-          <ng-icon name="bootstrapShield" helm />
-          <h3 hlmCardTitle>{{ 'general.permissions' | transloco }}</h3>
+    <form
+      class="flex h-full justify-between"
+      id="permissions-form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      hlmCard>
+      <div class="flex flex-col gap-6">
+        <div hlmCardHeader>
+          <div class="flex items-center gap-2">
+            <ng-icon name="bootstrapShield" helm />
+            <h3 hlmCardTitle>{{ 'general.permissions' | transloco }}</h3>
+          </div>
+          <p hlmCardDescription>Control user access and capabilities</p>
         </div>
-        <p hlmCardDescription>Control user access and capabilities</p>
-      </div>
-      <div class="space-y-6" hlmCardContent>
-        <div class="flex items-center justify-between space-x-2">
-          <mat-slide-toggle formControlName="isUserAllowedToCreateTeams">
-            {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
-          </mat-slide-toggle>
+        <div class="space-y-6" hlmCardContent>
+          <div class="flex items-center justify-between space-x-2">
+            <mat-slide-toggle formControlName="isUserAllowedToCreateTeams">
+              {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
+            </mat-slide-toggle>
+          </div>
         </div>
       </div>
       <div hlmCardFooter>

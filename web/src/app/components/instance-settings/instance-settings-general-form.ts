@@ -15,34 +15,36 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 @Component({
   template: `
     <form
-      class="h-full"
+      class="h-full flex-col justify-between"
       id="general-form"
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()"
       hlmCard>
-      <div hlmCardHeader>
-        <div class="flex items-center gap-2">
-          <ng-icon name="bootstrapGlobe" helm />
-          <h3 hlmCardTitle>{{ 'general.general' | transloco }}</h3>
+      <div class="flex flex-col gap-6">
+        <div hlmCardHeader>
+          <div class="flex items-center gap-2">
+            <ng-icon name="bootstrapGlobe" helm />
+            <h3 hlmCardTitle>{{ 'general.general' | transloco }}</h3>
+          </div>
+          <p hlmCardDescription>Configure your basic application settings</p>
         </div>
-        <p hlmCardDescription>Configure your basic application settings</p>
+        <form class="space-y-6" hlmCardContent>
+          <div class="space-y-2">
+            <pu-timezone-input
+              [availableTimezones]="availableTimezones()"
+              formControlName="timezone" />
+          </div>
+
+          <hr />
+
+          <div class="flex items-center justify-between space-x-2">
+            <mat-slide-toggle formControlName="showNewVersionDialog">
+              {{ 'instanceSettings.showNewVersionDialog' | transloco }}
+            </mat-slide-toggle>
+          </div>
+        </form>
       </div>
-      <form class="space-y-6" hlmCardContent>
-        <div class="space-y-2">
-          <pu-timezone-input
-            [availableTimezones]="availableTimezones()"
-            formControlName="timezone" />
-        </div>
-
-        <hr />
-
-        <div class="flex items-center justify-between space-x-2">
-          <mat-slide-toggle formControlName="showNewVersionDialog">
-            {{ 'instanceSettings.showNewVersionDialog' | transloco }}
-          </mat-slide-toggle>
-        </div>
-      </form>
       <p hlmCardFooter>
         <pu-save-button [valid]="isValid()" form="general-form" />
       </p>

@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, Component, booleanAttribute, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {AuthStore} from '@app/services';
 
@@ -15,16 +14,17 @@ import {AuthStore} from '@app/services';
 })
 export class OAuth2CallbackPage {
   private readonly authStore = inject(AuthStore);
-  readonly preview = injectQueryParams('preview', {transform: booleanAttribute});
+  protected readonly preview = input(false, {transform: booleanAttribute});
 
-  readonly tokens = injectQueryParams((params) => ({
-    refreshToken: params['refreshToken'] as string | undefined,
-    accessToken: params['accessToken'] as string | undefined,
-  }));
+  protected readonly refreshToken = input<string>();
+  protected readonly accessToken = input<string>();
 
   constructor() {
     if (!this.preview()) {
-      this.authStore.oauth2Login(this.tokens);
+      this.authStore.oauth2Login({
+        refreshToken: this.refreshToken(),
+        accessToken: this.accessToken(),
+      });
     }
   }
 }

@@ -61,7 +61,7 @@ import {TableLoadingBar} from '../table-loading-bar';
       @let _versionCheckEnabled = versionCheckEnabled();
       <div class="relative">
         <div
-          class="flex min-h-64 flex-col justify-between gap-4 transition-all duration-100"
+          class="flex h-full min-h-64 flex-col justify-between gap-4 transition-all duration-100"
           [class.blur-lg]="!_versionCheckEnabled"
           [class.pointer-events-none]="!_versionCheckEnabled"
           [class.saturate-50]="!_versionCheckEnabled">
@@ -262,8 +262,6 @@ import {TableLoadingBar} from '../table-loading-bar';
             </button>
           </div>
         }
-
-        <div class="mt-4 text-center"></div>
       </div>
     </section>
   `,

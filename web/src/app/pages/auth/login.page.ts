@@ -3,9 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   PLATFORM_ID,
+  booleanAttribute,
   computed,
   effect,
   inject,
+  input,
 } from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RouterLink} from '@angular/router';
@@ -18,7 +20,6 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {injectIsValid} from '@app/form';
@@ -171,19 +172,20 @@ export class LoginPage {
   });
   isValid = injectIsValid(this.form);
 
+  protected readonly email = input<string>();
+  protected readonly onetimePassword = input<string>();
+  protected readonly stayLoggedIn = input(false, {transform: booleanAttribute});
+
   constructor() {
     this.infoStore.loadOAuth2Providers();
-
-    const queryParams = injectQueryParams();
 
     const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     effect(() => {
-      const _queryParams = queryParams();
       this.form.patchValue({
-        email: _queryParams?.['email'],
-        password: _queryParams?.['onetimePassword'],
-        stayLoggedIn: _queryParams?.['stayLoggedIn'],
+        email: this.email(),
+        password: this.onetimePassword(),
+        stayLoggedIn: this.stayLoggedIn(),
       });
 
       if (isBrowser && this.form.valid) {

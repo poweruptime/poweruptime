@@ -18,6 +18,7 @@ import {
 } from '@ngrx/signals';
 import {EntityState} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {HlmPaginator} from '@spartan-ng/helm/paginator';
 import {loggerOf, n_from} from 'dfts-helper';
 
 import {RequestStatusState} from './request-status.feature';
@@ -80,6 +81,28 @@ export function withPaginatedTable<EntityType>({
               const options = {
                 page: paginator.pageIndex,
                 size: paginator.pageSize,
+              };
+              lumber.log('setPaginatorUpdate', 'new params', options);
+              patchState(store, () => options);
+              void router.navigate([], {
+                relativeTo: activatedRoute,
+                queryParamsHandling: 'merge',
+                queryParams: {
+                  [`${paramPrefix}page`]: options.page,
+                  [`${paramPrefix}size`]: options.size,
+                },
+              });
+            }),
+          ),
+        ),
+      ),
+      setHlmPaginator: rxMethod<HlmPaginator>(
+        switchMap((paginator) =>
+          paginator.page$.pipe(
+            tap(() => {
+              const options = {
+                page: paginator.pageIndex(),
+                size: paginator.pageSize(),
               };
               lumber.log('setPaginatorUpdate', 'new params', options);
               patchState(store, () => options);

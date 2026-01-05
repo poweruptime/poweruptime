@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, effect, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, input} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
@@ -11,7 +11,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {InputOTPComponent, REGEXP_ONLY_DIGITS} from '@ngxpert/input-otp';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '../api';
 import {AlertDirective} from '../components';
@@ -288,8 +287,8 @@ export class SetupPage {
   private readonly fb = inject(NonNullableFormBuilder);
   readonly setupStore = inject(SetupStore);
 
-  private readonly emailQueryParam = injectQueryParams('email');
-  private readonly codeQueryParam = injectQueryParams('code');
+  protected readonly email = input<string>();
+  protected readonly code = input<string>();
 
   testEmailForm = this.fb.group({
     email: [
@@ -351,8 +350,8 @@ export class SetupPage {
   }
   constructor() {
     effect(() => {
-      const email = this.emailQueryParam();
-      const code = this.codeQueryParam();
+      const email = this.email();
+      const code = this.code();
 
       if (email && code) {
         this.confirmEmailForm.patchValue({
