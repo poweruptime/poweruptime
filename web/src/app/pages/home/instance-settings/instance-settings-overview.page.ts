@@ -18,38 +18,36 @@ import {
 @Component({
   template: `
     @if (instanceSettingsStore.settings(); as settings) {
-      <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div class="mb-8">
-          <h1 class="text-foreground text-3xl font-bold tracking-tight">Settings</h1>
-          <p class="text-muted-foreground mt-2">
-            Manage your application preferences and configuration
-          </p>
-        </div>
+      <div class="mb-8">
+        <h1 class="text-foreground text-3xl font-bold tracking-tight">Settings</h1>
+        <p class="text-muted-foreground mt-2">
+          Manage your application preferences and configuration
+        </p>
+      </div>
 
-        <div class="grid gap-6 lg:grid-cols-2">
-          <pu-instance-settings-general-form
-            [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
-            [settings]="settings"
-            (submitCreate)="submitGeneralForm($event)" />
+      <div class="grid gap-6 lg:grid-cols-2">
+        <pu-instance-settings-general-form
+          [availableTimezones]="instanceAvailableTimezonesStore.availableTimezones()"
+          [settings]="settings"
+          (submitCreate)="submitGeneralForm($event)" />
 
-          <pu-instance-settings-version-check-form
-            [isLoading]="instanceSettingsVersionCheckStore.isPending()"
-            [settings]="settings"
-            (submitSettings)="submitVersionCheck($event)" />
+        <pu-instance-settings-version-check-form
+          [isLoading]="instanceSettingsVersionCheckStore.isPending()"
+          [settings]="settings"
+          (submitSettings)="submitVersionCheck($event)" />
 
-          <pu-instance-settings-permissions-form
-            [settings]="settings"
-            (submitCreate)="submitPermissionsForm($event)" />
+        <pu-instance-settings-permissions-form
+          [settings]="settings"
+          (submitCreate)="submitPermissionsForm($event)" />
 
-          <pu-instance-settings-retention-form
-            [settings]="settings"
-            (submitCreate)="submitRetentionForm($event)" />
+        <pu-instance-settings-retention-form
+          [settings]="settings"
+          (submitCreate)="submitRetentionForm($event)" />
 
-          <pu-instance-settings-sponsorship-form
-            [isLoading]="instanceSettingsSupportStore.isPending()"
-            [settings]="settings"
-            (submitCreate)="submitSponsorshipForm($event)" />
-        </div>
+        <pu-instance-settings-sponsorship-form
+          [isLoading]="instanceSettingsSupportStore.isPending()"
+          [settings]="settings"
+          (submitCreate)="submitSponsorshipForm($event)" />
       </div>
     }
   `,

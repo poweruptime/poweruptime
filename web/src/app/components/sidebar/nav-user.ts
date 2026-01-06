@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {ThemeService} from '@slateui/theme';
+import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -16,6 +17,7 @@ import {themeOptions} from '@app/util';
 
 @Component({
   template: `
+    @let profileInitials = this.profileStore.name() ?? 'U K' | initials;
     <ul hlmSidebarMenu>
       <li hlmSidebarMenuItem>
         <button
@@ -28,7 +30,7 @@ import {themeOptions} from '@app/util';
           <div class="relative">
             <hlm-avatar class="rounded-lg">
               <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
-                {{ profileInitials() ?? 'UK' }}
+                {{ profileInitials ?? 'UK' }}
               </span>
             </hlm-avatar>
             @if (infoStore.support(); as support) {
@@ -56,7 +58,7 @@ import {themeOptions} from '@app/util';
           <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <hlm-avatar class="rounded-lg">
               <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
-                {{ profileInitials() ?? 'UK' }}
+                {{ profileInitials ?? 'UK' }}
               </span>
             </hlm-avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
@@ -149,6 +151,8 @@ import {themeOptions} from '@app/util';
     HlmDropdownMenuImports,
     TranslocoPipe,
     RouterLink,
+    InitialsPipe,
+    InitialsPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -164,7 +168,6 @@ export class NavUser {
   protected readonly themeOptions = themeOptions;
 
   protected readonly _menuSide = computed(() => (this.sidebarService.isMobile() ? 'top' : 'right'));
-  protected profileInitials = computed(() => getInitials(this.profileStore.name()));
 
   constructor() {
     this.infoStore.loadSupport();
@@ -173,24 +176,4 @@ export class NavUser {
   openAbout() {
     this.dialog.open(AboutDialog);
   }
-}
-
-function getInitials(text?: string) {
-  if (!text) {
-    return undefined;
-  }
-  const words = text.split(' ');
-  let initials = '';
-
-  if (words.length === 1) {
-    // Only one word, return the first letter in uppercase
-    initials = words[0].charAt(0).toUpperCase();
-  } else {
-    // Multiple words, return the first two letters in uppercase
-    for (let i = 0; i < Math.min(2, words.length); i++) {
-      initials += words[i].charAt(0).toUpperCase();
-    }
-  }
-
-  return initials;
 }

@@ -6,10 +6,8 @@ import {map} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
-import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
-import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -26,108 +24,84 @@ import {CheckResultsStore} from '@app/services';
 import {dateToDateTime, toBackendDate, toBackendDateTime} from '@app/services/util';
 import {arrayToParam, paramToArray} from '@app/util';
 
+import {TableFilter, hasActiveFilters} from '../../table-filter';
 import {CheckResultTable} from './check-result-table';
 import {CheckResultsEmpty} from './check-results-empty';
 
 @Component({
   template: `
-    @let _activeFiltersCount = activeFiltersCount();
-    @let hasActiveFilters = _activeFiltersCount > 0;
-    @if (checkResultsStore.isEmpty() && !hasActiveFilters) {
+    @if (checkResultsStore.isEmpty() && !hasActiveFilters()) {
       <pu-check-results-empty />
     } @else {
       <div class="flex flex-col gap-2">
-        <div class="flex flex-wrap justify-end">
-          <hlm-collapsible
-            class="flex flex-col items-end gap-2 lg:flex-row lg:flex-row-reverse lg:items-center lg:justify-end">
+        <pu-table-filter filtersKey="checks.filter.">
+          <div class="flex justify-end">
+            <label
+              class="inline-flex min-w-40 items-center justify-end"
+              hlmLabel
+              for="showDuplicates">
+              {{ 'general.showDuplicates' | transloco }}
+              <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
+            </label>
+          </div>
+
+          <hlm-toggle-group
+            [(value)]="hasNotification"
+            hlmButtonGroup
+            type="single"
+            variant="outline"
+            size="sm">
             <button
-              class="relative"
+              (click)="hasNotification.set(null)"
+              hlmTooltipTrigger
               type="button"
               hlmBtn
-              hlmCollapsibleTrigger
               variant="outline"
-              size="icon">
-              <ng-icon hlm name="bootstrapFilter" size="sm" />
-              @if (hasActiveFilters) {
-                <span
-                  class="absolute -top-2 left-full flex min-w-5 -translate-x-1/2 items-center justify-center rounded-full px-1 py-[1px]"
-                  hlmBadge
-                  variant="destructive">
-                  {{ _activeFiltersCount }}
-                </span>
-              }
+              size="sm">
+              <ng-icon hlm name="bootstrapBell" size="sm" />
             </button>
-            <hlm-collapsible-content
-              class="grid grid-cols-2 items-center justify-end gap-4 lg:flex">
-              <div class="flex justify-end">
-                <label
-                  class="inline-flex min-w-40 items-center justify-end"
-                  hlmLabel
-                  for="showDuplicates">
-                  {{ 'general.showDuplicates' | transloco }}
-                  <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
-                </label>
-              </div>
-
-              <hlm-toggle-group
-                [(value)]="hasNotification"
-                hlmButtonGroup
-                type="single"
+            @for (state of availableHasNotificationStates(); track state.hasNotification) {
+              <button
+                class="data-[state=on]:bg-input/80"
+                [value]="state.hasNotification"
+                type="button"
+                hlmBtn
+                hlmToggleGroupItem
                 variant="outline"
                 size="sm">
-                <button
-                  (click)="hasNotification.set(null)"
-                  hlmTooltipTrigger
-                  type="button"
-                  hlmBtn
-                  variant="outline"
-                  size="sm">
-                  <ng-icon hlm name="bootstrapBell" size="sm" />
-                </button>
-                @for (state of availableHasNotificationStates(); track state.hasNotification) {
-                  <button
-                    class="data-[state=on]:bg-input/80"
-                    [value]="state.hasNotification"
-                    type="button"
-                    hlmBtn
-                    hlmToggleGroupItem
-                    variant="outline"
-                    size="sm">
-                    {{ state.name }}
-                  </button>
-                }
-              </hlm-toggle-group>
+                {{ state.name }}
+              </button>
+            }
+          </hlm-toggle-group>
 
-              <brn-select
-                class="inline-block"
-                [(value)]="statuses"
-                [placeholder]="'general.status' | transloco"
-                multiple>
-                <hlm-select-trigger>
-                  <hlm-select-value class="min-w-38" />
-                </hlm-select-trigger>
-                <hlm-select-content>
-                  @for (status of availableStatuses(); track status.status) {
-                    <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
-                  }
-                </hlm-select-content>
-              </brn-select>
+          <brn-select
+            class="inline-block"
+            [(value)]="statuses"
+            [placeholder]="'general.status' | transloco"
+            multiple>
+            <hlm-select-trigger>
+              <hlm-select-value class="min-w-38" />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              @for (status of availableStatuses(); track status.status) {
+                <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
+              }
+            </hlm-select-content>
+          </brn-select>
 
-              <hlm-date-range-picker
-                class="max-w-52"
-                [max]="max"
-                [autoCloseOnEndSelection]="true"
-                [formatDates]="formatDates"
-                [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
-                (dateChange)="
-                  start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
-                "
-                buttonId="rangePicker">
-                <span>{{ 'general.startEnd' | transloco }}</span>
-              </hlm-date-range-picker>
-            </hlm-collapsible-content>
-          </hlm-collapsible>
-        </div>
+          <hlm-date-range-picker
+            class="max-w-52"
+            [max]="max"
+            [autoCloseOnEndSelection]="true"
+            [formatDates]="formatDates"
+            [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
+            (dateChange)="
+              start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
+            "
+            buttonId="rangePicker">
+            <span>{{ 'general.startEnd' | transloco }}</span>
+          </hlm-date-range-picker>
+        </pu-table-filter>
 
         <pu-check-result-table [teamId]="teamId()" [monitorId]="monitorId()" />
       </div>
@@ -151,8 +125,7 @@ import {CheckResultsEmpty} from './check-results-empty';
     HlmSelectImports,
     BrnSelectImports,
     HlmDatePickerImports,
-    HlmCollapsibleImports,
-    HlmBadgeImports,
+    TableFilter,
   ],
 })
 export class CheckResultList {
@@ -197,9 +170,7 @@ export class CheckResultList {
   );
   protected readonly endDate = computed(() => (this.end() ? new Date(this.end()!) : undefined));
 
-  protected readonly activeFiltersCount = injectQueryParams(
-    (params) => Object.keys(params).filter((it) => it.startsWith('checks.fitler.')).length,
-  );
+  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters('checks.filter.'));
 
   readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},

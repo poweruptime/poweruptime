@@ -233,7 +233,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               "
               type="button"
               hlmBtn
-              variant="destructive">
+              variant="outline">
               <ng-icon hlm size="sm" name="bootstrapXCircleFill" />
               <span class="text-lg">{{ 'general.disable' | transloco }}</span>
             </button>
