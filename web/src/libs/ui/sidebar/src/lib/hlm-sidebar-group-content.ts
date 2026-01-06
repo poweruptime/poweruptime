@@ -1,17 +1,16 @@
-import {Directive, computed, input} from '@angular/core';
+import {Directive} from '@angular/core';
 
-import {hlm} from '@spartan-ng/helm/utils';
-import type {ClassValue} from 'clsx';
+import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: 'div[hlmSidebarGroupContent]',
   host: {
     'data-slot': 'sidebar-group-content',
     'data-sidebar': 'group-content',
-    '[class]': '_computedClass()',
   },
 })
 export class HlmSidebarGroupContent {
-  public readonly userClass = input<ClassValue>('', {alias: 'class'});
-  protected readonly _computedClass = computed(() => hlm('w-full text-sm', this.userClass()));
+  constructor() {
+    classes(() => 'w-full text-sm');
+  }
 }

@@ -1,10 +1,3 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.dev/license
- */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,10 +12,11 @@ import {
   CdkFooterRowDef,
   CdkHeaderRow,
   CdkHeaderRowDef,
-  CdkNoDataRow,
   CdkRow,
   CdkRowDef,
 } from '@angular/cdk/table';
+
+import {HlmTh, HlmTr} from '@spartan-ng/helm/table';
 
 // We can't reuse `CDK_ROW_TEMPLATE` because it's incompatible with local compilation mode.
 const ROW_TEMPLATE = `<ng-container cdkCellOutlet></ng-container>`;
@@ -32,109 +26,94 @@ const ROW_TEMPLATE = `<ng-container cdkCellOutlet></ng-container>`;
  * Captures the header row's template and other header properties such as the columns to display.
  */
 @Directive({
-  selector: '[matHeaderRowDef]',
-  providers: [{provide: CdkHeaderRowDef, useExisting: MatHeaderRowDef}],
+  selector: '[hlmHeaderRowDef]',
+  providers: [{provide: CdkHeaderRowDef, useExisting: HlmHeaderRowDef}],
   inputs: [
-    {name: 'columns', alias: 'matHeaderRowDef'},
-    {name: 'sticky', alias: 'matHeaderRowDefSticky', transform: booleanAttribute},
+    {name: 'columns', alias: 'hlmHeaderRowDef'},
+    {name: 'sticky', alias: 'hlmHeaderRowDefSticky', transform: booleanAttribute},
   ],
 })
-export class MatHeaderRowDef extends CdkHeaderRowDef {}
+export class HlmHeaderRowDef extends CdkHeaderRowDef {}
 
 /**
  * Footer row definition for the mat-table.
  * Captures the footer row's template and other footer properties such as the columns to display.
  */
 @Directive({
-  selector: '[matFooterRowDef]',
-  providers: [{provide: CdkFooterRowDef, useExisting: MatFooterRowDef}],
+  selector: '[hlmFooterRowDef]',
+  providers: [{provide: CdkFooterRowDef, useExisting: HlmFooterRowDef}],
   inputs: [
-    {name: 'columns', alias: 'matFooterRowDef'},
-    {name: 'sticky', alias: 'matFooterRowDefSticky', transform: booleanAttribute},
+    {name: 'columns', alias: 'hlmFooterRowDef'},
+    {name: 'sticky', alias: 'hlmFooterRowDefSticky', transform: booleanAttribute},
   ],
 })
-export class MatFooterRowDef extends CdkFooterRowDef {}
+export class HlmFooterRowDef extends CdkFooterRowDef {}
 
 /**
- * Data row definition for the mat-table.
+ * Data row definition for the hlm-data-table.
  * Captures the data row's template and other properties such as the columns to display and
  * a when predicate that describes when this row should be used.
  */
 @Directive({
-  selector: '[matRowDef]',
-  providers: [{provide: CdkRowDef, useExisting: MatRowDef}],
+  selector: '[hlmRowDef]',
+  providers: [{provide: CdkRowDef, useExisting: HlmRowDef}],
   inputs: [
-    {name: 'columns', alias: 'matRowDefColumns'},
-    {name: 'when', alias: 'matRowDefWhen'},
+    {name: 'columns', alias: 'hlmRowDefColumns'},
+    {name: 'when', alias: 'hlmRowDefWhen'},
   ],
 })
-export class MatRowDef<T> extends CdkRowDef<T> {}
+export class HlmRowDef<T> extends CdkRowDef<T> {}
 
 /** Header template container that contains the cell outlet. Adds the right class and role. */
 @Component({
-  selector: 'mat-header-row, tr[mat-header-row]',
+  selector: 'hlm-header-row, tr[hlm-header-row]',
   template: ROW_TEMPLATE,
   host: {
-    class: 'mat-mdc-header-row mdc-data-table__header-row',
     role: 'row',
   },
+  hostDirectives: [HlmTh],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
   changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
-  exportAs: 'matHeaderRow',
-  providers: [{provide: CdkHeaderRow, useExisting: MatHeaderRow}],
+  exportAs: 'hlmHeaderRow',
+  providers: [{provide: CdkHeaderRow, useExisting: HlmHeaderRow}],
   imports: [CdkCellOutlet],
 })
-export class MatHeaderRow extends CdkHeaderRow {}
+export class HlmHeaderRow extends CdkHeaderRow {}
 
 /** Footer template container that contains the cell outlet. Adds the right class and role. */
 @Component({
-  selector: 'mat-footer-row, tr[mat-footer-row]',
+  selector: 'hlm-footer-row, tr[hlm-footer-row]',
   template: ROW_TEMPLATE,
   host: {
-    class: 'mat-mdc-footer-row mdc-data-table__row',
     role: 'row',
   },
+  hostDirectives: [HlmTr],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
   changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
-  exportAs: 'matFooterRow',
-  providers: [{provide: CdkFooterRow, useExisting: MatFooterRow}],
+  exportAs: 'hlmFooterRow',
+  providers: [{provide: CdkFooterRow, useExisting: HlmFooterRow}],
   imports: [CdkCellOutlet],
 })
-export class MatFooterRow extends CdkFooterRow {}
+export class HlmFooterRow extends CdkFooterRow {}
 
 /** Data row template container that contains the cell outlet. Adds the right class and role. */
 @Component({
-  selector: 'mat-row, tr[mat-row]',
+  selector: 'hlm-row, tr[hlm-row]',
   template: ROW_TEMPLATE,
   host: {
-    class: 'mat-mdc-row mdc-data-table__row',
     role: 'row',
   },
+  hostDirectives: [HlmTr],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
   changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
-  exportAs: 'matRow',
-  providers: [{provide: CdkRow, useExisting: MatRow}],
+  exportAs: 'hlmRow',
+  providers: [{provide: CdkRow, useExisting: HlmRow}],
   imports: [CdkCellOutlet],
 })
-export class MatRow extends CdkRow {}
-
-/** Row that can be used to display a message when no data is shown in the table. */
-@Directive({
-  selector: 'ng-template[matNoDataRow]',
-  providers: [{provide: CdkNoDataRow, useExisting: MatNoDataRow}],
-})
-export class MatNoDataRow extends CdkNoDataRow {
-  override _cellSelector = 'td, mat-cell, [mat-cell], .mat-cell';
-
-  constructor() {
-    super();
-    this._contentClassNames.push('mat-mdc-no-data-row', 'mat-mdc-row', 'mdc-data-table__row');
-    this._cellClassNames.push('mat-mdc-cell', 'mdc-data-table__cell', 'mat-no-data-cell');
-  }
-}
+export class HlmRow extends CdkRow {}

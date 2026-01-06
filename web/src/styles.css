@@ -75,28 +75,34 @@ color utility to any element that depends on these defaults.
 }
 
 /* Column Width */
-.mat-column-select {
+.mat-column-select,
+.hlm-column-select {
   @apply w-28;
 }
 
-.mat-column-createdAt {
+.mat-column-createdAt,
+.hlm-column-createdAt {
   @apply w-37;
 }
 
-.mat-column-actions {
+.mat-column-actions,
+.hlm-column-actions {
   @apply whitespace-nowrap;
 }
 
-.mat-column-actions > * {
+.mat-column-actions > *,
+.hlm-column-actions > * {
   @apply mr-2;
 }
 
 /* kill the extra margin on the last child */
-.mat-column-actions > *:last-child {
+.mat-column-actions > *:last-child,
+.helm-column-actions > *:last-child {
   @apply mr-0;
 }
 
-.mat-column-deleted {
+.mat-column-deleted,
+.hlm-column-deleted {
   @apply w-52;
 }
 

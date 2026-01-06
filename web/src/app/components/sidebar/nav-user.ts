@@ -8,6 +8,7 @@ import {NgIcon} from '@ng-icons/core';
 import {ThemeService} from '@slateui/theme';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 
 import {AboutDialog} from '@app/components/about-dialog';
@@ -15,16 +16,6 @@ import {AuthStore, InfoStore, ProfileStore} from '@app/services';
 import {themeOptions} from '@app/util';
 
 @Component({
-  selector: 'pu-nav-user',
-  imports: [
-    HlmSidebarImports,
-    HlmAvatarImports,
-    NgIcon,
-    HlmDropdownMenuImports,
-    TranslocoPipe,
-    RouterLink,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ul hlmSidebarMenu>
       <li hlmSidebarMenuItem>
@@ -55,7 +46,7 @@ import {themeOptions} from '@app/util';
             <span class="truncate font-medium">{{ profileStore.name() }}</span>
             <span class="truncate text-xs">{{ profileStore.email() }}</span>
           </div>
-          <ng-icon class="ml-auto text-base" name="bootstrapGear" />
+          <ng-icon class="ml-auto text-base" hlm name="bootstrapGear" />
         </button>
       </li>
     </ul>
@@ -78,14 +69,14 @@ import {themeOptions} from '@app/util';
         <hlm-dropdown-menu-separator />
         <hlm-dropdown-menu-group>
           <button (click)="openAbout()" type="button" hlmDropdownMenuItem>
-            <ng-icon name="bootstrapInfoCircle" />
+            <ng-icon hlm size="sm" name="bootstrapInfoCircle" />
             {{ 'general.about' | transloco }}
           </button>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
         <hlm-dropdown-menu-group>
           <button type="button" hlmDropdownMenuItem routerLink="/profile">
-            <ng-icon name="bootstrapGear" />
+            <ng-icon hlm size="sm" name="bootstrapGear" />
             {{ 'profile.settings' | transloco }}
           </button>
           <button
@@ -94,7 +85,7 @@ import {themeOptions} from '@app/util';
             hlmDropdownMenuItem
             side="right"
             align="start">
-            <ng-icon name="bootstrapPaintBucket" />
+            <ng-icon hlm size="sm" name="bootstrapPaintBucket" />
             {{ 'general.theme' | transloco }}
             <hlm-dropdown-menu-item-sub-indicator />
           </button>
@@ -104,14 +95,14 @@ import {themeOptions} from '@app/util';
             type="button"
             side="right"
             align="start">
-            <ng-icon name="bootstrapTranslate" />
+            <ng-icon hlm size="sm" name="bootstrapTranslate" />
             {{ 'general.language' | transloco }}
             <hlm-dropdown-menu-item-sub-indicator />
           </button>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
         <button (click)="authStore.logout()" type="button" hlmDropdownMenuItem>
-          <ng-icon name="lucideLogOut" />
+          <ng-icon hlm size="sm" name="lucideLogOut" />
           {{ 'general.logout' | transloco }}
         </button>
       </hlm-dropdown-menu>
@@ -128,7 +119,7 @@ import {themeOptions} from '@app/util';
             type="button">
             <hlm-dropdown-menu-checkbox-indicator />
             {{ theme.viewValue }}
-            <ng-icon class="ms-2" [name]="theme.icon" />
+            <ng-icon class="ms-2" [name]="theme.icon" hlm size="sm" />
           </button>
         }
       </hlm-dropdown-menu-sub>
@@ -151,6 +142,16 @@ import {themeOptions} from '@app/util';
       </hlm-dropdown-menu-sub>
     </ng-template>
   `,
+  selector: 'pu-nav-user',
+  imports: [
+    HlmSidebarImports,
+    HlmAvatarImports,
+    HlmIconImports,
+    HlmDropdownMenuImports,
+    TranslocoPipe,
+    RouterLink,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavUser {
   private readonly sidebarService = inject(HlmSidebarService);

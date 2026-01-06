@@ -1,47 +1,60 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
-import {MatTab, MatTabGroup} from '@angular/material/tabs';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {CheckResultList} from './check-result';
-import {NotificationList} from './notification-list';
+import {NotificationList} from './notification/notification-list';
 
 @Component({
   template: `
-    <mat-card appearance="outlined">
-      <mat-card-content>
-        <mat-tab-group [(selectedIndex)]="ncTab" mat-stretch-tabs="false" mat-align-tabs="start">
-          <mat-tab [label]="'general.notifications' | transloco" tabindex="NOTIFICATIONS">
+    <hlm-tabs class="w-full" [tab]="ncTab()" (tabActivated)="ncTab.set($event)">
+      <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
+        <button class="gap-1.5" hlmTabsTrigger="notifications">
+          <ng-icon hlm name="bootstrapBell" size="sm" />
+          {{ 'general.notifications' | transloco }}
+        </button>
+        <button class="gap-1.5" hlmTabsTrigger="checkResults">
+          <ng-icon hlm name="bootstrapListStars" size="sm" />
+          {{ 'checkResult.list.title' | transloco }}
+        </button>
+      </hlm-tabs-list>
+      <div hlmTabsContent="notifications">
+        <section hlmCard>
+          <div hlmCardContent>
             <pu-notification-list [teamId]="teamId()" [monitorId]="monitorId()" />
-          </mat-tab>
-          <mat-tab [label]="'checkResult.list.title' | transloco" tabindex="CHECKS">
+          </div>
+        </section>
+      </div>
+      <div hlmTabsContent="checkResults">
+        <section hlmCard>
+          <div hlmCardContent>
             <pu-check-result-list [teamId]="teamId()" [monitorId]="monitorId()" />
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
+          </div>
+        </section>
+      </div>
+    </hlm-tabs>
   `,
 
   selector: 'pu-notification-check-result-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCard,
-    MatCardContent,
     CheckResultList,
     NotificationList,
-    MatTab,
-    MatTabGroup,
     TranslocoPipe,
+    HlmTabsImports,
+    HlmIconImports,
+    HlmCardImports,
   ],
 })
 export class NotificationCheckResultCard {
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
 
-  readonly ncTab = linkedQueryParam('nc_tab', {
-    parse: paramToNumber(),
+  readonly ncTab = linkedQueryParam<string>('nc_tab', {
+    defaultValue: 'notifications',
   });
 }

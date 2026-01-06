@@ -1,12 +1,6 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.dev/license
- */
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
 
+import {_DisposeViewRepeaterStrategy, _VIEW_REPEATER_STRATEGY} from '@angular/cdk/collections';
 import {
   CDK_TABLE,
   CdkTable,
@@ -17,13 +11,17 @@ import {
   STICKY_POSITIONING_LISTENER,
 } from '@angular/cdk/table';
 
-import {HlmTable} from '@spartan-ng/helm/table';
+import {HlmTBody, HlmTFoot, HlmTHead, HlmTable} from '@spartan-ng/helm/table';
 
+/**
+ * Wrapper for the CdkTable with Bootstrap styles.
+ */
 @Component({
-  selector: 'hlm-table, table[hlm-table]',
-  exportAs: 'hlmTable',
+  selector: 'hlm-data-table, table[hlm-data-table]',
+  exportAs: 'ngbDataTable',
   // Note that according to MDN, the `caption` element has to be projected as the **first**
   // element in the table. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption
+  // We can't reuse `CDK_TABLE_TEMPLATE` because it's incompatible with local compilation mode.
   template: `
     <ng-content select="caption" />
     <ng-content select="colgroup, col" />
@@ -37,14 +35,14 @@ import {HlmTable} from '@spartan-ng/helm/table';
     }
 
     @if (_isNativeHtmlTable) {
-      <thead role="rowgroup">
+      <thead hlmTHead role="rowgroup">
         <ng-container headerRowOutlet />
       </thead>
-      <tbody class="mdc-data-table__content" role="rowgroup">
+      <tbody class="mdc-data-table__content" hlmTBody role="rowgroup">
         <ng-container rowOutlet />
         <ng-container noDataRowOutlet />
       </tbody>
-      <tfoot role="rowgroup">
+      <tfoot hlmTFoot role="rowgroup">
         <ng-container footerRowOutlet />
       </tfoot>
     } @else {
@@ -54,23 +52,28 @@ import {HlmTable} from '@spartan-ng/helm/table';
       <ng-container footerRowOutlet />
     }
   `,
-  hostDirectives: [{directive: HlmTable, inputs: ['class']}],
   providers: [
     {provide: CdkTable, useExisting: HlmDataTable},
     {provide: CDK_TABLE, useExisting: HlmDataTable},
+    {provide: _VIEW_REPEATER_STRATEGY, useClass: _DisposeViewRepeaterStrategy},
     // Prevent nested tables from seeing this table's StickyPositioningListener.
     {provide: STICKY_POSITIONING_LISTENER, useValue: null},
   ],
+  hostDirectives: [HlmTable],
   encapsulation: ViewEncapsulation.None,
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
-  // tslint:disable-next-line:validate-decorators
   changeDetection: ChangeDetectionStrategy.Default,
-  imports: [HeaderRowOutlet, DataRowOutlet, NoDataRowOutlet, FooterRowOutlet],
+  imports: [
+    HeaderRowOutlet,
+    DataRowOutlet,
+    NoDataRowOutlet,
+    FooterRowOutlet,
+    HlmTBody,
+    HlmTFoot,
+    HlmTHead,
+  ],
 })
 export class HlmDataTable<T> extends CdkTable<T> {
-  /** Overrides the sticky CSS class set by the `CdkTable`. */
-  protected override stickyCssClass = 'table-sticky';
-
   /** Overrides the need to add position: sticky on every sticky cell element in `CdkTable`. */
   protected override needsPositionStickyOnElement = false;
 }

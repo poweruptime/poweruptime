@@ -46,6 +46,10 @@ export const ROUTES: Routes = [
     loadChildren: () => import('./monitor/mobile-team-monitor.routes').then((r) => r.ROUTES),
   },
   {
+    path: 'new-monitor',
+    loadComponent: () => import('./monitor/monitor-edit.page').then((c) => c.MonitorEditPage),
+  },
+  {
     path: '**',
     redirectTo: 'm',
   },

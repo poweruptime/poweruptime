@@ -19,6 +19,7 @@ import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-pe
 import {provideNgIconLoader, withCaching} from '@ng-icons/core';
 import {provideSlateUiTheme} from '@slateui/theme';
 import {provideHlmSidebarConfig} from '@spartan-ng/helm/sidebar';
+import {provideHlmTableConfig} from '@spartan-ng/helm/table';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
@@ -96,6 +97,9 @@ export const appConfig: ApplicationConfig = {
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
     }, withCaching()),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
+    provideHlmTableConfig({
+      th: 'text-foreground h-10 px-2 text-start align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pe-0 font-bold',
+    }),
     provideHlmSidebarConfig({
       mobileBreakpoint: '1920px',
     }),

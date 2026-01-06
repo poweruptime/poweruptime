@@ -1,9 +1,8 @@
-import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {lucideChevronRight} from '@ng-icons/lucide';
-import {hlm} from '@spartan-ng/helm/utils';
-import type {ClassValue} from 'clsx';
+import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -14,7 +13,6 @@ import type {ClassValue} from 'clsx';
   host: {
     role: 'presentation',
     'aria-hidden': 'true',
-    '[class]': '_computedClass()',
   },
   template: `
     <ng-content>
@@ -23,9 +21,7 @@ import type {ClassValue} from 'clsx';
   `,
 })
 export class HlmBreadcrumbSeparator {
-  public readonly userClass = input<ClassValue>('', {alias: 'class'});
-
-  protected readonly _computedClass = computed(() =>
-    hlm('[&_ng-icon]:block [&_ng-icon]:size-3.5', this.userClass()),
-  );
+  constructor() {
+    classes(() => '[&_ng-icon]:block [&_ng-icon]:size-3.5');
+  }
 }

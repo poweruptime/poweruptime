@@ -1,18 +1,15 @@
-import {Directive, computed, input} from '@angular/core';
+import {Directive} from '@angular/core';
 
-import {hlm} from '@spartan-ng/helm/utils';
-import type {ClassValue} from 'clsx';
+import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmDialogHeader],hlm-dialog-header',
   host: {
     'data-slot': 'dialog-header',
-    '[class]': '_computedClass()',
   },
 })
 export class HlmDialogHeader {
-  public readonly userClass = input<ClassValue>('', {alias: 'class'});
-  protected readonly _computedClass = computed(() =>
-    hlm('flex flex-col gap-2 text-center sm:text-left', this.userClass()),
-  );
+  constructor() {
+    classes(() => 'flex flex-col gap-2 text-center sm:text-start');
+  }
 }

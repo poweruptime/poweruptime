@@ -1,11 +1,4 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.dev/license
- */
-import {Directive, Input} from '@angular/core';
+import {Directive, InjectionToken, Input} from '@angular/core';
 
 import {
   CdkCell,
@@ -17,50 +10,54 @@ import {
   CdkHeaderCellDef,
 } from '@angular/cdk/table';
 
+import {HlmTd, HlmTh} from '@spartan-ng/helm/table';
+
 /**
  * Cell definition for the mat-table.
  * Captures the template of a column's data row cell as well as cell-specific properties.
  */
 @Directive({
-  selector: '[matCellDef]',
-  providers: [{provide: CdkCellDef, useExisting: MatCellDef}],
+  selector: '[hlmCellDef]',
+  providers: [{provide: CdkCellDef, useExisting: HlmCellDef}],
 })
-export class MatCellDef extends CdkCellDef {}
+export class HlmCellDef extends CdkCellDef {}
 
 /**
  * Header cell definition for the mat-table.
  * Captures the template of a column's header cell and as well as cell-specific properties.
  */
 @Directive({
-  selector: '[matHeaderCellDef]',
-  providers: [{provide: CdkHeaderCellDef, useExisting: MatHeaderCellDef}],
+  selector: '[hlmHeaderCellDef]',
+  providers: [{provide: CdkHeaderCellDef, useExisting: HlmHeaderCellDef}],
 })
-export class MatHeaderCellDef extends CdkHeaderCellDef {}
+export class HlmHeaderCellDef extends CdkHeaderCellDef {}
 
 /**
  * Footer cell definition for the mat-table.
  * Captures the template of a column's footer cell and as well as cell-specific properties.
  */
 @Directive({
-  selector: '[matFooterCellDef]',
-  providers: [{provide: CdkFooterCellDef, useExisting: MatFooterCellDef}],
+  selector: '[hlmFooterCellDef]',
+  providers: [{provide: CdkFooterCellDef, useExisting: HlmFooterCellDef}],
 })
-export class MatFooterCellDef extends CdkFooterCellDef {}
+export class HlmFooterCellDef extends CdkFooterCellDef {}
+
+export const hlmSortHeaderColumnDef = new InjectionToken('HLM_SORT_HEADER_COLUMN_DEF');
 
 /**
  * Column definition for the mat-table.
  * Defines a set of cells available for a table column.
  */
 @Directive({
-  selector: '[matColumnDef]',
+  selector: '[hlmColumnDef]',
   providers: [
-    {provide: CdkColumnDef, useExisting: MatColumnDef},
-    {provide: 'MAT_SORT_HEADER_COLUMN_DEF', useExisting: MatColumnDef},
+    {provide: CdkColumnDef, useExisting: HlmColumnDef},
+    {provide: hlmSortHeaderColumnDef, useExisting: HlmColumnDef},
   ],
 })
-export class MatColumnDef extends CdkColumnDef {
+export class HlmColumnDef extends CdkColumnDef {
   /** Unique name for this column. */
-  @Input('matColumnDef')
+  @Input('hlmColumnDef')
   override get name(): string {
     return this._name;
   }
@@ -76,34 +73,30 @@ export class MatColumnDef extends CdkColumnDef {
    */
   protected override _updateColumnCssClassName() {
     super._updateColumnCssClassName();
-    this._columnCssClassName!.push(`mat-column-${this.cssClassFriendlyName}`);
+    this._columnCssClassName!.push(`hlm-column-${this.cssClassFriendlyName}`);
   }
 }
 
 /** Header cell template container that adds the right classes and role. */
 @Directive({
-  selector: 'mat-header-cell, th[mat-header-cell]',
+  selector: 'hlm-header-cell, th[hlm-header-cell]',
   host: {
-    class: 'mat-mdc-header-cell mdc-data-table__header-cell',
     role: 'columnheader',
   },
+  hostDirectives: [HlmTh],
 })
-export class MatHeaderCell extends CdkHeaderCell {}
+export class HlmHeaderCell extends CdkHeaderCell {}
 
 /** Footer cell template container that adds the right classes and role. */
 @Directive({
-  selector: 'mat-footer-cell, td[mat-footer-cell]',
-  host: {
-    class: 'mat-mdc-footer-cell mdc-data-table__cell',
-  },
+  selector: 'hlm-footer-cell, td[hlm-footer-cell]',
+  hostDirectives: [HlmTd],
 })
-export class MatFooterCell extends CdkFooterCell {}
+export class HlmFooterCell extends CdkFooterCell {}
 
 /** Cell template container that adds the right classes and role. */
 @Directive({
-  selector: 'mat-cell, td[mat-cell]',
-  host: {
-    class: 'mat-mdc-cell mdc-data-table__cell',
-  },
+  selector: 'hlm-cell, td[hlm-cell]',
+  hostDirectives: [HlmTd],
 })
-export class MatCell extends CdkCell {}
+export class HlmCell extends CdkCell {}

@@ -16,7 +16,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {MonitorCardList, MonitorsFilter} from '@app/components/monitor';
+import {MonitorCardList, MonitorsEmpty, MonitorsFilter} from '@app/components/monitor';
 import {TeamSelect} from '@app/components/team-select';
 import {IsTeamAdmin} from '@app/directives';
 import {
@@ -28,79 +28,85 @@ import {
 
 @Component({
   template: `
-    <div class="flex gap-4">
-      <div class="flex h-[calc(100vh-90px)] flex-col gap-4" style="width: 21rem; min-width: 21rem;">
-        @let _showFilter = showFilter();
-        @let dashboard = monitorsDashboardStore.dashboard();
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            @if (teamId()) {
-              <a *isTeamAdmin mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
-            } @else {
-              <pu-team-select
-                (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])"
-                adminOnly>
-                <button mat-flat-button type="button">{{ 'monitor.new' | transloco }}</button>
-              </pu-team-select>
-            }
+    @let notSearchingNotPendingAndEmpty =
+      !monitorsSearchStore.isSearching() &&
+      !monitorsStore.isPending() &&
+      monitorsStore.sortedEntities().length === 0;
+    @if (notSearchingNotPendingAndEmpty) {
+      <pu-monitors-empty />
+    } @else {
+      <div class="flex gap-4">
+        <div
+          class="flex h-[calc(100vh-90px)] flex-col gap-4"
+          style="width: 21rem; min-width: 21rem;">
+          @let _showFilter = showFilter();
+          @let dashboard = monitorsDashboardStore.dashboard();
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              @if (teamId()) {
+                <a *isTeamAdmin mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
+              } @else {
+                <pu-team-select
+                  (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])"
+                  adminOnly>
+                  <button mat-flat-button type="button">{{ 'monitor.new' | transloco }}</button>
+                </pu-team-select>
+              }
+            </div>
+
+            <mat-chip-listbox
+              (change)="showFilter.set(!_showFilter)"
+              matTooltip="Ctrl + F"
+              matTooltipPosition="after">
+              <mat-chip-option [selected]="_showFilter">
+                <ng-icon name="bootstrapFilter" />
+              </mat-chip-option>
+            </mat-chip-listbox>
           </div>
 
-          <mat-chip-listbox
-            (change)="showFilter.set(!_showFilter)"
-            matTooltip="Ctrl + F"
-            matTooltipPosition="after">
-            <mat-chip-option [selected]="_showFilter">
-              <ng-icon name="bootstrapFilter" />
-            </mat-chip-option>
-          </mat-chip-listbox>
+          @defer (when _showFilter) {
+            @if (_showFilter) {
+              <pu-monitors-filter
+                [filter]="{
+                  search: $any(monitorsSearchStore.searchFilter()),
+                  types: monitorsSearchStore.typesFilter(),
+                  statuses: monitorsSearchStore.statusesFilter(),
+                  tags: monitorsSearchStore.tagsFilter(),
+                }"
+                [tags]="tagsStore.entities()"
+                [dashboard]="dashboard"
+                (filterChange)="
+                  monitorsSearchStore.searchFilter.set($event.search);
+                  monitorsSearchStore.typesFilter.set($event.types);
+                  monitorsSearchStore.statusesFilter.set($event.statuses);
+                  monitorsSearchStore.tagsFilter.set($event.tags)
+                " />
+            }
+          }
+
+          @if (monitorsSearchStore.isSearching()) {
+            @if (monitorsSearchStore.isFulfilled() && monitorsSearchStore.entities().length === 0) {
+              <span>No monitors found.</span>
+            }
+          }
+
+          @if (monitorsSearchStore.isSearching() && _showFilter) {
+            <pu-monitor-card-list
+              [entities]="monitorsSearchStore.entities()"
+              [isPending]="monitorsSearchStore.isPending()"
+              (nextPage)="monitorsSearchStore.nextPage()" />
+          } @else {
+            <pu-monitor-card-list
+              [entities]="monitorsStore.sortedEntities()"
+              [isPending]="monitorsStore.isPending()"
+              (nextPage)="monitorsStore.nextPage(teamId())" />
+          }
         </div>
-
-        @defer (when _showFilter) {
-          @if (_showFilter) {
-            <pu-monitors-filter
-              [filter]="{
-                search: $any(monitorsSearchStore.searchFilter()),
-                types: monitorsSearchStore.typesFilter(),
-                statuses: monitorsSearchStore.statusesFilter(),
-                tags: monitorsSearchStore.tagsFilter(),
-              }"
-              [tags]="tagsStore.entities()"
-              [dashboard]="dashboard"
-              (filterChange)="
-                monitorsSearchStore.searchFilter.set($event.search);
-                monitorsSearchStore.typesFilter.set($event.types);
-                monitorsSearchStore.statusesFilter.set($event.statuses);
-                monitorsSearchStore.tagsFilter.set($event.tags)
-              " />
-          }
-        }
-
-        @if (monitorsSearchStore.isSearching()) {
-          @if (monitorsSearchStore.isFulfilled() && monitorsSearchStore.entities().length === 0) {
-            <span>No monitors found.</span>
-          }
-        } @else {
-          @if (!monitorsStore.isPending() && monitorsStore.entities().length === 0) {
-            <span>{{ 'monitor.empty' | transloco }}</span>
-          }
-        }
-
-        @if (monitorsSearchStore.isSearching() && _showFilter) {
-          <pu-monitor-card-list
-            [entities]="monitorsSearchStore.entities()"
-            [isPending]="monitorsSearchStore.isPending()"
-            (nextPage)="monitorsSearchStore.nextPage()" />
-        } @else {
-          <pu-monitor-card-list
-            [entities]="monitorsStore.sortedEntities()"
-            [isPending]="monitorsStore.isPending()"
-            (nextPage)="monitorsStore.nextPage(teamId())" />
-        }
+        <div class="h-[calc(100vh-90px)] grow overflow-x-hidden overflow-y-auto px-2 pb-24">
+          <router-outlet />
+        </div>
       </div>
-      <div class="h-[calc(100vh-90px)] grow overflow-x-hidden overflow-y-auto px-2 pb-24">
-        <router-outlet />
-      </div>
-    </div>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [MonitorsSearchStore, MonitorsDashboardStore, TagsStore],
@@ -117,6 +123,7 @@ import {
     IsTeamAdmin,
     MatTooltip,
     NgIcon,
+    MonitorsEmpty,
   ],
   selector: 'pu-monitors-page',
 })

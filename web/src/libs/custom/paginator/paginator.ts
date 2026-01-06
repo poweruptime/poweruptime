@@ -40,14 +40,18 @@ export interface BrnDataTablePageEvent {
 
 @Component({
   template: `
-    <div class="flex justify-end">
+    <div class="flex justify-end py-0.5">
       <div class="inline-flex items-center justify-between gap-3">
         @if (!hidePageSize()) {
           <div class="flex items-center gap-3">
             @let _displayedPageSizeOptions = displayedPageSizeOptions();
             @if (_displayedPageSizeOptions.length > 1) {
               <label hlmLabel>Rows per page</label>
-              <brn-select class="ml-auto" [(ngModel)]="pageSize" placeholder="Page size">
+              <brn-select
+                class="ml-auto"
+                [(ngModel)]="pageSize"
+                (ngModelChange)="changePageSize()"
+                placeholder="Page size">
                 <hlm-select-trigger class="w-fit">
                   <hlm-select-value />
                 </hlm-select-trigger>
@@ -214,6 +218,15 @@ export class HlmPaginator {
       length,
     };
   });
+
+  protected changePageSize(): void {
+    // Current page needs to be updated to reflect the new page size. Navigate to the page
+    // containing the previous page's first item.
+    const startIndex = this.pageIndex() * this.pageSize();
+
+    this.pageIndex.set(Math.floor(startIndex / this.pageSize()) ?? 0);
+    this.emitPageEvent();
+  }
 
   /** Advances to the next page if it exists. */
   nextPage(): void {

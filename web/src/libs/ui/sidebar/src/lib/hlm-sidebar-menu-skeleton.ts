@@ -1,10 +1,9 @@
-import {ChangeDetectionStrategy, Component, booleanAttribute, computed, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, booleanAttribute, input} from '@angular/core';
 
 import {type BooleanInput} from '@angular/cdk/coercion';
 
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
-import {hlm} from '@spartan-ng/helm/utils';
-import type {ClassValue} from 'clsx';
+import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-sidebar-menu-skeleton,div[hlmSidebarMenuSkeleton]',
@@ -13,7 +12,6 @@ import type {ClassValue} from 'clsx';
   host: {
     'data-slot': 'sidebar-menu-skeleton',
     'data-sidebar': 'menu-skeleton',
-    '[class]': '_computedClass()',
     '[style.--skeleton-width]': '_width',
   },
   template: `
@@ -28,9 +26,9 @@ import type {ClassValue} from 'clsx';
 })
 export class HlmSidebarMenuSkeleton {
   public readonly showIcon = input<boolean, BooleanInput>(false, {transform: booleanAttribute});
-  public readonly userClass = input<ClassValue>('', {alias: 'class'});
-  protected readonly _computedClass = computed(() =>
-    hlm('flex h-8 items-center gap-2 rounded-md px-2', this.userClass()),
-  );
   protected readonly _width = `${Math.floor(Math.random() * 40) + 50}%`;
+
+  constructor() {
+    classes(() => 'flex h-8 items-center gap-2 rounded-md px-2');
+  }
 }

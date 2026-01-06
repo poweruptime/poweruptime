@@ -35,7 +35,7 @@ import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/servic
 
     @media (min-width: 2283px) {
       .main-content {
-        @apply mx-auto min-w-[1960px];
+        @apply mx-auto max-w-[1960px] min-w-[1960px];
       }
     }
   `,

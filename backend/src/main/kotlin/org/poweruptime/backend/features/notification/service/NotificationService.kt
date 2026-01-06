@@ -10,7 +10,6 @@ import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.orThrowNotFound
-import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -39,9 +38,8 @@ class NotificationService(
 
     fun getIdByPublicId(publicId: String): ULong = Notification.findIdByPublicIdOrThrow(publicId)
 
-    fun getByIdJoinCheckResultMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord =
+    fun getByIdJoinMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord =
         Notification
-            .innerJoin(CheckResult)
             .innerJoin(Monitor)
             .innerJoin(Team)
             .selectAll()
@@ -77,7 +75,7 @@ class NotificationService(
             this[SubNotification.message] = checkResult.message
         }
 
-        return getByIdJoinCheckResultMonitorAndTeam(notificationId)
+        return getByIdJoinMonitorAndTeam(notificationId)
     }
 
     fun getAllPaginated(

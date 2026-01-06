@@ -58,7 +58,10 @@
       "action": {
         "view": "View check"
       },
-      "hasNotification": "Has {{general.notifications}}",
+      "empty": {
+        "description": "Create your first monitor to receive {{general.checkResults}}.",
+        "title": "No {{general.checkResults}} yet."
+      },
       "title": "Checks"
     }
   },
@@ -164,6 +167,7 @@
     "notificationMethods": "Notification methods",
     "notifications": "Notifications",
     "open": "Open",
+    "options": "Options",
     "overview": "Overview",
     "password": "Password",
     "pause": "Pause",
@@ -332,6 +336,13 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
+    "list": {
+      "empty": {
+        "backToTeams": "Back to {{general.teams}}",
+        "description": "You haven't created any {{general.monitors}} yet. Get started by creating your first monitor.",
+        "title": "No {{general.monitors}} yet."
+      }
+    },
     "new": "New {{general.monitor}}",
     "oneDayUptime": "One-day uptime",
     "selector": {
@@ -367,8 +378,14 @@
       "openCheckResult": "Open {{general.checkResult}}"
     },
     "list": {
-      "openCheckResult": "Open the connected {{general.checkResult}}",
-      "view": "View {{general.notification}}"
+      "empty": {
+        "createNotificationMethod": "Create new {{general.notificationMethod}}",
+        "description": "poweruptime hasn't sent a notification yet. Configure {{general.notificationMethods}} or take a look at the checks.",
+        "manageNotificationMethods": "Manage {{general.notificationMethods}}",
+        "openCheckResults": "Open {{general.checkResults}}",
+        "title": "No {{general.notifications}} yet."
+      },
+      "openCheckResult": "Connected {{general.checkResult}}"
     }
   },
   "notificationMethod": {
