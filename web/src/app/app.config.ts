@@ -18,8 +18,10 @@ import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {provideNgIconLoader, withCaching} from '@ng-icons/core';
 import {provideSlateUiTheme} from '@slateui/theme';
+import {provideHlmDatePickerConfig} from '@spartan-ng/helm/date-picker';
 import {provideHlmSidebarConfig} from '@spartan-ng/helm/sidebar';
 import {provideHlmTableConfig} from '@spartan-ng/helm/table';
+import {format} from 'date-fns';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
 import {
@@ -97,6 +99,9 @@ export const appConfig: ApplicationConfig = {
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
     }, withCaching()),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
+    provideHlmDatePickerConfig({
+      formatDate: (date: Date) => format(date, 'dd.M.yyyy', {locale: dateFnsLocale}),
+    }),
     provideHlmTableConfig({
       th: 'text-foreground h-10 px-2 text-start align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pe-0 font-bold',
     }),

@@ -40,7 +40,7 @@ export const buttonVariants = cva(
 export type ButtonVariants = VariantProps<typeof buttonVariants>;
 
 @Directive({
-  selector: 'button[hlmBtn]',
+  selector: 'button[hlmBtn], a[hlmBtn]',
   exportAs: 'hlmBtn',
   hostDirectives: [{directive: BrnButton, inputs: ['disabled']}],
   host: {

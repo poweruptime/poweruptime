@@ -4,7 +4,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
-import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {CheckResultList} from './check-result';
 import {NotificationList} from './notification/notification-list';
@@ -13,11 +13,11 @@ import {NotificationList} from './notification/notification-list';
   template: `
     <hlm-tabs class="w-full" [tab]="ncTab()" (tabActivated)="ncTab.set($event)">
       <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
-        <button class="gap-1.5" hlmTabsTrigger="notifications">
+        <button class="gap-1.5" type="button" hlmTabsTrigger="notifications">
           <ng-icon hlm name="bootstrapBell" size="sm" />
           {{ 'general.notifications' | transloco }}
         </button>
-        <button class="gap-1.5" hlmTabsTrigger="checkResults">
+        <button class="gap-1.5" type="button" hlmTabsTrigger="checkResults">
           <ng-icon hlm name="bootstrapListStars" size="sm" />
           {{ 'checkResult.list.title' | transloco }}
         </button>
@@ -56,5 +56,6 @@ export class NotificationCheckResultCard {
 
   readonly ncTab = linkedQueryParam<string>('nc_tab', {
     defaultValue: 'notifications',
+    queryParamsHandling: 'replace',
   });
 }

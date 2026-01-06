@@ -71,14 +71,21 @@ import {TableLoadingBar} from '../../table-loading-bar';
             <ng-container hlmColumnDef="actions">
               <th *hlmHeaderCellDef hlm-header-cell></th>
               <td *hlmCellDef="let element" hlm-cell>
-                <button [hlmDropdownMenuTrigger]="menu" hlmBtn stopPropagation variant="ghost">
+                <button
+                  [hlmDropdownMenuTrigger]="menu"
+                  type="button"
+                  hlmBtn
+                  stopPropagation
+                  variant="ghost">
                   <span class="sr-only">Open notification menu</span>
                   <ng-icon hlm size="sm" name="bootstrapThreeDotsVertical" />
                 </button>
 
                 <ng-template #menu>
                   <hlm-dropdown-menu class="w-56">
-                    <hlm-dropdown-menu-label>{{ 'general.options' }}</hlm-dropdown-menu-label>
+                    <hlm-dropdown-menu-label>
+                      {{ 'general.options' | transloco }}
+                    </hlm-dropdown-menu-label>
 
                     <hlm-dropdown-menu-group>
                       <button

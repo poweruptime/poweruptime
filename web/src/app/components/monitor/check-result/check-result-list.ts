@@ -1,136 +1,132 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-
-import {
-  MatDateRangeInput,
-  MatDateRangePicker,
-  MatDatepickerToggle,
-  MatEndDate,
-  MatStartDate,
-} from '@angular/material/datepicker';
-import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatSelect} from '@angular/material/select';
-import {MatOption} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BrnSelect, BrnSelectImports} from '@spartan-ng/brain/select';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
+import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
+import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
-import {HlmPaginator} from '@spartan-ng/helm/paginator';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
-import {HlmSort} from '@spartan-ng/helm/sort';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmToggleGroupImports} from '@spartan-ng/helm/toggle-group';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
+import {format} from 'date-fns';
+import {injectQueryParams} from 'ngxtension/inject-query-params';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {BackendType} from '@app/api';
 import {CheckResultsStore} from '@app/services';
 import {dateToDateTime, toBackendDate, toBackendDateTime} from '@app/services/util';
-import {arrayToParam, paramToArray, trackBy} from '@app/util';
+import {arrayToParam, paramToArray} from '@app/util';
 
 import {CheckResultTable} from './check-result-table';
 import {CheckResultsEmpty} from './check-results-empty';
 
 @Component({
   template: `
-    @if (checkResultsStore.isEmpty()) {
+    @let _activeFiltersCount = activeFiltersCount();
+    @let hasActiveFilters = _activeFiltersCount > 0;
+    @if (checkResultsStore.isEmpty() && !hasActiveFilters) {
       <pu-check-results-empty />
     } @else {
       <div class="flex flex-col gap-2">
         <div class="flex flex-wrap justify-end">
-          <div class="grid grid-cols-2 items-center justify-end gap-4 lg:grid-cols-4">
-            <div class="flex justify-end">
-              <label class="inline-flex items-center" hlmLabel>
-                {{ 'general.showDuplicates' | transloco }}
-                <hlm-switch class="mr-2" [(checked)]="showDuplicates" />
-              </label>
-            </div>
-
-            <hlm-toggle-group
-              [(value)]="hasNotification"
-              hlmButtonGroup
-              type="single"
+          <hlm-collapsible
+            class="flex flex-col items-end gap-2 lg:flex-row lg:flex-row-reverse lg:items-center lg:justify-end">
+            <button
+              class="relative"
+              type="button"
+              hlmBtn
+              hlmCollapsibleTrigger
               variant="outline"
-              size="sm">
-              <button
-                [value]="null"
-                hlmTooltipTrigger
-                type="button"
-                hlmBtn
+              size="icon">
+              <ng-icon hlm name="bootstrapFilter" size="sm" />
+              @if (hasActiveFilters) {
+                <span
+                  class="absolute -top-2 left-full flex min-w-5 -translate-x-1/2 items-center justify-center rounded-full px-1 py-[1px]"
+                  hlmBadge
+                  variant="destructive">
+                  {{ _activeFiltersCount }}
+                </span>
+              }
+            </button>
+            <hlm-collapsible-content
+              class="grid grid-cols-2 items-center justify-end gap-4 lg:flex">
+              <div class="flex justify-end">
+                <label
+                  class="inline-flex min-w-40 items-center justify-end"
+                  hlmLabel
+                  for="showDuplicates">
+                  {{ 'general.showDuplicates' | transloco }}
+                  <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
+                </label>
+              </div>
+
+              <hlm-toggle-group
+                [(value)]="hasNotification"
+                hlmButtonGroup
+                type="single"
                 variant="outline"
                 size="sm">
-                <ng-icon (click)="hasNotification.set(null)" hlm name="bootstrapBell" size="sm" />
-              </button>
-              @let _hasNotification = hasNotification();
-              @for (state of availableHasNotificationStates(); track state.hasNotification) {
                 <button
-                  class="data-[state=on]:bg-input/80"
-                  [value]="state.hasNotification"
+                  (click)="hasNotification.set(null)"
+                  hlmTooltipTrigger
+                  type="button"
                   hlmBtn
-                  hlmToggleGroupItem
                   variant="outline"
                   size="sm">
-                  {{ state.name }}
+                  <ng-icon hlm name="bootstrapBell" size="sm" />
                 </button>
-              }
-            </hlm-toggle-group>
-
-            <brn-select class="inline-block" placeholder="Select an option">
-              <hlm-select-trigger class="w-56">
-                <hlm-select-value />
-              </hlm-select-trigger>
-              <hlm-select-content>
-                <hlm-option value="Refresh">Refresh</hlm-option>
-                <hlm-option value="Settings">Settings</hlm-option>
-                <hlm-option value="Help">Help</hlm-option>
-                <hlm-option value="Signout">Sign out</hlm-option>
-              </hlm-select-content>
-            </brn-select>
-
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>{{ 'general.status' | transloco }}</mat-label>
-              <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
-              <mat-select [(ngModel)]="statuses" multiple>
-                @for (status of availableStatuses(); track status.status) {
-                  <mat-option [value]="status.status">
-                    {{ status.name }}
-                  </mat-option>
+                @for (state of availableHasNotificationStates(); track state.hasNotification) {
+                  <button
+                    class="data-[state=on]:bg-input/80"
+                    [value]="state.hasNotification"
+                    type="button"
+                    hlmBtn
+                    hlmToggleGroupItem
+                    variant="outline"
+                    size="sm">
+                    {{ state.name }}
+                  </button>
                 }
-              </mat-select>
-            </mat-form-field>
+              </hlm-toggle-group>
 
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>{{ 'general.startEnd' | transloco }}</mat-label>
-              <mat-date-range-input [rangePicker]="picker" [max]="max">
-                <input
-                  [(ngModel)]="start"
-                  [placeholder]="'monitor.details.pingChart.startDate' | transloco"
-                  matStartDate />
-                <input
-                  [(ngModel)]="end"
-                  [placeholder]="'monitor.details.pingChart.endDate' | transloco"
-                  matEndDate />
-              </mat-date-range-input>
-              <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
+              <brn-select
+                class="inline-block"
+                [(value)]="statuses"
+                [placeholder]="'general.status' | transloco"
+                multiple>
+                <hlm-select-trigger>
+                  <hlm-select-value class="min-w-38" />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  @for (status of availableStatuses(); track status.status) {
+                    <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
+
+              <hlm-date-range-picker
+                class="max-w-52"
+                [max]="max"
+                [autoCloseOnEndSelection]="true"
+                [formatDates]="formatDates"
+                [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
+                (dateChange)="
+                  start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
+                "
+                buttonId="rangePicker">
+                <span>{{ 'general.startEnd' | transloco }}</span>
+              </hlm-date-range-picker>
+            </hlm-collapsible-content>
+          </hlm-collapsible>
         </div>
 
         <pu-check-result-table [teamId]="teamId()" [monitorId]="monitorId()" />
@@ -143,62 +139,67 @@ import {CheckResultsEmpty} from './check-results-empty';
   imports: [
     TranslocoPipe,
     FormsModule,
-    MatFormField,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    MatDateRangeInput,
-    MatDateRangePicker,
-    MatDatepickerToggle,
-    MatEndDate,
-    MatStartDate,
-    MatSuffix,
-    HlmIconImports,
     CheckResultTable,
     CheckResultsEmpty,
+    HlmIconImports,
     HlmSwitchImports,
     HlmLabelImports,
     HlmButtonImports,
     HlmButtonGroupImports,
     HlmToggleGroupImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmSelectImports,
     BrnSelectImports,
+    HlmDatePickerImports,
+    HlmCollapsibleImports,
+    HlmBadgeImports,
   ],
 })
 export class CheckResultList {
   protected readonly max = new Date();
+  protected readonly toBackendDate = toBackendDate;
+  protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
+    dates
+      .filter((it) => !!it)
+      .map((it) => format(it, 'dd.M.yyyy'))
+      .reduce((prev, curr, index) => `${prev}${index == 1 ? ' - ' : ''}${curr}`, '');
 
   readonly checkResultsStore = inject(CheckResultsStore);
 
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
 
-  private readonly paginator = viewChild.required(HlmPaginator);
-  private readonly sort = viewChild.required(HlmSort);
-
-  readonly showDuplicates = linkedQueryParam('checks.showDuplicates', {
+  readonly showDuplicates = linkedQueryParam('checks.filter.showDuplicates', {
     parse: paramToBoolean({defaultValue: false}),
+    stringify: (it) => (it === true ? 'true' : null),
   });
 
-  hasNotification = linkedQueryParam('checks.hasNotification', {
+  hasNotification = linkedQueryParam('checks.filter.hasNotification', {
     parse: paramToBoolean(),
   });
 
-  statuses = linkedQueryParam('checks.status', {
+  statuses = linkedQueryParam('checks.filter.status', {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
     stringify: arrayToParam(),
   });
 
-  start = linkedQueryParam('checks.start', {
+  protected readonly start = linkedQueryParam('checks.filter.start', {
     parse: (it) => (it ? toBackendDate(it) : undefined),
     stringify: (it) => (it ? toBackendDate(it) : undefined),
   });
-  end = linkedQueryParam('checks.end', {
+  protected readonly end = linkedQueryParam('checks.filter.end', {
     parse: (it) => (it ? toBackendDate(it) : undefined),
     stringify: (it) => (it ? toBackendDate(it) : undefined),
   });
+
+  protected readonly startDate = computed(() =>
+    this.start() ? new Date(this.start()!) : undefined,
+  );
+  protected readonly endDate = computed(() => (this.end() ? new Date(this.end()!) : undefined));
+
+  protected readonly activeFiltersCount = injectQueryParams(
+    (params) => Object.keys(params).filter((it) => it.startsWith('checks.fitler.')).length,
+  );
 
   readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},
@@ -214,8 +215,6 @@ export class CheckResultList {
 
   constructor() {
     this.checkResultsStore.setShowDuplicates(this.showDuplicates);
-    this.checkResultsStore.setHlmPaginator(this.paginator);
-    this.checkResultsStore.setHlmSort(this.sort);
 
     this.checkResultsStore.load(
       computed(() => {
@@ -248,6 +247,4 @@ export class CheckResultList {
 
     setColumnsToDisplay(computed(() => !this.monitorId()));
   }
-
-  protected readonly trackBy = trackBy;
 }

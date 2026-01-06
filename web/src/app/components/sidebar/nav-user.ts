@@ -4,7 +4,6 @@ import {RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
 import {ThemeService} from '@slateui/theme';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
