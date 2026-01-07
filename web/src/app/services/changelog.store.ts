@@ -29,7 +29,9 @@ export const ChangelogStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
   withProps(() => ({
-    lastVersion: injectLocalStorage<string>('pu_last_version'),
+    lastVersion: injectLocalStorage<string>('pu_last_version', {
+      defaultValue: environment.version,
+    }),
   })),
   withComputed((store, infoStore = inject(InfoStore)) => ({
     newVersionChangelogAvailable: computed(() => {
@@ -37,12 +39,6 @@ export const ChangelogStore = signalStore(
         return false;
       }
 
-      const currentVersion = environment.version;
-      const lastVersion = store.lastVersion();
-      if (!lastVersion) {
-        store.lastVersion.set(currentVersion);
-        return false;
-      }
       return environment.version !== store.lastVersion();
     }),
   })),
@@ -70,7 +66,7 @@ export const ChangelogStore = signalStore(
     ),
   })),
   withHooks({
-    onInit(_, infoStore = inject(InfoStore)) {
+    onInit(store, infoStore = inject(InfoStore)) {
       infoStore.loadShowNewVersionDialog();
     },
   }),

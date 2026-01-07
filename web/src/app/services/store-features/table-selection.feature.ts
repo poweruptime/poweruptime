@@ -29,6 +29,7 @@ export function withSelection<EntityType>({
     withComputed(({selection, entityMap}) => ({
       hasValue: computed(() => selection().length > 0),
       isAllSelected: computed(() => {
+        console.log('isAllSelected run');
         const _selection = selection();
         if (_selection.length === 0) {
           return false;

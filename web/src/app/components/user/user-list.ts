@@ -22,7 +22,7 @@ import {UserTable} from './user-table';
 @Component({
   template: `
     <div class="flex flex-col gap-2">
-      <div class="flex flex-col items-end justify-between gap-2 pt-1 md:flex-row md:items-center">
+      <div class="flex flex-col items-end justify-between gap-2 md:flex-row md:items-center">
         <button type="button" hlmBtn variant="default" routerLink="new">
           <ng-icon hlm size="sm" name="bootstrapPersonFillAdd" />
           {{ 'instanceSettings.inviteUser' | transloco }}
