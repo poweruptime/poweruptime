@@ -54,6 +54,17 @@ export interface LicenseData {
         Forum
       </a>
       <hr />
+      <button
+        class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+        type="button"
+        hlmBtn
+        variant="ghost">
+        <ng-icon hlm name="bootstrapInfoCircleFill" size="sm" />
+        <div class="flex items-center gap-2">
+          <span>Version</span>
+          <span class="bg-secondary rounded px-2 py-0.5 font-mono text-xs">{{ version }}</span>
+        </div>
+      </button>
       @let changelogPending = changelogStore.isPending();
       <button
         class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
@@ -68,17 +79,6 @@ export interface LicenseData {
           <ng-icon hlm name="lucideScrollText" size="sm" />
         }
         Changelog
-      </button>
-      <button
-        class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
-        type="button"
-        hlmBtn
-        variant="ghost">
-        <ng-icon hlm name="bootstrapInfoCircleFill" size="sm" />
-        <div class="flex items-center gap-2">
-          <span>Version</span>
-          <span class="bg-secondary rounded px-2 py-0.5 font-mono text-xs">{{ version }}</span>
-        </div>
       </button>
       <pu-debug-info-dialog *isSystemAdmin />
     </div>

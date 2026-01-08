@@ -2,8 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {ProfileOverviewPage} from './profile-overview.page';
-import {ProfileSecurityPage} from './profile-security.page';
+import {ProfileGeneralCard, ProfileSecurity} from '@app/components/profile';
 
 @Component({
   template: `
@@ -18,20 +17,20 @@ import {ProfileSecurityPage} from './profile-security.page';
       <div class="flex flex-col gap-14">
         <div class="flex flex-col gap-4">
           <h2 class="text-2xl font-bold tracking-tight">{{ 'general.overview' | transloco }}</h2>
-          <pu-profile-overview-page />
+          <pu-profile-general-card />
         </div>
 
         <hr />
 
         <div class="flex flex-col gap-4">
           <h2 class="text-2xl font-bold tracking-tight">{{ 'general.security' | transloco }}</h2>
-          <pu-profile-security-page />
+          <pu-profile-security />
         </div>
       </div>
     </div>
   `,
   selector: 'profile-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, ProfileOverviewPage, ProfileSecurityPage],
+  imports: [TranslocoPipe, ProfileGeneralCard, ProfileSecurity, ProfileGeneralCard],
 })
-export class ProfileLayout {}
+export class ProfilePage {}

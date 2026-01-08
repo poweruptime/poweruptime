@@ -1,36 +1,37 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 
-import {ProfileEmailEditForm} from '@app/components/profile';
 import {ProfileEditStore, ProfileStore} from '@app/services';
+
+import {ProfileEmailEditForm} from './profile-email-edit-form';
 
 @Component({
   template: `
     <div class="flex flex-col gap-4">
       <div class="grid md:grid-cols-2 xl:grid-cols-3">
         <div>
-          <mat-card appearance="outlined">
-            <mat-card-content>
+          <section class="h-full w-full" hlmCard>
+            <div hlmCardContent>
               @if (profileStore.email(); as email) {
                 <pu-profile-email-form
                   [email]="email"
                   (submitCreate)="profileEditStore.requestEmailChange($event)" />
               }
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </section>
         </div>
       </div>
     </div>
   `,
-  selector: 'pu-profile-overview-page',
+  selector: 'pu-profile-general-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProfileEditStore],
-  imports: [MatCard, MatCardContent, ProfileEmailEditForm],
+  imports: [ProfileEmailEditForm, HlmCardImports],
 })
-export class ProfileOverviewPage {
-  readonly profileStore = inject(ProfileStore);
-  readonly profileEditStore = inject(ProfileEditStore);
+export class ProfileGeneralCard {
+  protected readonly profileStore = inject(ProfileStore);
+  protected readonly profileEditStore = inject(ProfileEditStore);
 
   constructor() {
     this.profileStore.loadProfile();
