@@ -11,8 +11,9 @@ import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
 import {createInjectable} from 'ngxtension/create-injectable';
 
-import {HelpDialog} from '@app/components/help-dialog';
 import {IsSystemAdmin} from '@app/directives';
+
+import {HelpDialog} from '../_dialog/help-dialog';
 
 @Component({
   template: `
@@ -126,9 +127,7 @@ export class NavSecondary {
   );
 
   protected openHelp() {
-    this.dialog.open(HelpDialog, {
-      contentClass: 'sm:!max-w-[750px]',
-    });
+    this.dialog.open(HelpDialog);
   }
 }
 

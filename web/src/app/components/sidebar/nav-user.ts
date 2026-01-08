@@ -1,19 +1,19 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {MatDialog} from '@angular/material/dialog';
-
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 import {ThemeService} from 'dfx-theme';
 
-import {AboutDialog} from '@app/components/about-dialog';
 import {AuthStore, InfoStore, ProfileStore} from '@app/services';
 import {environment, themeOptions} from '@app/util';
+
+import {AboutDialog} from '../_dialog/about-dialog';
 
 @Component({
   template: `
@@ -74,7 +74,7 @@ import {environment, themeOptions} from '@app/util';
             {{ 'general.about' | transloco }}
           </button>
           @if (environment.channel === 'dev') {
-            <button routerLink="/dev" hlmDropdownMenuItem>
+            <button type="button" routerLink="/dev" hlmDropdownMenuItem>
               <ng-icon hlm size="sm" name="bootstrapCodeSlash" />
               {{ 'profile.devThings' | transloco }}
             </button>
@@ -166,7 +166,7 @@ export class NavUser {
   protected readonly environment = environment;
 
   private readonly sidebarService = inject(HlmSidebarService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(HlmDialogService);
   protected readonly themeService = inject(ThemeService);
   protected readonly translocoService = inject(TranslocoService);
   protected readonly profileStore = inject(ProfileStore);
@@ -180,8 +180,7 @@ export class NavUser {
   constructor() {
     this.infoStore.loadSupport();
   }
-
-  openAbout() {
+  protected openAbout() {
     this.dialog.open(AboutDialog);
   }
 }

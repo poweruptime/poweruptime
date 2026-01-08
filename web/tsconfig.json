@@ -50,6 +50,7 @@
       "@spartan-ng/helm/sidebar": ["./src/libs/ui/sidebar/src/index.ts"],
       "@spartan-ng/helm/skeleton": ["./src/libs/ui/skeleton/src/index.ts"],
       "@spartan-ng/helm/sort": ["./src/libs/custom/sort/index.ts"],
+      "@spartan-ng/helm/spinner": ["./src/libs/ui/spinner/src/index.ts"],
       "@spartan-ng/helm/switch": ["./src/libs/ui/switch/src/index.ts"],
       "@spartan-ng/helm/table": ["./src/libs/ui/table/src/index.ts"],
       "@spartan-ng/helm/tabs": ["./src/libs/ui/tabs/src/index.ts"],

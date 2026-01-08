@@ -13,7 +13,7 @@ import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
-import {ProfileEditStore, SessionsStore} from '@app/services';
+import {SessionsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
 @Component({

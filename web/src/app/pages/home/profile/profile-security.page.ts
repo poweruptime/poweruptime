@@ -9,7 +9,7 @@ import {
   ProfilePasswordEditForm,
   ProfileSessionTable,
 } from '@app/components/profile';
-import {ProfileEditStore, SessionsStore} from '@app/services';
+import {ProfileEditStore} from '@app/services';
 
 @Component({
   template: `

@@ -16,14 +16,14 @@ import {n_generate_float, n_generate_int} from 'dfts-helper';
       @if (!hide()) {
         <hlm-tooltip>
           <button
-            class="rainbow-border glow inline-block rounded-lg p-1 hover:cursor-pointer"
+            class="rainbow-border glow inline-block rounded-lg p-1 selection:border-none hover:cursor-pointer focus:border-none focus-visible:border-none active:border-none"
             (click)="confetti.next(true)"
             hlmTooltipTrigger
             type="button">
             <div
               class="flex items-center gap-2 rounded bg-gray-900 px-2 py-1.5 font-semibold text-white">
               <ng-icon name="lucideAward" size="26" />
-              <span class="hidden sm:inline">Supporter</span>
+              <span class="hidden sm:inline">Sponsor</span>
             </div>
           </button>
           <span *brnTooltipContent>

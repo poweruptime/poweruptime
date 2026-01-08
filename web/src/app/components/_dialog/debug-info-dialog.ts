@@ -10,10 +10,9 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 
-import {environment} from '@app/util';
-
-import {InfoStore, InstanceSettingsStore} from '../services';
-import {CopyButton} from './copy-button';
+import {InfoStore, InstanceSettingsStore} from '../../services';
+import {environment} from '../../util';
+import {CopyButton} from '../copy-button';
 
 @Component({
   template: `
