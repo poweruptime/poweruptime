@@ -4,7 +4,7 @@ import {MatMiniFabButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 import {NgIcon} from '@ng-icons/core';
-import {ThemeService} from '@slateui/theme';
+import {ThemeService} from 'dfx-theme';
 
 import {themeOptions} from '@app/util';
 

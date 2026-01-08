@@ -4,16 +4,16 @@ import {RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {ThemeService} from '@slateui/theme';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
+import {ThemeService} from 'dfx-theme';
 
 import {AboutDialog} from '@app/components/about-dialog';
 import {AuthStore, InfoStore, ProfileStore} from '@app/services';
-import {themeOptions} from '@app/util';
+import {environment, themeOptions} from '@app/util';
 
 @Component({
   template: `
@@ -73,6 +73,12 @@ import {themeOptions} from '@app/util';
             <ng-icon hlm size="sm" name="bootstrapInfoCircle" />
             {{ 'general.about' | transloco }}
           </button>
+          @if (environment.channel === 'dev') {
+            <button routerLink="/dev" hlmDropdownMenuItem>
+              <ng-icon hlm size="sm" name="bootstrapCodeSlash" />
+              {{ 'profile.devThings' | transloco }}
+            </button>
+          }
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
         <hlm-dropdown-menu-group>
@@ -157,6 +163,8 @@ import {themeOptions} from '@app/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavUser {
+  protected readonly environment = environment;
+
   private readonly sidebarService = inject(HlmSidebarService);
   private readonly dialog = inject(MatDialog);
   protected readonly themeService = inject(ThemeService);

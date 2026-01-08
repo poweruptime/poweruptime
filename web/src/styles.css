@@ -77,7 +77,7 @@ color utility to any element that depends on these defaults.
 /* Column Width */
 .mat-column-select,
 .hlm-column-select {
-  @apply w-28;
+  @apply w-12;
 }
 
 .mat-column-createdAt,

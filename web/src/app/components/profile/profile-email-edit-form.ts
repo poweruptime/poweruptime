@@ -68,6 +68,8 @@ export class ProfileEmailEditForm extends AbstractModelEditFormComponent<
   BackendType['UpdateEmailDto'],
   BackendType['UpdateEmailDto']
 > {
+  override disableInputFocus = true;
+
   override form = this.fb.nonNullable.group({
     password: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
     email: [

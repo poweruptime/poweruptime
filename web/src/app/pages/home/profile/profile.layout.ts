@@ -1,53 +1,37 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-
-import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 
-import {environment} from '@app/util';
+import {ProfileOverviewPage} from './profile-overview.page';
+import {ProfileSecurityPage} from './profile-security.page';
 
 @Component({
   template: `
-    <nav [tabPanel]="tabPanel" mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start">
-      @for (route of routes; track route.path) {
-        <a
-          #rla="routerLinkActive"
-          [active]="rla.isActive"
-          [routerLink]="route.path"
-          routerLinkActive
-          mat-tab-link>
-          {{ route.text | transloco }}
-        </a>
-      }
-    </nav>
-    <mat-tab-nav-panel #tabPanel>
-      <div class="pt-2">
-        <router-outlet />
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <h1 class="text-foreground text-3xl font-bold tracking-tight">
+          {{ 'profile.settings' | transloco }}
+        </h1>
+        <p class="text-muted-foreground mt-2">Manage your profile and security preferences</p>
       </div>
-    </mat-tab-nav-panel>
+
+      <div class="flex flex-col gap-14">
+        <div class="flex flex-col gap-4">
+          <h2 class="text-2xl font-bold tracking-tight">{{ 'general.overview' | transloco }}</h2>
+          <pu-profile-overview-page />
+        </div>
+
+        <hr />
+
+        <div class="flex flex-col gap-4">
+          <h2 class="text-2xl font-bold tracking-tight">{{ 'general.security' | transloco }}</h2>
+          <pu-profile-security-page />
+        </div>
+      </div>
+    </div>
   `,
-  selector: 'instance-settings-layout',
+  selector: 'profile-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatTabNav,
-    MatTabLink,
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    MatTabNavPanel,
-    TranslocoPipe,
-  ],
+  imports: [TranslocoPipe, ProfileOverviewPage, ProfileSecurityPage],
 })
-export class ProfileLayout {
-  /**
-   * t(general.overview)
-   * t(general.security)
-   * t(profile.devThings)
-   */
-  readonly routes = [
-    {path: 'overview', text: 'general.overview'},
-    {path: 'security', text: 'general.security'},
-    ...(environment.channel === 'dev' ? [{path: 'dev', text: 'profile.devThings'}] : []),
-  ];
-}
+export class ProfileLayout {}

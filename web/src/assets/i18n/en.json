@@ -126,6 +126,7 @@
     "data": "Data",
     "date": "Date",
     "delete": "Delete",
+    "deleteSelection": "{{general.delete}} Selection",
     "deleted": "Deleted",
     "description": "Description",
     "disable": "Disable",

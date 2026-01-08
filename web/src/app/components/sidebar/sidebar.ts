@@ -3,8 +3,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {Router} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon, provideIcons} from '@ng-icons/core';
-import {lucideCommand} from '@ng-icons/lucide';
+import {NgIcon} from '@ng-icons/core';
 import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
 
 import {TeamSelect} from '@app/components/team-select';
@@ -91,7 +90,6 @@ import {NavUser} from './nav-user';
     TranslocoPipe,
     NgOptimizedImage,
   ],
-  providers: [provideIcons({lucideCommand})],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidebar {
@@ -106,8 +104,6 @@ export class Sidebar {
 
   navigateToTeamDashboard(newTeamId: string) {
     const current = this.router.url; // e.g. "/t/abc/notification-methods"
-    const teamSegmentRe = /t\/[^/;?]+/;
-
     if (teamSegmentRe.test(current)) {
       // replace "t/{oldId}" with "t/{newTeamId}"
       const updated = current.replace(teamSegmentRe, `t/${newTeamId}`);
@@ -121,3 +117,5 @@ export class Sidebar {
     }
   }
 }
+
+const teamSegmentRe = /t\/[^/;?]+/;

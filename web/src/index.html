@@ -16,34 +16,41 @@
     <link rel="manifest" href="/assets/favis/site.webmanifest" />
   </head>
   <body id="body">
+    <!-- Flash Prevention - Prevents FOUC in all browsers -->
     <script>
       (function () {
         'use strict';
         try {
-          const t = localStorage.getItem('pu_theme') || 'system',
-            e =
-              t === 'system'
-                ? window.matchMedia('(prefers-color-scheme: dark)').matches
-                  ? 'dark'
-                  : 'light'
-                : t === 'light' || t === 'dark'
-                  ? t
-                  : 'light',
-            n = document.documentElement;
+          const t = localStorage.getItem('theme') || 'system';
+          const e =
+            t === 'system'
+              ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : t === 'light' || t === 'dark'
+                ? t
+                : 'light';
+          const n = document.documentElement;
           if (n) {
-            (n.classList.remove('light', 'dark'),
-              e === 'dark'
-                ? (n.classList.add('dark'), n.setAttribute('data-theme', 'dark'))
-                : (n.classList.remove('dark'), n.removeAttribute('data-theme')),
-              (n.style.colorScheme = e));
+            n.classList.remove('light', 'dark');
+            if (e === 'dark') {
+              n.classList.add('dark');
+              n.setAttribute('data-theme', 'dark');
+            } else {
+              n.classList.add('light');
+              n.setAttribute('data-theme', 'light');
+            }
+            n.style.colorScheme = e;
           }
         } catch (e) {
           try {
             const n = document.documentElement;
-            n &&
-              (n.classList.remove('light', 'dark'),
-              n.removeAttribute('data-theme'),
-              (n.style.colorScheme = 'light'));
+            if (n) {
+              n.classList.remove('dark');
+              n.classList.add('light');
+              n.setAttribute('data-theme', 'light');
+              n.style.colorScheme = 'light';
+            }
           } catch (e) {}
         }
       })();

@@ -62,7 +62,11 @@ import {
           }
         </mat-form-field>
 
-        @if (form.controls.password.errors?.['mismatch']) {
+        @if (
+          (form.controls.password.controls.confirmPassword.value.length > 0 ||
+            form.controls.password.controls.newPassword.value.length > 0) &&
+          form.controls.password.errors?.['mismatch']
+        ) {
           <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
         }
       </ng-container>
@@ -89,6 +93,8 @@ export class ProfilePasswordEditForm extends AbstractModelEditFormComponent<
   BackendType['UpdatePasswordDto'],
   BackendType['UpdatePasswordDto']
 > {
+  override disableInputFocus = true;
+
   override form = this.fb.nonNullable.group({
     oldPassword: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
     password: this.fb.nonNullable.group(

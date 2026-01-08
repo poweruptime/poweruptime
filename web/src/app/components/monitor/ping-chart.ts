@@ -10,8 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import {ThemeService} from '@slateui/theme';
 import Chart, {TooltipItem} from 'chart.js/auto';
+import {ThemeService} from 'dfx-theme';
 
 @Component({
   template: `
