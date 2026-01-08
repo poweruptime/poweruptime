@@ -3,6 +3,7 @@ import {Routes} from '@angular/router';
 import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {
+  MonitorDetailStore,
   MonitorsDashboardStore,
   MonitorsStore,
   NotificationMethodsStore,
@@ -47,6 +48,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'new-monitor',
+    providers: [MonitorDetailStore],
     loadComponent: () => import('./monitor/monitor-edit.page').then((c) => c.MonitorEditPage),
   },
   {

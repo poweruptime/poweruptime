@@ -27,7 +27,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
     <div class="flex flex-col gap-4">
       @if (notificationDetailStore.notification(); as notification) {
         <div>
-          <a mat-stroked-button routerLink="../../../" queryParamsHandling="merge">
+          <a mat-stroked-button routerLink="../../" queryParamsHandling="merge">
             <ng-icon class="me-1" name="bootstrapArrowLeft" />
             <span>{{ notification.monitor.name }}</span>
           </a>

@@ -1,4 +1,4 @@
-import {Component, computed, inject, input, signal} from '@angular/core';
+import {Component, booleanAttribute, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
@@ -6,6 +6,7 @@ import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {MonitorEditForm, MonitorEditFormPlaceholder} from '@app/components/monitor';
 import {
   DefaultSelectedNotificationMethodsStore,
+  MonitorDetailStore,
   MonitorEditStore,
   NotificationMethodsStore,
   SelectedTeamStore,
@@ -14,25 +15,18 @@ import {
 
 @Component({
   template: `
+    @let _isEditing = isEditing();
     <div class="flex flex-col gap-4">
-      @let _monitorId = monitorId();
-      @if (_monitorId) {
-        @if (monitorEditStore.isFulfilled()) {
-          <h1 class="text-4xl">
-            {{ 'monitor.edit.edit' | transloco: {name: monitorEditStore.monitor()?.name} }}
-          </h1>
-        } @else {
-          <hlm-skeleton class="h-12 w-64" />
-        }
-      } @else {
-        <h1 class="text-4xl">{{ 'cmdk.groups.monitor.create' | transloco }}</h1>
+      @if (!_isEditing) {
+        <h1 class="text-3xl">{{ 'cmdk.groups.monitor.create' | transloco }}</h1>
       }
 
-      @if (!_monitorId || monitorEditStore.isFulfilled()) {
+      @if (monitorDetailStore.isFulfilled() || !_isEditing) {
         <pu-monitor-edit-form
+          class="mt-4"
           [(searchNotificationMethod)]="searchNotificationMethod"
           [(searchTag)]="searchTag"
-          [monitor]="monitorEditStore.monitor()"
+          [monitor]="monitorDetailStore.monitor()"
           [selectedTeamId]="selectedTeamStore.selectedTeamId()"
           [allNotificationMethods]="notificationMethodsStore.entities()"
           [isNotificationMethodsSearchPending]="notificationMethodsStore.isPending()"
@@ -45,6 +39,8 @@ import {
           (submitCreate)="monitorEditStore.create($event)"
           (submitUpdate)="monitorEditStore.update($event)" />
       } @else {
+        <hlm-skeleton class="h-12 w-64" />
+
         <pu-monitor-edit-form-placeholder />
       }
     </div>
@@ -60,24 +56,23 @@ import {
   imports: [MonitorEditForm, MonitorEditFormPlaceholder, HlmSkeletonImports, TranslocoPipe],
 })
 export class MonitorEditPage {
-  readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly monitorEditStore = inject(MonitorEditStore);
+  protected readonly selectedTeamStore = inject(SelectedTeamStore);
+  protected readonly monitorEditStore = inject(MonitorEditStore);
+  protected readonly monitorDetailStore = inject(MonitorDetailStore);
 
   readonly notificationMethodsStore = inject(NotificationMethodsStore);
   readonly defaultSelectedNotificationMethodsStore = inject(
     DefaultSelectedNotificationMethodsStore,
   );
 
-  readonly tagsStore = inject(TagsStore);
+  isEditing = input(false, {transform: booleanAttribute});
 
-  readonly monitorId = input<string>();
+  readonly tagsStore = inject(TagsStore);
 
   searchNotificationMethod = signal('');
   searchTag = signal('');
 
   constructor() {
-    this.monitorEditStore.loadMonitorById(this.monitorId);
-
     this.defaultSelectedNotificationMethodsStore.load(
       computed(() => ({
         teamId: this.selectedTeamStore.selectedTeamId(),

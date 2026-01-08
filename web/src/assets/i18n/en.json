@@ -288,7 +288,7 @@
     "cloneSuccess": "Successfully cloned the {{general.monitor}}",
     "details": {
       "check": "Check every {{testIntervalDuration}}",
-      "openPublic": "Open public {{general.monitor}} page",
+      "openPublic": "Public page",
       "pingChart": {
         "endDate": "{{general.end}} {{general.date}}",
         "exceedsMaxWindow": "Selected window may not exceed 1 month",
