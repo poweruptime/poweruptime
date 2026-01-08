@@ -10,7 +10,6 @@ import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.features.authentication.SessionInformationMissingException
 import org.poweruptime.backend.features.authentication.SessionTokenIncorrectException
 import org.poweruptime.backend.features.authentication.domain.deleteAllUpdatedAtBefore
-import org.poweruptime.backend.features.authentication.domain.deleteByPublicId
 import org.poweruptime.backend.features.authentication.domain.existsByPublicSessionAndUserId
 import org.poweruptime.backend.features.authentication.domain.existsByRefreshToken
 import org.poweruptime.backend.features.authentication.domain.findAll
@@ -114,9 +113,6 @@ class SessionService(
 
     @Transactional
     fun clearSessionsOlderThan(past: Instant): Int = Session.deleteAllUpdatedAtBefore(past)
-
-    @Transactional
-    fun deleteByPublicId(publicSessionId: String) = Session.deleteByPublicId(publicSessionId)
 
     @Throws(SessionTokenIncorrectException::class)
     fun getByTokenOrThrow(

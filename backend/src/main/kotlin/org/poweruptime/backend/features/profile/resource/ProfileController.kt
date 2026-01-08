@@ -108,6 +108,6 @@ class ProfileController(
             throw NotFoundException("User session not found")
         }
 
-        sessionService.deleteByPublicId(publicSessionId)
+        sessionService.invalidateSessionByPublicId(publicSessionId)
     }
 }
