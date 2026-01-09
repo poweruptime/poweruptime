@@ -159,7 +159,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               </mat-slide-toggle>
 
               @if (form.controls.versionCheckAdminMailEnabled.getRawValue()) {
-                <div class="motion-preset-slide-down motion-duration-300 grid gap-2">
+                <div class="animate-in fade-in slide-in-from-top-20 grid gap-2 duration-300">
                   <mat-slide-toggle
                     formControlName="versionCheckAdminMailSendToEveryone"
                     labelPosition="before">

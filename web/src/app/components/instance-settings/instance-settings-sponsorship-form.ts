@@ -58,7 +58,7 @@ import {TableLoadingBar} from '../table-loading-bar';
             <b class="text-xl">
               Thank's for your support
               <i class="break-keep whitespace-nowrap">{{ settings().supportLookup }}&nbsp;</i>
-              <span class="motion-preset-pulse-sm">❤️</span>
+              <span>❤️</span>
             </b>
           </p>
           <div class="mt-4 mb-4 flex justify-center">

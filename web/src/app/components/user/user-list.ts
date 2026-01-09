@@ -5,9 +5,8 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -28,7 +27,7 @@ import {UserTable} from './user-table';
           {{ 'instanceSettings.inviteUser' | transloco }}
         </button>
 
-        <pu-table-filter filtersKey="filter.">
+        <pu-table-filter>
           <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="activated">
             {{ 'general.activated' | transloco }}
             <hlm-switch class="ms-2" id="activated" [(checked)]="activatedFilter" />
@@ -48,18 +47,18 @@ import {UserTable} from './user-table';
             </hlm-select-content>
           </brn-select>
 
-          <div class="w-72" hlmButtonGroup>
-            <button type="button" hlmBtn variant="outline">
+          <div class="w-72" hlmInputGroup>
+            <div hlmInputGroupAddon>
               <ng-icon hlm name="bootstrapSearch" size="sm" />
-            </button>
+            </div>
             <input
               [(ngModel)]="searchFilter"
               [placeholder]="'general.search' | transloco"
-              hlmInput />
+              hlmInputGroupInput />
             @if ((searchFilter()?.length ?? 0) > 0) {
-              <button (click)="searchFilter.set('')" type="button" hlmBtn variant="outline">
+              <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
                 <ng-icon hlm name="bootstrapXLg" size="sm" />
-                <span class="sr-only">'general.clear' | transloco</span>
+                <span class="sr-only">{{ 'general.clear' | transloco }}</span>
               </button>
             }
           </div>
@@ -84,8 +83,7 @@ import {UserTable} from './user-table';
     HlmSwitchImports,
     HlmSelectImports,
     BrnSelectImports,
-    HlmButtonGroupImports,
-    HlmInputImports,
+    HlmInputGroupImports,
   ],
 })
 export class UserList {

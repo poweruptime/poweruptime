@@ -8,9 +8,8 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
@@ -44,7 +43,7 @@ import {TeamTable} from './team-table';
           }
         </div>
 
-        <pu-table-filter filtersKey="filter.">
+        <pu-table-filter>
           <div class="flex justify-end">
             <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="showDeleted">
               {{ 'general.deleted' | transloco }}
@@ -52,18 +51,18 @@ import {TeamTable} from './team-table';
             </label>
           </div>
 
-          <div class="w-72" hlmButtonGroup>
-            <button type="button" hlmBtn variant="outline">
+          <div class="w-72" hlmInputGroup>
+            <div hlmInputGroupAddon>
               <ng-icon hlm name="bootstrapSearch" size="sm" />
-            </button>
+            </div>
             <input
               [(ngModel)]="searchFilter"
               [placeholder]="'general.search' | transloco"
-              hlmInput />
+              hlmInputGroupInput />
             @if ((searchFilter()?.length ?? 0) > 0) {
-              <button (click)="searchFilter.set('')" type="button" hlmBtn variant="outline">
+              <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
                 <ng-icon hlm name="bootstrapXLg" size="sm" />
-                <span class="sr-only">'general.clear' | transloco</span>
+                <span class="sr-only">{{ 'general.clear' | transloco }}</span>
               </button>
             }
           </div>
@@ -87,8 +86,7 @@ import {TeamTable} from './team-table';
     HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmButtonGroupImports,
-    HlmInputImports,
+    HlmInputGroupImports,
   ],
 })
 export class TeamList {

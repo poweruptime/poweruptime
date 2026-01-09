@@ -27,7 +27,7 @@ import {NotificationsEmpty} from './notifications-empty';
       <pu-notifications-empty />
     } @else {
       <div class="flex flex-col gap-2">
-        <pu-table-filter filtersKey="notifi.filter.">
+        <pu-table-filter [key]="tableKey">
           <brn-select
             class="inline-block"
             [(value)]="statuses"
@@ -75,6 +75,7 @@ import {NotificationsEmpty} from './notifications-empty';
   ],
 })
 export class NotificationList {
+  protected readonly tableKey = 'notifi';
   protected readonly max = new Date();
   protected readonly toBackendDate = toBackendDate;
   protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
@@ -107,7 +108,7 @@ export class NotificationList {
   );
   protected readonly endDate = computed(() => (this.end() ? new Date(this.end()!) : undefined));
 
-  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters('notifi.filter.'));
+  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters(this.tableKey));
 
   protected readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},

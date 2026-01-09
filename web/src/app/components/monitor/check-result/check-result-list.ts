@@ -34,7 +34,7 @@ import {CheckResultsEmpty} from './check-results-empty';
       <pu-check-results-empty />
     } @else {
       <div class="flex flex-col gap-2">
-        <pu-table-filter filtersKey="checks.filter.">
+        <pu-table-filter [key]="tableKey">
           <div class="flex justify-end">
             <label
               class="inline-flex min-w-40 items-center justify-end"
@@ -129,6 +129,7 @@ import {CheckResultsEmpty} from './check-results-empty';
   ],
 })
 export class CheckResultList {
+  protected readonly tableKey = 'checks';
   protected readonly max = new Date();
   protected readonly toBackendDate = toBackendDate;
   protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
@@ -170,7 +171,7 @@ export class CheckResultList {
   );
   protected readonly endDate = computed(() => (this.end() ? new Date(this.end()!) : undefined));
 
-  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters('checks.filter.'));
+  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters(this.tableKey));
 
   readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},

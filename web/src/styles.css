@@ -11,7 +11,6 @@
 @import '@spartan-ng/brain/hlm-tailwind-preset.css';
 
 @plugin '@tailwindcss/typography';
-@plugin 'tailwindcss-motion';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

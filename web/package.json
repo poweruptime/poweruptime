@@ -40,7 +40,6 @@
     "@ng-icons/bootstrap-icons": "33.0.0",
     "@ng-icons/core": "33.0.0",
     "@ng-icons/lucide": "33.0.0",
-    "@ng-matero/extensions": "21.1.2",
     "@ngrx/operators": "21.0.1",
     "@ngrx/signals": "21.0.1",
     "@ngx-dropzone/cdk": "21.0.0",
@@ -98,7 +97,6 @@
     "playwright-ng-schematics": "21.0.3",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.18",
-    "tailwindcss-motion": "1.1.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.50.1"
   },

@@ -8,12 +8,13 @@ import {
 } from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
-import {MatButton} from '@angular/material/button';
-import {MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
 import {MonitorCardList, MonitorsEmpty, MonitorsFilter} from '@app/components/monitor';
@@ -25,6 +26,7 @@ import {
   MonitorsSearchStore,
   TagsStore,
 } from '@app/services';
+import {toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -39,50 +41,67 @@ import {
         <div
           class="flex h-[calc(100vh-90px)] flex-col gap-4"
           style="width: 21rem; min-width: 21rem;">
-          @let _showFilter = showFilter();
-          @let dashboard = monitorsDashboardStore.dashboard();
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              @if (teamId()) {
-                <a *isTeamAdmin mat-flat-button routerLink="new">{{ 'monitor.new' | transloco }}</a>
-              } @else {
-                <pu-team-select
-                  (teamIdSelected)="router.navigate(['/', 't', $event, 'm', 'new'])"
-                  adminOnly>
-                  <button mat-flat-button type="button">{{ 'monitor.new' | transloco }}</button>
-                </pu-team-select>
-              }
+          <hlm-collapsible [(expanded)]="showFilter">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                @if (teamId()) {
+                  <a *isTeamAdmin hlmBtn routerLink="new">{{ 'monitor.new' | transloco }}</a>
+                } @else {
+                  <pu-team-select
+                    (teamIdSelected)="router.navigate(['/', 't', $event, 'new-monitor'])"
+                    adminOnly>
+                    <button hlmBtn type="button">{{ 'monitor.new' | transloco }}</button>
+                  </pu-team-select>
+                }
+              </div>
+
+              @let _showFilter = showFilter();
+
+              <hlm-tooltip>
+                <button
+                  class="relative"
+                  type="button"
+                  hlmBtn
+                  position="after"
+                  hlmCollapsibleTrigger
+                  hlmTooltipTrigger
+                  variant="outline"
+                  size="icon">
+                  <!--              [class.rotate-90]="expanded()"-->
+                  <ng-icon hlm name="bootstrapFilter" size="sm" />
+                </button>
+                <span *brnTooltipContent>Ctrl + F</span>
+              </hlm-tooltip>
             </div>
 
-            <mat-chip-listbox
-              (change)="showFilter.set(!_showFilter)"
-              matTooltip="Ctrl + F"
-              matTooltipPosition="after">
-              <mat-chip-option [selected]="_showFilter">
-                <ng-icon name="bootstrapFilter" />
-              </mat-chip-option>
-            </mat-chip-listbox>
-          </div>
-
-          @defer (when _showFilter) {
-            @if (_showFilter) {
-              <pu-monitors-filter
-                [filter]="{
-                  search: $any(monitorsSearchStore.searchFilter()),
-                  types: monitorsSearchStore.typesFilter(),
-                  statuses: monitorsSearchStore.statusesFilter(),
-                  tags: monitorsSearchStore.tagsFilter(),
-                }"
-                [tags]="tagsStore.entities()"
-                [dashboard]="dashboard"
-                (filterChange)="
-                  monitorsSearchStore.searchFilter.set($event.search);
-                  monitorsSearchStore.typesFilter.set($event.types);
-                  monitorsSearchStore.statusesFilter.set($event.statuses);
-                  monitorsSearchStore.tagsFilter.set($event.tags)
-                " />
-            }
-          }
+            <hlm-collapsible-content>
+              @defer (when _showFilter) {
+                @if (_showFilter) {
+                  <section
+                    class="animate-in fade-in slide-in-from-top-20 mt-4 py-4 duration-300"
+                    hlmCard>
+                    <div class="px-4" hlmCardContent>
+                      <pu-monitors-filter
+                        [filter]="{
+                          search: $any(monitorsSearchStore.searchFilter()),
+                          types: monitorsSearchStore.typesFilter(),
+                          statuses: monitorsSearchStore.statusesFilter(),
+                          tags: monitorsSearchStore.tagsFilter(),
+                        }"
+                        [tags]="tagsStore.entities()"
+                        [dashboard]="monitorsDashboardStore.dashboard()"
+                        (filterChange)="
+                          monitorsSearchStore.searchFilter.set($event.search);
+                          monitorsSearchStore.typesFilter.set($event.types);
+                          monitorsSearchStore.statusesFilter.set($event.statuses);
+                          monitorsSearchStore.tagsFilter.set($event.tags)
+                        " />
+                    </div>
+                  </section>
+                }
+              }
+            </hlm-collapsible-content>
+          </hlm-collapsible>
 
           @if (monitorsSearchStore.isSearching()) {
             @if (monitorsSearchStore.isFulfilled() && monitorsSearchStore.entities().length === 0) {
@@ -114,16 +133,17 @@ import {
     RouterOutlet,
     RouterLink,
     MonitorCardList,
-    MatChipListbox,
-    MatChipOption,
     MonitorsFilter,
     TranslocoPipe,
-    MatButton,
     TeamSelect,
     IsTeamAdmin,
-    MatTooltip,
-    NgIcon,
     MonitorsEmpty,
+    HlmButtonImports,
+    HlmCollapsibleImports,
+    HlmIconImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmCardImports,
   ],
   selector: 'pu-monitors-page',
 })
@@ -177,4 +197,6 @@ export class MonitorsPage {
       })),
     );
   }
+
+  protected readonly toBackendDate = toBackendDate;
 }

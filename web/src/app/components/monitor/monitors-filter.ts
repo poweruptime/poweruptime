@@ -2,92 +2,79 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 
-import {MatIconButton} from '@angular/material/button';
-import {MatFormField, MatLabel, MatPrefix, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatOption, MatSelect} from '@angular/material/select';
-
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-import {DfxAutofocus} from 'dfx-helper';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
 
 import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
 
 @Component({
   template: `
-    <form class="motion-preset-slide-down motion-duration-300 grid gap-2" [formGroup]="form">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>{{ 'general.search' | transloco }}</mat-label>
-        <ng-icon name="bootstrapSearch" matIconPrefix />
-        <input formControlName="search" matInput focus />
+    <form class="grid gap-2" [formGroup]="form">
+      <div hlmInputGroup>
+        <div hlmInputGroupAddon>
+          <ng-icon hlm name="bootstrapSearch" size="sm" />
+        </div>
+        <input
+          [placeholder]="'general.search' | transloco"
+          formControlName="search"
+          hlmInputGroupInput />
         @if (form.controls.search.getRawValue().length > 0) {
-          <button
-            class="flex items-center"
-            [attr.aria-label]="'general.clear' | transloco"
-            (click)="form.controls.search.setValue('')"
-            type="button"
-            matSuffix
-            mat-icon-button>
-            <ng-icon name="bootstrapXLg" aria-hidden="true" />
+          <button (click)="form.controls.search.setValue('')" hlmInputGroupButton type="button">
+            <ng-icon hlm name="bootstrapXLg" size="sm" />
+            <span class="sr-only">{{ 'general.clear' | transloco }}</span>
           </button>
         }
-      </mat-form-field>
+      </div>
 
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>{{ 'general.status' | transloco }}</mat-label>
-        <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
-        <mat-select formControlName="statuses" multiple>
+      <brn-select [placeholder]="'general.status' | transloco" formControlName="statuses" multiple>
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content>
           @for (status of availableStatuses(); track status.status) {
-            <mat-option [value]="status.status">
-              {{ status.name }}
-            </mat-option>
+            <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
           }
-        </mat-select>
-      </mat-form-field>
+        </hlm-select-content>
+      </brn-select>
 
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>{{ 'general.type' | transloco }}</mat-label>
-        <ng-icon name="bootstrapListCheck" matIconPrefix />
-        <mat-select formControlName="types" multiple>
+      <brn-select [placeholder]="'general.type' | transloco" formControlName="statuses" multiple>
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content>
           @for (type of types; track type.value) {
-            <mat-option [value]="type.value">
-              {{ type.name }}
-            </mat-option>
+            <hlm-option [value]="type.value">{{ type.name }}</hlm-option>
           }
-        </mat-select>
-      </mat-form-field>
+        </hlm-select-content>
+      </brn-select>
 
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>{{ 'general.tags' | transloco }}</mat-label>
-        <ng-icon name="bootstrapTag" matIconPrefix />
-        <mat-select formControlName="tags" multiple>
+      <brn-select [placeholder]="'general.tags' | transloco" formControlName="tags" multiple>
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content>
           @for (tag of tags(); track tag.name) {
-            <mat-option [value]="tag.name">
-              {{ tag.name }}
-            </mat-option>
+            <hlm-option [value]="tag.name">{{ tag.name }}</hlm-option>
           }
-        </mat-select>
-      </mat-form-field>
+        </hlm-select-content>
+      </brn-select>
     </form>
   `,
   selector: 'pu-monitors-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    NgIcon,
-    MatFormField,
-    MatLabel,
-    MatSelect,
-    MatOption,
-    MatIconButton,
-    MatInput,
-    DfxAutofocus,
     TranslocoPipe,
-    MatPrefix,
-    MatSuffix,
+    HlmIconImports,
+    HlmInputGroupImports,
+    HlmSelectImports,
+    BrnSelectImports,
   ],
 })
 export class MonitorsFilter {
