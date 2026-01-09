@@ -3,7 +3,8 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {MtxTooltip} from '@ng-matero/extensions/tooltip';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
@@ -21,45 +22,45 @@ import {MonitorStatusBackground} from '@app/directives';
       [style.width]="_size === 3 ? '18px' : '14px'"
       [style.min-width]="_size === 3 ? '18px' : '14px'">
       @if (link()) {
-        <a
-          class="rounded-sm hover:scale-125"
-          [routerLink]="'c/' + _checkResult.id + '/logs'"
-          [class.h-9]="_size === 3"
-          [class.h-6]="_size === 2"
-          [class.w-3]="_size === 3"
-          [class.w-2]="_size === 2"
-          [monitor-status-background]="_checkResult.status"
-          [mtxTooltip]="checkResultsTooltip"
-          stopPropagation>
-          <span class="sr-only">{{ _checkResult.status }}</span>
-        </a>
+        <hlm-tooltip>
+          <a
+            class="rounded-sm hover:scale-125"
+            [routerLink]="'c/' + _checkResult.id + '/logs'"
+            [class.h-9]="_size === 3"
+            [class.h-6]="_size === 2"
+            [class.w-3]="_size === 3"
+            [class.w-2]="_size === 2"
+            [monitor-status-background]="_checkResult.status"
+            hlmTooltipTrigger
+            stopPropagation>
+            <span class="sr-only">{{ _checkResult.status }}</span>
+          </a>
 
-        <ng-template #checkResultsTooltip>
-          <div class="flex flex-col">
+          <div class="flex flex-col" *brnTooltipContent>
             <span>
               {{ _checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
             </span>
-            <span class="font-bold">{{ _checkResult.status }}</span>
+            <span class="text-center font-bold">{{ _checkResult.status }}</span>
           </div>
-        </ng-template>
+        </hlm-tooltip>
       } @else {
-        <div
-          class="rounded-sm hover:scale-125"
-          [class.h-9]="_size === 3"
-          [class.h-6]="_size === 2"
-          [class.w-3]="_size === 3"
-          [class.w-2]="_size === 2"
-          [monitor-status-background]="_checkResult.status"
-          [mtxTooltip]="checkResultsTooltip"></div>
+        <hlm-tooltip>
+          <div
+            class="rounded-sm hover:scale-125"
+            [class.h-9]="_size === 3"
+            [class.h-6]="_size === 2"
+            [class.w-3]="_size === 3"
+            [class.w-2]="_size === 2"
+            [monitor-status-background]="_checkResult.status"
+            hlmTooltipTrigger></div>
 
-        <ng-template #checkResultsTooltip>
-          <div class="flex flex-col">
+          <div class="flex flex-col" *brnTooltipContent>
             <span>
               {{ _checkResult.createdAt | date: 'HH:mm:ss dd.MM. ' }}
             </span>
-            <span class="font-bold">{{ _checkResult.status }}</span>
+            <span class="text-center font-bold">{{ _checkResult.status }}</span>
           </div>
-        </ng-template>
+        </hlm-tooltip>
       }
 
       @if (!hideLabel()) {
@@ -69,19 +70,19 @@ import {MonitorStatusBackground} from '@app/directives';
         @let _length = length();
 
         @if (_first) {
-          <span class="absolute -bottom-8 left-1">
+          <span class="text-muted-foreground absolute -bottom-8 left-1">
             {{ 'general.latest' | transloco }}
           </span>
         }
 
         @if (_last && _length > 10) {
-          <span class="absolute right-0 -bottom-8">
+          <span class="text-muted-foreground absolute right-0 -bottom-8">
             {{ _checkResult.createdAt | date: 'HH:mm' }}
           </span>
         }
 
         @if (_length > 22 && !_first && _index % 10 === 0 && _index < maxLabelSize()) {
-          <span class="absolute -bottom-8 left-1">
+          <span class="text-muted-foreground absolute -bottom-8 left-1">
             {{ _checkResult.createdAt | date: 'HH:mm' }}
           </span>
         }
@@ -93,10 +94,11 @@ import {MonitorStatusBackground} from '@app/directives';
   imports: [
     RouterLink,
     MonitorStatusBackground,
-    MtxTooltip,
     DatePipe,
     TranslocoPipe,
     StopPropagationDirective,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
   ],
 })
 export class UptimeTimelineEntry {

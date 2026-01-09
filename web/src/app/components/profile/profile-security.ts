@@ -11,7 +11,7 @@ import {ProfileSessionTable} from './profile-session-table';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-10">
+    <div class="flex flex-col gap-4">
       <div class="grid gap-4 md:grid-cols-2">
         <div>
           <section class="w-full" hlmCard>
@@ -35,9 +35,9 @@ import {ProfileSessionTable} from './profile-session-table';
             </div>
           </section>
         </div>
-
-        <pu-profile-session-table class="md:col-span-2" />
       </div>
+
+      <pu-profile-session-table />
     </div>
   `,
   selector: 'pu-profile-security',

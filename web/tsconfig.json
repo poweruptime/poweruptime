@@ -22,6 +22,7 @@
     "paths": {
       "@app/*": ["src/app/*"],
       "@spartan-ng/helm/accordion": ["./src/libs/ui/accordion/src/index.ts"],
+      "@spartan-ng/helm/alert-dialog": ["./src/libs/ui/alert-dialog/src/index.ts"],
       "@spartan-ng/helm/avatar": ["./src/libs/ui/avatar/src/index.ts"],
       "@spartan-ng/helm/badge": ["./src/libs/ui/badge/src/index.ts"],
       "@spartan-ng/helm/breadcrumb": ["./src/libs/ui/breadcrumb/src/index.ts"],

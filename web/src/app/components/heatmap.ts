@@ -1,9 +1,9 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
-
-import {MtxTooltip} from '@ng-matero/extensions/tooltip';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
@@ -33,31 +33,29 @@ import {BackendType} from '../api';
         <div
           class="relative flex flex-col gap-2"
           [class.justify-end]="_firstWeekNotFull"
-          [style.margin-bottom]="_firstWeekNotFull ? '0.9rem' : ''">
+          [style.margin-bottom]="_firstWeekNotFull ? '1.85rem' : ''">
           @for (day of entry.series; track day.date) {
             @let number = day.value | heatmapDotNumber;
-            @if (!_selected || _selected <= number) {
-              <div
-                class="heatmap-dot hover:scale-125"
-                [class.animate-pulse]="
-                  (day.date | date: 'yyyy-MM-dd') === (currentDate() | date: 'yyyy-MM-dd')
-                "
-                [style.background-color]="number | heatmapDotBackground"
-                [mtxTooltip]="heatmapDotTooltip"
-                mtxTooltipPosition="above"></div>
-            } @else {
-              <div
-                class="heatmap-dot border border-solid border-slate-900 hover:scale-125 dark:border-slate-700"
-                [mtxTooltip]="heatmapDotTooltip"
-                mtxTooltipPosition="above"></div>
-            }
+            <hlm-tooltip>
+              @if (!_selected || _selected <= number) {
+                <div
+                  class="heatmap-dot hover:scale-125"
+                  [class.animate-pulse]="
+                    (day.date | date: 'yyyy-MM-dd') === (currentDate() | date: 'yyyy-MM-dd')
+                  "
+                  [style.background-color]="number | heatmapDotBackground"
+                  hlmTooltipTrigger></div>
+              } @else {
+                <div
+                  class="heatmap-dot border border-solid border-slate-900 hover:scale-125 dark:border-slate-700"
+                  hlmTooltipTrigger></div>
+              }
 
-            <ng-template #heatmapDotTooltip>
-              <div class="flex flex-col">
+              <div class="flex flex-col" *brnTooltipContent>
                 <span>{{ day.date | date: 'E, dd.MM.yyyy' }}</span>
-                <span class="font-bold">{{ day.value }}</span>
+                <span class="text-center font-bold">{{ day.value }}</span>
               </div>
-            </ng-template>
+            </hlm-tooltip>
           }
 
           @let xAxis = entry.name | heatmapXAxisFormatting;
@@ -73,34 +71,30 @@ import {BackendType} from '../api';
         </div>
       }
       <div class="pl-8">
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <div class="grid grid-flow-col grid-rows-6 gap-x-4 gap-y-2">
-              @for (i of 11 | repeat; track i; let first = $first; let last = $last) {
+        <section hlmCard>
+          <div class="grid grid-flow-col grid-rows-6 gap-x-4 gap-y-2" hlmCardContent>
+            @for (i of 11 | repeat; track i; let first = $first; let last = $last) {
+              <div
+                class="heatmap-legend-text flex h-3 w-12 items-center justify-between whitespace-nowrap">
+                @let number = i + '0' | heatmapDotNumber;
+                <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
                 <div
-                  class="heatmap-legend-text flex h-3 w-12 items-center justify-between whitespace-nowrap">
-                  @let number = i + '0' | heatmapDotNumber;
-                  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-                  <div
-                    class="heatmap-dot"
-                    [class.scale-125]="_selected === number"
-                    [style.background-color]="number | heatmapDotBackground"
-                    (keydown)="_selected === number ? selected.set(null) : selected.set(number)"
-                    (click)="
-                      _selected === number ? selected.set(null) : selected.set(number)
-                    "></div>
-                  @if (first) {
-                    <span>0%</span>
-                  } @else if (last) {
-                    <span>100%</span>
-                  } @else {
-                    <span>> {{ i }}0%</span>
-                  }
-                </div>
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
+                  class="heatmap-dot"
+                  [class.scale-125]="_selected === number"
+                  [style.background-color]="number | heatmapDotBackground"
+                  (keydown)="_selected === number ? selected.set(null) : selected.set(number)"
+                  (click)="_selected === number ? selected.set(null) : selected.set(number)"></div>
+                @if (first) {
+                  <span>0%</span>
+                } @else if (last) {
+                  <span>100%</span>
+                } @else {
+                  <span>> {{ i }}0%</span>
+                }
+              </div>
+            }
+          </div>
+        </section>
       </div>
     </div>
   `,
@@ -131,10 +125,10 @@ import {BackendType} from '../api';
     HeatmapDotBackgroundPipe,
     HeatmapXAxisFormattingPipe,
     RepeatPipe,
-    MtxTooltip,
-    MatCard,
-    MatCardContent,
     HeatmapDotNumberPipe,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmCardImports,
   ],
 })
 export class Heatmap {

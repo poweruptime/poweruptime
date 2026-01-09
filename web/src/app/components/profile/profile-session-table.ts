@@ -18,8 +18,8 @@ import {trackBy} from '@app/util';
 
 @Component({
   template: `
-    <section hlmCard>
-      <div class="items-center" hlmCardHeader>
+    <div hlmCard>
+      <div class="flex items-center justify-between" hlmCardHeader>
         <h3 hlmCardTitle>{{ 'general.sessions' | transloco }}</h3>
 
         <div hlmCardAction>
@@ -60,6 +60,7 @@ import {trackBy} from '@app/util';
                     stopPropagation />
                 </td>
               </ng-container>
+
               <ng-container hlmColumnDef="description">
                 <th *hlmHeaderCellDef hlm-header-cell>{{ 'general.description' | transloco }}</th>
                 <td class="whitespace-nowrap" *hlmCellDef="let element" hlm-cell>
@@ -100,7 +101,7 @@ import {trackBy} from '@app/util';
           [length]="sessionsStore.totalElements()"
           showFirstLastButtons />
       </div>
-    </section>
+    </div>
   `,
   selector: 'pu-profile-session-table',
   changeDetection: ChangeDetectionStrategy.OnPush,

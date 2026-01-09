@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, DOCUMENT, effect, inject, input} from '@angular/core';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
-
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
+import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {s_cut} from 'dfts-helper';
 
@@ -21,42 +21,39 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
           <pu-monitor-status [status]="monitor.status" />
         </div>
 
-        <mat-card appearance="outlined">
-          <mat-card-content>
+        <section class="gap-2" hlmCard>
+          <div hlmCardHeader>
+            <h3 class="text-lg" hlmCardTitle>{{ 'monitor.details.latestChecks' | transloco }}</h3>
+          </div>
+          <div hlmCardContent>
             <pu-uptime-timeline [checkResults]="monitor.lastCheckResults" />
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </section>
 
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <div
-              class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
-              @for (
-                uptimeResult of publicMonitorDetailStore.uptimeResults();
-                track uptimeResult.name
-              ) {
-                <div
-                  class="flex flex-col items-center justify-center rounded-lg border-2 border-gray-200 p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-900">
-                  <span class="text-center text-lg font-semibold">{{ uptimeResult.value }}</span>
-                  <span class="text-center text-gray-600 dark:text-gray-300">
-                    {{ uptimeResult.name }}
-                  </span>
+        <div
+          class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
+          @for (uptimeResult of publicMonitorDetailStore.uptimeResults(); track uptimeResult.name) {
+            <section hlmCard>
+              <div hlmCardContent>
+                <div class="space-y-2">
+                  <p class="text-3xl font-semibold tracking-tight">{{ uptimeResult.value }}</p>
+                  <p class="text-muted-foreground text-sm">{{ uptimeResult.name }}</p>
                 </div>
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
+              </div>
+            </section>
+          }
+        </div>
       }
 
       @defer (hydrate on hover) {
         @if (monitorDetailYearlyUptimeStore.isPending()) {
           <hlm-skeleton class="h-64 w-full" />
         } @else {
-          <mat-card appearance="outlined">
-            <mat-card-content>
+          <section hlmCard>
+            <div hlmCardContent>
               <pu-heatmap [entries]="monitorDetailYearlyUptimeStore.entities()" />
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </section>
         }
       } @placeholder {
         <hlm-skeleton class="h-64 w-full" />
@@ -67,11 +64,11 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
         @if (publicMonitorDetailStore.isPending()) {
           <hlm-skeleton class="w-full" style="height: 28rem" />
         } @else {
-          <mat-card appearance="outlined">
-            <mat-card-content>
+          <section hlmCard>
+            <div hlmCardContent>
               <pu-ping-chart [chart]="publicMonitorDetailStore.pingChart()" />
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </section>
         }
       } @placeholder {
         <hlm-skeleton class="w-full" style="height: 28rem" />
@@ -84,14 +81,14 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
   selector: 'public-monitor-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatCard,
-    MatCardContent,
     RefreshInComponent,
     Heatmap,
     UptimeTimeline,
     PingChart,
     MonitorStatus,
     HlmSkeletonImports,
+    HlmCardImports,
+    TranslocoPipe,
   ],
 })
 export class PublicMonitorPage {

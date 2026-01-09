@@ -57,7 +57,7 @@ import {TableLoadingBar} from '../table-loading-bar';
           <p class="text-center">
             <b class="text-xl">
               Thank's for your support
-              <i>{{ settings().supportLookup }}</i>
+              <i class="break-keep whitespace-nowrap">{{ settings().supportLookup }}&nbsp;</i>
               <span class="motion-preset-pulse-sm">❤️</span>
             </b>
           </p>
@@ -66,11 +66,13 @@ import {TableLoadingBar} from '../table-loading-bar';
           </div>
         } @else {
           <h2 class="text-center text-3xl">We ❤️ our Supporters</h2>
-          <p><b>Please consider supporting poweruptime through GitHub Sponsors.</b></p>
+          <p class="text-center">
+            <b>Please consider supporting poweruptime through GitHub Sponsors.</b>
+          </p>
         }
         <b class="flex items-center justify-center gap-2 underline">
           <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
-            Dafnik's GitHub Sponsors Profile
+            GitHub Sponsors
           </a>
           <ng-icon name="bootstrapBoxArrowUpRight" />
         </b>
@@ -111,7 +113,7 @@ import {TableLoadingBar} from '../table-loading-bar';
             </form>
           </div>
 
-          <div class="flex flex-col justify-between gap-2 sm:flex-row" hlmCardFooter>
+          <div class="flex flex-row justify-between gap-2" hlmCardFooter>
             <pu-save-button [valid]="isValid()" form="sponsorship-form" />
 
             <button

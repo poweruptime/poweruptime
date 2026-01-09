@@ -1,10 +1,9 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
-import {MatChip} from '@angular/material/chips';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
@@ -32,176 +31,175 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-8">
       @if (monitorDetailStore.monitor(); as monitor) {
-        <div class="flex items-center gap-6">
-          <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-6">
+            <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
 
-          <pu-monitor-status [status]="monitor.status" />
-        </div>
+            <pu-monitor-status [status]="monitor.status" />
+          </div>
 
-        @if (monitor.description; as description) {
-          @let _cutDescription = cutDescription();
+          @if (monitor.description; as description) {
+            @let _cutDescription = cutDescription();
 
-          <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-          <pre
-            class="whitespace-pre-wrap"
-            (keydown)="cutDescription.set(!_cutDescription)"
-            (click)="cutDescription.set(!_cutDescription)">@if (cutDescription()) {
+            <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+            <pre
+              class="whitespace-pre-wrap"
+              (keydown)="cutDescription.set(!_cutDescription)"
+              (click)="cutDescription.set(!_cutDescription)">@if (cutDescription()) {
             {{ description | s_cut: 300 : '....' }}
           } @else {
             {{ description }}
           }</pre>
-        }
-
-        <div class="flex flex-wrap gap-4">
-          @switch (monitor.type) {
-            @case ('HTTP') {
-              <a
-                class="font-extrabold text-emerald-700 dark:text-green-500"
-                [href]="$any(monitor.data)['url']"
-                target="_blank"
-                rel="noopener noreferrer">
-                {{ $any(monitor.data)['url'] }}
-              </a>
-            }
-            @case ('SSL_CERTIFICATE') {
-              <a
-                class="font-extrabold text-emerald-700 dark:text-green-500"
-                [href]="$any(monitor.data)['url']"
-                target="_blank"
-                rel="noopener noreferrer">
-                {{ $any(monitor.data)['url'] }}
-              </a>
-            }
-            @case ('DNS') {
-              <span class="font-extrabold text-emerald-700 dark:text-green-500">
-                [{{ $any(monitor.data)['type'] }}]
-                {{ $any(monitor.data)['host'] }}
-              </span>
-            }
-            @case ('PING') {
-              <span class="font-extrabold text-emerald-700 dark:text-green-500">
-                {{ $any(monitor.data)['ip'] }}:{{ $any(monitor.data)['port'] }}
-              </span>
-            }
-          }
-        </div>
-
-        <div class="flex flex-wrap gap-3">
-          <a
-            class="hover:cursor-pointer"
-            [routerLink]="[]"
-            [queryParams]="{'search.show': true, 'search.type': monitor.data._type}"
-            queryParamsHandling="merge">
-            <mat-chip>
-              {{ monitor.data._type | monitorCheckerDataValueLabel | transloco }}
-              {{ 'general.monitor' | transloco }}
-            </mat-chip>
-          </a>
-
-          @if (monitor.retries; as retries) {
-            <mat-chip class="flex items-center">
-              <ng-icon class="mr-1" name="bootstrapArrowRepeat" />
-              <span>{{ 'monitor.details.retries' | transloco: {retries} }}</span>
-            </mat-chip>
           }
 
-          @if (monitor.resendAfter; as resendAfter) {
-            <mat-chip class="flex items-center">
-              {{ 'monitor.details.resendAfter' | transloco: {resendAfter} }}
-            </mat-chip>
-          }
-
-          @if (monitor.upsideDown) {
-            <mat-chip class="flex items-center">
-              <ng-icon class="mr-1" name="bootstrapEmojiSmileUpsideDown" />
-              {{ 'monitor.edit.upsideDown' | transloco }}
-            </mat-chip>
-          }
-
-          @let maxNotificationMethods = 6;
-          @for (
-            notificationMethod of monitor.notificationMethods.slice(0, maxNotificationMethods);
-            track notificationMethod.id
-          ) {
-            <a
-              class="hover:cursor-pointer"
-              [routerLink]="
-                '/t/' + monitor.team.id + '/notification-methods/' + notificationMethod.id
-              ">
-              <mat-chip class="flex items-center">
-                <ng-icon class="mr-1" name="bootstrapBell" />
-                {{ notificationMethod.name }}
-              </mat-chip>
-            </a>
-          }
-          @if (monitor.notificationMethods.length > maxNotificationMethods) {
-            <mat-chip class="flex items-center">
-              <ng-icon class="mr-1" name="bootstrapBell" />
-              And more...
-            </mat-chip>
-          }
-        </div>
-
-        @if (monitor.tags.length > 0) {
-          <div class="flex flex-wrap gap-2">
-            @for (tag of monitor.tags; track tag.name) {
-              <span
-                class="text-xs whitespace-nowrap"
-                [pu-tag]="tag.variant"
-                [routerLink]="[]"
-                [queryParams]="{'search.show': true, 'search.tag': tag.name}"
-                clickable
-                queryParamsHandling="merge">
-                {{ tag.name }}
-              </span>
+          <div class="flex flex-wrap gap-4">
+            @switch (monitor.type) {
+              @case ('HTTP') {
+                <a
+                  class="font-extrabold text-emerald-700 dark:text-green-500"
+                  [href]="$any(monitor.data)['url']"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  {{ $any(monitor.data)['url'] }}
+                </a>
+              }
+              @case ('SSL_CERTIFICATE') {
+                <a
+                  class="font-extrabold text-emerald-700 dark:text-green-500"
+                  [href]="$any(monitor.data)['url']"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  {{ $any(monitor.data)['url'] }}
+                </a>
+              }
+              @case ('DNS') {
+                <span class="font-extrabold text-emerald-700 dark:text-green-500">
+                  [{{ $any(monitor.data)['type'] }}]
+                  {{ $any(monitor.data)['host'] }}
+                </span>
+              }
+              @case ('PING') {
+                <span class="font-extrabold text-emerald-700 dark:text-green-500">
+                  {{ $any(monitor.data)['ip'] }}:{{ $any(monitor.data)['port'] }}
+                </span>
+              }
             }
           </div>
-        }
+
+          <div class="flex flex-wrap gap-3">
+            <a
+              [routerLink]="[]"
+              [queryParams]="{'search.show': true, 'search.type': monitor.data._type}"
+              hlmBadge
+              variant="outline"
+              queryParamsHandling="merge">
+              {{ monitor.data._type | monitorCheckerDataValueLabel | transloco }}
+              {{ 'general.monitor' | transloco }}
+            </a>
+
+            @if (monitor.retries; as retries) {
+              <div class="flex items-center gap-2" hlmBadge variant="outline">
+                <ng-icon class="text-primary" hlm name="bootstrapArrowRepeat" size="xs" />
+                <span>{{ 'monitor.details.retries' | transloco: {retries} }}</span>
+              </div>
+            }
+
+            @if (monitor.resendAfter; as resendAfter) {
+              <span hlmBadge variant="outline">
+                {{ 'monitor.details.resendAfter' | transloco: {resendAfter} }}
+              </span>
+            }
+
+            @if (monitor.upsideDown) {
+              <div class="flex items-center gap-2" hlmBadge variant="outline">
+                <ng-icon class="text-primary" hlm name="bootstrapEmojiSmileUpsideDown" size="xs" />
+                {{ 'monitor.edit.upsideDown' | transloco }}
+              </div>
+            }
+
+            @let maxNotificationMethods = 6;
+            @for (
+              notificationMethod of monitor.notificationMethods.slice(0, maxNotificationMethods);
+              track notificationMethod.id
+            ) {
+              <a
+                class="flex gap-1"
+                [routerLink]="
+                  '/t/' + monitor.team.id + '/notification-methods/' + notificationMethod.id
+                "
+                hlmBadge
+                variant="outline">
+                <ng-icon class="text-primary" hlm name="bootstrapBell" size="xs" />
+                {{ notificationMethod.name }}
+              </a>
+            }
+            @if (monitor.notificationMethods.length > maxNotificationMethods) {
+              <div class="flex items-center gap-2" hlmBadge variant="outline">
+                <ng-icon class="text-primary" hlm name="bootstrapBell" size="xs" />
+                And more...
+              </div>
+            }
+          </div>
+
+          @if (monitor.tags.length > 0) {
+            <div class="flex flex-wrap gap-2">
+              @for (tag of monitor.tags; track tag.name) {
+                <span
+                  class="text-xs whitespace-nowrap"
+                  [pu-tag]="tag.variant"
+                  [routerLink]="[]"
+                  [queryParams]="{'search.show': true, 'search.tag': tag.name}"
+                  clickable
+                  queryParamsHandling="merge">
+                  {{ tag.name }}
+                </span>
+              }
+            </div>
+          }
+        </div>
       } @else {
         <pu-monitor-header-placeholder />
       }
 
-      <hr class="my-2" />
+      <section class="gap-2" hlmCard>
+        <div hlmCardHeader>
+          <h3 class="text-lg" hlmCardTitle>{{ 'monitor.details.latestChecks' | transloco }}</h3>
 
-      <mat-card appearance="outlined">
-        <mat-card-content>
-          <div class="flex flex-col gap-2">
-            <pu-infinite-uptime-timeline
-              [isPending]="infiniteCheckResultsStore.isInfinitePending()"
-              [checkResults]="infiniteCheckResultsStore.entities()"
-              (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
-              link />
-
+          <div hlmCardAction>
             @if (testIntervalDuration(); as testIntervalDuration) {
-              <span>
+              <span class="text-muted-foreground">
                 {{ 'monitor.details.check' | transloco: {testIntervalDuration} }}
               </span>
             } @else {
               <hlm-skeleton class="h-6 w-40" />
             }
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+        <div hlmCardContent>
+          <pu-infinite-uptime-timeline
+            [isPending]="infiniteCheckResultsStore.isInfinitePending()"
+            [checkResults]="infiniteCheckResultsStore.entities()"
+            (nextPage)="infiniteCheckResultsStore.nextPage(monitorId())"
+            link />
+        </div>
+      </section>
 
       @if (monitorDetailStore.isFulfilled()) {
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <div
-              class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
-              @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
-                <div
-                  class="flex flex-col items-center justify-center rounded-lg border-2 border-gray-200 p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-700 dark:hover:bg-gray-900">
-                  <span class="text-center text-lg font-semibold">{{ uptimeResult.value }}</span>
-                  <span class="text-center text-gray-600 dark:text-gray-300">
-                    {{ uptimeResult.name }}
-                  </span>
+        <div
+          class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
+          @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
+            <section hlmCard>
+              <div hlmCardContent>
+                <div class="space-y-2">
+                  <p class="text-3xl font-semibold tracking-tight">{{ uptimeResult.value }}</p>
+                  <p class="text-muted-foreground text-sm">{{ uptimeResult.name }}</p>
                 </div>
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
+              </div>
+            </section>
+          }
+        </div>
       } @else {
         <hlm-skeleton class="h-52 w-full" />
       }
@@ -210,18 +208,18 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
         @if (monitorDetailYearlyUptimeStore.isPending()) {
           <hlm-skeleton class="h-60 w-full" />
         } @else {
-          <mat-card appearance="outlined">
-            <mat-card-content>
+          <section hlmCard>
+            <div hlmCardContent>
               <pu-heatmap [entries]="monitorDetailYearlyUptimeStore.entities()" />
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </section>
         }
       } @placeholder {
         <hlm-skeleton class="h-60 w-full" />
       }
 
-      <mat-card appearance="outlined">
-        <mat-card-content>
+      <section hlmCard>
+        <div hlmCardContent>
           <pu-ping-chart-filter
             [filter]="pingChartFilter()"
             (filterChange)="
@@ -239,17 +237,14 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
           } @placeholder {
             <pu-chart-placeholder class="w-full" style="height: 24rem" />
           }
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </section>
     </div>
   `,
   selector: 'pu-monitor-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [InfiniteCheckResultsStore, CheckResultsPingStore],
   imports: [
-    MatCard,
-    MatCardContent,
-    MatChip,
     MonitorStatus,
     InfiniteUptimeTimeline,
     PingChart,
@@ -264,6 +259,8 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     Tag,
     ChartPlaceholder,
     HlmIconImports,
+    HlmCardImports,
+    HlmBadgeImports,
   ],
 })
 export class MonitorDetail {

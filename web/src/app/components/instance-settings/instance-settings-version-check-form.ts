@@ -220,7 +220,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               }
             </form>
           </div>
-          <div class="flex flex-col justify-between gap-2 sm:flex-row" hlmCardFooter>
+          <div class="flex flex-row justify-between gap-2" hlmCardFooter>
             <pu-save-button [valid]="isValid()" form="version-check-form" />
 
             <button

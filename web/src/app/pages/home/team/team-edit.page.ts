@@ -1,9 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-
-import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
@@ -12,14 +8,14 @@ import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
 import {BackendType} from '@app/api';
 import {InstanceSettingsRetentionForm} from '@app/components/instance-settings';
-import {TeamEditForm, TeamInvitesList, TeamSettings, TeamUsersList} from '@app/components/team';
+import {TeamEditForm, TeamInviteList, TeamSettings, TeamUserTable} from '@app/components/team';
 import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from '@app/services';
 
 @Component({
   template: `
     @let team = teamEditStore.team();
 
-    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl pb-8 sm:px-6 lg:px-8">
       @if (teamId(); as teamId) {
         @if (team; as team) {
           <div class="mb-8">
@@ -32,9 +28,9 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
             </p>
           </div>
 
-          <div class="grid gap-6 lg:grid-cols-2">
-            <div class="h-full flex-col justify-between" hlmCard>
-              <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-6">
+            <div class="grid gap-6 lg:grid-cols-2">
+              <section class="flex h-full flex-col gap-6" hlmCard>
                 <div hlmCardHeader>
                   <div class="flex items-center gap-2">
                     <ng-icon name="bootstrapGlobe" helm />
@@ -44,11 +40,9 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
                 <div hlmCardContent>
                   <pu-team-edit-form [team]="team" (submitUpdate)="teamEditStore.update($event)" />
                 </div>
-              </div>
-            </div>
+              </section>
 
-            <div class="h-full flex-col justify-between" hlmCard>
-              <div class="flex flex-col gap-6">
+              <section class="flex h-full flex-col gap-6" hlmCard>
                 <div hlmCardHeader>
                   <div class="flex items-center gap-2">
                     <ng-icon name="bootstrapGlobe" helm />
@@ -64,7 +58,7 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
                       (submitCreate)="teamSettingsStore.setTimezone($event.timezone)" />
                   }
                 </div>
-              </div>
+              </section>
             </div>
 
             @if (teamSettingsStore.settings(); as settings) {
@@ -75,33 +69,9 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
 
             @defer (when !team.personal) {
               @if (!team.personal) {
-                <mat-card class="col-span-2" appearance="outlined">
-                  <mat-card-header>
-                    <mat-card-title>{{ 'general.users' | transloco }}</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <div class="h-4"></div>
-                    <div class="flex flex-col gap-2">
-                      <div>
-                        <a mat-flat-button routerLink="../invite">
-                          {{ 'general.invite' | transloco }}
-                        </a>
-                      </div>
+                <pu-team-user-table [teamId]="teamId" />
 
-                      <pu-team-users-list [teamId]="teamId" />
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-
-                <mat-card class="col-span-2" appearance="outlined">
-                  <mat-card-header>
-                    <mat-card-title>{{ 'team.edit.openInvites' | transloco }}</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <div class="h-4"></div>
-                    <pu-team-invites-list [teamId]="teamId" />
-                  </mat-card-content>
-                </mat-card>
+                <pu-team-invite-list [teamId]="teamId" />
               }
             }
           </div>
@@ -139,20 +109,14 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
   imports: [
     TeamEditForm,
     TeamSettings,
-    TeamUsersList,
-    RouterLink,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    TeamInvitesList,
+    TeamUserTable,
     TranslocoPipe,
-    MatButton,
     InstanceSettingsRetentionForm,
     ReactiveFormsModule,
     HlmSkeletonImports,
     HlmCardImports,
     HlmIconImports,
+    TeamInviteList,
   ],
   providers: [TeamEditStore, TeamSettingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,

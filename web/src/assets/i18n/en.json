@@ -61,8 +61,7 @@
       "empty": {
         "description": "Create your first monitor to receive {{general.checkResults}}.",
         "title": "No {{general.checkResults}} yet."
-      },
-      "title": "Checks"
+      }
     }
   },
   "cmdk": {
@@ -111,6 +110,7 @@
     "cancel": "Cancel",
     "checkResult": "Check result",
     "checkResults": "Check results",
+    "checks": "Checks",
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
@@ -288,13 +288,14 @@
     "cloneSuccess": "Successfully cloned the {{general.monitor}}",
     "details": {
       "check": "Check every {{testIntervalDuration}}",
+      "latestChecks": "{{general.latest}} {{general.checks}}",
       "openPublic": "Public page",
       "pingChart": {
         "endDate": "{{general.end}} {{general.date}}",
         "exceedsMaxWindow": "Selected window may not exceed 1 month",
         "startDate": "{{general.start}} {{general.date}}"
       },
-      "resendAfter": "Resend notification after {{resendAfter}}x down checks",
+      "resendAfter": "Resend notification after {{resendAfter}}x three consecutive failed {{general.checks}}",
       "retries": "{{retries}}x retries"
     },
     "edit": {
@@ -381,7 +382,7 @@
     "list": {
       "empty": {
         "createNotificationMethod": "Create new {{general.notificationMethod}}",
-        "description": "poweruptime hasn't sent a notification yet. Configure {{general.notificationMethods}} or take a look at the checks.",
+        "description": "poweruptime hasn't sent a notification yet. Configure {{general.notificationMethods}} or take a look at the {{general.checks}}.",
         "manageNotificationMethods": "Manage {{general.notificationMethods}}",
         "openCheckResults": "Open {{general.checkResults}}",
         "title": "No {{general.notifications}} yet."
@@ -541,10 +542,10 @@
     "invite": "{{general.invite}} a new member",
     "monitors": "{{monitorCount}} Monitor(s)",
     "settings": {
-      "invitedAt": "Invited at",
+      "invitedAt": "Invited",
       "invitedBy": "Invited by",
-      "joinedAt": "Joined at",
-      "noInvites": "No open invites.",
+      "joinedAt": "Joined",
+      "noInvites": "No open invites",
       "settings": "{{general.team}} settings"
     }
   },

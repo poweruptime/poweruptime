@@ -17,7 +17,7 @@ import {HlmTBody, HlmTFoot, HlmTHead, HlmTable} from '@spartan-ng/helm/table';
  * Wrapper for the CdkTable with Bootstrap styles.
  */
 @Component({
-  selector: 'hlm-data-table, table[hlm-data-table]',
+  selector: 'table[hlm-data-table]',
   exportAs: 'ngbDataTable',
   // Note that according to MDN, the `caption` element has to be projected as the **first**
   // element in the table. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption
@@ -34,23 +34,16 @@ import {HlmTBody, HlmTFoot, HlmTHead, HlmTable} from '@spartan-ng/helm/table';
       <ng-content />
     }
 
-    @if (_isNativeHtmlTable) {
-      <thead hlmTHead role="rowgroup">
-        <ng-container headerRowOutlet />
-      </thead>
-      <tbody class="mdc-data-table__content" hlmTBody role="rowgroup">
-        <ng-container rowOutlet />
-        <ng-container noDataRowOutlet />
-      </tbody>
-      <tfoot hlmTFoot role="rowgroup">
-        <ng-container footerRowOutlet />
-      </tfoot>
-    } @else {
+    <thead hlmTHead role="rowgroup">
       <ng-container headerRowOutlet />
+    </thead>
+    <tbody class="mdc-data-table__content" hlmTBody role="rowgroup">
       <ng-container rowOutlet />
       <ng-container noDataRowOutlet />
+    </tbody>
+    <tfoot hlmTFoot role="rowgroup">
       <ng-container footerRowOutlet />
-    }
+    </tfoot>
   `,
   providers: [
     {provide: CdkTable, useExisting: HlmDataTable},

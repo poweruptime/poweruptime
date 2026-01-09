@@ -6,10 +6,10 @@ import {
   input,
   linkedSignal,
 } from '@angular/core';
-import {outputFromObservable, toObservable} from '@angular/core/rxjs-interop';
+import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {FormsModule} from '@angular/forms';
 
-import {Subject, combineLatest, map} from 'rxjs';
+import {Subject} from 'rxjs';
 
 import {computedPrevious} from '@spartan-ng/brain/core';
 import {BrnSelect, BrnSelectImports} from '@spartan-ng/brain/select';
@@ -41,12 +41,12 @@ export interface BrnDataTablePageEvent {
 @Component({
   template: `
     <div class="flex justify-end py-0.5">
-      <div class="inline-flex items-center justify-between gap-3">
+      <div class="inline-flex flex-wrap items-center justify-between gap-3 md:flex-nowrap">
         @if (!hidePageSize()) {
           <div class="flex items-center gap-3">
             @let _displayedPageSizeOptions = displayedPageSizeOptions();
             @if (_displayedPageSizeOptions.length > 1) {
-              <label hlmLabel>Rows per page</label>
+              <label class="whitespace-nowrap" hlmLabel>Rows per page</label>
               <brn-select
                 class="ml-auto"
                 [(ngModel)]="pageSize"
@@ -74,37 +74,35 @@ export interface BrnDataTablePageEvent {
           <span>of</span>
           <span class="text-foreground">{{ rangeLabel.length }}</span>
         </p>
-        <div class="grow">
-          <nav hlmPagination>
-            <ul hlmPaginationContent>
-              @let _showFirstLastButtons = showFirstLastButtons();
-              @if (_showFirstLastButtons) {
-                <li [class]="computedPreviousClass()" hlmPaginationItem>
-                  <button (click)="firstPage()" hlmBtn size="icon" variant="ghost">
-                    <ng-icon hlm size="sm" name="lucideChevronFirst" />
-                  </button>
-                </li>
-              }
+        <nav class="mx-none justify-end" hlmPagination>
+          <ul hlmPaginationContent>
+            @let _showFirstLastButtons = showFirstLastButtons();
+            @if (_showFirstLastButtons) {
               <li [class]="computedPreviousClass()" hlmPaginationItem>
-                <button (click)="previousPage()" hlmBtn size="icon" variant="ghost">
-                  <ng-icon hlm size="sm" name="lucideChevronLeft" />
+                <button (click)="firstPage()" hlmBtn size="icon" variant="ghost">
+                  <ng-icon hlm size="sm" name="lucideChevronFirst" />
                 </button>
               </li>
+            }
+            <li [class]="computedPreviousClass()" hlmPaginationItem>
+              <button (click)="previousPage()" hlmBtn size="icon" variant="ghost">
+                <ng-icon hlm size="sm" name="lucideChevronLeft" />
+              </button>
+            </li>
+            <li [class]="computedNextClass()" hlmPaginationItem>
+              <button (click)="nextPage()" hlmBtn size="icon" variant="ghost">
+                <ng-icon hlm size="sm" name="lucideChevronRight" />
+              </button>
+            </li>
+            @if (_showFirstLastButtons) {
               <li [class]="computedNextClass()" hlmPaginationItem>
-                <button (click)="nextPage()" hlmBtn size="icon" variant="ghost">
-                  <ng-icon hlm size="sm" name="lucideChevronRight" />
+                <button (click)="lastPage()" hlmBtn size="icon" variant="ghost">
+                  <ng-icon hlm size="sm" name="lucideChevronLast" />
                 </button>
               </li>
-              @if (_showFirstLastButtons) {
-                <li [class]="computedNextClass()" hlmPaginationItem>
-                  <button (click)="lastPage()" hlmBtn size="icon" variant="ghost">
-                    <ng-icon hlm size="sm" name="lucideChevronLast" />
-                  </button>
-                </li>
-              }
-            </ul>
-          </nav>
-        </div>
+            }
+          </ul>
+        </nav>
       </div>
     </div>
   `,

@@ -3,7 +3,7 @@ import {RouterOutlet} from '@angular/router';
 
 @Component({
   template: `
-    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl pb-8 sm:px-6 lg:px-8">
       <router-outlet />
     </div>
   `,

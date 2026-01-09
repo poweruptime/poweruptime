@@ -19,7 +19,7 @@ import {NotificationList} from './notification/notification-list';
         </button>
         <button class="gap-1.5" type="button" hlmTabsTrigger="checkResults">
           <ng-icon hlm name="bootstrapListStars" size="sm" />
-          {{ 'checkResult.list.title' | transloco }}
+          {{ 'general.checks' | transloco }}
         </button>
       </hlm-tabs-list>
       <div hlmTabsContent="notifications">

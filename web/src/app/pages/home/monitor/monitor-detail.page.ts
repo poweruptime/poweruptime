@@ -33,7 +33,7 @@ import {MonitorEditPage} from './monitor-edit.page';
           </button>
           <button class="gap-1.5" type="button" hlmTabsTrigger="checkResults">
             <ng-icon hlm name="bootstrapListStars" size="sm" />
-            {{ 'checkResult.list.title' | transloco }}
+            {{ 'general.checks' | transloco }}
           </button>
           <button class="gap-1.5" type="button" hlmTabsTrigger="settings">
             <ng-icon hlm name="bootstrapGear" size="sm" />

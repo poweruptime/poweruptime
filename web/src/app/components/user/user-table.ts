@@ -36,13 +36,13 @@ import {trackBy} from '@app/util';
                 {{ 'general.name' | transloco }}
               </th>
               <td *hlmCellDef="let element" hlm-cell>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-1.5">
                   <hlm-avatar class="rounded-lg">
                     <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
                       {{ element.name | initials }}
                     </span>
                   </hlm-avatar>
-                  <div class="inline-flex flex-col gap-2">
+                  <div class="inline-flex flex-col gap-1">
                     <div class="inline-flex items-center gap-2">
                       <span>{{ element.name }}</span>
                       @if (element.role === 'ADMIN') {

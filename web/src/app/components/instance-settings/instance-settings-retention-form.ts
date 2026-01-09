@@ -28,7 +28,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           <p hlmCardDescription>Configure how long data is stored</p>
         </div>
         <div class="space-y-6" hlmCardContent>
-          <div class="flex items-center justify-between space-x-2">
+          <div class="flex flex-wrap items-center justify-between space-x-2 md:justify-start">
             <mat-form-field>
               <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
               <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
