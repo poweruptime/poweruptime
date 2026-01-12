@@ -26,7 +26,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     @let _hideLabel = hideLabel();
     <cdk-virtual-scroll-viewport
       class="uptime-timeline-viewport"
-      [class.h-24]="_size === 3 && !_hideLabel"
+      [class.h-22]="_size === 3 && !_hideLabel"
       [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
       [class.h-10]="_size === 2 && _hideLabel"
       [itemSize]="_size === 3 ? '18' : '14'"
