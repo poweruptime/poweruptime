@@ -1,7 +1,7 @@
 import {Component, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnDialogClose, BrnDialogContent, BrnDialogTrigger} from '@spartan-ng/brain/dialog';
+import {BrnDialogClose, BrnDialogContent} from '@spartan-ng/brain/dialog';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
@@ -21,7 +21,7 @@ export interface Dependency {
     <hlm-dialog autoFocus="dialog">
       <button
         class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
-        brnDialogTrigger
+        hlmDialogTrigger
         type="button"
         hlmBtn
         variant="ghost">
@@ -91,7 +91,6 @@ export interface Dependency {
     HlmButtonImports,
     TranslocoPipe,
     BrnDialogContent,
-    BrnDialogTrigger,
     BrnDialogClose,
     HlmItemImports,
     HlmTooltipImports,

@@ -19,7 +19,7 @@ import {SupporterBadge} from '../supporter-badge';
         <h3 hlmDialogTitle>{{ 'general.about' | transloco }} poweruptime</h3>
         <p hlmDialogDescription>Self-hosted uptime monitoring tool for teams and individuals</p>
       </hlm-dialog-header>
-      <div class="space-y-6 py-6">
+      <div class="space-y-6">
         @if (infoStore.support(); as support) {
           <div class="flex flex-col items-center md:flex-row" hlmItem variant="outline" size="sm">
             @if (support.supportsSince) {
@@ -79,7 +79,7 @@ import {SupporterBadge} from '../supporter-badge';
         </section>
       </div>
     </div>
-    <hlm-dialog-footer>
+    <hlm-dialog-footer class="pt-3">
       <button type="button" hlmBtn variant="outline" brnDialogClose>
         {{ 'general.close' | transloco }}
       </button>

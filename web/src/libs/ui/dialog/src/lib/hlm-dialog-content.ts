@@ -1,5 +1,14 @@
 import {NgComponentOutlet} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  inject,
+  input,
+} from '@angular/core';
+
+import type {BooleanInput} from '@angular/cdk/coercion';
 
 import {provideIcons} from '@ng-icons/core';
 import {lucideX} from '@ng-icons/lucide';
@@ -25,15 +34,21 @@ import {HlmDialogClose} from './hlm-dialog-close';
       <ng-content />
     }
 
-    <button hlmDialogClose>
-      <span class="sr-only">Close</span>
-      <ng-icon hlm size="sm" name="lucideX" />
-    </button>
+    @if (showCloseButton()) {
+      <button hlmDialogClose>
+        <span class="sr-only">Close</span>
+        <ng-icon hlm size="sm" name="lucideX" />
+      </button>
+    }
   `,
 })
 export class HlmDialogContent {
   private readonly _dialogRef = inject(BrnDialogRef);
   private readonly _dialogContext = injectBrnDialogContext({optional: true});
+
+  public readonly showCloseButton = input<boolean, BooleanInput>(true, {
+    transform: booleanAttribute,
+  });
 
   public readonly state = computed(() => this._dialogRef?.state() ?? 'closed');
 

@@ -17,6 +17,6 @@ import {classes} from '@spartan-ng/helm/utils';
 })
 export class HlmCommandGroup {
   constructor() {
-    classes(() => 'text-foreground block overflow-hidden p-1 data-[hidden]:hidden');
+    classes(() => 'text-foreground block overflow-hidden p-1 data-hidden:hidden');
   }
 }

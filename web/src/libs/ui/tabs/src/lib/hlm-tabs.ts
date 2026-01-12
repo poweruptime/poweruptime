@@ -8,7 +8,7 @@ import {classes} from '@spartan-ng/helm/utils';
   hostDirectives: [
     {
       directive: BrnTabs,
-      inputs: ['orientation', 'direction', 'activationMode', 'brnTabs: tab'],
+      inputs: ['orientation', 'activationMode', 'brnTabs: tab'],
       outputs: ['tabActivated'],
     },
   ],
@@ -20,6 +20,6 @@ export class HlmTabs {
   public readonly tab = input.required<string>();
 
   constructor() {
-    classes(() => 'flex flex-col gap-2');
+    classes(() => 'group/tabs flex gap-2 data-[orientation=horizontal]:flex-col');
   }
 }

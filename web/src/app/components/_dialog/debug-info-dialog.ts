@@ -5,7 +5,7 @@ import {MatFormField, MatInput} from '@angular/material/input';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnDialogClose, BrnDialogContent, BrnDialogTrigger} from '@spartan-ng/brain/dialog';
+import {BrnDialogClose, BrnDialogContent} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -19,7 +19,7 @@ import {CopyButton} from '../copy-button';
     <hlm-dialog autoFocus="dialog">
       <button
         class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
-        brnDialogTrigger
+        hlmDialogTrigger
         type="button"
         hlmBtn
         variant="ghost">
@@ -65,7 +65,6 @@ import {CopyButton} from '../copy-button';
     MatInput,
     BrnDialogClose,
     BrnDialogContent,
-    BrnDialogTrigger,
     HlmButtonImports,
     HlmDialogImports,
     HlmIconImports,

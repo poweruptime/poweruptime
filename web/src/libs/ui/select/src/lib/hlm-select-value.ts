@@ -9,7 +9,7 @@ export class HlmSelectValue {
   constructor() {
     classes(
       () =>
-        'data-[placeholder]:text-muted-foreground line-clamp-1 flex items-center text-start gap-2 truncate',
+        'data-[placeholder]:text-muted-foreground line-clamp-1 flex items-center gap-2 truncate',
     );
   }
 }
