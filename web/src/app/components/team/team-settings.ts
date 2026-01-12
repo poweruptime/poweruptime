@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
-
 import {BackendType} from '@app/api';
 import {TimezoneInput} from '@app/components';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -16,7 +14,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     </form>
   `,
   selector: 'pu-team-settings',
-  imports: [NgxMatSelectSearchModule, ReactiveFormsModule, TimezoneInput, SaveButton],
+  imports: [ReactiveFormsModule, TimezoneInput, SaveButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamSettings extends AbstractModelEditFormComponent<
