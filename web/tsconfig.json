@@ -33,6 +33,7 @@
       "@spartan-ng/helm/card": ["./src/libs/ui/card/src/index.ts"],
       "@spartan-ng/helm/checkbox": ["./src/libs/ui/checkbox/src/index.ts"],
       "@spartan-ng/helm/collapsible": ["./src/libs/ui/collapsible/src/index.ts"],
+      "@spartan-ng/helm/command": ["./src/libs/ui/command/src/index.ts"],
       "@spartan-ng/helm/data-table": ["./src/libs/custom/table/index.ts"],
       "@spartan-ng/helm/date-picker": ["./src/libs/ui/date-picker/src/index.ts"],
       "@spartan-ng/helm/dialog": ["./src/libs/ui/dialog/src/index.ts"],
