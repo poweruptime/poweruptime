@@ -9,7 +9,7 @@ import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 
-import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
+import {setError, setFulfilled, setIdle, setPending, withRequestStatus} from './store-features';
 
 interface SetupStoreState {
   state: 'setupTestEmail' | 'confirmTestEmail' | 'setup' | 'setupCompleted';
@@ -23,7 +23,7 @@ export const SetupStore = signalStore(
   withRequestStatus(),
   withMethods((store, api = injectAPI()) => ({
     setState(state: SetupStoreState['state']) {
-      patchState(store, () => ({state}));
+      patchState(store, () => ({state}), setIdle());
     },
     testEmail: rxMethod<string>(
       pipe(

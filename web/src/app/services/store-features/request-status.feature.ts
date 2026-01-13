@@ -25,6 +25,10 @@ export function withRequestStatus() {
   );
 }
 
+export function setIdle(): RequestStatusState {
+  return {requestStatus: 'idle'};
+}
+
 export function setPending(): RequestStatusState {
   return {requestStatus: 'pending'};
 }

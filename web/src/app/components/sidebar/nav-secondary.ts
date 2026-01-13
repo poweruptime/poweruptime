@@ -117,7 +117,7 @@ export class NavSecondary {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.router.url),
-      map((url) => instanceSettingRoutes.includes(url)),
+      map((url) => instanceSettingRoutes.some((route) => url.includes(route))),
     ),
     {initialValue: false},
   );

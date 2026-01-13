@@ -13,7 +13,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
   template: `
     @let valid = isValid();
 
-    <form class="flex flex-col" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+    <form class="flex flex-col" id="email-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <span class="mb-4">{{ 'profile.email.current' | transloco }}: {{ email() }}</span>
 
       <mat-form-field>
@@ -48,7 +48,10 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
         }
       </mat-form-field>
 
-      <pu-save-button [valid]="valid" [text]="'profile.email.requestChange' | transloco" />
+      <pu-save-button
+        [valid]="valid"
+        [text]="'profile.email.requestChange' | transloco"
+        form="email-form" />
     </form>
   `,
   selector: 'pu-profile-email-form',

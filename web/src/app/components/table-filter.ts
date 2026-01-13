@@ -51,7 +51,7 @@ export class TableFilter {
   key = input('');
 
   expanded = linkedQueryParam(
-    computed(() => `${this.key()}.show`),
+    computed(() => `${this.key().length > 0 ? `${this.key()}.` : ''}show`),
     {
       parse: paramToBoolean({defaultValue: false}),
       stringify: (it) => (it === true ? 'true' : null),

@@ -3,11 +3,6 @@
 @import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css';
 
-@layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/preflight.css' layer(base);
-@import 'tailwindcss/utilities.css';
-
 @import '@spartan-ng/brain/hlm-tailwind-preset.css';
 
 @plugin '@tailwindcss/typography';
@@ -44,25 +39,7 @@ color utility to any element that depends on these defaults.
   }
 }
 
-:root {
-  --animate-caret-blink: caret-blink 1.2s ease-out infinite;
-}
-@keyframes caret-blink {
-  0%,
-  70%,
-  100% {
-    opacity: 1;
-  }
-  20%,
-  50% {
-    opacity: 0;
-  }
-}
-.animate-caret-blink {
-  animation: var(--animate-caret-blink);
-}
-
-.mat-mdc-text-field-wrapper {
+mat-mdc-text-field-wrapper {
   .mat-mdc-form-field-icon-suffix {
     @apply p-1 pe-4;
   }
@@ -107,6 +84,10 @@ color utility to any element that depends on these defaults.
 
 .tox-promotion-link {
   display: none !important;
+}
+
+hlm-select-value {
+  text-align: start;
 }
 
 pu-copy-icon-button {

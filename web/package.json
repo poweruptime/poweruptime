@@ -44,7 +44,6 @@
     "@ngrx/signals": "21.0.1",
     "@ngx-dropzone/cdk": "21.0.0",
     "@ngx-dropzone/material": "21.0.0",
-    "@ngxpert/input-otp": "1.0.3",
     "@spartan-ng/brain": "0.0.1-alpha.602",
     "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
     "@tailwindcss/postcss": "4.1.18",

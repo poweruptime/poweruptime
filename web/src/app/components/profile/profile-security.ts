@@ -3,9 +3,12 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 
-import {ProfileEditStore} from '@app/services';
+import {MFAEditStore, ProfileEditStore} from '@app/services';
 
-import {ProfileMFAForm} from './profile-mfa-form';
+import {MFABackupCodesCard} from './mfa/mfa-backup-codes-card';
+import {MFAConfirmCard} from './mfa/mfa-confirm-card';
+import {MFADisabledCard} from './mfa/mfa-disabled-card';
+import {MFAEnabledCard} from './mfa/mfa-enabled-card';
 import {ProfilePasswordEditForm} from './profile-password-edit-form';
 import {ProfileSessionTable} from './profile-session-table';
 
@@ -25,15 +28,26 @@ import {ProfileSessionTable} from './profile-session-table';
           </section>
         </div>
         <div>
-          <section class="w-full" hlmCard>
-            <div hlmCardHeader>
-              <h3 hlmCardTitle>{{ 'profile.mfa.title' | transloco }}</h3>
-            </div>
+          @let mfaState = mfaEditStore.state();
 
-            <div hlmCardContent>
-              <pu-profile-mfa-form />
-            </div>
-          </section>
+          @switch (mfaState) {
+            @case ('DISABLED') {
+              <pu-mfa-disabled-card (enableMFA)="mfaEditStore.setup()" />
+            }
+            @case ('CONFIRM') {
+              <pu-mfa-confirm-card />
+            }
+            @case ('ENABLED') {
+              <!-- ['123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456', '123456'] -->
+              @if (mfaEditStore.backupCodes(); as backupCodes) {
+                <pu-mfa-backup-codes-card
+                  [backupCodes]="backupCodes"
+                  (doneManagingBackupCodes)="mfaEditStore.setDone()" />
+              } @else {
+                <pu-mfa-enabled-card (disableMFA)="mfaEditStore.delete()" />
+              }
+            }
+          }
         </div>
       </div>
 
@@ -42,15 +56,19 @@ import {ProfileSessionTable} from './profile-session-table';
   `,
   selector: 'pu-profile-security',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ProfileEditStore],
+  providers: [ProfileEditStore, MFAEditStore],
   imports: [
     TranslocoPipe,
     ProfilePasswordEditForm,
-    ProfileMFAForm,
     ProfileSessionTable,
     HlmCardImports,
+    MFAConfirmCard,
+    MFABackupCodesCard,
+    MFADisabledCard,
+    MFAEnabledCard,
   ],
 })
 export class ProfileSecurity {
   protected readonly profileEditStore = inject(ProfileEditStore);
+  protected readonly mfaEditStore = inject(MFAEditStore);
 }
