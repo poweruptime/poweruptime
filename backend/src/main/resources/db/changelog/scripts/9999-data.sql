@@ -143,46 +143,46 @@ INSERT INTO check_result(id, public_id, monitor_id, status, previous_status, che
 VALUES (20, 'Uo5eNs9hA6cDk8vEt7PaJ0qRx', 2, 'U', 'U', '2025-01-04 18:10:08.846185 +00:00', '2025-01-04 18:11:08.846185 +00:00', 20, 1, '200 - OK');
 
 -- Notifications
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (1, '7hySSGASMhDwbcLh6xrEF', 1, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (2, '2BcDeFgHiJkLmNoPqRsTu', 2, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (3, '3CdEfGhIjKlMnOpQrStUv', 3, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (4, '4DeFgHiJkLmNoPqRsTuVw', 4, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (5, '5EfGhIjKlMnOpQrStUvWx', 5, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (6, '6FgHiJkLmNoPqRsTuVwXy', 6, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (7, '7GhIjKlMnOpQrStUvWxYz', 7, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (8, '8HiJkLmNoPqRsTuVwXyZa', 8, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (9, '9IjKlMnOpQrStUvWxYzAb', 9, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (10, '0JkLmNoPqRsTuVwXyZaBc', 10, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (11, '1KlMnOpQrStUvWxYzAbCd', 11, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (12, '2LmNoPqRsTuVwXyZaBcDe', 12, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (13, '3MnOpQrStUvWxYzAbCdEf', 13, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (14, '4NoPqRsTuVwXyZaBcDeFg', 14, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (15, '5OpQrStUvWxYzAbCdEfGh', 15, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (16, '6PqRsTuVwXyZaBcDeFgHi', 16, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (17, '7QrStUvWxYzAbCdEfGhIj', 17, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (18, '8RsTuVwXyZaBcDeFgHiJk', 18, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (19, '9StUvWxYzAbCdEfGhIjKl', 19, '200 - OK');
-INSERT INTO notification(id, public_id, check_result_id, title)
-VALUES (20, '0TuVwXyZaBcDeFgHiJkLm', 20, '200 - OK');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (1, '7hySSGASMhDwbcLh6xrEF', 1, '200 - OK', 2, 'Bq7xLk2mN9aYp4sQw8VdR3tXe', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (2, '2BcDeFgHiJkLmNoPqRsTu', 2, '200 - OK', 2, 'Cw9mRt5pF2kZs7dLb4XhQ6uYf', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (3, '3CdEfGhIjKlMnOpQrStUv', 3, '200 - OK', 2, 'Dx1nVb8qJ5lMt0eNc7YjR9wZg', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (4, '4DeFgHiJkLmNoPqRsTuVw', 4, '200 - OK', 2, 'Ey3oXc1rK8mNu2fOd0ZkS2aBh', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (5, '5EfGhIjKlMnOpQrStUvWx', 5, '200 - OK', 2, 'Fz5pYd4sL1nOv3gPe2AlT5bCi', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (6, '6FgHiJkLmNoPqRsTuVwXy', 6, '200 - OK', 2, 'Ga7qZe7tM4oPw6hQf5BmU8cDj', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (7, '7GhIjKlMnOpQrStUvWxYz', 7, '200 - OK', 2, 'Hb9rAf0uN7pQx9iRg8CnV1dEk', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (8, '8HiJkLmNoPqRsTuVwXyZa', 8, '200 - OK', 2, 'Ic1sBg3vO0qRy2jSh1DoW4eFl', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (9, '9IjKlMnOpQrStUvWxYzAb', 9, '200 - OK', 2, 'Jd3tCh6wP3rSz5kTi4EpX7fGm', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (10, '0JkLmNoPqRsTuVwXyZaBc', 10, '200 - OK', 2, 'Ke5uDi9xQ6sTa8lUj7FqY0gHn', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (11, '1KlMnOpQrStUvWxYzAbCd', 11, '200 - OK', 2, 'Lf7vEj2yR9tUb1mVk0GrZ3hIo', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (12, '2LmNoPqRsTuVwXyZaBcDe', 12, '200 - OK', 2, 'Mg9wFk5zS2uVc4nWl3HsA6iJp', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (13, '3MnOpQrStUvWxYzAbCdEf', 13, '200 - OK', 2, 'Nh1xGl8aT5vWd7oXm6ItB9jKq', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (14, '4NoPqRsTuVwXyZaBcDeFg', 14, '200 - OK', 2, 'Oi3yHm1bU8wXe0pYn9JuC2kLr', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (15, '5OpQrStUvWxYzAbCdEfGh', 15, '200 - OK', 2, 'Pj5zIn4cV1xYf3qZo2KvD5lMs', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (16, '6PqRsTuVwXyZaBcDeFgHi', 16, '200 - OK', 2, 'Qk7aJo7dW4yZg6rAp5LwE8mNt', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (17, '7QrStUvWxYzAbCdEfGhIj', 17, '200 - OK', 2, 'Rl9bKp0eX7zAh9sBq8MxF1nOu', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (18, '8RsTuVwXyZaBcDeFgHiJk', 18, '200 - OK', 2, 'Sm1cLq3fY0aBi2tCr1NyG4oPv', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (19, '9StUvWxYzAbCdEfGhIjKl', 19, '200 - OK', 2, 'Tn3dMr6gZ3bCj5uDs4OzH7pQw', 'U');
+INSERT INTO notification(id, public_id, check_result_id, title, monitor_id, public_check_result_id, status)
+VALUES (20, '0TuVwXyZaBcDeFgHiJkLm', 20, '200 - OK', 2, 'Uo5eNs9hA6cDk8vEt7PaJ0qRx', 'U');
 
 SELECT setval('team_id_seq', (SELECT MAX(id) FROM team));
 SELECT setval('user_id_seq', (SELECT MAX(id) FROM "user"));

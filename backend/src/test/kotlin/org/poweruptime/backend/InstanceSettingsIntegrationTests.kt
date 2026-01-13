@@ -703,8 +703,7 @@ class InstanceSettingsIntegrationTests(
             mockMvc.get("/v1/instance-settings/versionCheck").andExpect {
                 status { isOk() }
                 content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.latestVersion") { value(null) }
+                    string("")
                 }
             }
         }
@@ -716,7 +715,7 @@ class InstanceSettingsIntegrationTests(
                 .andExpect {
                     status { isOk() }
                     content {
-                        jsonPath("$.latestVersion") { value(null) }
+                        string("")
                     }
                 }
         }
@@ -727,7 +726,7 @@ class InstanceSettingsIntegrationTests(
             mockMvc.get("/v1/instance-settings/versionCheck").andExpect {
                 status { isOk() }
                 content {
-                    jsonPath("$.latestVersion") { value(null) }
+                    string("")
                 }
             }
         }

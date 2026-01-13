@@ -54,7 +54,7 @@ class AuthIntegrationTest(
 
             mvc.get("/v1/secure") {
                 headers {
-                    setBearerAuth(jwtResponse.accessToken!!)
+                    setBearerAuth(jwtResponse.accessToken)
                 }
             }.andExpect {
                 status { isOk() }
@@ -458,7 +458,7 @@ class AuthIntegrationTest(
             mvc.post("/v1/auth/refresh") {
                 contentType = MediaType.APPLICATION_JSON
                 content = RefreshJwtWithSessionTokenDto(
-                    refreshToken = response.refreshToken!!,
+                    refreshToken = response.refreshToken,
                     sessionInformation = "poweruptime integration tests",
                 ).toJSON()
             }.andExpect {

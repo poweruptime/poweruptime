@@ -105,6 +105,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "Test Notification",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -153,6 +156,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "UP Notification",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -195,6 +201,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "DOWN Notification",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -237,6 +246,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "Service Test",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -290,6 +302,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "Email Notification",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -332,6 +347,9 @@ class AppriseIntegrationTests(
             val notification = ModelFactory.getTestNotification(
                 title = "Slack Notification",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,
@@ -379,10 +397,16 @@ class AppriseIntegrationTests(
             val notification1 = ModelFactory.getTestNotification(
                 title = "Notification 1",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val notification2 = ModelFactory.getTestNotification(
                 title = "Notification 2",
                 checkResultId = checkResult.id,
+                status = checkResult.status,
+                monitorId = monitor.id,
+                publicCheckResultId = checkResult.publicId,
             )
             val method1 = ModelFactory.getTestNotificationMethod(
                 type = NotificationMethodType.SLACK,

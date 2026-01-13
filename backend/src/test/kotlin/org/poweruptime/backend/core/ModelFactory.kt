@@ -137,7 +137,10 @@ object ModelFactory {
 
     fun getTestNotification(
         title: String = "Test Title",
-        checkResultId: ULong = getTestCheckResult(title = title).id
+        checkResultId: ULong = getTestCheckResult(title = title).id,
+        monitorId: ULong = 1UL,
+        publicCheckResultId: String = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
+        status: MonitorStatus = MonitorStatus.UP,
     ) = NotificationRecord(
         checkResultId = checkResultId,
         title = title,
@@ -145,6 +148,9 @@ object ModelFactory {
         publicId = RandomGenerator.nanoId(NANO_ID_MAX_LENGTH),
         createdAt = Instant.now(),
         updatedAt = Instant.now(),
+        monitorId = monitorId,
+        publicCheckResultId = publicCheckResultId,
+        status = status,
     )
 
     fun getTestSubNotification(
