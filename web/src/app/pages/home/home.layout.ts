@@ -1,134 +1,58 @@
-import {NgOptimizedImage} from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  viewChild,
-} from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
-import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 
-import {MatIconButton} from '@angular/material/button';
-import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbar} from '@angular/material/toolbar';
-import {MatTooltip} from '@angular/material/tooltip';
+import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 
-import {BreakpointObserver} from '@angular/cdk/layout';
-
-import {debounceTime, filter, map, skip, withLatestFrom} from 'rxjs';
-
-import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-
-import {BackendOfflineAlert, Nav} from '@app/components';
-import {
-  BackendOfflineService,
-  ChangelogStore,
-  InfoStore,
-  PushService,
-  SelectedTeamStore,
-} from '@app/services';
-import {TailwindBreakpoints, isMobileBreakpoints} from '@app/services/util';
+import {BackendOfflineAlert} from '@app/components';
+import {Sidebar} from '@app/components/sidebar/sidebar';
+import {SiteHeader} from '@app/components/sidebar/site-header';
+import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
 
 @Component({
   selector: 'home-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @let _collapseNav = collapseNav();
+    <pu-sidebar [teamId]="selectedTeamStore.storageSelectedTeamId()">
+      <main class="ps-4 pe-2" hlmSidebarInset>
+        <pu-site-header-inset />
 
-    <mat-drawer-container autosize>
-      <mat-drawer #drawer [mode]="_collapseNav ? 'over' : 'side'" [opened]="!_collapseNav">
-        <pu-nav [teamId]="selectedTeamStore.storageSelectedTeamId()" />
-      </mat-drawer>
-
-      <mat-drawer-content>
-        <div class="flex h-screen max-h-screen flex-col gap-2">
-          <mat-toolbar>
-            <div class="flex items-center gap-2 pt-2">
-              @if (_collapseNav) {
-                <button
-                  [matTooltip]="'nav.toggle' | transloco"
-                  [attr.aria-label]="'nav.toggle' | transloco"
-                  (click)="drawer.toggle()"
-                  type="button"
-                  mat-icon-button>
-                  <ng-icon name="bootstrapList" size="24" />
-                </button>
-              }
-              <a class="inline-flex items-center gap-2 text-2xl" routerLink="/">
-                <img
-                  class="rounded-full"
-                  ngSrc="/assets/logo.webp"
-                  alt="logo"
-                  width="48"
-                  height="48" />
-                <span class="mb-1">poweruptime</span>
-              </a>
-            </div>
-          </mat-toolbar>
-
-          <main class="main w-full overflow-y-scroll px-2 pb-2">
-            @defer (when backendOfflineService.isOffline()) {
-              @if (backendOfflineService.isOffline()) {
-                <pu-backend-offline-alert />
-              }
+        <div class="main-content max-w-full">
+          @defer (when backendOfflineService.isOffline()) {
+            @if (backendOfflineService.isOffline()) {
+              <pu-backend-offline-alert />
             }
+          }
 
-            <router-outlet />
-          </main>
+          <router-outlet />
         </div>
-      </mat-drawer-content>
-    </mat-drawer-container>
+      </main>
+    </pu-sidebar>
   `,
   styles: `
     @reference "#styles.css";
 
-    .main {
-      max-width: 1920px;
-
-      /*-ms-overflow-style: none; !* IE and Edge *!*/
-      /*scrollbar-width: none; !* Firefox *!*/
-    }
-
     @media (min-width: 2283px) {
-      .main {
-        min-width: 1924px;
-        @apply mx-auto;
+      .main-content {
+        @apply mx-auto max-w-[1960px] min-w-[1960px];
       }
-    }
-
-    /* Hide scrollbar but allow scrolling */
-    .main::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Edge */
-    }
-
-    .mat-drawer {
-      border-top-right-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
     }
   `,
   imports: [
     RouterOutlet,
     ReactiveFormsModule,
-    MatSidenavModule,
-    NgIcon,
-    MatIconButton,
-    Nav,
-    MatTooltip,
-    TranslocoPipe,
     BackendOfflineAlert,
-    MatToolbar,
-    RouterLink,
-    NgOptimizedImage,
+    Sidebar,
+    SiteHeader,
+    HlmSidebarImports,
   ],
 })
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
-  readonly infoStore = inject(InfoStore);
+
+  private readonly sidebarService = inject(HlmSidebarService);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {
@@ -139,78 +63,26 @@ export class HomeLayout {
     },
   });
 
-  readonly drawer = viewChild.required(MatDrawer);
-
-  readonly breakpointObserver = inject(BreakpointObserver);
-
-  readonly collapseNav$ = this.breakpointObserver
-    .observe([
-      TailwindBreakpoints.xs,
-      TailwindBreakpoints.sm,
-      TailwindBreakpoints.md,
-      TailwindBreakpoints.lg,
-      TailwindBreakpoints.xl,
-      TailwindBreakpoints['2xl'],
-      TailwindBreakpoints['3xl'],
-    ])
-    .pipe(map((result) => result.matches));
-
-  readonly collapseNav = toSignal(this.collapseNav$, {requireSync: true});
-
   constructor() {
-    this.infoStore.loadSupport();
-
     this.selectedTeamStore.loadSelectedTeam(this.selectedTeamStore.storageSelectedTeamId);
 
     inject(PushService).monitorStatusChange$.pipe(takeUntilDestroyed()).subscribe();
 
-    const changelogStore = inject(ChangelogStore);
-
-    changelogStore.showNewVersionDialog(
-      computed(() => ({
-        version: changelogStore.lastVersion(),
-        newVersion: true,
-      })),
-    );
-
     const router = inject(Router);
 
-    router.events
-      .pipe(
-        takeUntilDestroyed(),
-        withLatestFrom(this.collapseNav$),
-        filter(([a, b]) => b && a instanceof NavigationEnd),
-      )
-      .subscribe(() => this.drawer().close());
-
-    this.collapseNav$.pipe(skip(1), takeUntilDestroyed()).subscribe((isMobile) => {
-      if (isMobile) {
-        void this.drawer().close();
+    toObservable(this.sidebarService.isMobile).subscribe((isMobile) => {
+      if (!isMobile) {
+        if (router.url.includes('/mm')) {
+          void router.navigateByUrl(router.url.replace('/mm', '/m'));
+        }
       } else {
-        void this.drawer().open('program');
-      }
-    });
-
-    this.breakpointObserver
-      .observe(isMobileBreakpoints)
-      .pipe(
-        takeUntilDestroyed(),
-        map((result) => result.matches),
-        debounceTime(275),
-      )
-      .subscribe((isMobile) => {
-        if (!isMobile) {
-          if (router.url.includes('/mm')) {
-            void router.navigateByUrl(router.url.replace('/mm', '/m'));
-          }
-        } else {
-          if (router.url.includes('/m')) {
-            const index = router.url.indexOf('/m');
-            if (router.url[index + 2] !== 'm') {
-              void router.navigateByUrl(router.url.replace('/m', '/mm'));
-            }
+        if (router.url.includes('/m')) {
+          const index = router.url.indexOf('/m');
+          if (router.url[index + 2] !== 'm') {
+            void router.navigateByUrl(router.url.replace('/m', '/mm'));
           }
         }
-      });
+      }
+    });
   }
 }

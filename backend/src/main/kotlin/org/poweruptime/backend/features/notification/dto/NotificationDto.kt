@@ -1,8 +1,8 @@
 package org.poweruptime.backend.features.notification.dto
 
-import org.poweruptime.backend.features.monitor.dto.CheckResultMinResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorMinResponse
-import org.poweruptime.backend.features.notification.model.NotificationJoinCheckResultMonitorAndTeamRecord
+import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.notification.model.NotificationJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.notification.model.NotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.team.dto.TeamMinResponse
@@ -18,16 +18,18 @@ data class NotificationMinResponse(
 
 data class NotificationResponse(
     val id: String,
-    val checkResult: CheckResultMinResponse,
+    val checkResultId: String,
     val title: String,
+    val status: MonitorStatus,
     val createdAt: Instant,
     val monitor: MonitorMinResponse,
     val team: TeamMinResponse,
 ) {
-    constructor(it: NotificationJoinCheckResultMonitorAndTeamRecord) : this(
+    constructor(it: NotificationJoinMonitorAndTeamRecord) : this(
         id = it.notification.publicId,
-        checkResult = CheckResultMinResponse(it.checkResult),
+        checkResultId = it.notification.publicCheckResultId,
         title = it.notification.title,
+        status = it.notification.status,
         createdAt = it.notification.createdAt,
         monitor = MonitorMinResponse(it.monitor),
         team = TeamMinResponse(it.team),

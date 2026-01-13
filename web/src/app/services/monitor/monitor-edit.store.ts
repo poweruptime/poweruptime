@@ -10,11 +10,10 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 
 import {setError, withRequestStatus} from '../store-features';
-import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore, withMonitorLoad} from './';
+import {InfiniteMonitorsStore, MonitorDetailStore, MonitorsSearchStore} from './';
 
 export const MonitorEditStore = signalStore(
   withRequestStatus(),
-  withMonitorLoad(),
   withMethods(
     (
       store,

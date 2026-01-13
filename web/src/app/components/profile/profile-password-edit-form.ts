@@ -17,7 +17,12 @@ import {
 
 @Component({
   template: `
-    <form class="flex flex-col" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+    <form
+      class="flex flex-col"
+      id="password-form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()">
       <mat-form-field>
         <mat-label>{{ 'profile.password.currentPassword' | transloco }}</mat-label>
         <input matInput formControlName="oldPassword" type="password" />
@@ -62,12 +67,19 @@ import {
           }
         </mat-form-field>
 
-        @if (form.controls.password.errors?.['mismatch']) {
+        @if (
+          (form.controls.password.controls.confirmPassword.value.length > 0 ||
+            form.controls.password.controls.newPassword.value.length > 0) &&
+          form.controls.password.errors?.['mismatch']
+        ) {
           <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
         }
       </ng-container>
 
-      <pu-save-button [valid]="isValid()" [text]="'profile.password.update' | transloco" />
+      <pu-save-button
+        [valid]="isValid()"
+        [text]="'profile.password.update' | transloco"
+        form="password-form" />
     </form>
   `,
   selector: 'pu-profile-password-form',
@@ -89,6 +101,8 @@ export class ProfilePasswordEditForm extends AbstractModelEditFormComponent<
   BackendType['UpdatePasswordDto'],
   BackendType['UpdatePasswordDto']
 > {
+  override disableInputFocus = true;
+
   override form = this.fb.nonNullable.group({
     oldPassword: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
     password: this.fb.nonNullable.group(

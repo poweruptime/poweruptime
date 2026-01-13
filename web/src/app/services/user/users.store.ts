@@ -30,7 +30,7 @@ export const UsersStore = signalStore(
   withRequestStatus(),
   withEntities<BackendType['UserResponse']>(),
   withPaginatedTable<BackendType['UserResponse']>({
-    columnsToDisplay: ['email', 'name', 'activated', 'role', 'actions'],
+    columnsToDisplay: ['name', 'activated', 'actions'],
     defaultSortBy: 'createdAt',
     defaultSortDirection: 'desc',
   }),

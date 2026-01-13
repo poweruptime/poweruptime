@@ -2,7 +2,7 @@
 
 import {Body, Container, Head, Html, Section, Tailwind} from '@react-email/components';
 import * as React from 'react';
-import {Fragment, PropsWithChildren} from 'react';
+import {PropsWithChildren} from 'react';
 import Logo from './Logo';
 
 export default function (props: PropsWithChildren & {disableLogo?: boolean}) {

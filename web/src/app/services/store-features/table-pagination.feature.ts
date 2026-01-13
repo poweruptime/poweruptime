@@ -18,6 +18,8 @@ import {
 } from '@ngrx/signals';
 import {EntityState} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {HlmPaginator} from '@spartan-ng/helm/paginator';
+import {HlmSort} from '@spartan-ng/helm/sort';
 import {loggerOf, n_from} from 'dfts-helper';
 
 import {RequestStatusState} from './request-status.feature';
@@ -95,7 +97,50 @@ export function withPaginatedTable<EntityType>({
           ),
         ),
       ),
+      setHlmPaginator: rxMethod<HlmPaginator>(
+        switchMap((paginator) =>
+          paginator.page$.pipe(
+            tap(() => {
+              const options = {
+                page: paginator.pageIndex(),
+                size: paginator.pageSize(),
+              };
+              lumber.log('setPaginatorUpdate', 'new params', options);
+              patchState(store, () => options);
+              void router.navigate([], {
+                relativeTo: activatedRoute,
+                queryParamsHandling: 'merge',
+                queryParams: {
+                  [`${paramPrefix}page`]: options.page,
+                  [`${paramPrefix}size`]: options.size,
+                },
+              });
+            }),
+          ),
+        ),
+      ),
       setSort: rxMethod<MatSort>(
+        switchMap((sort) =>
+          sort.sortChange.pipe(
+            tap(() => {
+              const options = {
+                sortBy: sort.active,
+                sortDirection: sort.direction,
+              };
+              lumber.log('setSortUpdate', 'new params', options);
+              void router.navigate([], {
+                relativeTo: activatedRoute,
+                queryParamsHandling: 'merge',
+                queryParams: {
+                  [`${paramPrefix}sort`]: options.sortBy,
+                  [`${paramPrefix}direction`]: options.sortDirection,
+                },
+              });
+            }),
+          ),
+        ),
+      ),
+      setHlmSort: rxMethod<HlmSort>(
         switchMap((sort) =>
           sort.sortChange.pipe(
             tap(() => {

@@ -1,12 +1,11 @@
 import {Routes} from '@angular/router';
 
+import {MonitorDetailStore} from '../../../services';
+
 export const ROUTES: Routes = [
   {
     path: 'new',
-    loadComponent: () => import('./monitor-edit.page').then((c) => c.MonitorEditPage),
-  },
-  {
-    path: ':monitorId/edit',
+    providers: [MonitorDetailStore],
     loadComponent: () => import('./monitor-edit.page').then((c) => c.MonitorEditPage),
   },
   {

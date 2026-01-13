@@ -103,8 +103,8 @@ springdoc:
 logging:
   level:
     org.poweruptime: DEBUG
-#    Exposed: DEBUG
-#    org.springframework.security: DEBUG
+    Exposed: ERROR
+    org.springframework.security: ERROR
     org.springframework.web: DEBUG
 
 management:
@@ -128,7 +128,7 @@ poweruptime:
   notification-temp:
     enabled: true
   monitor-autostart:
-    enabled: true
+    enabled: false
   storage:
     directory: storage
   keys:

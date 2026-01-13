@@ -17,6 +17,7 @@ import org.poweruptime.backend.features.notification.core.NotificationMethodTemp
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 import org.poweruptime.backend.features.notification.dto.NotificationTemplate
 import org.poweruptime.backend.features.notification.htmlConverter.HtmlConverterFactory
+import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodAndNotificationRecord
 import org.poweruptime.backend.features.notification.model.SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord
 import org.poweruptime.backend.features.notification.service.INotificationMethodDataService
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
@@ -73,7 +74,7 @@ class AppriseSender(
     }
 
     private fun handleTempNotification(
-        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        join: SubNotificationJoinMethodAndNotificationRecord,
         template: NotificationTemplate,
     ): SubNotificationUpdate {
         tempNotificationService.addNotification(
@@ -92,7 +93,7 @@ class AppriseSender(
     }
 
     private fun buildAppriseRequest(
-        join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
+        join: SubNotificationJoinMethodAndNotificationRecord,
         template: NotificationTemplate,
     ): AppriseNotificationRequest {
         val method = join.method
@@ -104,7 +105,7 @@ class AppriseSender(
             urls = listOf(buildAppriseUrl(appriseDto, method.type)),
             title = template.title.emptyToNull(),
             body = convertBody(template.body, method.type),
-            type = mapStatusToNotificationType(join.checkResult.status),
+            type = mapStatusToNotificationType(join.notification.status),
             format = mapFormatType(method.type.bodyType),
         )
     }
@@ -147,8 +148,8 @@ class AppriseSender(
             join,
             previousOppositeCheckResult = checkResultService
                 .getLastOppositeByMonitorIdAndStatus(
-                    join.monitor.id,
-                    join.checkResult.status,
+                    join.notification.monitorId,
+                    join.notification.status,
                 ),
         )
 

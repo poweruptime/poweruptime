@@ -27,13 +27,13 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
     <div class="flex flex-col gap-4">
       @if (notificationDetailStore.notification(); as notification) {
         <div>
-          <a mat-stroked-button routerLink="../../../" queryParamsHandling="merge">
+          <a mat-stroked-button routerLink="../../" queryParamsHandling="merge">
             <ng-icon class="me-1" name="bootstrapArrowLeft" />
             <span>{{ notification.monitor.name }}</span>
           </a>
         </div>
         <div class="flex flex-wrap items-end gap-2 text-2xl">
-          <pu-monitor-status [status]="notification.checkResult.status" />
+          <pu-monitor-status [status]="notification.status" />
           <h1>{{ notification.title }}</h1>
         </div>
         <div class="flex items-center gap-4">
@@ -44,7 +44,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
           <a
             class="hover:cursor-pointer"
-            [routerLink]="'../../c/' + notification.checkResult.id + '/logs'">
+            [routerLink]="'../../c/' + notification.checkResultId + '/logs'">
             <mat-chip-option>
               {{ 'notification.detail.openCheckResult' | transloco }}
               <ng-icon name="bootstrapBoxArrowUpRight" size="16" />

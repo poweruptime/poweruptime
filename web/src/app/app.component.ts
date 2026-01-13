@@ -19,7 +19,7 @@ import {environment} from '@app/util';
           <div
             class="h-0 w-0 border-t-[60px] border-l-[60px] border-t-blue-500 border-l-transparent"></div>
           <span
-            class="absolute top-2 right-2 rotate-45 transform ps-2 pt-2 text-xs font-bold text-white">
+            class="absolute top-1 right-1 rotate-45 transform ps-2 pt-2 text-xs font-bold text-white">
             {{ channel | uppercase }}
           </span>
         </div>

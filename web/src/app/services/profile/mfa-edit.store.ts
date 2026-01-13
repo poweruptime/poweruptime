@@ -21,6 +21,9 @@ export const MFAEditStore = signalStore(
     backupCodes: undefined,
   }),
   withMethods((store, api = injectAPI()) => ({
+    setDone() {
+      patchState(store, () => ({backupCodes: undefined}));
+    },
     load: rxMethod<void>(
       pipe(
         tap(() => patchState(store, setPending())),

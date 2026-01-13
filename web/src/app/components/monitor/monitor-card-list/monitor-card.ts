@@ -6,11 +6,12 @@ import {MatCard} from '@angular/material/card';
 
 import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
+
 import type {BackendType} from '@app/api';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
 
 import {LastCheckResultsStore} from '../../../services';
-import {Placeholder} from '../../placeholder';
 import {UptimeTimeline} from '../uptime-timeline';
 
 @Component({
@@ -36,12 +37,12 @@ import {UptimeTimeline} from '../uptime-timeline';
           @let hasTags = _monitor.tags.length > 0;
           @if (isLoading()) {
             <div class="flex w-full flex-col gap-2 px-2 pt-2">
-              <pu-placeholder class="h-6 w-full" />
+              <hlm-skeleton class="h-6 w-full" />
 
               @if (!hasTags) {
                 <div class="flex w-full justify-between">
-                  <pu-placeholder class="h-6 w-16" />
-                  <pu-placeholder class="h-6 w-16" />
+                  <hlm-skeleton class="h-6 w-16" />
+                  <hlm-skeleton class="h-6 w-16" />
                 </div>
               }
             </div>
@@ -94,7 +95,7 @@ import {UptimeTimeline} from '../uptime-timeline';
     UptimeTimeline,
     MonitorStatusTextBackground,
     Tag,
-    Placeholder,
+    HlmSkeletonImports,
   ],
 })
 export class MonitorCard {

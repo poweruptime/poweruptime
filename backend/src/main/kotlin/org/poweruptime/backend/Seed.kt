@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import kotlin.system.exitProcess
 
-private const val CHECK_RESULT_SEED_LENGTH = 1_000L
+private const val CHECK_RESULT_SEED_LENGTH = 10_000L
 
 @Configuration
 class Seed(

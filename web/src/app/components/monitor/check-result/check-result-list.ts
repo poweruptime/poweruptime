@@ -1,275 +1,177 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-
-import {MatIconAnchor, MatIconButton} from '@angular/material/button';
-import {
-  MatDateRangeInput,
-  MatDateRangePicker,
-  MatDatepickerToggle,
-  MatEndDate,
-  MatStartDate,
-} from '@angular/material/datepicker';
-import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSelect} from '@angular/material/select';
-import {MatOption} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltip} from '@angular/material/tooltip';
+import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {StopPropagationDirective} from 'dfx-helper';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
+import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
+import {HlmToggleGroupImports} from '@spartan-ng/helm/toggle-group';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
+import {format} from 'date-fns';
+import {injectQueryParams} from 'ngxtension/inject-query-params';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {TableLoadingBar} from '@app/components';
-import {MonitorStatusTextBackground} from '@app/directives';
-import {RelativeTimeWithTooltip} from '@app/pipes';
+import {BackendType} from '@app/api';
 import {CheckResultsStore} from '@app/services';
-import {arrayToParam, paramToArray, trackBy} from '@app/util';
+import {dateToDateTime, toBackendDate, toBackendDateTime} from '@app/services/util';
+import {arrayToParam, paramToArray} from '@app/util';
 
-import {BackendType} from '../../../api';
-import {dateToDateTime, toBackendDate, toBackendDateTime} from '../../../services/util';
+import {TableFilter, hasActiveFilters} from '../../table-filter';
+import {CheckResultTable} from './check-result-table';
+import {CheckResultsEmpty} from './check-results-empty';
 
 @Component({
   template: `
-    <div class="mt-4 flex flex-wrap justify-end">
-      <div class="grid grid-cols-2 items-center justify-end gap-4 lg:grid-cols-4">
-        @let _showDuplicates = showDuplicates();
-        <div class="flex justify-end">
-          <mat-slide-toggle
-            [checked]="_showDuplicates ?? false"
-            (toggleChange)="showDuplicates.set(_showDuplicates ? null : true)"
-            labelPosition="before">
-            {{ 'general.showDuplicates' | transloco }}
-          </mat-slide-toggle>
-        </div>
+    @if (checkResultsStore.isEmpty() && !hasActiveFilters()) {
+      <pu-check-results-empty />
+    } @else {
+      <div class="flex flex-col gap-2">
+        <pu-table-filter [key]="tableKey">
+          <div class="flex justify-end">
+            <label
+              class="inline-flex min-w-40 items-center justify-end"
+              hlmLabel
+              for="showDuplicates">
+              {{ 'general.showDuplicates' | transloco }}
+              <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
+            </label>
+          </div>
 
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>{{ 'checkResult.list.hasNotification' | transloco }}</mat-label>
-          <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
-          <mat-select [(ngModel)]="hasNotification">
-            @for (states of availableHasNotificationStates(); track states.hasNotification) {
-              <mat-option [value]="states.hasNotification">
-                {{ states.name }}
-              </mat-option>
+          <hlm-toggle-group
+            [(value)]="hasNotification"
+            hlmButtonGroup
+            type="single"
+            variant="outline"
+            size="sm">
+            <button
+              (click)="hasNotification.set(null)"
+              hlmTooltipTrigger
+              type="button"
+              hlmBtn
+              variant="outline"
+              size="sm">
+              <ng-icon hlm name="bootstrapBell" size="sm" />
+            </button>
+            @for (state of availableHasNotificationStates(); track state.hasNotification) {
+              <button
+                class="data-[state=on]:bg-input/80"
+                [value]="state.hasNotification"
+                type="button"
+                hlmBtn
+                hlmToggleGroupItem
+                variant="outline"
+                size="sm">
+                {{ state.name }}
+              </button>
             }
-          </mat-select>
-        </mat-form-field>
+          </hlm-toggle-group>
 
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>{{ 'general.status' | transloco }}</mat-label>
-          <ng-icon name="bootstrapArrowDownUp" matIconPrefix />
-          <mat-select [(ngModel)]="statuses" multiple>
-            @for (status of availableStatuses(); track status.status) {
-              <mat-option [value]="status.status">
-                {{ status.name }}
-              </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+          <brn-select
+            class="inline-block"
+            [(value)]="statuses"
+            [placeholder]="'general.status' | transloco"
+            multiple>
+            <hlm-select-trigger>
+              <hlm-select-value class="min-w-38" />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              @for (status of availableStatuses(); track status.status) {
+                <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
+              }
+            </hlm-select-content>
+          </brn-select>
 
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>{{ 'general.startEnd' | transloco }}</mat-label>
-          <mat-date-range-input [rangePicker]="picker" [max]="max">
-            <input
-              [(ngModel)]="start"
-              [placeholder]="'monitor.details.pingChart.startDate' | transloco"
-              matStartDate />
-            <input
-              [(ngModel)]="end"
-              [placeholder]="'monitor.details.pingChart.endDate' | transloco"
-              matEndDate />
-          </mat-date-range-input>
-          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
+          <hlm-date-range-picker
+            class="max-w-52"
+            [max]="max"
+            [autoCloseOnEndSelection]="true"
+            [formatDates]="formatDates"
+            [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
+            (dateChange)="
+              start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
+            "
+            buttonId="rangePicker">
+            <span>{{ 'general.startEnd' | transloco }}</span>
+          </hlm-date-range-picker>
+        </pu-table-filter>
+
+        <pu-check-result-table [teamId]="teamId()" [monitorId]="monitorId()" />
       </div>
-    </div>
-
-    <div class="table-responsive">
-      <table
-        [dataSource]="checkResultsStore.entities()"
-        [matSortActive]="checkResultsStore.sortBy()"
-        [matSortDirection]="checkResultsStore.sortDirection()"
-        [trackBy]="trackBy"
-        mat-table
-        matSort>
-        <ng-container matColumnDef="monitor">
-          <th *matHeaderCellDef mat-header-cell>{{ 'general.monitor' | transloco }}</th>
-          <td class="max-w-64 truncate" *matCellDef="let element" mat-cell>
-            <a class="underline" [routerLink]="element.monitor.id" stopPropagation>
-              {{ element.monitor.name }}
-            </a>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>
-            {{ 'general.status' | transloco }}
-          </th>
-          <td *matCellDef="let element" mat-cell>
-            <span
-              class="rounded-md px-2 py-1 font-bold"
-              [monitor-status-text-background]="element.status">
-              {{ element.status }}
-            </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="createdAt">
-          <th class="whitespace-nowrap" *matHeaderCellDef mat-header-cell mat-sort-header>
-            {{ 'general.createdAt' | transloco }}
-          </th>
-          <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-            <pu-relative-time [value]="element.createdAt" format="yyyy.MM.dd HH:mm:ss" />
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="title">
-          <th *matHeaderCellDef mat-header-cell>{{ 'general.title' | transloco }}</th>
-          <td class="whitespace-nowrap" *matCellDef="let element" mat-cell>
-            {{ element.title }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th *matHeaderCellDef mat-header-cell></th>
-          <td *matCellDef="let element" mat-cell>
-            <a
-              [matTooltip]="'checkResult.list.action.view' | transloco"
-              [attr.aria-label]="'checkResult.list.action.view' | transloco"
-              [routerLink]="
-                teamId() || (!teamId() && !monitorId())
-                  ? element.monitor.id + '/c/' + element.id + '/logs'
-                  : 'c/' + element.id + '/logs'
-              "
-              matTooltipPosition="left"
-              mat-icon-button
-              stopPropagation>
-              <ng-icon name="bootstrapArrowRight" />
-            </a>
-          </td>
-        </ng-container>
-
-        <tr *matHeaderRowDef="checkResultsStore.columnsToDisplay()" mat-header-row></tr>
-        <tr
-          *matRowDef="let element; columns: checkResultsStore.columnsToDisplay()"
-          [routerLink]="
-            teamId() || (!teamId() && !monitorId())
-              ? element.monitor.id + '/c/' + element.id + '/logs'
-              : 'c/' + element.id + '/logs'
-          "
-          mat-row
-          queryParamsHandling="merge"></tr>
-      </table>
-    </div>
-
-    <pu-table-loading-bar [loading]="checkResultsStore.isPending()" />
-
-    @if (checkResultsStore.isEmpty()) {
-      <div class="mt-2 w-full text-center">{{ 'general.noDataAvailable' | transloco }}</div>
-    }
-
-    <mat-paginator
-      [pageSizeOptions]="[10, 20, 50, 100, 200]"
-      [pageSize]="checkResultsStore.size()"
-      [pageIndex]="checkResultsStore.page()"
-      [length]="checkResultsStore.totalElements()"
-      showFirstLastButtons />
-  `,
-  styles: `
-    @reference "#styles.css";
-
-    .mat-column-monitor {
-      @apply w-64;
-    }
-
-    .mat-column-status {
-      @apply w-32;
-    }
-
-    .mat-column-actions {
-      @apply w-24;
     }
   `,
   selector: 'pu-check-result-list',
   providers: [CheckResultsStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatTableModule,
-    MatPaginator,
-    MatSortModule,
-    MatSlideToggle,
-    RouterLink,
-    TableLoadingBar,
-    RelativeTimeWithTooltip,
-    StopPropagationDirective,
-    NgIcon,
-    MatIconAnchor,
     TranslocoPipe,
-    MatTooltip,
-    MonitorStatusTextBackground,
     FormsModule,
-    MatFormField,
-    MatLabel,
-    MatOption,
-    MatSelect,
-    MatDateRangeInput,
-    MatDateRangePicker,
-    MatDatepickerToggle,
-    MatEndDate,
-    MatStartDate,
-    MatSuffix,
-    ReactiveFormsModule,
-    MatIconButton,
+    CheckResultTable,
+    CheckResultsEmpty,
+    HlmIconImports,
+    HlmSwitchImports,
+    HlmLabelImports,
+    HlmButtonImports,
+    HlmButtonGroupImports,
+    HlmToggleGroupImports,
+    HlmTooltipImports,
+    HlmSelectImports,
+    BrnSelectImports,
+    HlmDatePickerImports,
+    TableFilter,
   ],
 })
 export class CheckResultList {
+  protected readonly tableKey = 'checks';
   protected readonly max = new Date();
+  protected readonly toBackendDate = toBackendDate;
+  protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
+    dates
+      .filter((it) => !!it)
+      .map((it) => format(it, 'dd.M.yyyy'))
+      .reduce((prev, curr, index) => `${prev}${index == 1 ? ' - ' : ''}${curr}`, '');
 
   readonly checkResultsStore = inject(CheckResultsStore);
 
   readonly monitorId = input<string>();
   readonly teamId = input<string>();
 
-  private readonly paginator = viewChild.required(MatPaginator);
-  private readonly sort = viewChild.required(MatSort);
+  readonly showDuplicates = linkedQueryParam('checks.filter.showDuplicates', {
+    parse: paramToBoolean({defaultValue: false}),
+    stringify: (it) => (it === true ? 'true' : null),
+  });
 
-  readonly showDuplicates = linkedQueryParam('checks.showDuplicates', {
+  hasNotification = linkedQueryParam('checks.filter.hasNotification', {
     parse: paramToBoolean(),
   });
 
-  hasNotification = linkedQueryParam('checks.hasNotification', {
-    parse: paramToBoolean(),
-  });
-
-  statuses = linkedQueryParam('checks.status', {
+  statuses = linkedQueryParam('checks.filter.status', {
     parse: paramToArray<BackendType['CheckResultResponse']['status']>(),
     stringify: arrayToParam(),
   });
 
-  start = linkedQueryParam('checks.start', {
+  protected readonly start = linkedQueryParam('checks.filter.start', {
     parse: (it) => (it ? toBackendDate(it) : undefined),
     stringify: (it) => (it ? toBackendDate(it) : undefined),
   });
-  end = linkedQueryParam('checks.end', {
+  protected readonly end = linkedQueryParam('checks.filter.end', {
     parse: (it) => (it ? toBackendDate(it) : undefined),
     stringify: (it) => (it ? toBackendDate(it) : undefined),
   });
+
+  protected readonly startDate = computed(() =>
+    this.start() ? new Date(this.start()!) : undefined,
+  );
+  protected readonly endDate = computed(() => (this.end() ? new Date(this.end()!) : undefined));
+
+  protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters(this.tableKey));
 
   readonly availableStatuses = signal([
     {status: 'UP' as const, name: 'Up'},
@@ -279,15 +181,12 @@ export class CheckResultList {
   ]);
 
   readonly availableHasNotificationStates = signal([
-    {hasNotification: null, name: 'Ignore'},
-    {hasNotification: true, name: 'Has'},
-    {hasNotification: false, name: 'Has not'},
+    {hasNotification: true, name: 'Include'},
+    {hasNotification: false, name: 'Exclude'},
   ]);
 
   constructor() {
     this.checkResultsStore.setShowDuplicates(this.showDuplicates);
-    this.checkResultsStore.setPaginator(this.paginator);
-    this.checkResultsStore.setSort(this.sort);
 
     this.checkResultsStore.load(
       computed(() => {
@@ -320,6 +219,4 @@ export class CheckResultList {
 
     setColumnsToDisplay(computed(() => !this.monitorId()));
   }
-
-  protected readonly trackBy = trackBy;
 }

@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, computed} from '@angular/core';
 
-import {Placeholder} from './placeholder';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'pu-chart-placeholder',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Placeholder],
+  imports: [HlmSkeletonImports],
   host: {
     class: 'bg-muted flex flex-col justify-end gap-2 rounded p-4;',
     role: 'presentation',
@@ -13,10 +13,10 @@ import {Placeholder} from './placeholder';
   template: `
     <div class="flex h-full items-end justify-between gap-2">
       @for (bar of bars(); track $index) {
-        <pu-placeholder
+        <hlm-skeleton
           class="flex-1 rounded-t"
           [style.height]="bar.height"
-          [style.animation-delay]="bar.delay"></pu-placeholder>
+          [style.animation-delay]="bar.delay" />
       }
     </div>
   `,

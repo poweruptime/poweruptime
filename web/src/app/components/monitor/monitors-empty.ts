@@ -1,0 +1,45 @@
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {RouterLink} from '@angular/router';
+
+import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmEmptyImports} from '@spartan-ng/helm/empty';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+
+@Component({
+  template: `
+    <div hlmEmpty>
+      <div hlmEmptyHeader>
+        <div hlmEmptyMedia variant="icon">
+          <ng-icon hlm name="lucideSquareActivity" />
+        </div>
+        <div hlmEmptyTitle>{{ 'monitor.list.empty.title' | transloco }}</div>
+        <div hlmEmptyDescription>{{ 'monitor.list.empty.description' | transloco }}</div>
+      </div>
+      <div hlmEmptyContent>
+        <div class="flex gap-2">
+          <a hlmBtn routerLink="../new-monitor">
+            <ng-icon hlm name="bootstrapPlusCircle" size="sm" />
+            {{ 'monitor.new' | transloco }}
+          </a>
+          <a hlmBtn routerLink="../../" variant="outline">
+            {{ 'monitor.list.empty.backToTeams' | transloco }}
+          </a>
+        </div>
+      </div>
+      <a
+        class="text-muted-foreground"
+        routerLink="../recycle-bin/monitor"
+        hlmBtn
+        variant="link"
+        size="sm">
+        {{ 'general.recycleBin' | transloco }}
+        <ng-icon hlm name="lucideArrowUpRight" size="sm" />
+      </a>
+    </div>
+  `,
+  selector: 'pu-monitors-empty',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [HlmIconImports, HlmEmptyImports, HlmButtonImports, TranslocoPipe, RouterLink],
+})
+export class MonitorsEmpty {}

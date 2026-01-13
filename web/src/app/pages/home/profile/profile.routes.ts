@@ -1,34 +1,12 @@
 import {Routes} from '@angular/router';
 
-import {environment} from '@app/util';
-
 export const ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./profile.layout').then((c) => c.ProfileLayout),
-    children: [
-      {
-        path: 'overview',
-        loadComponent: () => import('./profile-overview.page').then((c) => c.ProfileOverviewPage),
-      },
-      {
-        path: 'security',
-        loadComponent: () => import('./profile-security.page').then((c) => c.ProfileSecurityPage),
-      },
-      {
-        path: 'dev',
-        canActivate: [() => environment.channel === 'dev'],
-        loadComponent: () => import('./profile-dev.page').then((c) => c.ProfileDevPage),
-      },
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'overview',
-      },
-      {
-        path: '**',
-        redirectTo: 'overview',
-      },
-    ],
+    loadComponent: () => import('./profile.page').then((c) => c.ProfilePage),
+  },
+  {
+    path: '**',
+    redirectTo: '/profile',
   },
 ];

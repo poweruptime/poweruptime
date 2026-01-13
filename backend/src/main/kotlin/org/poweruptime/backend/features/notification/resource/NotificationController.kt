@@ -99,6 +99,6 @@ class NotificationController(
     fun get(
         @PathVariable("id") publicId: String
     ): NotificationResponse = NotificationResponse(
-        notificationService.getByIdJoinCheckResultMonitorAndTeam(notificationService.getIdByPublicId(publicId)),
+        notificationService.getByIdJoinMonitorAndTeam(notificationService.getIdByPublicId(publicId)),
     )
 }

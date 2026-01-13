@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database} from '@app/api';
@@ -13,13 +13,22 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 
 @Component({
   template: `
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>{{ 'instanceSettings.retention.title' | transloco }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form id="retention-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-          <div class="mt-6 flex flex-wrap gap-4">
+    <form
+      class="flex h-full flex-col justify-between"
+      id="retention-form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      hlmCard>
+      <div class="flex flex-col gap-6">
+        <div hlmCardHeader>
+          <div class="flex items-center gap-2">
+            <h3 hlmCardTitle>{{ 'instanceSettings.retention.title' | transloco }}</h3>
+          </div>
+          <p hlmCardDescription>Configure how long data is stored</p>
+        </div>
+        <div class="space-y-6" hlmCardContent>
+          <div class="flex flex-wrap items-center justify-between space-x-2 md:justify-start">
             <mat-form-field>
               <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
               <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
@@ -62,11 +71,12 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
               }
             </mat-form-field>
           </div>
-
-          <pu-save-button [valid]="isValid()" form="retention-form" />
-        </form>
-      </mat-card-content>
-    </mat-card>
+        </div>
+      </div>
+      <div hlmCardFooter>
+        <pu-save-button [valid]="isValid()" form="retention-form" />
+      </div>
+    </form>
   `,
   selector: 'pu-instance-settings-retention-form',
   imports: [
@@ -75,14 +85,11 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     MatLabel,
     MatInput,
     MatError,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
     MatSuffix,
     NgxMatSelectSearchModule,
     SaveButton,
     TranslocoPipe,
+    HlmCardImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -90,6 +97,7 @@ export class InstanceSettingsRetentionForm extends AbstractModelEditFormComponen
   BackendType['SettingRetentionDto'],
   BackendType['SettingRetentionDto']
 > {
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     checkResultRetentionPeriodInDays: [
       180,

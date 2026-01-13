@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
 import {MatMiniFabButton} from '@angular/material/button';
-import {MatDialog} from '@angular/material/dialog';
 
 import {NgIcon} from '@ng-icons/core';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 
-import {AboutDialog} from '@app/components/about-dialog';
+import {AboutDialog} from '../_dialog/about-dialog';
 
 @Component({
   template: `
@@ -18,7 +18,7 @@ import {AboutDialog} from '@app/components/about-dialog';
   imports: [NgIcon, MatMiniFabButton],
 })
 export class OutsideAboutButton {
-  private dialog = inject(MatDialog);
+  private readonly dialog = inject(HlmDialogService);
 
   openAbout() {
     this.dialog.open(AboutDialog);

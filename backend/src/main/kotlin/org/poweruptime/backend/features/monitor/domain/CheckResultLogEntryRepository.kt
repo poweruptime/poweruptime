@@ -40,7 +40,7 @@ fun CheckResultLogEntry.findAll(
         query.andWhere { CheckResultLogEntry.stage inList it }
     }
 
-    return query.orderBy(CheckResultLogEntry.createdAt to SortOrder.DESC).map {
+    return query.orderBy(CheckResultLogEntry.createdAt to SortOrder.ASC).map {
         rowToCheckResultLogEntry(it)
     }
 }

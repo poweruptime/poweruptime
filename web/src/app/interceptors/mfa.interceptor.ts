@@ -1,13 +1,12 @@
 import {HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest} from '@angular/common/http';
 import {inject} from '@angular/core';
 
-import {MatDialog} from '@angular/material/dialog';
-
 import {BehaviorSubject, Observable, catchError, filter, switchMap, tap, throwError} from 'rxjs';
 
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {loggerOf} from 'dfts-helper';
 
-import {MFACheckDialog} from '@app/components/otp';
+import {MFACheckDialog} from '@app/components';
 
 const nextMFACode$ = new BehaviorSubject<string | undefined>(undefined);
 
@@ -16,7 +15,7 @@ export function mfaInterceptor(
   next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> {
   const lumber = loggerOf('mfaInterceptor');
-  const dialog = inject(MatDialog);
+  const dialog = inject(HlmDialogService);
 
   return next(request).pipe(
     catchError((error) => {
@@ -25,9 +24,7 @@ export function mfaInterceptor(
         error.status === 403 &&
         error.error?.codeName === 'MFA_CODE_REQUIRED'
       ) {
-        const dialogRef = dialog.open(MFACheckDialog);
-
-        return dialogRef.afterClosed().pipe(
+        return dialog.open(MFACheckDialog).closed$.pipe(
           tap((code) => console.log('MFACheckDialog return value ', code)),
           filter((code): code is string => !!code),
           switchMap((code) => {

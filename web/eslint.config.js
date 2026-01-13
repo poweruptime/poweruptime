@@ -6,6 +6,7 @@ const angular = require('angular-eslint');
 module.exports = tseslint.config(
   {
     files: ['**/*.ts'],
+    ignores: ['src/libs/**'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -36,6 +37,7 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
+    ignores: ['src/libs/**'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {
       '@angular-eslint/template/button-has-type': ['error'],

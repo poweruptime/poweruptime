@@ -12,11 +12,11 @@ import {CdkVirtualScrollViewport, ScrollingModule} from '@angular/cdk/scrolling'
 
 import {Subject, throttleTime} from 'rxjs';
 
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {BackendType} from '@app/api';
 
-import {Placeholder} from '../../';
 import {UptimeTimelineEntry} from './uptime-timeline-entry';
 
 @Component({
@@ -26,7 +26,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     @let _hideLabel = hideLabel();
     <cdk-virtual-scroll-viewport
       class="uptime-timeline-viewport"
-      [class.h-24]="_size === 3 && !_hideLabel"
+      [class.h-22]="_size === 3 && !_hideLabel"
       [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
       [class.h-10]="_size === 2 && _hideLabel"
       [itemSize]="_size === 3 ? '18' : '14'"
@@ -61,12 +61,12 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
           <div
             class="relative inline-flex flex-col items-center gap-1"
             [style.width]="_size === 3 ? '20px' : '16px'">
-            <pu-placeholder
+            <hlm-skeleton
               class="rounded-sm hover:scale-125"
               [class.h-9]="_size === 3"
               [class.h-6]="_size === 2"
               [class.w-3]="_size === 3"
-              [class.w-2]="_size === 2"></pu-placeholder>
+              [class.w-2]="_size === 2" />
           </div>
         }
       }
@@ -94,7 +94,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
   selector: 'pu-infinite-uptime-timeline',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ScrollingModule, Placeholder, RepeatPipe, UptimeTimelineEntry],
+  imports: [ScrollingModule, HlmSkeletonImports, RepeatPipe, UptimeTimelineEntry],
 })
 export class InfiniteUptimeTimeline {
   checkResults = input.required<BackendType['CheckResultMinResponse'][]>();

@@ -121,7 +121,9 @@ https://stackoverflow.com/questions/75535246/angular-mat-form-field-not-working-
 
 /* Material Table Column Width */
 .table-responsive {
+  display: block;
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
 }
 

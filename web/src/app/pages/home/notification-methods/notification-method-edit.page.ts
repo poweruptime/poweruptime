@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
-import {Placeholder} from '@app/components';
 import {NotificationMethodEditForm} from '@app/components/notification-method';
 import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} from '@app/services';
 
@@ -19,7 +19,7 @@ import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} fro
             }}
           </h1>
         } @else {
-          <pu-placeholder class="h-12 w-64" />
+          <hlm-skeleton class="h-12 w-64" />
         }
       } @else {
         <h1 class="text-4xl">{{ 'cmdk.groups.notificationMethod.create' | transloco }}</h1>
@@ -51,7 +51,7 @@ import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} fro
   `,
   selector: 'pu-notification-method-edit-page',
   providers: [NotificationMethodEditStore, MonitorsSearchStore],
-  imports: [NotificationMethodEditForm, Placeholder, TranslocoPipe],
+  imports: [NotificationMethodEditForm, HlmSkeletonImports, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodEditPage {

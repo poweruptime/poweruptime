@@ -4,6 +4,7 @@ import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {isSystemAdmin} from '@app/guards/is-system-admin.guard';
 import {MonitorsDashboardStore, MonitorsStore} from '@app/services';
+import {environment} from '@app/util';
 
 export const ROUTES: Routes = [
   {
@@ -49,12 +50,20 @@ export const ROUTES: Routes = [
       {
         path: 'settings',
         canActivate: [isSystemAdmin],
+        data: {
+          breadcrumb: 'nav.instanceSettings',
+        },
         loadChildren: () =>
           import('./instance-settings/instance-settings.routes').then((r) => r.ROUTES),
       },
       {
         path: 'profile',
         loadChildren: () => import('./profile/profile.routes').then((r) => r.ROUTES),
+      },
+      {
+        path: 'dev',
+        canActivate: [() => environment.channel === 'dev'],
+        loadComponent: () => import('./dev.page').then((c) => c.DevPage),
       },
       {
         path: '',

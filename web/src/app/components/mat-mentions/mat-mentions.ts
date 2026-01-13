@@ -64,8 +64,6 @@ import {
 
 import {getCaretPosition, setCaretPosition} from './utils';
 
-// your caret utilities
-
 /**
  * Provider that allows the autocomplete to register as a ControlValueAccessor.
  * @docs-private

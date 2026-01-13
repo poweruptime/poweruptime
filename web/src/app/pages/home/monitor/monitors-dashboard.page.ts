@@ -8,7 +8,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-10">
       @let selectedTeam = teamId() ? selectedTeamStore.selectedTeam() : undefined;
       <h1 class="text-3xl">
         {{ selectedTeam?.name ?? ('general.personal' | transloco) }} Dashboard

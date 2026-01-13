@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType} from '@app/api';
@@ -13,44 +14,52 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 
 @Component({
   template: `
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>{{ 'general.general' | transloco }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form
-          class="mt-6 flex flex-col gap-4"
-          id="general-form"
-          #formRef
-          [formGroup]="form"
-          (ngSubmit)="submit()">
-          <pu-timezone-input
-            [availableTimezones]="availableTimezones()"
-            formControlName="timezone" />
+    <form
+      class="h-full flex-col justify-between"
+      id="general-form"
+      #formRef
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      hlmCard>
+      <div class="flex flex-col gap-6">
+        <div hlmCardHeader>
+          <div class="flex items-center gap-2">
+            <ng-icon name="bootstrapGlobe" helm />
+            <h3 hlmCardTitle>{{ 'general.general' | transloco }}</h3>
+          </div>
+          <p hlmCardDescription>Configure your basic application settings</p>
+        </div>
+        <form class="space-y-6" hlmCardContent>
+          <div class="space-y-2">
+            <pu-timezone-input
+              [availableTimezones]="availableTimezones()"
+              formControlName="timezone" />
+          </div>
 
           <hr />
 
-          <mat-slide-toggle formControlName="showNewVersionDialog">
-            {{ 'instanceSettings.showNewVersionDialog' | transloco }}
-          </mat-slide-toggle>
-
-          <pu-save-button [valid]="isValid()" form="general-form" />
+          <div class="flex items-center justify-between space-x-2">
+            <mat-slide-toggle formControlName="showNewVersionDialog">
+              {{ 'instanceSettings.showNewVersionDialog' | transloco }}
+            </mat-slide-toggle>
+          </div>
         </form>
-      </mat-card-content>
-    </mat-card>
+      </div>
+      <p hlmCardFooter>
+        <pu-save-button [valid]="isValid()" form="general-form" />
+      </p>
+    </form>
   `,
   selector: 'pu-instance-settings-general-form',
   imports: [
     ReactiveFormsModule,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
     NgxMatSelectSearchModule,
     SaveButton,
     TranslocoPipe,
     TimezoneInput,
     MatSlideToggle,
+    HlmCardImports,
+    HlmIconImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,6 +67,7 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
   BackendType['InstanceSettingsResponse'],
   BackendType['InstanceSettingsResponse']
 > {
+  override disableInputFocus = true;
   override form = this.fb.nonNullable.group({
     timezone: ['', [Validators.required]],
     showNewVersionDialog: [true, [Validators.required]],

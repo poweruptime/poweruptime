@@ -1,12 +1,19 @@
 import {HttpClient} from '@angular/common/http';
-import {inject} from '@angular/core';
+import {computed, inject} from '@angular/core';
 
 import {MatDialog} from '@angular/material/dialog';
 
-import {filter, switchMap, tap} from 'rxjs';
+import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withProps} from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withProps,
+} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
@@ -18,89 +25,49 @@ import {BackendOperation} from '../api';
 import {InfoStore} from './info.store';
 import {setError, setFulfilled, setPending, withRequestStatus} from './store-features';
 
-interface LoadOptions {
-  version: string | undefined;
-  newVersion: boolean;
-  autoDialog: boolean;
-}
-
-interface PublicLoadOptions {
-  version: string | undefined;
-  newVersion: boolean;
-}
-
 export const ChangelogStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
   withProps(() => ({
-    lastVersion: injectLocalStorage<string>('pu_last_version'),
-    showDialogOnNewVersion: injectLocalStorage('pu_last_version_show_dialog_on_new_version', {
-      defaultValue: true,
+    lastVersion: injectLocalStorage<string>('pu_last_version', {
+      defaultValue: environment.version,
     }),
   })),
-  withMethods(
-    (
-      store,
-      httpClient = inject(HttpClient),
-      infoStore = inject(InfoStore),
-      dialog = inject(MatDialog),
-    ) => {
-      function showNewChangelog(): boolean {
-        if (!store.showDialogOnNewVersion()) {
-          return false;
-        }
-
-        const currentVersion = environment.version;
-        const lastVersion = store.lastVersion();
-        if (!lastVersion) {
-          store.lastVersion.set(currentVersion);
-          return false;
-        }
-        return environment.version !== store.lastVersion();
+  withComputed((store, infoStore = inject(InfoStore)) => ({
+    newVersionChangelogAvailable: computed(() => {
+      if (!infoStore.showNewVersionDialog()) {
+        return false;
       }
 
-      function load$({version, newVersion, autoDialog}: LoadOptions) {
-        patchState(store, setPending());
-
-        return httpClient
-          .get(`${BACKEND_API_URL}/v1/public/changelog`, {
+      return environment.version !== store.lastVersion();
+    }),
+  })),
+  withMethods((store, httpClient = inject(HttpClient), dialog = inject(MatDialog)) => ({
+    load: rxMethod<string | undefined>(
+      pipe(
+        tap(() => patchState(store, setPending())),
+        switchMap((version) =>
+          httpClient.get(`${BACKEND_API_URL}/v1/public/changelog`, {
             responseType: 'text',
             params: {
               ...(version ? {version} : {}),
               beta: environment.isBetaOrDevChannel,
             } satisfies BackendOperation['getChangelog']['parameters']['query'],
-          })
-          .pipe(
-            tapResponse({
-              next: (changelog) => {
-                patchState(store, setFulfilled());
-                dialog.open(ChangelogDialog, {data: {changelog, newVersion, autoDialog}});
-              },
-              error: (error) => patchState(store, setError(error)),
-            }),
-          );
-      }
-
-      const showNewVersionDialog = rxMethod<PublicLoadOptions>(
-        switchMap((options) => {
-          infoStore.loadShowNewVersionDialog();
-
-          return infoStore.showNewVersionDialog$.pipe(
-            filter((showNewVersionDialog) => showNewVersionDialog && showNewChangelog()),
-            switchMap(() => load$({...options, autoDialog: true})),
-            tap(() => store.lastVersion.set(environment.version)),
-          );
+          }),
+        ),
+        tapResponse({
+          next: (changelog) => {
+            patchState(store, setFulfilled());
+            dialog.open(ChangelogDialog, {data: {changelog}});
+          },
+          error: (error) => patchState(store, setError(error)),
         }),
-      );
-
-      const load = rxMethod<PublicLoadOptions>(
-        switchMap((options) => load$({...options, autoDialog: false})),
-      );
-
-      return {
-        showNewVersionDialog,
-        load,
-      };
+      ),
+    ),
+  })),
+  withHooks({
+    onInit(store, infoStore = inject(InfoStore)) {
+      infoStore.loadShowNewVersionDialog();
     },
-  ),
+  }),
 );

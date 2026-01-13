@@ -18,27 +18,18 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {distinctUntilChanged, filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {MtxPopover, MtxPopoverTrigger} from '@ng-matero/extensions/popover';
+import {BrnPopover, BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmPopoverImports} from '@spartan-ng/helm/popover';
 
 import {TeamsStore} from '@app/services';
 
 @Component({
   template: `
-    <div
-      #popoverTrigger="mtxPopoverTrigger"
-      [mtxPopoverTriggerFor]="popover"
-      mtxPopoverTriggerOn="click">
-      <ng-content />
-    </div>
-
-    <mtx-popover
-      #popover="mtxPopover"
-      [position]="['below', 'after']"
-      [closeOnPanelClick]="false"
-      [closeOnBackdropClick]="true"
-      [yOffset]="5"
-      [hideArrow]="true">
-      <div class="flex max-w-80 flex-col">
+    <hlm-popover sideOffset="5">
+      <div hlmPopoverTrigger>
+        <ng-content />
+      </div>
+      <div class="flex max-w-80 flex-col" *brnPopoverContent="let ctx" hlmPopoverContent>
         <mat-form-field class="mat-select-search-input" subscriptSizing="dynamic">
           <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
           <input [formControl]="searchControl" matInput />
@@ -74,7 +65,7 @@ import {TeamsStore} from '@app/services';
           <mat-progress-bar mode="indeterminate" />
         }
       </div>
-    </mtx-popover>
+    </hlm-popover>
   `,
   styles: `
     @reference "#styles.css";
@@ -91,18 +82,18 @@ import {TeamsStore} from '@app/services';
     MatLabel,
     MatFormField,
     MatRadioGroup,
-    MtxPopover,
-    MtxPopoverTrigger,
     MatInput,
     MatProgressBar,
     TranslocoPipe,
+    HlmPopoverImports,
+    BrnPopoverContent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamSelect {
   readonly teamsStore = inject(TeamsStore);
 
-  readonly trigger = viewChild(MtxPopoverTrigger);
+  public readonly popoverRef = viewChild(BrnPopover);
 
   readonly teamId = input(undefined, {
     transform: (teamId: string | undefined) => {
@@ -143,6 +134,6 @@ export class TeamSelect {
   }
 
   close() {
-    setTimeout(() => this.trigger()?.closePopover(), 10);
+    this.popoverRef()?.close();
   }
 }

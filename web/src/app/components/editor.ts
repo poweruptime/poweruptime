@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {ThemeService} from '@slateui/theme';
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
+import {ThemeService} from 'dfx-theme';
 
 @Component({
   selector: 'pu-editor',

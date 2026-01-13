@@ -1,31 +1,37 @@
-import {pipe, switchMap, tap} from 'rxjs';
+import {forkJoin, map, pipe, switchMap, tap} from 'rxjs';
 
+import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
-import {removeAllEntities, removeEntity, setEntities, withEntities} from '@ngrx/signals/entities';
+import {removeAllEntities, removeEntities, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {
   PaginationDto,
+  resetSelection,
   setError,
   setFulfilled,
   setPending,
   setTotalElements,
   withPaginatedTable,
   withRequestStatus,
+  withSelection,
 } from '@app/services/store-features';
+
+import {injectConfirmDialog$} from '../../components';
 
 export const SessionsStore = signalStore(
   withRequestStatus(),
   withEntities<BackendType['SessionResponse']>(),
   withPaginatedTable<BackendType['SessionResponse']>({
-    columnsToDisplay: ['description', 'updatedAt', 'createdAt', 'actions'],
+    columnsToDisplay: ['select', 'description', 'updatedAt', 'createdAt'],
     defaultSortBy: 'updatedAt',
     defaultSortDirection: 'desc',
   }),
-  withMethods((store, api = injectAPI()) => ({
+  withSelection<BackendType['SessionResponse']>({}),
+  withMethods((store, api = injectAPI(), confirmDialog$ = injectConfirmDialog$()) => ({
     load: rxMethod<{userId: string | undefined} & PaginationDto>(
       pipe(
         tap(() => patchState(store, setPending())),
@@ -56,32 +62,28 @@ export const SessionsStore = signalStore(
         ),
       ),
     ),
-    delete: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, setPending())),
-        switchMap((id) =>
-          api
-            .delete('/v1/profile/sessions/{id}', {
-              params: {
-                path: {
-                  id,
-                },
-              },
-            })
-            .pipe(
+    deleteSelection: rxMethod<void>(
+      switchMap(() =>
+        confirmDialog$(translate('general.confirmDelete')).pipe(
+          tap(() => patchState(store, setPending())),
+          map(() => store.selection().map((it) => it.id)),
+          switchMap((ids) =>
+            forkJoin(
+              ids.map((id) => api.delete('/v1/profile/sessions/{id}', {params: {path: {id}}})),
+            ).pipe(
               tapResponse({
                 next: () => {
-                  patchState(store, setFulfilled(), removeEntity(id));
+                  toast.success(`Successfully removed session(s)`);
 
-                  toast.success(`Successfully removed session`);
+                  patchState(store, setFulfilled(), removeEntities(ids), resetSelection());
                 },
                 error: (error) => {
+                  toast.error(`Could not remove session(s)`);
                   patchState(store, setError(error), setFulfilled());
-
-                  toast.error(`Could not remove session`);
                 },
               }),
             ),
+          ),
         ),
       ),
     ),

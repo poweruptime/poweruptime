@@ -22,7 +22,7 @@
         "verify": "Verify Code"
       },
       "description": "Your Admin-Account data",
-      "sendInvitation": "Send invitation E-Mail",
+      "sendInvitation": "Send Admin-Account invitation E-Mail",
       "setupCompleted": {
         "info1": "An invitation will be sent to the specified email address.",
         "info2": "If (for any reason) the connection to the E-Mail server fails, request a new password by [link:forgotPasswordUrl]resetting your password.[/link]"
@@ -58,8 +58,10 @@
       "action": {
         "view": "View check"
       },
-      "hasNotification": "Has {{general.notifications}}",
-      "title": "Checks"
+      "empty": {
+        "description": "Create your first monitor to receive {{general.checkResults}}.",
+        "title": "No {{general.checkResults}} yet."
+      }
     }
   },
   "cmdk": {
@@ -104,10 +106,13 @@
     "about": "About",
     "activated": "Activated",
     "admin": "Admin",
+    "backupCode": "Backup Code",
+    "backupCodes": "{{general.backupCode}}s",
     "body": "Body",
     "cancel": "Cancel",
     "checkResult": "Check result",
     "checkResults": "Check results",
+    "checks": "Checks",
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
@@ -123,11 +128,14 @@
     "data": "Data",
     "date": "Date",
     "delete": "Delete",
+    "deleteSelection": "{{general.delete}} Selection",
     "deleted": "Deleted",
     "description": "Description",
     "disable": "Disable",
     "domainName": "Domain Name",
     "domainNames": "Domain Names",
+    "done": "Done",
+    "download": "Download",
     "edit": "Edit",
     "email": "E-Mail",
     "emailAddress": "E-Mail address",
@@ -164,6 +172,7 @@
     "notificationMethods": "Notification methods",
     "notifications": "Notifications",
     "open": "Open",
+    "options": "Options",
     "overview": "Overview",
     "password": "Password",
     "pause": "Pause",
@@ -179,7 +188,7 @@
     "restore": "Restore",
     "restoreSuccess": "Successfully restored item(s).",
     "role": "Role",
-    "save": "Save",
+    "save": "Save Changes",
     "search": "Search",
     "secret": "Secret",
     "security": "Security",
@@ -224,9 +233,9 @@
     "retention": {
       "checkResult": "Check retention",
       "logs": "Logs retention",
-      "title": "Individual check & log retention"
+      "title": "Data Retention"
     },
-    "showNewVersionDialog": "Show new version changelog dialog after update",
+    "showNewVersionDialog": "Show new version changelog badge after update",
     "sponsorship": {
       "failed": "GitHub Sponsorship check failed.",
       "githubHandle": "GitHub Username",
@@ -261,15 +270,39 @@
     }
   },
   "mfa": {
-    "alreadyShown": "{{mfa.backupCodes}} already shown.",
-    "backupCodes": "Backup codes",
+    "backupCodes": {
+      "description": "Save these codes in a secure location"
+    },
+    "confirm": {
+      "confirm": "{{general.confirm}} and enable",
+      "description": "Scan the QR code with your authenticator app",
+      "label": "Enter verification code"
+    },
+    "description": "Add an extra layer of security to your account",
     "dialog": {
       "backupCode": "Backup code",
       "title": "Multi-factor code",
       "useBackupCode": "Use {{mfa.dialog.backupCode}}"
     },
-    "disabled": "{{mfa.mfa}} disabled.",
-    "enabled": "{{mfa.mfa}} enabled.",
+    "disabled": {
+      "description": "Enable 2FA to secure your account with an authenticator app. You'll need to scan a QR code with your preferred authentication app.",
+      "setup": "Setup {{mfa.mfa}}",
+      "title": "{{mfa.mfa}} disabled."
+    },
+    "enabled": {
+      "alreadyShown": "{{mfa.backupCodes}} already shown.",
+      "disable": "{{general.disable}} {{mfa.mfa}}",
+      "info": {
+        "1": {
+          "description": "Your account is protected with 2FA",
+          "title": "{{mfa.mfa}} {{general.enabled}}"
+        },
+        "2": {
+          "description": "{{general.backupCodes}} already viewed",
+          "title": "{{general.backupCodes}} saved"
+        }
+      }
+    },
     "mfa": "Multi-factor authentication"
   },
   "monitor": {
@@ -283,13 +316,14 @@
     "cloneSuccess": "Successfully cloned the {{general.monitor}}",
     "details": {
       "check": "Check every {{testIntervalDuration}}",
-      "openPublic": "Open public {{general.monitor}} page",
+      "latestChecks": "{{general.latest}} {{general.checks}}",
+      "openPublic": "Public page",
       "pingChart": {
         "endDate": "{{general.end}} {{general.date}}",
         "exceedsMaxWindow": "Selected window may not exceed 1 month",
         "startDate": "{{general.start}} {{general.date}}"
       },
-      "resendAfter": "Resend notification after {{resendAfter}}x down checks",
+      "resendAfter": "Resend notification after {{resendAfter}}x three consecutive failed {{general.checks}}",
       "retries": "{{retries}}x retries"
     },
     "edit": {
@@ -332,6 +366,13 @@
       "upsideDown": "Upside down"
     },
     "empty": "Create your first monitor",
+    "list": {
+      "empty": {
+        "backToTeams": "Back to {{general.teams}}",
+        "description": "You haven't created any {{general.monitors}} yet. Get started by creating your first monitor.",
+        "title": "No {{general.monitors}} yet."
+      }
+    },
     "new": "New {{general.monitor}}",
     "oneDayUptime": "One-day uptime",
     "selector": {
@@ -367,8 +408,14 @@
       "openCheckResult": "Open {{general.checkResult}}"
     },
     "list": {
-      "openCheckResult": "Open the connected {{general.checkResult}}",
-      "view": "View {{general.notification}}"
+      "empty": {
+        "createNotificationMethod": "Create new {{general.notificationMethod}}",
+        "description": "poweruptime hasn't sent a notification yet. Configure {{general.notificationMethods}} or take a look at the {{general.checks}}.",
+        "manageNotificationMethods": "Manage {{general.notificationMethods}}",
+        "openCheckResults": "Open {{general.checkResults}}",
+        "title": "No {{general.notifications}} yet."
+      },
+      "openCheckResult": "Connected {{general.checkResult}}"
     }
   },
   "notificationMethod": {
@@ -511,17 +558,22 @@
       "paused": "Paused {{general.monitors}}",
       "up": "Up {{general.monitors}}"
     },
+    "create": {
+      "create": "New {{general.team}}",
+      "description": "You only need a {{general.name}} to start"
+    },
     "edit": {
-      "edit": "Edit {{name}}",
+      "description": "Manage your team preferences and configuration",
+      "edit": "Team Settings",
       "openInvites": "{{general.open}} {{general.invites}}"
     },
     "invite": "{{general.invite}} a new member",
     "monitors": "{{monitorCount}} Monitor(s)",
     "settings": {
-      "invitedAt": "Invited at",
+      "invitedAt": "Invited",
       "invitedBy": "Invited by",
-      "joinedAt": "Joined at",
-      "noInvites": "No open invites.",
+      "joinedAt": "Joined",
+      "noInvites": "No open invites",
       "settings": "{{general.team}} settings"
     }
   },

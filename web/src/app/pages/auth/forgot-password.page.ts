@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, effect, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, input, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
@@ -9,7 +9,6 @@ import {MatInput} from '@angular/material/input';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {DfxAutofocus} from 'dfx-helper';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
@@ -147,6 +146,9 @@ export class ForgotPasswordPage {
   private readonly forgotPasswordStore = inject(ForgotPasswordStore);
   private readonly fb = inject(NonNullableFormBuilder);
 
+  protected readonly email = input<string>();
+  protected readonly resetToken = input<string>();
+
   state = signal<'REQUEST' | 'RESET'>('REQUEST');
 
   requestPasswordResetForm = this.fb.group({
@@ -190,12 +192,10 @@ export class ForgotPasswordPage {
   isResetPasswordFormValid = injectIsValid(this.resetPasswordForm);
 
   constructor() {
-    const queryParams = injectQueryParams();
     effect(() => {
-      const _queryParams = queryParams();
       const body = {
-        email: _queryParams?.['email'],
-        resetToken: _queryParams?.['resetToken'],
+        email: this.email(),
+        resetToken: this.resetToken(),
       };
 
       if (body.email && body.email.length > 0 && body.resetToken && body.resetToken.length > 0) {

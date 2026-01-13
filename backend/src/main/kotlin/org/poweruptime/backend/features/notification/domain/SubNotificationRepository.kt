@@ -13,7 +13,6 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.dto.Pageable
-import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
@@ -47,7 +46,6 @@ fun SubNotification.deleteByTeamIdAndOlderThan(
 ): Int = deleteWhere {
     notificationId inSubQuery (
         Notification
-            .innerJoin(CheckResult)
             .innerJoin(Monitor)
             .select(Notification.id)
             .where {
@@ -83,21 +81,12 @@ fun SubNotification.findAll(
         query.andWhere { NotificationMethod.teamId eq it }
     }
 
-    if (monitorId != null || statuses?.takeIf { it.isNotEmpty() } != null) {
-        query.adjustColumnSet {
-            innerJoin(CheckResult)
-        }.adjustSelect {
-            selectColumns = selectColumns + CheckResult.monitorId + CheckResult.status
-            select(selectColumns)
-        }
-    }
-
     monitorId?.let {
-        query.andWhere { CheckResult.monitorId eq it }
+        query.andWhere { Notification.monitorId eq it }
     }
 
     statuses?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere { CheckResult.status inList it }
+        query.andWhere { Notification.status inList it }
     }
 
     userId?.let {
@@ -133,7 +122,7 @@ fun SubNotification.findAll(
         pageable,
         sort = {
             when (it) {
-                "notification.checkResult.status" -> CheckResult.status
+                "notification.status" -> Notification.status
                 "method" -> NotificationMethod.type
                 "createdAt" -> SubNotification.createdAt
                 else -> null

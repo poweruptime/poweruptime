@@ -17,9 +17,13 @@ import {provideNgxMetaStandard} from '@davidlj95/ngx-meta/standard';
 import {provideTransloco} from '@jsverse/transloco';
 import {cookiesStorage, provideTranslocoPersistLang} from '@jsverse/transloco-persist-lang';
 import {provideNgIconLoader, withCaching} from '@ng-icons/core';
-import {provideSlateUiTheme} from '@slateui/theme';
+import {provideHlmDatePickerConfig} from '@spartan-ng/helm/date-picker';
+import {provideHlmSidebarConfig} from '@spartan-ng/helm/sidebar';
+import {provideHlmTableConfig} from '@spartan-ng/helm/table';
+import {format} from 'date-fns';
 import {de as dateFnsLocale} from 'date-fns/locale/de';
 import {provideDfxHelper, withMobileBreakpoint, withWindow} from 'dfx-helper';
+import {provideTheme, withThemeStorage} from 'dfx-theme';
 import {
   BoldTextTranspiler,
   ItalicTextTranspiler,
@@ -63,10 +67,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
-    provideSlateUiTheme({
-      strategy: 'class',
-      storageKey: 'pu_theme',
-    }),
+    provideTheme(withThemeStorage({key: 'pu_theme'})),
     provideTransloco({
       config: {
         availableLangs: [
@@ -95,6 +96,15 @@ export const appConfig: ApplicationConfig = {
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
     }, withCaching()),
     provideDfxHelper(withWindow(), withMobileBreakpoint(640)),
+    provideHlmDatePickerConfig({
+      formatDate: (date: Date) => format(date, 'dd.M.yyyy', {locale: dateFnsLocale}),
+    }),
+    provideHlmTableConfig({
+      th: 'text-foreground h-10 px-2 text-start align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pe-0 font-bold',
+    }),
+    provideHlmSidebarConfig({
+      mobileBreakpoint: '1920px',
+    }),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {

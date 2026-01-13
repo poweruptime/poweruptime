@@ -1,4 +1,4 @@
-import {Theme} from '@slateui/theme';
+import {Theme} from 'dfx-theme';
 
 /**
  * i(bootstrapLaptop)
