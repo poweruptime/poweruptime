@@ -1,5 +1,6 @@
 package org.poweruptime.backend
 
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -8,6 +9,7 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.*
 import org.poweruptime.backend.features.info.dto.SettingBooleanDto
 import org.poweruptime.backend.features.info.dto.SettingStringDto
+import org.poweruptime.backend.features.info.versionChecker.service.GitHubVersionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
@@ -730,5 +732,27 @@ class InstanceSettingsIntegrationTests(
                 }
             }
         }
+    }
+}
+
+class GitHubVersionServiceTests(
+    @Autowired val gitHubVersionService: GitHubVersionService,
+): BaseTestWithReusingContainers() {
+    @Test
+    fun `test check with old version`() {
+        val latestVersion = gitHubVersionService.fetchLatestVersion("0.3.0")
+        assertThat(latestVersion).isNotNull
+
+        val latestBetaVersion = gitHubVersionService.fetchLatestVersion("0.3.0-beta-1234")
+        assertThat(latestBetaVersion).isNotNull
+    }
+
+    @Test
+    fun `test check with new version`() {
+        val latestVersion = gitHubVersionService.fetchLatestVersion("99.99.99")
+        assertThat(latestVersion).isNull()
+
+        val latestBetaVersion = gitHubVersionService.fetchLatestVersion("99.99.99-beta-1234")
+        assertThat(latestBetaVersion).isNull()
     }
 }

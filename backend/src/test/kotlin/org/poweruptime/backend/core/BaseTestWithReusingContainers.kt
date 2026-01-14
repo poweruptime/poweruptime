@@ -11,7 +11,7 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.lifecycle.Startables
 
-/***
+/**
  * Context and Containers will be reused until one test class in between which inherits from [BaseTest].
  * In this case the context gets "dirtied" and the reusing functionality needs to be recreated as well
  */

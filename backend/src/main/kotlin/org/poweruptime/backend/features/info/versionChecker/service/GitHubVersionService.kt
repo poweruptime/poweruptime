@@ -18,7 +18,7 @@ class GitHubVersionService(
     private final val logger = KotlinLogging.logger {}
 
     @Suppress("LongMethod", "LoopWithTooManyJumpStatements")
-    fun fetchLatestVersion(currentVersion: String = infoService.version): VersionCheckResponse? {
+    fun fetchLatestVersion(currentVersion: String): VersionCheckResponse? {
         val currentVersionInfo = VersionInfo.fromString(currentVersion, "INVALID_URL")
         if (currentVersionInfo == null) {
             logger.error { "Could not parse current version: $currentVersion" }
