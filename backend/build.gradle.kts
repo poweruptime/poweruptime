@@ -135,18 +135,6 @@ tasks.bootJar {
     archiveFileName.set("backend.jar")
 }
 
-/**
- * Needs to be set if the project kotlin version is not supported by detekt.
- */
-configurations.detekt {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.0.21") // Add the version of Kotlin that detekt needs
-        }
-    }
-}
-
-
 val licenseReportPath: String = project.layout.buildDirectory.dir("reports/dependency-license").get().asFile.path
 
 licenseReport {
@@ -265,4 +253,15 @@ tasks.register<BootRun>("seed") {
     classpath = sourceSets["main"].runtimeClasspath
     // activate only the seed profile
     args = listOf("--spring.profiles.active=seed")
+}
+
+/**
+ * Needs to be set if the project kotlin version is not supported by detekt.
+ */
+configurations.detekt {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("2.2.20")
+        }
+    }
 }

@@ -2,17 +2,17 @@ complexity:
   LongParameterList:
     active: false
   CyclomaticComplexMethod:
-    threshold: 30
+    allowedComplexity: 30
     ignoreSimpleWhenEntries: true
   LongMethod:
     excludes:
       - '**/test/**'
   TooManyFunctions:
-    thresholdInClasses: 20
-    thresholdInInterfaces: 20
+    allowedFunctionsPerClass: 20
+    allowedFunctionsPerInterface: 20
   ComplexCondition:
     active: true
-    threshold: 8
+    allowedConditions: 8
 
 style:
   DestructuringDeclarationWithTooManyEntries:

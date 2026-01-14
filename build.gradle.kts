@@ -1,5 +1,5 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.report.ReportMergeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.time.Instant
@@ -26,7 +26,7 @@ plugins {
     id("org.springframework.boot") version "4.0.1" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("io.gitlab.arturbosch.detekt") version "1.23.8"
+    id("dev.detekt") version "2.0.0-alpha.1"
 
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
@@ -38,12 +38,11 @@ val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
 }
 
 allprojects {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
+    apply(plugin = "dev.detekt")
 
     detekt {
         config.from(rootDir.resolve("detekt.yml"))
         buildUponDefaultConfig = true
-        basePath = rootDir.path
         // Autocorrection can only be done locally
         autoCorrect = System.getenv("CI")?.lowercase() != true.toString()
     }
@@ -59,12 +58,8 @@ allprojects {
             sarif.required = true
         }
         finalizedBy(detektReportMergeSarif)
-        jvmTarget = "21"
+        jvmTarget = "24"
     }
-    detektReportMergeSarif {
-        input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
-    }
-
 }
 
 subprojects {
