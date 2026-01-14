@@ -7,6 +7,7 @@ import org.poweruptime.backend.configuration.MONITOR_YEARLY_UPTIME_CACHE_KEY
 import org.poweruptime.backend.core.utils.DAYS_PER_YEAR
 import org.poweruptime.backend.core.utils.HOURS_PER_DAY
 import org.poweruptime.backend.core.utils.startOfWeek
+import org.poweruptime.backend.features.monitor.core.PingAnalysis
 import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.domain.findByMonitorIdAndPickedUpBetween
 import org.poweruptime.backend.features.monitor.domain.findByMonitorIdBetweenDates
@@ -16,7 +17,9 @@ import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
 import org.poweruptime.backend.features.monitor.dto.PingTimelineDataEntryResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
-import org.poweruptime.backend.features.monitor.dto.PublicMonitorUptimeStatistics
+import org.poweruptime.backend.features.monitor.dto.PublicMonitorStatistics
+import org.poweruptime.backend.features.monitor.dto.PublicPingStatistics
+import org.poweruptime.backend.features.monitor.dto.PublicUptimeStatistics
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
@@ -35,6 +38,8 @@ import java.time.ZoneId
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
+import kotlin.collections.filter
+import kotlin.math.round
 
 const val FULL_PERCENT = 100
 
@@ -46,8 +51,7 @@ fun BigDecimal.myFormat(): String {
 
 @Service
 @Transactional(readOnly = true)
-class CheckResultStatisticsService {
-
+open class CheckResultStatisticsService {
     fun getLastByMonitorId(monitorId: ULong, limit: Int): List<CheckResultRecord> =
         CheckResult.findLastByMonitorId(monitorId, limit)
 
@@ -85,7 +89,7 @@ class CheckResultStatisticsService {
     }
 
     @Cacheable(value = [MONITOR_UPTIME_STATISTICS_CACHE_KEY])
-    fun uptimeStatisticsDto(monitorId: ULong): PublicMonitorUptimeStatistics {
+    fun uptimeStatisticsDto(monitorId: ULong): PublicMonitorStatistics {
         val now = Instant.now()
         val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
             monitorId,
@@ -101,44 +105,61 @@ class CheckResultStatisticsService {
             now,
         ) ?: BigDecimal(FULL_PERCENT)
 
+        fun calculateRecentPing(
+            timeOption: TimeOption,
+        ): PingAnalysis? = calculateAveragePingFromCheckResults(
+            checkResults,
+            now.minus(timeOption.hours, ChronoUnit.HOURS),
+            now,
+        )
+
         val lastYearHistoricalDayUptimes = getLastYearHistoricalDayUptime(monitorId)
 
-        return PublicMonitorUptimeStatistics(
-            oneHour = calculateRecentUptime(TimeOption.ONE_HOUR).myFormat(),
-            threeHours = calculateRecentUptime(TimeOption.THREE_HOURS)
-                .myFormat(),
-            sixHours = calculateRecentUptime(TimeOption.SIX_HOURS).myFormat(),
-            twelveHours = calculateRecentUptime(TimeOption.TWELVE_HOURS)
-                .myFormat(),
-            oneDay = calculateRecentUptime(TimeOption.ONE_DAY).myFormat(),
-            threeDays = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.THREE_DAYS,
-            ).myFormat(),
-            oneWeek = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.ONE_WEEK,
-            ).myFormat(),
-            twoWeeks = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.TWO_WEEKS,
-            ).myFormat(),
-            oneMonth = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.ONE_MONTH,
-            ).myFormat(),
-            threeMonths = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.THREE_MONTHS,
-            ).myFormat(),
-            sixMonths = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.SIX_MONTHS,
-            ).myFormat(),
-            oneYear = calculateHistoricalUptime(
-                lastYearHistoricalDayUptimes,
-                TimeOption.ONE_YEAR,
-            ).myFormat(),
+        return PublicMonitorStatistics(
+            uptime = PublicUptimeStatistics(
+                oneHour = calculateRecentUptime(TimeOption.ONE_HOUR).myFormat(),
+                threeHours = calculateRecentUptime(TimeOption.THREE_HOURS)
+                    .myFormat(),
+                sixHours = calculateRecentUptime(TimeOption.SIX_HOURS).myFormat(),
+                twelveHours = calculateRecentUptime(TimeOption.TWELVE_HOURS)
+                    .myFormat(),
+                oneDay = calculateRecentUptime(TimeOption.ONE_DAY).myFormat(),
+                threeDays = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.THREE_DAYS,
+                ).myFormat(),
+                oneWeek = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.ONE_WEEK,
+                ).myFormat(),
+                twoWeeks = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.TWO_WEEKS,
+                ).myFormat(),
+                oneMonth = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.ONE_MONTH,
+                ).myFormat(),
+                threeMonths = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.THREE_MONTHS,
+                ).myFormat(),
+                sixMonths = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.SIX_MONTHS,
+                ).myFormat(),
+                oneYear = calculateHistoricalUptime(
+                    lastYearHistoricalDayUptimes,
+                    TimeOption.ONE_YEAR,
+                ).myFormat(),
+            ),
+            ping = PublicPingStatistics(
+                oneHour = calculateRecentPing(TimeOption.ONE_HOUR),
+                threeHours = calculateRecentPing(TimeOption.THREE_HOURS),
+                sixHours = calculateRecentPing(TimeOption.SIX_HOURS),
+                twelveHours = calculateRecentPing(TimeOption.TWELVE_HOURS),
+                oneDay = calculateRecentPing(TimeOption.ONE_DAY),
+            ),
         )
     }
 
@@ -236,6 +257,46 @@ fun calculateHistoricalUptime(
     return totalUptime.divide(BigDecimal(days.size), PRECISION_SCALE, RoundingMode.HALF_UP)
 }
 
+fun calculateAveragePingFromCheckResults(
+    checkResults: List<CheckResultRecord>,
+    start: Instant,
+    end: Instant
+): PingAnalysis? {
+    if (checkResults.isEmpty()) return null
+
+    val filteredResults = checkResults.filter { result ->
+        result.pickedUpAt!! in start..end
+    }
+
+    if (filteredResults.isEmpty()) return null
+
+    val averagePingMs = filteredResults.sumOf { it.pingMs!! } / filteredResults.size
+    val midpoint = filteredResults.size / 2
+
+    val firstHalfAverage = if (midpoint > 0) {
+        filteredResults.take(midpoint).sumOf { it.pingMs!! } / midpoint
+    } else {
+        0L
+    }
+
+    val secondHalfAverage = if (filteredResults.size - midpoint > 0) {
+        filteredResults.drop(midpoint).sumOf { it.pingMs!! } / (filteredResults.size - midpoint)
+    } else {
+        0L
+    }
+
+    val trendPercentage = if (firstHalfAverage == 0L) {
+        0.0
+    } else {
+        ((secondHalfAverage - firstHalfAverage).toDouble() / firstHalfAverage) * 100
+    }
+
+    val roundedTrend = round(trendPercentage * 100) / 100
+
+    return PingAnalysis(averagePingMs, roundedTrend.toString())
+}
+
+
 fun calculateUptimeFromCheckResults(
     checkResults: List<CheckResultRecord>,
     start: Instant,
@@ -260,6 +321,7 @@ fun calculateUptimeFromCheckResults(
                 }
                 lastStatusChangeTime = pickedUpAt
             }
+
             pickedUpAt.isAfter(end) || pickedUpAt == end -> {
                 // Since results are sorted and this one is beyond the end,
                 // no need to check further results.

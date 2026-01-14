@@ -283,7 +283,7 @@ class MonitorController(
         team = team,
         notificationMethods = notificationMethodService.getByMonitorId(monitor.id),
         tags = tagService.getByMonitorId(monitor.id),
-        uptime = checkResultStatisticsService.uptimeStatisticsDto(monitor.id),
+        statistics = checkResultStatisticsService.uptimeStatisticsDto(monitor.id),
     )
 
     fun MonitorRecordJoinTeamRecord.toFullResponse() = MonitorFullResponse(
@@ -292,7 +292,7 @@ class MonitorController(
         team = team,
         notificationMethods = notificationMethodService.getByMonitorId(monitor.id),
         tags = tagService.getByMonitorId(monitor.id),
-        uptime = checkResultStatisticsService.uptimeStatisticsDto(monitor.id),
+        statistics = checkResultStatisticsService.uptimeStatisticsDto(monitor.id),
         lastCheckResults = checkResultStatisticsService.getLastByMonitorId(monitor.id, LAST_CHECK_RESULTS_COUNT),
         oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
             monitor.id,

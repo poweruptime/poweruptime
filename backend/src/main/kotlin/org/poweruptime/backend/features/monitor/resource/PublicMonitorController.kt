@@ -25,7 +25,7 @@ class PublicMonitorController(
         monitorService.getByPublicId(publicId).let {
             PublicMonitorResponse(
                 monitor = it,
-                uptime = checkResultStatisticsService.uptimeStatisticsDto(it.id),
+                statistics = checkResultStatisticsService.uptimeStatisticsDto(it.id),
                 lastCheckResults = checkResultStatisticsService.getLastByMonitorId(it.id, 100),
             )
         }
