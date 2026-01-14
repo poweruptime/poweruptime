@@ -61,6 +61,8 @@ colors=()
 outputs=()
 pids=()
 exit_codes=()
+start_times=()
+end_times=()
 
 # Start all tools
 for tool in "${tools[@]}"; do
@@ -75,6 +77,8 @@ for tool in "${tools[@]}"; do
   output=$(mktemp)
   outputs+=("$output")
 
+  start_times+=($(date +%s%N))
+
   eval "$cmd" >"$output" 2>&1 &
   pids+=($!)
 done
@@ -86,6 +90,7 @@ spinner pids[@] names[@] colors[@] & spinner_pid=$!
 for idx in "${!pids[@]}"; do
   wait "${pids[$idx]}"
   exit_codes[$idx]=$?
+  end_times+=($(date +%s%N))
 done
 
 kill "$spinner_pid" 2>/dev/null
@@ -106,9 +111,19 @@ echo -e "\nSummary:"
 for idx in "${!names[@]}"; do
   name=${names[$idx]}
   code=${exit_codes[$idx]}
+
+  duration_ns=$((end_times[$idx] - start_times[$idx]))
+  duration_ms=$((duration_ns / 1000000))
+
+  seconds=$((duration_ms / 1000))
+  milliseconds=$((duration_ms % 1000))
+  time_str=$(printf "%d.%03d" "$seconds" "$milliseconds")
+
   if [ "$code" -eq 0 ]; then
-    printf "  %s: \033[32mSuccess\033[0m\n" "$name"
+    printf "  %b%s\033[0m: \033[32mSuccess\033[0m (%ss)\n" \
+      "${colors[$idx]}" "$name" "$time_str"
   else
-    printf "  %s: \033[31mError (Code: %d)\033[0m\n" "$name" "$code"
+    printf "  %b%s\033[0m: \033[31mError (Code: %d)\033[0m (%ss)\n" \
+      "${colors[$idx]}" "$name" "$code" "$time_str"
   fi
 done
