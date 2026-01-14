@@ -131,7 +131,7 @@ class MonitorNotificationHandler(
         ) {
             requireNotNull(checkResult.timesRetried) { "timesRetried must be set for DOWN checks" }
 
-            val shouldResend = checkResult.timesRetried!! % monitor.resendAfter == 1L
+            val shouldResend = checkResult.timesRetried % monitor.resendAfter == 1L
 
             return if (shouldResend) {
                 NotificationAction.Send(
@@ -139,7 +139,7 @@ class MonitorNotificationHandler(
                     isResend = true,
                 )
             } else {
-                val remaining = monitor.resendAfter - (checkResult.timesRetried!! % monitor.resendAfter) - 1
+                val remaining = monitor.resendAfter - (checkResult.timesRetried % monitor.resendAfter) - 1
                 NotificationAction.Skip("Resend not due ($remaining checks remaining until next resend)")
             }
         }
@@ -176,7 +176,7 @@ class MonitorNotificationHandler(
         team = team,
         notificationMethods = notificationMethodService.getByMonitorId(id),
         tags = tagService.getByMonitorId(id),
-        uptime = checkResultStatisticsService.uptimeStatisticsDto(id),
+        statistics = checkResultStatisticsService.uptimeStatisticsDto(id),
         lastCheckResults = checkResultStatisticsService.getLastByMonitorId(id, LAST_CHECK_RESULTS_COUNT),
         oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
             monitorId = id,

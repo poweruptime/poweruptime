@@ -107,7 +107,7 @@ class NotificationTemplateService(
         status == MonitorStatus.DOWN &&
         timesRetried != null &&
         status == previousStatus &&
-        timesRetried!! % monitor.resendAfter == 1L
+        timesRetried % monitor.resendAfter == 1L
 
     private fun MonitorStatus.toStatusLabel() = when (this) {
         MonitorStatus.UP -> """Online"""
