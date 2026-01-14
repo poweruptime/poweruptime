@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 
-import {BackendOfflineAlert, BottomActionBar} from '@app/components';
+import {BackendOfflineAlert, OutsideBottomActions} from '@app/components';
 import {BackendOfflineService} from '@app/services';
 
 @Component({
@@ -20,9 +20,9 @@ import {BackendOfflineService} from '@app/services';
       </main>
     </div>
 
-    <pu-bottom-action-bar />
+    <pu-outside-bottom-actions />
   `,
-  imports: [RouterOutlet, BackendOfflineAlert, BottomActionBar],
+  imports: [RouterOutlet, BackendOfflineAlert, OutsideBottomActions],
 })
 export class AuthLayout {
   readonly backendOfflineService = inject(BackendOfflineService);

@@ -1,5 +1,5 @@
 export * from './_dialog';
-export * from './bottom-action-bar/bottom-action-bar';
+export * from './outside-bottom-actions';
 export * from './mat-mentions';
 export * from './alert.directive';
 export * from './backend-image';

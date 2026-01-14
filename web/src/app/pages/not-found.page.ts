@@ -7,7 +7,7 @@ import {MatButton} from '@angular/material/button';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 
-import {BottomActionBar} from '@app/components';
+import {OutsideBottomActions} from '@app/components';
 
 @Component({
   template: `
@@ -34,11 +34,11 @@ import {BottomActionBar} from '@app/components';
       </div>
     </div>
 
-    <pu-bottom-action-bar />
+    <pu-outside-bottom-actions />
   `,
   selector: 'not-found-page',
   standalone: true,
-  imports: [RouterLink, NgIcon, MatButton, TranslocoPipe, BottomActionBar],
+  imports: [RouterLink, NgIcon, MatButton, TranslocoPipe, OutsideBottomActions],
 })
 export class NotFoundPage {
   private readonly location = inject(Location);
