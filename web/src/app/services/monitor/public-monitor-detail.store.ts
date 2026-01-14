@@ -9,7 +9,7 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 
 import {setError, setFulfilled, setPending, withRequestStatus} from '../store-features';
-import {calculatePingChart, mapUptime} from '../util';
+import {buildPingStatistics, buildUptimeStatistics, calculatePingChart} from '../util';
 
 export const PublicMonitorDetailStore = signalStore(
   {providedIn: 'root'},
@@ -20,7 +20,8 @@ export const PublicMonitorDetailStore = signalStore(
     monitor: undefined,
   }),
   withComputed(({monitor}) => ({
-    uptimeResults: computed(() => (monitor() ? mapUptime(monitor()!.uptime) : [])),
+    uptimeStatistics: computed(() => buildUptimeStatistics(monitor()?.statistics?.uptime)),
+    pingStatistics: computed(() => buildPingStatistics(monitor()?.statistics?.ping)),
     pingChart: computed(() => calculatePingChart(monitor() ? monitor()!.lastCheckResults : [])),
   })),
   withMethods((store, api = injectAPI()) => ({

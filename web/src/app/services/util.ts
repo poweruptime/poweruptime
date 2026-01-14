@@ -2,56 +2,85 @@ import {format} from 'date-fns';
 
 import {BackendType} from '@app/api';
 
-export const mapUptime = (uptime: BackendType['MonitorMaxResponse']['uptime']) => [
-  {
-    name: 'Last hour',
-    value: uptime.oneHour,
-  },
-  {
-    name: '3 hours',
-    value: uptime.threeHours,
-  },
-  {
-    name: '6 hours',
-    value: uptime.sixHours,
-  },
-  {
-    name: '12 hours',
-    value: uptime.twelveHours,
-  },
-  {
-    name: 'Last day',
-    value: uptime.oneDay,
-  },
-  {
-    name: '3 days',
-    value: uptime.threeDays,
-  },
-  {
-    name: 'Last week',
-    value: uptime.oneWeek,
-  },
-  {
-    name: '2 weeks',
-    value: uptime.twoWeeks,
-  },
-  {
-    name: 'Last month',
-    value: uptime.oneMonth,
-  },
-  {
-    name: '3 months',
-    value: uptime.threeMonths,
-  },
-  {
-    name: '6 months',
-    value: uptime.sixMonths,
-  },
-  {
-    name: 'Last year',
-    value: uptime.oneYear,
-  },
-];
+export const buildPingStatistics = (ping?: BackendType['PublicPingStatistics']) =>
+  ping
+    ? [
+        {
+          name: 'Last hour',
+          value: ping.oneHour,
+        },
+        {
+          name: '3 hours',
+          value: ping.threeHours,
+        },
+        {
+          name: '6 hours',
+          value: ping.sixHours,
+        },
+        {
+          name: '12 hours',
+          value: ping.twelveHours,
+        },
+        {
+          name: 'Last day',
+          value: ping.oneDay,
+        },
+      ]
+    : [];
+
+export const buildUptimeStatistics = (uptime?: BackendType['PublicUptimeStatistics']) =>
+  uptime
+    ? [
+        {
+          name: 'Last hour',
+          value: uptime.oneHour,
+        },
+        {
+          name: '3 hours',
+          value: uptime.threeHours,
+        },
+        {
+          name: '6 hours',
+          value: uptime.sixHours,
+        },
+        {
+          name: '12 hours',
+          value: uptime.twelveHours,
+        },
+        {
+          name: 'Last day',
+          value: uptime.oneDay,
+        },
+        {
+          name: '3 days',
+          value: uptime.threeDays,
+        },
+        {
+          name: 'Last week',
+          value: uptime.oneWeek,
+        },
+        {
+          name: '2 weeks',
+          value: uptime.twoWeeks,
+        },
+        {
+          name: 'Last month',
+          value: uptime.oneMonth,
+        },
+        {
+          name: '3 months',
+          value: uptime.threeMonths,
+        },
+        {
+          name: '6 months',
+          value: uptime.sixMonths,
+        },
+        {
+          name: 'Last year',
+          value: uptime.oneYear,
+        },
+      ]
+    : [];
 
 export const calculatePingChart = (checkResults: BackendType['CheckResultMinResponse'][]) => {
   const data = checkResults.map((cr) => ({name: cr.createdAt, value: cr.pingMs ?? 0})).reverse();

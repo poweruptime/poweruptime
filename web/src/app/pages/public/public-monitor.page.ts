@@ -9,11 +9,12 @@ import {s_cut} from 'dfts-helper';
 
 import {Heatmap, RefreshInComponent} from '@app/components';
 import {MonitorStatus, PingChart, UptimeTimeline} from '@app/components/monitor';
+import {MonitorStatusTextBackground} from '@app/directives';
 import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/services';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-8">
       @if (publicMonitorDetailStore.monitor(); as monitor) {
         <div class="flex items-center gap-4">
           <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
@@ -30,18 +31,61 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
           </div>
         </section>
 
-        <div
-          class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
-          @for (uptimeResult of publicMonitorDetailStore.uptimeResults(); track uptimeResult.name) {
-            <section hlmCard>
-              <div hlmCardContent>
-                <div class="space-y-2">
-                  <p class="text-3xl font-semibold tracking-tight">{{ uptimeResult.value }}</p>
-                  <p class="text-muted-foreground text-sm">{{ uptimeResult.name }}</p>
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Uptime</h3>
+          <div
+            class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
+            @for (
+              uptimeStatistic of publicMonitorDetailStore.uptimeStatistics();
+              track uptimeStatistic.name
+            ) {
+              <section hlmCard>
+                <div hlmCardContent>
+                  <div class="space-y-2">
+                    <p class="text-3xl font-semibold tracking-tight">{{ uptimeStatistic.value }}</p>
+                    <p class="text-muted-foreground text-sm">{{ uptimeStatistic.name }}</p>
+                  </div>
                 </div>
-              </div>
-            </section>
-          }
+              </section>
+            }
+          </div>
+        </div>
+
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Ping</h3>
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            @for (
+              pingStatistic of publicMonitorDetailStore.pingStatistics();
+              track pingStatistic.name
+            ) {
+              <section hlmCard>
+                <div hlmCardContent>
+                  <div class="space-y-2">
+                    <div class="flex justify-between gap-4">
+                      <p class="text-3xl font-semibold tracking-tight">
+                        @if (pingStatistic.value?.averagePingMs; as averagePingMs) {
+                          {{ averagePingMs }}ms
+                        } @else {
+                          -
+                        }
+                      </p>
+                      <div>
+                        @if (pingStatistic.value?.trendPercentage; as trendPercentage) {
+                          @let isPositiveTrend = trendPercentage[0] !== '-';
+                          <span
+                            class="rounded-lg p-1 text-sm font-normal"
+                            [monitor-status-text-background]="isPositiveTrend ? 'UP' : 'DOWN'">
+                            {{ trendPercentage }}%
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <p class="text-muted-foreground text-sm">{{ pingStatistic.name }}</p>
+                  </div>
+                </div>
+              </section>
+            }
+          </div>
         </div>
       }
 
@@ -89,6 +133,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
     HlmSkeletonImports,
     HlmCardImports,
     TranslocoPipe,
+    MonitorStatusTextBackground,
   ],
 })
 export class PublicMonitorPage {

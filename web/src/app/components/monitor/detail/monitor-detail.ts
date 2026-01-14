@@ -18,12 +18,11 @@ import {
   PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
-import {Tag} from '@app/directives';
+import {MonitorStatusTextBackground, Tag} from '@app/directives';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {
   CheckResultsPingStore,
   InfiniteCheckResultsStore,
-  MonitorActionStore,
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
 } from '@app/services';
@@ -44,14 +43,16 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
             @let _cutDescription = cutDescription();
 
             <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-            <pre
+            <span
               class="whitespace-pre-wrap"
               (keydown)="cutDescription.set(!_cutDescription)"
-              (click)="cutDescription.set(!_cutDescription)">@if (cutDescription()) {
-            {{ description | s_cut: 300 : '....' }}
-          } @else {
-            {{ description }}
-          }</pre>
+              (click)="cutDescription.set(!_cutDescription)">
+              @if (cutDescription()) {
+                {{ description | s_cut: 300 : '....' }}
+              } @else {
+                {{ description }}
+              }
+            </span>
           }
 
           <div class="flex flex-wrap gap-4">
@@ -187,20 +188,61 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
       </section>
 
       @if (monitorDetailStore.isFulfilled()) {
-        <div
-          class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
-          @for (uptimeResult of monitorDetailStore.uptimeResults(); track uptimeResult.name) {
-            <section hlmCard>
-              <div hlmCardContent>
-                <div class="space-y-2">
-                  <p class="text-3xl font-semibold tracking-tight">{{ uptimeResult.value }}</p>
-                  <p class="text-muted-foreground text-sm">{{ uptimeResult.name }}</p>
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Uptime</h3>
+          <div
+            class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
+            @for (
+              uptimeStatistic of monitorDetailStore.uptimeStatistics();
+              track uptimeStatistic.name
+            ) {
+              <section hlmCard>
+                <div hlmCardContent>
+                  <div class="space-y-2">
+                    <p class="text-3xl font-semibold tracking-tight">{{ uptimeStatistic.value }}</p>
+                    <p class="text-muted-foreground text-sm">{{ uptimeStatistic.name }}</p>
+                  </div>
                 </div>
-              </div>
-            </section>
-          }
+              </section>
+            }
+          </div>
+        </div>
+
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Ping</h3>
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            @for (pingStatistic of monitorDetailStore.pingStatistics(); track pingStatistic.name) {
+              <section hlmCard>
+                <div hlmCardContent>
+                  <div class="space-y-2">
+                    <div class="flex justify-between gap-4">
+                      <p class="text-3xl font-semibold tracking-tight">
+                        @if (pingStatistic.value?.averagePingMs; as averagePingMs) {
+                          {{ averagePingMs }}ms
+                        } @else {
+                          -
+                        }
+                      </p>
+                      <div>
+                        @if (pingStatistic.value?.trendPercentage; as trendPercentage) {
+                          @let isPositiveTrend = trendPercentage[0] !== '-';
+                          <span
+                            class="rounded-lg p-1 text-sm font-normal"
+                            [monitor-status-text-background]="isPositiveTrend ? 'UP' : 'DOWN'">
+                            {{ trendPercentage }}%
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <p class="text-muted-foreground text-sm">{{ pingStatistic.name }}</p>
+                  </div>
+                </div>
+              </section>
+            }
+          </div>
         </div>
       } @else {
+        <hlm-skeleton class="h-52 w-full" />
         <hlm-skeleton class="h-52 w-full" />
       }
 
@@ -252,29 +294,29 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
     MonitorHeaderPlaceholder,
     RouterLink,
     DfxCutPipe,
-    HlmSkeletonImports,
     TranslocoPipe,
     PingChartFilter,
     MonitorCheckerDataValueLabelPipe,
     Tag,
     ChartPlaceholder,
+    HlmSkeletonImports,
     HlmIconImports,
     HlmCardImports,
     HlmBadgeImports,
+    MonitorStatusTextBackground,
   ],
 })
 export class MonitorDetail {
-  readonly monitorDetailStore = inject(MonitorDetailStore);
-  readonly monitorDetailYearlyUptimeStore = inject(MonitorDetailsYearlyUptimeStore);
-  readonly monitorActionStore = inject(MonitorActionStore);
-  readonly checkResultsPingStore = inject(CheckResultsPingStore);
-  readonly infiniteCheckResultsStore = inject(InfiniteCheckResultsStore);
+  protected readonly monitorDetailStore = inject(MonitorDetailStore);
+  protected readonly monitorDetailYearlyUptimeStore = inject(MonitorDetailsYearlyUptimeStore);
+  protected readonly checkResultsPingStore = inject(CheckResultsPingStore);
+  protected readonly infiniteCheckResultsStore = inject(InfiniteCheckResultsStore);
 
   readonly monitorId = input.required<string>();
 
   readonly cutDescription = signal(true);
 
-  readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
+  protected readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
     parse: (it) => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -286,18 +328,18 @@ export class MonitorDetail {
       return value === toBackendDate(yesterday) ? null : value;
     },
   });
-  readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
+  protected readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
     parse: (it) => it ?? toBackendDate(new Date()),
     stringify: (value) => (value === toBackendDate(new Date()) ? null : value),
   });
-  readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
+  protected readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
     parse: paramToNumber({
       defaultValue: 15,
     }),
     stringify: (value) => (value === 15 ? null : value),
   });
 
-  readonly pingChartFilter = computed(() => ({
+  protected readonly pingChartFilter = computed(() => ({
     range: {
       start: this.rangeStartPingChartFilter(),
       end: this.rangeEndPingChartFilter(),
@@ -305,7 +347,7 @@ export class MonitorDetail {
     precision: this.precisionPingChartFilter(),
   }));
 
-  readonly testIntervalDuration = computed(() => {
+  protected readonly testIntervalDuration = computed(() => {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
 
     if (!seconds) {

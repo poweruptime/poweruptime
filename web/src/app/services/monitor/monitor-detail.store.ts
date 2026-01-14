@@ -17,14 +17,15 @@ import {BackendType, injectAPI} from '@app/api';
 import {PushService, withMonitorLoad} from '@app/services';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
-import {mapUptime} from '../util';
+import {buildPingStatistics, buildUptimeStatistics} from '../util';
 
 export const MonitorDetailStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
   withMonitorLoad(),
   withComputed(({monitor}) => ({
-    uptimeResults: computed(() => (monitor() ? mapUptime(monitor()!.uptime) : [])),
+    uptimeStatistics: computed(() => buildUptimeStatistics(monitor()?.statistics?.uptime)),
+    pingStatistics: computed(() => buildPingStatistics(monitor()?.statistics?.ping)),
   })),
   withMethods((store) => ({
     updateMonitor(monitor: BackendType['MonitorMaxResponse']) {

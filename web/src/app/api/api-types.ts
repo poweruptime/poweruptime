@@ -2089,7 +2089,7 @@ export interface components {
         | components['schemas']['PingMonitorDataRecord']
         | components['schemas']['PushMonitorDataRecord']
         | components['schemas']['SSLCertificateMonitorDataRecord'];
-      uptime: components['schemas']['PublicMonitorUptimeStatistics'];
+      statistics: components['schemas']['PublicMonitorStatistics'];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
       oneDayUptime?: string;
     };
@@ -2099,19 +2099,35 @@ export interface components {
       /** @enum {string} */
       type: 'APPRISE' | 'DISCORD' | 'EMAIL' | 'SLACK';
     };
-    PublicMonitorUptimeStatistics: {
-      oneHour?: string;
-      threeHours?: string;
-      sixHours?: string;
-      twelveHours?: string;
-      oneDay?: string;
-      threeDays?: string;
-      oneWeek?: string;
-      twoWeeks?: string;
-      oneMonth?: string;
-      threeMonths?: string;
-      sixMonths?: string;
-      oneYear?: string;
+    PingAnalysis: {
+      /** Format: int64 */
+      averagePingMs: number;
+      trendPercentage: string;
+    };
+    PublicMonitorStatistics: {
+      uptime: components['schemas']['PublicUptimeStatistics'];
+      ping: components['schemas']['PublicPingStatistics'];
+    };
+    PublicPingStatistics: {
+      oneHour?: components['schemas']['PingAnalysis'];
+      threeHours?: components['schemas']['PingAnalysis'];
+      sixHours?: components['schemas']['PingAnalysis'];
+      twelveHours?: components['schemas']['PingAnalysis'];
+      oneDay?: components['schemas']['PingAnalysis'];
+    };
+    PublicUptimeStatistics: {
+      oneHour: string;
+      threeHours: string;
+      sixHours: string;
+      twelveHours: string;
+      oneDay: string;
+      threeDays: string;
+      oneWeek: string;
+      twoWeeks: string;
+      oneMonth: string;
+      threeMonths: string;
+      sixMonths: string;
+      oneYear: string;
     };
     TeamMinResponse: {
       id: string;
@@ -2412,7 +2428,7 @@ export interface components {
       /** @enum {string} */
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       description?: string;
-      uptime: components['schemas']['PublicMonitorUptimeStatistics'];
+      statistics: components['schemas']['PublicMonitorStatistics'];
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
     };
     DayUptimeStatistic: {
@@ -2526,7 +2542,7 @@ export interface components {
         | components['schemas']['PingMonitorDataRecord']
         | components['schemas']['PushMonitorDataRecord']
         | components['schemas']['SSLCertificateMonitorDataRecord'];
-      uptime: components['schemas']['PublicMonitorUptimeStatistics'];
+      statistics: components['schemas']['PublicMonitorStatistics'];
     };
     VersionCheckResponse: {
       version: string;
