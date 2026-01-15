@@ -28,7 +28,8 @@ import {HlmInputGroupButton} from '@spartan-ng/helm/input-group';
   imports: [NgIcon, TranslocoPipe, HlmInputGroupButton],
 })
 export class PasswordShowButton {
-  readonly show = signal(false);
+  protected readonly show = signal(false);
 
   readonly type = computed(() => (this.show() ? 'text' : 'password'));
+  readonly placeholder = computed(() => (this.show() ? 'secret password' : '*********'));
 }

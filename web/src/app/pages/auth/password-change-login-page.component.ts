@@ -83,7 +83,7 @@ import {AuthStore} from '@app/services';
                 <input
                   id="newPassword"
                   [type]="showButton.type()"
-                  [placeholder]="showButton.type() === 'text' ? 'secret password' : '**********'"
+                  [placeholder]="showButton.placeholder()"
                   hlmInputGroupInput
                   formControlName="newPassword" />
                 <pu-password-show-button #showButton hlmInputGroupAddon align="inline-end" />
@@ -106,9 +106,7 @@ import {AuthStore} from '@app/services';
                 <input
                   id="newPasswordConfirm"
                   [type]="showConfirmButton.type()"
-                  [placeholder]="
-                    showConfirmButton.type() === 'text' ? 'secret password' : '**********'
-                  "
+                  [placeholder]="showConfirmButton.placeholder()"
                   hlmInputGroupInput
                   formControlName="confirmPassword" />
                 <pu-password-show-button #showConfirmButton hlmInputGroupAddon align="inline-end" />
