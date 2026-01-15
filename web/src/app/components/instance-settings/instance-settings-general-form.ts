@@ -11,6 +11,7 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 import {BackendType} from '@app/api';
 import {TimezoneInput} from '@app/components';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {GroupedTimezones} from '@app/services';
 
 @Component({
   template: `
@@ -75,7 +76,7 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
 
   readonly isValid = injectIsValid(this.form);
 
-  availableTimezones = input<string[]>();
+  availableTimezones = input<GroupedTimezones[]>();
 
   settings = input.required({
     transform: (it: BackendType['InstanceSettingsResponse']) => {

@@ -9,41 +9,41 @@ import {
   signal,
 } from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {
-  ControlValueAccessor,
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-} from '@angular/forms';
-
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatOption, MatSelect} from '@angular/material/select';
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import {map, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
+
+import {GroupedTimezones} from '@app/services';
 
 @Component({
   template: `
-    <mat-form-field class="w-full">
-      <mat-label>{{ 'general.timezone' | transloco }}</mat-label>
-      <mat-select [(ngModel)]="value">
-        <mat-option class="pt-1">
-          <ngx-mat-select-search [(ngModel)]="timezoneFilter">
-            <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
-          </ngx-mat-select-search>
-        </mat-option>
-        @for (timeZone of filteredTimezones(); track timeZone) {
-          <mat-option [value]="timeZone">
-            {{ timeZone }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <hlm-combobox [(value)]="value">
+      <hlm-combobox-input [placeholder]="'general.timezone' | transloco"></hlm-combobox-input>
+      <div *brnPopoverContent hlmComboboxContent>
+        <hlm-combobox-empty>No items found.</hlm-combobox-empty>
+        <div hlmComboboxList>
+          @for (timezoneGroup of availableTimezones(); track $index) {
+            <div hlmComboboxGroup>
+              <div hlmComboboxLabel>{{ timezoneGroup.region }}</div>
+              @for (timezone of timezoneGroup.timezones; track timezone.id) {
+                <hlm-combobox-item [value]="timezone.id">
+                  {{ timezone.label }}
+                  <span class="text-xs text-gray-500 dark:text-gray-300">
+                    ({{ timezone.offset }})
+                  </span>
+                </hlm-combobox-item>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </hlm-combobox>
 
-    <div>
+    <div class="mt-2">
       <span>{{ 'general.time' | transloco }}:</span>
       {{ nowInTimezone() | date: 'yyyy.MM.dd HH:mm:ss' }}
     </div>
@@ -56,39 +56,15 @@ import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
     },
   ],
   selector: 'pu-timezone-input',
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatLabel,
-    NgxMatSelectSearchModule,
-    NgIcon,
-    TranslocoPipe,
-    DatePipe,
-  ],
+  imports: [FormsModule, TranslocoPipe, DatePipe, HlmComboboxImports, BrnPopoverContent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimezoneInput implements ControlValueAccessor {
-  availableTimezones = input([], {transform: (it: string[] | undefined) => it ?? []});
+  availableTimezones = input([], {transform: (it: GroupedTimezones[] | undefined) => it ?? []});
 
   value = signal<string | null>('');
   isDisabled = signal(false);
   onChange?: (it: string | null) => void;
-
-  timezoneFilter = signal('');
-
-  filteredTimezones = computed(() => {
-    const filter = this.timezoneFilter().trim().toLowerCase();
-    return this.availableTimezones()
-      .filter((it) => it.trim().toLowerCase().includes(filter))
-      .sort((a, b) =>
-        a
-          .toLowerCase()
-          .localeCompare(b.toLowerCase(), undefined, {numeric: true, sensitivity: 'base'}),
-      );
-  });
 
   readonly now = toSignal(timer(0, 1000).pipe(map(() => new Date())), {initialValue: new Date()});
   readonly nowInTimezone = computed(() =>

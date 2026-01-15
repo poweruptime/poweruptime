@@ -16,6 +16,7 @@ import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSetting
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSettingsResponse
 import org.poweruptime.backend.features.info.instanceSetting.dto.InstanceSupportSettingsResponse
 import org.poweruptime.backend.features.info.instanceSetting.dto.SettingRetentionDto
+import org.poweruptime.backend.features.info.instanceSetting.dto.TimezoneInfo
 import org.poweruptime.backend.features.info.supporter.SupporterService
 import org.poweruptime.backend.features.info.versionChecker.dto.VersionCheckResponse
 import org.poweruptime.backend.features.info.versionChecker.service.VersionChecker
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @Tag(name = "Instance Setting API")
 @RestController
@@ -58,9 +60,24 @@ class InstanceSettingController(
     )
     @GetMapping("timezones")
     @ResponseStatus(HttpStatus.OK)
-    fun getAvailableTimezones(): InstanceAvailableTimezonesResponse = InstanceAvailableTimezonesResponse(
-        availableTimezones = ZoneId.getAvailableZoneIds(),
-    )
+    fun getAvailableTimezones(): InstanceAvailableTimezonesResponse {
+        val now = ZonedDateTime.now()
+        val timezones = ZoneId.getAvailableZoneIds()
+            .map { zoneIdStr ->
+                val zoneId = ZoneId.of(zoneIdStr)
+                val offset = now.withZoneSameInstant(zoneId).offset
+                TimezoneInfo(
+                    id = zoneIdStr,
+                    offset = offset.toString().let {
+                        if (it == "Z") {
+                            "00:00"
+                        } else it
+                    },
+                )
+            }
+
+        return InstanceAvailableTimezonesResponse(availableTimezones = timezones)
+}
 
     @Operation(
         summary = "Set timezone instance setting",

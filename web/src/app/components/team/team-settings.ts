@@ -4,6 +4,7 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {BackendType} from '@app/api';
 import {TimezoneInput} from '@app/components';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {GroupedTimezones} from '@app/services';
 
 @Component({
   template: `
@@ -27,7 +28,7 @@ export class TeamSettings extends AbstractModelEditFormComponent<
 
   readonly isValid = injectIsValid(this.form);
 
-  availableTimezones = input<string[]>();
+  availableTimezones = input<GroupedTimezones[]>();
 
   settings = input.required({
     transform: (it: BackendType['TeamSettingsResponse']) => {

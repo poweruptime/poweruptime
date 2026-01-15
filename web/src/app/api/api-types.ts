@@ -2549,7 +2549,11 @@ export interface components {
       date: string;
     };
     InstanceAvailableTimezonesResponse: {
-      availableTimezones: string[];
+      availableTimezones: components['schemas']['TimezoneInfo'][];
+    };
+    TimezoneInfo: {
+      id: string;
+      offset: string;
     };
     InfoTimeResponse: {
       /** Format: date-time */

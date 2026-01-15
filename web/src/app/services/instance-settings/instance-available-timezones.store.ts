@@ -7,13 +7,22 @@ import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
 
+type TimezoneInfo = BackendType['TimezoneInfo'];
+
+interface TimezoneWithLabel extends TimezoneInfo {
+  label: string;
+}
+
+export interface GroupedTimezones {
+  region: string;
+  timezones: TimezoneWithLabel[];
+}
+
 export const InstanceAvailableTimezonesStore = signalStore(
   {providedIn: 'root'},
   withRequestStatus(),
   withState<{
-    availableTimezones:
-      | BackendType['InstanceAvailableTimezonesResponse']['availableTimezones']
-      | undefined;
+    availableTimezones: GroupedTimezones[] | undefined;
   }>({
     availableTimezones: undefined,
   }),
@@ -27,7 +36,7 @@ export const InstanceAvailableTimezonesStore = signalStore(
               next: (dto) =>
                 patchState(
                   store,
-                  () => ({availableTimezones: dto.availableTimezones}),
+                  () => ({availableTimezones: groupTimezonesByRegion(dto.availableTimezones)}),
                   setFulfilled(),
                 ),
               error: (error) => patchState(store, setError(error)),
@@ -38,3 +47,40 @@ export const InstanceAvailableTimezonesStore = signalStore(
     ),
   })),
 );
+
+function groupTimezonesByRegion(timezones: TimezoneInfo[]): GroupedTimezones[] {
+  const grouped = new Map<string, TimezoneWithLabel[]>();
+
+  for (const tz of timezones) {
+    const region = extractRegion(tz.id);
+    const label = createLabel(tz.id);
+    const tzWithLabel = {
+      ...tz,
+      label,
+    };
+
+    if (!grouped.has(region)) {
+      grouped.set(region, []);
+    }
+    grouped.get(region)!.push(tzWithLabel);
+  }
+
+  return Array.from(grouped.entries())
+    .map(([region, timezones]) => ({
+      region,
+      timezones: timezones.sort((a, b) => a.label.localeCompare(b.label)),
+    }))
+    .sort((a, b) => a.region.localeCompare(b.region));
+}
+
+function extractRegion(tzId: string): string {
+  const region = tzId.split('/')[0];
+  return region || 'Other';
+}
+
+function createLabel(tzId: string): string {
+  const parts = tzId.split('/');
+  if (parts.length === 1) return tzId;
+
+  return parts[parts.length - 1].replace(/_/g, ' ');
+}
