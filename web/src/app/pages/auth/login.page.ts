@@ -101,7 +101,7 @@ import {AuthStore, InfoStore} from '@app/services';
             {{ 'auth.stayLoggedIn' | transloco }}
           </label>
 
-          <button [disabled]="!isValid()" hlmBtn type="submit">
+          <button id="login-button" [disabled]="!isValid()" hlmBtn type="submit">
             <ng-icon hlm size="sm" name="bootstrapBoxArrowInRight" />
             {{ 'auth.login' | transloco }}
           </button>

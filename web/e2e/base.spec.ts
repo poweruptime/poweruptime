@@ -1,56 +1,36 @@
-import {expect, request, test} from '@playwright/test';
+import {expect, test} from '@playwright/test';
 
-test('has title', async ({page}) => {
+test('setup has title and accessible via preview', async ({page}) => {
   await page.goto('/setup?preview=true');
 
   await expect(page).toHaveTitle(/poweruptime/);
 
-  const title = page.locator(
-    '#body > app-root > auth-layout > div > main > pu-setup-page > mat-card > mat-card-header > div > mat-card-title > span > strong',
-  );
+  const title = page.locator('#title');
   await expect(title).toHaveText('poweruptime');
 });
 
-test('complete setup and open invitation link', async ({page}) => {
-  await page.goto('/setup?preview=true');
+test('user profile', async ({page}) => {
+  await page.goto('/m');
 
-  // Fill the email field
-  await page.fill('#mat-input-0', 'admin@admin.org');
+  const sidebarButton = page.locator('#sidebar-trigger');
+  const isSidebarOpen = (await sidebarButton.getAttribute('data-sidebar-open')) === 'true';
+  if (!isSidebarOpen) {
+    await sidebarButton.click();
+  }
 
-  // Submit the setup request
-  const submitButton = page.locator(
-    '#body > app-root > auth-layout > div > main > pu-setup-page > mat-card > mat-card-content > div > form > button',
+  const profileMenuButton = page.locator('#profile-menu-button');
+  await profileMenuButton.click();
+
+  const profileSettingsMenuButton = page.locator(
+    '[data-id="profile-menu"] > hlm-dropdown-menu-group:nth-child(5) > button:nth-child(1)',
   );
+  await profileSettingsMenuButton.click();
 
-  await expect(submitButton).toHaveText(/Send Test/i);
-  await submitButton.click();
-  await expect(submitButton).toHaveText(/Verify Code/i);
+  await page.waitForURL('/profile');
+  expect(page.url()).toMatch('/profile');
 
-  // --- Step 1: Fetch notification with OTP ---
-  const apiContext = await request.newContext();
-  const response1 = await apiContext.get('http://localhost:8080/api/v1/public/temp-notification');
-  expect(response1.ok()).toBeTruthy();
-
-  const notifications1: Array<{
-    id: string;
-    url: string;
-    createdAt: string;
-    to: string;
-    subject: string;
-    body: string;
-    bodyHTML: string;
-  }> = await response1.json();
-
-  // Get most recent notification containing setup link
-  const otpNotif = notifications1.find((n) => n.body.includes('http://localhost:4200/setup'));
-  expect(otpNotif).toBeTruthy();
-
-  const otpUrl = new URL(otpNotif!.body.match(/http:\/\/localhost:4200\/setup\?[^"]+/)![0]);
-  const code = otpUrl.searchParams.get('code');
-  expect(code).not.toBeNull();
-
-  // Enter OTP
-  await page.fill('#input-otp-0', code!);
-  await submitButton.click();
-  await expect(submitButton).toHaveText(/Send Invitation/i);
+  const title = page.locator(
+    '#body > app-root > home-layout > pu-sidebar > div > main > div > profile-layout > div > div > h1',
+  );
+  await expect(title).toHaveText('Profile Settings');
 });

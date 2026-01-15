@@ -21,6 +21,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
     <ul hlmSidebarMenu>
       <li hlmSidebarMenuItem>
         <button
+          id="profile-menu-button"
           [hlmDropdownMenuTrigger]="menu"
           [side]="_menuSide()"
           type="button"
@@ -53,7 +54,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
     </ul>
 
     <ng-template #menu>
-      <hlm-dropdown-menu class="min-w-56 rounded-lg">
+      <hlm-dropdown-menu class="min-w-56 rounded-lg" data-id="profile-menu">
         <hlm-dropdown-menu-label>
           <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <hlm-avatar class="rounded-lg">

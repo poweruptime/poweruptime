@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmBreadCrumbImports} from '@spartan-ng/helm/breadcrumb';
 import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
-import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
+import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 
 import {BreadcrumbService, ChangelogStore, ProfileStore} from '@app/services';
 
@@ -14,7 +14,11 @@ import {VersionCheckBadge} from './version-check-badge';
   template: `
     <header class="flex h-16 shrink-0 items-center justify-between gap-2">
       <div class="flex items-center gap-2 px-4">
-        <button type="button" hlmSidebarTrigger>
+        <button
+          id="sidebar-trigger"
+          [attr.data-sidebar-open]="isSidebarOpen()"
+          type="button"
+          hlmSidebarTrigger>
           <span class="sr-only">{{ 'nav.toggle' | transloco }}</span>
         </button>
         @let _breadcrumbs = breadcrumbs();
@@ -66,6 +70,7 @@ import {VersionCheckBadge} from './version-check-badge';
 export class SiteHeader {
   protected readonly changelogStore = inject(ChangelogStore);
 
-  protected breadcrumbs = inject(BreadcrumbService).breadcrumbs;
-  protected profileRole = inject(ProfileStore).role;
+  protected readonly breadcrumbs = inject(BreadcrumbService).breadcrumbs;
+  protected readonly profileRole = inject(ProfileStore).role;
+  protected readonly isSidebarOpen = inject(HlmSidebarService).openMobile;
 }

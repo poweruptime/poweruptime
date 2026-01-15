@@ -1,16 +1,19 @@
 import {ChangeDetectionStrategy, Component, effect, inject, input} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import { HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {
+  HlmInputGroupImports,
+} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
+import { HlmLabelImports} from '@spartan-ng/helm/label';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {Database} from '@app/api';
@@ -24,7 +27,7 @@ import {SetupStore} from '@app/services';
       <section hlmCard>
         <div hlmCardHeader>
           <h3 class="text-2xl" hlmCardTitle>
-            <strong>poweruptime</strong>
+            <span class="font-bold" id="title">poweruptime</span>
             | {{ 'auth.setup.title' | transloco }}
           </h3>
         </div>
@@ -73,31 +76,42 @@ import {SetupStore} from '@app/services';
                 class="animate-in fade-in zoom-in slide-out-to-end-20 grid gap-6"
                 [formGroup]="testEmailForm"
                 (ngSubmit)="submitTestEmail()">
-                <mat-form-field>
-                  <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
-                  <input matInput formControlName="email" />
-
-                  @let emailErrors = testEmailForm.controls.email.errors;
-                  @if (emailErrors?.['required']) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                <hlm-form-field>
+                  <label hlmLabel for="test-email">
+                    {{ 'general.emailAddress' | transloco }}
+                  </label>
+                  <div hlmInputGroup>
+                    <input
+                      id="test-email"
+                      hlmInputGroupInput
+                      formControlName="email"
+                      type="email"
+                      placeholder="you@example.com" />
+                    <div hlmInputGroupAddon>
+                      <ng-icon name="lucideMail" />
+                    </div>
+                  </div>
+                  @let testEmailErrors = testEmailForm.controls.email.errors;
+                  @if (testEmailErrors?.['required']) {
+                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
                   }
-                  @if (emailErrors?.['email']) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                  @if (testEmailErrors?.['email']) {
+                    <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
                   }
-                  @if (emailErrors?.['minlength']; as minlength) {
-                    <mat-error>
-                      {{ 'form.validation.minlength' | transloco: minlength }}
-                    </mat-error>
+                  @if (testEmailErrors?.['minlength']; as minlength) {
+                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
                   }
-                  @if (emailErrors?.['maxlength']; as maxlength) {
-                    <mat-error>
-                      {{ 'form.validation.maxlength' | transloco: maxlength }}
-                    </mat-error>
+                  @if (testEmailErrors?.['maxlength']; as maxlength) {
+                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
                   }
-                </mat-form-field>
+                </hlm-form-field>
 
                 <div class="grid gap-4">
-                  <button [disabled]="!isTestEmailFormValid()" hlmBtn type="submit">
+                  <button
+                    id="email-test-button"
+                    [disabled]="!isTestEmailFormValid()"
+                    hlmBtn
+                    type="submit">
                     <ng-icon hlm size="sm" name="bootstrapEnvelopePlus" />
                     {{ 'auth.setup.testEmail.send' | transloco }}
                   </button>
@@ -121,6 +135,7 @@ import {SetupStore} from '@app/services';
                 [formGroup]="confirmEmailForm"
                 (ngSubmit)="submitConfirmEmail()">
                 <brn-input-otp
+                  id="email-test-code-input"
                   hlmInputOtp
                   maxLength="6"
                   formControlName="code"
@@ -141,6 +156,7 @@ import {SetupStore} from '@app/services';
                 <div class="grid w-full gap-4 md:grid-cols-2">
                   <button
                     class="col-span-2"
+                    id="email-test-code-button"
                     [disabled]="!isConfirmEmailFormValid()"
                     hlmBtn
                     type="submit">
@@ -168,50 +184,68 @@ import {SetupStore} from '@app/services';
             @case ('setup') {
               <form class="grid gap-4" [formGroup]="setupForm" (ngSubmit)="submitSetup()">
                 <h3>{{ 'auth.setup.description' | transloco }}:</h3>
-                <mat-form-field>
-                  <mat-label>{{ 'general.name' | transloco }}</mat-label>
-                  <input matInput formControlName="name" />
-
+                <hlm-form-field>
+                  <label hlmLabel for="name">
+                    {{ 'general.name' | transloco }}
+                  </label>
+                  <div hlmInputGroup>
+                    <input
+                      id="name"
+                      hlmInputGroupInput
+                      formControlName="name"
+                      type="text"
+                      placeholder="John Doe" />
+                    <div hlmInputGroupAddon>
+                      <ng-icon name="lucideUser" />
+                    </div>
+                  </div>
                   @let nameErrors = setupForm.controls.name.errors;
                   @if (nameErrors?.['required']) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
                   }
                   @if (nameErrors?.['minlength']; as minlength) {
-                    <mat-error>
-                      {{ 'form.validation.minlength' | transloco: minlength }}
-                    </mat-error>
+                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
                   }
                   @if (nameErrors?.['maxlength']; as maxlength) {
-                    <mat-error>
-                      {{ 'form.validation.maxlength' | transloco: maxlength }}
-                    </mat-error>
+                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
                   }
-                </mat-form-field>
+                </hlm-form-field>
 
-                <mat-form-field>
-                  <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
-                  <input matInput formControlName="email" />
+                <hlm-form-field>
+                  <label hlmLabel for="email">
+                    {{ 'general.emailAddress' | transloco }}
+                  </label>
+                  <div hlmInputGroup>
+                    <input
+                      id="email"
+                      hlmInputGroupInput
+                      formControlName="email"
+                      type="email"
+                      placeholder="you@example.com" />
+                    <div hlmInputGroupAddon>
+                      <ng-icon name="lucideMail" />
+                    </div>
+                  </div>
+                  @let setupEmailErrors = setupForm.controls.email.errors;
+                  @if (setupEmailErrors?.['required']) {
+                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                  }
+                  @if (setupEmailErrors?.['email']) {
+                    <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+                  }
+                  @if (setupEmailErrors?.['minlength']; as minlength) {
+                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                  }
+                  @if (setupEmailErrors?.['maxlength']; as maxlength) {
+                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                  }
+                </hlm-form-field>
 
-                  @let emailErrors = setupForm.controls.email.errors;
-                  @if (emailErrors?.['required']) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                  }
-                  @if (emailErrors?.['email']) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                  }
-                  @if (emailErrors?.['minlength']; as minlength) {
-                    <mat-error>
-                      {{ 'form.validation.minlength' | transloco: minlength }}
-                    </mat-error>
-                  }
-                  @if (emailErrors?.['maxlength']; as maxlength) {
-                    <mat-error>
-                      {{ 'form.validation.maxlength' | transloco: maxlength }}
-                    </mat-error>
-                  }
-                </mat-form-field>
-
-                <button [disabled]="!isSetupFormValid()" hlmBtn type="submit">
+                <button
+                  id="send-invite-button"
+                  [disabled]="!isSetupFormValid()"
+                  hlmBtn
+                  type="submit">
                   <ng-icon hlm size="sm" name="bootstrapEnvelopePlus" />
                   {{ 'auth.setup.sendInvitation' | transloco }}
                 </button>
@@ -244,10 +278,6 @@ import {SetupStore} from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    MatLabel,
-    MatFormField,
-    MatInput,
-    MatError,
     TranslocoPipe,
     AlertDirective,
     TranslocoMarkupComponent,
@@ -257,6 +287,9 @@ import {SetupStore} from '@app/services';
     HlmCardImports,
     HlmButtonImports,
     HlmIconImports,
+    HlmInputGroupImports,
+    HlmFormFieldImports,
+    HlmLabelImports,
   ],
 })
 export class SetupPage {
