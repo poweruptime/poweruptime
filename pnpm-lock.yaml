@@ -91,8 +91,8 @@ importers:
         specifier: 21.0.5
         version: 21.0.5(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-server@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.0.8)(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/router@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))
       '@davidlj95/ngx-meta':
-        specifier: 20.0.1
-        version: 20.0.1(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/router@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))
+        specifier: 21.0.1
+        version: 21.0.1(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/router@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))
       '@fastify/http-proxy':
         specifier: 11.4.1
         version: 11.4.1
@@ -1201,12 +1201,12 @@ packages:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
 
-  '@davidlj95/ngx-meta@20.0.1':
-    resolution: {integrity: sha512-/16DR0y7Gv0pXJypHcX6NV5cv0rpcH09A02kOtZEeThjXrmR87ZZWPbFu1NTtgegX/6oeIj+YsqUXZDF8W91Dg==}
+  '@davidlj95/ngx-meta@21.0.1':
+    resolution: {integrity: sha512-bv47A6W81abnxwGUkNixoT1XNWH6r30I8P9oPR2VCNCnnkLj9LPTTaMRNMEiXeuw7k81i+R0WPB01Whj9pOD5w==}
     peerDependencies:
-      '@angular/common': ^20 || ^19 || ^18
-      '@angular/core': ^20 || ^19 || ^18
-      '@angular/router': ^20 || ^19 || ^18
+      '@angular/common': ^21 || ^20 || ^19
+      '@angular/core': ^21 || ^20 || ^19
+      '@angular/router': ^21 || ^20 || ^19
     peerDependenciesMeta:
       '@angular/router':
         optional: true
@@ -9565,7 +9565,7 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@davidlj95/ngx-meta@20.0.1(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/router@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))':
+  '@davidlj95/ngx-meta@21.0.1(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/router@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@angular/platform-browser@21.0.8(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))':
     dependencies:
       '@angular/common': 21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)
