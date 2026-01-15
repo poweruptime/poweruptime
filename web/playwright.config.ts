@@ -27,7 +27,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {name: 'setup', testMatch: 'setup.ts'},
-    {name: 'auth', testMatch: 'auth.setup.ts'},
+    {name: 'auth', testMatch: 'auth.setup.ts', dependencies: ['setup']},
     {
       name: 'chromium',
       use: {

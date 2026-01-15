@@ -1,4 +1,5 @@
 import {expect, test} from '@playwright/test';
+import {thr_sleep} from 'dfts-helper';
 import path from 'path';
 
 const authFile = path.join(__dirname, '../playwright/.auth/user.json');
@@ -6,7 +7,7 @@ const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 test('authenticate', async ({page}) => {
   await page.goto('/');
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await thr_sleep(500);
 
   expect(page.url()).toBe('http://localhost:4200/auth/login');
 

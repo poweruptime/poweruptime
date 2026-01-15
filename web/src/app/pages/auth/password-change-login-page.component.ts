@@ -142,7 +142,7 @@ import {AuthStore} from '@app/services';
             {{ 'auth.stayLoggedIn' | transloco }}
           </label>
 
-          <button [disabled]="!formValid()" hlmBtn type="submit">
+          <button id="password-change-button" [disabled]="!formValid()" hlmBtn type="submit">
             <ng-icon class="mr-2" name="bootstrapEnvelope" />
             Login
           </button>

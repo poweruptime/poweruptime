@@ -1,11 +1,12 @@
 import {expect, request, test} from '@playwright/test';
+import {thr_sleep} from 'dfts-helper';
 
 import {getTempNotification} from './tempNotifications';
 
 test('setup', async ({page}) => {
   await page.goto('/');
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await thr_sleep(500);
 
   test.skip(
     page.url() === 'http://localhost:4200/auth/login',
@@ -22,6 +23,8 @@ test('setup', async ({page}) => {
   await expect(sendEmailTestButton).toHaveText(/Send Test/i);
   await sendEmailTestButton.click();
 
+  await thr_sleep(500);
+
   const apiContext = await request.newContext();
 
   // Get most recent notification containing setup link
@@ -34,10 +37,10 @@ test('setup', async ({page}) => {
   expect(code).not.toBeNull();
 
   // Enter OTP
-  await page.fill('#email-test-code-input', code!);
+  await page.fill('#email-test-code-input > div:nth-child(4) > input', code!);
 
   const sendEmailTestCodeButton = page.locator('#email-test-code-button');
-  await expect(sendEmailTestCodeButton).toHaveText(/Send Invitation/i);
+  await expect(sendEmailTestCodeButton).toHaveText(/Verify Code/i);
   await sendEmailTestCodeButton.click();
 
   // Enter first admin user data
@@ -46,11 +49,8 @@ test('setup', async ({page}) => {
 
   const sendInviteButton = page.locator('#send-invite-button');
   await sendInviteButton.click();
-  await expect(
-    page.locator(
-      '#body > app-root > auth-layout > div > main > pu-setup-page > mat-card > mat-card-content > div > div.rounded-lg.p-4.text-sm.dark\\:bg-gray-800.bg-blue-100.text-blue-800.dark\\:text-blue-400 > b',
-    ),
-  ).toHaveText('An invitation will be sent to the specified email address.');
+
+  await thr_sleep(500);
 
   // Set first password for newly created user
   const {body: loginNotificationBody} = await getTempNotification(apiContext, ({body}) =>
@@ -60,11 +60,9 @@ test('setup', async ({page}) => {
   expect(loginUrl).not.toBeNull();
   await page.goto(loginUrl);
 
-  await page.fill('#mat-input-4', 'Passwort1234');
-  await page.fill('#mat-input-5', 'Passwort1234');
+  await page.fill('#newPassword', 'Passwort1234');
+  await page.fill('#newPasswordConfirm', 'Passwort1234');
 
-  const passwordChangeSubmitButton = page.locator(
-    '#body > app-root > auth-layout > div > main > password-change-login-page > mat-card > mat-card-content > form > div.flex.flex-col.gap-3 > button',
-  );
+  const passwordChangeSubmitButton = page.locator('#password-change-button');
   await passwordChangeSubmitButton.click();
 });
