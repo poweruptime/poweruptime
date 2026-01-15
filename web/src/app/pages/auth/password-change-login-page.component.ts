@@ -1,15 +1,14 @@
 import {Component, booleanAttribute, effect, inject, input} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
-import {DfxAutofocus} from 'dfx-helper';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
@@ -17,121 +16,152 @@ import {AuthStore} from '@app/services';
 
 @Component({
   template: `
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>
-          <strong>poweruptime</strong>
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h3 hlmCardTitle>
+          <span class="font-bold">poweruptime</span>
           | {{ 'auth.changePassword' | transloco }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form class="mt-6 flex flex-col gap-10" [formGroup]="form" (ngSubmit)="submit()">
-          <div class="flex flex-col gap-4">
-            <mat-form-field>
-              <mat-label>{{ 'general.email' | transloco }}</mat-label>
-              <input type="email" matInput formControlName="email" />
+        </h3>
+      </div>
 
-              @if (form.controls.email.errors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (form.controls.email.errors?.['email']) {
-                <mat-error>{{ 'form.validation.email' | transloco }}</mat-error>
-              }
-            </mat-form-field>
+      <form class="grid gap-10" [formGroup]="form" (ngSubmit)="submit()" hlmCardContent>
+        <div class="grid gap-4">
+          <hlm-form-field>
+            <label hlmLabel for="email">
+              {{ 'general.emailAddress' | transloco }}
+            </label>
+            <div hlmInputGroup>
+              <input
+                id="email"
+                hlmInputGroupInput
+                formControlName="email"
+                type="email"
+                placeholder="you@example.com" />
+              <div hlmInputGroupAddon>
+                <ng-icon name="lucideMail" />
+              </div>
+            </div>
+            @let emailErrors = form.controls.email.errors;
+            @if (emailErrors?.['required']) {
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            }
+            @if (emailErrors?.['email']) {
+              <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+            }
+            @if (emailErrors?.['maxlength']; as maxlength) {
+              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+            }
+          </hlm-form-field>
 
-            <mat-form-field>
-              <mat-label>{{ 'auth.oldPassword' | transloco }}</mat-label>
-              <input type="password" matInput formControlName="oldPassword" />
+          <hlm-form-field>
+            <label hlmLabel for="oldPassword">
+              {{ 'auth.oldPassword' | transloco }}
+            </label>
 
-              @if (form.controls.oldPassword.errors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (form.controls.oldPassword.errors?.['minlength']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-              }
-            </mat-form-field>
+            <div hlmInputGroup>
+              <input
+                id="oldPassword"
+                hlmInputGroupInput
+                formControlName="oldPassword"
+                type="password"
+                placeholder="********" />
+            </div>
+            @let oldPasswordErrors = form.controls.oldPassword.errors;
+            @if (oldPasswordErrors?.['required']) {
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            }
+            @if (oldPasswordErrors?.['minlength']; as minlength) {
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            }
+          </hlm-form-field>
 
-            <ng-container formGroupName="newPassword">
-              <mat-form-field>
-                <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
-                <input [type]="showButton.type()" matInput formControlName="newPassword" focus />
+          <ng-container formGroupName="newPassword">
+            <hlm-form-field>
+              <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
-                <pu-password-show-button #showButton matSuffix />
-
-                @if (form.controls.newPassword.controls.newPassword.errors?.['required']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-                @if (
-                  form.controls.newPassword.controls.newPassword.errors?.['minlength'];
-                  as minlength
-                ) {
-                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field>
-                <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
+              <div hlmInputGroup>
                 <input
-                  [type]="showConfirmButton.type()"
-                  matInput
-                  formControlName="confirmPassword" />
-
-                <pu-password-show-button #showConfirmButton matSuffix />
-
-                @if (form.controls.newPassword.controls.confirmPassword.errors?.['required']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-                @if (
-                  form.controls.newPassword.controls.confirmPassword.errors?.['minlength'];
-                  as minlength
-                ) {
-                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                }
-              </mat-form-field>
-
-              @if (form.controls.newPassword.errors?.['mismatch']) {
-                <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
+                  id="newPassword"
+                  [type]="showButton.type()"
+                  [placeholder]="showButton.type() === 'text' ? 'secret password' : '**********'"
+                  hlmInputGroupInput
+                  formControlName="newPassword" />
+                <pu-password-show-button #showButton hlmInputGroupAddon align="inline-end" />
+              </div>
+              @let newPasswordErrors = form.controls.newPassword.controls.newPassword.errors;
+              @if (newPasswordErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
               }
-            </ng-container>
+              @if (newPasswordErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+            </hlm-form-field>
 
-            @if (authStore.error() === 'INVALID_CREDENTIALS') {
-              <mat-error>Invalid credentials.</mat-error>
+            <hlm-form-field>
+              <label hlmLabel for="newPasswordConfirm">
+                {{ 'auth.newPasswordConfirm' | transloco }}
+              </label>
+
+              <div hlmInputGroup>
+                <input
+                  id="newPasswordConfirm"
+                  [type]="showConfirmButton.type()"
+                  [placeholder]="
+                    showConfirmButton.type() === 'text' ? 'secret password' : '**********'
+                  "
+                  hlmInputGroupInput
+                  formControlName="confirmPassword" />
+                <pu-password-show-button #showConfirmButton hlmInputGroupAddon align="inline-end" />
+              </div>
+              @let confirmPasswordErrors =
+                form.controls.newPassword.controls.confirmPassword.errors;
+              @if (confirmPasswordErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+              @if (confirmPasswordErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+            </hlm-form-field>
+
+            @if (form.controls.newPassword.errors?.['mismatch']) {
+              <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
             }
-            @if (authStore.error() === 'PASSWORDS_IDENTICAL') {
-              <mat-error>Please provide a new and different password.</mat-error>
-            }
-          </div>
+          </ng-container>
 
-          <div class="flex flex-col gap-3">
-            <mat-slide-toggle formControlName="stayLoggedIn">Stay logged in</mat-slide-toggle>
+          @if (authStore.error() === 'INVALID_CREDENTIALS') {
+            <hlm-error>Invalid credentials.</hlm-error>
+          }
+          @if (authStore.error() === 'PASSWORDS_IDENTICAL') {
+            <hlm-error>Please provide a new and different password.</hlm-error>
+          }
+        </div>
 
-            <button [disabled]="!formValid()" mat-flat-button type="submit">
-              <ng-icon class="mr-2" name="bootstrapEnvelope" />
-              Login
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
+        <div class="grid gap-3">
+          <label class="flex items-center" hlmLabel for="stayLoggedIn">
+            <hlm-switch class="mr-2" id="stayLoggedIn" formControlName="stayLoggedIn" />
+            {{ 'auth.stayLoggedIn' | transloco }}
+          </label>
+
+          <button [disabled]="!formValid()" hlmBtn type="submit">
+            <ng-icon class="mr-2" name="bootstrapEnvelope" />
+            Login
+          </button>
+        </div>
+      </form>
+    </section>
   `,
   selector: 'password-change-login-page',
   imports: [
     ReactiveFormsModule,
     NgIcon,
-    MatError,
-    MatLabel,
-    MatFormField,
-    MatInput,
-    MatCard,
-    MatCardHeader,
-    MatCardContent,
-    MatCardTitle,
-    MatButton,
-    MatSlideToggle,
-    DfxAutofocus,
     TranslocoPipe,
-    MatSuffix,
     PasswordShowButton,
+    HlmCardImports,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputGroupImports,
+    HlmSwitchImports,
+    HlmButtonImports,
   ],
 })
 export class PasswordChangeLoginPage {
@@ -141,8 +171,16 @@ export class PasswordChangeLoginPage {
   private readonly fb = inject(NonNullableFormBuilder);
   protected readonly authStore = inject(AuthStore);
 
-  readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+  protected readonly form = this.fb.group({
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(Database.MIN_MAIL_LENGTH),
+        Validators.maxLength(Database.MAX_MAIL_LENGTH),
+      ],
+    ],
     oldPassword: ['', [Validators.required, Validators.minLength(Database.MIN_PASSWORD_LENGTH)]],
     newPassword: this.fb.group(
       {
@@ -159,7 +197,7 @@ export class PasswordChangeLoginPage {
     ),
     stayLoggedIn: [false],
   });
-  readonly formValid = injectIsValid(this.form);
+  protected readonly formValid = injectIsValid(this.form);
 
   constructor() {
     effect(() => {

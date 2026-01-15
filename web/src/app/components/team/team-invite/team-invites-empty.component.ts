@@ -20,9 +20,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
         </div>
       </div>
       <div class="flex gap-2" hlmEmptyContent>
-        <a routerLink="../invite">
-          <button hlmBtn type="button">{{ 'team.invite' | transloco }}</button>
-        </a>
+        <a routerLink="../invite" hlmBtn type="button">{{ 'team.invite' | transloco }}</a>
       </div>
     </div>
   `,

@@ -60,13 +60,16 @@ class StatusText implements PipeTransform {
         <div hlmEmptyDescription>You haven&apos;t configured any OAuth2 Providers yet.</div>
       </div>
       <a
+        class="text-muted-foreground"
+        type="button"
+        hlmBtn
+        variant="link"
+        size="sm"
         target="_blank"
         rel="noopener"
         href="https://github.com/poweruptime/poweruptime/blob/main/infrastructure/README.md#oauth2-guide">
-        <button class="text-muted-foreground" type="button" hlmBtn variant="link" size="sm">
-          Learn More
-          <ng-icon hlm name="lucideArrowUpRight" size="sm" />
-        </button>
+        > Learn More
+        <ng-icon hlm name="lucideArrowUpRight" size="sm" />
       </a>
     </div>
   `,

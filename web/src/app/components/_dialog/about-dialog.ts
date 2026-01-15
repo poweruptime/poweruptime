@@ -36,11 +36,9 @@ import {SupporterBadge} from '../supporter-badge';
                 <div hlmItemTitle>Please consider supporting the development of poweruptime.</div>
               </div>
               <div hlmItemActions>
-                <a href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
-                  <button hlmBtn type="button">
-                    GitHub Sponsors
-                    <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
-                  </button>
+                <a hlmBtn href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
+                  GitHub Sponsors
+                  <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
                 </a>
               </div>
             }

@@ -5,6 +5,7 @@ export * from './alert.directive';
 export * from './backend-image';
 export * from './backend-offline-alert';
 export * from './copy-icon-button';
+export * from './dot-background';
 export * from './chart-placeholder.component';
 export * from './file-upload';
 export * from './heatmap';

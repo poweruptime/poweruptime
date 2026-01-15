@@ -1,10 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, signal} from '@angular/core';
 
-import {MatIconButton} from '@angular/material/button';
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmInputGroupButton} from '@spartan-ng/helm/input-group';
 
 @Component({
   template: `
@@ -14,10 +12,10 @@ import {NgIcon} from '@ng-icons/core';
 
     <button
       [attr.aria-label]="label"
-      [matTooltip]="label"
       (click)="show.set(!_show)"
-      type="button"
-      mat-icon-button>
+      hlmInputGroupButton
+      size="icon-xs"
+      type="button">
       @if (_show) {
         <ng-icon name="bootstrapEyeFill" />
       } @else {
@@ -27,7 +25,7 @@ import {NgIcon} from '@ng-icons/core';
   `,
   selector: 'pu-password-show-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIcon, MatIconButton, TranslocoPipe, MatTooltip],
+  imports: [NgIcon, TranslocoPipe, HlmInputGroupButton],
 })
 export class PasswordShowButton {
   readonly show = signal(false);

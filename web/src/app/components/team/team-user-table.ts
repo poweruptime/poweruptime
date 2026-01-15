@@ -36,11 +36,9 @@ import {TeamUsersStore} from '@app/services';
       </div>
       <div class="flex flex-col gap-2" hlmCardContent>
         <div class="flex gap-2">
-          <a routerLink="../invite">
-            <button type="button" hlmBtn>
-              <ng-icon hlm size="sm" name="bootstrapPersonAdd" />
-              {{ 'general.invite' | transloco }}
-            </button>
+          <a routerLink="../invite" type="button" hlmBtn>
+            <ng-icon hlm size="sm" name="bootstrapPersonAdd" />
+            {{ 'general.invite' | transloco }}
           </a>
 
           <button

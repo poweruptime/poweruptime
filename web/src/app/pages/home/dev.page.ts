@@ -39,8 +39,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Not Found Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/not-found">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/not-found"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -49,8 +55,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Team Join Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/t/join/1234">
-                      <button type="button" hlmBtn variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/t/join/1234"
+                      type="button"
+                      hlmBtn
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -59,8 +71,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Email Change Confirm Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/email-change/confirm/1234">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/email-change/confirm/1234"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -70,8 +88,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Email Change Undo Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/email-change/undo/1234">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/email-change/undo/1234"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -86,8 +110,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Login Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/auth/login">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/auth/login"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -96,8 +126,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Forgot Password Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/auth/forgot-password">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      hlmBtn
+                      routerLink="/auth/forgot-password"
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -106,8 +142,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Password Change Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/auth/password-change">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      routerLink="/auth/password-change"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm">
+                      Preview
                     </a>
                   </div>
                 </div>
@@ -116,8 +158,14 @@ import {AuthStore, ChangelogStore} from '@app/services';
                     <div hlmItemTitle>Setup Page</div>
                   </div>
                   <div hlmItemActions>
-                    <a [queryParams]="{preview: true}" routerLink="/setup">
-                      <button hlmBtn type="button" variant="outline" size="sm">Preview</button>
+                    <a
+                      [queryParams]="{preview: true}"
+                      hlmBtn
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      routerLink="/setup">
+                      Preview
                     </a>
                   </div>
                 </div>

@@ -40,6 +40,7 @@
       "@spartan-ng/helm/dialog": ["./src/libs/ui/dialog/src/index.ts"],
       "@spartan-ng/helm/dropdown-menu": ["./src/libs/ui/dropdown-menu/src/index.ts"],
       "@spartan-ng/helm/empty": ["./src/libs/ui/empty/src/index.ts"],
+      "@spartan-ng/helm/form-field": ["./src/libs/ui/form-field/src/index.ts"],
       "@spartan-ng/helm/icon": ["./src/libs/ui/icon/src/index.ts"],
       "@spartan-ng/helm/input": ["./src/libs/ui/input/src/index.ts"],
       "@spartan-ng/helm/input-group": ["./src/libs/ui/input-group/src/index.ts"],
