@@ -2,79 +2,79 @@ import {ChangeDetectionStrategy, Component, computed, inject, input, signal} fro
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 
-import {MatCard} from '@angular/material/card';
-
 import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
 import type {BackendType} from '@app/api';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
+import {LastCheckResultsStore} from '@app/services';
 
-import {LastCheckResultsStore} from '../../../services';
 import {UptimeTimeline} from '../uptime-timeline';
 
 @Component({
   template: `
     @let _monitor = monitor();
-    <a [routerLink]="_monitor.id" [queryParamsHandling]="'merge'" style="height: 120px">
-      <mat-card routerLinkActive="active-card" appearance="outlined" style="height: 120px">
-        <div class="flex flex-col items-start gap-1 rounded-lg p-2">
-          <div class="flex max-w-80 items-center gap-1">
-            <span
-              class="rounded-4xl px-2 py-0.5"
-              [monitor-status-text-background]="_monitor.status">
-              @if (_monitor.status === 'UP') {
-                {{ _monitor.oneDayUptime }}
-              } @else {
-                {{ _monitor.status }}
-              }
-            </span>
-            <span class="truncate">{{ _monitor.name }}</span>
-          </div>
-
-          @let _isHovering = isHovering();
-          @let hasTags = _monitor.tags.length > 0;
-          @if (isLoading()) {
-            <div class="flex w-full flex-col gap-2 px-2 pt-2">
-              <hlm-skeleton class="h-6 w-full" />
-
-              @if (!hasTags) {
-                <div class="flex w-full justify-between">
-                  <hlm-skeleton class="h-6 w-16" />
-                  <hlm-skeleton class="h-6 w-16" />
-                </div>
-              }
-            </div>
-          } @else {
-            <pu-uptime-timeline
-              class="min-w-full"
-              [hideLabel]="hasTags && !_isHovering"
-              [checkResults]="entities()"
-              [size]="2"
-              (mouseenter)="hoveringTrigger.set(true)"
-              (mouseleave)="hoveringTrigger.set(false)" />
-          }
-
-          @if (!_isHovering && hasTags) {
-            <div
-              class="badge-container flex gap-2 overflow-x-auto"
-              style="max-width: 19.25rem; padding: 5px">
-              @for (tag of _monitor.tags; track tag.name) {
-                <span
-                  class="text-xs whitespace-nowrap"
-                  [pu-tag]="tag.variant"
-                  [routerLink]="[]"
-                  [queryParams]="{'search.show': true, 'search.tag': tag.name}"
-                  clickable
-                  queryParamsHandling="merge">
-                  {{ tag.name }}
-                </span>
-              }
-            </div>
-          }
+    <a
+      class="h-[120px] py-2"
+      [routerLink]="_monitor.id"
+      [queryParamsHandling]="'merge'"
+      hlmCard
+      routerLinkActive="bg-gray-100 dark:bg-card/5">
+      <div class="flex flex-col items-start gap-1 rounded-lg px-2" hlmCardContent>
+        <div class="flex max-w-80 items-center gap-1">
+          <span class="rounded-4xl px-2 py-0.5" [monitor-status-text-background]="_monitor.status">
+            @if (_monitor.status === 'UP') {
+              {{ _monitor.oneDayUptime }}
+            } @else {
+              {{ _monitor.status }}
+            }
+          </span>
+          <span class="truncate">{{ _monitor.name }}</span>
         </div>
-      </mat-card>
+
+        @let _isHovering = isHovering();
+        @let hasTags = _monitor.tags.length > 0;
+        @if (isLoading()) {
+          <div class="flex w-full flex-col gap-2 px-2 pt-2">
+            <hlm-skeleton class="h-6 w-full" />
+
+            @if (!hasTags) {
+              <div class="flex w-full justify-between">
+                <hlm-skeleton class="h-6 w-16" />
+                <hlm-skeleton class="h-6 w-16" />
+              </div>
+            }
+          </div>
+        } @else {
+          <pu-uptime-timeline
+            class="min-w-full"
+            [hideLabel]="hasTags && !_isHovering"
+            [checkResults]="entities()"
+            [size]="2"
+            (mouseenter)="hoveringTrigger.set(true)"
+            (mouseleave)="hoveringTrigger.set(false)" />
+        }
+
+        @if (!_isHovering && hasTags) {
+          <div
+            class="badge-container flex gap-2 overflow-x-auto"
+            style="max-width: 19.25rem; padding: 5px">
+            @for (tag of _monitor.tags; track tag.name) {
+              <span
+                class="text-xs whitespace-nowrap"
+                [pu-tag]="tag.variant"
+                [routerLink]="[]"
+                [queryParams]="{'search.show': true, 'search.tag': tag.name}"
+                clickable
+                queryParamsHandling="merge">
+                {{ tag.name }}
+              </span>
+            }
+          </div>
+        }
+      </div>
     </a>
   `,
   styles: `
@@ -90,12 +90,12 @@ import {UptimeTimeline} from '../uptime-timeline';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
-    RouterLinkActive,
-    MatCard,
     UptimeTimeline,
     MonitorStatusTextBackground,
     Tag,
     HlmSkeletonImports,
+    HlmCardImports,
+    RouterLinkActive,
   ],
 })
 export class MonitorCard {

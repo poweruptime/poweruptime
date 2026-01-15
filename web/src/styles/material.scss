@@ -24,14 +24,6 @@ html {
         container-divider-color: #52525b,
       )
     );
-
-    .active-card {
-      @include mat.card-overrides(
-        (
-          outlined-outline-color: lightgray,
-        )
-      );
-    }
   }
 }
 
@@ -49,14 +41,6 @@ html {
     (
       filled-container-color: var(--mat-sys-error-container),
       filled-label-text-color: var(--mat-sys-on-error-container),
-    )
-  );
-}
-
-.active-card {
-  @include mat.card-overrides(
-    (
-      outlined-outline-color: gray,
     )
   );
 }
