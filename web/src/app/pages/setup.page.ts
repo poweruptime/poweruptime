@@ -7,13 +7,11 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import { HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {
-  HlmInputGroupImports,
-} from '@spartan-ng/helm/input-group';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
-import { HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {Database} from '@app/api';
