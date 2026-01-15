@@ -183,6 +183,7 @@
     "precision": "Precision",
     "preview": "Preview",
     "profile": "Profile",
+    "public": "Public",
     "recycleBin": "Recycle Bin",
     "redirecting": "Redirecting...",
     "restore": "Restore",
@@ -533,9 +534,12 @@
       "slugInUse": "Slug already taken"
     },
     "list": {
-      "delete": "Delete the {{general.statusPage}}",
-      "edit": "Edit the {{general.statusPage}}",
-      "preview": "Preview the {{general.statusPage}}"
+      "empty": {
+        "createStatusPage": "Create new {{general.statusPage}}",
+        "description": "You haven't created any {{general.statusPages}} yet. Get started by adding your first one.",
+        "openMonitors": "Back to {{general.monitors}}",
+        "title": "No {{general.statusPages}} yet."
+      }
     },
     "public": {
       "issues": "Some services experience issues.",

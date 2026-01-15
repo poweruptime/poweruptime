@@ -72,7 +72,7 @@ export class TableFilter {
   );
 }
 
-export const hasActiveFilters = (key: string) => {
+export const hasActiveFilters = (key = '') => {
   const filterKey = `${key.length > 0 ? `${key}.` : ''}filter.`;
   return (params: Params) =>
     Object.keys(params).filter((it) => it.startsWith(filterKey)).length > 0;
