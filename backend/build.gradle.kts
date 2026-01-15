@@ -62,7 +62,7 @@ dependencies {
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.1")
-    runtimeOnly("org.postgresql:postgresql:42.7.8")
+    runtimeOnly("org.postgresql:postgresql:42.7.9")
 
     implementation("com.zaxxer:HikariCP:7.0.2")
 
