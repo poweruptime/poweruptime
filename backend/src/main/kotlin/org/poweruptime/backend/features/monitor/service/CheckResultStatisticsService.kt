@@ -265,7 +265,7 @@ fun calculateAveragePingFromCheckResults(
     if (checkResults.isEmpty()) return null
 
     val filteredResults = checkResults.filter { result ->
-        result.pickedUpAt!! in start..end
+        result.pickedUpAt!! in start..end && result.pingMs != null
     }
 
     if (filteredResults.isEmpty()) return null
