@@ -32,7 +32,7 @@
     "@angular/platform-server": "21.0.8",
     "@angular/router": "21.0.8",
     "@angular/ssr": "21.0.5",
-    "@davidlj95/ngx-meta": "20.0.1",
+    "@davidlj95/ngx-meta": "21.0.1",
     "@fastify/http-proxy": "11.4.1",
     "@fastify/static": "9.0.0",
     "@jsverse/transloco": "8.2.0",
