@@ -4,8 +4,6 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
@@ -17,7 +15,9 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
@@ -33,6 +33,7 @@ import {MonitorEditFormHttpData} from './monitor-edit-form-http-data';
 import {MonitorEditFormPingData} from './monitor-edit-form-ping-data';
 import {MonitorEditFormPushData} from './monitor-edit-form-push-data';
 import {MonitorEditFormSSLCertificateData} from './monitor-edit-form-ssl-certificate-data';
+import {MonitorEditNotificationMethodsEmpty} from './monitor-edit-notification-methods-empty';
 import {
   TestIntervalUnits,
   getTestInterval,
@@ -164,18 +165,17 @@ import {
           {{ 'monitor.edit.upsideDown' | transloco }}
         </mat-slide-toggle>
 
-        <mat-card class="col-span-6 mt-8" appearance="outlined">
+        <section class="col-span-6 mt-8" hlmCard>
           @let typeValue = form.controls.type.getRawValue();
-          <mat-card-header>
-            <mat-card-title>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>
               @if (typeValue !== '') {
                 {{ typeValue | monitorCheckerDataValueLabel | transloco }} -
               }
               {{ 'general.data' | transloco }}
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-4"></div>
+            </h3>
+          </div>
+          <div hlmCardContent>
             @if (typeValue !== '') {
               @defer (when typeValue === 'DNS') {
                 @if (typeValue === 'DNS') {
@@ -209,47 +209,49 @@ import {
             } @else {
               <span>{{ 'monitor.edit.selectTypeToContinue' | transloco }}</span>
             }
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </section>
       </div>
 
       <div class="col-span-1 flex flex-col gap-6">
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>{{ 'general.notificationMethods' | transloco }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-4"></div>
-            <pu-notification-method-selector
-              [(searchNotificationMethod)]="searchNotificationMethod"
-              [notificationMethods]="allNotificationMethods()"
-              [isPending]="isNotificationMethodsSearchPending()"
-              formControlName="notificationMethods" />
+        <section hlmCard>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>{{ 'general.notificationMethods' | transloco }}</h3>
+          </div>
+          <div hlmCardContent>
+            @if (allNotificationMethods().length === 0) {
+              <pu-monitor-edit-notification-methods-empty />
+            } @else {
+              <pu-notification-method-selector
+                [(searchNotificationMethod)]="searchNotificationMethod"
+                [notificationMethods]="allNotificationMethods()"
+                [isPending]="isNotificationMethodsSearchPending()"
+                formControlName="notificationMethods" />
 
-            @if (!monitor() && isDefaultSelectedNotificationMethodsPending()) {
-              <mat-progress-bar mode="indeterminate" />
+              @if (!monitor() && isDefaultSelectedNotificationMethodsPending()) {
+                <mat-progress-bar mode="indeterminate" />
+              }
+
+              <a hlmBtn variant="link" routerLink="../../notification-methods/new" target="_blank">
+                {{ 'notificationMethod.edit.create' | transloco }}
+                <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+              </a>
             }
+          </div>
+        </section>
 
-            <a mat-button routerLink="../../../notification-methods/new" target="_blank">
-              {{ 'notificationMethod.edit.create' | transloco }}
-              <ng-icon class="ms-1" name="bootstrapBoxArrowUpRight" />
-            </a>
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>{{ 'general.tags' | transloco }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-4"></div>
+        <section hlmCard>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>{{ 'general.tags' | transloco }}</h3>
+          </div>
+          <div hlmCardContent>
             <pu-tag-selector
               [(searchTag)]="searchTag"
               [tags]="allTags()"
               [isPending]="isTagsSearchPending()"
               formControlName="tags" />
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </section>
       </div>
 
       <pu-save-button class="ms-3" [valid]="isValid()" />
@@ -271,14 +273,9 @@ import {
     MatSuffix,
     MatSlideToggle,
     MatProgressBar,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatCardHeader,
     CdkTextareaAutosize,
     TranslocoPipe,
     NgxMatSelectSearchModule,
-    NgIcon,
     SaveButton,
     NotificationMethodSelector,
     MonitorEditFormDnsData,
@@ -288,7 +285,10 @@ import {
     MonitorEditFormPushData,
     MonitorCheckerDataValueLabelPipe,
     TagSelector,
-    MatButton,
+    HlmCardImports,
+    HlmButtonImports,
+    HlmIconImports,
+    MonitorEditNotificationMethodsEmpty,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

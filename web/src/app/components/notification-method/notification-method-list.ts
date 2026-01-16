@@ -18,14 +18,14 @@ import {IsTeamAdmin} from '@app/directives';
 import {NotificationMethodsStore, SelectedTeamStore} from '@app/services';
 import {arrayToParam, paramToArray} from '@app/util';
 
-import {StatusPagesEmpty} from '../status-page/status-pages-empty';
 import {TableFilter, hasActiveFilters} from '../table-filter';
 import {NotificationMethodTable} from './notification-method-table';
+import {NotificationMethodsEmpty} from './notification-methods-empty';
 
 @Component({
   template: `
     @if (notificationMethodsStore.isEmpty() && !hasActiveFilters()) {
-      <pu-status-pages-empty />
+      <pu-notification-methods-empty />
     } @else {
       <div class="grid gap-2">
         <pu-table-filter>
@@ -85,7 +85,6 @@ import {NotificationMethodTable} from './notification-method-table';
     RouterLink,
     TranslocoPipe,
     IsTeamAdmin,
-    StatusPagesEmpty,
     TableFilter,
     NotificationMethodTable,
     HlmButtonImports,
@@ -95,6 +94,7 @@ import {NotificationMethodTable} from './notification-method-table';
     HlmInputGroupImports,
     HlmLabelImports,
     HlmSwitchImports,
+    NotificationMethodsEmpty,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

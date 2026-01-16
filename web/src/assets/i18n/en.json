@@ -445,6 +445,12 @@
         "recipient": "Recipient: ",
         "via": " via "
       },
+      "empty": {
+        "createNotificationMethod": "Create new {{general.notificationMethods}}",
+        "description": "You haven't created any {{general.notificationMethods}} yet. Get started by adding your first one.",
+        "openMonitors": "Back to {{general.monitors}}",
+        "title": "No {{general.notificationMethods}} yet."
+      },
       "restoreSuccess": "Successfully restored {{name}}."
     },
     "selector": {
