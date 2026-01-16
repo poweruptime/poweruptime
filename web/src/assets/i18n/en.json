@@ -43,9 +43,6 @@
     "description": "It seems like the backend is offline. Try in a few minutes again.",
     "title": "{{general.error}}!"
   },
-  "changelog": {
-    "closeAndDontShowAgain": "{{general.close}} and don't show again"
-  },
   "checkResult": {
     "details": {
       "check": "Check",
@@ -61,23 +58,6 @@
       "empty": {
         "description": "Create your first monitor to receive {{general.checkResults}}.",
         "title": "No {{general.checkResults}} yet."
-      }
-    }
-  },
-  "cmdk": {
-    "groups": {
-      "monitor": {
-        "create": "Create new {{general.monitor}}"
-      },
-      "notificationMethod": {
-        "create": "Create new {{general.notificationMethod}}"
-      },
-      "statusPage": {
-        "create": "Create new {{general.statusPage}}"
-      },
-      "team": {
-        "create": "New {{general.team}}",
-        "search": "{{general.search}} {{general.teams}}..."
       }
     }
   },
@@ -291,7 +271,6 @@
       "title": "{{mfa.mfa}} disabled."
     },
     "enabled": {
-      "alreadyShown": "{{mfa.backupCodes}} already shown.",
       "disable": "{{general.disable}} {{mfa.mfa}}",
       "info": {
         "1": {
@@ -328,6 +307,7 @@
       "retries": "{{retries}}x retries"
     },
     "edit": {
+      "create": "Create new {{general.monitor}}",
       "dns": {
         "matches": {
           "label": "Matches",
@@ -336,7 +316,6 @@
         },
         "server": "DNS-{{general.server}}"
       },
-      "edit": "Edit {{name}}",
       "http": {
         "allowedStatusCodeRanges": {
           "enter": "Enter status code range",
@@ -366,7 +345,6 @@
       },
       "upsideDown": "Upside down"
     },
-    "empty": "Create your first monitor",
     "list": {
       "empty": {
         "backToTeams": "Back to {{general.teams}}",
@@ -426,6 +404,7 @@
         "urlHelp": "Find more information [link:webhookHelpUrl]here[/link]."
       },
       "body": "Body template",
+      "create": "Create new {{general.notificationMethod}}",
       "discord": {
         "displayName": "Display name",
         "url": "Discord Webhook {{general.url}}",
@@ -491,9 +470,6 @@
       "new": "New {{general.emailAddress}}",
       "requestChange": "Request {{general.emailAddress}} change"
     },
-    "mfa": {
-      "title": "Multi-factor authentication"
-    },
     "password": {
       "currentPassword": "Current {{general.password}}",
       "update": "Update {{general.password}}"
@@ -509,6 +485,7 @@
   },
   "statusPage": {
     "edit": {
+      "create": "Create new {{general.statusPage}}",
       "domainNames": {
         "enter": "Enter {{general.domainName}}",
         "inUse": "Following domain names are already taken: \"{{domainNames}}\"",
@@ -573,6 +550,7 @@
     },
     "invite": "{{general.invite}} a new member",
     "monitors": "{{monitorCount}} Monitor(s)",
+    "search": "{{general.search}} {{general.teams}}...",
     "settings": {
       "invitedAt": "Invited",
       "invitedBy": "Invited by",

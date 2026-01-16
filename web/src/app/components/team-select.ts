@@ -31,7 +31,7 @@ import {TeamsStore} from '@app/services';
       </div>
       <div class="flex max-w-80 flex-col" *brnPopoverContent="let ctx" hlmPopoverContent>
         <mat-form-field class="mat-select-search-input" subscriptSizing="dynamic">
-          <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
+          <mat-label>{{ 'team.search' | transloco }}</mat-label>
           <input [formControl]="searchControl" matInput />
         </mat-form-field>
 

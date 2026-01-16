@@ -18,7 +18,7 @@ import {
     @let _isEditing = isEditing();
     <div class="flex flex-col gap-4">
       @if (!_isEditing) {
-        <h1 class="text-3xl">{{ 'cmdk.groups.monitor.create' | transloco }}</h1>
+        <h1 class="text-3xl">{{ 'monitor.edit.create' | transloco }}</h1>
       }
 
       @if (monitorDetailStore.isFulfilled() || !_isEditing) {

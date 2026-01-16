@@ -68,7 +68,7 @@ class StatusText implements PipeTransform {
         target="_blank"
         rel="noopener"
         href="https://github.com/poweruptime/poweruptime/blob/main/infrastructure/README.md#oauth2-guide">
-        > Learn More
+        Learn More
         <ng-icon hlm name="lucideArrowUpRight" size="sm" />
       </a>
     </div>

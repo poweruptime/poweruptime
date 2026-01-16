@@ -24,7 +24,7 @@ import {StatusPagesEmpty} from './status-pages-empty';
       <div class="grid gap-2">
         <div class="flex justify-between gap-4">
           <a *isTeamAdmin hlmBtn routerLink="new">
-            {{ 'cmdk.groups.statusPage.create' | transloco }}
+            {{ 'statusPage.edit.create' | transloco }}
           </a>
 
           <pu-table-filter>

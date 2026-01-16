@@ -16,7 +16,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
       @let _statusPageId = statusPageId();
       @let statusPage = statusPageEditStore.statusPage();
       @if (!_statusPageId) {
-        <h1 class="text-4xl">{{ 'cmdk.groups.statusPage.create' | transloco }}</h1>
+        <h1 class="text-4xl">{{ 'statusPage.edit.create' | transloco }}</h1>
       }
 
       @if (_statusPageId) {

@@ -31,7 +31,7 @@ import {TailwindBreakpoints} from '@app/services/util';
       }
 
       <mat-form-field class="w-full" subscriptSizing="dynamic">
-        <mat-label>{{ 'cmdk.groups.team.search' | transloco }}</mat-label>
+        <mat-label>{{ 'team.search' | transloco }}</mat-label>
         <input [formControl]="searchControl" matInput />
       </mat-form-field>
     </div>

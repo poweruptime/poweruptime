@@ -231,7 +231,7 @@ import {
             }
 
             <a mat-button routerLink="../../../notification-methods/new" target="_blank">
-              {{ 'cmdk.groups.notificationMethod.create' | transloco }}
+              {{ 'notificationMethod.edit.create' | transloco }}
               <ng-icon class="ms-1" name="bootstrapBoxArrowUpRight" />
             </a>
           </mat-card-content>

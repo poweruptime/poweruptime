@@ -22,7 +22,7 @@ import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} fro
           <hlm-skeleton class="h-12 w-64" />
         }
       } @else {
-        <h1 class="text-4xl">{{ 'cmdk.groups.notificationMethod.create' | transloco }}</h1>
+        <h1 class="text-4xl">{{ 'notificationMethod.edit.create' | transloco }}</h1>
       }
 
       @if (_notificationMethodId) {
