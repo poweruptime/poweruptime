@@ -439,11 +439,8 @@
       "useByDefault": "Use by default"
     },
     "list": {
-      "clone": "Clone the {{general.notificationMethod}}",
       "cloneSuccess": "Successfully cloned the {{general.notificationMethod}}.",
-      "delete": "Delete the {{general.notificationMethod}}",
       "deleteSuccess": "Successfully deleted the {{general.notificationMethod}}.",
-      "edit": "Edit the {{general.notificationMethod}}",
       "email": {
         "recipient": "Recipient: ",
         "via": " via "

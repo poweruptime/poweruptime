@@ -61,11 +61,6 @@ import {TableLoadingBar} from '../../table-loading-bar';
               </td>
             </ng-container>
 
-            <ng-container hlmColumnDef="actions">
-              <th *hlmHeaderCellDef hlm-header-cell></th>
-              <td *hlmCellDef="let element" hlm-cell></td>
-            </ng-container>
-
             <tr *hlmHeaderRowDef="teamInvitesStore.columnsToDisplay()" hlm-header-row></tr>
             <tr *hlmRowDef="let row; columns: teamInvitesStore.columnsToDisplay()" hlm-row></tr>
           </table>
@@ -95,10 +90,6 @@ import {TableLoadingBar} from '../../table-loading-bar';
 
     .hlm-column-inviter-name {
       @apply w-64;
-    }
-
-    .hlm-column-actions {
-      @apply w-16;
     }
   `,
   selector: 'pu-team-invite-table',

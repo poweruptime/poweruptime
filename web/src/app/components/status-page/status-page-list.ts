@@ -9,10 +9,10 @@ import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
-import {TableFilter, hasActiveFilters} from '@app/components/table-filter';
 import {IsTeamAdmin} from '@app/directives';
 import {SelectedTeamStore, StatusPagesStore} from '@app/services';
 
+import {TableFilter, hasActiveFilters} from '../table-filter';
 import {StatusPageTable} from './status-page-table';
 import {StatusPagesEmpty} from './status-pages-empty';
 

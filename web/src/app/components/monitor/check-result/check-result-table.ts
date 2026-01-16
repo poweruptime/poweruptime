@@ -127,10 +127,6 @@ import {trackBy} from '@app/util';
     .hlm-column-status {
       @apply w-32;
     }
-
-    .hlm-column-actions {
-      @apply w-24;
-    }
   `,
   selector: 'pu-check-result-table',
   changeDetection: ChangeDetectionStrategy.OnPush,

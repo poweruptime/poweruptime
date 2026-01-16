@@ -111,6 +111,16 @@ import {StatusPagesStore} from '@app/services';
         showFirstLastButtons />
     </div>
   `,
+  styles: `
+    @reference "#styles.css";
+
+    .hlm-column-name {
+      @apply w-52 text-nowrap;
+    }
+    .hlm-column-slug {
+      @apply w-16 text-nowrap;
+    }
+  `,
   selector: 'pu-status-page-table',
   imports: [
     RouterLink,

@@ -63,7 +63,7 @@ mat-mdc-text-field-wrapper {
 
 .mat-column-actions,
 .hlm-column-actions {
-  @apply whitespace-nowrap;
+  @apply w-10 whitespace-nowrap;
 }
 
 .mat-column-actions > *,

@@ -138,9 +138,6 @@ import {TableLoadingBar} from '../../table-loading-bar';
     .hlm-column-status {
       @apply w-32;
     }
-    .hlm-column-actions {
-      @apply w-24;
-    }
   `,
   selector: 'pu-notification-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
