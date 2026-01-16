@@ -106,55 +106,59 @@ class HasTemplateFeatureEnabled implements PipeTransform {
           </mat-slide-toggle>
         </div>
 
-        <section class="col-span-6" hlmCard>
-          <div hlmCardHeader>
-            <h3 hlmCardTitle>
+        <div class="col-span-6">
+          <section hlmCard>
+            <div hlmCardHeader>
+              <h3 hlmCardTitle>
+                @if (_typeValue !== '') {
+                  {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
+                }
+                {{ 'general.data' | transloco }}
+              </h3>
+            </div>
+            <div hlmCardContent>
               @if (_typeValue !== '') {
-                {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
-              }
-              {{ 'general.data' | transloco }}
-            </h3>
-          </div>
-          <div hlmCardContent>
-            @if (_typeValue !== '') {
-              @defer (when _typeValue === 'APPRISE') {
-                @if (_typeValue === 'APPRISE') {
-                  <pu-notification-method-edit-form-apprise-data />
+                @defer (when _typeValue === 'APPRISE') {
+                  @if (_typeValue === 'APPRISE') {
+                    <pu-notification-method-edit-form-apprise-data />
+                  }
                 }
-              }
 
-              @defer (when _typeValue === 'DISCORD') {
-                @if (_typeValue === 'DISCORD') {
-                  <pu-notification-method-edit-form-discord-data />
+                @defer (when _typeValue === 'DISCORD') {
+                  @if (_typeValue === 'DISCORD') {
+                    <pu-notification-method-edit-form-discord-data />
+                  }
                 }
-              }
 
-              @defer (when _typeValue === 'EMAIL') {
-                @if (_typeValue === 'EMAIL') {
-                  <pu-notification-method-edit-form-email-data />
+                @defer (when _typeValue === 'EMAIL') {
+                  @if (_typeValue === 'EMAIL') {
+                    <pu-notification-method-edit-form-email-data />
+                  }
                 }
-              }
 
-              @defer (when _typeValue === 'SLACK') {
-                @if (_typeValue === 'SLACK') {
-                  <pu-notification-method-edit-form-slack-data />
+                @defer (when _typeValue === 'SLACK') {
+                  @if (_typeValue === 'SLACK') {
+                    <pu-notification-method-edit-form-slack-data />
+                  }
                 }
+              } @else {
+                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
               }
-            } @else {
-              <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
-            }
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
 
-        <section class="col-span-6" hlmCard>
-          <div hlmCardContent>
-            <pu-monitor-selector
-              [(searchMonitor)]="searchMonitors"
-              [monitors]="allMonitors()"
-              [isPending]="isMonitorsSearchPending()"
-              formControlName="monitors" />
-          </div>
-        </section>
+        <div class="col-span-6">
+          <section hlmCard>
+            <div hlmCardContent>
+              <pu-monitor-selector
+                [(searchMonitor)]="searchMonitors"
+                [monitors]="allMonitors()"
+                [isPending]="isMonitorsSearchPending()"
+                formControlName="monitors" />
+            </div>
+          </section>
+        </div>
 
         <div class="col-span-6 flex gap-4">
           <pu-save-button [valid]="isValid()" />

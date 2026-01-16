@@ -10,7 +10,6 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
 import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
-import {StopPropagationDirective} from 'dfx-helper';
 
 import {TableLoadingBar} from '@app/components';
 import {SessionsStore} from '@app/services';
@@ -35,7 +34,7 @@ import {trackBy} from '@app/util';
         </div>
       </div>
 
-      <div class="flex flex-col gap-2" hlmCardContent>
+      <div class="grid gap-2" hlmCardContent>
         <div class="overflow-hidden">
           <div hlmTableContainer>
             <table
@@ -56,8 +55,7 @@ import {trackBy} from '@app/util';
                 <td *hlmCellDef="let row" hlm-cell>
                   <hlm-checkbox
                     [checked]="sessionsStore.isSelected(row)"
-                    (checkedChange)="sessionsStore.toggle(row)"
-                    stopPropagation />
+                    (checkedChange)="sessionsStore.toggle(row)" />
                 </td>
               </ng-container>
 
@@ -115,7 +113,6 @@ import {trackBy} from '@app/util';
     HlmSortImports,
     HlmPaginatorImports,
     HlmCheckbox,
-    StopPropagationDirective,
     HlmButtonImports,
     HlmIconImports,
     HlmCardImports,

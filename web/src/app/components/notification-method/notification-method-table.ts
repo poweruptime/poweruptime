@@ -116,7 +116,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                         {{ 'general.copy' | transloco }}
                       </button>
                       <button
-                        (click)="notificationMethodsStore.delete(element.slug)"
+                        (click)="notificationMethodsStore.delete(element.id)"
                         type="button"
                         hlmDropdownMenuItem>
                         <ng-icon hlm size="sm" name="bootstrapTrashFill" />

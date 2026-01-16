@@ -13,3 +13,4 @@ export * from './notification/notification-list';
 export * from './notification-method-selector';
 export * from './ping-chart';
 export * from './ping-chart-filter';
+export * from './recycle-bin-monitor-list';

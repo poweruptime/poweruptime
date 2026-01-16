@@ -2,9 +2,6 @@ import {computed, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort, SortDirection} from '@angular/material/sort';
-
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs';
 
 import {
@@ -19,7 +16,7 @@ import {
 import {EntityState} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {HlmPaginator} from '@spartan-ng/helm/paginator';
-import {HlmSort} from '@spartan-ng/helm/sort';
+import {HlmSort, SortDirection} from '@spartan-ng/helm/sort';
 import {loggerOf, n_from} from 'dfts-helper';
 
 import {RequestStatusState} from './request-status.feature';
@@ -75,28 +72,6 @@ export function withPaginatedTable<EntityType>({
         tap(({by, direction}) => patchState(store, () => ({sortBy: by, sortDirection: direction}))),
       ),
       setPageSize: rxMethod<number>(tap((size) => patchState(store, () => ({size})))),
-      setPaginator: rxMethod<MatPaginator>(
-        switchMap((paginator) =>
-          paginator.page.pipe(
-            tap(() => {
-              const options = {
-                page: paginator.pageIndex,
-                size: paginator.pageSize,
-              };
-              lumber.log('setPaginatorUpdate', 'new params', options);
-              patchState(store, () => options);
-              void router.navigate([], {
-                relativeTo: activatedRoute,
-                queryParamsHandling: 'merge',
-                queryParams: {
-                  [`${paramPrefix}page`]: options.page,
-                  [`${paramPrefix}size`]: options.size,
-                },
-              });
-            }),
-          ),
-        ),
-      ),
       setHlmPaginator: rxMethod<HlmPaginator>(
         switchMap((paginator) =>
           paginator.page$.pipe(
@@ -113,27 +88,6 @@ export function withPaginatedTable<EntityType>({
                 queryParams: {
                   [`${paramPrefix}page`]: options.page,
                   [`${paramPrefix}size`]: options.size,
-                },
-              });
-            }),
-          ),
-        ),
-      ),
-      setSort: rxMethod<MatSort>(
-        switchMap((sort) =>
-          sort.sortChange.pipe(
-            tap(() => {
-              const options = {
-                sortBy: sort.active,
-                sortDirection: sort.direction,
-              };
-              lumber.log('setSortUpdate', 'new params', options);
-              void router.navigate([], {
-                relativeTo: activatedRoute,
-                queryParamsHandling: 'merge',
-                queryParams: {
-                  [`${paramPrefix}sort`]: options.sortBy,
-                  [`${paramPrefix}direction`]: options.sortDirection,
                 },
               });
             }),

@@ -1,46 +1,59 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-
-import {MatTabLink, MatTabNav, MatTabNavPanel} from '@angular/material/tabs';
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTabsImports} from '@spartan-ng/helm/tabs';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
+
+import {RecycleBinMonitorList} from '@app/components/monitor';
+import {RecycleBinNotificationMethodPage} from '@app/components/notification-method';
+import {RecycleBinStatusPageList} from '@app/components/status-page';
 
 @Component({
   template: `
-    <nav [tabPanel]="tabPanel" mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start">
-      @for (route of routes; track route.path) {
-        <a
-          #rla="routerLinkActive"
-          [active]="rla.isActive"
-          [routerLink]="route.path"
-          routerLinkActive
-          mat-tab-link>
-          {{ route.text | transloco }}
-        </a>
-      }
-    </nav>
-    <mat-tab-nav-panel #tabPanel>
-      <div class="pt-2">
-        <router-outlet />
+    <hlm-tabs class="w-full" [tab]="tab()" (tabActivated)="tab.set($event)">
+      <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
+        <button class="gap-1.5" type="button" hlmTabsTrigger="monitors">
+          <ng-icon hlm name="lucideScreenShare" size="sm" />
+          {{ 'general.monitors' | transloco }}
+        </button>
+        <button class="gap-1.5" type="button" hlmTabsTrigger="notificationMethods">
+          <ng-icon hlm name="bootstrapBell" size="sm" />
+          {{ 'general.notificationMethods' | transloco }}
+        </button>
+        <button class="gap-1.5" type="button" hlmTabsTrigger="statusPages">
+          <ng-icon hlm name="bootstrapChatLeftQuote" size="sm" />
+          {{ 'general.statusPages' | transloco }}
+        </button>
+      </hlm-tabs-list>
+      @let _teamId = teamId();
+      <div hlmTabsContent="monitors">
+        <pu-recycle-bin-monitor-list [teamId]="_teamId" />
       </div>
-    </mat-tab-nav-panel>
+      <div hlmTabsContent="notificationMethods">
+        <pu-recycle-bin-notification-method-list [teamId]="_teamId" />
+      </div>
+      <div hlmTabsContent="statusPages">
+        <pu-recycle-bin-status-page-list [teamId]="_teamId" />
+      </div>
+    </hlm-tabs>
   `,
   selector: 'pu-recycle-bin-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatTabNav,
-    MatTabLink,
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    MatTabNavPanel,
+    RecycleBinMonitorList,
+    RecycleBinNotificationMethodPage,
+    RecycleBinStatusPageList,
     TranslocoPipe,
+    HlmIconImports,
+    HlmTabsImports,
   ],
 })
 export class RecycleBinLayout {
-  readonly routes = [
-    {path: 'monitor', text: 'general.monitors'},
-    {path: 'status-page', text: 'general.statusPages'},
-    {path: 'notification-method', text: 'general.notificationMethods'},
-  ];
+  readonly teamId = input.required<string>();
+
+  readonly tab = linkedQueryParam<string>('tab', {
+    defaultValue: 'monitors',
+    queryParamsHandling: 'replace',
+  });
 }
