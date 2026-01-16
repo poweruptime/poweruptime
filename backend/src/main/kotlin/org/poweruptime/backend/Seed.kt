@@ -305,8 +305,10 @@ class CheckResultSeedService {
             this[CheckResult.monitorId] = monitorId
             this[CheckResult.status] = MonitorStatus.UP
             this[CheckResult.timesRetried] = 0
-            this[CheckResult.previousStatus] = MonitorStatus.UP
-            this[CheckResult.pickedUpAt] = relative
+            this[CheckResult.previousStatus] = if (it == 0L) null else MonitorStatus.UP
+            this[CheckResult.createdAt] = relative
+            this[CheckResult.updatedAt] = relative
+            this[CheckResult.pickedUpAt] = relative.plusSeconds(2)
             this[CheckResult.checkedAt] = relative.plusSeconds(10)
             this[CheckResult.pingMs] = 69
             this[CheckResult.title] = "Test - OK"
