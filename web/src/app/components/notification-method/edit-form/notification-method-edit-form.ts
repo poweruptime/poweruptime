@@ -12,7 +12,6 @@ import {
 import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/divider';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -23,6 +22,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {typeOfArrayElement} from 'dfts-helper';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
@@ -65,7 +65,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
       (ngSubmit)="submit()">
       @let _typeValue = typeValue();
 
-      <div class="flex flex-col gap-8">
+      <div class="grid gap-8">
         <div class="grid grid-cols-12 gap-2">
           <mat-form-field class="col-span-8 md:col-span-6">
             <mat-label>{{ 'general.name' | transloco }}</mat-label>
@@ -106,17 +106,16 @@ class HasTemplateFeatureEnabled implements PipeTransform {
           </mat-slide-toggle>
         </div>
 
-        <mat-card class="col-span-6" appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>
+        <section class="col-span-6" hlmCard>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>
               @if (_typeValue !== '') {
                 {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
               }
               {{ 'general.data' | transloco }}
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-4"></div>
+            </h3>
+          </div>
+          <div hlmCardContent>
             @if (_typeValue !== '') {
               @defer (when _typeValue === 'APPRISE') {
                 @if (_typeValue === 'APPRISE') {
@@ -144,19 +143,18 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             } @else {
               <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
             }
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </section>
 
-        <mat-card class="col-span-6" appearance="outlined">
-          <mat-card-content>
-            <div class="h-4"></div>
+        <section class="col-span-6" hlmCard>
+          <div hlmCardContent>
             <pu-monitor-selector
               [(searchMonitor)]="searchMonitors"
               [monitors]="allMonitors()"
               [isPending]="isMonitorsSearchPending()"
               formControlName="monitors" />
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </section>
 
         <div class="col-span-6 flex gap-4">
           <pu-save-button [valid]="isValid()" />
@@ -175,57 +173,52 @@ class HasTemplateFeatureEnabled implements PipeTransform {
       </div>
 
       <div>
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title>
-              <h3 class="text-2xl">{{ 'general.template' | transloco }}</h3>
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="h-4"></div>
-            <div class="flex flex-col gap-10">
-              @if (_typeValue === '') {
-                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
-              }
-              @if (notificationMethodTemplateStore.isPending()) {
-                <hlm-skeleton class="h-48 w-full" />
-                <hlm-skeleton class="h-24 w-full" />
-                <hlm-skeleton class="h-48 w-full" />
-                <hlm-skeleton class="h-24 w-full" />
-              } @else {
-                @let _isCreating = isCreating();
-                @if (notificationMethodTemplateStore.template(); as template) {
-                  @if (template.features | hasTemplateFeatureEnabled: 'TITLE') {
-                    <pu-notification-method-edit-template
-                      [label]="'notificationMethod.edit.titleTemplate' | transloco"
-                      [showReset]="!_isCreating"
-                      [disableReset]="
-                        form.controls.titleTemplate.getRawValue() === template.titleTemplate
-                      "
-                      (resetClick)="form.patchValue({titleTemplate: template.titleTemplate})"
-                      formControlName="titleTemplate" />
-
-                    <mat-divider />
-                  }
-
-                  @let _html =
-                    template.bodyType === 'HTML' ||
-                    template.bodyType === 'MARKDOWN' ||
-                    template.bodyType === 'MRKDWN';
+        <section hlmCard>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>{{ 'general.template' | transloco }}</h3>
+          </div>
+          <div class="grid gap-10" hlmCardContent>
+            @if (_typeValue === '') {
+              <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
+            }
+            @if (notificationMethodTemplateStore.isPending()) {
+              <hlm-skeleton class="h-48 w-full" />
+              <hlm-skeleton class="h-24 w-full" />
+              <hlm-skeleton class="h-48 w-full" />
+              <hlm-skeleton class="h-24 w-full" />
+            } @else {
+              @let _isCreating = isCreating();
+              @if (notificationMethodTemplateStore.template(); as template) {
+                @if (template.features | hasTemplateFeatureEnabled: 'TITLE') {
                   <pu-notification-method-edit-template
-                    [html]="_html"
-                    [label]="'notificationMethod.edit.body' | transloco"
+                    [label]="'notificationMethod.edit.titleTemplate' | transloco"
                     [showReset]="!_isCreating"
                     [disableReset]="
-                      form.controls.bodyTemplate.getRawValue() === template.bodyTemplate
+                      form.controls.titleTemplate.getRawValue() === template.titleTemplate
                     "
-                    (resetClick)="form.patchValue({bodyTemplate: template.bodyTemplate})"
-                    formControlName="bodyTemplate" />
+                    (resetClick)="form.patchValue({titleTemplate: template.titleTemplate})"
+                    formControlName="titleTemplate" />
+
+                  <mat-divider />
                 }
+
+                @let _html =
+                  template.bodyType === 'HTML' ||
+                  template.bodyType === 'MARKDOWN' ||
+                  template.bodyType === 'MRKDWN';
+                <pu-notification-method-edit-template
+                  [html]="_html"
+                  [label]="'notificationMethod.edit.body' | transloco"
+                  [showReset]="!_isCreating"
+                  [disableReset]="
+                    form.controls.bodyTemplate.getRawValue() === template.bodyTemplate
+                  "
+                  (resetClick)="form.patchValue({bodyTemplate: template.bodyTemplate})"
+                  formControlName="bodyTemplate" />
               }
-            </div>
-          </mat-card-content>
-        </mat-card>
+            }
+          </div>
+        </section>
       </div>
     </form>
   `,
@@ -247,10 +240,6 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     NotificationMethodEditTemplate,
     MatDivider,
     MatError,
-    MatCard,
-    MatCardTitle,
-    MatCardHeader,
-    MatCardContent,
     NotificationSenderDataValueLabelPipe,
     NgxMatSelectSearchModule,
     NgIcon,
@@ -259,6 +248,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     NotificationMethodEditFormAppriseData,
     MonitorSelector,
     HasTemplateFeatureEnabled,
+    HlmCardImports,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<

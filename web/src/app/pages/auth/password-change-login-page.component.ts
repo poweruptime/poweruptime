@@ -48,6 +48,9 @@ import {AuthStore} from '@app/services';
             @if (emailErrors?.['email']) {
               <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
             }
+            @if (emailErrors?.['minlength']; as minlength) {
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            }
             @if (emailErrors?.['maxlength']; as maxlength) {
               <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
             }

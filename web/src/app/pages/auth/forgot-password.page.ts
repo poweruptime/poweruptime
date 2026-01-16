@@ -1,14 +1,13 @@
 import {ChangeDetectionStrategy, Component, effect, inject, input, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-import {DfxAutofocus} from 'dfx-helper';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
@@ -17,129 +16,136 @@ import {ForgotPasswordStore} from '@app/services';
 @Component({
   template: `
     @defer (on timer(50)) {
-      <mat-card class="w-full">
-        <mat-card-header>
-          <mat-card-title>
-            <strong>poweruptime</strong>
+      <section hlmCard>
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>
+            <span class="font-bold">poweruptime</span>
             | {{ 'auth.forgotPassword.title' | transloco }}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          @if (state() === 'REQUEST') {
-            <form
-              class="mt-6 grid gap-4"
-              [formGroup]="requestPasswordResetForm"
-              (ngSubmit)="submitRequest()">
-              <mat-form-field>
-                <mat-label>{{ 'general.emailAddress' | transloco }}</mat-label>
-                <input matInput formControlName="email" />
+          </h3>
+        </div>
+        @if (state() === 'REQUEST') {
+          <form
+            class="grid gap-4"
+            [formGroup]="requestPasswordResetForm"
+            (ngSubmit)="submitRequest()"
+            hlmCardContent>
+            <hlm-form-field>
+              <label hlmLabel for="email">
+                {{ 'general.emailAddress' | transloco }}
+              </label>
+              <div hlmInputGroup>
+                <input
+                  id="email"
+                  hlmInputGroupInput
+                  formControlName="email"
+                  type="email"
+                  placeholder="you@example.com" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideMail" />
+                </div>
+              </div>
+              @let emailErrors = requestPasswordResetForm.controls.email.errors;
+              @if (emailErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+              @if (emailErrors?.['email']) {
+                <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+              }
+              @if (emailErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+              @if (emailErrors?.['maxlength']; as maxlength) {
+                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              }
+            </hlm-form-field>
 
-                @let emailErrors = requestPasswordResetForm.controls.email.errors;
-                @if (emailErrors?.['required']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-                @if (emailErrors?.['email']) {
-                  <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                }
-                @if (emailErrors?.['minlength']; as minlength) {
-                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                }
-                @if (emailErrors?.['maxlength']; as maxlength) {
-                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-                }
-              </mat-form-field>
+            <button [disabled]="!isRequestPasswordResetFormValid()" hlmBtn type="submit">
+              <ng-icon hlm size="sm" name="lucideMailQuestionMark" />
+              {{ 'auth.requestPasswordReset' | transloco }}
+            </button>
+          </form>
+        } @else {
+          <form
+            class="grid gap-4"
+            [formGroup]="resetPasswordForm"
+            (ngSubmit)="submitReset()"
+            hlmCardContent>
+            <ng-container formGroupName="newPassword">
+              <hlm-form-field>
+                <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
-              <button [disabled]="!isRequestPasswordResetFormValid()" mat-flat-button type="submit">
-                <ng-icon class="mr-2" name="bootstrapBoxArrowInRight" />
-                {{ 'auth.requestPasswordReset' | transloco }}
-              </button>
-            </form>
-          } @else {
-            <form
-              class="mt-6 grid gap-4"
-              [formGroup]="resetPasswordForm"
-              (ngSubmit)="submitReset()">
-              <ng-container formGroupName="newPassword">
-                <mat-form-field>
-                  <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
-                  <input [type]="showButton.type()" matInput formControlName="newPassword" focus />
-
-                  <pu-password-show-button #showButton matSuffix />
-
-                  @if (
-                    resetPasswordForm.controls.newPassword.controls.newPassword.errors?.['required']
-                  ) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                  }
-                  @if (
-                    resetPasswordForm.controls.newPassword.controls.newPassword.errors?.[
-                      'minlength'
-                    ];
-                    as minlength
-                  ) {
-                    <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                  }
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
+                <div hlmInputGroup>
                   <input
-                    [type]="showConfirmButton.type()"
-                    matInput
-                    formControlName="confirmPassword" />
-
-                  <pu-password-show-button #showConfirmButton matSuffix />
-
-                  @if (
-                    resetPasswordForm.controls.newPassword.controls.confirmPassword.errors?.[
-                      'required'
-                    ]
-                  ) {
-                    <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-                  }
-                  @if (
-                    resetPasswordForm.controls.newPassword.controls.confirmPassword.errors?.[
-                      'minlength'
-                    ];
-                    as minlength
-                  ) {
-                    <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-                  }
-                </mat-form-field>
-
-                @if (resetPasswordForm.controls.newPassword.errors?.['mismatch']) {
-                  <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
+                    id="newPassword"
+                    [type]="showButton.type()"
+                    [placeholder]="showButton.placeholder()"
+                    hlmInputGroupInput
+                    formControlName="newPassword" />
+                  <pu-password-show-button #showButton hlmInputGroupAddon align="inline-end" />
+                </div>
+                @let newPasswordErrors =
+                  resetPasswordForm.controls.newPassword.controls.newPassword.errors;
+                @if (newPasswordErrors?.['required']) {
+                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
                 }
-              </ng-container>
+                @if (newPasswordErrors?.['minlength']; as minlength) {
+                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                }
+              </hlm-form-field>
 
-              <button [disabled]="!isResetPasswordFormValid()" mat-flat-button type="submit">
-                <ng-icon class="mr-2" name="bootstrapBoxArrowInRight" />
-                {{ 'auth.resetPassword' | transloco }}
-              </button>
-            </form>
-          }
-        </mat-card-content>
-      </mat-card>
+              <hlm-form-field>
+                <label hlmLabel for="newPasswordConfirm">
+                  {{ 'auth.newPasswordConfirm' | transloco }}
+                </label>
+
+                <div hlmInputGroup>
+                  <input
+                    id="newPasswordConfirm"
+                    [type]="showConfirmButton.type()"
+                    [placeholder]="showConfirmButton.placeholder()"
+                    hlmInputGroupInput
+                    formControlName="confirmPassword" />
+                  <pu-password-show-button
+                    #showConfirmButton
+                    hlmInputGroupAddon
+                    align="inline-end" />
+                </div>
+                @let confirmPasswordErrors =
+                  resetPasswordForm.controls.newPassword.controls.confirmPassword.errors;
+                @if (confirmPasswordErrors?.['required']) {
+                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                }
+                @if (confirmPasswordErrors?.['minlength']; as minlength) {
+                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                }
+              </hlm-form-field>
+
+              @if (resetPasswordForm.controls.newPassword.errors?.['mismatch']) {
+                <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
+              }
+            </ng-container>
+
+            <button [disabled]="!isResetPasswordFormValid()" hlmBtn type="submit">
+              <ng-icon hlm size="sm" name="lucideRotateCcwKey" />
+              {{ 'auth.resetPassword' | transloco }}
+            </button>
+          </form>
+        }
+      </section>
     }
   `,
   selector: 'pu-forgot-password-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    NgIcon,
-    MatLabel,
-    MatFormField,
-    MatInput,
-    MatError,
-    MatSuffix,
-    MatButton,
-    MatCard,
-    MatCardHeader,
-    MatCardContent,
-    MatCardTitle,
     TranslocoPipe,
-    DfxAutofocus,
     PasswordShowButton,
+    HlmCardImports,
+    HlmFormFieldImports,
+    HlmInputGroupImports,
+    HlmLabelImports,
+    HlmButtonImports,
+    HlmIconImports,
   ],
 })
 export class ForgotPasswordPage {

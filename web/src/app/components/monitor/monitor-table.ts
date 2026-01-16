@@ -12,14 +12,10 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
-import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
-import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {MonitorStatusTextBackground} from '@app/directives';
@@ -90,25 +86,6 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
               </td>
             </ng-container>
 
-            <ng-container hlmColumnDef="actions">
-              <th *hlmHeaderCellDef hlm-header-cell></th>
-              <td *hlmCellDef="let element" hlm-cell>
-                <hlm-tooltip>
-                  <a
-                    [routerLink]="
-                      teamId() ? '/t/' + element.team.id + '/m/' + element.id : element.id
-                    "
-                    hlmBtn
-                    variant="ghost"
-                    size="icon-sm"
-                    stopPropagation>
-                    <ng-icon hlm size="sm" name="bootstrapArrowRight" />
-                  </a>
-                  <span *brnTooltipConten>{{ 'checkResult.list.action.view' | transloco }}</span>
-                </hlm-tooltip>
-              </td>
-            </ng-container>
-
             <tr *hlmHeaderRowDef="monitorsStore.columnsToDisplay()" hlm-header-row></tr>
 
             <tr
@@ -153,10 +130,6 @@ import {InfiniteUptimeTimeline} from './uptime-timeline';
     HlmTableContainer,
     HlmDataTableImports,
     HlmPaginatorImports,
-    HlmButtonImports,
-    HlmIconImports,
-    HlmTooltipImports,
-    BrnTooltipContentTemplate,
   ],
 })
 export class MonitorTable {
@@ -172,7 +145,7 @@ export class MonitorTable {
 
     const setColumnsToDisplay = rxMethod<boolean>(
       map((includeTeamColumn) => {
-        let it = ['name', 'status', 'checkResults', 'actions'];
+        let it = ['name', 'status', 'checkResults'];
 
         if (includeTeamColumn) {
           it = ['team.name', ...it];

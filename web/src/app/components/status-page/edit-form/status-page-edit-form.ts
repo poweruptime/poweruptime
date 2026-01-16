@@ -17,7 +17,6 @@ import {
 } from '@angular/forms';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
 import {
   MatChipGrid,
   MatChipInput,
@@ -42,6 +41,7 @@ import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 
 import {BackendType, Database, injectAPI} from '@app/api';
 import {AlertDirective, FileUpload} from '@app/components';
@@ -216,54 +216,52 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             track index;
             let index = $index
           ) {
-            <mat-card [formGroup]="statusPageGroupControl" cdkDrag appearance="outlined">
+            <section [formGroup]="statusPageGroupControl" hlmCard cdkDrag>
               <div class="group-drag-placeholder" *cdkDragPlaceholder></div>
-              <mat-card-content>
-                <div class="flex flex-col gap-4">
-                  <div class="flex items-center justify-between text-xl">
-                    <div class="inline-flex items-center gap-2">
-                      <div class="min-w-6 hover:cursor-move" cdkDragHandle>
-                        <ng-icon name="bootstrapGripVertical" size="20" />
-                      </div>
-
-                      <mat-form-field subscriptSizing="dynamic">
-                        <mat-label>{{ 'general.name' | transloco }}</mat-label>
-                        <input matInput formControlName="name" />
-
-                        @let groupNameErrors = statusPageGroupControl.controls.name.errors;
-                        @if (groupNameErrors?.['maxlength']; as maxlength) {
-                          <mat-error>
-                            {{ 'form.validation.maxlength' | transloco: maxlength }}
-                          </mat-error>
-                        }
-                      </mat-form-field>
+              <div class="flex flex-col gap-4" hlmCardContent>
+                <div class="flex items-center justify-between text-xl">
+                  <div class="inline-flex items-center gap-2">
+                    <div class="min-w-6 hover:cursor-move" cdkDragHandle>
+                      <ng-icon name="bootstrapGripVertical" size="20" />
                     </div>
 
-                    <button
-                      [disabled]="form.disabled"
-                      (click)="form.controls.groups.removeAt(index)"
-                      type="button"
-                      mat-icon-button>
-                      <ng-icon name="bootstrapTrashFill" />
-                    </button>
+                    <mat-form-field subscriptSizing="dynamic">
+                      <mat-label>{{ 'general.name' | transloco }}</mat-label>
+                      <input matInput formControlName="name" />
+
+                      @let groupNameErrors = statusPageGroupControl.controls.name.errors;
+                      @if (groupNameErrors?.['maxlength']; as maxlength) {
+                        <mat-error>
+                          {{ 'form.validation.maxlength' | transloco: maxlength }}
+                        </mat-error>
+                      }
+                    </mat-form-field>
                   </div>
 
-                  <pu-editor
-                    [placeholder]="('general.description' | transloco) + '...'"
-                    formControlName="description" />
-
-                  <pu-status-page-edit-form-group-monitors
-                    [(allSelectedMonitors)]="allSelectedMonitors"
-                    [(monitorSearch)]="monitorSearch"
-                    [monitorSearchPending]="monitorsSearchStore.isPending()"
-                    [searchableMonitors]="monitorsSearchStore.entities()"
-                    [index]="index"
-                    [length]="form.controls.groups.controls.length"
-                    [style.display]="isCollapsed ? 'none' : 'block'"
-                    formControlName="monitorIds" />
+                  <button
+                    [disabled]="form.disabled"
+                    (click)="form.controls.groups.removeAt(index)"
+                    type="button"
+                    mat-icon-button>
+                    <ng-icon name="bootstrapTrashFill" />
+                  </button>
                 </div>
-              </mat-card-content>
-            </mat-card>
+
+                <pu-editor
+                  [placeholder]="('general.description' | transloco) + '...'"
+                  formControlName="description" />
+
+                <pu-status-page-edit-form-group-monitors
+                  [(allSelectedMonitors)]="allSelectedMonitors"
+                  [(monitorSearch)]="monitorSearch"
+                  [monitorSearchPending]="monitorsSearchStore.isPending()"
+                  [searchableMonitors]="monitorsSearchStore.entities()"
+                  [index]="index"
+                  [length]="form.controls.groups.controls.length"
+                  [style.display]="isCollapsed ? 'none' : 'block'"
+                  formControlName="monitorIds" />
+              </div>
+            </section>
           }
         </div>
       </div>
@@ -297,8 +295,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     MatError,
     MatButton,
     MatIconButton,
-    MatCard,
-    MatCardContent,
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
@@ -314,6 +310,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     MatChipRow,
     MatChipInput,
     MatChipRemove,
+    HlmCardImports,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

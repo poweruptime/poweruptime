@@ -18,7 +18,6 @@ import {
 } from '@angular/forms';
 
 import {MatIconButton} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
@@ -35,6 +34,7 @@ import {
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType} from '@app/api';
@@ -82,7 +82,7 @@ interface DragEventType {
       @let _allMonitors = mappedByIdMonitors();
       @let _monitorIdsWithWriteableSignal = monitorIdsWithWriteableSignal();
       <div
-        class="drag-list flex min-h-20 flex-col justify-center gap-2 rounded-lg border border-1 border-dashed border-gray-500"
+        class="drag-list flex min-h-20 flex-col justify-center gap-2 rounded-xl border border-1 border-dashed border-gray-500"
         [id]="'list-spgm-' + index()"
         [cdkDropListData]="_monitorIdsWithWriteableSignal"
         [cdkDropListEnterPredicate]="alreadyInListPredicate()"
@@ -96,29 +96,28 @@ interface DragEventType {
           @let monitor = _allMonitors.get(monitorIdWithWritableSignal.monitorId);
 
           @if (monitor; as monitor) {
-            <mat-card
+            <section
               [cdkDragData]="monitorIdWithWritableSignal"
               [cdkDragDisabled]="_isDisabled"
+              hlmCard
               cdkDrag>
               <div class="monitor-drag-placeholder" *cdkDragPlaceholder></div>
-              <mat-card-content>
-                <div class="flex items-center justify-between text-xl">
-                  <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
-                    <ng-icon name="bootstrapGripVertical" size="20" />
-                    <h3>{{ monitor.name }}</h3>
-                  </div>
-                  <div>
-                    <button
-                      [disabled]="_isDisabled"
-                      (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
-                      type="button"
-                      mat-icon-button>
-                      <ng-icon name="bootstrapTrashFill" />
-                    </button>
-                  </div>
+              <div class="flex items-center justify-between text-xl" hlmCardContent>
+                <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
+                  <ng-icon name="bootstrapGripVertical" size="20" />
+                  <h3>{{ monitor.name }}</h3>
                 </div>
-              </mat-card-content>
-            </mat-card>
+                <div>
+                  <button
+                    [disabled]="_isDisabled"
+                    (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
+                    type="button"
+                    mat-icon-button>
+                    <ng-icon name="bootstrapTrashFill" />
+                  </button>
+                </div>
+              </div>
+            </section>
           } @else {
             <div>NEVER EVER ERROR</div>
           }
@@ -140,7 +139,7 @@ interface DragEventType {
     }
 
     .monitor-drag-placeholder {
-      @apply animate-pulse rounded-2xl bg-slate-400 dark:bg-gray-700;
+      @apply animate-pulse rounded-xl bg-slate-400 dark:bg-gray-700;
       min-height: 4.5rem;
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
@@ -161,8 +160,6 @@ interface DragEventType {
     CdkDrag,
     CdkDragHandle,
     MatIconButton,
-    MatCard,
-    MatCardContent,
     MatFormField,
     MatSelect,
     MatLabel,
@@ -172,6 +169,7 @@ interface DragEventType {
     MatProgressBar,
     CdkDragPlaceholder,
     TranslocoPipe,
+    HlmCardImports,
   ],
 })
 export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {

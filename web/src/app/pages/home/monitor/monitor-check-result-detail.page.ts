@@ -3,13 +3,14 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import {MatButton} from '@angular/material/button';
-import {MatCard, MatCardContent} from '@angular/material/card';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {format} from '@std/fmt/duration';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 import {RepeatPipe} from 'ngxtension/repeat-pipe';
@@ -20,7 +21,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 
 @Component({
   template: `
-    <div class="flex flex-col gap-4">
+    <div class="grid gap-14">
       @if (checkResultDetailStore.isPending()) {
         <div class="flex animate-pulse flex-col gap-4">
           <hlm-skeleton class="h-10 w-32" />
@@ -29,21 +30,21 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
         </div>
       } @else {
         @if (checkResultDetailStore.checkResult(); as checkResult) {
-          <div>
-            <a mat-stroked-button routerLink="../../../" queryParamsHandling="merge">
-              <ng-icon class="me-1" name="bootstrapArrowLeft" />
-              <span>{{ checkResult.monitor.name }}</span>
-            </a>
-          </div>
-          <div class="flex flex-wrap gap-2 text-2xl">
-            <pu-monitor-status [status]="checkResult.status" />
-            <h1>{{ checkResult.title }}</h1>
-            <span class="text-gray-400">#{{ checkResult.id }}</span>
-          </div>
+          <div class="grid gap-6">
+            <div>
+              <button (click)="history.back()" hlmBtn type="button">
+                <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
+                <span>{{ 'notFound.back' | transloco }}</span>
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-2 text-2xl">
+              <pu-monitor-status [status]="checkResult.status" />
+              <h1>{{ checkResult.title }}</h1>
+              <span class="text-gray-400">#{{ checkResult.id }}</span>
+            </div>
 
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <div class="flex gap-10 px-2">
+            <section hlmCard>
+              <div class="flex gap-10" hlmCardContent>
                 @if (checkResult.pingMs; as pingMs) {
                   <div class="flex flex-col gap-2">
                     <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>
@@ -68,18 +69,16 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                   </span>
                 </div>
               </div>
-            </mat-card-content>
-          </mat-card>
+            </section>
+          </div>
 
           @if (checkResult.message; as message) {
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <div class="flex items-start justify-between gap-2">
-                  <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
-                  <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
-                </div>
-              </mat-card-content>
-            </mat-card>
+            <section hlmCard>
+              <div class="flex items-start justify-between gap-2" hlmCardContent>
+                <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
+                <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
+              </div>
+            </section>
           }
         }
       }
@@ -92,61 +91,64 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
         </div>
       } @else {
         @if (checkResultLogEntriesStore.entities().length === 0) {
-          <mat-card>
-            <mat-card-content>
-              <div class="flex flex-col items-center gap-2">
-                <ng-icon size="24" name="bootstrapCalendarX" />
-                <code>{{ 'checkResult.details.expired' | transloco }}</code>
-              </div>
-            </mat-card-content>
-          </mat-card>
+          <section hlmCard>
+            <div class="flex flex-col items-center gap-2" hlmCardContent>
+              <ng-icon size="24" name="bootstrapCalendarX" />
+              <code>{{ 'checkResult.details.expired' | transloco }}</code>
+            </div>
+          </section>
         } @else {
           <div class="mt-4 flex flex-col gap-4 space-y-1">
             <div class="flex items-center justify-between">
               <h2 class="ps-2 text-xl">{{ 'general.logs' | transloco }}</h2>
-              <mat-slide-toggle [(ngModel)]="showTimestamps">
+
+              <label class="inline-flex items-center" hlmLabel for="showTimestamps">
                 {{ 'checkResult.details.showTimestamps' | transloco }}
-              </mat-slide-toggle>
+                <hlm-switch class="mr-2" id="showTimestamps" [(checked)]="showTimestamps" />
+              </label>
             </div>
 
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">{{ 'general.setup' | transloco }}</h3>
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>{{ 'general.setup' | transloco }}</h3>
+              </div>
+              <div hlmCardContent>
                 @for (logEntry of checkResultLogEntriesStore.setup(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
                     [showTimestamps]="showTimestamps()" />
                 }
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">{{ 'checkResult.details.check' | transloco }}</h3>
+              </div>
+            </section>
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>{{ 'checkResult.details.check' | transloco }}</h3>
+              </div>
+              <div hlmCardContent>
                 @for (logEntry of checkResultLogEntriesStore.check(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
                     [showTimestamps]="showTimestamps()" />
                 }
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">
-                  {{ 'checkResult.details.statusUpdate' | transloco }}
-                </h3>
+              </div>
+            </section>
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>{{ 'checkResult.details.statusUpdate' | transloco }}</h3>
+              </div>
+              <div hlmCardContent>
                 @for (logEntry of checkResultLogEntriesStore.statusUpdate(); track logEntry.id) {
                   <pu-check-result-log-entry
                     [logEntry]="logEntry"
                     [showTimestamps]="showTimestamps()" />
                 }
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card appearance="outlined">
-              <mat-card-content>
-                <h3 class="mb-2 ps-2 text-lg">{{ 'general.notifications' | transloco }}</h3>
+              </div>
+            </section>
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>{{ 'general.notifications' | transloco }}</h3>
+              </div>
+              <div hlmCardContent>
                 @for (logEntry of checkResultLogEntriesStore.notifications(); track logEntry.id) {
                   @if (logEntry.properties?.['notificationId']; as notificationId) {
                     <a [routerLink]="'../../../n/' + notificationId">
@@ -175,20 +177,20 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                     item of checkResultLogEntriesStore.notificationsGrouped() | keyvalue;
                     track item.key
                   ) {
-                    <mat-card appearance="outlined">
-                      <mat-card-content>
+                    <section hlmCard>
+                      <div hlmCardContent>
                         @for (logEntry of item.value; track logEntry.id) {
                           <pu-check-result-log-entry
                             [logEntry]="logEntry"
                             [showTimestamps]="showTimestamps()"
                             disableStartTimestamp />
                         }
-                      </mat-card-content>
-                    </mat-card>
+                      </div>
+                    </section>
                   }
                 </div>
-              </mat-card-content>
-            </mat-card>
+              </div>
+            </section>
           </div>
         }
       }
@@ -199,22 +201,25 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
   imports: [
     NgIcon,
     RouterLink,
-    MatCard,
-    MatCardContent,
-    MatSlideToggle,
     FormsModule,
     CheckResultLogEntry,
     KeyValuePipe,
-    HlmSkeletonImports,
     CopyIconButton,
     RepeatPipe,
     TranslocoPipe,
     DatePipe,
     MonitorStatus,
-    MatButton,
+    HlmSkeletonImports,
+    HlmCardImports,
+    HlmButtonImports,
+    HlmIconImports,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
 })
 export class MonitorCheckResultDetailPage {
+  protected readonly history = history;
+
   readonly checkResultDetailStore = inject(CheckResultDetailStore);
   readonly checkResultLogEntriesStore = inject(CheckResultLogEntriesStore);
 
