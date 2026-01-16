@@ -3,15 +3,20 @@ package org.poweruptime.backend.features.statusPage.dto
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorJoinMonitorRecord
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
 
 data class PublicStatusPageGroupResponse(
     val id: String,
     val name: String?,
-    val description: String?
+    val description: String?,
+    val monitors: List<PublicMonitorMinResponse> ,
 ) {
-    constructor(it: StatusPageGroupRecord) : this(it.publicId, it.name, it.description)
+    constructor(
+        it: StatusPageGroupRecord,
+        monitors: List<PublicMonitorMinResponse>
+    ) : this(it.publicId, it.name, it.description, monitors)
 }
 
 data class StatusPageGroupResponse(

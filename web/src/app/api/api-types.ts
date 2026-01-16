@@ -961,23 +961,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/public/status-page/{slug}/monitor': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get all monitors */
-    get: operations['getAllByStatusPage'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/public/status-page/byDomain/{domain}': {
     parameters: {
       query?: never;
@@ -2390,26 +2373,6 @@ export interface components {
       bodyHTML?: string;
       appriseDto?: components['schemas']['AppriseNotificationRequest'];
     };
-    PublicStatusPageGroupResponse: {
-      id: string;
-      name?: string;
-      description?: string;
-    };
-    PublicStatusPageResponse: {
-      slug: string;
-      name: string;
-      description?: string;
-      footer?: string;
-      image?: components['schemas']['FileResponse'];
-      groups: components['schemas']['PublicStatusPageGroupResponse'][];
-    };
-    PaginatedResponsePublicMonitorMinResponse: {
-      /** Format: int64 */
-      numberOfItems: number;
-      /** Format: int32 */
-      numberOfPages: number;
-      data: components['schemas']['PublicMonitorMinResponse'][];
-    };
     PublicMonitorMinResponse: {
       name: string;
       id: string;
@@ -2419,6 +2382,20 @@ export interface components {
       status: 'UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED';
       oneDayUptime?: string;
       lastCheckResults: components['schemas']['CheckResultMinResponse'][];
+    };
+    PublicStatusPageGroupResponse: {
+      id: string;
+      name?: string;
+      description?: string;
+      monitors: components['schemas']['PublicMonitorMinResponse'][];
+    };
+    PublicStatusPageResponse: {
+      slug: string;
+      name: string;
+      description?: string;
+      footer?: string;
+      image?: components['schemas']['FileResponse'];
+      groups: components['schemas']['PublicStatusPageGroupResponse'][];
     };
     PublicMonitorResponse: {
       name: string;
@@ -3224,7 +3201,6 @@ export interface operations {
         statuses?: ('UP' | 'DOWN' | 'PENDING' | 'MAINTENANCE' | 'PAUSED')[];
         types?: ('DNS' | 'HTTP' | 'PING' | 'PUSH' | 'SSL_CERTIFICATE')[];
         tags?: string[];
-        usedInStatusPageGroupIds?: string[];
         deleted?: boolean;
       };
       header?: never;
@@ -4285,42 +4261,6 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PublicStatusPageResponse'];
-        };
-      };
-    };
-  };
-  getAllByStatusPage: {
-    parameters: {
-      query?: {
-        /**
-         * @description Zero-based page index (0..N)
-         * @example 0
-         */
-        page?: number;
-        /**
-         * @description The size of the page to be returned
-         * @example 10
-         */
-        size?: number;
-        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: components['schemas']['sort'];
-        usedInStatusPageGroupIds?: string[];
-      };
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['PaginatedResponsePublicMonitorMinResponse'];
         };
       };
     };

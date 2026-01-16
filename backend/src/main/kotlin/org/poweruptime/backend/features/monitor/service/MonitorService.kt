@@ -82,25 +82,21 @@ class MonitorService(
         pageable: Pageable,
         teamId: ULong? = null,
         userId: ULong? = null,
-        statusPageSlug: String? = null,
         name: String? = null,
         enabledNotificationMethodIds: List<ULong>? = null,
         statuses: List<MonitorStatus>? = null,
         types: List<MonitorType>? = null,
         tags: List<String>? = null,
-        usedInStatusPageGroupIds: List<ULong>? = null,
         deleted: Boolean = false
     ): Page<MonitorRecordJoinTeamRecord> = Monitor.findAll(
         pageable = pageable,
         teamId = teamId,
         userId = userId,
-        statusPageSlug = statusPageSlug,
         name = name,
         enabledNotificationMethodIds = enabledNotificationMethodIds,
         statuses = statuses,
         types = types,
         tags = tags,
-        usedInStatusPageGroupIds = usedInStatusPageGroupIds,
         deleted = deleted,
     )
 

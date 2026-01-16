@@ -1,7 +1,9 @@
+import {computed} from '@angular/core';
+
 import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -16,6 +18,12 @@ export const PublicStatusPageStore = signalStore(
   }>({
     statusPage: undefined,
   }),
+  withComputed(({statusPage}) => ({
+    status: computed(() => {
+      const _entities = statusPage()?.groups?.flatMap((it) => it.monitors) ?? [];
+      return _entities.some((it) => it.status === 'DOWN') ? ('DOWN' as const) : ('UP' as const);
+    }),
+  })),
   withMethods((store, api = injectAPI()) => ({
     loadBySlug: rxMethod<{
       slug?: string;

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {MatTooltip} from '@angular/material/tooltip';
@@ -6,14 +6,14 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 
+import {BackendType} from '@app/api';
 import {UptimeTimeline} from '@app/components/monitor';
 import {MonitorStatusTextBackground} from '@app/directives';
-import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
 
 @Component({
   template: `
     <div class="flex flex-col gap-4">
-      @for (monitor of publicStatusPageMonitorsStore.entities(); track monitor.id) {
+      @for (monitor of monitors(); track monitor.id) {
         <div class="flex flex-col justify-between gap-y-2 lg:flex-row lg:items-center">
           <div class="inline-flex items-center gap-4">
             <strong
@@ -57,7 +57,6 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   `,
   selector: 'pu-status-page-monitor-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [PublicStatusPageMonitorsStore],
   imports: [
     NgIcon,
     RouterLink,
@@ -68,18 +67,5 @@ import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-st
   ],
 })
 export class StatusPageMonitorList {
-  readonly slug = input.required<string>();
-  readonly statusPageGroupIds = input<string[]>();
-
-  readonly publicStatusPageMonitorsStore = inject(PublicStatusPageMonitorsStore);
-
-  constructor() {
-    this.publicStatusPageMonitorsStore.load(
-      computed(() => ({
-        ...this.publicStatusPageMonitorsStore.pageable(),
-        slug: this.slug(),
-        usedInStatusPageGroupIds: this.statusPageGroupIds(),
-      })),
-    );
-  }
+  readonly monitors = input.required<BackendType['PublicMonitorMinResponse'][]>();
 }

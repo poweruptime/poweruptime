@@ -12,7 +12,6 @@ import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.domain.PermissionsService
 import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
 import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
@@ -29,7 +28,6 @@ import org.poweruptime.backend.features.monitor.service.MonitorDataService
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.monitor.service.myFormat
 import org.poweruptime.backend.features.notification.service.NotificationMethodService
-import org.poweruptime.backend.features.statusPage.service.StatusPageGroupService
 import org.poweruptime.backend.features.tag.TagService
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.service.TeamService
@@ -51,7 +49,6 @@ class MonitorController(
     private val monitorDataService: MonitorDataService,
     private val notificationMethodService: NotificationMethodService,
     private val tagService: TagService,
-    private val statusPageGroupService: StatusPageGroupService,
     private val checkResultStatisticsService: CheckResultStatisticsService,
     private val permissionsService: PermissionsService,
 ) {
@@ -86,7 +83,6 @@ class MonitorController(
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
         @RequestParam("types") types: List<MonitorType>?,
         @RequestParam("tags") tags: List<String>?,
-        @RequestParam("usedInStatusPageGroupIds") publicUsedInStatusPageGroupIds: Set<String>?,
         @RequestParam("deleted") deleted: Boolean = false
     ): PaginatedResponse<MonitorResponse> {
         publicTeamId?.let {
@@ -113,21 +109,6 @@ class MonitorController(
                         ).ensureAllInTeam(teamId) { it.teamId }.map { it.id }
                     } else {
                         permissionsService.isPartOfByNotificationMethodIds(auth.publicUserId(), publicIds)
-                    }
-                }
-            },
-            usedInStatusPageGroupIds = publicUsedInStatusPageGroupIds?.toList()?.let { publicIds ->
-                statusPageGroupService.getIdsByPublicIds(publicIds).also { statusPageGroupIds ->
-                    if (teamId != null) {
-                        if (!statusPageGroupService.ensureAllStatusGroupsInTeam(
-                                statusPageGroupIds = statusPageGroupIds,
-                                teamId = teamId,
-                            )
-                        ) {
-                            throw ForbiddenException("Can only check for status page groups in same team")
-                        }
-                    } else {
-                        permissionsService.isPartOfByStatusPageGroupIds(auth.publicUserId(), publicIds)
                     }
                 }
             },

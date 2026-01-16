@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.fileUpload.FileResponse
+import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
 import org.poweruptime.backend.features.statusPage.model.StatusPageDomainNameRecord
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitorJoinMonitorRecord
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
@@ -21,13 +22,16 @@ data class PublicStatusPageResponse(
     val image: FileResponse?,
     val groups: List<PublicStatusPageGroupResponse>
 ) {
-    constructor(statusPage: StatusPageRecord, groups: List<StatusPageGroupRecord>) : this(
+    constructor(
+        statusPage: StatusPageRecord,
+        groups: List<Pair<StatusPageGroupRecord, List<PublicMonitorMinResponse>>>
+    ) : this(
         slug = statusPage.publicId,
         name = statusPage.name,
         description = statusPage.description,
         footer = statusPage.footer,
         image = statusPage.image?.let { FileResponse(it) },
-        groups = groups.map { group -> PublicStatusPageGroupResponse(group) },
+        groups = groups.map { PublicStatusPageGroupResponse(it.first, it.second) },
     )
 }
 

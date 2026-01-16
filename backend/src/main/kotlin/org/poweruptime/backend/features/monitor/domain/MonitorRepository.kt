@@ -25,8 +25,6 @@ import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.MonitorType
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
 import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
-import org.poweruptime.backend.features.statusPage.model.StatusPage
-import org.poweruptime.backend.features.statusPage.model.StatusPageGroupMonitor
 import org.poweruptime.backend.features.tag.MonitorTag
 import org.poweruptime.backend.features.tag.Tag
 import org.poweruptime.backend.features.team.model.Team
@@ -77,17 +75,15 @@ fun Monitor.findAll(
     pageable: Pageable,
     teamId: ULong? = null,
     userId: ULong? = null,
-    statusPageSlug: String? = null,
     name: String? = null,
     enabledNotificationMethodIds: List<ULong>? = null,
     statuses: List<MonitorStatus>? = null,
     types: List<MonitorType>? = null,
     tags: List<String>? = null,
-    usedInStatusPageGroupIds: List<ULong>? = null,
     deleted: Boolean = false
 ): Page<MonitorRecordJoinTeamRecord> {
-    require(teamId != null || userId != null || statusPageSlug != null) {
-        "teamId, userId or slug needs to be provided"
+    require(teamId != null || userId != null) {
+        "teamId, or userId needs to be provided"
     }
 
     var selectColumns = columns + Team.columns
@@ -108,32 +104,6 @@ fun Monitor.findAll(
             select(selectColumns)
         }.andWhere {
             TeamUser.userId eq it
-        }
-    }
-
-    if (statusPageSlug != null || usedInStatusPageGroupIds?.takeIf { it.isNotEmpty() } != null) {
-        query.adjustColumnSet {
-            innerJoin(StatusPageGroupMonitor)
-        }
-    }
-
-    statusPageSlug?.let {
-        query.adjustColumnSet {
-            innerJoin(StatusPage)
-        }.adjustSelect {
-            selectColumns = selectColumns + StatusPage.publicId
-            select(selectColumns)
-        }.andWhere {
-            StatusPage.publicId eq it
-        }
-    }
-
-    usedInStatusPageGroupIds?.takeIf { it.isNotEmpty() }?.let {
-        query.adjustSelect {
-            selectColumns = selectColumns + StatusPageGroupMonitor.groupId
-            select(selectColumns)
-        }.andWhere {
-            StatusPageGroupMonitor.groupId inList it
         }
     }
 
@@ -198,7 +168,6 @@ fun Monitor.findAll(
                 "retries" -> Monitor.retries
                 "deleted" -> Monitor.deleted
                 "createdAt" -> Monitor.createdAt
-                "groupMonitors.position" -> StatusPageGroupMonitor.position
                 "team.name" -> Team.name
                 else -> null
             }

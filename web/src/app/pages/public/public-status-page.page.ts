@@ -21,9 +21,7 @@ import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusColor} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
-import {PublicStatusPageMonitorsStore} from '@app/services/status-page/public-status-page-monitors.store';
-
-import {BACKEND_API_URL} from '../../util';
+import {BACKEND_API_URL} from '@app/util';
 
 @Component({
   template: `
@@ -45,7 +43,7 @@ import {BACKEND_API_URL} from '../../util';
           <mat-card appearance="outlined">
             <mat-card-content>
               <div class="inline-flex items-center gap-2">
-                @if (publicStatusPageMonitorsStore.status() === 'UP') {
+                @if (publicStatusPageStore.status() === 'UP') {
                   <ng-icon
                     [monitor-status-color]="'UP'"
                     size="24"
@@ -77,9 +75,7 @@ import {BACKEND_API_URL} from '../../util';
 
                 <mat-card appearance="outlined">
                   <mat-card-content>
-                    <pu-status-page-monitor-list
-                      [slug]="statusPage.slug"
-                      [statusPageGroupIds]="[group.id]" />
+                    <pu-status-page-monitor-list [monitors]="group.monitors" />
                   </mat-card-content>
                 </mat-card>
               </div>
@@ -103,7 +99,6 @@ import {BACKEND_API_URL} from '../../util';
   `,
   selector: 'pu-public-status-page-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [PublicStatusPageMonitorsStore],
   imports: [
     RefreshInComponent,
     MatCard,
@@ -121,7 +116,6 @@ export class PublicStatusPagePage {
   private readonly document = inject(DOCUMENT);
 
   readonly publicStatusPageStore = inject(PublicStatusPageStore);
-  readonly publicStatusPageMonitorsStore = inject(PublicStatusPageMonitorsStore);
 
   statusPageSlug = input<string>();
 
@@ -139,20 +133,14 @@ export class PublicStatusPagePage {
       })),
     );
 
-    this.publicStatusPageMonitorsStore.load(
-      computed(() => ({
-        ...this.publicStatusPageMonitorsStore.pageable(),
-        slug: this.publicStatusPageStore.statusPage()?.slug,
-      })),
-    );
-
     effect(() => {
       const statusPage = this.publicStatusPageStore.statusPage();
-      const status = this.publicStatusPageMonitorsStore.status();
 
-      if (!statusPage || this.publicStatusPageMonitorsStore.isPending()) {
+      if (!statusPage) {
         return;
       }
+
+      const status = this.publicStatusPageStore.status();
 
       const description = s_cut(
         `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
