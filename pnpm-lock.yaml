@@ -40,8 +40,8 @@ importers:
         version: 19.2.3(react@19.2.3)
     devDependencies:
       '@react-email/preview-server':
-        specifier: 5.2.1
-        version: 5.2.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.2)
+        specifier: 5.2.3
+        version: 5.2.3(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.2)
       '@types/react':
         specifier: 19.2.8
         version: 19.2.8
@@ -49,8 +49,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.8)
       react-email:
-        specifier: 5.2.1
-        version: 5.2.1
+        specifier: 5.2.3
+        version: 5.2.3
 
   web:
     dependencies:
@@ -2911,8 +2911,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/preview-server@5.2.1':
-    resolution: {integrity: sha512-1FO7dUizZDcp8vf8Rzbalt6B/vN7Zdz2LVLwY3J+y0JPJcpVMrItXgJHkQR+juLsvTg0PmcACh8dolOvBFnc3Q==}
+  '@react-email/preview-server@5.2.3':
+    resolution: {integrity: sha512-1kVIyCGBaHd++N0LAuuIFohS33TvGA/nx3yLlWPBKLW5Wjit9X1MNisoH45tG3bOmx84YZvbtXI++0hPkKL/tQ==}
 
   '@react-email/preview@0.0.14':
     resolution: {integrity: sha512-aYK8q0IPkBXyMsbpMXgxazwHxYJxTrXrV95GFuu2HbEiIToMwSyUgb8HDFYwPqqfV03/jbwqlsXmFxsOd+VNaw==}
@@ -7061,8 +7061,8 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  react-email@5.2.1:
-    resolution: {integrity: sha512-ETejN253u7SXQQIIj+fvqxOUAFTMTnEl9lfVYFIbcGtRSrojAdN6x8eX+mDgvQFSjI7inMXNxmYaqQkx8eoOQw==}
+  react-email@5.2.3:
+    resolution: {integrity: sha512-EJZLLsdaFD7DYHQKMotpm5tiUp5Fp/FFB6x8VlZA5z20itiJsQ5zBaTTPBDE0KhJXvAUhBbKjC1BheCEchVoOg==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -11523,7 +11523,7 @@ snapshots:
       marked: 15.0.12
       react: 19.2.3
 
-  '@react-email/preview-server@5.2.1(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.2)':
+  '@react-email/preview-server@5.2.3(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.2)':
     dependencies:
       next: 16.0.10(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.2)
     transitivePeerDependencies:
@@ -15310,7 +15310,7 @@ snapshots:
       bl: 4.1.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
-      cli-spinners: 2.6.1
+      cli-spinners: 2.9.2
       is-interactive: 1.0.0
       log-symbols: 4.1.0
       strip-ansi: 6.0.1
@@ -15901,7 +15901,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-email@5.2.1:
+  react-email@5.2.3:
     dependencies:
       '@babel/parser': 7.28.6
       '@babel/traverse': 7.28.6
