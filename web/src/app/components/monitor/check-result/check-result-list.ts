@@ -35,15 +35,10 @@ import {CheckResultsEmpty} from './check-results-empty';
     } @else {
       <div class="flex flex-col gap-2">
         <pu-table-filter [key]="tableKey">
-          <div class="flex justify-end">
-            <label
-              class="inline-flex min-w-40 items-center justify-end"
-              hlmLabel
-              for="showDuplicates">
-              {{ 'general.showDuplicates' | transloco }}
-              <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
-            </label>
-          </div>
+          <label class="inline-flex min-w-36 items-center" hlmLabel for="showDuplicates">
+            {{ 'general.showDuplicates' | transloco }}
+            <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
+          </label>
 
           <hlm-toggle-group
             [(value)]="hasNotification"

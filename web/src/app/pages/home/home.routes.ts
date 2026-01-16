@@ -3,7 +3,7 @@ import {Routes} from '@angular/router';
 import {isDesktopGuard} from '@app/guards/is-desktop.guard';
 import {isMobileGuard} from '@app/guards/is-mobile.guard';
 import {isSystemAdmin} from '@app/guards/is-system-admin.guard';
-import {MonitorsDashboardStore, MonitorsStore} from '@app/services';
+import {MonitorsDashboardStore, MonitorsStore, TagsStore} from '@app/services';
 import {environment} from '@app/util';
 
 export const ROUTES: Routes = [
@@ -31,7 +31,7 @@ export const ROUTES: Routes = [
       {
         path: 'mm',
         canActivate: [isMobileGuard],
-        providers: [MonitorsStore, MonitorsDashboardStore],
+        providers: [MonitorsStore, MonitorsDashboardStore, TagsStore],
         children: [
           {
             path: ':monitorId',

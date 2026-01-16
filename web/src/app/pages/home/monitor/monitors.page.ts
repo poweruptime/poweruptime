@@ -76,29 +76,27 @@ import {toBackendDate} from '@app/services/util';
 
             <hlm-collapsible-content>
               @defer (when _showFilter) {
-                @if (_showFilter) {
-                  <section
-                    class="animate-in fade-in slide-in-from-top-20 mt-4 py-4 duration-300"
-                    hlmCard>
-                    <div class="px-4" hlmCardContent>
-                      <pu-monitors-filter
-                        [filter]="{
-                          search: $any(monitorsSearchStore.searchFilter()),
-                          types: monitorsSearchStore.typesFilter(),
-                          statuses: monitorsSearchStore.statusesFilter(),
-                          tags: monitorsSearchStore.tagsFilter(),
-                        }"
-                        [tags]="tagsStore.entities()"
-                        [dashboard]="monitorsDashboardStore.dashboard()"
-                        (filterChange)="
-                          monitorsSearchStore.searchFilter.set($event.search);
-                          monitorsSearchStore.typesFilter.set($event.types);
-                          monitorsSearchStore.statusesFilter.set($event.statuses);
-                          monitorsSearchStore.tagsFilter.set($event.tags)
-                        " />
-                    </div>
-                  </section>
-                }
+                <section
+                  class="animate-in fade-in slide-in-from-top-20 mt-4 py-4 duration-300"
+                  hlmCard>
+                  <div class="px-4" hlmCardContent>
+                    <pu-monitors-filter
+                      [filter]="{
+                        search: $any(monitorsSearchStore.searchFilter()),
+                        types: monitorsSearchStore.typesFilter(),
+                        statuses: monitorsSearchStore.statusesFilter(),
+                        tags: monitorsSearchStore.tagsFilter(),
+                      }"
+                      [tags]="tagsStore.entities()"
+                      [dashboard]="monitorsDashboardStore.dashboard()"
+                      (filterChange)="
+                        monitorsSearchStore.searchFilter.set($event.search);
+                        monitorsSearchStore.typesFilter.set($event.types);
+                        monitorsSearchStore.statusesFilter.set($event.statuses);
+                        monitorsSearchStore.tagsFilter.set($event.tags)
+                      " />
+                  </div>
+                </section>
               }
             </hlm-collapsible-content>
           </hlm-collapsible>

@@ -9,17 +9,16 @@ import {
   input,
 } from '@angular/core';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
-
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {s_cut} from 'dfts-helper';
 
 import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
-import {MonitorStatusColor} from '@app/directives';
+import {MonitorStatusText} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
 import {BACKEND_API_URL} from '@app/util';
 
@@ -40,25 +39,25 @@ import {BACKEND_API_URL} from '@app/util';
             <h1 class="text-4xl font-bold">{{ statusPage.name }}</h1>
           </div>
 
-          <mat-card appearance="outlined">
-            <mat-card-content>
-              <div class="inline-flex items-center gap-2">
-                @if (publicStatusPageStore.status() === 'UP') {
-                  <ng-icon
-                    [monitor-status-color]="'UP'"
-                    size="24"
-                    name="bootstrapCheckCircleFill" />
-                  <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
-                } @else {
-                  <ng-icon
-                    [monitor-status-color]="'DOWN'"
-                    size="24"
-                    name="bootstrapExclamationCircleFill" />
-                  <span class="text-xl">{{ 'statusPage.public.issues' | transloco }}</span>
-                }
-              </div>
-            </mat-card-content>
-          </mat-card>
+          <section hlmCard>
+            <div class="inline-flex items-center gap-2" hlmCardContent>
+              @if (publicStatusPageStore.status() === 'UP') {
+                <ng-icon
+                  [monitor-status-text]="'UP'"
+                  hlm
+                  size="lg"
+                  name="bootstrapCheckCircleFill" />
+                <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
+              } @else {
+                <ng-icon
+                  [monitor-status-text]="'DOWN'"
+                  hlm
+                  size="lg"
+                  name="bootstrapExclamationCircleFill" />
+                <span class="text-xl">{{ 'statusPage.public.issues' | transloco }}</span>
+              }
+            </div>
+          </section>
 
           @if (statusPage.description; as it) {
             <pu-shadow-render [html]="it" />
@@ -73,11 +72,11 @@ import {BACKEND_API_URL} from '@app/util';
                   <pu-shadow-render [html]="description" />
                 }
 
-                <mat-card appearance="outlined">
-                  <mat-card-content>
+                <section hlmCard>
+                  <div hlmCardContent>
                     <pu-status-page-monitor-list [monitors]="group.monitors" />
-                  </mat-card-content>
-                </mat-card>
+                  </div>
+                </section>
               </div>
             }
           </div>
@@ -101,14 +100,13 @@ import {BACKEND_API_URL} from '@app/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RefreshInComponent,
-    MatCard,
-    MatCardContent,
     StatusPageMonitorList,
-    NgIcon,
     BackendImage,
-    MonitorStatusColor,
     ShadowRender,
     TranslocoPipe,
+    HlmCardImports,
+    HlmIconImports,
+    MonitorStatusText,
   ],
 })
 export class PublicStatusPagePage {

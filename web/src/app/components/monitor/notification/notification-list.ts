@@ -26,7 +26,7 @@ import {NotificationsEmpty} from './notifications-empty';
     @if (notificationsStore.isEmpty() && !hasActiveFilters()) {
       <pu-notifications-empty />
     } @else {
-      <div class="flex flex-col gap-2">
+      <div class="grid gap-2">
         <pu-table-filter [key]="tableKey">
           <brn-select
             class="inline-block"

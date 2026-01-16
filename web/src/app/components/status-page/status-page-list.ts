@@ -22,29 +22,26 @@ import {StatusPagesEmpty} from './status-pages-empty';
       <pu-status-pages-empty />
     } @else {
       <div class="grid gap-2">
-        <div class="flex justify-between gap-4">
-          <a *isTeamAdmin hlmBtn routerLink="new">
+        <pu-table-filter>
+          <a *isTeamAdmin hlmBtn routerLink="new" head>
             {{ 'statusPage.edit.create' | transloco }}
           </a>
-
-          <pu-table-filter>
-            <div class="w-72" hlmInputGroup>
-              <div hlmInputGroupAddon>
-                <ng-icon hlm name="bootstrapSearch" size="sm" />
-              </div>
-              <input
-                [(ngModel)]="searchFilter"
-                [placeholder]="'general.search' | transloco"
-                hlmInputGroupInput />
-              @if ((searchFilter()?.length ?? 0) > 0) {
-                <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-                  <ng-icon hlm name="bootstrapXLg" size="sm" />
-                  <span class="sr-only">{{ 'general.clear' | transloco }}</span>
-                </button>
-              }
+          <div class="w-72" hlmInputGroup>
+            <div hlmInputGroupAddon>
+              <ng-icon hlm name="bootstrapSearch" size="sm" />
             </div>
-          </pu-table-filter>
-        </div>
+            <input
+              [(ngModel)]="searchFilter"
+              [placeholder]="'general.search' | transloco"
+              hlmInputGroupInput />
+            @if ((searchFilter()?.length ?? 0) > 0) {
+              <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
+                <ng-icon hlm name="bootstrapXLg" size="sm" />
+                <span class="sr-only">{{ 'general.clear' | transloco }}</span>
+              </button>
+            }
+          </div>
+        </pu-table-filter>
 
         <pu-status-page-table />
       </div>
@@ -70,7 +67,7 @@ export class StatusPageList {
 
   protected readonly hasActiveFilters = injectQueryParams(hasActiveFilters());
 
-  searchFilter = linkedQueryParam('filter.name', {
+  protected searchFilter = linkedQueryParam('filter.name', {
     stringify: (value) => (value.length > 0 ? value : null),
   });
 

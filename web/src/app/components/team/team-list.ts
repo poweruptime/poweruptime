@@ -21,11 +21,11 @@ import {TeamTable} from './team-table';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-2">
+    <div class="grid gap-2">
       @let _deleted = showDeleted();
 
-      <div class="flex flex-col items-end justify-between gap-2 md:flex-row md:items-center">
-        <div class="flex gap-2">
+      <pu-table-filter>
+        <div class="flex gap-2" head>
           <button type="button" hlmBtn variant="default" routerLink="/t/new">
             <ng-icon hlm size="sm" name="lucideBadgePlus" />
             {{ 'team.create.create' | transloco }}
@@ -43,31 +43,29 @@ import {TeamTable} from './team-table';
           }
         </div>
 
-        <pu-table-filter>
-          <div class="flex justify-end">
-            <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="showDeleted">
-              {{ 'general.deleted' | transloco }}
-              <hlm-switch class="mr-2" id="showDeleted" [(checked)]="showDeleted" />
-            </label>
-          </div>
+        <div class="flex justify-end">
+          <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="showDeleted">
+            {{ 'general.deleted' | transloco }}
+            <hlm-switch class="mr-2" id="showDeleted" [(checked)]="showDeleted" />
+          </label>
+        </div>
 
-          <div class="w-72" hlmInputGroup>
-            <div hlmInputGroupAddon>
-              <ng-icon hlm name="bootstrapSearch" size="sm" />
-            </div>
-            <input
-              [(ngModel)]="searchFilter"
-              [placeholder]="'general.search' | transloco"
-              hlmInputGroupInput />
-            @if ((searchFilter()?.length ?? 0) > 0) {
-              <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-                <ng-icon hlm name="bootstrapXLg" size="sm" />
-                <span class="sr-only">{{ 'general.clear' | transloco }}</span>
-              </button>
-            }
+        <div class="w-72" hlmInputGroup>
+          <div hlmInputGroupAddon>
+            <ng-icon hlm name="bootstrapSearch" size="sm" />
           </div>
-        </pu-table-filter>
-      </div>
+          <input
+            [(ngModel)]="searchFilter"
+            [placeholder]="'general.search' | transloco"
+            hlmInputGroupInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
+              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <span class="sr-only">{{ 'general.clear' | transloco }}</span>
+            </button>
+          }
+        </div>
+      </pu-table-filter>
 
       <pu-team-table [showDeleted]="showDeleted()" />
     </div>

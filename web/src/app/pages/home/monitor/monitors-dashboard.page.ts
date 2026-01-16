@@ -1,10 +1,35 @@
-import {Component, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmCardImports} from '@spartan-ng/helm/card';
 
 import {NotificationCheckResultCard} from '@app/components/monitor';
 import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
+
+@Component({
+  selector: 'pu-metric-card',
+  template: `
+    <section class="h-full py-3" hlmCard>
+      <div class="flex items-start justify-between px-4" hlmCardContent>
+        <div class="flex-1">
+          <div class="text-muted-foreground mb-2 flex items-center gap-2 text-sm">
+            <ng-content select="[title]" />
+          </div>
+          <div class="text-foreground mb-1 text-3xl font-semibold">
+            <ng-content select="[value]" />
+          </div>
+          <div class="text-muted-foreground text-xs">
+            <ng-content select="[subtitle]" />
+          </div>
+        </div>
+      </div>
+    </section>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [HlmCardImports],
+})
+export class MetricCard {}
 
 @Component({
   template: `
@@ -18,50 +43,22 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
       @if (dashboard; as dashboard) {
         <div
           class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          <div class="card">
-            <span class="text-4xl font-bold">{{ dashboard.monitorCount }}</span>
-            <span class="text-gray-700 dark:text-gray-200">Monitor(s)</span>
-          </div>
-          <a
-            class="card"
-            [queryParams]="{'search.status': 'UP', 'search.show': true}"
-            routerLink="."
-            queryParamsHandling="replace">
-            <span class="text-4xl font-bold">{{ dashboard.upCount }}</span>
-            <span class="text-gray-700 dark:text-gray-200">
-              {{ 'monitor.status.up' | transloco }}
+          <pu-metric-card>
+            <span title>Active Monitors</span>
+            <span value>
+              {{ dashboard.monitorCount - dashboard.pausedCount - dashboard.maintenanceCount }}
             </span>
-          </a>
-          <a
-            class="card"
+            <span subtitle>{{ dashboard.pausedCount }} paused</span>
+          </pu-metric-card>
+
+          <pu-metric-card
             [queryParams]="{'search.status': 'DOWN', 'search.show': true}"
             routerLink="."
             queryParamsHandling="replace">
-            <span class="text-4xl font-bold">{{ dashboard.downCount }}</span>
-            <span class="text-gray-700 dark:text-gray-200">
-              {{ 'monitor.status.down' | transloco }}
-            </span>
-          </a>
-          <a
-            class="card"
-            [queryParams]="{'search.status': 'MAINTENANCE', 'search.show': true}"
-            routerLink="."
-            queryParamsHandling="replace">
-            <span class="text-4xl font-bold">{{ dashboard.maintenanceCount }}</span>
-            <span class="text-gray-700 dark:text-gray-200">
-              {{ 'general.maintenance' | transloco }}
-            </span>
-          </a>
-          <a
-            class="card"
-            [queryParams]="{'search.status': 'PAUSED', 'search.show': true}"
-            routerLink="."
-            queryParamsHandling="replace">
-            <span class="text-4xl font-bold">{{ dashboard.pausedCount }}</span>
-            <span class="text-gray-700 dark:text-gray-200">
-              {{ 'monitor.status.paused' | transloco }}
-            </span>
-          </a>
+            <span title>Incidents</span>
+            <span value>{{ dashboard.downCount }}</span>
+            <span subtitle>down monitors</span>
+          </pu-metric-card>
         </div>
       }
 
@@ -71,18 +68,7 @@ import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
     </div>
   `,
   selector: 'pu-monitors-dashboard',
-  styles: `
-    @reference "#styles.css";
-
-    .card {
-      @apply grid items-center justify-center gap-3 rounded-md border border-solid p-4 transition duration-200 hover:bg-gray-200 dark:border-gray-500 hover:dark:bg-gray-800;
-
-      span {
-        @apply text-center;
-      }
-    }
-  `,
-  imports: [RouterLink, TranslocoPipe, NotificationCheckResultCard],
+  imports: [RouterLink, TranslocoPipe, NotificationCheckResultCard, MetricCard],
 })
 export class MonitorsDashboardPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);

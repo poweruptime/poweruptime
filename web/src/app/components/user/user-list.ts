@@ -20,50 +20,48 @@ import {UserTable} from './user-table';
 
 @Component({
   template: `
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-col items-end justify-between gap-2 md:flex-row md:items-center">
-        <button type="button" hlmBtn variant="default" routerLink="new">
+    <div class="grid gap-2">
+      <pu-table-filter>
+        <button type="button" hlmBtn variant="default" routerLink="new" head>
           <ng-icon hlm size="sm" name="bootstrapPersonFillAdd" />
           {{ 'instanceSettings.inviteUser' | transloco }}
         </button>
 
-        <pu-table-filter>
-          <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="activated">
-            {{ 'general.activated' | transloco }}
-            <hlm-switch class="ms-2" id="activated" [(checked)]="activatedFilter" />
-          </label>
+        <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="activated">
+          {{ 'general.activated' | transloco }}
+          <hlm-switch class="ms-2" id="activated" [(checked)]="activatedFilter" />
+        </label>
 
-          <brn-select
-            class="inline-block"
-            [(value)]="roleFilter"
-            [placeholder]="'general.role' | transloco">
-            <hlm-select-trigger>
-              <hlm-select-value class="min-w-38" />
-            </hlm-select-trigger>
-            <hlm-select-content>
-              @for (role of roles; track role.value) {
-                <hlm-option [value]="role.value">{{ role.name }}</hlm-option>
-              }
-            </hlm-select-content>
-          </brn-select>
-
-          <div class="w-72" hlmInputGroup>
-            <div hlmInputGroupAddon>
-              <ng-icon hlm name="bootstrapSearch" size="sm" />
-            </div>
-            <input
-              [(ngModel)]="searchFilter"
-              [placeholder]="'general.search' | transloco"
-              hlmInputGroupInput />
-            @if ((searchFilter()?.length ?? 0) > 0) {
-              <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-                <ng-icon hlm name="bootstrapXLg" size="sm" />
-                <span class="sr-only">{{ 'general.clear' | transloco }}</span>
-              </button>
+        <brn-select
+          class="inline-block"
+          [(value)]="roleFilter"
+          [placeholder]="'general.role' | transloco">
+          <hlm-select-trigger>
+            <hlm-select-value class="min-w-38" />
+          </hlm-select-trigger>
+          <hlm-select-content>
+            @for (role of roles; track role.value) {
+              <hlm-option [value]="role.value">{{ role.name }}</hlm-option>
             }
+          </hlm-select-content>
+        </brn-select>
+
+        <div class="w-72" hlmInputGroup>
+          <div hlmInputGroupAddon>
+            <ng-icon hlm name="bootstrapSearch" size="sm" />
           </div>
-        </pu-table-filter>
-      </div>
+          <input
+            [(ngModel)]="searchFilter"
+            [placeholder]="'general.search' | transloco"
+            hlmInputGroupInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
+              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <span class="sr-only">{{ 'general.clear' | transloco }}</span>
+            </button>
+          }
+        </div>
+      </pu-table-filter>
 
       <pu-user-table />
     </div>

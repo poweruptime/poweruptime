@@ -8,6 +8,7 @@ import {
   MonitorsStore,
   NotificationMethodsStore,
   StatusPagesStore,
+  TagsStore,
 } from '@app/services';
 
 export const ROUTES: Routes = [
@@ -43,7 +44,7 @@ export const ROUTES: Routes = [
   {
     path: 'mm',
     canActivate: [isMobileGuard],
-    providers: [MonitorsStore, MonitorsDashboardStore],
+    providers: [MonitorsStore, MonitorsDashboardStore, TagsStore],
     loadChildren: () => import('./monitor/mobile-team-monitor.routes').then((r) => r.ROUTES),
   },
   {
