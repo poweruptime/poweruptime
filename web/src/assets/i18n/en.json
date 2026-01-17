@@ -564,7 +564,7 @@
   },
   "user": {
     "edit": {
-      "forcePasswordChange": "Force password change on next login.",
+      "forcePasswordChange": "Force password change on next login",
       "sendInviteEmail": "Send invite {{general.email}}",
       "updatePassword": "Update password"
     }

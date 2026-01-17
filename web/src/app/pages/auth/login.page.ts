@@ -22,7 +22,7 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {Database} from '@app/api';
-import {injectIsValid} from '@app/form';
+import {PasswordShowButton, injectIsValid} from '@app/form';
 import {AuthStore, InfoStore} from '@app/services';
 
 @Component({
@@ -58,6 +58,9 @@ import {AuthStore, InfoStore} from '@app/services';
             @if (emailErrors?.['email']) {
               <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
             }
+            @if (emailErrors?.['minlength']; as minlength) {
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            }
             @if (emailErrors?.['maxlength']; as maxlength) {
               <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
             }
@@ -75,13 +78,14 @@ import {AuthStore, InfoStore} from '@app/services';
             <div hlmInputGroup>
               <input
                 id="password"
+                [type]="showPasswordButton.type()"
+                [placeholder]="showPasswordButton.placeholder()"
                 hlmInputGroupInput
-                formControlName="password"
-                type="password"
-                placeholder="********" />
+                formControlName="password" />
               <div hlmInputGroupAddon>
                 <ng-icon name="lucideKey" />
               </div>
+              <pu-password-show-button #showPasswordButton hlmInputGroupAddon align="inline-end" />
             </div>
             @let passwordErrors = form.controls.password.errors;
             @if (passwordErrors?.['required']) {
@@ -161,6 +165,7 @@ import {AuthStore, InfoStore} from '@app/services';
     HlmButtonImports,
     HlmSwitchImports,
     HlmIconImports,
+    PasswordShowButton,
   ],
 })
 export class LoginPage {
