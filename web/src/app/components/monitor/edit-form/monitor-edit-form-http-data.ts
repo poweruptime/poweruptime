@@ -17,7 +17,6 @@ import {
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatHint, MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
@@ -25,6 +24,8 @@ import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {Database} from '../../../api';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -226,11 +227,10 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
           cdkAutosizeMinRows="3"></textarea>
       </mat-form-field>
 
-      <div class="col-span-4 flex min-h-14 items-center">
-        <mat-slide-toggle formControlName="certificateExpiry">
-          {{ 'monitor.edit.http.certificateExpiry' | transloco }}
-        </mat-slide-toggle>
-      </div>
+      <label class="col-span-4 flex items-center" hlmLabel for="certificateExpiry">
+        <hlm-switch class="mr-2" id="certificateExpiry" formControlName="certificateExpiry" />
+        {{ 'monitor.edit.http.certificateExpiry' | transloco }}
+      </label>
 
       @if (httpDataFormGroup.controls.certificateExpiry.getRawValue()) {
         <mat-form-field class="col-span-4" subscriptSizing="dynamic">
@@ -250,9 +250,10 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         </mat-form-field>
       }
 
-      <mat-slide-toggle class="col-span-8" formControlName="ignoreTLS">
+      <label class="col-span-8 flex items-center" hlmLabel for="ignoreTLS">
+        <hlm-switch class="mr-2" id="ignoreTLS" formControlName="ignoreTLS" />
         {{ 'monitor.edit.http.ignoreTLS' | transloco }}
-      </mat-slide-toggle>
+      </label>
     </div>
   `,
   imports: [
@@ -264,7 +265,6 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatSelect,
     MatHint,
     MatOption,
-    MatSlideToggle,
     TranslocoPipe,
     CdkTextareaAutosize,
     NgIcon,
@@ -275,6 +275,8 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatAutocomplete,
     FormsModule,
     MatAutocompleteTrigger,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

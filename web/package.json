@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng-icons-manager --watch & ng serve",
+    "start": "ng-icons-manager --watch & ng serve --hmr false",
     "start:ssr": "node dist/poweruptime-web/server/server.mjs",
     "build": "ng-icons-manager --verbose && ng build --configuration development --verbose",
     "build:docker": "ng-icons-manager --verbose && ng build --configuration docker --verbose && pnpm i18n:optimize",

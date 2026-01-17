@@ -5,10 +5,11 @@ import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/mat
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
@@ -101,9 +102,10 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           </mat-select>
         </mat-form-field>
 
-        <mat-slide-toggle class="col-span-2" formControlName="ignoreTLSErrors">
+        <label class="col-span-2 flex items-center" hlmLabel for="ignoreTLSErrors">
+          <hlm-switch class="mr-2" id="ignoreTLSErrors" formControlName="ignoreTLSErrors" />
           {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
-        </mat-slide-toggle>
+        </label>
       </div>
 
       <mat-form-field class="col-span-1">
@@ -204,8 +206,9 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     TranslocoPipe,
     MatSelect,
     MatOption,
-    MatSlideToggle,
     MatError,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
 })
 export class NotificationMethodEditFormEmailData {

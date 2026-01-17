@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {BackendType} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -22,16 +22,20 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
       <div class="flex flex-col gap-6">
         <div hlmCardHeader>
           <div class="flex items-center gap-2">
-            <ng-icon name="bootstrapShield" helm />
+            <ng-icon name="bootstrapShield" hlm size="sm" />
             <h3 hlmCardTitle>{{ 'general.permissions' | transloco }}</h3>
           </div>
           <p hlmCardDescription>Control user access and capabilities</p>
         </div>
         <div class="space-y-6" hlmCardContent>
           <div class="flex items-center justify-between space-x-2">
-            <mat-slide-toggle formControlName="isUserAllowedToCreateTeams">
+            <label class="flex items-center" hlmLabel for="isUserAllowedToCreateTeams">
+              <hlm-switch
+                class="mr-2"
+                id="isUserAllowedToCreateTeams"
+                formControlName="isUserAllowedToCreateTeams" />
               {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
-            </mat-slide-toggle>
+            </label>
           </div>
         </div>
       </div>
@@ -43,11 +47,12 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   selector: 'pu-instance-settings-permissions-form',
   imports: [
     ReactiveFormsModule,
-    MatSlideToggle,
     SaveButton,
     TranslocoPipe,
     HlmCardImports,
     HlmIconImports,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

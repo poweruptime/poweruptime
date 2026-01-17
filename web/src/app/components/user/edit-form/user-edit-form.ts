@@ -85,7 +85,7 @@ import {
       @if (!_isCreating) {
         <div
           class="border-input data-[checked=true]:border-primary/50 relative grid gap-4 rounded-md border p-4 shadow-xs outline-none"
-          [attr.data-checked]="form.controls.updatePassword.value">
+          [attr.data-checked]="form.controls.updatePassword.getRawValue()">
           <label
             class="flex items-start justify-between gap-2 has-data-[disabled=true]:cursor-not-allowed has-data-[disabled=true]:opacity-70"
             for="updatedPassword"
@@ -104,7 +104,7 @@ import {
             <hlm-switch id="updatedPassword" formControlName="updatePassword" />
           </label>
 
-          @if (form.controls.updatePassword.value) {
+          @if (form.controls.updatePassword.getRawValue()) {
             <hlm-form-field>
               <label hlmLabel for="password">
                 {{ 'general.password' | transloco }}
@@ -166,7 +166,7 @@ import {
       <div>
         <div
           class="border-input data-[checked=true]:border-primary/50 relative w-full rounded-md border p-4 shadow-xs outline-none"
-          [attr.data-checked]="form.controls.forcePasswordChange.value">
+          [attr.data-checked]="form.controls.forcePasswordChange.getRawValue()">
           <label
             class="flex items-start justify-between gap-2 has-data-[disabled=true]:cursor-not-allowed has-data-[disabled=true]:opacity-70"
             for="forcePasswordChange"
@@ -190,7 +190,7 @@ import {
       </div>
 
       <div class="grid gap-4 xl:grid-cols-2">
-        @let isAdmin = form.controls.isAdmin.value;
+        @let isAdmin = form.controls.isAdmin.getRawValue();
         <div
           class="border-input data-[checked=true]:border-primary/50 relative rounded-md border p-4 shadow-xs outline-none"
           [attr.data-checked]="isAdmin">
@@ -218,7 +218,7 @@ import {
           </label>
         </div>
         @if (!_isCreating) {
-          @let isActivated = form.controls.activated.value;
+          @let isActivated = form.controls.activated.getRawValue();
           <div
             class="border-input data-[checked=true]:border-primary/50 relative rounded-md border p-4 shadow-xs outline-none"
             [attr.data-checked]="isActivated">
@@ -249,7 +249,7 @@ import {
       <div>
         <div
           class="border-input data-[checked=true]:border-primary/50 relative w-full rounded-md border p-4 shadow-xs outline-none"
-          [attr.data-checked]="form.controls.sendInvitation.value">
+          [attr.data-checked]="form.controls.sendInvitation.getRawValue()">
           <label
             class="flex items-start justify-between gap-2 has-data-[disabled=true]:cursor-not-allowed has-data-[disabled=true]:opacity-70"
             for="sendInvitation"

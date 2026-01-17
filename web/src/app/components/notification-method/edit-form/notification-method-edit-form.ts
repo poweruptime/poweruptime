@@ -16,14 +16,15 @@ import {MatDivider} from '@angular/material/divider';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {typeOfArrayElement} from 'dfts-helper';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
@@ -101,9 +102,10 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             }
           </mat-form-field>
 
-          <mat-slide-toggle class="col-span-6" formControlName="useByDefault">
+          <label class="col-span-6 flex items-center" hlmLabel for="useByDefault">
+            <hlm-switch class="mr-2" id="useByDefault" formControlName="useByDefault" />
             {{ 'notificationMethod.edit.useByDefault' | transloco }}
-          </mat-slide-toggle>
+          </label>
         </div>
 
         <div class="col-span-6">
@@ -237,22 +239,23 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     MatLabel,
     MatSelect,
     MatOption,
-    MatSlideToggle,
     SaveButton,
+    NotificationMethodEditTemplate,
+    NotificationMethodEditFormAppriseData,
     NotificationMethodEditFormEmailData,
     NotificationMethodEditFormDiscordData,
-    NotificationMethodEditTemplate,
+    NotificationMethodEditFormSlackData,
     MatDivider,
     MatError,
     NotificationSenderDataValueLabelPipe,
     NgxMatSelectSearchModule,
     NgIcon,
-    NotificationMethodEditFormSlackData,
-    HlmSkeletonImports,
-    NotificationMethodEditFormAppriseData,
     MonitorSelector,
     HasTemplateFeatureEnabled,
+    HlmSkeletonImports,
     HlmCardImports,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<

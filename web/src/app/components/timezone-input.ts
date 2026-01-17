@@ -37,6 +37,7 @@ import {GroupedTimezones} from '@app/services';
                   </span>
                 </hlm-combobox-item>
               }
+              <div hlmComboboxSeparator></div>
             </div>
           }
         </div>

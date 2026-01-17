@@ -73,7 +73,7 @@ mat-mdc-text-field-wrapper {
 
 /* kill the extra margin on the last child */
 .mat-column-actions > *:last-child,
-.helm-column-actions > *:last-child {
+.hlm-column-actions > *:last-child {
   @apply mr-0;
 }
 

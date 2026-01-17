@@ -1,12 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {BackendType} from '@app/api';
 import {TimezoneInput} from '@app/components';
@@ -40,9 +39,13 @@ import {GroupedTimezones} from '@app/services';
           <hr />
 
           <div class="flex items-center justify-between space-x-2">
-            <mat-slide-toggle formControlName="showNewVersionDialog">
+            <label class="flex items-center" hlmLabel for="showNewVersionDialog">
+              <hlm-switch
+                class="mr-2"
+                id="showNewVersionDialog"
+                formControlName="showNewVersionDialog" />
               {{ 'instanceSettings.showNewVersionDialog' | transloco }}
-            </mat-slide-toggle>
+            </label>
           </div>
         </form>
       </div>
@@ -54,13 +57,13 @@ import {GroupedTimezones} from '@app/services';
   selector: 'pu-instance-settings-general-form',
   imports: [
     ReactiveFormsModule,
-    NgxMatSelectSearchModule,
     SaveButton,
     TranslocoPipe,
     TimezoneInput,
-    MatSlideToggle,
     HlmCardImports,
     HlmIconImports,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

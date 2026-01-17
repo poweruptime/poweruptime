@@ -13,16 +13,17 @@ import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} fr
 import {MatButton} from '@angular/material/button';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {BrnTooltipImports} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database} from '@app/api';
@@ -147,77 +148,110 @@ import {TableLoadingBar} from '../table-loading-bar';
 
             <hr />
 
-            <form
-              class="grid gap-2"
-              id="version-check-form"
-              [formGroup]="form"
-              (ngSubmit)="onSubmit()">
-              <mat-slide-toggle
-                formControlName="versionCheckAdminMailEnabled"
-                labelPosition="before">
-                {{ 'instanceSettings.versionCheck.adminMail.title' | transloco }}
-              </mat-slide-toggle>
+            <form id="version-check-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div
+                class="border-input data-[checked=true]:border-primary/50 relative grid gap-4 rounded-md border p-4 shadow-xs outline-none"
+                [attr.data-checked]="form.controls.versionCheckAdminMailEnabled.value">
+                <label
+                  class="flex items-start justify-between gap-2 has-data-[disabled=true]:cursor-not-allowed has-data-[disabled=true]:opacity-70"
+                  for="versionCheckAdminMailEnabled"
+                  hlmLabel>
+                  <div class="inline-flex items-center gap-2">
+                    <div class="bg-secondary flex h-9 w-9 items-center justify-center rounded-md">
+                      <ng-icon hlm size="sm" name="lucideRefreshCcw" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <span class="text-sm leading-4">
+                        {{ 'instanceSettings.versionCheck.adminMail.title' | transloco }}
+                      </span>
+                      <p class="text-muted-foreground text-xs font-normal">
+                        Send email when an update is available.
+                      </p>
+                    </div>
+                  </div>
+                  <hlm-switch
+                    id="versionCheckAdminMailEnabled"
+                    formControlName="versionCheckAdminMailEnabled" />
+                </label>
 
-              @if (form.controls.versionCheckAdminMailEnabled.getRawValue()) {
-                <div class="animate-in fade-in slide-in-from-top-20 grid gap-2 duration-300">
-                  <mat-slide-toggle
-                    formControlName="versionCheckAdminMailSendToEveryone"
-                    labelPosition="before">
-                    {{ 'instanceSettings.versionCheck.adminMail.everyone' | transloco }}
-                  </mat-slide-toggle>
-                  <mat-form-field>
-                    <mat-label>
-                      {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
-                    </mat-label>
-                    <mat-chip-grid
-                      #toGrid
-                      [attr.aria-label]="
-                        'instanceSettings.versionCheck.adminMail.to.enter' | transloco
-                      "
-                      formControlName="versionCheckAdminMailTo">
-                      @for (
-                        email of form.controls.versionCheckAdminMailTo.getRawValue();
-                        track email
-                      ) {
-                        <mat-chip-row
-                          (removed)="chipInputRemove(form.controls.versionCheckAdminMailTo, email)">
-                          {{ email }}
-                          <button
-                            [attr.aria-label]="
-                              'instanceSettings.versionCheck.adminMail.to.remove'
-                                | transloco: {email}
-                            "
-                            type="button"
-                            matChipRemove>
-                            <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-                          </button>
-                        </mat-chip-row>
-                      }
-                    </mat-chip-grid>
-                    <input
-                      [matChipInputFor]="toGrid"
-                      [placeholder]="'instanceSettings.versionCheck.adminMail.to.new' | transloco"
-                      (matChipInputTokenEnd)="
-                        chipInputAdd(form.controls.versionCheckAdminMailTo, $event)
-                      " />
+                @if (form.controls.versionCheckAdminMailEnabled.getRawValue()) {
+                  <div
+                    class="grid gap-2 duration-300"
+                    animate.enter="animate-in fade-in slide-in-from-top-20"
+                    animate.leave="animate-out fade-out slide-out-to-top-20">
+                    <label
+                      class="flex items-center justify-between"
+                      hlmLabel
+                      for="versionCheckAdminMailSendToEveryone">
+                      {{ 'instanceSettings.versionCheck.adminMail.everyone' | transloco }}
+                      <hlm-switch
+                        id="versionCheckAdminMailSendToEveryone"
+                        formControlName="versionCheckAdminMailSendToEveryone" />
+                    </label>
 
-                    @let toErrors = form.controls.versionCheckAdminMailTo.errors;
-                    @if (toErrors?.['required']) {
-                      <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                    @if (!form.controls.versionCheckAdminMailSendToEveryone.getRawValue()) {
+                      <mat-form-field
+                        class="duration-300"
+                        animate.enter="animate-in fade-in slide-in-from-top-20"
+                        animate.leave="animate-out fade-out slide-out-to-top-20">
+                        <mat-label>
+                          {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
+                        </mat-label>
+                        <mat-chip-grid
+                          #toGrid
+                          [attr.aria-label]="
+                            'instanceSettings.versionCheck.adminMail.to.enter' | transloco
+                          "
+                          formControlName="versionCheckAdminMailTo">
+                          @for (
+                            email of form.controls.versionCheckAdminMailTo.getRawValue();
+                            track email
+                          ) {
+                            <mat-chip-row
+                              (removed)="
+                                chipInputRemove(form.controls.versionCheckAdminMailTo, email)
+                              ">
+                              {{ email }}
+                              <button
+                                [attr.aria-label]="
+                                  'instanceSettings.versionCheck.adminMail.to.remove'
+                                    | transloco: {email}
+                                "
+                                type="button"
+                                matChipRemove>
+                                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
+                              </button>
+                            </mat-chip-row>
+                          }
+                        </mat-chip-grid>
+                        <input
+                          [matChipInputFor]="toGrid"
+                          [placeholder]="
+                            'instanceSettings.versionCheck.adminMail.to.new' | transloco
+                          "
+                          (matChipInputTokenEnd)="
+                            chipInputAdd(form.controls.versionCheckAdminMailTo, $event)
+                          " />
+
+                        @let toErrors = form.controls.versionCheckAdminMailTo.errors;
+                        @if (toErrors?.['required']) {
+                          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                        }
+                        @if (toErrors?.['minLengthArrayItem']; as minlength) {
+                          <mat-error>
+                            {{ 'form.validation.minlength' | transloco: minlength }}
+                          </mat-error>
+                        }
+                        @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
+                          <mat-error>
+                            {{ 'form.validation.maxlength' | transloco: maxlength }}
+                          </mat-error>
+                        }
+                      </mat-form-field>
                     }
-                    @if (toErrors?.['minLengthArrayItem']; as minlength) {
-                      <mat-error>
-                        {{ 'form.validation.minlength' | transloco: minlength }}
-                      </mat-error>
-                    }
-                    @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
-                      <mat-error>
-                        {{ 'form.validation.maxlength' | transloco: maxlength }}
-                      </mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-              }
+                  </div>
+                }
+              </div>
             </form>
           </div>
           <div class="flex flex-row justify-between gap-2" hlmCardFooter>
@@ -279,7 +313,6 @@ import {TableLoadingBar} from '../table-loading-bar';
   selector: 'pu-instance-settings-version-check-form',
   imports: [
     ReactiveFormsModule,
-    MatSlideToggle,
     MatChipGrid,
     MatChipRow,
     MatChipRemove,
@@ -296,9 +329,11 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmCardImports,
     HlmButtonImports,
     HlmTooltipImports,
+    BrnTooltipImports,
     HlmIconImports,
     HlmBadgeImports,
-    BrnTooltipContentTemplate,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

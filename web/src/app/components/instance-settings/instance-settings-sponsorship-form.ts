@@ -12,14 +12,14 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {MatButton} from '@angular/material/button';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
-import {HlmButton} from '@spartan-ng/helm/button';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIcon} from '@spartan-ng/helm/icon';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {format} from '@std/fmt/duration';
 
@@ -107,9 +107,10 @@ import {TableLoadingBar} from '../table-loading-bar';
                 }
               </mat-form-field>
 
-              <mat-slide-toggle formControlName="showSupportBadge">
+              <label class="flex items-center" hlmLabel for="showSupportBadge">
+                <hlm-switch class="mr-2" id="showSupportBadge" formControlName="showSupportBadge" />
                 {{ 'instanceSettings.sponsorship.showBadge' | transloco }}
-              </mat-slide-toggle>
+              </label>
             </form>
           </div>
 
@@ -160,7 +161,6 @@ import {TableLoadingBar} from '../table-loading-bar';
   selector: 'pu-instance-settings-sponsorship-form',
   imports: [
     ReactiveFormsModule,
-    MatSlideToggle,
     SaveButton,
     TranslocoPipe,
     MatButton,
@@ -169,14 +169,15 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatInput,
     MatLabel,
     DatePipe,
-    NgIcon,
     SupporterBadge,
     TableLoadingBar,
     HlmCardImports,
     HlmTooltipImports,
     BrnTooltipContentTemplate,
-    HlmButton,
-    HlmIcon,
+    HlmButtonImports,
+    HlmIconImports,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

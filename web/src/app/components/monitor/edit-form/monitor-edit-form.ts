@@ -8,7 +8,6 @@ import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/for
 import {MatInput} from '@angular/material/input';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
@@ -18,6 +17,8 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
@@ -161,9 +162,10 @@ import {
           }
         </mat-form-field>
 
-        <mat-slide-toggle class="col-span-6" formControlName="upsideDown">
+        <label class="col-span-6 flex items-center" hlmLabel for="upsideDown">
+          <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
           {{ 'monitor.edit.upsideDown' | transloco }}
-        </mat-slide-toggle>
+        </label>
 
         <section class="col-span-6 mt-8" hlmCard>
           @let typeValue = form.controls.type.getRawValue();
@@ -271,7 +273,6 @@ import {
     MatSelectTrigger,
     MatOption,
     MatSuffix,
-    MatSlideToggle,
     MatProgressBar,
     CdkTextareaAutosize,
     TranslocoPipe,
@@ -285,10 +286,12 @@ import {
     MonitorEditFormPushData,
     MonitorCheckerDataValueLabelPipe,
     TagSelector,
+    MonitorEditNotificationMethodsEmpty,
     HlmCardImports,
     HlmButtonImports,
     HlmIconImports,
-    MonitorEditNotificationMethodsEmpty,
+    HlmLabelImports,
+    HlmSwitchImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
