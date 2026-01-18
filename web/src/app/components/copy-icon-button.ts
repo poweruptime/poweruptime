@@ -1,9 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
 
-import {TooltipPosition} from '@angular/material/tooltip';
-
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {BrnTooltipContentTemplate, TooltipPosition} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';

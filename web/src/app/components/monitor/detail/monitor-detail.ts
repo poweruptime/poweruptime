@@ -30,12 +30,6 @@ import {
     <div class="flex flex-col gap-8">
       @if (monitorDetailStore.monitor(); as monitor) {
         <div class="flex flex-col gap-2">
-          <div class="flex items-center gap-6">
-            <h1 class="text-4xl font-bold">{{ monitor.name }}</h1>
-
-            <pu-monitor-status [status]="monitor.status" />
-          </div>
-
           @if (monitor.description; as description) {
             @let _cutDescription = cutDescription();
 
@@ -87,16 +81,6 @@ import {
           </div>
 
           <div class="flex flex-wrap gap-3">
-            <a
-              [routerLink]="[]"
-              [queryParams]="{'search.show': true, 'search.type': monitor.data._type}"
-              hlmBadge
-              variant="outline"
-              queryParamsHandling="merge">
-              {{ monitor.data._type | monitorCheckerDataValueLabel | transloco }}
-              {{ 'general.monitor' | transloco }}
-            </a>
-
             @if (monitor.retries; as retries) {
               <div class="flex items-center gap-2" hlmBadge variant="outline">
                 <ng-icon class="text-primary" hlm name="bootstrapArrowRepeat" size="xs" />

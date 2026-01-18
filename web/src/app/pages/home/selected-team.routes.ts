@@ -17,10 +17,6 @@ export const ROUTES: Routes = [
     loadComponent: () => import('./team/team-edit.page').then((c) => c.TeamEditPage),
   },
   {
-    path: 'invite',
-    loadComponent: () => import('./team/team-invite.page').then((c) => c.TeamInvitePage),
-  },
-  {
     path: 'notification-methods',
     providers: [NotificationMethodsStore],
     loadChildren: () =>

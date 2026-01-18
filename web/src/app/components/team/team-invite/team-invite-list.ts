@@ -13,7 +13,7 @@ import {TeamInvitesEmpty} from './team-invites-empty.component';
     <section class="flex flex-col gap-6" hlmCard>
       @if (teamInvitesStore.isEmpty()) {
         <div hlmCardContent>
-          <pu-team-invites-empty />
+          <pu-team-invites-empty [teamId]="teamId()" />
         </div>
       } @else {
         <div hlmCardHeader>
@@ -26,7 +26,6 @@ import {TeamInvitesEmpty} from './team-invites-empty.component';
     </section>
   `,
   selector: 'pu-team-invite-list',
-  providers: [TeamInvitesStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe, HlmCardImports, TeamInviteTable, TeamInvitesEmpty],
 })

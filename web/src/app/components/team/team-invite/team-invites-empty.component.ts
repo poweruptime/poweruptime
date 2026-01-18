@@ -1,17 +1,20 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+
+import {TeamInviteDialog} from '../../_dialog/team-invite-dialog';
 
 @Component({
   template: `
     <div hlmEmpty>
       <div hlmEmptyHeader>
         <div hlmEmptyMedia variant="icon">
-          <ng-icon name="bootstrapEnvelopeSlash" />
+          <ng-icon name="lucideMailCheck" />
         </div>
         <div hlmEmptyTitle>{{ 'team.settings.noInvites' | transloco }}</div>
         <div hlmEmptyDescription>
@@ -20,7 +23,10 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
         </div>
       </div>
       <div class="flex gap-2" hlmEmptyContent>
-        <a routerLink="../invite" hlmBtn type="button">{{ 'team.invite' | transloco }}</a>
+        <a routerLink="../invite" hlmBtn type="button">
+          <ng-icon hlm size="sm" name="lucideUserPlus" />
+          {{ 'team.invite' | transloco }}
+        </a>
       </div>
     </div>
   `,
@@ -28,4 +34,16 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe, HlmEmptyImports, HlmIconImports, HlmButtonImports, RouterLink],
 })
-export class TeamInvitesEmpty {}
+export class TeamInvitesEmpty {
+  private readonly dialog = inject(HlmDialogService);
+
+  readonly teamId = input.required<string>();
+
+  openInviteDialog() {
+    this.dialog.open(TeamInviteDialog, {
+      context: {
+        teamId: this.teamId(),
+      },
+    });
+  }
+}

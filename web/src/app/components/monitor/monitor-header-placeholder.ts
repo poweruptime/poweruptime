@@ -5,11 +5,6 @@ import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 @Component({
   template: `
     <div class="flex flex-col gap-4">
-      <div class="flex items-center justify-between">
-        <hlm-skeleton class="h-12 w-64" />
-        <hlm-skeleton class="h-12 w-12" />
-      </div>
-
       <hlm-skeleton class="h-8 w-1/2" />
 
       <div class="flex gap-4">

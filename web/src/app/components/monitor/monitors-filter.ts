@@ -43,7 +43,7 @@ import {MonitorSearchParams} from '@app/services';
         </hlm-select-content>
       </brn-select>
 
-      <brn-select [placeholder]="'general.type' | transloco" formControlName="statuses" multiple>
+      <brn-select [placeholder]="'general.type' | transloco" formControlName="types" multiple>
         <hlm-select-trigger class="w-full">
           <hlm-select-value />
         </hlm-select-trigger>

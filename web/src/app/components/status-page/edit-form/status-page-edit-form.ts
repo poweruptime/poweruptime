@@ -16,7 +16,6 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {MatButton, MatIconButton} from '@angular/material/button';
 import {
   MatChipGrid,
   MatChipInput,
@@ -25,8 +24,6 @@ import {
   MatChipRow,
 } from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatTooltip} from '@angular/material/tooltip';
 
 import {
   CdkDrag,
@@ -40,8 +37,15 @@ import {
 import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database, injectAPI} from '@app/api';
 import {AlertDirective, FileUpload} from '@app/components';
@@ -68,45 +72,59 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
       (ngSubmit)="submit()">
       <div>
         <div class="grid grid-cols-2 gap-6">
-          <mat-form-field class="col-span-1">
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
+          <hlm-form-field class="col-span-1">
+            <label hlmLabel for="name">
+              {{ 'general.name' | transloco }}
+            </label>
 
+            <div hlmInputGroup>
+              <input id="name" hlmInputGroupInput formControlName="name" type="text" />
+              <div hlmInputGroupAddon>
+                <ng-icon name="lucideUser" />
+              </div>
+            </div>
             @let nameErrors = form.controls.name.errors;
             @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
             }
             @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
             }
             @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
             }
-          </mat-form-field>
+          </hlm-form-field>
 
-          <mat-form-field class="col-span-1">
-            <mat-label>{{ 'general.slug' | transloco }}</mat-label>
-            <input matInput formControlName="slug" />
+          <hlm-form-field class="col-span-1">
+            <label hlmLabel for="slug">
+              {{ 'general.slug' | transloco }}
+            </label>
 
+            <div hlmInputGroup>
+              <div hlmInputGroupAddon>
+                <label for="slug" hlmLabel>/</label>
+              </div>
+              <input id="slug" hlmInputGroupInput formControlName="slug" type="text" />
+            </div>
             @let slugErrors = form.controls.slug.errors;
             @if (slugErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
             }
             @if (slugErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.slug' | transloco }}</mat-error>
+              <hlm-error>{{ 'form.validation.slug' | transloco }}</hlm-error>
             }
             @if (slugErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
             }
             @if (slugErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
             }
             @if (slugErrors?.['slugInUse']) {
-              <mat-error>
+              <hlm-error>
                 {{ 'statusPage.edit.slugInUse' | transloco }}
-              </mat-error>
+              </hlm-error>
             }
-          </mat-form-field>
+          </hlm-form-field>
 
           <pu-file-upload
             class="col-span-2 2xl:col-span-1"
@@ -179,26 +197,39 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 
         <div class="flex justify-between">
           <div>
-            <button [disabled]="form.disabled" (click)="onGroupAdd()" type="button" mat-flat-button>
+            <button
+              [disabled]="form.disabled"
+              (click)="onGroupAdd()"
+              hlmBtn
+              variant="secondary"
+              type="button">
+              <ng-icon hlm size="sm" name="lucideCirclePlus" />
               {{ 'statusPage.edit.group.add' | transloco }}
             </button>
           </div>
 
-          <button
-            [matTooltip]="
-              isCollapsed
-                ? ('statusPage.edit.monitors.show' | transloco)
-                : ('statusPage.edit.monitors.hide' | transloco)
-            "
-            (click)="collapsed.set(!isCollapsed)"
-            type="button"
-            mat-icon-button>
-            @if (isCollapsed) {
-              <ng-icon name="bootstrapArrowsExpand" />
-            } @else {
-              <ng-icon name="bootstrapArrowsCollapse" />
-            }
-          </button>
+          <hlm-tooltip>
+            <button
+              (click)="collapsed.set(!isCollapsed)"
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
+              type="button"
+              hlmTooltipTrigger>
+              @if (isCollapsed) {
+                <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+              } @else {
+                <ng-icon hlm size="sm" name="bootstrapArrowsCollapse" />
+              }
+            </button>
+            <span *brnTooltipContent>
+              @if (isCollapsed) {
+                {{ 'statusPage.edit.monitors.show' | transloco }}
+              } @else {
+                {{ 'statusPage.edit.monitors.hide' | transloco }}
+              }
+            </span>
+          </hlm-tooltip>
         </div>
 
         @let groupsErrors = form.controls.groups.errors;
@@ -211,55 +242,63 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
           (cdkDropListDropped)="onGroupDrop($event)"
           cdkDropList
           formArrayName="groups">
-          @for (
-            statusPageGroupControl of form.controls.groups.controls;
-            track index;
-            let index = $index
-          ) {
+          @for (statusPageGroupControl of form.controls.groups.controls; track $index) {
             <section [formGroup]="statusPageGroupControl" hlmCard cdkDrag>
               <div class="group-drag-placeholder" *cdkDragPlaceholder></div>
               <div class="flex flex-col gap-4" hlmCardContent>
                 <div class="flex items-center justify-between text-xl">
                   <div class="inline-flex items-center gap-2">
-                    <div class="min-w-6 hover:cursor-move" cdkDragHandle>
-                      <ng-icon name="bootstrapGripVertical" size="20" />
+                    <div class="inline-flex min-w-6 items-center hover:cursor-move" cdkDragHandle>
+                      <ng-icon hlm name="bootstrapGripVertical" />
                     </div>
 
-                    <mat-form-field subscriptSizing="dynamic">
-                      <mat-label>{{ 'general.name' | transloco }}</mat-label>
-                      <input matInput formControlName="name" />
-
+                    <hlm-form-field>
+                      <input
+                        [id]="'group-name-' + $index"
+                        [placeholder]="'general.name' | transloco"
+                        hlmInput
+                        formControlName="name"
+                        type="text" />
                       @let groupNameErrors = statusPageGroupControl.controls.name.errors;
                       @if (groupNameErrors?.['maxlength']; as maxlength) {
-                        <mat-error>
+                        <hlm-error>
                           {{ 'form.validation.maxlength' | transloco: maxlength }}
-                        </mat-error>
+                        </hlm-error>
                       }
-                    </mat-form-field>
+                    </hlm-form-field>
                   </div>
 
-                  <button
-                    [disabled]="form.disabled"
-                    (click)="form.controls.groups.removeAt(index)"
-                    type="button"
-                    mat-icon-button>
-                    <ng-icon name="bootstrapTrashFill" />
-                  </button>
+                  <hlm-tooltip>
+                    <button
+                      [disabled]="form.disabled"
+                      (click)="form.controls.groups.removeAt($index)"
+                      hlmBtn
+                      hlmTooltipTrigger
+                      variant="ghost"
+                      size="icon-sm"
+                      type="button">
+                      <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                    </button>
+                    <span *brnTooltipContent>{{ 'general.delete' | transloco }}</span>
+                  </hlm-tooltip>
                 </div>
 
                 <pu-editor
                   [placeholder]="('general.description' | transloco) + '...'"
                   formControlName="description" />
 
-                <pu-status-page-edit-form-group-monitors
-                  [(allSelectedMonitors)]="allSelectedMonitors"
-                  [(monitorSearch)]="monitorSearch"
-                  [monitorSearchPending]="monitorsSearchStore.isPending()"
-                  [searchableMonitors]="monitorsSearchStore.entities()"
-                  [index]="index"
-                  [length]="form.controls.groups.controls.length"
-                  [style.display]="isCollapsed ? 'none' : 'block'"
-                  formControlName="monitorIds" />
+                @if (!isCollapsed) {
+                  <pu-status-page-edit-form-group-monitors
+                    [(allSelectedMonitors)]="allSelectedMonitors"
+                    [(monitorSearch)]="monitorSearch"
+                    [monitorSearchPending]="monitorsSearchStore.isPending()"
+                    [searchableMonitors]="monitorsSearchStore.entities()"
+                    [index]="$index"
+                    [length]="form.controls.groups.controls.length"
+                    animate.enter="animate-in fade-in slide-in-from-top-20 duration-300"
+                    animate.leave="animate-out fade-out slide-out-to-top-20 duration-300"
+                    formControlName="monitorIds" />
+                }
               </div>
             </section>
           }
@@ -290,20 +329,15 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     ReactiveFormsModule,
     TranslocoPipe,
     MatFormField,
-    MatInput,
     MatLabel,
     MatError,
-    MatButton,
-    MatIconButton,
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    NgIcon,
     SaveButton,
     Editor,
     StatusPageEditFormGroupMonitors,
     CdkDragPlaceholder,
-    MatTooltip,
     FileUpload,
     AlertDirective,
     MatChipGrid,
@@ -311,6 +345,14 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     MatChipInput,
     MatChipRemove,
     HlmCardImports,
+    HlmTooltipImports,
+    HlmButtonImports,
+    BrnTooltipContentTemplate,
+    HlmIconImports,
+    HlmInputGroupImports,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputImports,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

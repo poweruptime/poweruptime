@@ -33,6 +33,7 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 
 import {BackendType} from '@app/api';
 
@@ -43,7 +44,7 @@ interface DragEventType {
 
 @Component({
   template: `
-    <hr />
+    <hlm-separator />
     @let _isDisabled = isDisabled();
 
     <div class="mt-3 flex flex-col gap-2">
@@ -164,6 +165,7 @@ interface DragEventType {
     BrnPopoverContent,
     HlmButtonImports,
     HlmIconImports,
+    HlmSeparatorImports,
   ],
 })
 export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {

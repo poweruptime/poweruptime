@@ -6,7 +6,6 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
@@ -16,6 +15,7 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
 import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
 import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
@@ -26,6 +26,8 @@ import {TableLoadingBar} from '@app/components';
 import {RelativeTimeWithTooltip} from '@app/pipes';
 import {TeamUsersStore} from '@app/services';
 
+import {TeamInviteDialog} from '../_dialog/team-invite-dialog';
+
 @Component({
   template: `
     @let _teamId = teamId();
@@ -34,12 +36,12 @@ import {TeamUsersStore} from '@app/services';
       <div hlmCardHeader>
         <h3 hlmCardTitle>{{ 'general.users' | transloco }}</h3>
       </div>
-      <div class="flex flex-col gap-2" hlmCardContent>
+      <div class="grid gap-2" hlmCardContent>
         <div class="flex gap-2">
-          <a routerLink="../invite" type="button" hlmBtn>
-            <ng-icon hlm size="sm" name="bootstrapPersonAdd" />
+          <button (click)="openInviteDialog()" type="button" hlmBtn>
+            <ng-icon hlm size="sm" name="lucideUserPlus" />
             {{ 'general.invite' | transloco }}
-          </a>
+          </button>
 
           <button
             [disabled]="!teamUsersStore.hasValue()"
@@ -175,13 +177,11 @@ import {TeamUsersStore} from '@app/services';
     }
   `,
   selector: 'pu-team-user-table',
-  providers: [TeamUsersStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     StopPropagationDirective,
     TableLoadingBar,
     RelativeTimeWithTooltip,
-    RouterLink,
     TranslocoPipe,
     InitialsPipe,
     HlmTableContainer,
@@ -197,7 +197,8 @@ import {TeamUsersStore} from '@app/services';
   ],
 })
 export class TeamUserTable {
-  readonly teamUsersStore = inject(TeamUsersStore);
+  protected readonly teamUsersStore = inject(TeamUsersStore);
+  private readonly dialog = inject(HlmDialogService);
 
   readonly teamId = input.required<string>();
 
@@ -214,5 +215,13 @@ export class TeamUserTable {
         ...this.teamUsersStore.pageable(),
       })),
     );
+  }
+
+  openInviteDialog() {
+    this.dialog.open(TeamInviteDialog, {
+      context: {
+        teamId: this.teamId(),
+      },
+    });
   }
 }

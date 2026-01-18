@@ -1,7 +1,7 @@
 import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods} from '@ngrx/signals';
+import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
@@ -17,17 +17,19 @@ import {
 } from '@app/services/store-features';
 
 export const TeamInvitesStore = signalStore(
+  {providedIn: 'root'},
   withRequestStatus(),
   withEntities<BackendType['TeamJoinTokenResponse']>(),
   withPaginatedTable<BackendType['TeamJoinTokenResponse']>({
-    columnsToDisplay: ['inviteeEmail', 'role', 'inviter.name', 'createdAt', 'actions'],
+    columnsToDisplay: ['inviteeEmail', 'role', 'inviter.name', 'createdAt'],
     defaultSortBy: 'createdAt',
   }),
+  withState<{teamId: string | undefined}>({teamId: undefined}),
   withMethods((store, api = injectAPI()) => ({
     load: rxMethod<{teamId: string | undefined} & PaginationDto>(
       pipe(
         filter(({teamId}) => !!teamId),
-        tap(() => patchState(store, setPending())),
+        tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
         debounceTime(275),
         switchMap(({teamId, ...query}) =>
           api

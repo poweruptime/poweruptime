@@ -173,6 +173,7 @@
     "search": "Search",
     "secret": "Secret",
     "security": "Security",
+    "send": "Send",
     "server": "Server",
     "sessions": "Sessions",
     "settings": "Settings",
@@ -556,6 +557,7 @@
     "invite": "{{general.invite}} a new member",
     "monitors": "{{monitorCount}} Monitor(s)",
     "search": "{{general.search}} {{general.teams}}...",
+    "send": "{{general.send}} {{general.invite}}",
     "settings": {
       "invitedAt": "Invited",
       "invitedBy": "Invited by",

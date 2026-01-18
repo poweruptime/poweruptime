@@ -1,13 +1,14 @@
 import {inject} from '@angular/core';
-import {Router} from '@angular/router';
+import {FormArray} from '@angular/forms';
 
 import {filter, forkJoin, map, pipe, switchMap, tap} from 'rxjs';
 
 import {translate} from '@jsverse/transloco';
-import {tapResponse} from '@ngrx/operators';
+import {mapResponse, tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {removeEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {BrnDialogRef} from '@spartan-ng/brain/dialog';
 import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -24,7 +25,10 @@ import {
   withSelection,
 } from '@app/services/store-features';
 
+import {TeamInvitesStore} from './team-invites.store';
+
 export const TeamUsersStore = signalStore(
+  {providedIn: 'root'},
   withRequestStatus(),
   withEntities<BackendType['TeamUserResponse']>(),
   withPaginatedTable<BackendType['TeamUserResponse']>({
@@ -36,8 +40,8 @@ export const TeamUsersStore = signalStore(
     (
       store,
       api = injectAPI(),
-      router = inject(Router),
       confirmDialog$ = injectConfirmDeleteDialog$(),
+      teamInvitesStore = inject(TeamInvitesStore),
     ) => ({
       load: rxMethod<{teamId: string | undefined} & PaginationDto>(
         pipe(
@@ -71,64 +75,85 @@ export const TeamUsersStore = signalStore(
         ),
       ),
       invite: rxMethod<{
+        dialogRef: BrnDialogRef;
+        membersForm: FormArray;
         teamId: string;
-        role: BackendType['InviteTeamUserDto']['role'];
-        email: string;
+        members: {
+          role: BackendType['InviteTeamUserDto']['role'];
+          email: string;
+        }[];
       }>(
         pipe(
           tap(() => patchState(store, setPending())),
-          switchMap(({teamId, ...body}) =>
-            api
-              .post('/v1/team/{teamId}/user', {
-                params: {
-                  path: {
-                    teamId,
-                  },
-                },
-                body,
-              })
-              .pipe(
-                tapResponse({
-                  next: () => {
-                    patchState(store, setFulfilled());
+          switchMap(({teamId, members, dialogRef, membersForm}) =>
+            forkJoin(
+              members.map((member, index) =>
+                api
+                  .post('/v1/team/{teamId}/user', {
+                    params: {
+                      path: {
+                        teamId,
+                      },
+                    },
+                    body: {
+                      role: member.role,
+                      email: member.email,
+                    },
+                  })
+                  .pipe(
+                    mapResponse({
+                      next: () => {
+                        toast.success(`Successfully invited ${member.email}.`);
+                        return true;
+                      },
+                      error: (error: any) => {
+                        console.log(error?.error);
 
-                    toast.success(`Successfully invited ${body.email}.`);
+                        if (error?.error?.codeName === 'NOT_FOUND') {
+                          membersForm.controls[index]!.setErrors({mailNotFound: true});
+                          toast.error(`${member.email} not found`);
+                        } else if (error?.error?.code === 429) {
+                          membersForm.controls[index]!.setErrors({rateLimitExeceeded: true});
+                          toast.error(`Invite rate limit exceeded for ${member.email}`);
+                        } else if (error?.error?.codeName === 'PERSONAL_TEAM') {
+                          membersForm.controls[index]!.setErrors({personalTeam: true});
+                          toast.error(`You can't invite other users to your personal team`);
+                        } else if (error?.error?.codeName === 'ALREADY_IN_TEAM') {
+                          membersForm.controls[index]!.setErrors({alreadyInTeam: true});
+                          toast.error(`${member.email} is already in the team`);
+                        } else {
+                          membersForm.controls[index]!.setErrors({unknownError: true});
+                          toast.error(`Inviting ${member.email} went wrong`);
+                        }
 
-                    void router.navigateByUrl(`/t/${teamId}/edit`);
-                  },
-                  error: (error: any) => {
-                    patchState(store, setError(error), setFulfilled());
-
-                    console.log(error?.error);
-
-                    if (error?.error?.httpCode === 404) {
-                      toast.error(`${body.email} not found`);
-
-                      return;
-                    }
-
-                    if (error?.error?.httpCode === 429) {
-                      toast.error(`Invite rate limit exceeded for ${body.email}`);
-
-                      return;
-                    }
-
-                    if (error?.error?.codeName === 'PERSONAL_TEAM') {
-                      toast.error(`You can't invite other users to your personal team`);
-
-                      return;
-                    }
-
-                    if (error?.error?.codeName === 'ALREADY_IN_TEAM') {
-                      toast.error(`${body.email} is already in the team`);
-
-                      return;
-                    }
-
-                    toast.error(`Inviting ${body.email} went wrong`);
-                  },
-                }),
+                        return false;
+                      },
+                    }),
+                  ),
               ),
+            ).pipe(
+              tapResponse({
+                next: (statuses) => {
+                  patchState(store, setFulfilled());
+
+                  statuses.forEach((status, index) => {
+                    if (status) {
+                      membersForm.removeAt(index, {emitEvent: true});
+                    }
+                  });
+
+                  if (statuses.every((it) => !!it)) {
+                    dialogRef.close();
+                  }
+
+                  teamInvitesStore.load({
+                    teamId: teamInvitesStore.teamId(),
+                    ...teamInvitesStore.pageable(),
+                  });
+                },
+                error: () => patchState(store, setFulfilled()),
+              }),
+            ),
           ),
         ),
       ),
