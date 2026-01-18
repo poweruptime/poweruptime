@@ -299,9 +299,11 @@
       "latestChecks": "{{general.latest}} {{general.checks}}",
       "openPublic": "Public page",
       "pingChart": {
-        "endDate": "{{general.end}} {{general.date}}",
-        "exceedsMaxWindow": "Selected window may not exceed 1 month",
-        "startDate": "{{general.start}} {{general.date}}"
+        "empty": {
+          "description": "Try a different timeframe",
+          "title": "No pings found"
+        },
+        "exceedsMaxWindow": "Selected window may not exceed 1 month"
       },
       "resendAfter": "Resend notification after {{resendAfter}}x three consecutive failed {{general.checks}}",
       "retries": "{{retries}}x retries"

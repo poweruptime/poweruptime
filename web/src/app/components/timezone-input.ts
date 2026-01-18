@@ -21,9 +21,15 @@ import {GroupedTimezones} from '@app/services';
 
 @Component({
   template: `
-    <hlm-combobox [(value)]="value">
-      <hlm-combobox-input [placeholder]="'general.timezone' | transloco"></hlm-combobox-input>
+    <hlm-combobox [(value)]="value" autoFocus="first-tabbable">
+      <hlm-combobox-trigger class="w-full justify-between font-normal">
+        <span hlmComboboxValue></span>
+      </hlm-combobox-trigger>
       <div *brnPopoverContent hlmComboboxContent>
+        <hlm-combobox-input
+          [placeholder]="'general.timezone' | transloco"
+          showTrigger="false"
+          mode="popup" />
         <hlm-combobox-empty>No items found.</hlm-combobox-empty>
         <div hlmComboboxList>
           @for (timezoneGroup of availableTimezones(); track $index) {

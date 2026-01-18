@@ -8,14 +8,12 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
 import {DfxCutPipe} from 'dfx-helper';
-import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
 
 import {ChartPlaceholder, Heatmap} from '@app/components';
 import {
   InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
   MonitorStatus,
-  PingChart,
   PingChartFilter,
 } from '@app/components/monitor';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
@@ -26,7 +24,6 @@ import {
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
 } from '@app/services';
-import {dateToDateTime, toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -262,20 +259,8 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
 
       <section hlmCard>
         <div hlmCardContent>
-          <pu-ping-chart-filter
-            [filter]="pingChartFilter()"
-            (filterChange)="
-              rangeStartPingChartFilter.set($event.range.start);
-              rangeEndPingChartFilter.set($event.range.end);
-              precisionPingChartFilter.set($event.precision)
-            " />
-
           @defer (on idle) {
-            @if (checkResultsPingStore.isFulfilled()) {
-              <pu-ping-chart [chart]="checkResultsPingStore.data()!" />
-            } @else {
-              <pu-chart-placeholder class="w-full" style="height: 24rem" />
-            }
+            <pu-ping-chart-filter [monitorId]="monitorId()" />
           } @placeholder {
             <pu-chart-placeholder class="w-full" style="height: 24rem" />
           }
@@ -289,7 +274,6 @@ import {dateToDateTime, toBackendDate} from '@app/services/util';
   imports: [
     MonitorStatus,
     InfiniteUptimeTimeline,
-    PingChart,
     Heatmap,
     MonitorHeaderPlaceholder,
     RouterLink,
@@ -316,37 +300,6 @@ export class MonitorDetail {
 
   readonly cutDescription = signal(true);
 
-  protected readonly rangeStartPingChartFilter = linkedQueryParam('ping.filter.range.start', {
-    parse: (it) => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      return it ?? toBackendDate(yesterday);
-    },
-    stringify: (value) => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      return value === toBackendDate(yesterday) ? null : value;
-    },
-  });
-  protected readonly rangeEndPingChartFilter = linkedQueryParam('ping.filter.range.end', {
-    parse: (it) => it ?? toBackendDate(new Date()),
-    stringify: (value) => (value === toBackendDate(new Date()) ? null : value),
-  });
-  protected readonly precisionPingChartFilter = linkedQueryParam('ping.filter.precision', {
-    parse: paramToNumber({
-      defaultValue: 15,
-    }),
-    stringify: (value) => (value === 15 ? null : value),
-  });
-
-  protected readonly pingChartFilter = computed(() => ({
-    range: {
-      start: this.rangeStartPingChartFilter(),
-      end: this.rangeEndPingChartFilter(),
-    },
-    precision: this.precisionPingChartFilter(),
-  }));
-
   protected readonly testIntervalDuration = computed(() => {
     const seconds = this.monitorDetailStore.monitor()?.testIntervalSeconds;
 
@@ -365,35 +318,6 @@ export class MonitorDetail {
         monitorId: this.monitorId(),
         page: this.infiniteCheckResultsStore.page(),
       })),
-    );
-
-    this.checkResultsPingStore.load(
-      computed(() => {
-        const filter = this.pingChartFilter();
-        const now = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const hasSelectedYesterday = filter.range.start === toBackendDate(yesterday);
-        const hasSelectedToday = filter.range.end === toBackendDate(now);
-        return {
-          monitorId: this.monitorId(),
-          precision: this.precisionPingChartFilter(),
-          start: dateToDateTime(
-            filter.range.start,
-            hasSelectedYesterday ? yesterday.getHours() : 0,
-            hasSelectedYesterday ? yesterday.getMinutes() : 0,
-            hasSelectedYesterday ? yesterday.getHours() : 0,
-            0,
-          ),
-          end: dateToDateTime(
-            filter.range.end,
-            hasSelectedToday ? now.getHours() : 0,
-            hasSelectedToday ? now.getMinutes() : 0,
-            hasSelectedToday ? now.getSeconds() : 0,
-            0,
-          ),
-        };
-      }),
     );
   }
 }

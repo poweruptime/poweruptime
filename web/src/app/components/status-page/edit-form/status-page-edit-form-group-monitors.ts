@@ -5,6 +5,7 @@ import {
   computed,
   effect,
   forwardRef,
+  inject,
   input,
   model,
   signal,
@@ -12,15 +13,9 @@ import {
 import {
   ControlValueAccessor,
   FormControl,
-  FormsModule,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
-
-import {MatIconButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatProgressBar} from '@angular/material/progress-bar';
-import {MatOption, MatSelect, MatSelectChange} from '@angular/material/select';
 
 import {
   CdkDrag,
@@ -32,10 +27,12 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {BackendType} from '@app/api';
 
@@ -52,31 +49,31 @@ interface DragEventType {
     <div class="mt-3 flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <span class="text-xl">{{ 'general.monitors' | transloco }}</span>
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>{{ 'statusPage.edit.monitors.add' | transloco }}</mat-label>
-          <mat-select [formControl]="selectedMonitor" (selectionChange)="onAdd($event)">
-            <mat-option class="pt-1">
-              <ngx-mat-select-search [(ngModel)]="monitorSearch" noEntriesFoundLabel="">
-                <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
-              </ngx-mat-select-search>
-            </mat-option>
-            @if (monitorSearchPending()) {
-              <mat-progress-bar mode="indeterminate" style="z-index: 1000; margin-top: 0.5rem" />
-            } @else {
-              @for (monitor of filteredMonitors(); track monitor.id) {
-                <mat-option [value]="monitor.id">{{ monitor.name }}</mat-option>
-              } @empty {
-                <mat-option disabled>
-                  @if (monitorSearch() === '') {
-                    {{ 'statusPage.edit.monitors.search.noLeft' | transloco }}
-                  } @else {
-                    {{ 'statusPage.edit.monitors.search.noFound' | transloco }}
-                  }
-                </mat-option>
+        <hlm-combobox
+          [formControl]="selectedMonitor"
+          (valueChange)="onAdd($event)"
+          autoFocus="first-tabbable">
+          <hlm-combobox-trigger class="w-full justify-between font-normal">
+            <span hlmComboboxValue></span>
+          </hlm-combobox-trigger>
+          <div *brnPopoverContent hlmComboboxContent>
+            <hlm-combobox-input showTrigger="false" mode="popup" />
+            <hlm-combobox-empty>
+              @if (monitorSearch() === '') {
+                {{ 'statusPage.edit.monitors.search.noLeft' | transloco }}
+              } @else {
+                {{ 'statusPage.edit.monitors.search.noFound' | transloco }}
               }
-            }
-          </mat-select>
-        </mat-form-field>
+            </hlm-combobox-empty>
+            <div hlmComboboxList>
+              @for (monitor of filteredMonitors(); track $index) {
+                <hlm-combobox-item [value]="monitor">
+                  {{ monitor.name }}
+                </hlm-combobox-item>
+              }
+            </div>
+          </div>
+        </hlm-combobox>
       </div>
 
       @let _allMonitors = mappedByIdMonitors();
@@ -104,16 +101,18 @@ interface DragEventType {
               <div class="monitor-drag-placeholder" *cdkDragPlaceholder></div>
               <div class="flex items-center justify-between text-xl" hlmCardContent>
                 <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
-                  <ng-icon name="bootstrapGripVertical" size="20" />
+                  <ng-icon hlm size="sm" name="bootstrapGripVertical" size="20" />
                   <h3>{{ monitor.name }}</h3>
                 </div>
                 <div>
                   <button
                     [disabled]="_isDisabled"
                     (click)="onDelete(monitorIdWithWritableSignal.monitorId)"
-                    type="button"
-                    mat-icon-button>
-                    <ng-icon name="bootstrapTrashFill" />
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    type="button">
+                    <ng-icon hlm size="sm" name="bootstrapTrashFill" />
                   </button>
                 </div>
               </div>
@@ -155,24 +154,22 @@ interface DragEventType {
   ],
   imports: [
     ReactiveFormsModule,
-    FormsModule,
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    MatIconButton,
-    MatFormField,
-    MatSelect,
-    MatLabel,
-    MatOption,
-    NgxMatSelectSearchModule,
-    NgIcon,
-    MatProgressBar,
     CdkDragPlaceholder,
     TranslocoPipe,
     HlmCardImports,
+    HlmComboboxImports,
+    BrnPopoverContent,
+    HlmButtonImports,
+    HlmIconImports,
   ],
 })
 export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
+  private readonly translocoService = inject(TranslocoService);
+
+  // TODO: make it async again
   monitorSearch = model.required<string>();
   monitorSearchPending = input.required<boolean>();
   allSelectedMonitors = model.required<BackendType['MonitorMinResponse'][]>();
@@ -206,7 +203,9 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
     this.monitorIds().map((it) => ({monitorId: it, monitorIds: this.monitorIds})),
   );
 
-  readonly selectedMonitor = new FormControl('');
+  readonly selectedMonitor = new FormControl(
+    this.translocoService.translate('statusPage.edit.monitors.add'),
+  );
   readonly isDisabled = signal(false);
   onChange?: (it: string[] | null) => void;
 
@@ -232,9 +231,15 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
     }
   }
 
-  onAdd(it: MatSelectChange): void {
+  onAdd(it?: BackendType['MonitorResponse'] | string): void {
+    if (!it || typeof it === 'string') {
+      return;
+    }
+
+    const monitorId = it.id;
+
     const monitor = this.searchableMonitors().find(
-      (searchMonitor) => searchMonitor.id === it.value,
+      (searchMonitor) => searchMonitor.id === monitorId,
     );
 
     if (!monitor) {
@@ -242,9 +247,9 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
     }
 
     this.allSelectedMonitors.update((monitors) => [...monitors, monitor]);
-    this.monitorIds.update((monitorIds) => [...monitorIds, it.value]);
+    this.monitorIds.update((monitorIds) => [...monitorIds, monitorId]);
 
-    this.selectedMonitor.reset();
+    this.selectedMonitor.reset(this.translocoService.translate('statusPage.edit.monitors.add'));
   }
 
   onDelete(monitorId: string): void {

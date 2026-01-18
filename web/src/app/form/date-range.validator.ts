@@ -1,18 +1,17 @@
-import {AbstractControl} from '@angular/forms';
+import {Signal, computed} from '@angular/core';
 
-export function dateRangeValidator(
+export function injectDateRangeValidator(
   maxRangeInDays: number,
-): (control: AbstractControl) => {invalidRange: true} | null {
-  return (control: AbstractControl) => {
-    const start = control.get('start')?.value as string | null;
-    const end = control.get('end')?.value as string | null;
-
+  start: Signal<string>,
+  end: Signal<string>,
+) {
+  return computed(() => {
     let invalid = false;
     if (start && end) {
       invalid =
-        new Date(start).valueOf() + 1000 * 3600 * 24 * maxRangeInDays < new Date(end).valueOf(); //checking if date difference is less than 31 days
+        new Date(start()).valueOf() + 1000 * 3600 * 24 * maxRangeInDays < new Date(end()).valueOf(); //checking if date difference is less than 31 days
     }
 
-    return invalid ? {invalidRange: true} : null;
-  };
+    return invalid;
+  });
 }

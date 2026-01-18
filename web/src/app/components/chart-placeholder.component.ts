@@ -7,7 +7,7 @@ import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [HlmSkeletonImports],
   host: {
-    class: 'bg-muted flex flex-col justify-end gap-2 rounded p-4;',
+    class: 'flex flex-col justify-end gap-2 rounded p-4;',
     role: 'presentation',
   },
   template: `
