@@ -18,7 +18,7 @@ import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.core.utils.RandomGenerator
-import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
+import org.poweruptime.backend.features.authentication.permission.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorStatus

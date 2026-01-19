@@ -10,8 +10,9 @@ import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.domain.PermissionsService
-import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
+import org.poweruptime.backend.features.authentication.permission.Permission
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -62,19 +63,19 @@ class SubNotificationController(
 
         publicMonitorId?.let { publicMonitorId ->
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByMonitorId(publicUserId, publicMonitorId)
+                permissionsService.isPartOf(publicUserId, publicMonitorId, Permission.Monitor)
             }
         }
 
         publicTeamId?.let { publicTeamId ->
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
+                permissionsService.isPartOf(publicUserId, publicTeamId, Permission.Team)
             }
         }
 
         publicNotificationId?.let { notificationId ->
             auth.throwIfNotPartOf { userId ->
-                permissionsService.isPartOfByNotificationId(userId, notificationId)
+                permissionsService.isPartOf(userId, notificationId, Permission.Notification)
             }
         }
 

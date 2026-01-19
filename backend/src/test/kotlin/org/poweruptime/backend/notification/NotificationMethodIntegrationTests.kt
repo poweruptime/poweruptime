@@ -96,6 +96,7 @@ class NotificationMethodIntegrationTests(
 
         @Test
         @MockUser
+        @ClearInitDatabase
         fun `test success with team admin user`() {
             mockMvc.get("/v1/notification-method/UoKSMt62oFcX").andExpect {
                 status { isOk() }
@@ -112,6 +113,7 @@ class NotificationMethodIntegrationTests(
 
         @Test
         @MockUser(MockUsers.USER2)
+        @ClearInitDatabase
         fun `test success with team user`() {
             mockMvc.get("/v1/notification-method/UoKSMt62oFcX").andExpect {
                 status { isOk() }

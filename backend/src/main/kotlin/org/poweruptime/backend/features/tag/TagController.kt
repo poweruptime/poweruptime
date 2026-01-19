@@ -9,8 +9,8 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.features.authentication.domain.PermissionsService
-import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.service.TeamService
@@ -42,7 +42,7 @@ class TagController(
     ): PaginatedResponse<TagDto> {
         publicTeamId?.let { publicTeamId ->
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
+                permissionsService.isPartOf(publicUserId, publicTeamId, Permission.Team)
             }
         }
 

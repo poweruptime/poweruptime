@@ -18,10 +18,11 @@ import org.poweruptime.backend.core.utils.DAYS_PER_MONTH
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_MINUTE
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_SECONDS
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
-import org.poweruptime.backend.features.authentication.domain.PermissionsService
-import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
 import org.poweruptime.backend.features.authentication.permission.MONITOR_MEMBER
+import org.poweruptime.backend.features.authentication.permission.Permission
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
@@ -75,13 +76,13 @@ class CheckResultController(
 
         publicMonitorId?.let {
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByMonitorId(publicUserId, publicMonitorId)
+                permissionsService.isPartOf(publicUserId, publicMonitorId, Permission.Monitor)
             }
         }
 
         publicTeamId?.let {
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
+                permissionsService.isPartOf(publicUserId, publicTeamId, Permission.Team)
             }
         }
 

@@ -11,7 +11,8 @@ import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.ForbiddenException
-import org.poweruptime.backend.features.authentication.domain.PermissionsService
+import org.poweruptime.backend.features.authentication.permission.Permission
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.TEAM_ADMIN
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
 import org.poweruptime.backend.features.authentication.service.isAdmin
@@ -173,10 +174,11 @@ class TeamController(
         role = if (authentication.isAdmin()) {
             TeamRole.ADMIN
         } else {
-            role ?: permissionsService.findByTeamId(
+            role ?: permissionsService.find(
                 publicUserId = authentication.publicUserId(),
-                publicTeamId = publicId,
-            )?.role ?: throw ForbiddenException("User not in team")
+                entityId = publicId,
+                Permission.Team
+            ) ?: throw ForbiddenException("User not in team")
         },
     )
 }

@@ -1,13 +1,11 @@
 package org.poweruptime.backend.features.authentication.permission
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.poweruptime.backend.features.authentication.domain.*
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.service.publicUserId
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
 
 @Component
@@ -33,17 +31,22 @@ class PermissionEvaluator(
             return false
         }
 
-        val parsedPermission = Permission.entries.find { it.permissionName == permissionName } ?: run {
+        val permissionRequest = Permission.fromPermissionName(permissionName)
+        if (permissionRequest == null) {
             logger.error { """Unknown permission: "$permissionName"""" }
-
             return false
         }
 
         val publicUserId = authentication.publicUserId()
 
-        return checkPermission(parsedPermission, publicUserId, publicTargetId).apply {
+        return permissionsService.checkPermission(
+            publicUserId,
+            publicTargetId,
+            permissionRequest,
+        ).apply {
             logger.debug {
-                "Checker: '${parsedPermission.name}' user: '$publicUserId' target: '$publicTargetId' result: $this"
+                "Checker: '${permissionRequest.permissionName}' " +
+                    "user: '$publicUserId' target: '$publicTargetId' result: $this"
             }
         }
     }
@@ -54,68 +57,4 @@ class PermissionEvaluator(
         targetType: String,
         permission: Any
     ): Boolean = false
-
-    @Transactional(readOnly = true)
-    fun checkPermission(
-        permission: Permission,
-        publicUserId: String,
-        publicTargetId: String
-    ): Boolean = when (permission) {
-        Permission.TeamAdmin -> permissionsService.isAdminOfByTeamId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.TeamMember -> permissionsService.isPartOfByTeamId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.MonitorAdmin -> permissionsService.isAdminOfByMonitorId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.MonitorMember -> permissionsService.isPartOfByMonitorId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.CheckResultAdmin -> permissionsService.isAdminOfByCheckResultId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.CheckResultMember -> permissionsService.isPartOfByCheckResultId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.NotificationMethodAdmin -> permissionsService.isAdminOfByNotificationMethodId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.NotificationMethodMember -> permissionsService.isPartOfByNotificationMethodId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.NotificationAdmin -> permissionsService.isAdminOfByNotificationId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.NotificationMember -> permissionsService.isPartOfByNotificationId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.StatusPageAdmin -> permissionsService.isAdminOfByStatusPageId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.StatusPageMember -> permissionsService.isPartOfByStatusPageId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.StatusPageGroupAdmin -> permissionsService.isAdminOfByStatusPageGroupId(
-            publicUserId,
-            publicTargetId,
-        )
-        Permission.StatusPageGroupMember -> permissionsService.isPartOfByStatusPageGroupId(
-            publicUserId,
-            publicTargetId,
-        )
-    }
 }

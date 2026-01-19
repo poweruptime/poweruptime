@@ -15,7 +15,7 @@ import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.domain.undeleteById
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.BadRequestException
-import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
+import org.poweruptime.backend.features.authentication.permission.ensureAllInTeam
 import org.poweruptime.backend.features.monitor.MonitorScheduler
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByTeamIdsGrouped
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByUserGrouped

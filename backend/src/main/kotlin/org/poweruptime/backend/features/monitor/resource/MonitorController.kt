@@ -12,9 +12,9 @@ import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
-import org.poweruptime.backend.features.authentication.domain.PermissionsService
-import org.poweruptime.backend.features.authentication.domain.ensureAllInTeam
-import org.poweruptime.backend.features.authentication.domain.throwIfNotPartOf
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
+import org.poweruptime.backend.features.authentication.permission.ensureAllInTeam
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.publicUserId
 import org.poweruptime.backend.features.authentication.service.userId
@@ -87,7 +87,7 @@ class MonitorController(
     ): PaginatedResponse<MonitorResponse> {
         publicTeamId?.let {
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByTeamId(publicUserId, it)
+                permissionsService.isPartOf(publicUserId, it, Permission.Team)
             }
         }
 
@@ -108,7 +108,7 @@ class MonitorController(
                             publicIds,
                         ).ensureAllInTeam(teamId) { it.teamId }.map { it.id }
                     } else {
-                        permissionsService.isPartOfByNotificationMethodIds(auth.publicUserId(), publicIds)
+                        permissionsService.isPartOfByIds(auth.publicUserId(), publicIds, Permission.NotificationMethod)
                     }
                 }
             },
@@ -249,7 +249,7 @@ class MonitorController(
     ): MonitorDashboardResponse {
         publicTeamId?.let { publicTeamId ->
             auth.throwIfNotPartOf { publicUserId ->
-                permissionsService.isPartOfByTeamId(publicUserId, publicTeamId)
+                permissionsService.isPartOf(publicUserId, publicTeamId, Permission.Team)
             }
 
             return monitorService.getTeamDashboard(Team.findIdByPublicIdOrThrow(publicTeamId))
