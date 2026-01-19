@@ -54,6 +54,7 @@ tools=(
   "Prettier|green|pnpm format"
   "eslint|yellow|pnpm -C web lint:fix"
   "Detekt|cyan|./gradlew detekt"
+  "gofmt|magenta|gofmt -w ./cli"
 )
 
 names=()

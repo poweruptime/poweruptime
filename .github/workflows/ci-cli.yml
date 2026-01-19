@@ -1,0 +1,56 @@
+name: dev ci (cli)
+
+on:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'cli/**'
+      - '.gitignore'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+      - 'cli/**'
+      - '.gitignore'
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          cache: true
+          cache-dependency-path: cli/go.sum
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          args: build --clean --snapshot
+          workdir: cli
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Reorganize artifacts
+        run: |
+          cd ./cli
+          chmod +x ./reorganize-dist.sh
+          ./reorganize-dist.sh dev
+          cd -
+
+      - name: Archive CLI artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: cli-artifacts
+          path: ./cli/dist/binaries
+          retention-days: 1

@@ -36,6 +36,21 @@ jobs:
       - name: Style check
         run: pnpm format:check
 
+  gofmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          cache: true
+          cache-dependency-path: cli/go.sum
+
+      - name: Style check
+        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+
   detekt:
     runs-on: ubuntu-latest
     steps:
