@@ -26,9 +26,7 @@ import java.time.Instant
 
 @Service
 @Transactional(readOnly = true)
-class FileService(
-    @Value(Config.STORAGE_DIRECTORY) private val directoryPath: String,
-) {
+class FileService(@Value(Config.STORAGE_DIRECTORY) private val directoryPath: String) {
     private val rootLocation = Path.of(directoryPath)
     private final val logger = KotlinLogging.logger {}
 
@@ -36,13 +34,14 @@ class FileService(
     fun store(uploadFile: MultipartFile): FileRecord {
         isAllowedToUpload(uploadFile)
 
-        val dbFile = File.insertAndGetId {
-            it[File.name] = uploadFile.resource.filename!!
-        }.let { id ->
-            File.findByIdOrThrow(id.value) {
-                File.rowToFileRecord(it)
+        val dbFile = File
+            .insertAndGetId {
+                it[File.name] = uploadFile.resource.filename!!
+            }.let { id ->
+                File.findByIdOrThrow(id.value) {
+                    File.rowToFileRecord(it)
+                }
             }
-        }
 
         val destinationFile: Path = rootLocation
             .resolve(Paths.get(dbFile.fileId))
@@ -82,12 +81,12 @@ class FileService(
         null
     }
 
-    fun getByFileId(fileId: String): FileRecord = File.findByPublicId(fileId) {
-        File.rowToFileRecord(it)
-    }.orThrowNotFound("File not found: $fileId")
+    fun getByFileId(fileId: String): FileRecord = File
+        .findByPublicId(fileId) {
+            File.rowToFileRecord(it)
+        }.orThrowNotFound("File not found: $fileId")
 
-    fun getIdByFileId(fileId: String): ULong =
-        File.findIdByPublicId(fileId).orThrowNotFound("File not found: $fileId")
+    fun getIdByFileId(fileId: String): ULong = File.findIdByPublicId(fileId).orThrowNotFound("File not found: $fileId")
 
     fun init() {
         Files.createDirectories(rootLocation)
@@ -145,15 +144,12 @@ class FileService(
         return filesToDelete
     }
 
-    private fun getAllFilesOnDisk(): List<Path> {
-        return Files.walk(rootLocation)
-            .filter { Files.isRegularFile(it) }
-            .toList()
-    }
+    private fun getAllFilesOnDisk(): List<Path> = Files
+        .walk(rootLocation)
+        .filter { Files.isRegularFile(it) }
+        .toList()
 
-    private fun loadFile(fileId: String): Path {
-        return rootLocation.resolve(fileId)
-    }
+    private fun loadFile(fileId: String): Path = rootLocation.resolve(fileId)
 
     private fun isAllowedToUpload(file: MultipartFile) {
         if (file.isEmpty) {

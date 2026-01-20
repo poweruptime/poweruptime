@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1/public/changelog")
 @Tag(name = "Changelog API")
-class ChangelogController(
-    private val changelogService: ChangelogService
-) {
+class ChangelogController(private val changelogService: ChangelogService) {
     @Operation(
         summary = "Get changelog",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -25,7 +23,8 @@ class ChangelogController(
     fun getChangelog(
         @RequestParam beta: Boolean = false,
         @RequestParam version: String? = null,
-    ): ResponseEntity<String> = ResponseEntity.ok()
+    ): ResponseEntity<String> = ResponseEntity
+        .ok()
         .contentType(MediaType.TEXT_MARKDOWN)
         .body(changelogService.fetchChangelog(beta, version))
 }

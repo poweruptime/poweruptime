@@ -13,7 +13,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.RestClient
 
 private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
-    val connectionConfig = ConnectionConfig.custom()
+    val connectionConfig = ConnectionConfig
+        .custom()
         .setConnectTimeout(Timeout.ofMilliseconds(4000))
         .setSocketTimeout(Timeout.ofMilliseconds(4000))
         .build()
@@ -22,15 +23,16 @@ private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
         setDefaultConnectionConfig(connectionConfig)
     }
 
-    val httpClient = HttpClientBuilder.create()
+    val httpClient = HttpClientBuilder
+        .create()
         .setConnectionManager(connectionManager)
         .setDefaultRequestConfig(
-            RequestConfig.custom()
+            RequestConfig
+                .custom()
                 .setConnectionRequestTimeout(Timeout.ofMilliseconds(4000))
                 .setResponseTimeout(Timeout.ofMilliseconds(4000))
                 .build(),
-        )
-        .build()
+        ).build()
 
     return HttpComponentsClientHttpRequestFactory(httpClient)
 }
@@ -39,7 +41,8 @@ private fun clientHttpRequestFactory(): ClientHttpRequestFactory {
 class HttpClientConfiguration {
     @Primary
     @Bean
-    fun restClient(): RestClient = RestClient.builder()
+    fun restClient(): RestClient = RestClient
+        .builder()
         .requestFactory(clientHttpRequestFactory())
         .build()
 }

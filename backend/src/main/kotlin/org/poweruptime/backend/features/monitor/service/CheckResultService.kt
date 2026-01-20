@@ -32,10 +32,15 @@ class CheckResultService {
         CheckResult.rowToCheckResultRecord(it)
     }
 
-    fun getByIdJoinMonitorAndTeam(id: ULong): CheckResultJoinMonitorAndTeamRecord =
-        CheckResult.innerJoin(Monitor).innerJoin(Team).selectAll().where {
+    fun getByIdJoinMonitorAndTeam(id: ULong): CheckResultJoinMonitorAndTeamRecord = CheckResult
+        .innerJoin(Monitor)
+        .innerJoin(Team)
+        .selectAll()
+        .where {
             CheckResult.id eq id
-        }.limit(1).firstOrNull()?.let {
+        }.limit(1)
+        .firstOrNull()
+        ?.let {
             CheckResultJoinMonitorAndTeamRecord(
                 checkResult = CheckResult.rowToCheckResultRecord(it),
                 monitor = Monitor.rowToMonitorRecord(it),
@@ -45,10 +50,8 @@ class CheckResultService {
 
     fun getIdByPublicId(publicId: String): ULong = CheckResult.findIdByPublicIdOrThrow(publicId)
 
-    fun getLastOppositeByMonitorIdAndStatus(
-        monitorId: ULong,
-        status: MonitorStatus,
-    ): CheckResultRecord? = CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId, status)
+    fun getLastOppositeByMonitorIdAndStatus(monitorId: ULong, status: MonitorStatus): CheckResultRecord? =
+        CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId, status)
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -77,7 +80,7 @@ class CheckResultService {
     fun getByStatusUpMonitorIdAndPickedUpBetween(
         monitorId: ULong,
         start: Instant,
-        end: Instant
+        end: Instant,
     ): List<CheckResultRecord> = CheckResult.findByStatusUpMonitorIdAndPickedUpBetween(monitorId, start, end)
 
     @Transactional

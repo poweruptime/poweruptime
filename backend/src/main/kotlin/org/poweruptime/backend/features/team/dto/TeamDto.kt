@@ -9,10 +9,7 @@ import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import java.time.Instant
 
-data class TeamMinResponse(
-    val id: String,
-    val name: String,
-) {
+data class TeamMinResponse(val id: String, val name: String) {
     constructor(team: TeamRecord) : this(
         id = team.publicId,
         name = team.name,

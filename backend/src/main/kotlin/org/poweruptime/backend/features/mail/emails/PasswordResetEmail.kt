@@ -8,7 +8,7 @@ data class PasswordResetEmail(
     val user: UserRecord,
     val resetToken: String,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(user.email)
 

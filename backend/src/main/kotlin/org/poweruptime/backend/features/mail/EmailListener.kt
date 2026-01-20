@@ -8,9 +8,7 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 
 @Component
-class EmailListener(
-    private val systemEmailService: SystemEmailService
-) {
+class EmailListener(private val systemEmailService: SystemEmailService) {
     /**
      * Consumer for "email-queue"
      * Retry after 30 seconds, 1.5 minutes, 4.5 minutes and 10 minutes

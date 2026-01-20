@@ -9,7 +9,7 @@ data class InviteUserEmail(
     val invitee: UserRecord,
     val onetimePassword: String,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(invitee.email)
 

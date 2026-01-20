@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.*
 
 class MonitorIntegrationTests(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val instanceSettingService: InstanceSettingService
+    @Autowired val instanceSettingService: InstanceSettingService,
 ) : BaseTestWithReusingContainers() {
     private val dnsMonitorCheckerData = DnsMonitorDataRecord(
         host = "playground.dafnik.me",
@@ -254,96 +254,21 @@ class MonitorIntegrationTests(
     inner class CreateMonitor {
         @Test
         fun `test if secured`() {
-            mockMvc.post("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateMonitorDto(dnsMonitorCheckerData).toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .post("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getCreateMonitorDto(dnsMonitorCheckerData).toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser
         fun `test success with user`() {
             val model = ModelFactory.getCreateMonitorDto(dnsMonitorCheckerData)
-            mockMvc.post("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockUser
-        fun `test success permission for newly created team`() {
-            instanceSettingService.setUserAllowedToCreateTeams(true)
-            val teamModel = ModelFactory.getCreateTeamDto()
-            val (teamId) = mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = teamModel.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(teamModel.name) }
-                    }
-                }
-            }.andReturn().toDto<TeamResponse>()
-
-            val monitorModel = ModelFactory.getCreateMonitorDto(
-                dnsMonitorCheckerData,
-                teamId = teamId,
-            )
-            mockMvc.post("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = monitorModel.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(monitorModel.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockAdmin
-        fun `test success with admin`() {
-            val model = ModelFactory.getCreateMonitorDto(dnsMonitorCheckerData)
-            mockMvc.post("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockAdmin
-        fun `test success all types`() {
-            val createdMonitors = monitorCheckers().map { data ->
-                val model = ModelFactory.getCreateMonitorDto(data)
-                val monitor = mockMvc.post("/v1/monitor") {
+            mockMvc
+                .post("/v1/monitor") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
                 }.andExpect {
@@ -353,12 +278,95 @@ class MonitorIntegrationTests(
                         content {
                             jsonPath("$.id") { exists() }
                             jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
-                            jsonPath("$.type") { value(model.data._type.code) }
-                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
-                }.andReturn().toDto<MonitorFullResponse>()
+                }
+        }
+
+        @Test
+        @MockUser
+        fun `test success permission for newly created team`() {
+            instanceSettingService.setUserAllowedToCreateTeams(true)
+            val teamModel = ModelFactory.getCreateTeamDto()
+            val (teamId) = mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = teamModel.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(teamModel.name) }
+                        }
+                    }
+                }.andReturn()
+                .toDto<TeamResponse>()
+
+            val monitorModel = ModelFactory.getCreateMonitorDto(
+                dnsMonitorCheckerData,
+                teamId = teamId,
+            )
+            mockMvc
+                .post("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = monitorModel.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(monitorModel.name) }
+                        }
+                    }
+                }
+        }
+
+        @Test
+        @MockAdmin
+        fun `test success with admin`() {
+            val model = ModelFactory.getCreateMonitorDto(dnsMonitorCheckerData)
+            mockMvc
+                .post("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(model.name) }
+                        }
+                    }
+                }
+        }
+
+        @Test
+        @MockAdmin
+        fun `test success all types`() {
+            val createdMonitors = monitorCheckers().map { data ->
+                val model = ModelFactory.getCreateMonitorDto(data)
+                val monitor = mockMvc
+                    .post("/v1/monitor") {
+                        contentType = MediaType.APPLICATION_JSON
+                        content = model.toJSON()
+                    }.andExpect {
+                        status { isCreated() }
+                        content {
+                            contentType(MediaType.APPLICATION_JSON)
+                            content {
+                                jsonPath("$.id") { exists() }
+                                jsonPath("$.name") { value(model.name) }
+                                jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
+                                jsonPath("$.type") { value(model.data._type.code) }
+                                jsonPath("$.data._type") { value(model.data._type.code) }
+                            }
+                        }
+                    }.andReturn()
+                    .toDto<MonitorFullResponse>()
 
                 assertThat(monitor.data.toJSON()).isEqualTo(data.toJSON())
 
@@ -370,22 +378,24 @@ class MonitorIntegrationTests(
                 val model = monitorCheckers().random().let { data ->
                     ModelFactory.getUpdateMonitorDto(id, data)
                 }
-                val monitor = mockMvc.put("/v1/monitor") {
-                    contentType = MediaType.APPLICATION_JSON
-                    content = model.toJSON()
-                }.andExpect {
-                    status { isOk() }
-                    content {
-                        contentType(MediaType.APPLICATION_JSON)
+                val monitor = mockMvc
+                    .put("/v1/monitor") {
+                        contentType = MediaType.APPLICATION_JSON
+                        content = model.toJSON()
+                    }.andExpect {
+                        status { isOk() }
                         content {
-                            jsonPath("$.id") { value(id) }
-                            jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
-                            jsonPath("$.type") { value(model.data._type.code) }
-                            jsonPath("$.data._type") { value(model.data._type.code) }
+                            contentType(MediaType.APPLICATION_JSON)
+                            content {
+                                jsonPath("$.id") { value(id) }
+                                jsonPath("$.name") { value(model.name) }
+                                jsonPath("$.team.id") { value("4Lxhu5YKWPBr") }
+                                jsonPath("$.type") { value(model.data._type.code) }
+                                jsonPath("$.data._type") { value(model.data._type.code) }
+                            }
                         }
-                    }
-                }.andReturn().toDto<MonitorFullResponse>()
+                    }.andReturn()
+                    .toDto<MonitorFullResponse>()
 
                 assertThat(monitor.data.toJSON()).isEqualTo(model.data.toJSON())
             }
@@ -397,77 +407,83 @@ class MonitorIntegrationTests(
     inner class UpdateMonitor {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateMonitorDto(
-                    "6XSKoPbRhSsb",
-                    dnsMonitorCheckerData,
-                ).toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getUpdateMonitorDto(
+                            "6XSKoPbRhSsb",
+                            dnsMonitorCheckerData,
+                        ).toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if secured with team user`() {
             val model = ModelFactory.getUpdateMonitorDto("6XSKoPbRhSsb", dnsMonitorCheckerData)
-            mockMvc.put("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if secured with wrong team user`() {
             val model = ModelFactory.getUpdateMonitorDto("6XSKoPbRhSsb", dnsMonitorCheckerData)
-            mockMvc.put("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test success with admin`() {
             val model = ModelFactory.getUpdateMonitorDto("6XSKoPbRhSsb", dnsMonitorCheckerData)
-            mockMvc.put("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("6XSKoPbRhSsb") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("6XSKoPbRhSsb") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
 
         @Test
         @MockUser
         fun `test success with team admin user`() {
             val model = ModelFactory.getUpdateMonitorDto("6XSKoPbRhSsb", dnsMonitorCheckerData)
-            mockMvc.put("/v1/monitor") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/monitor") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("6XSKoPbRhSsb") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("6XSKoPbRhSsb") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
     }
 

@@ -45,7 +45,11 @@ class Exposed {
                 }
             }
 
-    @Bean // PersistenceExceptionTranslationPostProcessor with proxyTargetClass=false, see https://github.com/spring-projects/spring-boot/issues/1844
+    /**
+     * PersistenceExceptionTranslationPostProcessor with proxyTargetClass=false
+     * see https://github.com/spring-projects/spring-boot/issues/1844
+     */
+    @Bean
     fun persistenceExceptionTranslationPostProcessor() = PersistenceExceptionTranslationPostProcessor()
 }
 

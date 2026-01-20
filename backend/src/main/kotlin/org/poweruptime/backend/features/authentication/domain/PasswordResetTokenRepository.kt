@@ -14,17 +14,15 @@ fun PasswordResetToken.deleteOlderThan(before: Instant): Int = deleteWhere {
     createdAt less before
 }
 
-fun PasswordResetToken.countByUserIdAndCreatedAfter(
-    userId: ULong,
-    createdAfter: Instant
-): Long = selectAll().where {
-    (PasswordResetToken.userId eq userId) and (PasswordResetToken.createdAt greater createdAfter)
-}.count()
+fun PasswordResetToken.countByUserIdAndCreatedAfter(userId: ULong, createdAfter: Instant): Long = selectAll()
+    .where {
+        (PasswordResetToken.userId eq userId) and (PasswordResetToken.createdAt greater createdAfter)
+    }.count()
 
 fun PasswordResetToken.invalidateByUserIdTokenAndCreatedAfter(
     userId: ULong,
     token: String,
-    createdAfter: Instant
+    createdAfter: Instant,
 ): Int = update({
     (PasswordResetToken.userId eq userId) and
         (PasswordResetToken.createdAt greater createdAfter) and

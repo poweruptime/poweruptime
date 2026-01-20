@@ -11,7 +11,7 @@ data class JoinTeamEmail(
     val invitee: UserRecord,
     val token: String,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(invitee.email)
 

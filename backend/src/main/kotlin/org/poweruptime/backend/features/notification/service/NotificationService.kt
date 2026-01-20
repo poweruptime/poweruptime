@@ -29,44 +29,41 @@ import java.time.Instant
 
 @Service
 @Transactional(readOnly = true)
-class NotificationService(
-    private val notificationMethodService: NotificationMethodService,
-) {
+class NotificationService(private val notificationMethodService: NotificationMethodService) {
     fun getById(id: ULong): NotificationRecord = Notification.findByIdOrThrow(id) {
         Notification.rowToNotificationRecord(it)
     }
 
     fun getIdByPublicId(publicId: String): ULong = Notification.findIdByPublicIdOrThrow(publicId)
 
-    fun getByIdJoinMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord =
-        Notification
-            .innerJoin(Monitor)
-            .innerJoin(Team)
-            .selectAll()
-            .where {
-                Notification.id eq id
-            }
-            .limit(1)
-            .firstOrNull()
-            ?.let {
-                NotificationJoinMonitorAndTeamRecord(
-                    notification = Notification.rowToNotificationRecord(it),
-                    monitor = Monitor.rowToMonitorRecord(it),
-                    team = Team.rowToTeamRecord(it),
-                )
-            }.orThrowNotFound()
+    fun getByIdJoinMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord = Notification
+        .innerJoin(Monitor)
+        .innerJoin(Team)
+        .selectAll()
+        .where {
+            Notification.id eq id
+        }.limit(1)
+        .firstOrNull()
+        ?.let {
+            NotificationJoinMonitorAndTeamRecord(
+                notification = Notification.rowToNotificationRecord(it),
+                monitor = Monitor.rowToMonitorRecord(it),
+                team = Team.rowToTeamRecord(it),
+            )
+        }.orThrowNotFound()
 
     @Transactional
     fun send(monitorId: ULong, checkResult: CheckResultRecord): NotificationJoinMonitorAndTeamRecord {
         assert(listOf(MonitorStatus.UP, MonitorStatus.DOWN).contains(checkResult.status))
 
-        val notificationId = Notification.insertAndGetId {
-            it[Notification.monitorId] = checkResult.monitorId
-            it[Notification.checkResultId] = checkResult.id
-            it[Notification.publicCheckResultId] = checkResult.publicId
-            it[Notification.status] = checkResult.status
-            it[Notification.title] = checkResult.title!!
-        }.value
+        val notificationId = Notification
+            .insertAndGetId {
+                it[Notification.monitorId] = checkResult.monitorId
+                it[Notification.checkResultId] = checkResult.id
+                it[Notification.publicCheckResultId] = checkResult.publicId
+                it[Notification.status] = checkResult.status
+                it[Notification.title] = checkResult.title!!
+            }.value
 
         SubNotification.batchInsert(notificationMethodService.getByMonitorId(monitorId)) { notificationMethod ->
             this[SubNotification.notificationId] = notificationId

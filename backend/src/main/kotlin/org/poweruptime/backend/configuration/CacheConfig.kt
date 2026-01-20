@@ -14,26 +14,28 @@ const val MONITOR_YEARLY_UPTIME_CACHE_KEY = "MONITOR_YEARLY_UPTIME_CACHE"
 
 @Configuration
 class CacheConfig {
-
     @Bean
     fun cacheManager(): CacheManager = SimpleCacheManager().apply {
         setCaches(
             listOf(
                 CaffeineCache(
                     MONITOR_RECENT_UPTIME_CACHE_KEY,
-                    Caffeine.newBuilder()
+                    Caffeine
+                        .newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build(),
                 ),
                 CaffeineCache(
                     MONITOR_UPTIME_STATISTICS_CACHE_KEY,
-                    Caffeine.newBuilder()
+                    Caffeine
+                        .newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build(),
                 ),
                 CaffeineCache(
                     MONITOR_YEARLY_UPTIME_CACHE_KEY,
-                    Caffeine.newBuilder()
+                    Caffeine
+                        .newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build(),
                 ),

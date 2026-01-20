@@ -13,9 +13,7 @@ import org.springframework.test.web.servlet.get
         "springdoc.api-docs.enabled=false",
     ],
 )
-class SwaggerDisabledIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class SwaggerDisabledIntegrationTest(@Autowired private val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `check if swagger redirection url is working`() {
         mockMvc.get("/swagger/docs").andExpect {
@@ -51,9 +49,7 @@ class SwaggerDisabledIntegrationTest(
         "springdoc.api-docs.enabled=true",
     ],
 )
-class SwaggerEnabledIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class SwaggerEnabledIntegrationTest(@Autowired private val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `check if swagger redirection url is working`() {
         mockMvc.get("/swagger/docs").andExpect {

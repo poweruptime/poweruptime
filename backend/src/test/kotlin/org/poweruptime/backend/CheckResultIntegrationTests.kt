@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
 
-class CheckResultIntegrationTests(
-    @Autowired val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class CheckResultIntegrationTests(@Autowired val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `test if secured`() {
         mockMvc.get("/v1/check-result").andExpect {

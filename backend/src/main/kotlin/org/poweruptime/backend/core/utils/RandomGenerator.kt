@@ -18,6 +18,7 @@ const val NANO_ID_SMALL_LENGTH = 12
 
 object RandomGenerator {
     private val random: SecureRandom = SecureRandom()
+
     fun int(min: Int = 0, max: Int = 10): Int = random.nextInt(min, max + 1)
 
     fun nanoId(size: Int = NANO_ID_SMALL_LENGTH) = NanoId.generate(size, NANO_ID_SET, NANO_ID_BYTES_FACTOR)

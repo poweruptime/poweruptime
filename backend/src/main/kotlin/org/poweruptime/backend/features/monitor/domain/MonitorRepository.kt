@@ -31,27 +31,25 @@ import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 
-fun Monitor.updateStatus(ids: List<ULong>, newStatus: MonitorStatus): Int =
-    update({ id inList ids }) {
-        it[status] = newStatus
-    }
+fun Monitor.updateStatus(ids: List<ULong>, newStatus: MonitorStatus): Int = update({ id inList ids }) {
+    it[status] = newStatus
+}
 
 fun Monitor.updateStatus(id: ULong, newStatus: MonitorStatus): Int = update({ Monitor.id eq id }) {
     it[status] = newStatus
 }
 
-fun Monitor.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord =
-    innerJoin(Team)
-        .selectAll()
-        .where { Monitor.id eq id }
-        .limit(1)
-        .firstOrNull()
-        ?.let {
-            MonitorRecordJoinTeamRecord(
-                monitor = rowToMonitorRecord(it),
-                team = Team.rowToTeamRecord(it),
-            )
-        } ?: throw NotFoundException()
+fun Monitor.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord = innerJoin(Team)
+    .selectAll()
+    .where { Monitor.id eq id }
+    .limit(1)
+    .firstOrNull()
+    ?.let {
+        MonitorRecordJoinTeamRecord(
+            monitor = rowToMonitorRecord(it),
+            team = Team.rowToTeamRecord(it),
+        )
+    } ?: throw NotFoundException()
 
 fun Monitor.findByNotificationMethodId(notificationMethodId: ULong): List<MonitorRecord> =
     innerJoin(MonitorNotificationMethod, { Monitor.id }, { MonitorNotificationMethod.monitorId })
@@ -80,7 +78,7 @@ fun Monitor.findAll(
     statuses: List<MonitorStatus>? = null,
     types: List<MonitorType>? = null,
     tags: List<String>? = null,
-    deleted: Boolean = false
+    deleted: Boolean = false,
 ): Page<MonitorRecordJoinTeamRecord> {
     require(teamId != null || userId != null) {
         "teamId, or userId needs to be provided"
@@ -97,14 +95,15 @@ fun Monitor.findAll(
         query.andWhere { Monitor.teamId eq it }
     }
     userId?.let {
-        query.adjustColumnSet {
-            innerJoin(TeamUser)
-        }.adjustSelect {
-            selectColumns = selectColumns + TeamUser.userId
-            select(selectColumns)
-        }.andWhere {
-            TeamUser.userId eq it
-        }
+        query
+            .adjustColumnSet {
+                innerJoin(TeamUser)
+            }.adjustSelect {
+                selectColumns = selectColumns + TeamUser.userId
+                select(selectColumns)
+            }.andWhere {
+                TeamUser.userId eq it
+            }
     }
 
     name?.takeIf { it.isNotEmpty() }?.let {
@@ -126,14 +125,15 @@ fun Monitor.findAll(
     }
 
     enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let {
-        query.adjustColumnSet {
-            innerJoin(MonitorNotificationMethod)
-        }.adjustSelect {
-            selectColumns = selectColumns + MonitorNotificationMethod.notificationMethodId
-            select(selectColumns)
-        }.andWhere {
-            MonitorNotificationMethod.notificationMethodId inList it
-        }
+        query
+            .adjustColumnSet {
+                innerJoin(MonitorNotificationMethod)
+            }.adjustSelect {
+                selectColumns = selectColumns + MonitorNotificationMethod.notificationMethodId
+                select(selectColumns)
+            }.andWhere {
+                MonitorNotificationMethod.notificationMethodId inList it
+            }
     }
 
     enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let { methodIds ->
@@ -181,41 +181,34 @@ fun Monitor.findAll(
     )
 }
 
-fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(id).where {
-    Monitor.teamId eq teamId and deleted.isNull()
-}.map { it[id].value }
+fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(id)
+    .where {
+        Monitor.teamId eq teamId and deleted.isNull()
+    }.map { it[id].value }
 
-fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> =
-    select(
-        teamId,
-        status,
-        id.count(), // same as COUNT(*)
-    )
-        .where {
-            (teamId inList teamIds) and (deleted.isNull())
-        }
-        .groupBy(teamId, status)
-        .map {
-            TeamStatusCount(
-                teamId = it[teamId],
-                status = it[status],
-                count = it[id.count()],
-            )
-        }
+fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> = select(
+    teamId,
+    status,
+    id.count(), // same as COUNT(*)
+).where {
+    (teamId inList teamIds) and (deleted.isNull())
+}.groupBy(teamId, status)
+    .map {
+        TeamStatusCount(
+            teamId = it[teamId],
+            status = it[status],
+            count = it[id.count()],
+        )
+    }
 
 fun Monitor.countMonitorsByUserGrouped(userId: ULong): List<Pair<MonitorStatus, Long>> =
     innerJoin(TeamUser, { teamId }, { TeamUser.teamId })
         .select(status, id.count())
         .where {
             (TeamUser.userId eq userId) and deleted.isNull()
-        }
-        .groupBy(status)
+        }.groupBy(status)
         .map {
             it[status] to it[id.count()]
         }
 
-data class TeamStatusCount(
-    val teamId: ULong,
-    val status: MonitorStatus,
-    val count: Long
-)
+data class TeamStatusCount(val teamId: ULong, val status: MonitorStatus, val count: Long)

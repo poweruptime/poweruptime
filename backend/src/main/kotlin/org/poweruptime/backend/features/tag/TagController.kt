@@ -9,9 +9,9 @@ import org.poweruptime.backend.core.SYSTEM_ROLE_ADMIN
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
+import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
-import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
@@ -46,13 +46,14 @@ class TagController(
             }
         }
 
-        return tagService.getAllPaginated(
-            pageable = pageable,
-            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
-            userId = if (publicTeamId == null) auth.userId() else null,
-            name = name,
-        ).toDto {
-            TagDto(it)
-        }
+        return tagService
+            .getAllPaginated(
+                pageable = pageable,
+                teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+                userId = if (publicTeamId == null) auth.userId() else null,
+                name = name,
+            ).toDto {
+                TagDto(it)
+            }
     }
 }

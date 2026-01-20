@@ -74,7 +74,7 @@ object ModelFactory {
     fun getTestMonitor(
         type: MonitorType = MonitorType.DNS,
         name: String = "Test",
-        status: MonitorStatus = MonitorStatus.PENDING
+        status: MonitorStatus = MonitorStatus.PENDING,
     ) = MonitorRecord(
         name = name,
         testIntervalSeconds = 30,
@@ -246,11 +246,7 @@ object ModelFactory {
         tags = listOf(),
     )
 
-    fun getUpdateMonitorDto(
-        id: String,
-        data: MonitorData,
-        name: String? = null
-    ) = UpdateMonitorDto(
+    fun getUpdateMonitorDto(id: String, data: MonitorData, name: String? = null) = UpdateMonitorDto(
         id = id,
         name = name ?: "Updated Test Monitor",
         description = null,
@@ -276,19 +272,16 @@ object ModelFactory {
         monitorIds = listOf(),
     )
 
-    fun getUpdateNotificationMethodDto(
-        id: String,
-        data: NotificationMethodData,
-        name: String? = null
-    ) = UpdateNotificationMethodDto(
-        id = id,
-        name = name ?: "Updated Test Notification Method",
-        data = data,
-        useByDefault = false,
-        titleTemplate = null,
-        bodyTemplate = null,
-        monitorIds = listOf(),
-    )
+    fun getUpdateNotificationMethodDto(id: String, data: NotificationMethodData, name: String? = null) =
+        UpdateNotificationMethodDto(
+            id = id,
+            name = name ?: "Updated Test Notification Method",
+            data = data,
+            useByDefault = false,
+            titleTemplate = null,
+            bodyTemplate = null,
+            monitorIds = listOf(),
+        )
 
     fun getTestSetupDto() = SetupDto(
         name = "admin",

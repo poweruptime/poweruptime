@@ -140,10 +140,7 @@ class InstanceSettingService {
         value.toString(),
     )
 
-    private fun setValueByKey(
-        key: SettingKey,
-        value: String
-    ) {
+    private fun setValueByKey(key: SettingKey, value: String) {
         val instanceSetting = InstanceSetting.findByKey(key)
 
         if (instanceSetting == null) {
@@ -160,11 +157,7 @@ class InstanceSettingService {
         }
     }
 
-    private fun getByKey(
-        key: SettingKey,
-    ): InstanceSettingRecord? = InstanceSetting.findByKey(key)
+    private fun getByKey(key: SettingKey): InstanceSettingRecord? = InstanceSetting.findByKey(key)
 
-    private fun getValueByKey(
-        key: SettingKey,
-    ): String = getByKey(key)?.value ?: key.default
+    private fun getValueByKey(key: SettingKey): String = getByKey(key)?.value ?: key.default
 }

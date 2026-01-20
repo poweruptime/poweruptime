@@ -14,10 +14,7 @@ class ListItemRegexValidator : ConstraintValidator<ListItemRegex, List<String>> 
         regex = constraint.pattern.toRegex()
     }
 
-    override fun isValid(
-        value: List<String>?,
-        context: ConstraintValidatorContext
-    ): Boolean {
+    override fun isValid(value: List<String>?, context: ConstraintValidatorContext): Boolean {
         // null → leave it to @NotNull if you annotate that too
         if (value == null) return true
         return value.all { regex.matches(it) }
@@ -45,13 +42,10 @@ annotation class ListItemRegex(
      * The regex each element must match
      */
     val pattern: String,
-
     /**
      * Validation message. You can refer to "{pattern}" in your interpolation.
      */
     val message: String = "Each element must match regex \"{pattern}\"",
-
     val groups: Array<KClass<*>> = [],
-
-    val payload: Array<KClass<out Payload>> = []
+    val payload: Array<KClass<out Payload>> = [],
 )

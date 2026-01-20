@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
 
-class UserIntegrationTests(
-    @Autowired val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class UserIntegrationTests(@Autowired val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/user/{id}")
     inner class GetUser {
@@ -190,24 +188,26 @@ class UserIntegrationTests(
     inner class CreateUser {
         @Test
         fun `test if secured`() {
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateUserDto().toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getCreateUserDto().toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if secured with non-admin user`() {
             val model = ModelFactory.getCreateUserDto()
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -220,21 +220,22 @@ class UserIntegrationTests(
                 sendInvitation = false,
                 activated = true,
             )
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.id") { exists() }
-                    jsonPath("$.name") { value(model.name) }
-                    jsonPath("$.email") { value(model.email) }
-                    jsonPath("$.role") { value(model.role.name) }
-                    jsonPath("$.activated") { value(true) }
-                    jsonPath("$.forcePasswordChange") { value(true) }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        jsonPath("$.id") { exists() }
+                        jsonPath("$.name") { value(model.name) }
+                        jsonPath("$.email") { value(model.email) }
+                        jsonPath("$.role") { value(model.role.name) }
+                        jsonPath("$.activated") { value(true) }
+                        jsonPath("$.forcePasswordChange") { value(true) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -246,20 +247,21 @@ class UserIntegrationTests(
                 password = null,
                 sendInvitation = true,
             )
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.id") { exists() }
-                    jsonPath("$.name") { value(model.name) }
-                    jsonPath("$.email") { value(model.email) }
-                    jsonPath("$.activated") { value(true) }
-                    jsonPath("$.forcePasswordChange") { value(true) }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        jsonPath("$.id") { exists() }
+                        jsonPath("$.name") { value(model.name) }
+                        jsonPath("$.email") { value(model.email) }
+                        jsonPath("$.activated") { value(true) }
+                        jsonPath("$.forcePasswordChange") { value(true) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -271,15 +273,16 @@ class UserIntegrationTests(
                 password = "MyPassword123",
                 sendInvitation = false,
             )
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    jsonPath("$.email") { value(model.email) }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        jsonPath("$.email") { value(model.email) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -291,15 +294,16 @@ class UserIntegrationTests(
                 role = SystemRole.ADMIN,
                 sendInvitation = false,
             )
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    jsonPath("$.role") { value("ADMIN") }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        jsonPath("$.role") { value("ADMIN") }
+                    }
                 }
-            }
         }
 
         @Test
@@ -311,34 +315,43 @@ class UserIntegrationTests(
                 role = SystemRole.USER,
                 sendInvitation = false,
             )
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    jsonPath("$.role") { value("USER") }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        jsonPath("$.role") { value("USER") }
+                    }
                 }
-            }
         }
 
         @Test
         @MockAdmin
         fun `test create user creates personal team`() {
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateUserDto(
-                    name = "User With Team",
-                    email = "userteam@example.com",
-                    sendInvitation = false,
-                ).toJSON()
-            }.andExpect {
-                status { isCreated() }
-            }.andReturn().toDto<UserResponse>().id
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getCreateUserDto(
+                            name = "User With Team",
+                            email = "userteam@example.com",
+                            sendInvitation = false,
+                        ).toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                }.andReturn()
+                .toDto<UserResponse>()
+                .id
 
-            val teams = mockMvc.get("/v1/team?page=0&size=20").andExpect {
-                status { isOk() }
-            }.andReturn().toDto<PaginatedResponse<TeamResponse>>().data
+            val teams = mockMvc
+                .get("/v1/team?page=0&size=20")
+                .andExpect {
+                    status { isOk() }
+                }.andReturn()
+                .toDto<PaginatedResponse<TeamResponse>>()
+                .data
 
             Assertions.assertThat(teams.map { it.name }.any { it == "User With Team" }).isTrue()
         }
@@ -349,54 +362,61 @@ class UserIntegrationTests(
             val existingEmail = "existing@example.com"
 
             // Create first user
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateUserDto(
-                    email = existingEmail,
-                    sendInvitation = false,
-                ).toJSON()
-            }.andExpect {
-                status { isCreated() }
-            }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getCreateUserDto(
+                            email = existingEmail,
+                            sendInvitation = false,
+                        ).toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                }
 
             // Try to create second user with same email
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateUserDto(
-                    email = existingEmail,
-                    sendInvitation = false,
-                ).toJSON()
-            }.andExpect {
-                status { isBadRequest() }
-                content {
-                    jsonPath("$.codeName") { value("USER_EMAIL_ALREADY_TAKEN") }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getCreateUserDto(
+                            email = existingEmail,
+                            sendInvitation = false,
+                        ).toJSON()
+                }.andExpect {
+                    status { isBadRequest() }
+                    content {
+                        jsonPath("$.codeName") { value("USER_EMAIL_ALREADY_TAKEN") }
+                    }
                 }
-            }
         }
 
         @Test
         @MockAdmin
         fun `test invalid email format`() {
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateUserDto(
-                    email = "invalid-email",
-                    sendInvitation = false,
-                ).toJSON()
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getCreateUserDto(
+                            email = "invalid-email",
+                            sendInvitation = false,
+                        ).toJSON()
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test missing required fields`() {
-            mockMvc.post("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = """{}"""
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mockMvc
+                .post("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = """{}"""
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
     }
 
@@ -405,36 +425,39 @@ class UserIntegrationTests(
     inner class UpdateUser {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateUserDto("user1").toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateUserDto("user1").toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if secured with non-admin user`() {
             val model = ModelFactory.getUpdateUserDto("user1")
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test update user not found`() {
             val model = ModelFactory.getUpdateUserDto("nonexistentId")
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
@@ -445,15 +468,16 @@ class UserIntegrationTests(
                 id = "BLyrWbFXSg3K",
                 name = "Updated Name",
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.name") { value("Updated Name") }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.name") { value("Updated Name") }
+                    }
                 }
-            }
         }
 
         @Test
@@ -464,15 +488,16 @@ class UserIntegrationTests(
                 id = "BLyrWbFXSg3K",
                 email = "newemail@example.com",
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.email") { value("newemail@example.com") }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.email") { value("newemail@example.com") }
+                    }
                 }
-            }
         }
 
         @Test
@@ -483,12 +508,13 @@ class UserIntegrationTests(
                 id = "BLyrWbFXSg3K",
                 password = "NewPassword123",
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-            }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                }
         }
 
         @Test
@@ -499,15 +525,16 @@ class UserIntegrationTests(
                 id = "BLyrWbFXSg3K",
                 role = SystemRole.ADMIN,
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.role") { value("ADMIN") }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.role") { value("ADMIN") }
+                    }
                 }
-            }
         }
 
         @Test
@@ -518,15 +545,16 @@ class UserIntegrationTests(
                 id = "BLyrWbFXSg3K",
                 activated = true,
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.activated") { value(true) }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.activated") { value(true) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -537,15 +565,16 @@ class UserIntegrationTests(
                 id = "phECfcYSejyt",
                 activated = false,
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.activated") { value(false) }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.activated") { value(false) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -558,17 +587,18 @@ class UserIntegrationTests(
                 sendInvitation = true,
                 password = null,
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.name") { value("Reinvited User") }
-                    jsonPath("$.activated") { value(true) }
-                    jsonPath("$.forcePasswordChange") { value(true) }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.name") { value("Reinvited User") }
+                        jsonPath("$.activated") { value(true) }
+                        jsonPath("$.forcePasswordChange") { value(true) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -580,16 +610,17 @@ class UserIntegrationTests(
                 sendInvitation = true,
                 password = "NewInvitePassword123",
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.activated") { value(true) }
-                    jsonPath("$.forcePasswordChange") { value(true) }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.activated") { value(true) }
+                        jsonPath("$.forcePasswordChange") { value(true) }
+                    }
                 }
-            }
         }
 
         @Test
@@ -604,18 +635,19 @@ class UserIntegrationTests(
                 activated = true,
                 forcePasswordChange = false,
             )
-            mockMvc.put("/v1/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    jsonPath("$.name") { value("Fully Updated User") }
-                    jsonPath("$.email") { value("fullyupdated@example.com") }
-                    jsonPath("$.role") { value("ADMIN") }
-                    jsonPath("$.activated") { value(true) }
+            mockMvc
+                .put("/v1/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content {
+                        jsonPath("$.name") { value("Fully Updated User") }
+                        jsonPath("$.email") { value("fullyupdated@example.com") }
+                        jsonPath("$.role") { value("ADMIN") }
+                        jsonPath("$.activated") { value(true) }
+                    }
                 }
-            }
         }
     }
 

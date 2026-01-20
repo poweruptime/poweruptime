@@ -24,7 +24,7 @@ class SystemEmailService(
     @Value(Config.MAIL_IGNORE_TLS_ERRORS) private val mailIgnoreTLSErrors: Boolean,
     private val tempNotificationService: TempNotificationService,
     private val emailTemplateService: EmailTemplateService,
-    private val rabbitMQService: RabbitMQService
+    private val rabbitMQService: RabbitMQService,
 ) {
     private final val logger = KotlinLogging.logger {}
 

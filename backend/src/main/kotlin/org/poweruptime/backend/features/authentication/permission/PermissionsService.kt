@@ -1,6 +1,5 @@
 package org.poweruptime.backend.features.authentication.permission
 
-import org.jetbrains.exposed.v1.jdbc.Query
 import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.service.isAdmin
 import org.poweruptime.backend.features.authentication.service.publicUserId
@@ -13,54 +12,36 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class PermissionsService {
-    fun isPartOf(
-        publicUserId: String,
-        entityId: String,
-        permission: Permission
-    ): Boolean = permission.buildQuery(publicUserId, entityId).limit(1).count() > 0
+    fun isPartOf(publicUserId: String, entityId: String, permission: Permission): Boolean =
+        permission.buildQuery(publicUserId, entityId).limit(1).count() > 0
 
-    fun find(
-        publicUserId: String,
-        entityId: String,
-        permission: Permission
-    ): TeamRole? = permission.buildQuery(publicUserId, entityId).limit(1)
+    fun find(publicUserId: String, entityId: String, permission: Permission): TeamRole? = permission
+        .buildQuery(publicUserId, entityId)
+        .limit(1)
         .firstOrNull()
         ?.let { it[TeamUser.role] }
 
-    fun hasRole(
-        publicUserId: String,
-        entityId: String,
-        permission: Permission,
-        role: TeamRole
-    ): Boolean = find(publicUserId, entityId, permission) == role
+    fun hasRole(publicUserId: String, entityId: String, permission: Permission, role: TeamRole): Boolean =
+        find(publicUserId, entityId, permission) == role
 
-    fun isPartOfByIds(
-        publicUserId: String,
-        entityIds: Collection<String>,
-        permission: Permission
-    ): Boolean = entityIds.all { isPartOf(publicUserId, it, permission) }
+    fun isPartOfByIds(publicUserId: String, entityIds: Collection<String>, permission: Permission): Boolean =
+        entityIds.all { isPartOf(publicUserId, it, permission) }
 
-    fun isAdminOfByIds(
-        publicUserId: String,
-        entityIds: Collection<String>,
-        permission: Permission
-    ): Boolean = entityIds.all {
-        hasRole(publicUserId, it, permission, TeamRole.ADMIN)
-    }
+    fun isAdminOfByIds(publicUserId: String, entityIds: Collection<String>, permission: Permission): Boolean =
+        entityIds.all {
+            hasRole(publicUserId, it, permission, TeamRole.ADMIN)
+        }
 
-    fun checkPermission(
-        publicUserId: String,
-        entityId: String,
-        permissionRequest: PermissionRequest
-    ): Boolean = when (permissionRequest.requiredRole) {
-        TeamRole.ADMIN -> hasRole(
-            publicUserId,
-            entityId,
-            permissionRequest.permission,
-            TeamRole.ADMIN
-        )
-        TeamRole.MEMBER, null -> isPartOf(publicUserId, entityId, permissionRequest.permission)
-    }
+    fun checkPermission(publicUserId: String, entityId: String, permissionRequest: PermissionRequest): Boolean =
+        when (permissionRequest.requiredRole) {
+            TeamRole.ADMIN -> hasRole(
+                publicUserId,
+                entityId,
+                permissionRequest.permission,
+                TeamRole.ADMIN,
+            )
+            TeamRole.MEMBER, null -> isPartOf(publicUserId, entityId, permissionRequest.permission)
+        }
 }
 
 fun Authentication.throwIfNotPartOf(checker: (publicUserId: String) -> Boolean) {

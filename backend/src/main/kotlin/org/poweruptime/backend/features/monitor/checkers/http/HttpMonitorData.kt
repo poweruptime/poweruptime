@@ -109,13 +109,10 @@ data class HttpMonitorDataRecord(
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
     @get:Pattern(regexp = Database.URL_REGEX)
     val url: String,
-
     @get:NotNull
     val method: HttpMonitorDataMethod,
-
     @get:NotNull
     val contentType: HttpMonitorDataContentType,
-
     @get:NotNull
     @get:Size(min = Database.MIN_STATUS_CODES)
     @get:ListItemRegex(
@@ -124,27 +121,19 @@ data class HttpMonitorDataRecord(
     )
     @get:StatusCodeRangeOrder
     val allowedStatusCodeRanges: List<String>,
-
     @get:Min(Database.MIN_REDIRECTS)
     @get:Max(Database.MAX_REDIRECTS)
     val maxRedirects: Long? = null,
-
     @get:NotNull
     val ignoreTLS: Boolean = false,
-
     @get:NotNull
     val certificateExpiry: Boolean = false,
-
     @get:Min(Database.MIN_VALID_DAYS_LEFT)
     @get:Max(Database.MAX_VALID_DAYS_LEFT)
     val certificateValidDaysLeft: Long? = null,
-
     val body: String? = null,
-
     val searchTerm: String? = null,
-
     val authType: HttpMonitorDataAuthType? = null,
-
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     val basicAuthDataUsername: String? = null,
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
@@ -170,14 +159,11 @@ data class HttpMonitorDataRecord(
 annotation class StatusCodeRangeOrder(
     val message: String = "Each status‐code range must have start =< end",
     val groups: Array<KClass<*>> = [],
-    val payload: Array<KClass<out Payload>> = []
+    val payload: Array<KClass<out Payload>> = [],
 )
 
 class StatusCodeRangeOrderValidator : ConstraintValidator<StatusCodeRangeOrder, List<String>> {
-    override fun isValid(
-        value: List<String>?,
-        context: ConstraintValidatorContext
-    ): Boolean {
+    override fun isValid(value: List<String>?, context: ConstraintValidatorContext): Boolean {
         // null==valid here; @NotNull handles null if you've added it
         if (value == null) return true
 

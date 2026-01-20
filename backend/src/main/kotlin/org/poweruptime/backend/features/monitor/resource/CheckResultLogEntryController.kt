@@ -39,10 +39,11 @@ class CheckResultLogEntryController(
     fun getAll(
         @PathVariable("checkResultId") publicCheckResultId: String,
         @RequestParam("stages") stage: List<CheckResultLogStage>? = null,
-    ): List<CheckResultLogEntryResponse> = checkResultLogEntryService.getAllPaginated(
-        checkResultId = checkResultService.getIdByPublicId(publicCheckResultId),
-        stages = stage,
-    ).map {
-        CheckResultLogEntryResponse(it)
-    }
+    ): List<CheckResultLogEntryResponse> = checkResultLogEntryService
+        .getAllPaginated(
+            checkResultId = checkResultService.getIdByPublicId(publicCheckResultId),
+            stages = stage,
+        ).map {
+            CheckResultLogEntryResponse(it)
+        }
 }

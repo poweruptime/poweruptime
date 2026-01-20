@@ -55,7 +55,7 @@ import org.springframework.web.bind.annotation.RestController
 class TeamUserController(
     private val teamService: TeamService,
     private val teamJoinTokenService: TeamJoinTokenService,
-    private val userService: UserService
+    private val userService: UserService,
 ) {
     @Operation(
         summary = "Get users from team",
@@ -69,9 +69,9 @@ class TeamUserController(
     fun getUsers(
         @ParameterObject pageable: Pageable,
         @PathVariable("teamId") publicTeamId: String,
-    ): PaginatedResponse<TeamUserResponse> =
-        TeamUser.findAll(pageable, teamService.getIdByPublicId(publicTeamId))
-            .toDto { TeamUserResponse(it) }
+    ): PaginatedResponse<TeamUserResponse> = TeamUser
+        .findAll(pageable, teamService.getIdByPublicId(publicTeamId))
+        .toDto { TeamUserResponse(it) }
 
     @Operation(
         summary = "Get open invites from team",
@@ -84,12 +84,13 @@ class TeamUserController(
     fun getInvites(
         @ParameterObject pageable: Pageable,
         @PathVariable("teamId") publicTeamId: String,
-    ): PaginatedResponse<TeamJoinTokenResponse> = teamJoinTokenService.getByTeamIdPaginated(
-        pageable,
-        teamService.getIdByPublicId(publicTeamId),
-    ).toDto {
-        TeamJoinTokenResponse(it)
-    }
+    ): PaginatedResponse<TeamJoinTokenResponse> = teamJoinTokenService
+        .getByTeamIdPaginated(
+            pageable,
+            teamService.getIdByPublicId(publicTeamId),
+        ).toDto {
+            TeamJoinTokenResponse(it)
+        }
 
     @Operation(
         summary = "Invite user to join team",
@@ -148,10 +149,11 @@ class TeamUserController(
     ): TeamUserResponse {
         val teamId = teamService.getIdByPublicId(publicTeamId)
         val userId = userService.getIdByPublicId(dto.userId)
-        TeamUser.findByTeamAndUserId(
-            teamId = teamId,
-            userId = userId,
-        ).orThrowNotFound("User not in team")
+        TeamUser
+            .findByTeamAndUserId(
+                teamId = teamId,
+                userId = userId,
+            ).orThrowNotFound("User not in team")
 
         TeamUser.update({
             (TeamUser.teamId eq teamId) and (TeamUser.userId eq userId)
@@ -176,7 +178,7 @@ class TeamUserController(
     fun removeUser(
         auth: Authentication,
         @PathVariable("teamId") publicTeamId: String,
-        @PathVariable("userId") publicUserId: String
+        @PathVariable("userId") publicUserId: String,
     ) {
         val teamId = teamService.getIdByPublicId(publicTeamId)
         val userId = userService.getIdByPublicId(publicUserId)

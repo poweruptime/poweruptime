@@ -57,28 +57,27 @@ data class MonitorRecord(
     var status: MonitorStatus,
 )
 
-fun Monitor.rowToMonitorRecord(row: ResultRow): MonitorRecord =
-    MonitorRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        deleted = row[deleted],
-        name = row[name],
-        teamId = row[teamId],
-        type = row[type],
-        testIntervalSeconds = row[testIntervalSeconds],
-        upsideDown = row[upsideDown],
-        retries = row[retries],
-        resendAfter = row[resendAfter],
-        description = row[description],
-        status = row[status],
-    )
+fun Monitor.rowToMonitorRecord(row: ResultRow): MonitorRecord = MonitorRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    deleted = row[deleted],
+    name = row[name],
+    teamId = row[teamId],
+    type = row[type],
+    testIntervalSeconds = row[testIntervalSeconds],
+    upsideDown = row[upsideDown],
+    retries = row[retries],
+    resendAfter = row[resendAfter],
+    description = row[description],
+    status = row[status],
+)
 
 open class MonitorRecordJoinTeamRecord(open val monitor: MonitorRecord, open val team: TeamRecord)
 
 data class MonitorRecordWithDataJoinTeamRecord(
     override val monitor: MonitorRecord,
     override val team: TeamRecord,
-    val data: MonitorData
+    val data: MonitorData,
 ) : MonitorRecordJoinTeamRecord(monitor, team)

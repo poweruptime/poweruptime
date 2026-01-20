@@ -15,7 +15,7 @@ import org.testcontainers.lifecycle.Startables
  * Context and Containers will be reused until one test class in between which inherits from [BaseTest].
  * In this case the context gets "dirtied" and the reusing functionality needs to be recreated as well
  */
-@Suppress("UtilityClassWithPublicConstructor")
+@Suppress("UtilityClassWithPublicConstructor", "AbstractClassCanBeInterface")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
@@ -48,6 +48,7 @@ abstract class BaseTestWithReusingContainers {
     }
 }
 
+@Suppress("AbstractClassCanBeInterface")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
@@ -55,7 +56,6 @@ abstract class BaseTestWithReusingContainers {
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 abstract class BaseTest protected constructor() {
-
     companion object {
         @Container
         @JvmStatic

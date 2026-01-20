@@ -8,7 +8,7 @@ data class MFALowBackupCodesEmail(
     val user: UserRecord,
     val backupCodesCount: Int,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(user.email)
 

@@ -75,14 +75,19 @@ suspend fun CheckResult.findAll(
         }
 
         teamId != null -> {
-            Team.innerJoin(Monitor).innerJoin(CheckResult)
+            Team
+                .innerJoin(Monitor)
+                .innerJoin(CheckResult)
                 .select(selectColumns)
         }
 
         userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
-            TeamUser.innerJoin(Team).innerJoin(Monitor)
-                .innerJoin(CheckResult).select(selectColumns)
+            TeamUser
+                .innerJoin(Team)
+                .innerJoin(Monitor)
+                .innerJoin(CheckResult)
+                .select(selectColumns)
         }
 
         else -> error("teamId or monitorId or userId needs to be provided")
@@ -103,14 +108,15 @@ suspend fun CheckResult.findAll(
     }
 
     hasNotification?.let {
-        query.adjustColumnSet {
-            leftJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
-        }.adjustSelect {
-            selectColumns = selectColumns + Notification.id
-            select(selectColumns)
-        }.andWhere {
-            if (it) Notification.id.isNotNull() else Notification.id.isNull()
-        }
+        query
+            .adjustColumnSet {
+                leftJoin(Notification, { CheckResult.id }, { Notification.checkResultId })
+            }.adjustSelect {
+                selectColumns = selectColumns + Notification.id
+                select(selectColumns)
+            }.andWhere {
+                if (it) Notification.id.isNotNull() else Notification.id.isNull()
+            }
     }
 
     start?.let { query.andWhere { CheckResult.createdAt greaterEq it } }
@@ -123,10 +129,7 @@ suspend fun CheckResult.findAll(
     query
 }
 
-fun CheckResult.findLastByMonitorId(
-    monitorId: ULong,
-    limit: Int
-): List<CheckResultRecord> = selectAll()
+fun CheckResult.findLastByMonitorId(monitorId: ULong, limit: Int): List<CheckResultRecord> = selectAll()
     .where {
         CheckResult.monitorId eq monitorId and (pickedUpAt.isNotNull())
     }.orderBy(createdAt, SortOrder.DESC)
@@ -135,11 +138,9 @@ fun CheckResult.findLastByMonitorId(
         rowToCheckResultRecord(it)
     }
 
-fun CheckResult.findLastByMonitorIds(
-    monitorIds: List<ULong>,
-    limit: Int
-): List<CheckResultRecord> {
-    val rn = rowNumber().over()
+fun CheckResult.findLastByMonitorIds(monitorIds: List<ULong>, limit: Int): List<CheckResultRecord> {
+    val rn = rowNumber()
+        .over()
         .partitionBy(monitorId)
         .orderBy(createdAt, SortOrder.DESC)
         .alias("rn")
@@ -148,19 +149,16 @@ fun CheckResult.findLastByMonitorIds(
         .where {
             (monitorId inList monitorIds) and
                 (pickedUpAt.isNotNull())
-        }
-        .alias("ranked")
+        }.alias("ranked")
 
     return ranked
         .select(ranked.columns)
         .where {
             LessEqOp(ranked[rn], intLiteral(limit))
-        }
-        .orderBy(
+        }.orderBy(
             ranked[monitorId] to SortOrder.ASC,
             ranked[createdAt] to SortOrder.DESC,
-        )
-        .map {
+        ).map {
             rowToCheckResultRecord(it, ranked)
         }
 }
@@ -168,50 +166,50 @@ fun CheckResult.findLastByMonitorIds(
 fun CheckResult.findByMonitorIdAndPickedUpBetween(
     monitorId: ULong,
     start: Instant,
-    end: Instant
-): List<CheckResultRecord> = selectAll().where {
-    (pickedUpAt greaterEq start) and (pickedUpAt less end) and (CheckResult.monitorId eq monitorId)
-}.orderBy(pickedUpAt, SortOrder.ASC).map {
-    rowToCheckResultRecord(it)
-}
-
-fun CheckResult.findLastOppositeByMonitorIdAndStatus(
-    monitorId: ULong,
-    status: MonitorStatus,
-): CheckResultRecord? = selectAll().where {
-    (
-        CheckResult.status eq when (status) {
-            MonitorStatus.UP -> MonitorStatus.DOWN
-            MonitorStatus.DOWN -> MonitorStatus.UP
-            else -> throw InvalidAttributesException(
-                "Check result status not allowed to be $status",
-            )
-        }
-        ) and (CheckResult.monitorId eq monitorId) and (CheckResult.status neq CheckResult.previousStatus)
-}.orderBy(createdAt, SortOrder.DESC_NULLS_LAST)
-    .limit(1)
-    .firstOrNull()
-    ?.let {
+    end: Instant,
+): List<CheckResultRecord> = selectAll()
+    .where {
+        (pickedUpAt greaterEq start) and (pickedUpAt less end) and (CheckResult.monitorId eq monitorId)
+    }.orderBy(pickedUpAt, SortOrder.ASC)
+    .map {
         rowToCheckResultRecord(it)
     }
+
+fun CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId: ULong, status: MonitorStatus): CheckResultRecord? =
+    selectAll()
+        .where {
+            (
+                CheckResult.status eq when (status) {
+                    MonitorStatus.UP -> MonitorStatus.DOWN
+                    MonitorStatus.DOWN -> MonitorStatus.UP
+                    else -> throw InvalidAttributesException(
+                        "Check result status not allowed to be $status",
+                    )
+                }
+                ) and (CheckResult.monitorId eq monitorId) and (CheckResult.status neq CheckResult.previousStatus)
+        }.orderBy(createdAt, SortOrder.DESC_NULLS_LAST)
+        .limit(1)
+        .firstOrNull()
+        ?.let {
+            rowToCheckResultRecord(it)
+        }
 
 fun CheckResult.findByStatusUpMonitorIdAndPickedUpBetween(
     monitorId: ULong,
     start: Instant,
-    end: Instant
-): List<CheckResultRecord> = selectAll().where {
-    (status eq MonitorStatus.UP) and
-        (pickedUpAt greaterEq start) and
-        (pickedUpAt less end) and
-        (CheckResult.monitorId eq monitorId)
-}.orderBy(pickedUpAt, SortOrder.ASC).map {
-    rowToCheckResultRecord(it)
-}
+    end: Instant,
+): List<CheckResultRecord> = selectAll()
+    .where {
+        (status eq MonitorStatus.UP) and
+            (pickedUpAt greaterEq start) and
+            (pickedUpAt less end) and
+            (CheckResult.monitorId eq monitorId)
+    }.orderBy(pickedUpAt, SortOrder.ASC)
+    .map {
+        rowToCheckResultRecord(it)
+    }
 
-fun CheckResult.deleteByTeamIdAndOlderThan(
-    teamId: ULong,
-    before: Instant
-): Int = deleteWhere {
+fun CheckResult.deleteByTeamIdAndOlderThan(teamId: ULong, before: Instant): Int = deleteWhere {
     CheckResult.monitorId inSubQuery (
         Monitor.select(Monitor.id).where {
             Monitor.teamId eq teamId

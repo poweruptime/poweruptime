@@ -11,11 +11,11 @@ data class PublicStatusPageGroupResponse(
     val id: String,
     val name: String?,
     val description: String?,
-    val monitors: List<PublicMonitorMinResponse> ,
+    val monitors: List<PublicMonitorMinResponse>,
 ) {
     constructor(
         it: StatusPageGroupRecord,
-        monitors: List<PublicMonitorMinResponse>
+        monitors: List<PublicMonitorMinResponse>,
     ) : this(it.publicId, it.name, it.description, monitors)
 }
 
@@ -24,7 +24,7 @@ data class StatusPageGroupResponse(
     val name: String?,
     val description: String?,
     val position: Int?,
-    val monitors: List<StatusPageGroupMonitorResponse>
+    val monitors: List<StatusPageGroupMonitorResponse>,
 ) {
     constructor(group: StatusPageGroupRecord, groupMonitors: List<StatusPageGroupMonitorJoinMonitorRecord>) : this(
         id = group.publicId,

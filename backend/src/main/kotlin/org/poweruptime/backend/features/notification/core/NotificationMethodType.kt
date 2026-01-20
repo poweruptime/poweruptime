@@ -9,7 +9,9 @@ object NotificationMethodTypes {
     const val SLACK = "SLACK"
 }
 
-enum class NotificationMethodType : ADatabaseEnumConvertable, NotificationMethodTemplate {
+enum class NotificationMethodType :
+    ADatabaseEnumConvertable,
+    NotificationMethodTemplate {
     APPRISE {
         override val code = NotificationMethodTypes.APPRISE
         override val bodyType = NotificationMethodTemplateType.PLAIN
@@ -95,9 +97,12 @@ interface NotificationMethodTemplate {
 }
 
 enum class NotificationMethodTemplateFeatures {
-    TITLE
+    TITLE,
 }
 
 enum class NotificationMethodTemplateType {
-    PLAIN, HTML, MARKDOWN, MRKDWN
+    PLAIN,
+    HTML,
+    MARKDOWN,
+    MRKDWN,
 }

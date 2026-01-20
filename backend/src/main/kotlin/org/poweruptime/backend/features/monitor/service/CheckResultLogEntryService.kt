@@ -16,7 +16,7 @@ class CheckResultLogEntryService {
         stage: CheckResultLogStage,
         checkResultId: ULong,
         message: String,
-        properties: Map<String, String>? = null
+        properties: Map<String, String>? = null,
     ) {
         save(
             level = CheckResultLogEntryLevel.INFO,
@@ -32,7 +32,7 @@ class CheckResultLogEntryService {
         stage: CheckResultLogStage,
         checkResultId: ULong,
         message: String,
-        properties: Map<String, String>? = null
+        properties: Map<String, String>? = null,
     ) {
         save(
             level = CheckResultLogEntryLevel.ACTION,

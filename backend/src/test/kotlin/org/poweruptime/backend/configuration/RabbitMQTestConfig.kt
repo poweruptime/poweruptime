@@ -11,14 +11,9 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(RabbitMQConfiguration::class)
 class RabbitMQTestConfig {
+    @Bean
+    fun rabbitAdmin(connectionFactory: ConnectionFactory): RabbitAdmin = RabbitAdmin(connectionFactory)
 
     @Bean
-    fun rabbitAdmin(connectionFactory: ConnectionFactory): RabbitAdmin {
-        return RabbitAdmin(connectionFactory)
-    }
-
-    @Bean
-    fun rabbitTemplate(connectionFactory: ConnectionFactory): RabbitTemplate {
-        return RabbitTemplate(connectionFactory)
-    }
+    fun rabbitTemplate(connectionFactory: ConnectionFactory): RabbitTemplate = RabbitTemplate(connectionFactory)
 }

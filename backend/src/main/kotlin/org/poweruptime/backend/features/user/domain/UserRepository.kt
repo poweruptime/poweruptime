@@ -23,8 +23,7 @@ fun User.findByEmail(email: String): UserRecord? =
         User.rowToUserRecord(it)
     }
 
-fun User.existsByEmail(email: String): Boolean =
-    select(id).where { User.email eq email }.limit(1).count() > 0
+fun User.existsByEmail(email: String): Boolean = select(id).where { User.email eq email }.limit(1).count() > 0
 
 fun User.findByRole(role: SystemRole): List<UserRecord> =
     selectAll().where { User.role eq role }.map { rowToUserRecord(it) }
@@ -36,7 +35,7 @@ fun User.findAll(
     search: String?,
     activated: Boolean?,
     role: SystemRole?,
-    deleted: Boolean = false
+    deleted: Boolean = false,
 ): Page<UserRecord> {
     var condition: Op<Boolean> = User.deleted.deletedFilter(deleted)
 

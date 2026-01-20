@@ -68,11 +68,7 @@ class MonitorNotificationHandler(
     /**
      * Sends push if monitor status changed.
      */
-    fun sendMonitorStatusPushIfChanged(
-        monitor: MonitorRecord,
-        team: TeamRecord,
-        oldStatus: MonitorStatus
-    ) {
+    fun sendMonitorStatusPushIfChanged(monitor: MonitorRecord, team: TeamRecord, oldStatus: MonitorStatus) {
         if (monitor.status != oldStatus) {
             logger.debug { "Send push status change for team '${team.id}'" }
 
@@ -93,7 +89,7 @@ class MonitorNotificationHandler(
         checkResult: CheckResultRecord,
         team: TeamRecord,
         oldMonitorStatus: MonitorStatus,
-        context: MonitorCheckContext
+        context: MonitorCheckContext,
     ): List<SubNotificationJoinMethodRecord>? {
         val decision = decideNotificationAction(monitor, checkResult, oldMonitorStatus, context)
 
@@ -109,7 +105,7 @@ class MonitorNotificationHandler(
         monitor: MonitorRecord,
         checkResult: CheckResultRecord,
         oldStatus: MonitorStatus,
-        context: MonitorCheckContext
+        context: MonitorCheckContext,
     ): NotificationAction {
         // First UP after boot - skip
         if (context.isFirstCheckAfterBoot && monitor.status == MonitorStatus.UP) {
@@ -152,7 +148,7 @@ class MonitorNotificationHandler(
         monitor: MonitorRecord,
         checkResult: CheckResultRecord,
         team: TeamRecord,
-        decision: NotificationAction.Send
+        decision: NotificationAction.Send,
     ): Pair<NotificationRecord, List<SubNotificationJoinMethodRecord>> {
         val notificationJoin = notificationService.send(monitor.id, checkResult)
         val subNotifications = subNotificationService.getByNotificationId(notificationJoin.notification.id)
@@ -178,17 +174,14 @@ class MonitorNotificationHandler(
         tags = tagService.getByMonitorId(id),
         statistics = checkResultStatisticsService.uptimeStatisticsDto(id),
         lastCheckResults = checkResultStatisticsService.getLastByMonitorId(id, LAST_CHECK_RESULTS_COUNT),
-        oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
-            monitorId = id,
-            TimeOption.ONE_DAY,
-        ).myFormat(),
+        oneDayUptime = checkResultStatisticsService
+            .calculateRecentUptimeByMonitorId(
+                monitorId = id,
+                TimeOption.ONE_DAY,
+            ).myFormat(),
     )
 
-    private fun logNotificationDecision(
-        checkResultId: ULong,
-        decision: NotificationAction,
-        notificationId: String?
-    ) {
+    private fun logNotificationDecision(checkResultId: ULong, decision: NotificationAction, notificationId: String?) {
         when (decision) {
             is NotificationAction.Send -> {
                 checkResultLogEntryService.action(
@@ -218,6 +211,7 @@ class MonitorNotificationHandler(
 
     private sealed class NotificationAction {
         data class Send(val reason: String, val isResend: Boolean) : NotificationAction()
+
         data class Skip(val reason: String) : NotificationAction()
     }
 }

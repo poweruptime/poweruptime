@@ -46,10 +46,7 @@ object EmailNotificationMethodData : NotificationMethodDataTable(NotificationMet
         bcc = row[bcc]?.toSet(),
     )
 
-    override fun insert(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun insert(notificationMethodId: ULong, data: NotificationMethodData) {
         data as EmailNotificationMethodDataRecord
 
         insert {
@@ -66,10 +63,7 @@ object EmailNotificationMethodData : NotificationMethodDataTable(NotificationMet
         }
     }
 
-    override fun update(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun update(notificationMethodId: ULong, data: NotificationMethodData) {
         data as EmailNotificationMethodDataRecord
 
         update({ id eq notificationMethodId }) {
@@ -92,7 +86,6 @@ object EmailNotificationMethodData : NotificationMethodDataTable(NotificationMet
 
 data class EmailNotificationMethodDataRecord(
     val to: Set<String>,
-
     @get:NotBlank
     @get:Size(
         min = Database.MIN_DOMAIN_LENGTH,
@@ -100,26 +93,21 @@ data class EmailNotificationMethodDataRecord(
     )
     @get:Pattern(regexp = Database.DOMAIN_REGEX)
     override val host: String,
-
     @get:NotNull
     @get:Min(Database.MIN_PORT)
     @get:Max(Database.MAX_PORT)
     override val port: Int,
-
     @get:NotBlank
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     override val username: String,
-
     @get:NotBlank
     @get:Size(max = Database.MAX_BASIC_AUTH_LENGTH)
     override val password: String,
-
     @get:NotNull
     override val security: EmailSecurity,
-
     @get:NotNull
     override val ignoreTLSErrors: Boolean,
-
     val cc: Set<String>?,
     val bcc: Set<String>?,
-) : NotificationMethodData(NotificationMethodType.EMAIL), EmailSender
+) : NotificationMethodData(NotificationMethodType.EMAIL),
+    EmailSender

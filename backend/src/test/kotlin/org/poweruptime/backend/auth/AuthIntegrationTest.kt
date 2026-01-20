@@ -27,15 +27,15 @@ import java.util.Date
 class AuthIntegrationTest(
     @Autowired private val authTestUtils: AuthTestUtils,
     @Autowired private val mvc: MockMvc,
-    @Autowired private val sessionService: SessionService
+    @Autowired private val sessionService: SessionService,
 ) : BaseTestWithReusingContainers() {
-
     @DisplayName("API /v1/secure")
     @Nested
     inner class UnsecureApi {
         @Test
         fun `check if auth is in place`() {
-            mvc.get("/v1/secure")
+            mvc
+                .get("/v1/secure")
                 .andExpect {
                     status { isUnauthorized() }
                 }
@@ -52,24 +52,26 @@ class AuthIntegrationTest(
              */
             val jwtResponse = authTestUtils.adminJwtResponse
 
-            mvc.get("/v1/secure") {
-                headers {
-                    setBearerAuth(jwtResponse.accessToken)
+            mvc
+                .get("/v1/secure") {
+                    headers {
+                        setBearerAuth(jwtResponse.accessToken)
+                    }
+                }.andExpect {
+                    status { isOk() }
                 }
-            }.andExpect {
-                status { isOk() }
-            }
         }
 
         @Test
         fun `test unsuccessful with wrong bearer token`() {
-            mvc.get("/v1/secure") {
-                headers {
-                    setBearerAuth("wrong token")
+            mvc
+                .get("/v1/secure") {
+                    headers {
+                        setBearerAuth("wrong token")
+                    }
+                }.andExpect {
+                    status { isUnauthorized() }
                 }
-            }.andExpect {
-                status { isUnauthorized() }
-            }
         }
     }
 
@@ -78,152 +80,163 @@ class AuthIntegrationTest(
     inner class LoginApi {
         @Test
         fun `test successful admin login without session`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "admin@admin.org",
-                    password = "admin1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "admin@admin.org",
+                        password = "admin1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
                 }
-            }
         }
 
         @Test
         fun `test successful admin login with session`() {
-            mvc.post("/v1/auth/login") {
-                contentType = MediaType.APPLICATION_JSON
-                content = LoginDto(
-                    email = "admin@admin.org",
-                    password = "admin1234",
-                    sessionInformation = "Testing",
-                    stayLoggedIn = true,
-                ).toJSON()
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { exists() }
+            mvc
+                .post("/v1/auth/login") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = LoginDto(
+                        email = "admin@admin.org",
+                        password = "admin1234",
+                        sessionInformation = "Testing",
+                        stayLoggedIn = true,
+                    ).toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { exists() }
+                    }
                 }
-            }
         }
 
         @Test
         fun `test unsuccessful login with wrong credentials`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "some@some.com",
-                    password = "asdf1234",
-                    sessionInformation = "Testing",
-                    stayLoggedIn = true,
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isUnauthorized() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { doesNotExist() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "some@some.com",
+                        password = "asdf1234",
+                        sessionInformation = "Testing",
+                        stayLoggedIn = true,
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isUnauthorized() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { doesNotExist() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
                 }
-            }
         }
 
         @Test
         @ClearInitDatabase
         fun `test unsuccessful login with deactivated account`() {
-            mvc.post("/v1/auth/login") {
-                contentType = MediaType.APPLICATION_JSON
-                content = LoginDto(
-                    email = "test5@test.org",
-                    password = "test1234",
-                    sessionInformation = "Testing",
-                    stayLoggedIn = true,
-                ).toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mvc
+                .post("/v1/auth/login") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = LoginDto(
+                        email = "test5@test.org",
+                        password = "test1234",
+                        sessionInformation = "Testing",
+                        stayLoggedIn = true,
+                    ).toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         fun `test sign in with wrong credentials with existing email`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "admin@admin.org",
-                    password = "wurst1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "admin@admin.org",
+                        password = "wurst1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         fun `test login with 2 users check jwt not equal`() {
-            val user1Result = mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "admin@admin.org",
-                    password = "admin1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
-                }
-            }.andReturn().toDto<JwtResponse>()
+            val user1Result = mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "admin@admin.org",
+                        password = "admin1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
+                }.andReturn()
+                .toDto<JwtResponse>()
 
-            val user2Result = mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test1@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
-                }
-            }.andReturn().toDto<JwtResponse>()
+            val user2Result = mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test1@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
+                }.andReturn()
+                .toDto<JwtResponse>()
             assertThat(user1Result.accessToken).isNotEqualTo(user2Result.accessToken)
         }
 
         @Test
         fun `test sign in with missing MFA code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         fun `test sign in with incorrect MFA code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    set(CustomHttpHeader.MFA_CODE, "12345")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        set(CustomHttpHeader.MFA_CODE, "12345")
+                    }
+                }.andExpect {
+                    status { isForbidden() }
                 }
-            }.andExpect {
-                status { isForbidden() }
-            }
         }
 
         fun getDateTwoDaysAgo(): Date {
@@ -234,132 +247,139 @@ class AuthIntegrationTest(
 
         @Test
         fun `test sign in with outdated MFA code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                    stayLoggedIn = true,
-                    sessionInformation = "Testing1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    setMFACode("7tyjXh9ckw", getDateTwoDaysAgo())
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                        stayLoggedIn = true,
+                        sessionInformation = "Testing1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        setMFACode("7tyjXh9ckw", getDateTwoDaysAgo())
+                    }
+                }.andExpect {
+                    status { isForbidden() }
                 }
-            }.andExpect {
-                status { isForbidden() }
-            }
         }
 
         @Test
         fun `test sign in with MFA code but inactive`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test3@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test3@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
                 }
-            }
         }
 
         @Test
         fun `test sign in with MFA code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                    stayLoggedIn = true,
-                    sessionInformation = "Testing1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    setMFACode("7tyjXh9ckw")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                        stayLoggedIn = true,
+                        sessionInformation = "Testing1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        setMFACode("7tyjXh9ckw")
+                    }
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { exists() }
+                    }
                 }
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { exists() }
-                }
-            }
         }
 
         @Test
         fun `test sign in with used MFA backup code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    set(CustomHttpHeader.MFA_CODE, "sA1XZuMTFWTX8kxaS8CEP2fZx")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        set(CustomHttpHeader.MFA_CODE, "sA1XZuMTFWTX8kxaS8CEP2fZx")
+                    }
+                }.andExpect {
+                    status { isForbidden() }
                 }
-            }.andExpect {
-                status { isForbidden() }
-            }
         }
 
         @Test
         fun `test sign in with MFA backup code`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    set(CustomHttpHeader.MFA_CODE, "MrZcfxDk6kbFKrrw7APWk4Zz3")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        set(CustomHttpHeader.MFA_CODE, "MrZcfxDk6kbFKrrw7APWk4Zz3")
+                    }
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
                 }
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
-                }
-            }
         }
 
         @Test
         fun `test sign in with MFA backup code used twice`() {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+                    }
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { doesNotExist() }
+                    }
                 }
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { doesNotExist() }
-                }
-            }
 
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "test4@test.org",
-                    password = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "test4@test.org",
+                        password = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        set(CustomHttpHeader.MFA_CODE, "HU5ELSCkW4XXFE5cpekk2buRM")
+                    }
+                }.andExpect {
+                    status { isForbidden() }
                 }
-            }.andExpect {
-                status { isForbidden() }
-            }
         }
     }
 
@@ -370,20 +390,22 @@ class AuthIntegrationTest(
         fun `test refresh token`() {
             val jwtResponse = authTestUtils.newAdminJwtResponse()
 
-            val jwtRefreshApi = mvc.post("/v1/auth/refresh") {
-                contentType = MediaType.APPLICATION_JSON
-                content = RefreshJwtWithSessionTokenDto(
-                    jwtResponse.refreshToken!!,
-                    "refresh successful",
-                ).toJSON()
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { exists() }
-                }
-            }.andReturn().toDto<JwtResponse>()
+            val jwtRefreshApi = mvc
+                .post("/v1/auth/refresh") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = RefreshJwtWithSessionTokenDto(
+                        jwtResponse.refreshToken!!,
+                        "refresh successful",
+                    ).toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { exists() }
+                    }
+                }.andReturn()
+                .toDto<JwtResponse>()
 
             assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
             assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
@@ -398,55 +420,63 @@ class AuthIntegrationTest(
                 "refresh successful",
             ).toJSON()
 
-            val jwtRefreshApi = mvc.post("/v1/auth/refresh") {
-                contentType = MediaType.APPLICATION_JSON
-                content = dto
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.accessToken") { exists() }
-                    jsonPath("$.refreshToken") { exists() }
-                }
-            }.andReturn().toDto<JwtResponse>()
+            val jwtRefreshApi = mvc
+                .post("/v1/auth/refresh") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = dto
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.accessToken") { exists() }
+                        jsonPath("$.refreshToken") { exists() }
+                    }
+                }.andReturn()
+                .toDto<JwtResponse>()
 
             assertThat(jwtRefreshApi.refreshToken).isNotEqualTo(jwtResponse.refreshToken)
             assertThat(jwtRefreshApi.accessToken).isNotEqualTo(jwtResponse.accessToken)
 
-            mvc.post("/v1/auth/refresh") {
-                contentType = MediaType.APPLICATION_JSON
-                content = dto
-            }.andExpect {
-                status { isUnauthorized() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-            }
+            mvc
+                .post("/v1/auth/refresh") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = dto
+                }.andExpect {
+                    status { isUnauthorized() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                }
         }
 
         @Test
         fun `test refresh token with invalid session information`() {
-            val jwtResponse = mvc.post("/v1/auth/login") {
-                content = ModelFactory.getAdminSignInDto().toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andReturn().toDto<JwtResponse>()
+            val jwtResponse = mvc
+                .post("/v1/auth/login") {
+                    content = ModelFactory.getAdminSignInDto().toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andReturn()
+                .toDto<JwtResponse>()
 
-            mvc.post("/v1/auth/refresh") {
-                contentType = MediaType.APPLICATION_JSON
-                content = RefreshJwtWithSessionTokenDto(
-                    jwtResponse.refreshToken!!,
-                    "short",
-                ).toJSON()
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mvc
+                .post("/v1/auth/refresh") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = RefreshJwtWithSessionTokenDto(
+                        jwtResponse.refreshToken!!,
+                        "short",
+                    ).toJSON()
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
 
         @Test
         fun `test refresh token not valid`() {
             // Given
-            val response = mvc.post("/v1/auth/login") {
-                content = ModelFactory.getAdminSignInDto().toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andReturn().toDto<JwtResponse>()
+            val response = mvc
+                .post("/v1/auth/login") {
+                    content = ModelFactory.getAdminSignInDto().toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andReturn()
+                .toDto<JwtResponse>()
             assertThat(response.accessToken).isNotNull
             assertThat(response.refreshToken).isNotNull
 
@@ -455,16 +485,17 @@ class AuthIntegrationTest(
             sessionService.invalidateSessionByPublicId(userSession.publicId)
 
             // Then
-            mvc.post("/v1/auth/refresh") {
-                contentType = MediaType.APPLICATION_JSON
-                content = RefreshJwtWithSessionTokenDto(
-                    refreshToken = response.refreshToken,
-                    sessionInformation = "poweruptime integration tests",
-                ).toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-            }
+            mvc
+                .post("/v1/auth/refresh") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = RefreshJwtWithSessionTokenDto(
+                        refreshToken = response.refreshToken,
+                        sessionInformation = "poweruptime integration tests",
+                    ).toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                }
         }
     }
 }

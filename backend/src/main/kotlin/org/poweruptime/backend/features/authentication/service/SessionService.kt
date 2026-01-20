@@ -35,29 +35,21 @@ import kotlin.jvm.Throws
 
 @Service
 @Transactional(readOnly = true)
-class SessionService(
-    val refreshTokenGenerationService: RefreshTokenGenerationService
-) {
+class SessionService(val refreshTokenGenerationService: RefreshTokenGenerationService) {
     fun existsByPublicSessionAndUserId(sessionId: String, userId: ULong) =
         Session.existsByPublicSessionAndUserId(sessionId, userId)
 
-    fun getAllPaginated(
-        pageable: Pageable,
-        userId: ULong,
-        valid: Boolean = true
-    ): Page<SessionRecord> = Session.findAll(
-        pageable = pageable,
-        userId = userId,
-        valid = valid,
-    )
+    fun getAllPaginated(pageable: Pageable, userId: ULong, valid: Boolean = true): Page<SessionRecord> =
+        Session.findAll(
+            pageable = pageable,
+            userId = userId,
+            valid = valid,
+        )
 
     @Transactional
     @Throws(SessionTokenIncorrectException::class)
     @Suppress("ThrowsCount")
-    fun refreshSession(
-        token: String,
-        description: String
-    ): RefreshTokenRecord {
+    fun refreshSession(token: String, description: String): RefreshTokenRecord {
         val (session, user) = getJoinUserByTokenOrThrow(token)
         val refreshToken = RefreshToken.findByToken(token) ?: throw SessionTokenIncorrectException()
 
@@ -96,54 +88,51 @@ class SessionService(
     }
 
     @Transactional
-    fun invalidateSessionByPublicId(publicSessionId: String): Unit = Session.findIdByPublicIdOrThrow(
-        publicSessionId,
-    ).let { id ->
-        Session.invalidateSession(id)
-        RefreshToken.invalidateAllTokensBySessionId(id)
-    }
+    fun invalidateSessionByPublicId(publicSessionId: String): Unit = Session
+        .findIdByPublicIdOrThrow(
+            publicSessionId,
+        ).let { id ->
+            Session.invalidateSession(id)
+            RefreshToken.invalidateAllTokensBySessionId(id)
+        }
 
     @Transactional
-    fun invalidateSessionsByUserId(userId: ULong): Unit = Session.findAllByUserId(userId).map {
-        it.id
-    }.let { id ->
-        Session.invalidateSessions(id)
-        RefreshToken.invalidateAllTokensBySessionIds(id)
-    }
+    fun invalidateSessionsByUserId(userId: ULong): Unit = Session
+        .findAllByUserId(userId)
+        .map {
+            it.id
+        }.let { id ->
+            Session.invalidateSessions(id)
+            RefreshToken.invalidateAllTokensBySessionIds(id)
+        }
 
     @Transactional
     fun clearSessionsOlderThan(past: Instant): Int = Session.deleteAllUpdatedAtBefore(past)
 
     @Throws(SessionTokenIncorrectException::class)
-    fun getByTokenOrThrow(
-        refreshToken: String
-    ) = Session.findByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
+    fun getByTokenOrThrow(refreshToken: String) =
+        Session.findByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
 
     @Throws(SessionTokenIncorrectException::class)
-    fun getJoinUserByTokenOrThrow(
-        refreshToken: String
-    ) = Session.findJoinUserByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
+    fun getJoinUserByTokenOrThrow(refreshToken: String) =
+        Session.findJoinUserByRefreshToken(refreshToken) ?: throw SessionTokenIncorrectException()
 
-    private fun createRefreshToken(
-        token: String,
-        sessionId: ULong
-    ): RefreshTokenRecord = RefreshToken.insertAndGetId {
-        it[RefreshToken.sessionId] = sessionId
-        it[RefreshToken.token] = token
-    }.let { id ->
-        RefreshToken.findByIdOrThrow(id.value) {
-            RefreshToken.rowToRefreshTokenRecord(it)
+    private fun createRefreshToken(token: String, sessionId: ULong): RefreshTokenRecord = RefreshToken
+        .insertAndGetId {
+            it[RefreshToken.sessionId] = sessionId
+            it[RefreshToken.token] = token
+        }.let { id ->
+            RefreshToken.findByIdOrThrow(id.value) {
+                RefreshToken.rowToRefreshTokenRecord(it)
+            }
         }
-    }
 
-    fun createSessionForOAuth2(
-        user: UserRecord,
-        sessionInformation: String,
-    ): RefreshTokenRecord {
-        val sessionId = Session.insertAndGetId {
-            it[Session.userId] = user.id
-            it[Session.description] = sessionInformation
-        }.value
+    fun createSessionForOAuth2(user: UserRecord, sessionInformation: String): RefreshTokenRecord {
+        val sessionId = Session
+            .insertAndGetId {
+                it[Session.userId] = user.id
+                it[Session.description] = sessionInformation
+            }.value
 
         return createRefreshToken(
             token = generateNewRefreshToken(user.publicId, user.role.grantedAuthorities),
@@ -156,7 +145,7 @@ class SessionService(
     fun createSessionIfNeeded(
         stayLoggedIn: Boolean?,
         sessionInformation: String?,
-        user: UserRecord
+        user: UserRecord,
     ): RefreshTokenRecord? {
         if (stayLoggedIn != true) {
             return null
@@ -166,10 +155,11 @@ class SessionService(
             throw SessionInformationMissingException()
         }
 
-        val sessionId = Session.insertAndGetId {
-            it[Session.userId] = user.id
-            it[Session.description] = sessionInformation
-        }.value
+        val sessionId = Session
+            .insertAndGetId {
+                it[Session.userId] = user.id
+                it[Session.description] = sessionInformation
+            }.value
 
         return createRefreshToken(
             token = generateNewRefreshToken(user.publicId, user.role.grantedAuthorities),

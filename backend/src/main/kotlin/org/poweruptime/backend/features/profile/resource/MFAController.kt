@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1/profile/mfa")
 @Tag(name = "MFA API")
-class MFAController(
-    private val mfaService: MFAService,
-) {
+class MFAController(private val mfaService: MFAService) {
     @Operation(
         summary = "Get MFA state",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -68,13 +66,12 @@ class MFAController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    fun confirm(auth: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse =
-        ConfirmMFAResponse(
-            backupCodes = mfaService.activate(
-                mfaId = auth.user().mfaId ?: throw BadRequestException("Setup MFA first"),
-                code = dto.code,
-            ),
-        )
+    fun confirm(auth: Authentication, @Valid @RequestBody dto: ConfirmMFADto): ConfirmMFAResponse = ConfirmMFAResponse(
+        backupCodes = mfaService.activate(
+            mfaId = auth.user().mfaId ?: throw BadRequestException("Setup MFA first"),
+            code = dto.code,
+        ),
+    )
 
     @Operation(
         summary = "Delete MFA",
@@ -82,10 +79,7 @@ class MFAController(
     )
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    fun delete(
-        auth: Authentication,
-        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-    ) {
+    fun delete(auth: Authentication, @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?) {
         mfaService.validate(auth.user(), mfaCode)
 
         mfaService.delete(auth.user().mfaId!!)

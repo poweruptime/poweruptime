@@ -1,5 +1,6 @@
 import dev.detekt.gradle.Detekt
 import dev.detekt.gradle.report.ReportMergeTask
+import org.gradle.kotlin.dsl.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.time.Instant
@@ -33,9 +34,9 @@ plugins {
     kotlin("plugin.serialization") version "2.3.0"
 }
 
-val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
-    output = layout.buildDirectory.file("reports/detekt/merge.sarif")
-}
+//val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
+//    output = layout.buildDirectory.file("reports/detekt/merge.sarif")
+//}
 
 allprojects {
     apply(plugin = "dev.detekt")
@@ -46,9 +47,12 @@ allprojects {
         // Autocorrection can only be done locally
         autoCorrect = System.getenv("CI")?.lowercase() != true.toString()
     }
+//    detektReportMergeSarif {
+//        input.from(tasks.withType<Detekt>().map { it.reports.checkstyle.outputLocation })
+//    }
 
     dependencies {
-        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.1")
     }
 
     tasks.withType<Detekt>().configureEach {
@@ -57,7 +61,6 @@ allprojects {
             html.required = true
             sarif.required = true
         }
-        finalizedBy(detektReportMergeSarif)
         jvmTarget = "24"
     }
 }

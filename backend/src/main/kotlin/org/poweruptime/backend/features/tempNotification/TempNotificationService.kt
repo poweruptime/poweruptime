@@ -13,12 +13,12 @@ data class TempNotification(
     val subject: String,
     val body: String? = null,
     val bodyHTML: String? = null,
-    val appriseDto: AppriseNotificationRequest? = null
+    val appriseDto: AppriseNotificationRequest? = null,
 )
 
 @Service
 class TempNotificationService {
-    var tempNotifications: MutableList<TempNotification> = mutableListOf()
+    val tempNotifications: MutableList<TempNotification> = mutableListOf()
 
     fun addNotification(tempNotification: TempNotification) = tempNotifications.add(0, tempNotification)
 
@@ -29,10 +29,10 @@ class TempNotificationService {
 
     fun removeOldTempNotifications() {
         val date1HourAgo = Instant.now().minusSeconds(60 * 60)
-        tempNotifications = tempNotifications.filter { it.createdAt > date1HourAgo }.toMutableList()
+        tempNotifications.removeIf { it.createdAt > date1HourAgo }
     }
 
     fun removeAll() {
-        tempNotifications = mutableListOf()
+        tempNotifications.clear()
     }
 }

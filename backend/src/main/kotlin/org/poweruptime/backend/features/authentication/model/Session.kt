@@ -32,21 +32,17 @@ data class SessionRecord(
     val valid: Boolean,
 )
 
-data class SessionJoinUserRecord(
-    val session: SessionRecord,
-    val user: UserRecord,
-)
+data class SessionJoinUserRecord(val session: SessionRecord, val user: UserRecord)
 
-fun Session.rowToSessionRecord(row: ResultRow): SessionRecord =
-    SessionRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        userId = row[userId],
-        description = row[description],
-        valid = row[valid],
-    )
+fun Session.rowToSessionRecord(row: ResultRow): SessionRecord = SessionRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    userId = row[userId],
+    description = row[description],
+    valid = row[valid],
+)
 
 object RefreshToken : ULongIdTable("refresh_token"), HasModifiers {
     override val createdAt = createdAt()
@@ -66,12 +62,12 @@ data class RefreshTokenRecord(
     val token: String,
     val valid: Boolean,
 )
-fun RefreshToken.rowToRefreshTokenRecord(row: ResultRow): RefreshTokenRecord =
-    RefreshTokenRecord(
-        id = row[id].value,
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        sessionId = row[sessionId],
-        token = row[token],
-        valid = row[valid],
-    )
+
+fun RefreshToken.rowToRefreshTokenRecord(row: ResultRow): RefreshTokenRecord = RefreshTokenRecord(
+    id = row[id].value,
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    sessionId = row[sessionId],
+    token = row[token],
+    valid = row[valid],
+)

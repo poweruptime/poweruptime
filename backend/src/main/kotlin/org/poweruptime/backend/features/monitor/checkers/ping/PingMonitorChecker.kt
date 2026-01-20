@@ -22,7 +22,6 @@ class PingMonitorChecker : MonitorChecker(MonitorType.PING) {
         }
 
         val result = MonitoringResultHandler()
-        @Suppress("TooGenericExceptionCaught")
         try {
             Socket().use { soc ->
                 soc.connect(InetSocketAddress(data.ip, data.port), 4000)

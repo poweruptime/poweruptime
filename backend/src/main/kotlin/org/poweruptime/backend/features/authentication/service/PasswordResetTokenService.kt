@@ -16,10 +16,7 @@ const val THREE_HOURS_IN_SECONDS = 3L * 60L * 60L
 
 @Service
 @Transactional
-class PasswordResetTokenService(
-    val systemEmailService: SystemEmailService
-) {
-
+class PasswordResetTokenService(val systemEmailService: SystemEmailService) {
     fun create(user: UserRecord) {
         if (PasswordResetToken.countByUserIdAndCreatedAfter(
                 user.id,
@@ -29,9 +26,10 @@ class PasswordResetTokenService(
             return
         }
 
-        val resetToken = PasswordResetToken.insertAndGetId {
-            it[PasswordResetToken.userId] = user.id
-        }.value
+        val resetToken = PasswordResetToken
+            .insertAndGetId {
+                it[PasswordResetToken.userId] = user.id
+            }.value
 
         systemEmailService.queueEmail(
             PasswordResetEmail(user, resetToken = resetToken),

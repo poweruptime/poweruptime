@@ -20,7 +20,8 @@ interface INotificationMethodDataService {
 class NotificationMethodDataService : INotificationMethodDataService {
     override fun findByIdAndType(id: ULong, type: NotificationMethodType): NotificationMethodData =
         NotificationMethodDataTable.getByType(type).let { table ->
-            table.selectAll()
+            table
+                .selectAll()
                 .where {
                     table.id eq id
                 }.limit(1)
@@ -30,21 +31,19 @@ class NotificationMethodDataService : INotificationMethodDataService {
         }
 
     @Transactional
-    fun insert(
-        notificationMethod: NotificationMethodRecord,
-        data: NotificationMethodData
-    ): NotificationMethodData = NotificationMethodDataTable
-        .getByType(notificationMethod.type)
-        .insert(notificationMethod.id, data)
-        .let {
-            findByIdAndType(notificationMethod.id, notificationMethod.type)
-        }
+    fun insert(notificationMethod: NotificationMethodRecord, data: NotificationMethodData): NotificationMethodData =
+        NotificationMethodDataTable
+            .getByType(notificationMethod.type)
+            .insert(notificationMethod.id, data)
+            .let {
+                findByIdAndType(notificationMethod.id, notificationMethod.type)
+            }
 
     @Transactional
     fun update(
         oldNotificationMethod: NotificationMethodRecord,
         updatedNotificationMethod: NotificationMethodRecord,
-        data: NotificationMethodData
+        data: NotificationMethodData,
     ): NotificationMethodData = if (oldNotificationMethod.type !== updatedNotificationMethod.type) {
         NotificationMethodDataTable.getByType(oldNotificationMethod.type).deleteById(oldNotificationMethod.id)
 

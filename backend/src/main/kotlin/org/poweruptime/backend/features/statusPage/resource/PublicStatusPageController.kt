@@ -25,9 +25,8 @@ class PublicStatusPageController(
     private val statusPageService: StatusPageService,
     private val checkResultStatisticsService: CheckResultStatisticsService,
 ) {
-
     private fun getStatusPageGroupsMonitorsAndCheckResults(
-        statusPageId: ULong
+        statusPageId: ULong,
     ): List<Pair<StatusPageGroupRecord, List<PublicMonitorMinResponse>>> {
         val groups = StatusPageGroup.findByStatusPage(statusPageId)
         val monitors = StatusPageGroupMonitor.findByStatusPage(statusPageId)
@@ -42,16 +41,19 @@ class PublicStatusPageController(
         return groups.map { group ->
             Pair(
                 group,
-                groupedMonitors[group.id]?.map {
-                    PublicMonitorMinResponse(
-                        monitor = it.monitor,
-                        oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
-                            it.monitor.id,
-                            TimeOption.ONE_DAY,
-                        ).myFormat(),
-                        lastCheckResults = checkResultsPerMonitor[it.monitor.id] ?: emptyList(),
-                    )
-                } ?: emptyList())
+                groupedMonitors[group.id]
+                    ?.map {
+                        PublicMonitorMinResponse(
+                            monitor = it.monitor,
+                            oneDayUptime = checkResultStatisticsService
+                                .calculateRecentUptimeByMonitorId(
+                                    it.monitor.id,
+                                    TimeOption.ONE_DAY,
+                                ).myFormat(),
+                            lastCheckResults = checkResultsPerMonitor[it.monitor.id].orEmpty(),
+                        )
+                    }.orEmpty(),
+            )
         }
     }
 
@@ -60,11 +62,12 @@ class PublicStatusPageController(
     )
     @GetMapping("/{slug}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(@PathVariable slug: String): PublicStatusPageResponse =
-        statusPageService.findBySlug(slug)?.let {
+    fun get(@PathVariable slug: String): PublicStatusPageResponse = statusPageService
+        .findBySlug(slug)
+        ?.let {
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id)
+                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id),
             )
         }.orThrowNotFound("Status page not found")
 
@@ -73,11 +76,12 @@ class PublicStatusPageController(
     )
     @GetMapping("/byDomain/{domain}")
     @ResponseStatus(HttpStatus.OK)
-    fun getByDomain(@PathVariable domain: String): PublicStatusPageResponse =
-        statusPageService.findByDomainName(domain)?.let {
+    fun getByDomain(@PathVariable domain: String): PublicStatusPageResponse = statusPageService
+        .findByDomainName(domain)
+        ?.let {
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id)
+                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id),
             )
         }.orThrowNotFound("Status page not found")
 }

@@ -10,6 +10,7 @@ import kotlin.reflect.typeOf
 
 // Extension function to map the content of MvcResult using the object mapper
 inline fun <reified T : Any> MvcResult.toDto(): T = toDto(typeOf<T>())
+
 fun <T : Any> MvcResult.toDto(kType: KType): T =
     puJsonMapper.readValue(this.response.contentAsByteArray, kType.toTypeReference())
 

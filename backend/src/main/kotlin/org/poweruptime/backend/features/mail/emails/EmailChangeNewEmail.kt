@@ -9,7 +9,7 @@ data class EmailChangeNewEmail(
     val newEmail: String,
     val confirmToken: String,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(newEmail)
 

@@ -8,13 +8,9 @@ object VersionCheckMail : ULongIdTable("version_check_mail") {
     val puVersion = varchar("pu_version", Database.MAX_PU_VERSION_LENGTH).uniqueIndex()
 }
 
-data class VersionCheckMailRecord(
-    val id: ULong,
-    val puVersion: String,
-)
+data class VersionCheckMailRecord(val id: ULong, val puVersion: String)
 
-fun VersionCheckMail.rowToVersionCheckMailRecord(row: ResultRow): VersionCheckMailRecord =
-    VersionCheckMailRecord(
-        id = row[id].value,
-        puVersion = row[puVersion],
-    )
+fun VersionCheckMail.rowToVersionCheckMailRecord(row: ResultRow): VersionCheckMailRecord = VersionCheckMailRecord(
+    id = row[id].value,
+    puVersion = row[puVersion],
+)

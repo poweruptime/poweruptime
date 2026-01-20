@@ -34,14 +34,13 @@ class AuthController(
     private val passwordResetTokenService: PasswordResetTokenService,
     private val mfaService: MFAService,
 ) {
-
     @Operation(
         summary = "Login",
     )
     @PostMapping("/login")
     fun login(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-        @Valid @RequestBody request: LoginDto
+        @Valid @RequestBody request: LoginDto,
     ): JwtResponse {
         val auth = authenticationProvider.authenticate(
             UsernamePasswordAuthenticationToken(
@@ -85,9 +84,10 @@ class AuthController(
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     fun refresh(@Valid @RequestBody request: RefreshJwtWithSessionTokenDto): JwtResponse {
-        val authentication = refreshTokenAuthProvider.authenticate(
-            BearerTokenAuthenticationToken(request.refreshToken),
-        ).orThrowNotFound()
+        val authentication = refreshTokenAuthProvider
+            .authenticate(
+                BearerTokenAuthenticationToken(request.refreshToken),
+            ).orThrowNotFound()
 
         val sessionToken = sessionService.refreshSession(
             token = request.refreshToken,
@@ -107,7 +107,7 @@ class AuthController(
     @ResponseStatus(HttpStatus.OK)
     fun passwordChange(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-        @Valid @RequestBody request: LoginWithPasswordChangeDto
+        @Valid @RequestBody request: LoginWithPasswordChangeDto,
     ): JwtResponse {
         var user = authService.getByEmail(request.email)
 
@@ -125,7 +125,8 @@ class AuthController(
             )
 
             throw NoPasswordChangeRequiredException()
-        } catch (_: CredentialsExpiredException) {}
+        } catch (_: CredentialsExpiredException) {
+        }
 
         mfaService.validate(user, mfaCode)
 
@@ -168,7 +169,7 @@ class AuthController(
     @ResponseStatus(HttpStatus.OK)
     fun updatePasswordWithResetToken(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-        @Valid @RequestBody request: PasswordForgotResetDto
+        @Valid @RequestBody request: PasswordForgotResetDto,
     ) {
         val user = authService.getByEmail(request.email)
 

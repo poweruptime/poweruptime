@@ -8,10 +8,7 @@ import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 
 @Service
-class EmailTemplateService(
-    private val templateEngine: TemplateEngine,
-    private val hostService: HostService,
-) {
+class EmailTemplateService(private val templateEngine: TemplateEngine, private val hostService: HostService) {
     fun getRenderedMail(email: Email): EmailTemplateResponse {
         val context = email.context.applyDefaultContext(email.subject)
         return EmailTemplateResponse(

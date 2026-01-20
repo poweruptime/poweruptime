@@ -14,9 +14,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType
 
 @Configuration
 @EnableConfigurationProperties(OAuth2ClientProperties::class)
-class OAuth2ClientRegistrationsConfig(
-    private val props: OAuth2ClientProperties
-) {
+class OAuth2ClientRegistrationsConfig(private val props: OAuth2ClientProperties) {
     private val log = KotlinLogging.logger {}
 
     @Bean
@@ -69,11 +67,9 @@ class OAuth2ClientRegistrationsConfig(
                             .clientSecret(registration.clientSecret!!)
                             .authorizationGrantType(
                                 AuthorizationGrantType(registration.authorizationGrantType),
-                            )
-                            .redirectUri(
+                            ).redirectUri(
                                 registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
-                            )
-                            .clientName(registration.clientName ?: registrationId.capitalize())
+                            ).clientName(registration.clientName ?: registrationId.capitalize())
                             .scope(*registration.scope!!.toTypedArray())
                             .authorizationUri(it.authorizationUri)
                             .issuerUri(it.issuerUri)
@@ -93,16 +89,13 @@ class OAuth2ClientRegistrationsConfig(
 
 private fun String?.isNullBlankOrEmpty() = this.isNullOrBlank() || this == "EMPTY"
 
-class EmptyClientRegistrationRepository(
-    registrations: List<ClientRegistration> = emptyList()
-) : ClientRegistrationRepository, Iterable<ClientRegistration> {
-
+class EmptyClientRegistrationRepository(registrations: List<ClientRegistration> = emptyList()) :
+    ClientRegistrationRepository,
+    Iterable<ClientRegistration> {
     private val registrations: Map<String, ClientRegistration> =
         registrations.associateBy { it.registrationId }
 
-    override fun findByRegistrationId(registrationId: String): ClientRegistration? =
-        registrations[registrationId]
+    override fun findByRegistrationId(registrationId: String): ClientRegistration? = registrations[registrationId]
 
-    override fun iterator(): Iterator<ClientRegistration> =
-        registrations.values.iterator()
+    override fun iterator(): Iterator<ClientRegistration> = registrations.values.iterator()
 }

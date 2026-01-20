@@ -64,17 +64,13 @@ class UserService(
 
     fun findByEmail(email: String): UserRecord? = User.findByEmail(email)
 
-    fun getAll(
-        pageable: Pageable,
-        search: String?,
-        activated: Boolean?,
-        role: SystemRole?,
-    ): Page<UserRecord> = User.findAll(
-        pageable = pageable,
-        search = search,
-        activated = activated,
-        role = role,
-    )
+    fun getAll(pageable: Pageable, search: String?, activated: Boolean?, role: SystemRole?): Page<UserRecord> =
+        User.findAll(
+            pageable = pageable,
+            search = search,
+            activated = activated,
+            role = role,
+        )
 
     fun isSetup(): Boolean = User.isSetup()
 
@@ -92,15 +88,15 @@ class UserService(
             dto.activated
         }
 
-        return User.insertAndGetId {
-            it[User.name] = dto.name
-            it[User.email] = dto.email
-            it[User.passwordHash] = passwordEncoder.encode(onetimePassword)!!
-            it[User.activated] = activated
-            it[User.role] = dto.role
-            it[User.forcePasswordChange] = forcePasswordChange
-        }
-            .let { getById(it.value) }
+        return User
+            .insertAndGetId {
+                it[User.name] = dto.name
+                it[User.email] = dto.email
+                it[User.passwordHash] = passwordEncoder.encode(onetimePassword)!!
+                it[User.activated] = activated
+                it[User.role] = dto.role
+                it[User.forcePasswordChange] = forcePasswordChange
+            }.let { getById(it.value) }
             .also { user ->
                 teamService.create(dto = CreateTeamDto(dto.name), creatorId = user.id, personalUserId = user.id)
 
@@ -113,17 +109,17 @@ class UserService(
     }
 
     @Transactional
-    fun update(dto: UpdateUserDto, inviter: UserRecord): UserRecord =
-        getIdByPublicId(dto.id).let { id ->
-            val isInvitationButNoPasswordProvided = dto.sendInvitation && dto.password == null
+    fun update(dto: UpdateUserDto, inviter: UserRecord): UserRecord = getIdByPublicId(dto.id).let { id ->
+        val isInvitationButNoPasswordProvided = dto.sendInvitation && dto.password == null
 
-            val newPassword = if (isInvitationButNoPasswordProvided) {
-                RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
-            } else {
-                dto.password
-            }
+        val newPassword = if (isInvitationButNoPasswordProvided) {
+            RandomGenerator.nanoId(PASSWORD_DEFAULT_LENGTH)
+        } else {
+            dto.password
+        }
 
-            User.update({ User.id eq id }) {
+        User
+            .update({ User.id eq id }) {
                 it[User.name] = dto.name
                 it[User.email] = dto.email
 
@@ -141,22 +137,21 @@ class UserService(
                 getById(id)
             }.also { user ->
                 if (dto.sendInvitation) {
-                    require(newPassword != null)
+                    requireNotNull(newPassword)
 
                     systemEmailService.queueEmail(
                         InviteUserEmail(invitee = user, inviter = inviter, onetimePassword = newPassword),
                     )
                 }
             }
-        }
-
-    @Transactional
-    fun deleteById(id: ULong): Int {
-        return User.deleteById(id)
     }
 
     @Transactional
-    fun undeleteById(id: ULong): UserRecord = User.undeleteById(
-        id,
-    ).let { getById(id) }
+    fun deleteById(id: ULong): Int = User.deleteById(id)
+
+    @Transactional
+    fun undeleteById(id: ULong): UserRecord = User
+        .undeleteById(
+            id,
+        ).let { getById(id) }
 }

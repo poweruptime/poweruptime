@@ -26,17 +26,12 @@ import org.springframework.http.HttpStatusCode
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientResponseException
+import org.springframework.web.client.toEntity
 
-class HttpMonitorChecker(
-    private val teamSettingService: TeamSettingService,
-) : MonitorChecker(MonitorType.HTTP) {
+class HttpMonitorChecker(private val teamSettingService: TeamSettingService) : MonitorChecker(MonitorType.HTTP) {
     private val logger = KotlinLogging.logger {}
 
-    @Suppress("ReturnCount")
-    override fun execute(
-        monitor: MonitorRecord,
-        data: MonitorData,
-    ): CheckResultDto {
+    override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
         data as HttpMonitorDataRecord
 
         if (data.certificateExpiry) {
@@ -64,7 +59,8 @@ class HttpMonitorChecker(
         return try {
             val httpResponse = makeHttpRequest(data)
 
-            if (!data.getAllowedStatusCodesRanges()
+            if (!data
+                    .getAllowedStatusCodesRanges()
                     .isStatusCodeAllowed(httpResponse.statusCode)
             ) {
                 return result.error(
@@ -108,15 +104,13 @@ class HttpMonitorChecker(
         val responseBody: Any? = null,
     )
 
-    @Suppress("LongMethod")
-    private fun makeHttpRequest(
-        httpMonitorCheckerData: HttpMonitorDataRecord,
-    ): HttpResponse {
+    private fun makeHttpRequest(httpMonitorCheckerData: HttpMonitorDataRecord): HttpResponse {
         val requestFactory = buildHttpClientRequestFactory(
             httpMonitorCheckerData,
         )
 
-        val customRestClient = RestClient.builder()
+        val customRestClient = RestClient
+            .builder()
             .requestFactory(requestFactory)
             .build()
 
@@ -125,9 +119,9 @@ class HttpMonitorChecker(
                 .method(httpMonitorCheckerData.method.toHttpMethod())
                 .uri(httpMonitorCheckerData.url)
                 .headers { it.applyHeaders(httpMonitorCheckerData) }
-                .body(httpMonitorCheckerData.body ?: "")
+                .body(httpMonitorCheckerData.body.orEmpty())
                 .retrieve()
-                .toEntity(String::class.java)
+                .toEntity<String>()
 
             val httpStatus = try {
                 HttpStatus.valueOf(entity.statusCode.value())
@@ -152,32 +146,37 @@ class HttpMonitorChecker(
     private fun buildHttpClientRequestFactory(
         httpMonitorCheckerData: HttpMonitorDataRecord,
     ): HttpComponentsClientHttpRequestFactory {
-        val connectionConfig = ConnectionConfig.custom()
+        val connectionConfig = ConnectionConfig
+            .custom()
             .setConnectTimeout(Timeout.ofMilliseconds(4000))
             .setSocketTimeout(Timeout.ofMilliseconds(4000))
             .build()
 
-        val connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+        val connectionManager = PoolingHttpClientConnectionManagerBuilder
+            .create()
             .setDefaultConnectionConfig(connectionConfig)
 
-        val requestConfig = RequestConfig.custom().apply {
-            if (httpMonitorCheckerData.maxRedirects == null) {
-                setRedirectsEnabled(false)
-            } else {
-                setRedirectsEnabled(true)
-                setMaxRedirects(
-                    httpMonitorCheckerData.maxRedirects.toInt(),
-                )
-            }
+        val requestConfig = RequestConfig
+            .custom()
+            .apply {
+                if (httpMonitorCheckerData.maxRedirects == null) {
+                    setRedirectsEnabled(false)
+                } else {
+                    setRedirectsEnabled(true)
+                    setMaxRedirects(
+                        httpMonitorCheckerData.maxRedirects.toInt(),
+                    )
+                }
 
-            setConnectionRequestTimeout(Timeout.ofMilliseconds(4000))
-            setResponseTimeout(Timeout.ofMilliseconds(4000))
-        }.build()
+                setConnectionRequestTimeout(Timeout.ofMilliseconds(4000))
+                setResponseTimeout(Timeout.ofMilliseconds(4000))
+            }.build()
 
         if (httpMonitorCheckerData.ignoreTLS) {
             connectionManager.setTlsSocketStrategy(
                 DefaultClientTlsStrategy(
-                    SSLContexts.custom()
+                    SSLContexts
+                        .custom()
                         .loadTrustMaterial(null) { _, _ -> true }
                         .build(),
                     NoopHostnameVerifier.INSTANCE,
@@ -185,20 +184,18 @@ class HttpMonitorChecker(
             )
         }
 
-        val httpClient = HttpClientBuilder.create()
+        val httpClient = HttpClientBuilder
+            .create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(connectionManager.build())
             .addResponseInterceptorFirst { response, _, _ ->
                 response.removeHeaders("Content-Encoding")
-            }
-            .build()
+            }.build()
 
         return HttpComponentsClientHttpRequestFactory(httpClient)
     }
 
-    private fun HttpHeaders.applyHeaders(
-        httpMonitorCheckerData: HttpMonitorDataRecord,
-    ) {
+    private fun HttpHeaders.applyHeaders(httpMonitorCheckerData: HttpMonitorDataRecord) {
         add("Accept", "*/*")
         add(
             "Content-Type",
@@ -230,9 +227,7 @@ class HttpMonitorChecker(
         HttpMonitorDataMethod.OPTIONS -> HttpMethod.OPTIONS
     }
 
-    private fun List<IntRange>.isStatusCodeAllowed(
-        statusCode: HttpStatusCode,
-    ): Boolean {
+    private fun List<IntRange>.isStatusCodeAllowed(statusCode: HttpStatusCode): Boolean {
         val code = statusCode.value()
         return any { code in it }
     }

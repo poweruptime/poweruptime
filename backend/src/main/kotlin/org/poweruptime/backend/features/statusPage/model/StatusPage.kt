@@ -45,17 +45,16 @@ data class StatusPageRecord(
     val footer: String?,
 )
 
-fun StatusPage.rowToStatusPageRecord(row: ResultRow): StatusPageRecord =
-    StatusPageRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        deleted = row[deleted],
-        name = row[name],
-        teamId = row[teamId],
-        imageId = row[imageId],
-        image = if (row[imageId] != null) File.rowToFileRecord(row) else null,
-        description = row[description],
-        footer = row[footer],
-    )
+fun StatusPage.rowToStatusPageRecord(row: ResultRow): StatusPageRecord = StatusPageRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    deleted = row[deleted],
+    name = row[name],
+    teamId = row[teamId],
+    imageId = row[imageId],
+    image = if (row[imageId] != null) File.rowToFileRecord(row) else null,
+    description = row[description],
+    footer = row[footer],
+)

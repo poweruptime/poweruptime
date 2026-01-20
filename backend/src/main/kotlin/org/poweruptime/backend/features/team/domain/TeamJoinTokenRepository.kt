@@ -21,44 +21,40 @@ import org.poweruptime.backend.features.team.model.TeamJoinTokenRecord
 import org.poweruptime.backend.features.team.model.rowToTeamJoinTokenRecord
 import java.time.Instant
 
-fun TeamJoinToken.countByTeamAndInviteeId(
-    teamId: ULong,
-    inviteeId: ULong
-): Long = selectAll().where {
-    (TeamJoinToken.teamId eq teamId) and (TeamJoinToken.inviteeId eq inviteeId)
-}.count()
+fun TeamJoinToken.countByTeamAndInviteeId(teamId: ULong, inviteeId: ULong): Long = selectAll()
+    .where {
+        (TeamJoinToken.teamId eq teamId) and (TeamJoinToken.inviteeId eq inviteeId)
+    }.count()
 
 fun TeamJoinToken.findValidByInviteeIdTokenAndCreatedAfter(
     inviteeId: ULong,
     token: String,
-    createdAfter: Instant
-): TeamJoinTokenRecord? = selectAll().where {
-    (TeamJoinToken.inviteeId eq inviteeId) and
-        (id eq token) and
-        (createdAt greater createdAfter) and
-        (valid eq true)
-}.firstOrNull()?.let {
-    rowToTeamJoinTokenRecord(it)
-}
+    createdAfter: Instant,
+): TeamJoinTokenRecord? = selectAll()
+    .where {
+        (TeamJoinToken.inviteeId eq inviteeId) and
+            (id eq token) and
+            (createdAt greater createdAfter) and
+            (valid eq true)
+    }.firstOrNull()
+    ?.let {
+        rowToTeamJoinTokenRecord(it)
+    }
 
-fun TeamJoinToken.invalidateByInviteeId(
-    inviteeId: ULong
-): Int = update({
+fun TeamJoinToken.invalidateByInviteeId(inviteeId: ULong): Int = update({
     (TeamJoinToken.inviteeId eq inviteeId) and (valid eq true)
 }) {
     it[valid] = false
 }
 
-fun TeamJoinToken.findAll(
-    pageable: Pageable,
-    teamId: ULong
-): Page<TeamJoinTokenJoinInviteeAndInviter> {
+fun TeamJoinToken.findAll(pageable: Pageable, teamId: ULong): Page<TeamJoinTokenJoinInviteeAndInviter> {
     val invitee = User.alias("invitee")
     val inviter = User.alias("inviter")
 
     val query = innerJoin(invitee, { TeamJoinToken.inviteeId }, { invitee[User.id] })
         .innerJoin(inviter, { TeamJoinToken.inviterId }, { inviter[User.id] })
-        .selectAll().where {
+        .selectAll()
+        .where {
             (TeamJoinToken.teamId eq teamId) and (TeamJoinToken.valid eq true)
         }
 
@@ -86,8 +82,6 @@ fun TeamJoinToken.findAll(
     )
 }
 
-fun TeamJoinToken.deleteOlderThan(
-    before: Instant
-): Int = deleteWhere {
+fun TeamJoinToken.deleteOlderThan(before: Instant): Int = deleteWhere {
     createdAt less before
 }

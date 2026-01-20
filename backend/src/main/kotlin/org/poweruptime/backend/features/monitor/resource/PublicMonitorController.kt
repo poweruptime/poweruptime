@@ -21,14 +21,13 @@ class PublicMonitorController(
     )
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(@PathVariable("id") publicId: String): PublicMonitorResponse =
-        monitorService.getByPublicId(publicId).let {
-            PublicMonitorResponse(
-                monitor = it,
-                statistics = checkResultStatisticsService.uptimeStatisticsDto(it.id),
-                lastCheckResults = checkResultStatisticsService.getLastByMonitorId(it.id, 100),
-            )
-        }
+    fun get(@PathVariable("id") publicId: String): PublicMonitorResponse = monitorService.getByPublicId(publicId).let {
+        PublicMonitorResponse(
+            monitor = it,
+            statistics = checkResultStatisticsService.uptimeStatisticsDto(it.id),
+            lastCheckResults = checkResultStatisticsService.getLastByMonitorId(it.id, 100),
+        )
+    }
 
     @Operation(
         summary = "Get monitor yearly uptime",

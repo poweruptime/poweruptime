@@ -12,8 +12,8 @@ import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.features.authentication.permission.Permission
 import org.poweruptime.backend.features.authentication.permission.PermissionsService
-import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.MonitorService
@@ -79,20 +79,21 @@ class SubNotificationController(
             }
         }
 
-        return subNotificationService.getAllPaginated(
-            pageable = pageable,
-            notificationId = publicNotificationId?.let { notificationService.getIdByPublicId(it) },
-            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
-            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
-            userId = if (publicTeamId == null && publicMonitorId == null && publicNotificationId == null) {
-                auth.userId()
-            } else {
-                null
-            },
-            methods = methods,
-            statuses = statuses,
-        ).toDto {
-            SubNotificationResponse(it)
-        }
+        return subNotificationService
+            .getAllPaginated(
+                pageable = pageable,
+                notificationId = publicNotificationId?.let { notificationService.getIdByPublicId(it) },
+                monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+                teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+                userId = if (publicTeamId == null && publicMonitorId == null && publicNotificationId == null) {
+                    auth.userId()
+                } else {
+                    null
+                },
+                methods = methods,
+                statuses = statuses,
+            ).toDto {
+                SubNotificationResponse(it)
+            }
     }
 }

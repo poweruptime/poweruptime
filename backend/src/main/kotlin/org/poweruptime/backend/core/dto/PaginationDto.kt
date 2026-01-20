@@ -15,10 +15,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class PageableArgumentResolver(
-    private val validator: Validator
-) : HandlerMethodArgumentResolver {
-
+class PageableArgumentResolver(private val validator: Validator) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean =
         parameter.parameterType == Pageable::class.java
 
@@ -26,7 +23,7 @@ class PageableArgumentResolver(
         parameter: MethodParameter,
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
-        binderFactory: WebDataBinderFactory?
+        binderFactory: WebDataBinderFactory?,
     ): Pageable {
         val pageNumber = webRequest.getParameter("page")?.toIntOrNull() ?: 0
         val pageSize = webRequest.getParameter("size")?.toIntOrNull() ?: 10
@@ -36,10 +33,9 @@ class PageableArgumentResolver(
 
         // Validate
         val violations = validator.validate(pageable)
-        if (violations.isNotEmpty()) {
-            throw IllegalArgumentException(
-                violations.joinToString(", ") { it.message },
-            )
+
+        require(violations.isEmpty()) {
+            violations.joinToString(", ") { it.message }
         }
 
         return pageable
@@ -55,7 +51,6 @@ data class Pageable(
     )
     @get:Min(0)
     val pageNumber: Int = 0,
-
     @Schema(
         name = "size",
         description = "The size of the page to be returned",
@@ -64,7 +59,6 @@ data class Pageable(
     )
     @get:Min(1)
     val pageSize: Int = 10,
-
     @Schema(
         name = "sort",
         description = "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. " +
@@ -76,8 +70,8 @@ data class Pageable(
     val offset: Long = (pageNumber.toLong()) * pageSize.toLong()
 
     @JsonIgnore
-    fun getSortOrders(): List<Sort> {
-        return sort?.mapNotNull { sortString ->
+    fun getSortOrders(): List<Sort> = sort
+        ?.mapNotNull { sortString ->
             try {
                 Sort.parse(sortString)
             } catch (e: BadRequestException) {
@@ -87,14 +81,10 @@ data class Pageable(
                         "Original error: ${e.message}",
                 )
             }
-        } ?: emptyList()
-    }
+        }.orEmpty()
 }
 
-data class Sort(
-    val property: String,
-    val sortOrder: SortOrder
-) {
+data class Sort(val property: String, val sortOrder: SortOrder) {
     companion object {
         private val VALID_DIRECTIONS = setOf("asc", "desc")
 
@@ -148,11 +138,7 @@ data class Sort(
     }
 }
 
-data class PaginatedResponse<T>(
-    val numberOfItems: Long,
-    val numberOfPages: Int,
-    val data: List<T>
-)
+data class PaginatedResponse<T>(val numberOfItems: Long, val numberOfPages: Int, val data: List<T>)
 
 fun <T : Any, U> Page<T>.toDto(map: (it: T) -> U) = PaginatedResponse(
     numberOfItems = totalElements,

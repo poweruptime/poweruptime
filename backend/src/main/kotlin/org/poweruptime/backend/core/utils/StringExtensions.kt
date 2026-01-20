@@ -12,9 +12,11 @@ import java.util.Locale.getDefault
 fun String?.emptyToNull(): String? = if (isNullOrEmpty()) null else this
 
 fun String.toBase32EncodedString(): String = Base32().encodeToString(this.toByteArray(Charsets.UTF_8))
+
 fun String.toBase32EncodedByteArray(): ByteArray = Base32().encode(this.toByteArray(Charsets.UTF_8))
 
 private const val ABBREVIATOR = "..."
+
 fun String.abbreviate(length: Int): String = if (this.length > length) {
     "${this.substring(0 , length - ABBREVIATOR.length)}$ABBREVIATOR"
 } else {
@@ -47,5 +49,4 @@ fun HttpHeaders.addBasicAuthString(username: String, password: String) = apply {
 
 fun <T : Any> T?.orThrowNotFound(message: String = "Property not found"): T = this ?: throw NotFoundException(message)
 
-fun LocalDate.startOfWeek(): LocalDate =
-    this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+fun LocalDate.startOfWeek(): LocalDate = this.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))

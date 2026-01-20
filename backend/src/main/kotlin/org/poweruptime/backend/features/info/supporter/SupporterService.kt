@@ -23,9 +23,7 @@ class SupporterService(
         }
     }"
 
-    fun check(
-        githubHandle: String? = instanceSettingService.getSupportLookup()
-    ): Boolean {
+    fun check(githubHandle: String? = instanceSettingService.getSupportLookup()): Boolean {
         val handle = githubHandle?.takeIf { it.isNotBlank() } ?: return false
 
         val sponsorsResponse = try {
@@ -48,10 +46,8 @@ class SupporterService(
         .body
         ?: throw NotFoundException("Empty sponsors response")
 
-    private fun isSupporter(
-        handle: String,
-        sponsors: List<GitHubSponsorDto>
-    ): Boolean = handle == testHandle() || sponsors.any { it.handle == handle }
+    private fun isSupporter(handle: String, sponsors: List<GitHubSponsorDto>): Boolean =
+        handle == testHandle() || sponsors.any { it.handle == handle }
 
     private fun updateSupportSince(isSupporter: Boolean) {
         val since = instanceSettingService.getSupportsSince()

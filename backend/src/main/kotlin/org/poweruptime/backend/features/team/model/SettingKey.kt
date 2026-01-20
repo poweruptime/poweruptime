@@ -3,7 +3,9 @@ package org.poweruptime.backend.features.team.model
 import org.poweruptime.backend.core.models.ADatabaseEnumConvertable
 import java.time.ZoneId
 
-enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
+enum class SettingKey :
+    ADatabaseEnumConvertable,
+    SettingKeyDefaultValue {
     CHECK_RESULT_RETENTION_PERIOD_IN_DAYS {
         override val code = "CR"
         override val default = 365.toString() // 1 year
@@ -51,7 +53,7 @@ enum class SettingKey : ADatabaseEnumConvertable, SettingKeyDefaultValue {
     SHOW_NEW_VERSION_DIALOG {
         override val code = "SV"
         override val default: String = true.toString()
-    }
+    },
 }
 
 interface SettingKeyDefaultValue {

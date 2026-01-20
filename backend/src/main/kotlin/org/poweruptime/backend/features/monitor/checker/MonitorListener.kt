@@ -101,7 +101,7 @@ class MonitorListener(
     private fun updateMonitorStatus(
         monitor: MonitorRecord,
         outcome: CheckExecutionOutcome,
-        checkResultId: ULong
+        checkResultId: ULong,
     ): Pair<MonitorRecord, MonitorStatus> {
         val oldStatus = monitor.status
 

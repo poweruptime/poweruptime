@@ -28,11 +28,10 @@ data class MFARecord(
     val active: Boolean,
 )
 
-fun MFA.rowToMFARecord(row: ResultRow): MFARecord =
-    MFARecord(
-        id = row[id].value,
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        secret = row[secret],
-        active = row[active],
-    )
+fun MFA.rowToMFARecord(row: ResultRow): MFARecord = MFARecord(
+    id = row[id].value,
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    secret = row[secret],
+    active = row[active],
+)

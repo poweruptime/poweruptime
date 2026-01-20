@@ -7,15 +7,9 @@ import org.poweruptime.backend.features.team.model.TeamUserJoinUserAndInviterRec
 import org.poweruptime.backend.features.user.UserMinResponse
 import java.time.Instant
 
-data class InviteTeamUserDto(
-    @get:NotNull val role: TeamRole,
-    @get:NotBlank val email: String
-)
+data class InviteTeamUserDto(@get:NotNull val role: TeamRole, @get:NotBlank val email: String)
 
-data class UpdateTeamUserDto(
-    @get:NotNull val userId: String,
-    @get:NotNull val role: TeamRole,
-)
+data class UpdateTeamUserDto(@get:NotNull val userId: String, @get:NotNull val role: TeamRole)
 
 data class TeamUserResponse(
     val user: UserMinResponse,

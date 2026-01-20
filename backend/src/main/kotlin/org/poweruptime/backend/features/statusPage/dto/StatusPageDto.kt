@@ -20,11 +20,11 @@ data class PublicStatusPageResponse(
     val description: String?,
     val footer: String?,
     val image: FileResponse?,
-    val groups: List<PublicStatusPageGroupResponse>
+    val groups: List<PublicStatusPageGroupResponse>,
 ) {
     constructor(
         statusPage: StatusPageRecord,
-        groups: List<Pair<StatusPageGroupRecord, List<PublicMonitorMinResponse>>>
+        groups: List<Pair<StatusPageGroupRecord, List<PublicMonitorMinResponse>>>,
     ) : this(
         slug = statusPage.publicId,
         name = statusPage.name,
@@ -43,13 +43,13 @@ data class StatusPageResponse(
     val image: FileResponse?,
     val domainNames: List<String>,
     val deleted: Instant?,
-    val groups: List<StatusPageGroupResponse>
+    val groups: List<StatusPageGroupResponse>,
 ) {
     constructor(
         statusPage: StatusPageRecord,
         domainNames: List<StatusPageDomainNameRecord>,
         groups: List<StatusPageGroupRecord>,
-        statusPageGroupMonitors: Map<ULong, List<StatusPageGroupMonitorJoinMonitorRecord>>
+        statusPageGroupMonitors: Map<ULong, List<StatusPageGroupMonitorJoinMonitorRecord>>,
     ) : this(
         name = statusPage.name,
         slug = statusPage.publicId,

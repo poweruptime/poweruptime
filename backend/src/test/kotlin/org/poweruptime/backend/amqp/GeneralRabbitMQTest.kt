@@ -10,7 +10,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
 class GeneralRabbitMQTest : BaseTestWithReusingContainers() {
-
     @Autowired
     lateinit var rabbitTemplate: RabbitTemplate
 
@@ -22,7 +21,9 @@ class GeneralRabbitMQTest : BaseTestWithReusingContainers() {
         val message: Message? = rabbitTemplate.receive(TestRabbit.TEST_QUEUE)
 
         assertThat(message).isNotNull
-        val receivedMessage = message!!.body.decodeToString()
+        val receivedMessage = message!!
+            .body
+            .decodeToString()
             .removePrefix("\"")
             .removeSuffix("\"")
         assertThat(receivedMessage).isEqualTo(messageBody)

@@ -7,7 +7,7 @@ import org.thymeleaf.context.Context
 data class PasswordChangedEmail(
     val user: UserRecord,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(user.email)
 

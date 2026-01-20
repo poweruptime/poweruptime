@@ -43,29 +43,28 @@ class TeamService {
         Team.findIdByPublicIdOrThrow(publicId, includeDeleted)
 
     @Transactional
-    fun create(dto: CreateTeamDto, creatorId: ULong? = null, personalUserId: ULong? = null): TeamRecord =
-        Team.insertAndGetId {
+    fun create(dto: CreateTeamDto, creatorId: ULong? = null, personalUserId: ULong? = null): TeamRecord = Team
+        .insertAndGetId {
             it[Team.name] = dto.name
             it[Team.personalUserId] = personalUserId
-        }
-            .let { getById(it.value) }
-            .also { team ->
-                if (creatorId != null) {
-                    TeamUser.insert {
-                        it[TeamUser.teamId] = team.id
-                        it[TeamUser.userId] = creatorId
-                        it[TeamUser.role] = TeamRole.ADMIN
-                    }
+        }.let { getById(it.value) }
+        .also { team ->
+            if (creatorId != null) {
+                TeamUser.insert {
+                    it[TeamUser.teamId] = team.id
+                    it[TeamUser.userId] = creatorId
+                    it[TeamUser.role] = TeamRole.ADMIN
                 }
             }
+        }
 
     @Transactional
-    fun update(dto: UpdateTeamDto): TeamRecord =
-        Team.findIdByPublicIdOrThrow(dto.id).let { id ->
-            Team.update({ Team.id eq id }) {
+    fun update(dto: UpdateTeamDto): TeamRecord = Team.findIdByPublicIdOrThrow(dto.id).let { id ->
+        Team
+            .update({ Team.id eq id }) {
                 it[Team.name] = dto.name
             }.let { getById(id) }
-        }
+    }
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -94,7 +93,8 @@ class TeamService {
     }
 
     @Transactional
-    fun undeleteById(id: ULong): TeamRecord = Team.undeleteById(
-        id,
-    ).let { getById(id) }
+    fun undeleteById(id: ULong): TeamRecord = Team
+        .undeleteById(
+            id,
+        ).let { getById(id) }
 }

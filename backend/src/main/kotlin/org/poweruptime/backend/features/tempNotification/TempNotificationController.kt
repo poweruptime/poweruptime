@@ -16,13 +16,23 @@ import org.springframework.web.bind.annotation.RestController
 class TempNotificationController(
     private val tempNotificationService: TempNotificationService,
     @Value(Config.NOTIFICATION_TEMP_ENABLED)
-    private val tempNotificationsEnabled: Boolean = false
+    private val tempNotificationsEnabled: Boolean = false,
 ) {
     @GetMapping
-    fun getAll() = if (tempNotificationsEnabled) { tempNotificationService.getAll() } else { throw NotFoundException() }
+    fun getAll() = if (tempNotificationsEnabled) {
+        tempNotificationService.getAll()
+    } else {
+        throw NotFoundException()
+    }
 
     @GetMapping("/{id}")
     fun getSingle(@PathVariable("id") id: String) = if (tempNotificationsEnabled) {
-        tempNotificationService.getAll().find { it.id == id }?.bodyHTML.orThrowNotFound()
-    } else { throw NotFoundException() }
+        tempNotificationService
+            .getAll()
+            .find { it.id == id }
+            ?.bodyHTML
+            .orThrowNotFound()
+    } else {
+        throw NotFoundException()
+    }
 }

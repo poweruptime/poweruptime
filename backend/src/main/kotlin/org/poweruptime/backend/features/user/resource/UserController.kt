@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/v1/user")
 @Tag(name = "User API")
-class UserController(
-    val userService: UserService,
-) {
+class UserController(val userService: UserService) {
     @Operation(
         summary = "Get user",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -52,12 +50,13 @@ class UserController(
         @RequestParam("search") search: String?,
         @RequestParam("activated") activated: Boolean?,
         @RequestParam("role") role: SystemRole?,
-    ): PaginatedResponse<UserResponse> = userService.getAll(
-        pageable = pageable,
-        search = search,
-        activated = activated,
-        role = role,
-    ).toDto { UserResponse(it) }
+    ): PaginatedResponse<UserResponse> = userService
+        .getAll(
+            pageable = pageable,
+            search = search,
+            activated = activated,
+            role = role,
+        ).toDto { UserResponse(it) }
 
     @Operation(
         summary = "Create user",

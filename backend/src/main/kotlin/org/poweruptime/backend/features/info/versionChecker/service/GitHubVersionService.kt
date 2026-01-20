@@ -11,10 +11,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.toEntity
 
 @Service
-class GitHubVersionService(
-    private val restClient: RestClient,
-    private val infoService: InfoService,
-) {
+class GitHubVersionService(private val restClient: RestClient, private val infoService: InfoService) {
     private final val logger = KotlinLogging.logger {}
 
     @Suppress("LongMethod", "LoopWithTooManyJumpStatements")
@@ -56,8 +53,7 @@ class GitHubVersionService(
                             logger.debug { "Could not parse version tag: ${tag.name}" }
                         }
                     }
-                }
-                .filter { it.isBeta == isBetaChannel }
+                }.filter { it.isBeta == isBetaChannel }
                 .sorted()
                 .reversed() // Get latest first
 
@@ -144,22 +140,18 @@ class GitHubVersionService(
         }
 
         val linkHeader = response.headers.getFirst("Link")
+        @Suppress("UseOrEmpty")
         return Pair(response.body ?: emptyArray(), linkHeader)
     }
 
-    private fun extractNextPageUrl(linkHeader: String?): String? {
-        if (linkHeader == null) return null
-
-        return linkHeader
-            .split(",")
-            .map { it.trim() }
-            .find { it.contains("""rel="next"""") }
-            ?.let { link ->
-                val urlMatch = Regex("<([^>]+)>").find(link)
-                urlMatch?.groupValues?.get(1)
-            }
-            ?.also { nextUrl ->
-                logger.debug { "Extracted next page URL: $nextUrl" }
-            }
-    }
+    private fun extractNextPageUrl(linkHeader: String?): String? = linkHeader
+        ?.split(",")
+        ?.map { it.trim() }
+        ?.find { it.contains("""rel="next"""") }
+        ?.let { link ->
+            val urlMatch = Regex("<([^>]+)>").find(link)
+            urlMatch?.groupValues?.get(1)
+        }?.also { nextUrl ->
+            logger.debug { "Extracted next page URL: $nextUrl" }
+        }
 }

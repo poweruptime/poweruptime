@@ -8,10 +8,7 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 
 class EmailNotificationMethodDataAppriseConverter :
     NotificationMethodDataAppriseConverter(NotificationMethodType.EMAIL) {
-
-    override fun convert(
-        notificationMethodData: NotificationMethodData,
-    ): NotificationMethodDataAppriseDto {
+    override fun convert(notificationMethodData: NotificationMethodData): NotificationMethodDataAppriseDto {
         val data = notificationMethodData as EmailNotificationMethodDataRecord
 
         val usernameDomain = data.username.split("@").last()

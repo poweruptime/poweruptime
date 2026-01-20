@@ -9,9 +9,8 @@ import org.poweruptime.backend.features.notification.model.SubNotificationJoinMe
 import org.poweruptime.backend.features.notification.service.NotificationTemplateService
 import org.springframework.beans.factory.annotation.Autowired
 
-class NotificationTemplateTest(
-    @Autowired val notificationTemplateService: NotificationTemplateService
-) : BaseTestWithReusingContainers() {
+class NotificationTemplateTest(@Autowired val notificationTemplateService: NotificationTemplateService) :
+    BaseTestWithReusingContainers() {
     @Test
     fun `test email template`() {
         val title = """ this is a "test" """

@@ -22,11 +22,10 @@ class OAuth2LoginSuccessHandler(
     private val accessTokenService: AccessTokenGenerationService,
     private val sessionService: SessionService,
 ) : AuthenticationSuccessHandler {
-
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authentication: Authentication
+        authentication: Authentication,
     ) {
         // the principal is the DefaultOAuth2User we returned above
         val oauthUser = authentication.principal as OAuth2User

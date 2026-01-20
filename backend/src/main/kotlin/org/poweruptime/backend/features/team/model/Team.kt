@@ -22,7 +22,11 @@ object Team : ULongIdTable("team"), HasPublicId, HasModifiers, HasSoftDelete, Ha
     override val deleted = softDelete()
     override val name = name()
 
-    val personalUserId = ulong("user_id").references(User.id).nullable().index().uniqueIndex()
+    val personalUserId = ulong("user_id")
+        .references(User.id)
+        .nullable()
+        .index()
+        .uniqueIndex()
 }
 
 data class TeamRecord(
@@ -35,13 +39,12 @@ data class TeamRecord(
     val name: String,
 )
 
-fun Team.rowToTeamRecord(row: ResultRow): TeamRecord =
-    TeamRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        deleted = row[deleted],
-        personalUserId = row[personalUserId],
-        name = row[name],
-    )
+fun Team.rowToTeamRecord(row: ResultRow): TeamRecord = TeamRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    deleted = row[deleted],
+    personalUserId = row[personalUserId],
+    name = row[name],
+)

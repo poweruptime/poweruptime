@@ -62,7 +62,8 @@ class InstanceSettingController(
     @ResponseStatus(HttpStatus.OK)
     fun getAvailableTimezones(): InstanceAvailableTimezonesResponse {
         val now = ZonedDateTime.now()
-        val timezones = ZoneId.getAvailableZoneIds()
+        val timezones = ZoneId
+            .getAvailableZoneIds()
             .map { zoneIdStr ->
                 val zoneId = ZoneId.of(zoneIdStr)
                 val offset = now.withZoneSameInstant(zoneId).offset
@@ -71,13 +72,15 @@ class InstanceSettingController(
                     offset = offset.toString().let {
                         if (it == "Z") {
                             "00:00"
-                        } else it
+                        } else {
+                            it
+                        }
                     },
                 )
             }
 
         return InstanceAvailableTimezonesResponse(availableTimezones = timezones)
-}
+    }
 
     @Operation(
         summary = "Set timezone instance setting",
@@ -86,9 +89,7 @@ class InstanceSettingController(
     )
     @PutMapping("timezone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setTimeZone(
-        @RequestBody @Valid dto: SettingStringDto
-    ): InstanceSettingsResponse {
+    fun setTimeZone(@RequestBody @Valid dto: SettingStringDto): InstanceSettingsResponse {
         if (!ZoneId.getAvailableZoneIds().contains(dto.it)) {
             throw NotFoundException("ZoneId not found")
         }
@@ -104,9 +105,7 @@ class InstanceSettingController(
     )
     @PutMapping("support")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setSupport(
-        @RequestBody @Valid dto: InstanceSettingSupportDto
-    ): InstanceSupportSettingsResponse {
+    fun setSupport(@RequestBody @Valid dto: InstanceSettingSupportDto): InstanceSupportSettingsResponse {
         instanceSettingService.setSupportLookup(dto.supportLookup)
         instanceSettingService.setShowSupportBadge(dto.showSupportBadge)
 
@@ -130,9 +129,7 @@ class InstanceSettingController(
     )
     @PutMapping("isUserAllowedToCreateTeams")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setIsUserAllowedToCreateTeams(
-        @RequestBody @Valid dto: SettingBooleanDto
-    ): InstanceSettingsResponse {
+    fun setIsUserAllowedToCreateTeams(@RequestBody @Valid dto: SettingBooleanDto): InstanceSettingsResponse {
         instanceSettingService.setUserAllowedToCreateTeams(dto.it)
 
         return getSettings()
@@ -145,9 +142,7 @@ class InstanceSettingController(
     )
     @PutMapping("showNewVersionDialog")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setShowNewVersionDialog(
-        @RequestBody @Valid dto: SettingBooleanDto
-    ): InstanceSettingsResponse {
+    fun setShowNewVersionDialog(@RequestBody @Valid dto: SettingBooleanDto): InstanceSettingsResponse {
         instanceSettingService.setShowNewVersionDialog(dto.it)
 
         return getSettings()
@@ -160,9 +155,7 @@ class InstanceSettingController(
     )
     @PutMapping("retention")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setRetention(
-        @RequestBody @Valid dto: SettingRetentionDto
-    ): InstanceSettingsResponse {
+    fun setRetention(@RequestBody @Valid dto: SettingRetentionDto): InstanceSettingsResponse {
         instanceSettingService.setCheckResultRetentionPeriodInDays(dto.checkResultRetentionPeriodInDays)
         instanceSettingService.setCheckResultLogRetentionPeriodInDays(dto.checkResultLogRetentionPeriodInDays)
 
@@ -176,9 +169,7 @@ class InstanceSettingController(
     )
     @PutMapping("versionCheck")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun setVersionCheck(
-        @RequestBody @Valid dto: InstanceSettingVersionCheckDto
-    ): InstanceSettingsResponse {
+    fun setVersionCheck(@RequestBody @Valid dto: InstanceSettingVersionCheckDto): InstanceSettingsResponse {
         instanceSettingService.setVersionCheckEnabled(dto.versionCheckEnabled)
         instanceSettingService.setVersionCheckAdminMailEnabled(dto.versionCheckAdminMailEnabled)
         instanceSettingService.setVersionCheckAdminMailTo(dto.versionCheckAdminMailTo)
@@ -192,7 +183,6 @@ class InstanceSettingController(
         description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
     )
     @GetMapping("versionCheck")
-    fun versionCheck(
-        @RequestParam("skipCache") skipCache: Boolean = false
-    ): VersionCheckResponse? = versionChecker.checkForLatestVersion(skipCache)
+    fun versionCheck(@RequestParam("skipCache") skipCache: Boolean = false): VersionCheckResponse? =
+        versionChecker.checkForLatestVersion(skipCache)
 }

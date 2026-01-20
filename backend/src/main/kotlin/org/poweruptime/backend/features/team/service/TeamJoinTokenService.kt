@@ -25,10 +25,7 @@ const val THREE_DAYS_IN_SECONDS = 3L * 24L * 60L * 60L
 
 @Service
 @Transactional(readOnly = true)
-class TeamJoinTokenService(
-    private val systemEmailService: SystemEmailService
-) {
-
+class TeamJoinTokenService(private val systemEmailService: SystemEmailService) {
     fun getByTeamIdPaginated(pageable: Pageable, teamId: ULong): Page<TeamJoinTokenJoinInviteeAndInviter> =
         TeamJoinToken.findAll(pageable, teamId)
 
@@ -37,12 +34,13 @@ class TeamJoinTokenService(
 
     @Transactional
     fun create(inviterTeam: TeamRecord, inviter: UserRecord, invitee: UserRecord, role: TeamRole): String =
-        TeamJoinToken.insertAndGetId {
-            it[TeamJoinToken.teamId] = inviterTeam.id
-            it[TeamJoinToken.inviteeId] = invitee.id
-            it[TeamJoinToken.inviterId] = inviter.id
-            it[TeamJoinToken.role] = role
-        }.value
+        TeamJoinToken
+            .insertAndGetId {
+                it[TeamJoinToken.teamId] = inviterTeam.id
+                it[TeamJoinToken.inviteeId] = invitee.id
+                it[TeamJoinToken.inviterId] = inviter.id
+                it[TeamJoinToken.role] = role
+            }.value
             .also {
                 systemEmailService.queueEmail(
                     JoinTeamEmail(

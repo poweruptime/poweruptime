@@ -18,28 +18,27 @@ import org.springframework.context.annotation.Configuration
     bearerFormat = "JWT",
     scheme = "bearer",
 )
-class OpenApiConfiguration(
-    private val buildProperties: BuildProperties,
-) {
+class OpenApiConfiguration(private val buildProperties: BuildProperties) {
     @Bean
-    fun defineOpenApi(): OpenAPI = OpenAPI().info(
-        Info().apply {
-            title = "poweruptime API"
-            version = buildProperties.version
-            description = ""
-            contact = Contact().apply {
-                name = "poweruptime"
-                url = "https://poweruptime.org"
-            }
-        },
-    ).servers(
-        listOf(
-            Server().apply {
-                url = "http://localhost:8080/api"
-                description = "Development"
+    fun defineOpenApi(): OpenAPI = OpenAPI()
+        .info(
+            Info().apply {
+                title = "poweruptime API"
+                version = buildProperties.version
+                description = ""
+                contact = Contact().apply {
+                    name = "poweruptime"
+                    url = "https://poweruptime.org"
+                }
             },
-        ),
-    )
+        ).servers(
+            listOf(
+                Server().apply {
+                    url = "http://localhost:8080/api"
+                    description = "Development"
+                },
+            ),
+        )
 
     // Swagger respects jackson object mapper.
     @Bean

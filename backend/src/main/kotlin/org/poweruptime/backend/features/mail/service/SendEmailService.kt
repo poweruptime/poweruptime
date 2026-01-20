@@ -55,6 +55,7 @@ class SendEmailService {
             helper.setSubject(emailDto.subject)
             helper.setFrom("poweruptime <${emailSenderDto.username}>")
 
+            @Suppress("AvoidReferentialEquality")
             if (emailDto.html !== null) {
                 helper.setText(emailDto.plain, emailDto.html)
             } else {

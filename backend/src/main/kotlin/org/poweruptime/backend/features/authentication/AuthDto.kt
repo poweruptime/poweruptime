@@ -19,7 +19,7 @@ data class LoginWithPasswordChangeDto(
     @get:NotBlank @Size(min = Database.MIN_PASSWORD_LENGTH) val newPassword: String,
     @get:NotBlank @Size(min = Database.MIN_PASSWORD_LENGTH) val oldPassword: String,
     @get:Size(min = 6, max = 60) val sessionInformation: String? = null,
-    val stayLoggedIn: Boolean? = null
+    val stayLoggedIn: Boolean? = null,
 )
 
 data class SetupDto(
@@ -30,9 +30,7 @@ data class SetupDto(
     ) val email: String,
 )
 
-data class PasswordForgotRequestDto(
-    @get:NotBlank val email: String,
-)
+data class PasswordForgotRequestDto(@get:NotBlank val email: String)
 
 data class PasswordForgotResetDto(
     @get:NotBlank val email: String,
@@ -42,24 +40,14 @@ data class PasswordForgotResetDto(
 
 data class RefreshJwtWithSessionTokenDto(
     @get:NotBlank val refreshToken: String,
-    @get:NotBlank @get:Size(min = 6, max = 60) val sessionInformation: String
+    @get:NotBlank @get:Size(min = 6, max = 60) val sessionInformation: String,
 )
 
-data class LogoutDto(
-    @get:NotBlank val refreshToken: String
-)
+data class LogoutDto(@get:NotBlank val refreshToken: String)
 
-data class JwtResponse(
-    val accessToken: String,
-    val refreshToken: String? = null
-)
+data class JwtResponse(val accessToken: String, val refreshToken: String? = null)
 
-data class SessionResponse(
-    val id: String,
-    val description: String,
-    val createdAt: Instant,
-    val updatedAt: Instant
-) {
+data class SessionResponse(val id: String, val description: String, val createdAt: Instant, val updatedAt: Instant) {
     constructor(session: SessionRecord) : this(
         session.publicId,
         session.description,

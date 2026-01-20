@@ -11,14 +11,10 @@ object MonitorNotificationMethod : Table("monitor_notification_method") {
     override val primaryKey: PrimaryKey = PrimaryKey(monitorId, notificationMethodId)
 }
 
-data class MonitorNotificationMethodRecord(
-    val monitorId: ULong,
-    val notificationMethodId: ULong,
-)
+data class MonitorNotificationMethodRecord(val monitorId: ULong, val notificationMethodId: ULong)
 
-fun MonitorNotificationMethod.rowToMonitorNotificationMethodRecord(
-    row: ResultRow
-): MonitorNotificationMethodRecord = MonitorNotificationMethodRecord(
-    monitorId = row[monitorId],
-    notificationMethodId = row[notificationMethodId],
-)
+fun MonitorNotificationMethod.rowToMonitorNotificationMethodRecord(row: ResultRow): MonitorNotificationMethodRecord =
+    MonitorNotificationMethodRecord(
+        monitorId = row[monitorId],
+        notificationMethodId = row[notificationMethodId],
+    )

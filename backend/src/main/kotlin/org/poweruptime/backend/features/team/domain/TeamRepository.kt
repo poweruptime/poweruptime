@@ -28,12 +28,13 @@ fun Team.findAll(
     val query = select(selectColumns).where { Team.deleted.deletedFilter(deleted) }
 
     userId?.let {
-        query.adjustColumnSet {
-            innerJoin(TeamUser)
-        }.adjustSelect {
-            selectColumns = selectColumns + TeamUser.userId
-            select(selectColumns)
-        }.andWhere { TeamUser.userId eq it }
+        query
+            .adjustColumnSet {
+                innerJoin(TeamUser)
+            }.adjustSelect {
+                selectColumns = selectColumns + TeamUser.userId
+                select(selectColumns)
+            }.andWhere { TeamUser.userId eq it }
     }
 
     if (userId != null && role != null) {

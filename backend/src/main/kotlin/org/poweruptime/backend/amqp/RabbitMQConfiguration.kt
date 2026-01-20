@@ -21,11 +21,10 @@ import tools.jackson.databind.json.JsonMapper
 @Configuration
 @Suppress("TooManyFunctions")
 class RabbitMQConfiguration {
-
     @Bean
     fun rabbitTemplate(
         connectionFactory: ConnectionFactory,
-        producerJacksonJsonMessageConverter: JacksonJsonMessageConverter
+        producerJacksonJsonMessageConverter: JacksonJsonMessageConverter,
     ): RabbitTemplate {
         val rabbitTemplate = RabbitTemplate(connectionFactory)
         rabbitTemplate.messageConverter = producerJacksonJsonMessageConverter
@@ -36,9 +35,8 @@ class RabbitMQConfiguration {
     fun rabbitAdmin(connectionFactory: ConnectionFactory) = RabbitAdmin(connectionFactory)
 
     @Bean
-    fun producerJacksonJsonMessageConverter(
-        jsonMapper: JsonMapper
-    ): JacksonJsonMessageConverter = JacksonJsonMessageConverter(jsonMapper)
+    fun producerJacksonJsonMessageConverter(jsonMapper: JsonMapper): JacksonJsonMessageConverter =
+        JacksonJsonMessageConverter(jsonMapper)
 
     // DEAD LETTER
     @Bean
@@ -52,7 +50,8 @@ class RabbitMQConfiguration {
 
     // EMAIL
     @Bean
-    fun emailQueue(): Queue = QueueBuilder.durable(EMAIL_QUEUE)
+    fun emailQueue(): Queue = QueueBuilder
+        .durable(EMAIL_QUEUE)
         .deadLetterExchange(DEAD_LETTER_EXCHANGE)
         .build()
 

@@ -30,10 +30,7 @@ class MonitorCheckExecutor(
      * Executes the health check and returns what to persist.
      * NO database operations - pure business logic.
      */
-    fun execute(
-        checkResult: CheckResultRecord,
-        context: MonitorCheckContext
-    ): CheckExecutionOutcome {
+    fun execute(checkResult: CheckResultRecord, context: MonitorCheckContext): CheckExecutionOutcome {
         val pickedUpAt = Instant.now()
 
         // Validation: picked up too late?
@@ -85,7 +82,7 @@ class MonitorCheckExecutor(
         currentMonitorStatus: MonitorStatus,
         checkOutcome: CheckExecutionOutcome.Completed,
         retriesAllowed: Long,
-        checkResultId: ULong
+        checkResultId: ULong,
     ): MonitorStatus {
         require(checkOutcome.status == MonitorStatus.DOWN || checkOutcome.status == MonitorStatus.UP)
 

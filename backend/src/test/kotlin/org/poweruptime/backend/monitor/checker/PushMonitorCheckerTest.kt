@@ -16,18 +16,18 @@ import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
 
-class PushMonitorCheckerTest(
-    @Autowired private val teamSettingService: TeamSettingService
-) : BaseTestWithReusingContainers() {
+class PushMonitorCheckerTest(@Autowired private val teamSettingService: TeamSettingService) :
+    BaseTestWithReusingContainers() {
     inner class PushMonitorCheckerEntryRepositoryMock : IPushMonitorCheckerEntryRepository {
         private val pushes = mutableListOf<PushMonitorCheckerEntryRecord>()
 
         override fun getLatestByPushIdAndBetweenNowAndThen(
             pushId: String,
-            then: Instant
-        ): PushMonitorCheckerEntryRecord? = pushes.filter {
-            it.pushId == pushId && (it.createdAt.isAfter(then) || it.createdAt == then)
-        }.maxByOrNull { it.createdAt }
+            then: Instant,
+        ): PushMonitorCheckerEntryRecord? = pushes
+            .filter {
+                it.pushId == pushId && (it.createdAt.isAfter(then) || it.createdAt == then)
+            }.maxByOrNull { it.createdAt }
 
         fun save(pushId: String, status: MonitorStatus, createdAt: Instant = Instant.now()) {
             pushes.add(

@@ -16,29 +16,18 @@ data class UpdateEmailDto(
     @get:NotBlank @get:Email @get:Size(min = 6, max = 255) val email: String,
 )
 
-data class ConfirmMFADto(
-    val code: String
-)
+data class ConfirmMFADto(val code: String)
 
-data class ConfirmMFAResponse(
-    val backupCodes: List<String>
-)
+data class ConfirmMFAResponse(val backupCodes: List<String>)
 
-data class SetupMFAResponse(
-    val base32Secret: String
-)
+data class SetupMFAResponse(val base32Secret: String)
 
 enum class MFAState {
     DISABLED,
     ENABLED,
 }
 
-data class ProfileResponse(
-    val id: String,
-    val email: String,
-    val name: String,
-    val role: SystemRole,
-) {
+data class ProfileResponse(val id: String, val email: String, val name: String, val role: SystemRole) {
     constructor(user: UserRecord) : this(
         id = user.publicId,
         email = user.email,

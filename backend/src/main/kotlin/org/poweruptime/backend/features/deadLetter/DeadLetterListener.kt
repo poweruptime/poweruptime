@@ -20,7 +20,7 @@ class DeadLetterListener {
     @RabbitListener(queues = [DEAD_LETTER_QUEUE])
     @Transactional
     fun deadLetterQueueConsumer(dto: Message) {
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        @Suppress("SwallowedException")
         val body = try {
             String(dto.body).lines().joinToString("")
         } catch (_: Throwable) {

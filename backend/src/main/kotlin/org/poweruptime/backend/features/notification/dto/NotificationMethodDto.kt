@@ -14,11 +14,7 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
 import java.time.Instant
 
-data class NotificationMethodMinResponse(
-    val id: String,
-    val name: String,
-    val type: NotificationMethodType,
-) {
+data class NotificationMethodMinResponse(val id: String, val name: String, val type: NotificationMethodType) {
     constructor(it: NotificationMethodRecord) : this(
         id = it.publicId,
         name = it.name,
@@ -51,12 +47,12 @@ data class NotificationMethodResponse(
     val useByDefault: Boolean,
     val titleTemplate: String?,
     val bodyTemplate: String?,
-    val monitors: List<MonitorMinResponse>
+    val monitors: List<MonitorMinResponse>,
 ) {
     constructor(
         notificationMethod: NotificationMethodRecord,
         data: NotificationMethodData,
-        usedByMonitors: List<MonitorRecord>
+        usedByMonitors: List<MonitorRecord>,
     ) : this(
         id = notificationMethod.publicId,
         name = notificationMethod.name,

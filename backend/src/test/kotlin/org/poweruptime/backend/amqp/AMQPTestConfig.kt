@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class AMQPTestConfig {
-
     @Bean
     fun testQueue() = Queue(TestRabbit.TEST_QUEUE)
 

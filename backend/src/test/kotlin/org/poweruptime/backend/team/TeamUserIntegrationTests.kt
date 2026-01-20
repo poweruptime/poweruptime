@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
 
-class TeamUserIntegrationTests(
-    @Autowired val mockMvc: MockMvc
-) : BaseTestWithReusingContainers() {
+class TeamUserIntegrationTests(@Autowired val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/team/user")
     inner class GetTeamUsers {
@@ -110,56 +108,61 @@ class TeamUserIntegrationTests(
     inner class InviteUserToJoinTeam {
         @Test
         fun `test if secured`() {
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto().toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if unknown team fails with user`() {
-            mockMvc.post("/v1/team/1234ddd/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto().toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .post("/v1/team/1234ddd/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test if unknown team fails with admin`() {
-            mockMvc.post("/v1/team/1234ddd/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto().toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .post("/v1/team/1234ddd/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if unknown email fails`() {
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto().toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if team member fails`() {
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto().toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -167,47 +170,50 @@ class TeamUserIntegrationTests(
         @ClearInitDatabase
         fun `test success with team admin`() {
             val model = ModelFactory.getInviteTeamUserDto(email = "test4@test.org")
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
                     content {
-                        jsonPath("$.id") { exists() }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                        }
                     }
                 }
-            }
         }
 
         @Test
         @MockAdmin
         @ClearInitDatabase
         fun `test success with admin`() {
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto(email = "test4@test.org").toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto(email = "test4@test.org").toJSON()
+                }.andExpect {
+                    status { isCreated() }
                     content {
-                        jsonPath("$.id") { exists() }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                        }
                     }
                 }
-            }
         }
 
         @Test
         @MockUser
         fun `test if already in fails`() {
-            mockMvc.post("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getInviteTeamUserDto(email = "test2@test.org").toJSON()
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mockMvc
+                .post("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getInviteTeamUserDto(email = "test2@test.org").toJSON()
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
     }
 
@@ -216,81 +222,88 @@ class TeamUserIntegrationTests(
     inner class UpdateTeamUser {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamUserDto().toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if unknown team fails with user`() {
-            mockMvc.put("/v1/team/1234ddd/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamUserDto().toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team/1234ddd/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test if unknown team fails with admin`() {
-            mockMvc.put("/v1/team/1234ddd/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamUserDto().toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .put("/v1/team/1234ddd/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if unknown userid fails`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamUserDto().toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamUserDto().toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockUser
         @ClearInitDatabase
         fun `test if not in team userid fails`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamUserDto(userId = "phECfcYSejyt").toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamUserDto(userId = "phECfcYSejyt").toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if secured with team user`() {
             val model = ModelFactory.getUpdateTeamUserDto()
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if secured with wrong team user`() {
             val model = ModelFactory.getUpdateTeamUserDto()
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -298,19 +311,20 @@ class TeamUserIntegrationTests(
         @ClearInitDatabase
         fun `test success with admin`() {
             val model = ModelFactory.getUpdateTeamUserDto(userId = "8BS4AaxuYG9h", role = TeamRole.ADMIN)
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.user.id") { value(model.userId) }
-                        jsonPath("$.role") { value(model.role.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.user.id") { value(model.userId) }
+                            jsonPath("$.role") { value(model.role.name) }
+                        }
                     }
                 }
-            }
         }
 
         @Test
@@ -318,19 +332,20 @@ class TeamUserIntegrationTests(
         @ClearInitDatabase
         fun `test success with team admin user`() {
             val model = ModelFactory.getUpdateTeamUserDto(userId = "8BS4AaxuYG9h", role = TeamRole.ADMIN)
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/user") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/user") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.user.id") { value(model.userId) }
-                        jsonPath("$.role") { value(model.role.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.user.id") { value(model.userId) }
+                            jsonPath("$.role") { value(model.role.name) }
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -400,9 +415,8 @@ class TeamUserJoinIntegrationTests(
     @Autowired val userService: UserService,
     @Autowired val teamService: TeamService,
     @Autowired val teamJoinTokenService: TeamJoinTokenService,
-    @Autowired val mockMvc: MockMvc
+    @Autowired val mockMvc: MockMvc,
 ) : BaseTestWithReusingContainers() {
-
     @Test
     @MockUser(MockUsers.USER4)
     fun `test if fail on not found`() {

@@ -9,10 +9,7 @@ import java.time.Instant
 sealed class CheckExecutionOutcome {
     data class Late(val pickedUpAt: Instant) : CheckExecutionOutcome()
 
-    data class Skipped(
-        val status: MonitorStatus,
-        val pickedUpAt: Instant
-    ) : CheckExecutionOutcome()
+    data class Skipped(val status: MonitorStatus, val pickedUpAt: Instant) : CheckExecutionOutcome()
 
     data class Completed(
         val status: MonitorStatus,
@@ -22,6 +19,6 @@ sealed class CheckExecutionOutcome {
         val title: String,
         val message: String?,
         val timesRetried: Long,
-        val previousStatus: MonitorStatus
+        val previousStatus: MonitorStatus,
     ) : CheckExecutionOutcome()
 }

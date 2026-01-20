@@ -22,9 +22,7 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
-class MFAIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class MFAIntegrationTest(@Autowired private val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/profile/mfa")
     inner class SetupMFA {
@@ -87,95 +85,105 @@ class MFAIntegrationTest(
         @Test
         @MockUser(MockUsers.USER4)
         fun `test if fails if already confirmed`() {
-            mockMvc.post("/v1/profile/mfa") {
-                content = ConfirmMFADto(
-                    code = "123456",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mockMvc
+                .post("/v1/profile/mfa") {
+                    content = ConfirmMFADto(
+                        code = "123456",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if fails if wrong code`() {
-            mockMvc.post("/v1/profile/mfa") {
-                content = ConfirmMFADto(
-                    code = "123456",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isBadRequest() }
-            }
+            mockMvc
+                .post("/v1/profile/mfa") {
+                    content = ConfirmMFADto(
+                        code = "123456",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isBadRequest() }
+                }
         }
     }
 
     @Test
     @MockUser(MockUsers.USER3)
     fun `test if success setup, confirm, delete and setup again`() {
-        val response = mockMvc.get("/v1/profile/mfa") {
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-            content {
-                jsonPath("$.base32Secret") { exists() }
-            }
-        }.andReturn().toDto<SetupMFAResponse>()
+        val response = mockMvc
+            .get("/v1/profile/mfa") {
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content {
+                    jsonPath("$.base32Secret") { exists() }
+                }
+            }.andReturn()
+            .toDto<SetupMFAResponse>()
 
         // Make explicit a login attempt, so we definitely have the new mfa in the user auth object
-        val jwtResponse = mockMvc.post("/v1/auth/login") {
-            content = LoginDto(
-                email = "test3@test.org",
-                password = "test1234",
-                sessionInformation = null,
-                stayLoggedIn = false,
-            ).toJSON()
-            contentType = MediaType.APPLICATION_JSON
-        }.andReturn().toDto<JwtResponse>()
+        val jwtResponse = mockMvc
+            .post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "test3@test.org",
+                    password = "test1234",
+                    sessionInformation = null,
+                    stayLoggedIn = false,
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andReturn()
+            .toDto<JwtResponse>()
 
-        mockMvc.post("/v1/profile/mfa") {
-            headers {
-                setBearerAuth(jwtResponse.accessToken)
-            }
-            content = ConfirmMFADto(
-                code = GoogleAuthenticator(
-                    base32secret = response.base32Secret.toByteArray(),
-                ).generate(),
-            ).toJSON()
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-            content {
-                jsonPath("$.backupCodes") { exists() }
-                jsonPath("$.backupCodes.length()") { value(10) }
-                jsonPath("$.backupCodes[0]") { exists() }
-            }
-        }
-
-        mockMvc.delete("/v1/profile/mfa") {
-            contentType = MediaType.APPLICATION_JSON
-            headers {
-                setBearerAuth(jwtResponse.accessToken)
-                set(
-                    CustomHttpHeader.MFA_CODE,
-                    GoogleAuthenticator(
+        mockMvc
+            .post("/v1/profile/mfa") {
+                headers {
+                    setBearerAuth(jwtResponse.accessToken)
+                }
+                content = ConfirmMFADto(
+                    code = GoogleAuthenticator(
                         base32secret = response.base32Secret.toByteArray(),
                     ).generate(),
-                )
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content {
+                    jsonPath("$.backupCodes") { exists() }
+                    jsonPath("$.backupCodes.length()") { value(10) }
+                    jsonPath("$.backupCodes[0]") { exists() }
+                }
             }
-        }.andExpect {
-            status { isOk() }
-        }
 
-        val response2 = mockMvc.get("/v1/profile/mfa") {
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-            content {
-                jsonPath("$.base32Secret") { exists() }
+        mockMvc
+            .delete("/v1/profile/mfa") {
+                contentType = MediaType.APPLICATION_JSON
+                headers {
+                    setBearerAuth(jwtResponse.accessToken)
+                    set(
+                        CustomHttpHeader.MFA_CODE,
+                        GoogleAuthenticator(
+                            base32secret = response.base32Secret.toByteArray(),
+                        ).generate(),
+                    )
+                }
+            }.andExpect {
+                status { isOk() }
             }
-        }.andReturn().toDto<SetupMFAResponse>()
+
+        val response2 = mockMvc
+            .get("/v1/profile/mfa") {
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content {
+                    jsonPath("$.base32Secret") { exists() }
+                }
+            }.andReturn()
+            .toDto<SetupMFAResponse>()
 
         assertThat(response.base32Secret).isNotEqualTo(response2.base32Secret)
     }

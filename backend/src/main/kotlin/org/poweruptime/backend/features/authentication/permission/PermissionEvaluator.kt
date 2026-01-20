@@ -9,16 +9,10 @@ import org.springframework.stereotype.Component
 import java.io.Serializable
 
 @Component
-class PermissionEvaluator(
-    private val permissionsService: PermissionsService,
-) : PermissionEvaluator {
+class PermissionEvaluator(private val permissionsService: PermissionsService) : PermissionEvaluator {
     private final val logger = KotlinLogging.logger {}
 
-    override fun hasPermission(
-        authentication: Authentication,
-        publicTargetId: Any,
-        permissionName: Any
-    ): Boolean {
+    override fun hasPermission(authentication: Authentication, publicTargetId: Any, permissionName: Any): Boolean {
         if (authentication.authorities.any { it.authority == SystemRole.ADMIN.grantedAuthority.authority }) {
             return true
         }
@@ -39,22 +33,23 @@ class PermissionEvaluator(
 
         val publicUserId = authentication.publicUserId()
 
-        return permissionsService.checkPermission(
-            publicUserId,
-            publicTargetId,
-            permissionRequest,
-        ).apply {
-            logger.debug {
-                "Checker: '${permissionRequest.permissionName}' " +
-                    "user: '$publicUserId' target: '$publicTargetId' result: $this"
+        return permissionsService
+            .checkPermission(
+                publicUserId,
+                publicTargetId,
+                permissionRequest,
+            ).apply {
+                logger.debug {
+                    "Checker: '${permissionRequest.permissionName}' " +
+                        "user: '$publicUserId' target: '$publicTargetId' result: $this"
+                }
             }
-        }
     }
 
     override fun hasPermission(
         authentication: Authentication,
         targetId: Serializable,
         targetType: String,
-        permission: Any
+        permission: Any,
     ): Boolean = false
 }

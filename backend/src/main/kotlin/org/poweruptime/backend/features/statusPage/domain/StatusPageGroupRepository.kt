@@ -8,18 +8,16 @@ import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroupRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageGroupRecord
 
-fun StatusPageGroup.findByStatusPage(statusPageId: ULong): List<StatusPageGroupRecord> =
-    selectAll()
-        .where { StatusPageGroup.statusPageId eq statusPageId }
-        .orderBy(position, SortOrder.ASC)
-        .map {
-            rowToStatusPageGroupRecord(it)
-        }
+fun StatusPageGroup.findByStatusPage(statusPageId: ULong): List<StatusPageGroupRecord> = selectAll()
+    .where { StatusPageGroup.statusPageId eq statusPageId }
+    .orderBy(position, SortOrder.ASC)
+    .map {
+        rowToStatusPageGroupRecord(it)
+    }
 
-fun StatusPageGroup.findByStatusPage(statusPageId: List<ULong>): List<StatusPageGroupRecord> =
-    selectAll()
-        .where { StatusPageGroup.statusPageId inList statusPageId }
-        .orderBy(position, SortOrder.ASC)
-        .map {
-            rowToStatusPageGroupRecord(it)
-        }
+fun StatusPageGroup.findByStatusPage(statusPageId: List<ULong>): List<StatusPageGroupRecord> = selectAll()
+    .where { StatusPageGroup.statusPageId inList statusPageId }
+    .orderBy(position, SortOrder.ASC)
+    .map {
+        rowToStatusPageGroupRecord(it)
+    }

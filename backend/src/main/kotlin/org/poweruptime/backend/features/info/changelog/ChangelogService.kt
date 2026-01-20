@@ -25,15 +25,14 @@ class ChangelogService {
 
     private val markdownRendererOptions = MutableDataSet()
     private val parser = Parser.builder(markdownRendererOptions).build()
-    private val renderer = HtmlRenderer.builder(
-        markdownRendererOptions,
-    ).attributeProviderFactory(LinkTargetBlankAttributeProvider.factory()).build()
+    private val renderer = HtmlRenderer
+        .builder(
+            markdownRendererOptions,
+        ).attributeProviderFactory(LinkTargetBlankAttributeProvider.factory())
+        .build()
 
     @Throws(BadRequestException::class, NotFoundException::class)
-    fun fetchChangelog(
-        beta: Boolean,
-        version: String?,
-    ): String {
+    fun fetchChangelog(beta: Boolean, version: String?): String {
         val resourcePath = if (beta) {
             "static/CHANGELOG-beta.md"
         } else {
@@ -65,10 +64,7 @@ class ChangelogService {
         return resource.inputStream.bufferedReader().use { it.readLines() }
     }
 
-    private fun excerptForVersion(
-        lines: List<String>,
-        version: String
-    ): String? {
+    private fun excerptForVersion(lines: List<String>, version: String): String? {
         val headerRegex = Regex(
             "^##\\s+${Regex.escape(version)}(?:\\s*-\\s*$datePattern)?$",
         )
@@ -88,12 +84,8 @@ class LinkTargetBlankAttributeProvider : AttributeProvider {
     }
 
     companion object {
-        fun factory(): AttributeProviderFactory {
-            return object : IndependentAttributeProviderFactory() {
-                override fun apply(context: LinkResolverContext): AttributeProvider {
-                    return LinkTargetBlankAttributeProvider()
-                }
-            }
+        fun factory(): AttributeProviderFactory = object : IndependentAttributeProviderFactory() {
+            override fun apply(context: LinkResolverContext): AttributeProvider = LinkTargetBlankAttributeProvider()
         }
     }
 }

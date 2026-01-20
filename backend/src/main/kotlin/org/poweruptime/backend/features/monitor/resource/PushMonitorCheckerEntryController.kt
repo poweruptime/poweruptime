@@ -31,7 +31,8 @@ class PushMonitorCheckerEntryController {
     ) {
         when (status) {
             MonitorStatus.UP,
-            MonitorStatus.DOWN -> {
+            MonitorStatus.DOWN,
+            -> {
                 PushMonitorCheckerEntry.insert {
                     it[PushMonitorCheckerEntry.publicId] = pushId
                     it[PushMonitorCheckerEntry.status] = status

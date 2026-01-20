@@ -45,35 +45,33 @@ data class UserRecord(
     val mfaId: ULong?,
     val activated: Boolean,
     val forcePasswordChange: Boolean,
-    val role: SystemRole
+    val role: SystemRole,
 )
 
-fun User.rowToUserRecord(row: ResultRow): UserRecord =
-    UserRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        name = row[name],
-        email = row[email],
-        passwordHash = row[passwordHash],
-        mfaId = row[mfaId],
-        activated = row[activated],
-        forcePasswordChange = row[forcePasswordChange],
-        role = row[role],
-    )
+fun User.rowToUserRecord(row: ResultRow): UserRecord = UserRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    name = row[name],
+    email = row[email],
+    passwordHash = row[passwordHash],
+    mfaId = row[mfaId],
+    activated = row[activated],
+    forcePasswordChange = row[forcePasswordChange],
+    role = row[role],
+)
 
-fun User.rowToUserRecord(row: ResultRow, alias: Alias<User>): UserRecord =
-    UserRecord(
-        id = row[alias[id]].value,
-        publicId = row[alias[publicId]],
-        createdAt = row[alias[createdAt]],
-        updatedAt = row[alias[updatedAt]],
-        name = row[alias[name]],
-        email = row[alias[email]],
-        passwordHash = row[alias[passwordHash]],
-        mfaId = row[alias[mfaId]],
-        activated = row[alias[activated]],
-        forcePasswordChange = row[alias[forcePasswordChange]],
-        role = row[alias[role]],
-    )
+fun User.rowToUserRecord(row: ResultRow, alias: Alias<User>): UserRecord = UserRecord(
+    id = row[alias[id]].value,
+    publicId = row[alias[publicId]],
+    createdAt = row[alias[createdAt]],
+    updatedAt = row[alias[updatedAt]],
+    name = row[alias[name]],
+    email = row[alias[email]],
+    passwordHash = row[alias[passwordHash]],
+    mfaId = row[alias[mfaId]],
+    activated = row[alias[activated]],
+    forcePasswordChange = row[alias[forcePasswordChange]],
+    role = row[alias[role]],
+)

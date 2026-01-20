@@ -14,21 +14,17 @@ inline fun <reified T> maxCodeLength(): Int
 
 inline fun <reified T> Table.enumerationByCode(
     name: String,
-    maxCodeLength: Int = maxCodeLength<T>()
+    maxCodeLength: Int = maxCodeLength<T>(),
 ): Column<T>
-    where T : Enum<T>, T : ADatabaseEnumConvertable {
-    return registerColumn(name, EnumColumnType(maxCodeLength, enumValues<T>()))
-}
+    where T : Enum<T>, T : ADatabaseEnumConvertable =
+    registerColumn(name, EnumColumnType(maxCodeLength, enumValues<T>()))
 
 /**
  * ColumnType implementation that handles enums implementing [ADatabaseEnumConvertable].
  */
-class EnumColumnType<T>(
-    private val length: Int,
-    private val enumValues: Array<T>
-) : ColumnType<T>()
+class EnumColumnType<T>(private val length: Int, private val enumValues: Array<T>) :
+    ColumnType<T>()
     where T : Enum<T>, T : ADatabaseEnumConvertable {
-
     override fun sqlType(): String = "VARCHAR($length)"
 
     override fun notNullValueToDB(value: T): Any = value.code

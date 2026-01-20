@@ -37,7 +37,6 @@ class AppriseIntegrationTests(
     @Autowired private val checkResultService: CheckResultService,
     @Autowired private val tempNotificationService: TempNotificationService,
 ) : BaseTestWithReusingContainers() {
-
     private lateinit var mockNotificationMethodDataService:
         MockNotificationMethodDataService
 
@@ -284,7 +283,6 @@ class AppriseIntegrationTests(
     @Nested
     @DisplayName("notification method types")
     inner class NotificationMethodTypes {
-
         @Test
         @DisplayName(
             "should send via email method",
@@ -379,7 +377,6 @@ class AppriseIntegrationTests(
     @Nested
     @DisplayName("multiple notifications")
     inner class MultipleNotifications {
-
         @Test
         @DisplayName(
             "should send multiple notifications independently",
@@ -489,9 +486,7 @@ class MockNotificationMethodDataService : INotificationMethodDataService {
         return this
     }
 
-    fun withDefaultReturnValue(
-        data: NotificationMethodData,
-    ): MockNotificationMethodDataService {
+    fun withDefaultReturnValue(data: NotificationMethodData): MockNotificationMethodDataService {
         defaultReturnValue = data
         return this
     }
@@ -502,8 +497,7 @@ class MockNotificationMethodDataService : INotificationMethodDataService {
 
     fun getCallCount(): Int = callCount
 
-    fun getCallHistory(): List<Pair<ULong, NotificationMethodType>> =
-        callHistory.toList()
+    fun getCallHistory(): List<Pair<ULong, NotificationMethodType>> = callHistory.toList()
 
     fun getLastId(): ULong? = callHistory.lastOrNull()?.first
 
@@ -519,10 +513,7 @@ class MockNotificationMethodDataService : INotificationMethodDataService {
         callHistory.clear()
     }
 
-    override fun findByIdAndType(
-        id: ULong,
-        type: NotificationMethodType,
-    ): NotificationMethodData {
+    override fun findByIdAndType(id: ULong, type: NotificationMethodType): NotificationMethodData {
         callCount++
         callHistory.add(id to type)
 
@@ -531,7 +522,6 @@ class MockNotificationMethodDataService : INotificationMethodDataService {
         }
 
         val key = id to type
-        val returnValue = returnValues[key] ?: defaultReturnValue
-        return returnValue ?: error("No return value set up for findByIdAndType($id, $type)")
+        return returnValues[key] ?: defaultReturnValue
     }
 }

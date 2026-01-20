@@ -21,10 +21,8 @@ import java.io.File
 import java.io.PrintWriter
 
 @ContextConfiguration(loader = NonHeadlessSpringBootContextLoader::class)
-class MailRenderUnitTests(
-    @Autowired val emailTemplateService: EmailTemplateService,
-) : BaseTestWithReusingContainers() {
-
+class MailRenderUnitTests(@Autowired val emailTemplateService: EmailTemplateService) :
+    BaseTestWithReusingContainers() {
     val openHTML = !GraphicsEnvironment.isHeadless()
 
     private fun String.openInBrowser(filename: String? = null): String {

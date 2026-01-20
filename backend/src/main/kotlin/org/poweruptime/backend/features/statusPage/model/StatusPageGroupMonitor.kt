@@ -49,7 +49,7 @@ fun StatusPageGroupMonitor.rowToStatusPageGroupMonitorRecord(row: ResultRow): St
     )
 
 fun StatusPageGroupMonitor.rowToStatusPageGroupMonitorJoinMonitorRecord(
-    row: ResultRow
+    row: ResultRow,
 ): StatusPageGroupMonitorJoinMonitorRecord = StatusPageGroupMonitorJoinMonitorRecord(
     groupMonitor = StatusPageGroupMonitor.rowToStatusPageGroupMonitorRecord(row),
     monitor = Monitor.rowToMonitorRecord(row),

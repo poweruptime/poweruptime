@@ -21,10 +21,7 @@ object DiscordNotificationMethodData : NotificationMethodDataTable(NotificationM
         displayName = row[displayName],
     )
 
-    override fun insert(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun insert(notificationMethodId: ULong, data: NotificationMethodData) {
         data as DiscordNotificationMethodDataRecord
 
         insert {
@@ -34,10 +31,7 @@ object DiscordNotificationMethodData : NotificationMethodDataTable(NotificationM
         }
     }
 
-    override fun update(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun update(notificationMethodId: ULong, data: NotificationMethodData) {
         data as DiscordNotificationMethodDataRecord
 
         update({ id eq notificationMethodId }) {

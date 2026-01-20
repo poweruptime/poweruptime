@@ -12,10 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import java.time.Instant
 
-class TempNotificationIntegrationTests(
-    @Autowired val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
-
+class TempNotificationIntegrationTests(@Autowired val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `test auto removal success`() {
         val tempNotificationService = TempNotificationService()
@@ -68,9 +65,7 @@ class TempNotificationIntegrationTests(
         "poweruptime.notification-temp.enabled=false",
     ],
 )
-class TempNotificationsDisabledIntegrationTest(
-    @Autowired val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class TempNotificationsDisabledIntegrationTest(@Autowired val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `check if disabled is working`() {
         mockMvc.get("/v1/public/temp-tempNotification").andExpect {

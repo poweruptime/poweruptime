@@ -10,9 +10,7 @@ import java.time.Instant
 
 data class NotificationTemplate(val title: String, val body: String)
 
-data class NotificationMinResponse(
-    val id: String,
-) {
+data class NotificationMinResponse(val id: String) {
     constructor(it: NotificationRecord) : this(it.publicId)
 }
 

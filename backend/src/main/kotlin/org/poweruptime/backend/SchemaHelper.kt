@@ -49,9 +49,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class SchemaHelper(
-    @Value(Config.DATABASE_DDL_AUTO) private val databaseDDLAuto: String = "validate",
-) {
+class SchemaHelper(@Value(Config.DATABASE_DDL_AUTO) private val databaseDDLAuto: String = "validate") {
     private final val logger = KotlinLogging.logger {}
 
     fun execute() {

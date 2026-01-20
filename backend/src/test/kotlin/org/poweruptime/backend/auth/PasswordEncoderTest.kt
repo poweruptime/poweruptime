@@ -5,9 +5,7 @@ import org.poweruptime.backend.core.BaseTestWithReusingContainers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 
-class PasswordEncoderTest(
-    @Autowired private val passwordEncoder: PasswordEncoder
-) : BaseTestWithReusingContainers() {
+class PasswordEncoderTest(@Autowired private val passwordEncoder: PasswordEncoder) : BaseTestWithReusingContainers() {
     @Test
     fun `test password encoder`() {
         println("Test user Password: ${passwordEncoder.encode("test1234")}")

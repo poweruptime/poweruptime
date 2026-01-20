@@ -19,10 +19,7 @@ object AppriseNotificationMethodData : NotificationMethodDataTable(NotificationM
         url = row[url],
     )
 
-    override fun insert(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun insert(notificationMethodId: ULong, data: NotificationMethodData) {
         data as AppriseNotificationMethodDataRecord
 
         insert {
@@ -31,10 +28,7 @@ object AppriseNotificationMethodData : NotificationMethodDataTable(NotificationM
         }
     }
 
-    override fun update(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun update(notificationMethodId: ULong, data: NotificationMethodData) {
         data as AppriseNotificationMethodDataRecord
 
         update({ id eq notificationMethodId }) {

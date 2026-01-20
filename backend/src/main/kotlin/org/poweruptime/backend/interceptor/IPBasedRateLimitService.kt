@@ -24,13 +24,15 @@ class IPBasedRateLimitService(
 
     private fun newBucket() = LocalBucketBuilder()
         .addLimit(
-            BandwidthBuilder.builder().capacity(rateLimitTries).refillIntervally(
-                1,
-                Duration.ofSeconds(
-                    // round upwards
-                    ceil(rateLimitDurationInSeconds.toDouble() / rateLimitTries.toDouble()).roundToLong(),
-                ),
-            ).build(),
-        )
-        .build()
+            BandwidthBuilder
+                .builder()
+                .capacity(rateLimitTries)
+                .refillIntervally(
+                    1,
+                    Duration.ofSeconds(
+                        // round upwards
+                        ceil(rateLimitDurationInSeconds.toDouble() / rateLimitTries.toDouble()).roundToLong(),
+                    ),
+                ).build(),
+        ).build()
 }
