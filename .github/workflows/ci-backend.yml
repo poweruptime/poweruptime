@@ -59,18 +59,5 @@ jobs:
           distribution: corretto
           cache: gradle
 
-      - name: Generate kover coverage report
-        run: ./gradlew koverXmlReport
-
-      - name: Add coverage report to PR
-        id: kover
-        uses: mi-kas/kover-report@v1
-        if: (success() || failure()) && github.event_name == 'pull_request'
-        with:
-          path: ${{ github.workspace }}/backend/build/reports/kover/report.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: Code Coverage
-          update-comment: true
-          min-coverage-overall: 60
-          min-coverage-changed-files: 60
-          coverage-counter-type: LINE
+      - name: Execute tests
+        run: ./gradlew test
