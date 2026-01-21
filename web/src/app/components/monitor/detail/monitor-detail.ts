@@ -13,13 +13,10 @@ import {ChartPlaceholder, Heatmap} from '@app/components';
 import {
   InfiniteUptimeTimeline,
   MonitorHeaderPlaceholder,
-  MonitorStatus,
   PingChartFilter,
 } from '@app/components/monitor';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
-import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {
-  CheckResultsPingStore,
   InfiniteCheckResultsStore,
   MonitorDetailStore,
   MonitorDetailsYearlyUptimeStore,
@@ -254,9 +251,8 @@ import {
   `,
   selector: 'pu-monitor-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [InfiniteCheckResultsStore, CheckResultsPingStore],
+  providers: [InfiniteCheckResultsStore],
   imports: [
-    MonitorStatus,
     InfiniteUptimeTimeline,
     Heatmap,
     MonitorHeaderPlaceholder,
@@ -264,7 +260,6 @@ import {
     DfxCutPipe,
     TranslocoPipe,
     PingChartFilter,
-    MonitorCheckerDataValueLabelPipe,
     Tag,
     ChartPlaceholder,
     HlmSkeletonImports,
@@ -277,7 +272,6 @@ import {
 export class MonitorDetail {
   protected readonly monitorDetailStore = inject(MonitorDetailStore);
   protected readonly monitorDetailYearlyUptimeStore = inject(MonitorDetailsYearlyUptimeStore);
-  protected readonly checkResultsPingStore = inject(CheckResultsPingStore);
   protected readonly infiniteCheckResultsStore = inject(InfiniteCheckResultsStore);
 
   readonly monitorId = input.required<string>();

@@ -1,14 +1,19 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Router, RouterOutlet} from '@angular/router';
 
-import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
+import {BreakpointObserver} from '@angular/cdk/layout';
+
+import {map} from 'rxjs';
+
+import {HlmSidebarInset} from '@spartan-ng/helm/sidebar';
 
 import {BackendOfflineAlert} from '@app/components';
 import {Sidebar} from '@app/components/sidebar/sidebar';
 import {SiteHeader} from '@app/components/sidebar/site-header';
 import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/services';
+import {isMobileBreakpoints} from '@app/services/util';
 
 @Component({
   selector: 'home-layout',
@@ -45,14 +50,12 @@ import {BackendOfflineService, PushService, SelectedTeamStore} from '@app/servic
     BackendOfflineAlert,
     Sidebar,
     SiteHeader,
-    HlmSidebarImports,
+    HlmSidebarInset,
   ],
 })
 export class HomeLayout {
   readonly backendOfflineService = inject(BackendOfflineService);
   readonly selectedTeamStore = inject(SelectedTeamStore);
-
-  private readonly sidebarService = inject(HlmSidebarService);
 
   teamId = input(undefined, {
     transform: (it: string | undefined) => {
@@ -70,19 +73,22 @@ export class HomeLayout {
 
     const router = inject(Router);
 
-    toObservable(this.sidebarService.isMobile).subscribe((isMobile) => {
-      if (!isMobile) {
-        if (router.url.includes('/mm')) {
-          void router.navigateByUrl(router.url.replace('/mm', '/m'));
-        }
-      } else {
-        if (router.url.includes('/m')) {
-          const index = router.url.indexOf('/m');
-          if (router.url[index + 2] !== 'm') {
-            void router.navigateByUrl(router.url.replace('/m', '/mm'));
+    inject(BreakpointObserver)
+      .observe(isMobileBreakpoints)
+      .pipe(map((result) => result.matches))
+      .subscribe((isMobile) => {
+        if (!isMobile) {
+          if (router.url.includes('/mm')) {
+            void router.navigateByUrl(router.url.replace('/mm', '/m'));
+          }
+        } else {
+          if (router.url.includes('/m')) {
+            const index = router.url.indexOf('/m');
+            if (router.url[index + 2] !== 'm') {
+              void router.navigateByUrl(router.url.replace('/m', '/mm'));
+            }
           }
         }
-      }
-    });
+      });
   }
 }

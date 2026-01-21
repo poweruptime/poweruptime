@@ -2,22 +2,22 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmBadge} from '@spartan-ng/helm/badge';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmSkeleton} from '@spartan-ng/helm/skeleton';
+import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {CheckResultList, MonitorStatus, NotificationList} from '@app/components/monitor';
 import {MonitorDetail} from '@app/components/monitor/detail';
 import {IsTeamAdmin} from '@app/directives';
+import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {MonitorActionStore, MonitorDetailStore} from '@app/services';
 
-import {MonitorCheckerDataValueLabelPipe} from '../../../pipes';
 import {MonitorEditPage} from './monitor-edit.page';
 
 @Component({
@@ -161,23 +161,23 @@ import {MonitorEditPage} from './monitor-edit.page';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [MonitorActionStore],
   imports: [
-    TranslocoPipe,
+    MonitorCheckerDataValueLabelPipe,
+    MonitorStatus,
     MonitorDetail,
     CheckResultList,
     NotificationList,
     MonitorEditPage,
     IsTeamAdmin,
+    RouterLink,
+    TranslocoPipe,
     HlmTabsImports,
     HlmIconImports,
     HlmCardImports,
     HlmButtonImports,
     HlmButtonGroupImports,
     HlmDropdownMenuImports,
-    HlmBadge,
-    MonitorCheckerDataValueLabelPipe,
-    MonitorStatus,
-    HlmSkeleton,
-    RouterLink,
+    HlmBadgeImports,
+    HlmSkeletonImports,
   ],
 })
 export class MonitorDetailPage {

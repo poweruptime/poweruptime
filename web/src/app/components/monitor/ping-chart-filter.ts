@@ -21,7 +21,7 @@ import {PingChart} from './ping-chart';
   template: `
     <div class="flex flex-col gap-2">
       <pu-table-filter [key]="tableKey">
-        <brn-select
+        <hlm-select
           class="inline-block"
           [(value)]="precision"
           [placeholder]="'general.status' | transloco"
@@ -38,7 +38,7 @@ import {PingChart} from './ping-chart';
             <hlm-option [value]="180">{{ 'general.xHours' | transloco: {value: 3} }}</hlm-option>
             <hlm-option [value]="360">{{ 'general.xHours' | transloco: {value: 6} }}</hlm-option>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select>
 
         <hlm-date-range-picker
           class="max-w-52"
@@ -88,6 +88,7 @@ import {PingChart} from './ping-chart';
   `,
   selector: 'pu-ping-chart-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [CheckResultsPingStore],
   imports: [
     TableFilter,
     PingChart,
