@@ -26,7 +26,7 @@ class NotificationTemplateService(
 ) {
     fun getRenderedNotification(
         subNotificationJoin: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
-        previousOppositeCheckResult: CheckResultRecord? = null
+        previousOppositeCheckResult: CheckResultRecord? = null,
     ): NotificationTemplate {
         val context = subNotificationJoin.toContext(previousOppositeCheckResult)
 
@@ -45,7 +45,7 @@ class NotificationTemplateService(
         .replaceThymeleafReplacementSquareBrackets()
 
     private fun SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord.toContext(
-        previousOppositeCheckResult: CheckResultRecord?
+        previousOppositeCheckResult: CheckResultRecord?,
     ) = Context().apply {
         setVariable("monitorName", monitor.name)
         setVariable(
@@ -83,10 +83,11 @@ class NotificationTemplateService(
             )
             setVariable(
                 "previousStatusDuration",
-                Duration.between(
-                    it.pickedUpAt,
-                    checkResult.pickedUpAt,
-                ).toHumanReadableString(),
+                Duration
+                    .between(
+                        it.pickedUpAt,
+                        checkResult.pickedUpAt,
+                    ).toHumanReadableString(),
             )
         }
 
@@ -127,14 +128,14 @@ class NotificationTemplateService(
         return template
     }
 
-    private fun String.replaceNoneThymeleafSquareBrackets() =
-        this.replace("\\[".toRegex(), OPENING_SQUARE_BRACKET_REPLACEMENT_CHAR)
-            .replace("]", CLOSING_SQUARE_BRACKET_REPLACEMENT_CHAR)
+    private fun String.replaceNoneThymeleafSquareBrackets() = this
+        .replace("\\[".toRegex(), OPENING_SQUARE_BRACKET_REPLACEMENT_CHAR)
+        .replace("]", CLOSING_SQUARE_BRACKET_REPLACEMENT_CHAR)
 
-    private fun String.replaceThymeleafReplacementSquareBrackets() =
-        this.replace(OPENING_SQUARE_BRACKET_REPLACEMENT_CHAR, "[")
-            .replace(CLOSING_SQUARE_BRACKET_REPLACEMENT_CHAR, "]")
-            .replace("&quot;", "\"")
+    private fun String.replaceThymeleafReplacementSquareBrackets() = this
+        .replace(OPENING_SQUARE_BRACKET_REPLACEMENT_CHAR, "[")
+        .replace(CLOSING_SQUARE_BRACKET_REPLACEMENT_CHAR, "]")
+        .replace("&quot;", "\"")
 
     fun Duration.toHumanReadableString(): String {
         var totalSeconds = seconds

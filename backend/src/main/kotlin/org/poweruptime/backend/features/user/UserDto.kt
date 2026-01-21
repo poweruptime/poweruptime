@@ -8,11 +8,7 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.authentication.model.UserRecord
 
-data class UserMinResponse(
-    val id: String,
-    val email: String,
-    val name: String
-) {
+data class UserMinResponse(val id: String, val email: String, val name: String) {
     constructor(user: UserRecord) : this(
         user.publicId,
         user.email,
@@ -26,7 +22,7 @@ data class UserResponse(
     val email: String,
     val activated: Boolean,
     val forcePasswordChange: Boolean,
-    val role: SystemRole
+    val role: SystemRole,
 ) {
     constructor(user: UserRecord) : this(
         user.publicId,

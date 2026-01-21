@@ -9,7 +9,7 @@ data class TeamJoinTokenResponse(
     val inviteeEmail: String,
     val inviter: UserMinResponse,
     val role: TeamRole,
-    val createdAt: Instant
+    val createdAt: Instant,
 ) {
     constructor(it: TeamJoinTokenJoinInviteeAndInviter) : this(
         it.invitee.email,

@@ -16,9 +16,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
 
-class ProfileIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-) : BaseTestWithReusingContainers() {
+class ProfileIntegrationTest(@Autowired private val mockMvc: MockMvc) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/profile")
     inner class GetProfile {
@@ -95,60 +93,64 @@ class ProfileIntegrationTest(
         @Test
         @MockUser
         fun `test if fails with wrong password`() {
-            mockMvc.put("/v1/profile/password") {
-                content = UpdatePasswordDto(
-                    oldPassword = "testWrong",
-                    newPassword = "testNew",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/profile/password") {
+                    content = UpdatePasswordDto(
+                        oldPassword = "testWrong",
+                        newPassword = "testNew",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER4)
         fun `test if fails with with enabled MFA`() {
-            mockMvc.put("/v1/profile/password") {
-                content = UpdatePasswordDto(
-                    oldPassword = "test1234",
-                    newPassword = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/profile/password") {
+                    content = UpdatePasswordDto(
+                        oldPassword = "test1234",
+                        newPassword = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser
         fun `test if success`() {
-            mockMvc.put("/v1/profile/password") {
-                content = UpdatePasswordDto(
-                    oldPassword = "test1234",
-                    newPassword = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-            }
+            mockMvc
+                .put("/v1/profile/password") {
+                    content = UpdatePasswordDto(
+                        oldPassword = "test1234",
+                        newPassword = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER4)
         fun `test if success with enabled MFA`() {
-            mockMvc.put("/v1/profile/password") {
-                content = UpdatePasswordDto(
-                    oldPassword = "test1234",
-                    newPassword = "test1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-                headers {
-                    setMFACode("7tyjXh9ckw")
+            mockMvc
+                .put("/v1/profile/password") {
+                    content = UpdatePasswordDto(
+                        oldPassword = "test1234",
+                        newPassword = "test1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                    headers {
+                        setMFACode("7tyjXh9ckw")
+                    }
+                }.andExpect {
+                    status { isOk() }
                 }
-            }.andExpect {
-                status { isOk() }
-            }
         }
     }
 

@@ -47,10 +47,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/v1/status-page")
 @Tag(name = "Status Page API")
 @Transactional(readOnly = true)
-class StatusPageController(
-    private val statusPageService: StatusPageService,
-    private val teamService: TeamService
-) {
+class StatusPageController(private val statusPageService: StatusPageService, private val teamService: TeamService) {
     @Operation(
         summary = "Get status page",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -95,9 +92,9 @@ class StatusPageController(
 
         return statusPages.toDto {
             it.toResponse(
-                domainNames = domainNamesPerStatusPage[it.id] ?: emptyList(),
-                groups = groupsPerStatusPage[it.id] ?: emptyList(),
-                statusPageGroupMonitors = groupMonitorsPerStatusPage[it.id] ?: emptyList(),
+                domainNames = domainNamesPerStatusPage[it.id].orEmpty(),
+                groups = groupsPerStatusPage[it.id].orEmpty(),
+                statusPageGroupMonitors = groupMonitorsPerStatusPage[it.id].orEmpty(),
             )
         }
     }
@@ -118,11 +115,10 @@ class StatusPageController(
     )
     @GetMapping("/free/domain/{domainNames}")
     @ResponseStatus(HttpStatus.OK)
-    fun freeDomainNames(
-        @PathVariable domainNames: String
-    ): List<BooleanResponse> = domainNames.split(
-        ",",
-    ).map { BooleanResponse(statusPageService.findByDomainName(it) == null) }
+    fun freeDomainNames(@PathVariable domainNames: String): List<BooleanResponse> = domainNames
+        .split(
+            ",",
+        ).map { BooleanResponse(statusPageService.findByDomainName(it) == null) }
 
     @Operation(
         summary = "Add status page",
@@ -133,9 +129,8 @@ class StatusPageController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    fun create(
-        @RequestBody @Valid dto: CreateStatusPageDto
-    ): StatusPageResponse = statusPageService.create(dto).toResponse()
+    fun create(@RequestBody @Valid dto: CreateStatusPageDto): StatusPageResponse =
+        statusPageService.create(dto).toResponse()
 
     @Operation(
         summary = "Update status page",
@@ -171,8 +166,8 @@ class StatusPageController(
     @DeleteMapping("/{id}/undo")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
-    fun undelete(@PathVariable("id") publicId: String): StatusPageResponse =
-        statusPageService.undeleteById(
+    fun undelete(@PathVariable("id") publicId: String): StatusPageResponse = statusPageService
+        .undeleteById(
             statusPageService.getIdByPublicId(publicId, includeDeleted = true),
         ).toResponse()
 
@@ -180,7 +175,7 @@ class StatusPageController(
         domainNames: List<StatusPageDomainNameRecord> = StatusPageDomainName.findByStatusPage(this.id),
         groups: List<StatusPageGroupRecord> = StatusPageGroup.findByStatusPage(this.id),
         statusPageGroupMonitors: List<StatusPageGroupMonitorJoinMonitorRecord> = StatusPageGroupMonitor
-            .findByStatusPage(this.id)
+            .findByStatusPage(this.id),
     ): StatusPageResponse = StatusPageResponse(
         statusPage = this,
         domainNames = domainNames,

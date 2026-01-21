@@ -13,10 +13,9 @@ fun RefreshToken.findByToken(token: String): RefreshTokenRecord? =
         RefreshToken.rowToRefreshTokenRecord(it)
     }
 
-fun RefreshToken.invalidateAllTokensBySessionId(sessionId: ULong) =
-    update({ RefreshToken.sessionId eq sessionId }) {
-        it[valid] = false
-    }
+fun RefreshToken.invalidateAllTokensBySessionId(sessionId: ULong) = update({ RefreshToken.sessionId eq sessionId }) {
+    it[valid] = false
+}
 
 fun RefreshToken.invalidateAllTokensBySessionIds(sessionIds: List<ULong>) =
     update({ RefreshToken.sessionId inList sessionIds }) {

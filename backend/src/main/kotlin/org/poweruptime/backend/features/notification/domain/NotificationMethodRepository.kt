@@ -16,13 +16,14 @@ import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.notification.model.NotificationMethodRecord
 import org.poweruptime.backend.features.notification.model.rowToNotificationMethodRecord
 
-fun NotificationMethod.findByMonitorId(
-    monitorId: ULong
-): List<NotificationMethodRecord> = innerJoin(MonitorNotificationMethod).selectAll().where {
-    MonitorNotificationMethod.monitorId eq monitorId
-}.map {
-    rowToNotificationMethodRecord(it)
-}
+fun NotificationMethod.findByMonitorId(monitorId: ULong): List<NotificationMethodRecord> =
+    innerJoin(MonitorNotificationMethod)
+        .selectAll()
+        .where {
+            MonitorNotificationMethod.monitorId eq monitorId
+        }.map {
+            rowToNotificationMethodRecord(it)
+        }
 
 fun NotificationMethod.findAll(
     pageable: Pageable,

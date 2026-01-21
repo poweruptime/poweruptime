@@ -15,9 +15,9 @@ import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
 import org.poweruptime.backend.features.statusPage.model.StatusPage
 import org.poweruptime.backend.features.statusPage.model.StatusPageGroup
-import org.poweruptime.backend.features.team.model.Team as TeamTable
 import org.poweruptime.backend.features.team.model.TeamRole
 import org.poweruptime.backend.features.team.model.TeamUser
+import org.poweruptime.backend.features.team.model.Team as TeamTable
 
 const val TEAM = "TEAM"
 const val TEAM_ADMIN = "${TEAM}_ADMIN"
@@ -49,14 +49,13 @@ const val STATUS_PAGE_GROUP_MEMBER = "${STATUS_PAGE_GROUP}_MEMBER"
 
 abstract class PermissionChecker {
     open fun applyAdditionalJoins(baseJoins: Join): Join = baseJoins
+
     open fun getTablesToJoin(): List<Any> = emptyList()
+
     abstract fun getEntityPublicIdColumn(): Column<String>
 }
 
-data class PermissionRequest(
-    val permission: Permission,
-    val requiredRole: TeamRole?
-) {
+data class PermissionRequest(val permission: Permission, val requiredRole: TeamRole?) {
     val permissionName: String
         get() = when (requiredRole) {
             TeamRole.ADMIN -> "${permission.baseName}_ADMIN"
@@ -64,23 +63,21 @@ data class PermissionRequest(
         }
 }
 
-enum class Permission(
-    val baseName: String,
-    private val checker: PermissionChecker
-) {
+enum class Permission(val baseName: String, private val checker: PermissionChecker) {
     Team(TEAM, TeamPermissionChecker),
     Monitor(MONITOR, MonitorPermissionChecker),
     CheckResult(CHECK_RESULT, CheckResultPermissionChecker),
     NotificationMethod(NOTIFICATION_METHOD, NotificationMethodPermissionChecker),
     Notification(NOTIFICATION, NotificationPermissionChecker),
     StatusPage(STATUS_PAGE, StatusPagePermissionChecker),
-    StatusPageGroup(STATUS_PAGE_GROUP, StatusPageGroupPermissionChecker);
+    StatusPageGroup(STATUS_PAGE_GROUP, StatusPageGroupPermissionChecker),
+    ;
 
     fun buildQuery(publicUserId: String, entityId: String): Query {
         var baseJoin = checker.applyAdditionalJoins(
             TeamUser
                 .innerJoin(User, { TeamUser.userId }, { User.id })
-                .innerJoin(TeamTable, { TeamUser.teamId }, { TeamTable.id })
+                .innerJoin(TeamTable, { TeamUser.teamId }, { TeamTable.id }),
         )
 
         for (table in checker.getTablesToJoin()) {
@@ -91,7 +88,8 @@ enum class Permission(
 
         val entityPublicIdColumn = checker.getEntityPublicIdColumn()
 
-        return checker.applyAdditionalJoins(baseJoin)
+        return checker
+            .applyAdditionalJoins(baseJoin)
             .select(TeamUser.role, User.publicId, entityPublicIdColumn)
             .where {
                 (User.publicId eq publicUserId) and (entityPublicIdColumn eq entityId)
@@ -99,20 +97,20 @@ enum class Permission(
     }
 
     companion object {
-        fun fromPermissionName(permissionName: String): PermissionRequest? {
-            return when {
-                permissionName.endsWith("_ADMIN") -> {
-                    val baseName = permissionName.removeSuffix("_ADMIN")
-                    entries.find { it.baseName == baseName }
-                        ?.let { PermissionRequest(it, TeamRole.ADMIN) }
-                }
-                permissionName.endsWith("_MEMBER") -> {
-                    val baseName = permissionName.removeSuffix("_MEMBER")
-                    entries.find { it.baseName == baseName }
-                        ?.let { PermissionRequest(it, TeamRole.MEMBER) }
-                }
-                else -> null
+        fun fromPermissionName(permissionName: String): PermissionRequest? = when {
+            permissionName.endsWith("_ADMIN") -> {
+                val baseName = permissionName.removeSuffix("_ADMIN")
+                entries
+                    .find { it.baseName == baseName }
+                    ?.let { PermissionRequest(it, TeamRole.ADMIN) }
             }
+            permissionName.endsWith("_MEMBER") -> {
+                val baseName = permissionName.removeSuffix("_MEMBER")
+                entries
+                    .find { it.baseName == baseName }
+                    ?.let { PermissionRequest(it, TeamRole.MEMBER) }
+            }
+            else -> null
         }
     }
 }
@@ -123,30 +121,36 @@ private object TeamPermissionChecker : PermissionChecker() {
 
 private object MonitorPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = Monitor.publicId
+
     override fun getTablesToJoin() = listOf(Monitor)
 }
 
 private object CheckResultPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = CheckResult.publicId
+
     override fun getTablesToJoin() = listOf(Monitor, CheckResult)
 }
 
 private object NotificationMethodPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = NotificationMethod.publicId
+
     override fun getTablesToJoin() = listOf(NotificationMethod)
 }
 
 private object NotificationPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = Notification.publicId
+
     override fun getTablesToJoin() = listOf(Monitor, Notification)
 }
 
 private object StatusPagePermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = StatusPage.publicId
+
     override fun getTablesToJoin() = listOf(StatusPage)
 }
 
 private object StatusPageGroupPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = StatusPageGroup.publicId
+
     override fun getTablesToJoin() = listOf(StatusPage, StatusPageGroup)
 }

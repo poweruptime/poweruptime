@@ -22,7 +22,6 @@ private const val DNS_ANSWER_SECTION = 1
 class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
     private final val logger = KotlinLogging.logger {}
 
-    @Suppress("ReturnCount", "DestructuringDeclarationWithTooManyEntries", "TooGenericExceptionCaught")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
         data as DnsMonitorDataRecord
 
@@ -80,24 +79,22 @@ class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
         }
     }
 
-    private fun getDNSAnswerSection(
-        resolver: Resolver,
-        host: String,
-        type: DnsMonitorDataType
-    ): String = resolver.send(
-        Message.newQuery(
-            Record.newRecord(
-                Name.fromString(host.parseDnsHost()),
-                type.toRecordType(),
-                DClass.IN,
+    private fun getDNSAnswerSection(resolver: Resolver, host: String, type: DnsMonitorDataType): String = resolver
+        .send(
+            Message.newQuery(
+                Record.newRecord(
+                    Name.fromString(host.parseDnsHost()),
+                    type.toRecordType(),
+                    DClass.IN,
+                ),
             ),
-        ),
-    ).sectionToString(DNS_ANSWER_SECTION).trimMargin()
+        ).sectionToString(DNS_ANSWER_SECTION)
+        .trimMargin()
 
-    private fun parseAnswerSection(answerSection: String, type: DnsMonitorDataType): List<String> =
-        answerSection.lines()
-            .filter { it.contains("IN\t${type.name}") }
-            .map { it.split(type.name).last().trim() }
+    private fun parseAnswerSection(answerSection: String, type: DnsMonitorDataType): List<String> = answerSection
+        .lines()
+        .filter { it.contains("IN\t${type.name}") }
+        .map { it.split(type.name).last().trim() }
 }
 
 private fun DnsMonitorDataType.toRecordType() = when (this) {

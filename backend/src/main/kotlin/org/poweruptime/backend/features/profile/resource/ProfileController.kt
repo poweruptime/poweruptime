@@ -45,7 +45,7 @@ class ProfileController(
     private val authService: AuthService,
     private val sessionService: SessionService,
     private val mfaService: MFAService,
-    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider
+    @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider,
 ) {
     @Operation(
         summary = "Get profile of authenticated user",
@@ -64,7 +64,7 @@ class ProfileController(
     fun updatePassword(
         auth: Authentication,
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
-        @RequestBody @Valid dto: UpdatePasswordDto
+        @RequestBody @Valid dto: UpdatePasswordDto,
     ) {
         // Check old password, as authentication can not be trusted (already includes authenticated password)
         try {
@@ -89,13 +89,12 @@ class ProfileController(
     )
     @GetMapping("sessions")
     @ResponseStatus(HttpStatus.OK)
-    fun getSessions(
-        auth: Authentication,
-        @ParameterObject pageable: Pageable,
-    ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
-        pageable = pageable,
-        userId = auth.userId(),
-    ).toDto { SessionResponse(it) }
+    fun getSessions(auth: Authentication, @ParameterObject pageable: Pageable): PaginatedResponse<SessionResponse> =
+        sessionService
+            .getAllPaginated(
+                pageable = pageable,
+                userId = auth.userId(),
+            ).toDto { SessionResponse(it) }
 
     @Operation(
         summary = "Delete a session of authenticated user",

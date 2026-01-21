@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
-class PushIntegrationTest(
-    @Autowired private val mvc: MockMvc,
-) : BaseTestWithReusingContainers() {
-
+class PushIntegrationTest(@Autowired private val mvc: MockMvc) : BaseTestWithReusingContainers() {
     @DisplayName("API /v1/see")
     @Nested
     inner class SSETest {

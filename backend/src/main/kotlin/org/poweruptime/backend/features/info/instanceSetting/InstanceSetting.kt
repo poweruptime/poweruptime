@@ -12,15 +12,10 @@ object InstanceSetting : ULongIdTable("instance_setting") {
     val value = varchar("value", Database.MAX_SETTING_VALUE_LENGTH)
 }
 
-data class InstanceSettingRecord(
-    val id: ULong,
-    val key: SettingKey,
-    var value: String,
-)
+data class InstanceSettingRecord(val id: ULong, val key: SettingKey, var value: String)
 
-fun InstanceSetting.rowToInstanceSetting(row: ResultRow): InstanceSettingRecord =
-    InstanceSettingRecord(
-        id = row[id].value,
-        key = row[key],
-        value = row[value],
-    )
+fun InstanceSetting.rowToInstanceSetting(row: ResultRow): InstanceSettingRecord = InstanceSettingRecord(
+    id = row[id].value,
+    key = row[key],
+    value = row[value],
+)

@@ -20,119 +20,124 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 
-class HttpMonitorCheckerTests(
-    @Autowired teamSettingService: TeamSettingService,
-) : BaseTestWithReusingContainers() {
+class HttpMonitorCheckerTests(@Autowired teamSettingService: TeamSettingService) : BaseTestWithReusingContainers() {
     private fun getHttpBinUrl() = "http://localhost:${httpBin.getMappedPort(80)}"
 
     private val httpMonitorChecker = HttpMonitorChecker(teamSettingService)
 
     @Test
-    fun `test if simple works`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "https://dafnik.me",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if simple works`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "https://dafnik.me",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if fails if TLS does not work`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "https://expired.badssl.com/",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("Connection error")
-    }
+    fun `test if fails if TLS does not work`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "https://expired.badssl.com/",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+            assertThat(it.title).isEqualTo("Connection error")
+        }
 
     @Test
-    fun `test if succeeds if TLS does not work but is ignored`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "https://expired.badssl.com/",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            ignoreTLS = true,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if succeeds if TLS does not work but is ignored`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "https://expired.badssl.com/",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                ignoreTLS = true,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if succeeds for xml`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/xml",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.XML,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        println("localhost:${httpBin.getMappedPort(80)}/xml: ${it.title} ${it.message}")
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if succeeds for xml`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/xml",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.XML,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            println("localhost:${httpBin.getMappedPort(80)}/xml: ${it.title} ${it.message}")
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if succeeds for json`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/json",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if succeeds for json`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/json",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if succeeds for html`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/html",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.HTML,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if succeeds for html`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/html",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.HTML,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if succeeds for gzip`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/gzip",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
+    fun `test if succeeds for gzip`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/gzip",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
 
     @Test
-    fun `test if succeeds for different methods`(): Unit =
-        HttpMonitorDataMethod.entries
-            .filter { it != HttpMonitorDataMethod.HEAD && it != HttpMonitorDataMethod.OPTIONS }
-            .forEach { method ->
-                httpMonitorChecker.execute(
+    fun `test if succeeds for different methods`(): Unit = HttpMonitorDataMethod.entries
+        .filter { it != HttpMonitorDataMethod.HEAD && it != HttpMonitorDataMethod.OPTIONS }
+        .forEach { method ->
+            httpMonitorChecker
+                .execute(
                     ModelFactory.getTestMonitor(MonitorType.HTTP),
                     HttpMonitorDataRecord(
                         url = "${getHttpBinUrl()}/${method.name.lowercase(Locale.getDefault())}",
@@ -144,248 +149,263 @@ class HttpMonitorCheckerTests(
                     assertThat(it.isUp).isTrue()
                     assertThat(it.title).isEqualTo("200 - OK")
                 }
-            }
+        }
 
     @Test
-    fun `test if succeeds for html with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/html",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.HTML,
-            searchTerm = "shameful story of his wretched fate",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
-
-    @Test
-    fun `test if fails for html with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/html",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.HTML,
-            searchTerm = "NOT_FOUND_THIS",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("Search term not found in body")
-    }
-
-    @Test
-    fun `test if succeeds for json with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/json",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            searchTerm = """"title": "Wake up to WonderWidgets!",""",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
-
-    @Test
-    fun `test if fails for json with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/json",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.HTML,
-            searchTerm = "NOT_FOUND_THIS",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("Search term not found in body")
-    }
-
-    @Test
-    fun `test if succeeds for xml with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/xml",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.XML,
-            searchTerm = "Sample Slide Show",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
-
-    @Test
-    fun `test if fails for xml with search term`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/xml",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.XML,
-            searchTerm = "NOT_FOUND_THIS",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("Search term not found in body")
-    }
-
-    @Test
-    fun `test if succeeds for json with basic auth`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            authType = HttpMonitorDataAuthType.BASIC,
-            basicAuthDataUsername = "test_user",
-            basicAuthDataPassword = "test_password",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
-
-    @Test
-    fun `test if succeeds for json with basic auth and search`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            authType = HttpMonitorDataAuthType.BASIC,
-            basicAuthDataUsername = "test_user",
-            basicAuthDataPassword = "test_password",
-            searchTerm = """"authenticated": true""",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("200 - OK")
-    }
-
-    @Test
-    fun `test if succeeds for json with basic auth and fails with search`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            authType = HttpMonitorDataAuthType.BASIC,
-            basicAuthDataUsername = "test_user",
-            basicAuthDataPassword = "test_password",
-            searchTerm = "NOT_FOUND",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("Search term not found in body")
-    }
-
-    @Test
-    fun `test if fails for json with basic auth with`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            authType = HttpMonitorDataAuthType.BASIC,
-            basicAuthDataUsername = "test_user1",
-            basicAuthDataPassword = "test_password1",
-            allowedStatusCodeRanges = listOf("200 - 299"),
-        ),
-    ).let {
-        assertThat(it.isUp).isFalse()
-        assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
-    }
-
-    @Test
-    fun `test if succeeds for json with basic auth with expected status code`(): Unit = httpMonitorChecker.execute(
-        ModelFactory.getTestMonitor(MonitorType.HTTP),
-        HttpMonitorDataRecord(
-            url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
-            method = HttpMonitorDataMethod.GET,
-            contentType = HttpMonitorDataContentType.JSON,
-            authType = HttpMonitorDataAuthType.BASIC,
-            basicAuthDataUsername = "test_user1",
-            basicAuthDataPassword = "test_password1",
-            allowedStatusCodeRanges = listOf("401 - 401"),
-        ),
-    ).let {
-        assertThat(it.isUp).isTrue()
-        assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
-    }
-
-    @Test
-    fun `test if fails after timeout`() {
-        val now = Instant.now()
-        httpMonitorChecker.execute(
+    fun `test if succeeds for html with search term`(): Unit = httpMonitorChecker
+        .execute(
             ModelFactory.getTestMonitor(MonitorType.HTTP),
             HttpMonitorDataRecord(
-                url = "${getHttpBinUrl()}/delay/10",
+                url = "${getHttpBinUrl()}/html",
                 method = HttpMonitorDataMethod.GET,
-                contentType = HttpMonitorDataContentType.JSON,
+                contentType = HttpMonitorDataContentType.HTML,
+                searchTerm = "shameful story of his wretched fate",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
+
+    @Test
+    fun `test if fails for html with search term`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/html",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.HTML,
+                searchTerm = "NOT_FOUND_THIS",
                 allowedStatusCodeRanges = listOf("200 - 299"),
             ),
         ).let {
             assertThat(it.isUp).isFalse()
-            assertThat(it.title).isEqualTo("Connection error")
+            assertThat(it.title).isEqualTo("Search term not found in body")
         }
+
+    @Test
+    fun `test if succeeds for json with search term`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/json",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                searchTerm = """"title": "Wake up to WonderWidgets!",""",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
+
+    @Test
+    fun `test if fails for json with search term`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/json",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.HTML,
+                searchTerm = "NOT_FOUND_THIS",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+            assertThat(it.title).isEqualTo("Search term not found in body")
+        }
+
+    @Test
+    fun `test if succeeds for xml with search term`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/xml",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.XML,
+                searchTerm = "Sample Slide Show",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
+
+    @Test
+    fun `test if fails for xml with search term`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/xml",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.XML,
+                searchTerm = "NOT_FOUND_THIS",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+            assertThat(it.title).isEqualTo("Search term not found in body")
+        }
+
+    @Test
+    fun `test if succeeds for json with basic auth`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                authType = HttpMonitorDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user",
+                basicAuthDataPassword = "test_password",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
+
+    @Test
+    fun `test if succeeds for json with basic auth and search`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                authType = HttpMonitorDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user",
+                basicAuthDataPassword = "test_password",
+                searchTerm = """"authenticated": true""",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("200 - OK")
+        }
+
+    @Test
+    fun `test if succeeds for json with basic auth and fails with search`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                authType = HttpMonitorDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user",
+                basicAuthDataPassword = "test_password",
+                searchTerm = "NOT_FOUND",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+            assertThat(it.title).isEqualTo("Search term not found in body")
+        }
+
+    @Test
+    fun `test if fails for json with basic auth with`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                authType = HttpMonitorDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user1",
+                basicAuthDataPassword = "test_password1",
+                allowedStatusCodeRanges = listOf("200 - 299"),
+            ),
+        ).let {
+            assertThat(it.isUp).isFalse()
+            assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
+        }
+
+    @Test
+    fun `test if succeeds for json with basic auth with expected status code`(): Unit = httpMonitorChecker
+        .execute(
+            ModelFactory.getTestMonitor(MonitorType.HTTP),
+            HttpMonitorDataRecord(
+                url = "${getHttpBinUrl()}/basic-auth/test_user/test_password",
+                method = HttpMonitorDataMethod.GET,
+                contentType = HttpMonitorDataContentType.JSON,
+                authType = HttpMonitorDataAuthType.BASIC,
+                basicAuthDataUsername = "test_user1",
+                basicAuthDataPassword = "test_password1",
+                allowedStatusCodeRanges = listOf("401 - 401"),
+            ),
+        ).let {
+            assertThat(it.isUp).isTrue()
+            assertThat(it.title).isEqualTo("401 - UNAUTHORIZED")
+        }
+
+    @Test
+    fun `test if fails after timeout`() {
+        val now = Instant.now()
+        httpMonitorChecker
+            .execute(
+                ModelFactory.getTestMonitor(MonitorType.HTTP),
+                HttpMonitorDataRecord(
+                    url = "${getHttpBinUrl()}/delay/10",
+                    method = HttpMonitorDataMethod.GET,
+                    contentType = HttpMonitorDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                ),
+            ).let {
+                assertThat(it.isUp).isFalse()
+                assertThat(it.title).isEqualTo("Connection error")
+            }
         assertThat(Duration.between(now, Instant.now()).seconds).isLessThanOrEqualTo(8)
     }
 
     @Test
     fun `test max redirects disallowed`() {
-        httpMonitorChecker.execute(
-            ModelFactory.getTestMonitor(MonitorType.HTTP),
-            HttpMonitorDataRecord(
-                url = "${getHttpBinUrl()}/redirect/3",
-                method = HttpMonitorDataMethod.GET,
-                contentType = HttpMonitorDataContentType.JSON,
-                allowedStatusCodeRanges = listOf("200 - 299"),
-            ),
-        ).let {
-            assertThat(it.isUp).isFalse()
-        }
+        httpMonitorChecker
+            .execute(
+                ModelFactory.getTestMonitor(MonitorType.HTTP),
+                HttpMonitorDataRecord(
+                    url = "${getHttpBinUrl()}/redirect/3",
+                    method = HttpMonitorDataMethod.GET,
+                    contentType = HttpMonitorDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                ),
+            ).let {
+                assertThat(it.isUp).isFalse()
+            }
     }
 
     @Test
     fun `test max redirects`() {
-        httpMonitorChecker.execute(
-            ModelFactory.getTestMonitor(MonitorType.HTTP),
-            HttpMonitorDataRecord(
-                url = "${getHttpBinUrl()}/redirect/3",
-                method = HttpMonitorDataMethod.GET,
-                contentType = HttpMonitorDataContentType.JSON,
-                allowedStatusCodeRanges = listOf("200 - 299"),
-                maxRedirects = 5,
-            ),
-        ).let {
-            assertThat(it.isUp).isTrue()
-        }
+        httpMonitorChecker
+            .execute(
+                ModelFactory.getTestMonitor(MonitorType.HTTP),
+                HttpMonitorDataRecord(
+                    url = "${getHttpBinUrl()}/redirect/3",
+                    method = HttpMonitorDataMethod.GET,
+                    contentType = HttpMonitorDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                    maxRedirects = 5,
+                ),
+            ).let {
+                assertThat(it.isUp).isTrue()
+            }
     }
 
     @Test
     fun `test fail max redirects`() {
-        httpMonitorChecker.execute(
-            ModelFactory.getTestMonitor(MonitorType.HTTP),
-            HttpMonitorDataRecord(
-                url = "${getHttpBinUrl()}/redirect/10",
-                method = HttpMonitorDataMethod.GET,
-                contentType = HttpMonitorDataContentType.JSON,
-                allowedStatusCodeRanges = listOf("200 - 299"),
-                maxRedirects = 5,
-            ),
-        ).let {
-            assertThat(it.isUp).isFalse()
-        }
+        httpMonitorChecker
+            .execute(
+                ModelFactory.getTestMonitor(MonitorType.HTTP),
+                HttpMonitorDataRecord(
+                    url = "${getHttpBinUrl()}/redirect/10",
+                    method = HttpMonitorDataMethod.GET,
+                    contentType = HttpMonitorDataContentType.JSON,
+                    allowedStatusCodeRanges = listOf("200 - 299"),
+                    maxRedirects = 5,
+                ),
+            ).let {
+                assertThat(it.isUp).isFalse()
+            }
     }
 
     @Test
@@ -401,31 +421,33 @@ class HttpMonitorCheckerTests(
         )
 
         statusCodes.forEach { statusCode ->
-            httpMonitorChecker.execute(
-                ModelFactory.getTestMonitor(MonitorType.HTTP),
-                HttpMonitorDataRecord(
-                    url = "${getHttpBinUrl()}/status/$statusCode",
-                    method = HttpMonitorDataMethod.GET,
-                    contentType = HttpMonitorDataContentType.JSON,
-                    allowedStatusCodeRanges = listOf("$statusCode - $statusCode"),
-                ),
-            ).let {
-                assertThat(it.isUp).isTrue()
-            }
+            httpMonitorChecker
+                .execute(
+                    ModelFactory.getTestMonitor(MonitorType.HTTP),
+                    HttpMonitorDataRecord(
+                        url = "${getHttpBinUrl()}/status/$statusCode",
+                        method = HttpMonitorDataMethod.GET,
+                        contentType = HttpMonitorDataContentType.JSON,
+                        allowedStatusCodeRanges = listOf("$statusCode - $statusCode"),
+                    ),
+                ).let {
+                    assertThat(it.isUp).isTrue()
+                }
         }
 
         statusCodes.forEach { statusCode ->
-            httpMonitorChecker.execute(
-                ModelFactory.getTestMonitor(MonitorType.HTTP),
-                HttpMonitorDataRecord(
-                    url = "${getHttpBinUrl()}/status/$statusCode",
-                    method = HttpMonitorDataMethod.GET,
-                    contentType = HttpMonitorDataContentType.JSON,
-                    allowedStatusCodeRanges = listOf("000 - 000"),
-                ),
-            ).let {
-                assertThat(it.isUp).isFalse()
-            }
+            httpMonitorChecker
+                .execute(
+                    ModelFactory.getTestMonitor(MonitorType.HTTP),
+                    HttpMonitorDataRecord(
+                        url = "${getHttpBinUrl()}/status/$statusCode",
+                        method = HttpMonitorDataMethod.GET,
+                        contentType = HttpMonitorDataContentType.JSON,
+                        allowedStatusCodeRanges = listOf("000 - 000"),
+                    ),
+                ).let {
+                    assertThat(it.isUp).isFalse()
+                }
         }
     }
 

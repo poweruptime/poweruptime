@@ -33,7 +33,6 @@ class SchedulingConfiguration(
 
     // Runs 1 hour after instance start every 24 hours
     @Scheduled(fixedDelay = 86_400_000L, initialDelay = 3_600_000L)
-    @Suppress("LongMethod")
     fun cleanup() {
         teamService.getAll().forEach { team ->
             val checkResultRetentionPeriodInDays = teamSettingService.getCheckResultRetentionPeriodInDays(team.id)

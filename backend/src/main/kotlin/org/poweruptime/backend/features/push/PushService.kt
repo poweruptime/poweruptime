@@ -21,11 +21,10 @@ class PushService(
     private val rabbitMQService: RabbitMQService,
     private val rabbitMQConfiguration: RabbitMQConfiguration,
 ) {
-
     private data class MessageListenerHolder(
         val refCount: AtomicLong,
         val flux: Flux<String>,
-        val container: SimpleMessageListenerContainer
+        val container: SimpleMessageListenerContainer,
     )
 
     private val holderByTeam = ConcurrentHashMap<ULong, MessageListenerHolder>()
@@ -48,22 +47,23 @@ class PushService(
             }
         }
 
-        val flux = Flux.create { emitter: FluxSink<String> ->
-            // Set up listener for each subscription
-            container.setMessageListener {
-                if (!emitter.isCancelled) {
-                    val message = String(it.body)
-                    emitter.next(message)
+        val flux = Flux
+            .create { emitter: FluxSink<String> ->
+                // Set up listener for each subscription
+                container.setMessageListener {
+                    if (!emitter.isCancelled) {
+                        val message = String(it.body)
+                        emitter.next(message)
+                    }
                 }
+
+                container.start()
+
+                emitter.onDispose { decrementCount() }
+                emitter.onCancel { decrementCount() }
+            }.doFinally {
+                decrementCount()
             }
-
-            container.start()
-
-            emitter.onDispose { decrementCount() }
-            emitter.onCancel { decrementCount() }
-        }.doFinally {
-            decrementCount()
-        }
 
         return MessageListenerHolder(refCount = AtomicLong(0), flux = flux, container = container)
     }

@@ -8,7 +8,7 @@ data class DeadLetterResponse(
     val queue: String,
     val exchange: String,
     val createdAt: Instant,
-    val updatedAt: Instant
+    val updatedAt: Instant,
 ) {
     constructor(it: DeadLetterRecord) : this(
         it.publicId,

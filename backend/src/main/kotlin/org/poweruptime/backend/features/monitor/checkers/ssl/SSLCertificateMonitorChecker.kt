@@ -23,11 +23,9 @@ import java.time.ZoneId
 import javax.net.ssl.*
 import javax.net.ssl.HttpsURLConnection
 
-class SSLCertificateMonitorChecker(
-    private val teamSettingService: TeamSettingService
-) : MonitorChecker(MonitorType.SSL_CERTIFICATE) {
-
-    @Suppress("ReturnCount")
+class SSLCertificateMonitorChecker(private val teamSettingService: TeamSettingService) :
+    MonitorChecker(MonitorType.SSL_CERTIFICATE) {
+    @Suppress("MapGetWithNotNullAssertionOperator")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
         data as SSLCertificateMonitorDataRecord
 
@@ -91,18 +89,12 @@ private fun makeRequest(url: String): List<X509Certificate> {
 
     // 2) Wrap it so only date-errors are swallowed
     val permissiveTm = object : X509TrustManager {
-        override fun getAcceptedIssuers(): Array<X509Certificate> =
-            defaultTm.acceptedIssuers
+        override fun getAcceptedIssuers(): Array<X509Certificate> = defaultTm.acceptedIssuers
 
-        override fun checkClientTrusted(
-            chain: Array<out X509Certificate>,
-            authType: String
-        ) = defaultTm.checkClientTrusted(chain, authType)
+        override fun checkClientTrusted(chain: Array<out X509Certificate>, authType: String) =
+            defaultTm.checkClientTrusted(chain, authType)
 
-        override fun checkServerTrusted(
-            chain: Array<out X509Certificate>,
-            authType: String
-        ) {
+        override fun checkServerTrusted(chain: Array<out X509Certificate>, authType: String) {
             try {
                 defaultTm.checkServerTrusted(chain, authType)
             } catch (e: CertificateException) {
@@ -143,7 +135,8 @@ private fun isDateOnlyException(e: CertificateException): Boolean {
     while (curr != null) {
         when (curr) {
             is CertificateExpiredException,
-            is CertificateNotYetValidException -> return true
+            is CertificateNotYetValidException,
+            -> return true
             is CertPathValidatorException -> {
                 val reason = curr.reason
                 // only swallow EXPIRED or NOT_YET_VALID
@@ -167,7 +160,11 @@ private fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId
     "${
         subjectNameRegex.find(it.subjectX500Principal.name)?.value ?: it.subjectX500Principal.name
     }: ${duration.abs().toDays()} day(s) ${
-        if (duration.toDays() >= 0) {"remaining, expires on"} else "overdue, expired on"
+        if (duration.toDays() >= 0) {
+            "remaining, expires on"
+        } else {
+            "overdue, expired on"
+        }
     } ${it.notAfter
         .toInstant()
         .atZone(zoneId)

@@ -43,19 +43,15 @@ data class TagRecord(
     var variant: TagVariant,
 )
 
-data class TagJoinMonitorRecord(
-    val tag: TagRecord,
-    val monitorTag: MonitorTagRecord
-)
+data class TagJoinMonitorRecord(val tag: TagRecord, val monitorTag: MonitorTagRecord)
 
-fun Tag.rowToTagRecord(row: ResultRow): TagRecord =
-    TagRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        deleted = row[deleted],
-        teamId = row[teamId],
-        name = row[name],
-        variant = row[variant],
-    )
+fun Tag.rowToTagRecord(row: ResultRow): TagRecord = TagRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    deleted = row[deleted],
+    teamId = row[teamId],
+    name = row[name],
+    variant = row[variant],
+)

@@ -44,16 +44,9 @@ data class CheckResultResponse(
     )
 }
 
-data class DayUptimeStatistics(
-    val name: LocalDate,
-    val series: List<DayUptimeStatistic>,
-)
+data class DayUptimeStatistics(val name: LocalDate, val series: List<DayUptimeStatistic>)
 
-data class DayUptimeStatistic(
-    val date: LocalDate,
-    val name: String,
-    val value: String
-)
+data class DayUptimeStatistic(val date: LocalDate, val name: String, val value: String)
 
 data class PingTimelineResponse(
     val smallestValue: Long = 0,
@@ -61,7 +54,4 @@ data class PingTimelineResponse(
     val data: List<PingTimelineDataEntryResponse> = listOf(),
 )
 
-data class PingTimelineDataEntryResponse(
-    val name: Instant,
-    var value: Long = 0,
-)
+data class PingTimelineDataEntryResponse(val name: Instant, var value: Long = 0)

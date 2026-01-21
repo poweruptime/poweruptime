@@ -28,10 +28,7 @@ import java.time.ZoneId
 @RestController
 @RequestMapping("/v1/team")
 @Tag(name = "Team Setting API")
-class TeamSettingController(
-    private val teamService: TeamService,
-    private val teamSettingService: TeamSettingService
-) {
+class TeamSettingController(private val teamService: TeamService, private val teamSettingService: TeamSettingService) {
     @Operation(
         summary = "Get settings from team",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -59,7 +56,7 @@ class TeamSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setTimeZone(
         @PathVariable("teamId") publicTeamId: String,
-        @RequestBody @Valid dto: SettingStringDto
+        @RequestBody @Valid dto: SettingStringDto,
     ): TeamSettingsResponse {
         if (!ZoneId.getAvailableZoneIds().contains(dto.it)) {
             throw NotFoundException("ZoneId not found")
@@ -80,7 +77,7 @@ class TeamSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setRetention(
         @PathVariable("teamId") publicTeamId: String,
-        @RequestBody @Valid dto: SettingRetentionDto
+        @RequestBody @Valid dto: SettingRetentionDto,
     ): TeamSettingsResponse {
         val teamId = teamService.getIdByPublicId(publicTeamId)
 

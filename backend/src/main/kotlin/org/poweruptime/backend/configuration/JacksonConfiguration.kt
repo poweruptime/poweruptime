@@ -18,10 +18,7 @@ private val blankStringToNullDeserializerModule = SimpleModule().apply {
     addDeserializer(
         String::class.java,
         object : StdDeserializer<String>(String::class.java) {
-            override fun deserialize(
-                p: JsonParser,
-                ctxt: DeserializationContext
-            ): String? {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): String? {
                 val result = StringDeserializer.instance.deserialize(p, ctxt)
                 return if (result.isNullOrBlank()) null else result
             }

@@ -17,9 +17,8 @@ class InterceptorConfiguration(
     @Value(Config.HOST) val host: String,
     private val ipBasedRateLimitService: IPBasedRateLimitService,
     private val userIdBasedRateLimitService: UserIdBasedRateLimitService,
-    private val pageableArgumentResolver: PageableArgumentResolver
+    private val pageableArgumentResolver: PageableArgumentResolver,
 ) : WebMvcConfigurer {
-
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(pageableArgumentResolver)
     }
@@ -36,17 +35,20 @@ class InterceptorConfiguration(
     @Suppress("SpreadOperator")
     override fun addInterceptors(registry: InterceptorRegistry) {
         if (rateLimitEnabled) {
-            registry.addInterceptor(
-                IPBasedRateLimitInterceptor(ipBasedRateLimitService),
-            ).addPathPatterns(Routes.ipRateLimited)
-            registry.addInterceptor(
-                UserIdBasedRateLimitInterceptor(userIdBasedRateLimitService),
-            ).addPathPatterns(Routes.userIdRateLimited)
+            registry
+                .addInterceptor(
+                    IPBasedRateLimitInterceptor(ipBasedRateLimitService),
+                ).addPathPatterns(Routes.ipRateLimited)
+            registry
+                .addInterceptor(
+                    UserIdBasedRateLimitInterceptor(userIdBasedRateLimitService),
+                ).addPathPatterns(Routes.userIdRateLimited)
         }
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
+        registry
+            .addMapping("/**")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .apply {
                 if (host.startsWith("localhost")) {

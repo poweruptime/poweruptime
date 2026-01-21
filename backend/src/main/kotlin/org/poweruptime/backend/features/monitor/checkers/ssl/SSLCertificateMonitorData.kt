@@ -55,7 +55,6 @@ data class SSLCertificateMonitorDataRecord(
     )
     @get:Pattern(regexp = Database.URL_REGEX)
     val url: String,
-
     @get:Min(Database.MIN_VALID_DAYS_LEFT)
     @get:Max(Database.MAX_VALID_DAYS_LEFT)
     val validDaysLeft: Long? = null,

@@ -72,5 +72,5 @@ fun NotificationMethod.rowToNotificationMethodRecord(row: ResultRow): Notificati
 
 data class NotificationMethodWithDataRecord(
     val notificationMethod: NotificationMethodRecord,
-    val data: NotificationMethodData
+    val data: NotificationMethodData,
 )

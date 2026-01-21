@@ -10,9 +10,8 @@ import org.springframework.security.test.context.support.WithUserDetails
 annotation class MockUser(
     @get:AliasFor(annotation = WithUserDetails::class)
     val value: String = MockUsers.USER1,
-
     @get:AliasFor(annotation = WithUserDetails::class, attribute = "userDetailsServiceBeanName")
-    val userDetailsServiceBeanName: String = AuthUtils.AUTH_DETAILS_SERVICE
+    val userDetailsServiceBeanName: String = AuthUtils.AUTH_DETAILS_SERVICE,
 )
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -21,9 +20,8 @@ annotation class MockUser(
 annotation class MockAdmin(
     @get:AliasFor(annotation = WithUserDetails::class)
     val value: String = MockUsers.ADMIN,
-
     @get:AliasFor(annotation = WithUserDetails::class, attribute = "userDetailsServiceBeanName")
-    val userDetailsServiceBeanName: String = AuthUtils.AUTH_DETAILS_SERVICE
+    val userDetailsServiceBeanName: String = AuthUtils.AUTH_DETAILS_SERVICE,
 )
 
 object MockUsers {

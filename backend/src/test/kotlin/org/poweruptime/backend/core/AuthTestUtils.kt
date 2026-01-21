@@ -17,28 +17,25 @@ import tools.jackson.module.kotlin.readValue
 import java.util.Date
 
 @Component
-class AuthTestUtils(
-    @Autowired val mvc: MockMvc
-) {
+class AuthTestUtils(@Autowired val mvc: MockMvc) {
     val adminJwtResponse: JwtResponse by lazy {
         loginUser(ModelFactory.getAdminSignInDto())
     }
 
-    fun newAdminJwtResponse(): JwtResponse {
-        return loginUser(ModelFactory.getAdminSignInDto())
-    }
+    fun newAdminJwtResponse(): JwtResponse = loginUser(ModelFactory.getAdminSignInDto())
 
     private final fun loginUser(userLoginDto: LoginDto): JwtResponse {
-        val response = mvc.post("/v1/auth/login") {
-            content = userLoginDto.toJSON()
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-            content { contentType(MediaType.APPLICATION_JSON) }
-            content {
-                jsonPath("$.accessToken") { exists() }
-            }
-        }.andReturn()
+        val response = mvc
+            .post("/v1/auth/login") {
+                content = userLoginDto.toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.accessToken") { exists() }
+                }
+            }.andReturn()
 
         return puJsonMapper.readValue(response.response.contentAsByteArray)
     }

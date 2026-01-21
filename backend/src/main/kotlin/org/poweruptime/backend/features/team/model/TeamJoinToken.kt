@@ -34,17 +34,16 @@ data class TeamJoinTokenRecord(
     val valid: Boolean,
 )
 
-fun TeamJoinToken.rowToTeamJoinTokenRecord(row: ResultRow): TeamJoinTokenRecord =
-    TeamJoinTokenRecord(
-        id = row[id].value,
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        inviteeId = row[inviteeId],
-        inviterId = row[inviterId],
-        teamId = row[teamId],
-        role = row[role],
-        valid = row[valid],
-    )
+fun TeamJoinToken.rowToTeamJoinTokenRecord(row: ResultRow): TeamJoinTokenRecord = TeamJoinTokenRecord(
+    id = row[id].value,
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    inviteeId = row[inviteeId],
+    inviterId = row[inviterId],
+    teamId = row[teamId],
+    role = row[role],
+    valid = row[valid],
+)
 
 data class TeamJoinTokenJoinInviteeAndInviter(
     val teamJoinToken: TeamJoinTokenRecord,

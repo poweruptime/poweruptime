@@ -59,9 +59,10 @@ class MonitorScheduler(
         schedules[monitor.id] = taskScheduler.scheduleAtFixedRate(
             {
                 val checkResultId = transaction {
-                    CheckResult.insertAndGetId {
-                        it[CheckResult.monitorId] = monitor.id
-                    }.value
+                    CheckResult
+                        .insertAndGetId {
+                            it[CheckResult.monitorId] = monitor.id
+                        }.value
                 }
                 logger.debug {
                     "Queuing monitor '${monitor.name}' with id '${monitor.id}' for run '$checkResultId'"

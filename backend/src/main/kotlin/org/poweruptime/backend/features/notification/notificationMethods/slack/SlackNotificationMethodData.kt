@@ -21,10 +21,7 @@ object SlackNotificationMethodData : NotificationMethodDataTable(NotificationMet
         displayName = row[displayName],
     )
 
-    override fun insert(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun insert(notificationMethodId: ULong, data: NotificationMethodData) {
         data as SlackNotificationMethodDataRecord
 
         insert {
@@ -34,10 +31,7 @@ object SlackNotificationMethodData : NotificationMethodDataTable(NotificationMet
         }
     }
 
-    override fun update(
-        notificationMethodId: ULong,
-        data: NotificationMethodData
-    ) {
+    override fun update(notificationMethodId: ULong, data: NotificationMethodData) {
         data as SlackNotificationMethodDataRecord
 
         update({ id eq notificationMethodId }) {
@@ -56,7 +50,6 @@ data class SlackNotificationMethodDataRecord(
     @get:Size(min = Database.MIN_URL_LENGTH, max = Database.MAX_URL_LENGTH)
     @get:Pattern(regexp = Database.URL_REGEX)
     val url: String,
-
     @get:Size(min = Database.MIN_DISCORD_DISPLAY_NAME_LENGTH, max = Database.MAX_DISCORD_DISPLAY_NAME_LENGTH)
     val displayName: String? = null,
 ) : NotificationMethodData(NotificationMethodType.SLACK)

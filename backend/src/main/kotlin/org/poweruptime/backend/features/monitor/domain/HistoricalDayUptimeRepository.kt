@@ -15,13 +15,12 @@ fun HistoricalDayUptime.findByMonitorIdBetweenDates(
     monitorId: ULong,
     start: LocalDate,
     end: LocalDate,
-): List<HistoricalDayUptimeRecord> =
-    selectAll()
-        .where {
-            (HistoricalDayUptime.monitorId eq monitorId) and (date greaterEq start) and (date lessEq end)
-        }.orderBy(
-            date,
-            SortOrder.DESC,
-        ).map {
-            rowToHistoricalDayUptimeRecord(it)
-        }
+): List<HistoricalDayUptimeRecord> = selectAll()
+    .where {
+        (HistoricalDayUptime.monitorId eq monitorId) and (date greaterEq start) and (date lessEq end)
+    }.orderBy(
+        date,
+        SortOrder.DESC,
+    ).map {
+        rowToHistoricalDayUptimeRecord(it)
+    }

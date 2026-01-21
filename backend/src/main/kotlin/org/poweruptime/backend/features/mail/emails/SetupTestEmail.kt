@@ -7,7 +7,7 @@ data class SetupTestEmail(
     val inviteeEmail: String,
     val code: String,
     override val cc: Set<String>? = null,
-    override val bcc: Set<String>? = null
+    override val bcc: Set<String>? = null,
 ) : Email {
     override val to = setOf(inviteeEmail)
 

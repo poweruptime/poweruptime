@@ -1,6 +1,5 @@
 package org.poweruptime.backend.features.monitor.checker
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.features.monitor.model.CheckResult
@@ -16,16 +15,11 @@ class MonitorCheckPersister(
     private val checkResultService: CheckResultService,
     private val monitorService: MonitorService,
 ) {
-    private val logger = KotlinLogging.logger {}
-
     /**
      * Persists check result. Returns updated record from DB.
      * MUST be called in a transaction.
      */
-    fun saveCheckResult(
-        checkResultId: ULong,
-        outcome: CheckExecutionOutcome
-    ): CheckResultRecord {
+    fun saveCheckResult(checkResultId: ULong, outcome: CheckExecutionOutcome): CheckResultRecord {
         when (outcome) {
             is CheckExecutionOutcome.Late -> {
                 CheckResult.update({ CheckResult.id eq checkResultId }) {
@@ -65,10 +59,7 @@ class MonitorCheckPersister(
      * Updates monitor status if needed. Returns true if updated.
      * MUST be called in a transaction.
      */
-    fun updateMonitorStatus(
-        monitorId: ULong,
-        newStatus: MonitorStatus
-    ): Boolean {
+    fun updateMonitorStatus(monitorId: ULong, newStatus: MonitorStatus): Boolean {
         val rowsUpdated = monitorService.updateStatus(monitorId, newStatus)
         return rowsUpdated > 0
     }

@@ -4,17 +4,17 @@ import org.poweruptime.backend.features.notification.dto.NotificationResponse
 import org.poweruptime.backend.features.notification.dto.SubNotificationResponse
 
 enum class PushTypes {
-    MONITOR, CHECK_RESULT, NOTIFICATION, SUB_NOTIFICATION
+    MONITOR,
+    CHECK_RESULT,
+    NOTIFICATION,
+    SUB_NOTIFICATION,
 }
 
 interface PushDto {
     val type: PushTypes
 }
 
-data class PushMonitorDto(
-    override val type: PushTypes = PushTypes.MONITOR,
-    val monitor: MonitorFullResponse,
-) : PushDto
+data class PushMonitorDto(override val type: PushTypes = PushTypes.MONITOR, val monitor: MonitorFullResponse) : PushDto
 
 data class PushCheckResultDto(
     override val type: PushTypes = PushTypes.CHECK_RESULT,

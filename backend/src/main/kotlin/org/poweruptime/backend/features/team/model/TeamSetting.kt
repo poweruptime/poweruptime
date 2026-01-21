@@ -13,17 +13,11 @@ object TeamSetting : ULongIdTable("team_setting") {
     val teamId = ulong("team_id").references(Team.id).index()
 }
 
-data class TeamSettingRecord(
-    val id: ULong,
-    val key: SettingKey,
-    var value: String,
-    val teamId: ULong
-)
+data class TeamSettingRecord(val id: ULong, val key: SettingKey, var value: String, val teamId: ULong)
 
-fun TeamSetting.rowToTeamSettingRecord(row: ResultRow): TeamSettingRecord =
-    TeamSettingRecord(
-        id = row[id].value,
-        key = row[key],
-        value = row[value],
-        teamId = row[teamId],
-    )
+fun TeamSetting.rowToTeamSettingRecord(row: ResultRow): TeamSettingRecord = TeamSettingRecord(
+    id = row[id].value,
+    key = row[key],
+    value = row[value],
+    teamId = row[teamId],
+)

@@ -24,7 +24,7 @@ class UptimeCalculationTest {
         private fun getTestCheckResultRecord(
             status: MonitorStatus,
             previousStatus: MonitorStatus,
-            pickedUpAt: Instant
+            pickedUpAt: Instant,
         ) = CheckResultRecord(
             status = status,
             previousStatus = previousStatus,
@@ -50,7 +50,10 @@ class UptimeCalculationTest {
             ).isNull()
         }
 
+        @Suppress("PrivatePropertyName", "PropertyName")
         private val date_12_12_2024 = Instant.ofEpochSecond(1733961600)
+
+        @Suppress("PrivatePropertyName", "PropertyName")
         private val date_13_12_2024 = Instant.ofEpochSecond(1734048000)
 
         @Test
@@ -312,12 +315,10 @@ class UptimeCalculationTest {
     @Nested
     @DisplayName("calculateHistoricalUptime")
     inner class CalculateHistoricalUptime {
+        @Suppress("PrivatePropertyName", "PropertyName")
         private val date_12_12_2024 = LocalDate.of(2020, 12, 12)
 
-        private fun getTestHistoricalDayUptimeRecord(
-            date: LocalDate,
-            uptime: BigDecimal
-        ) = HistoricalDayUptimeRecord(
+        private fun getTestHistoricalDayUptimeRecord(date: LocalDate, uptime: BigDecimal) = HistoricalDayUptimeRecord(
             id = idCounter.also {
                 idCounter++
             },

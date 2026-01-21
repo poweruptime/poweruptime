@@ -71,21 +71,23 @@ open class CheckResultStatisticsService {
         val pastYearGrouped = (0..DAYS_PER_YEAR).map { currentDate.minusDays(it.toLong()) }.groupBy { it.startOfWeek() }
 
         // Construct stats. For missing days, assume 100% uptime
-        return pastYearGrouped.map { (startOfWeek, daysInWeek) ->
-            val weekData = groupedByWeek[startOfWeek].orEmpty().associateBy { it.date }
-            DayUptimeStatistics(
-                name = startOfWeek,
-                series = daysInWeek.map { date ->
-                    val day = weekData[date]
-                    val uptime = day?.uptime ?: BigDecimal(FULL_PERCENT)
-                    DayUptimeStatistic(
-                        date = date,
-                        name = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()),
-                        value = uptime.myFormat(),
-                    )
-                }.reversed(),
-            )
-        }.reversed()
+        return pastYearGrouped
+            .map { (startOfWeek, daysInWeek) ->
+                val weekData = groupedByWeek[startOfWeek].orEmpty().associateBy { it.date }
+                DayUptimeStatistics(
+                    name = startOfWeek,
+                    series = daysInWeek
+                        .map { date ->
+                            val day = weekData[date]
+                            val uptime = day?.uptime ?: BigDecimal(FULL_PERCENT)
+                            DayUptimeStatistic(
+                                date = date,
+                                name = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                                value = uptime.myFormat(),
+                            )
+                        }.reversed(),
+                )
+            }.reversed()
     }
 
     @Cacheable(value = [MONITOR_UPTIME_STATISTICS_CACHE_KEY])
@@ -97,17 +99,13 @@ open class CheckResultStatisticsService {
             now,
         )
 
-        fun calculateRecentUptime(
-            timeOption: TimeOption,
-        ): BigDecimal = calculateUptimeFromCheckResults(
+        fun calculateRecentUptime(timeOption: TimeOption): BigDecimal = calculateUptimeFromCheckResults(
             checkResults,
             now.minus(timeOption.hours, ChronoUnit.HOURS),
             now,
         ) ?: BigDecimal(FULL_PERCENT)
 
-        fun calculateRecentPing(
-            timeOption: TimeOption,
-        ): PingAnalysis? = calculateAveragePingFromCheckResults(
+        fun calculateRecentPing(timeOption: TimeOption): PingAnalysis? = calculateAveragePingFromCheckResults(
             checkResults,
             now.minus(timeOption.hours, ChronoUnit.HOURS),
             now,
@@ -179,11 +177,13 @@ open class CheckResultStatisticsService {
     fun syncCheckResultsToHistoricalDayUptime(monitorId: ULong) {
         val currentDate = LocalDate.now()
         val startOfYearAgo = currentDate.minusYears(1)
-        val existing = HistoricalDayUptime.findByMonitorIdBetweenDates(
-            monitorId,
-            startOfYearAgo,
-            currentDate,
-        ).map { it.date }.toSet()
+        val existing = HistoricalDayUptime
+            .findByMonitorIdBetweenDates(
+                monitorId,
+                startOfYearAgo,
+                currentDate,
+            ).map { it.date }
+            .toSet()
 
         val totalDays = (TimeOption.ONE_YEAR.hours / HOURS_PER_DAY).toInt()
         val zoneId = ZoneId.systemDefault()
@@ -198,8 +198,7 @@ open class CheckResultStatisticsService {
                 val endOfDay = dateToProcess.plusDays(1).atStartOfDay(zoneId).toInstant()
                 val uptime = calculateUptimeByMonitorId(monitorId, startOfDay, endOfDay)
                 Pair(dateToProcess, uptime)
-            }
-            .toList() // Convert the sequence to a list for saveAll
+            }.toList() // Convert the sequence to a list for saveAll
 
         if (newEntries.isNotEmpty()) {
             HistoricalDayUptime.batchInsert(newEntries) { (date, uptime) ->
@@ -245,7 +244,7 @@ open class CheckResultStatisticsService {
 
 fun calculateHistoricalUptime(
     historicalDayUptimes: List<HistoricalDayUptimeRecord>,
-    timeOption: TimeOption
+    timeOption: TimeOption,
 ): BigDecimal {
     val daysCount = (timeOption.hours / HOURS_PER_DAY).toInt()
     // Ensure the list is large enough
@@ -260,7 +259,7 @@ fun calculateHistoricalUptime(
 fun calculateAveragePingFromCheckResults(
     checkResults: List<CheckResultRecord>,
     start: Instant,
-    end: Instant
+    end: Instant,
 ): PingAnalysis? {
     if (checkResults.isEmpty()) return null
 
@@ -296,12 +295,7 @@ fun calculateAveragePingFromCheckResults(
     return PingAnalysis(averagePingMs, roundedTrend.toString())
 }
 
-
-fun calculateUptimeFromCheckResults(
-    checkResults: List<CheckResultRecord>,
-    start: Instant,
-    end: Instant
-): BigDecimal? {
+fun calculateUptimeFromCheckResults(checkResults: List<CheckResultRecord>, start: Instant, end: Instant): BigDecimal? {
     if (checkResults.isEmpty()) return null
 
     val totalDurationMs = Duration.between(start, end).toMillis().toBigDecimal()
@@ -335,14 +329,15 @@ fun calculateUptimeFromCheckResults(
         return BigDecimal.ZERO
     }
 
-    return totalUpDurationMs.divide(totalDurationMs, PRECISION_SCALE, RoundingMode.HALF_UP)
+    return totalUpDurationMs
+        .divide(totalDurationMs, PRECISION_SCALE, RoundingMode.HALF_UP)
         .multiply(BigDecimal(FULL_PERCENT))
 }
 
 fun generatePingTimelineEntries(
     startInstant: Instant,
     endInstant: Instant,
-    precisionMillis: Long
+    precisionMillis: Long,
 ): List<PingTimelineDataEntryResponse> {
     val entries = mutableListOf<PingTimelineDataEntryResponse>()
     var currentMillis = startInstant.toEpochMilli()
@@ -360,7 +355,7 @@ fun generatePingTimelineEntries(
 fun buildPingTimelineResponse(
     entries: List<PingTimelineDataEntryResponse>,
     checkResults: List<CheckResultRecord>,
-    halfPrecisionSeconds: Long
+    halfPrecisionSeconds: Long,
 ): PingTimelineResponse {
     var highestValue = 0L
     var smallestValue = Long.MAX_VALUE // Initialize to max value so first comparison works
@@ -417,9 +412,7 @@ fun buildPingTimelineResponse(
     )
 }
 
-private fun Set<Instant>.findClosestBucket(
-    timestamp: Instant,
-    halfPrecisionSeconds: Long
-): Instant? = firstOrNull { bucket ->
-    timestamp in bucket.minusSeconds(halfPrecisionSeconds)..bucket.plusSeconds(halfPrecisionSeconds)
-}
+private fun Set<Instant>.findClosestBucket(timestamp: Instant, halfPrecisionSeconds: Long): Instant? =
+    firstOrNull { bucket ->
+        timestamp in bucket.minusSeconds(halfPrecisionSeconds)..bucket.plusSeconds(halfPrecisionSeconds)
+    }

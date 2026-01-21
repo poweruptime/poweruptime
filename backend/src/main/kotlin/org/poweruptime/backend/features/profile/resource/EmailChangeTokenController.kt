@@ -37,7 +37,7 @@ class EmailChangeTokenController(
     private val mfaService: MFAService,
     private val emailChangeTokenService: EmailChangeTokenService,
     private val infoService: InfoService,
-    @param:Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider
+    @param:Qualifier(AuthUtils.AUTHENTICATION_PROVIDER) private val authenticationProvider: DaoAuthenticationProvider,
 ) {
     @Operation(
         summary = "Request email update of authenticated user",
@@ -48,7 +48,7 @@ class EmailChangeTokenController(
     fun requestEmailChangeToken(
         @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
         auth: Authentication,
-        @RequestBody @Valid dto: UpdateEmailDto
+        @RequestBody @Valid dto: UpdateEmailDto,
     ) {
         if (infoService.oAuth2Enabled) {
             throw ServiceUnavailableException("E-mail change disabled because of OAuth2 being enabled")

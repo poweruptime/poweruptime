@@ -43,18 +43,17 @@ data class NotificationRecord(
     val status: MonitorStatus,
 )
 
-fun Notification.rowToNotificationRecord(row: ResultRow): NotificationRecord =
-    NotificationRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        monitorId = row[monitorId],
-        checkResultId = row[checkResultId],
-        publicCheckResultId = row[publicCheckResultId],
-        title = row[title],
-        status = row[status],
-    )
+fun Notification.rowToNotificationRecord(row: ResultRow): NotificationRecord = NotificationRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    monitorId = row[monitorId],
+    checkResultId = row[checkResultId],
+    publicCheckResultId = row[publicCheckResultId],
+    title = row[title],
+    status = row[status],
+)
 
 data class NotificationJoinMonitorAndTeamRecord(
     val notification: NotificationRecord,

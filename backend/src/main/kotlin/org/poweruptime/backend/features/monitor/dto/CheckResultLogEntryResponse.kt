@@ -9,7 +9,7 @@ data class CheckResultLogEntryResponse(
     val level: CheckResultLogEntryLevel,
     val message: String,
     val properties: Map<String, String>?,
-    val createdAt: Instant
+    val createdAt: Instant,
 ) {
     constructor(it: CheckResultLogEntryRecord) : this(
         id = it.publicId,

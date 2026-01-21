@@ -27,11 +27,10 @@ data class FileRecord(
     val fileId: String,
 )
 
-fun File.rowToFileRecord(row: ResultRow): FileRecord =
-    FileRecord(
-        id = row[id].value,
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        name = row[name],
-        fileId = row[publicId],
-    )
+fun File.rowToFileRecord(row: ResultRow): FileRecord = FileRecord(
+    id = row[id].value,
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    name = row[name],
+    fileId = row[publicId],
+)

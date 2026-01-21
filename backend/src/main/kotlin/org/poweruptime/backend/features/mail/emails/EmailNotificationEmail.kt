@@ -8,7 +8,7 @@ data class EmailNotificationEmail(
     val title: String,
     val body: String,
     override val cc: Set<String>?,
-    override val bcc: Set<String>?
+    override val bcc: Set<String>?,
 ) : Email {
     override val subject = title
 

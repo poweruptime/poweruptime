@@ -11,9 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.servlet.HandlerInterceptor
 import java.util.concurrent.TimeUnit
 
-class UserIdBasedRateLimitInterceptor(
-    private val userIdBasedRateLimitService: UserIdBasedRateLimitService
-) : HandlerInterceptor {
+class UserIdBasedRateLimitInterceptor(private val userIdBasedRateLimitService: UserIdBasedRateLimitService) :
+    HandlerInterceptor {
     private final val logger = KotlinLogging.logger {}
 
     @Throws(Exception::class)

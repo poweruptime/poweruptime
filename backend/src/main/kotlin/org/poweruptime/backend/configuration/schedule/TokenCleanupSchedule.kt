@@ -23,7 +23,6 @@ class TokenCleanupSchedule(
 
     // Runs 30 minutes after instance start every 24 hours
     @Scheduled(fixedDelay = 86_400_000L, initialDelay = 1_800_000L)
-    @Suppress("LongMethod")
     fun cleanup() {
         val dateNineMonthAgo = Instant.now().minusSeconds(SECONDS_PER_DAY * 30 * 9) // 9 months
 

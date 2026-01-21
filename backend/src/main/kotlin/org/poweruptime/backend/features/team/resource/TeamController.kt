@@ -60,8 +60,9 @@ class TeamController(
     @PreAuthorize("hasPermission(#publicId, '$TEAM_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(authentication: Authentication, @PathVariable("id") publicId: String): TeamMaxResponse =
-        teamService.getIdByPublicId(publicId).let { id ->
+    fun get(authentication: Authentication, @PathVariable("id") publicId: String): TeamMaxResponse = teamService
+        .getIdByPublicId(publicId)
+        .let { id ->
             teamService.getById(id)
         }.toMaxResponse(authentication)
 
@@ -107,18 +108,16 @@ class TeamController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(
-        auth: Authentication,
-        @RequestBody @Valid dto: CreateTeamDto
-    ): TeamMaxResponse {
+    fun create(auth: Authentication, @RequestBody @Valid dto: CreateTeamDto): TeamMaxResponse {
         if (!auth.isAdmin() && !instanceSettingService.getUserAllowedToCreateTeams()) {
             throw ForbiddenException("User not allowed to create teams")
         }
 
-        return teamService.create(
-            dto,
-            creatorId = auth.userId(),
-        ).toMaxResponse(auth, TeamRole.ADMIN)
+        return teamService
+            .create(
+                dto,
+                creatorId = auth.userId(),
+            ).toMaxResponse(auth, TeamRole.ADMIN)
     }
 
     @Operation(
@@ -164,10 +163,7 @@ class TeamController(
         dashboard = dashboard,
     )
 
-    fun TeamRecord.toMaxResponse(
-        authentication: Authentication,
-        role: TeamRole? = null,
-    ) = TeamMaxResponse(
+    fun TeamRecord.toMaxResponse(authentication: Authentication, role: TeamRole? = null) = TeamMaxResponse(
         team = this,
         yourPersonal = personalUserId == authentication.userId(),
         dashboard = monitorService.getTeamDashboard(id),
@@ -177,7 +173,7 @@ class TeamController(
             role ?: permissionsService.find(
                 publicUserId = authentication.publicUserId(),
                 entityId = publicId,
-                Permission.Team
+                Permission.Team,
             ) ?: throw ForbiddenException("User not in team")
         },
     )

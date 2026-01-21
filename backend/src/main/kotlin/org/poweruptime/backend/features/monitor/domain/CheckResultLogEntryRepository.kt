@@ -18,17 +18,13 @@ import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.rowToCheckResultLogEntry
 import java.time.Instant
 
-fun CheckResultLogEntry.deleteByTeamIdAndOlderThan(
-    teamId: ULong,
-    before: Instant
-): Int =
-    deleteWhere {
-        checkResultId inSubQuery (
-            CheckResult.innerJoin(Monitor).select(CheckResult.id).where {
-                Monitor.teamId eq teamId
-            }
-            ) and (CheckResult.createdAt less before)
-    }
+fun CheckResultLogEntry.deleteByTeamIdAndOlderThan(teamId: ULong, before: Instant): Int = deleteWhere {
+    checkResultId inSubQuery (
+        CheckResult.innerJoin(Monitor).select(CheckResult.id).where {
+            Monitor.teamId eq teamId
+        }
+        ) and (CheckResult.createdAt less before)
+}
 
 fun CheckResultLogEntry.findAll(
     checkResultId: ULong,

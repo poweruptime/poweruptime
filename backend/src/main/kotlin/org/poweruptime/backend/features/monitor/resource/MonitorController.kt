@@ -12,10 +12,10 @@ import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
+import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.ensureAllInTeam
 import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
-import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.service.publicUserId
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.core.TimeOption
@@ -60,11 +60,10 @@ class MonitorController(
     @PreAuthorize("hasPermission(#publicId, '$MONITOR_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(
-        @PathVariable("id") publicId: String
-    ): MonitorMaxResponse = monitorService.getIdByPublicId(publicId).let { id ->
-        monitorService.getJoinTeamById(id).toMaxResponse()
-    }
+    fun get(@PathVariable("id") publicId: String): MonitorMaxResponse =
+        monitorService.getIdByPublicId(publicId).let { id ->
+            monitorService.getJoinTeamById(id).toMaxResponse()
+        }
 
     @Suppress("LongMethod")
     @Operation(
@@ -83,7 +82,7 @@ class MonitorController(
         @RequestParam("statuses") statuses: List<MonitorStatus>?,
         @RequestParam("types") types: List<MonitorType>?,
         @RequestParam("tags") tags: List<String>?,
-        @RequestParam("deleted") deleted: Boolean = false
+        @RequestParam("deleted") deleted: Boolean = false,
     ): PaginatedResponse<MonitorResponse> {
         publicTeamId?.let {
             auth.throwIfNotPartOf { publicUserId ->
@@ -104,9 +103,11 @@ class MonitorController(
             enabledNotificationMethodIds = publicEnabledNotificationMethodIds?.toList()?.let { publicIds ->
                 notificationMethodService.getIdsByPublicIds(publicIds).also {
                     if (teamId != null) {
-                        notificationMethodService.getByPublicId(
-                            publicIds,
-                        ).ensureAllInTeam(teamId) { it.teamId }.map { it.id }
+                        notificationMethodService
+                            .getByPublicId(
+                                publicIds,
+                            ).ensureAllInTeam(teamId) { it.teamId }
+                            .map { it.id }
                     } else {
                         permissionsService.isPartOfByIds(auth.publicUserId(), publicIds, Permission.NotificationMethod)
                     }
@@ -115,9 +116,10 @@ class MonitorController(
             deleted = deleted,
         )
 
-        val monitorIds = monitors.map {
-            it.monitor.id
-        }.content
+        val monitorIds = monitors
+            .map {
+                it.monitor.id
+            }.content
 
         val tagsPerMonitor = tagService.getByMonitorId(monitorIds)
 
@@ -125,11 +127,12 @@ class MonitorController(
             MonitorResponse(
                 monitor = it.monitor,
                 team = it.team,
-                tags = tagsPerMonitor[it.monitor.id] ?: emptyList(),
-                oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
-                    it.monitor.id,
-                    TimeOption.ONE_DAY,
-                ).myFormat(),
+                tags = tagsPerMonitor[it.monitor.id].orEmpty(),
+                oneDayUptime = checkResultStatisticsService
+                    .calculateRecentUptimeByMonitorId(
+                        it.monitor.id,
+                        TimeOption.ONE_DAY,
+                    ).myFormat(),
             )
         }
     }
@@ -165,10 +168,11 @@ class MonitorController(
     @PutMapping("/{id}/clone")
     @ResponseStatus(HttpStatus.OK)
     fun clone(@PathVariable("id") publicId: String, @RequestBody @Valid cloneDto: CloneDto): MonitorFullResponse =
-        monitorService.clone(
-            publicMonitorId = publicId,
-            teamId = cloneDto.teamId?.let { publicTeamId -> teamService.getIdByPublicId(publicTeamId) },
-        ).toFullResponse()
+        monitorService
+            .clone(
+                publicMonitorId = publicId,
+                teamId = cloneDto.teamId?.let { publicTeamId -> teamService.getIdByPublicId(publicTeamId) },
+            ).toFullResponse()
 
     @Operation(
         summary = "Delete monitor",
@@ -243,10 +247,7 @@ class MonitorController(
     @GetMapping("/dashboard")
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
-    fun getDashboard(
-        auth: Authentication,
-        @RequestParam("teamId") publicTeamId: String?,
-    ): MonitorDashboardResponse {
+    fun getDashboard(auth: Authentication, @RequestParam("teamId") publicTeamId: String?): MonitorDashboardResponse {
         publicTeamId?.let { publicTeamId ->
             auth.throwIfNotPartOf { publicUserId ->
                 permissionsService.isPartOf(publicUserId, publicTeamId, Permission.Team)
@@ -275,9 +276,10 @@ class MonitorController(
         tags = tagService.getByMonitorId(monitor.id),
         statistics = checkResultStatisticsService.uptimeStatisticsDto(monitor.id),
         lastCheckResults = checkResultStatisticsService.getLastByMonitorId(monitor.id, LAST_CHECK_RESULTS_COUNT),
-        oneDayUptime = checkResultStatisticsService.calculateRecentUptimeByMonitorId(
-            monitor.id,
-            TimeOption.ONE_DAY,
-        ).myFormat(),
+        oneDayUptime = checkResultStatisticsService
+            .calculateRecentUptimeByMonitorId(
+                monitor.id,
+                TimeOption.ONE_DAY,
+            ).myFormat(),
     )
 }

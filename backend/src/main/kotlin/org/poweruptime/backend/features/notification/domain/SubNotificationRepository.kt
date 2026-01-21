@@ -28,22 +28,19 @@ import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamUser
 import java.time.Instant
 
-fun SubNotification.findByNotificationId(
-    notificationId: ULong
-): List<SubNotificationJoinMethodRecord> =
-    innerJoin(NotificationMethod).selectAll().where {
-        SubNotification.notificationId eq notificationId
-    }.map {
-        SubNotificationJoinMethodRecord(
-            subNotification = rowToSubNotificationRecord(it),
-            method = NotificationMethod.rowToNotificationMethodRecord(it),
-        )
-    }
+fun SubNotification.findByNotificationId(notificationId: ULong): List<SubNotificationJoinMethodRecord> =
+    innerJoin(NotificationMethod)
+        .selectAll()
+        .where {
+            SubNotification.notificationId eq notificationId
+        }.map {
+            SubNotificationJoinMethodRecord(
+                subNotification = rowToSubNotificationRecord(it),
+                method = NotificationMethod.rowToNotificationMethodRecord(it),
+            )
+        }
 
-fun SubNotification.deleteByTeamIdAndOlderThan(
-    teamId: ULong,
-    before: Instant
-): Int = deleteWhere {
+fun SubNotification.deleteByTeamIdAndOlderThan(teamId: ULong, before: Instant): Int = deleteWhere {
     notificationId inSubQuery (
         Notification
             .innerJoin(Monitor)
@@ -90,16 +87,17 @@ fun SubNotification.findAll(
     }
 
     userId?.let {
-        query.adjustColumnSet {
-            innerJoin(Team)
-        }.adjustColumnSet {
-            innerJoin(TeamUser)
-        }.adjustSelect {
-            selectColumns = selectColumns + TeamUser.userId
-            select(selectColumns)
-        }.andWhere {
-            TeamUser.userId eq it
-        }
+        query
+            .adjustColumnSet {
+                innerJoin(Team)
+            }.adjustColumnSet {
+                innerJoin(TeamUser)
+            }.adjustSelect {
+                selectColumns = selectColumns + TeamUser.userId
+                select(selectColumns)
+            }.andWhere {
+                TeamUser.userId eq it
+            }
     }
 
     methods?.takeIf { it.isNotEmpty() }?.let {
@@ -107,14 +105,15 @@ fun SubNotification.findAll(
     }
 
     if (teamId != null || userId != null) {
-        query.adjustColumnSet {
-            innerJoin(Monitor)
-        }.adjustSelect {
-            selectColumns = selectColumns + Monitor.deleted
-            select(selectColumns)
-        }.andWhere {
-            Monitor.deleted.isNull()
-        }
+        query
+            .adjustColumnSet {
+                innerJoin(Monitor)
+            }.adjustSelect {
+                selectColumns = selectColumns + Monitor.deleted
+                select(selectColumns)
+            }.andWhere {
+                Monitor.deleted.isNull()
+            }
     }
 
     return pageQuery(

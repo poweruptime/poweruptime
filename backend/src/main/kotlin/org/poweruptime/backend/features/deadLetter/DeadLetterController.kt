@@ -25,9 +25,10 @@ class DeadLetterController {
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAll() = DeadLetter.findAll {
-        DeadLetter.rowToDeadLetterRecord(it)
-    }.map { DeadLetterResponse(it) }
+    fun getAll() = DeadLetter
+        .findAll {
+            DeadLetter.rowToDeadLetterRecord(it)
+        }.map { DeadLetterResponse(it) }
 
     @Operation(
         summary = "Delete dead letter",

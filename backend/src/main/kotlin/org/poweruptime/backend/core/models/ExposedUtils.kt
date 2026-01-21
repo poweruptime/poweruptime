@@ -42,23 +42,25 @@ private val nowExpression = object : Expression<Instant>() {
     }
 }
 
-fun Table.softDelete(name: String = "deleted"): Column<Instant?> =
-    timestamp(name).nullable()
+fun Table.softDelete(name: String = "deleted"): Column<Instant?> = timestamp(name).nullable()
+
 fun Table.createdAt(name: String = "created_at"): Column<Instant> =
     timestamp(name).clientDefault { Instant.now() }.defaultExpression(nowExpression)
+
 fun Table.updatedAt(name: String = "updated_at"): Column<Instant> =
     timestamp(name).clientDefault { Instant.now() }.defaultExpression(nowExpression)
+
 fun Table.nanoId(name: String, length: Int): Column<String> = varchar(name, length)
     .clientDefault { RandomGenerator.nanoId(length) }
     .uniqueIndex()
+
 fun Table.name(
     name: String = "name",
     length: Int = Database.MAX_NAME_LENGTH,
-    collation: String = Database.NUMERIC_COLLATION
+    collation: String = Database.NUMERIC_COLLATION,
 ): Column<String> = varchar(name, length, collation)
-fun Table.position(
-    name: String = "position",
-): Column<Int?> = integer(name).nullable()
+
+fun Table.position(name: String = "position"): Column<Int?> = integer(name).nullable()
 
 open class NanoIdTable(name: String, length: Int, columnName: String = "id") : IdTable<String>(name) {
     final override val id: Column<EntityID<String>> = varchar(columnName, length)

@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.*
 
 class NotificationMethodIntegrationTests(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val instanceSettingService: InstanceSettingService
+    @Autowired val instanceSettingService: InstanceSettingService,
 ) : BaseTestWithReusingContainers() {
     private val discordNotificationSenderData = DiscordNotificationMethodDataRecord(
         url = "https://test.at",
@@ -208,14 +208,16 @@ class NotificationMethodIntegrationTests(
     inner class CreateNotificationMethod {
         @Test
         fun `test if secured`() {
-            mockMvc.post("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateNotificationMethodDto(
-                    discordNotificationSenderData,
-                ).toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .post("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getCreateNotificationMethodDto(
+                            discordNotificationSenderData,
+                        ).toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
@@ -224,86 +226,8 @@ class NotificationMethodIntegrationTests(
             val model = ModelFactory.getCreateNotificationMethodDto(
                 discordNotificationSenderData,
             )
-            mockMvc.post("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockUser
-        fun `test success permission for newly created team`() {
-            instanceSettingService.setUserAllowedToCreateTeams(true)
-            val teamModel = ModelFactory.getCreateTeamDto()
-            val (teamId) = mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = teamModel.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(teamModel.name) }
-                    }
-                }
-            }.andReturn().toDto<TeamResponse>()
-
-            val notificationMethodModel = ModelFactory.getCreateNotificationMethodDto(
-                discordNotificationSenderData,
-                teamId = teamId,
-            )
-            mockMvc.post("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = notificationMethodModel.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(notificationMethodModel.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockAdmin
-        fun `test success with admin`() {
-            val model = ModelFactory.getCreateNotificationMethodDto(
-                discordNotificationSenderData,
-            )
-            mockMvc.post("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
-                    }
-                }
-            }
-        }
-
-        @Test
-        @MockAdmin
-        fun `test success all types`() {
-            val createdNotificationMethods = notificationSender.map { data ->
-                val model = ModelFactory.getCreateNotificationMethodDto(data)
-                val notificationMethod = mockMvc.post("/v1/notification-method") {
+            mockMvc
+                .post("/v1/notification-method") {
                     contentType = MediaType.APPLICATION_JSON
                     content = model.toJSON()
                 }.andExpect {
@@ -313,11 +237,96 @@ class NotificationMethodIntegrationTests(
                         content {
                             jsonPath("$.id") { exists() }
                             jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.type") { value(model.data._type.code) }
-                            jsonPath("$.data._type") { value(model.data._type.code) }
                         }
                     }
-                }.andReturn().toDto<NotificationMethodResponse>()
+                }
+        }
+
+        @Test
+        @MockUser
+        fun `test success permission for newly created team`() {
+            instanceSettingService.setUserAllowedToCreateTeams(true)
+            val teamModel = ModelFactory.getCreateTeamDto()
+            val (teamId) = mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = teamModel.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(teamModel.name) }
+                        }
+                    }
+                }.andReturn()
+                .toDto<TeamResponse>()
+
+            val notificationMethodModel = ModelFactory.getCreateNotificationMethodDto(
+                discordNotificationSenderData,
+                teamId = teamId,
+            )
+            mockMvc
+                .post("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = notificationMethodModel.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(notificationMethodModel.name) }
+                        }
+                    }
+                }
+        }
+
+        @Test
+        @MockAdmin
+        fun `test success with admin`() {
+            val model = ModelFactory.getCreateNotificationMethodDto(
+                discordNotificationSenderData,
+            )
+            mockMvc
+                .post("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(model.name) }
+                        }
+                    }
+                }
+        }
+
+        @Test
+        @MockAdmin
+        fun `test success all types`() {
+            val createdNotificationMethods = notificationSender.map { data ->
+                val model = ModelFactory.getCreateNotificationMethodDto(data)
+                val notificationMethod = mockMvc
+                    .post("/v1/notification-method") {
+                        contentType = MediaType.APPLICATION_JSON
+                        content = model.toJSON()
+                    }.andExpect {
+                        status { isCreated() }
+                        content {
+                            contentType(MediaType.APPLICATION_JSON)
+                            content {
+                                jsonPath("$.id") { exists() }
+                                jsonPath("$.name") { value(model.name) }
+                                jsonPath("$.type") { value(model.data._type.code) }
+                                jsonPath("$.data._type") { value(model.data._type.code) }
+                            }
+                        }
+                    }.andReturn()
+                    .toDto<NotificationMethodResponse>()
 
                 assertThat(notificationMethod.data.toJSON()).isEqualTo(data.toJSON())
 
@@ -329,21 +338,23 @@ class NotificationMethodIntegrationTests(
                 val model = notificationSender.random().let { data ->
                     ModelFactory.getUpdateNotificationMethodDto(id, data)
                 }
-                val monitor = mockMvc.put("/v1/notification-method") {
-                    contentType = MediaType.APPLICATION_JSON
-                    content = model.toJSON()
-                }.andExpect {
-                    status { isOk() }
-                    content {
-                        contentType(MediaType.APPLICATION_JSON)
+                val monitor = mockMvc
+                    .put("/v1/notification-method") {
+                        contentType = MediaType.APPLICATION_JSON
+                        content = model.toJSON()
+                    }.andExpect {
+                        status { isOk() }
                         content {
-                            jsonPath("$.id") { value(id) }
-                            jsonPath("$.name") { value(model.name) }
-                            jsonPath("$.type") { value(model.data._type.code) }
-                            jsonPath("$.data._type") { value(model.data._type.code) }
+                            contentType(MediaType.APPLICATION_JSON)
+                            content {
+                                jsonPath("$.id") { value(id) }
+                                jsonPath("$.name") { value(model.name) }
+                                jsonPath("$.type") { value(model.data._type.code) }
+                                jsonPath("$.data._type") { value(model.data._type.code) }
+                            }
                         }
-                    }
-                }.andReturn().toDto<NotificationMethodResponse>()
+                    }.andReturn()
+                    .toDto<NotificationMethodResponse>()
 
                 assertThat(monitor.data.toJSON()).isEqualTo(model.data.toJSON())
             }
@@ -355,15 +366,17 @@ class NotificationMethodIntegrationTests(
     inner class UpdateMonitor {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateNotificationMethodDto(
-                    "UoKSMt62oFcX",
-                    discordNotificationSenderData,
-                ).toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory
+                        .getUpdateNotificationMethodDto(
+                            "UoKSMt62oFcX",
+                            discordNotificationSenderData,
+                        ).toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
@@ -373,12 +386,13 @@ class NotificationMethodIntegrationTests(
                 "UoKSMt62oFcX",
                 discordNotificationSenderData,
             )
-            mockMvc.put("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -388,12 +402,13 @@ class NotificationMethodIntegrationTests(
                 "UoKSMt62oFcX",
                 discordNotificationSenderData,
             )
-            mockMvc.put("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -403,19 +418,20 @@ class NotificationMethodIntegrationTests(
                 "UoKSMt62oFcX",
                 discordNotificationSenderData,
             )
-            mockMvc.put("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("UoKSMt62oFcX") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("UoKSMt62oFcX") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
 
         @Test
@@ -425,19 +441,20 @@ class NotificationMethodIntegrationTests(
                 "UoKSMt62oFcX",
                 discordNotificationSenderData,
             )
-            mockMvc.put("/v1/notification-method") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/notification-method") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("UoKSMt62oFcX") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("UoKSMt62oFcX") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
     }
 

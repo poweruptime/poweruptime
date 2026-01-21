@@ -32,5 +32,5 @@ enum class DnsMonitorDataType : ADatabaseEnumConvertable {
     },
     TXT {
         override val code = "TXT"
-    }
+    },
 }

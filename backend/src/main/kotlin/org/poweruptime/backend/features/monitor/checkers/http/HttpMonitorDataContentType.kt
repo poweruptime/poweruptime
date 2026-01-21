@@ -11,5 +11,5 @@ enum class HttpMonitorDataContentType : ADatabaseEnumConvertable {
     },
     HTML {
         override val code = "HTML"
-    }
+    },
 }

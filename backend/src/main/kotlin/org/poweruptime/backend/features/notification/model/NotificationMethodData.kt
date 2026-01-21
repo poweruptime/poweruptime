@@ -17,8 +17,9 @@ import org.poweruptime.backend.features.notification.notificationMethods.slack.S
     JsonSubTypes.Type(value = EmailNotificationMethodDataRecord::class, name = NotificationMethodTypes.EMAIL),
     JsonSubTypes.Type(value = SlackNotificationMethodDataRecord::class, name = NotificationMethodTypes.SLACK),
 )
+@Suppress("AbstractClassCanBeConcreteClass")
 abstract class NotificationMethodData(
     @Suppress("PropertyName", "ConstructorParameterNaming")
     @JsonProperty("_type")
-    val _type: NotificationMethodType
+    val _type: NotificationMethodType,
 )

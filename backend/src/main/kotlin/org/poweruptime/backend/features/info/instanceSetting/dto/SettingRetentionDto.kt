@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull
 
 data class SettingRetentionDto(
     @get:NotNull val checkResultRetentionPeriodInDays: Int,
-    @get:NotNull val checkResultLogRetentionPeriodInDays: Int
+    @get:NotNull val checkResultLogRetentionPeriodInDays: Int,
 )

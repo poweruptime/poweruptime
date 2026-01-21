@@ -32,12 +32,11 @@ data class MFABackupCodeRecord(
     val valid: Boolean,
 )
 
-fun MFABackupCode.rowToMFABackupCodeRecord(row: ResultRow): MFABackupCodeRecord =
-    MFABackupCodeRecord(
-        id = row[id].value,
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        mfaId = row[mfaId],
-        codeHash = row[codeHash],
-        valid = row[valid],
-    )
+fun MFABackupCode.rowToMFABackupCodeRecord(row: ResultRow): MFABackupCodeRecord = MFABackupCodeRecord(
+    id = row[id].value,
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    mfaId = row[mfaId],
+    codeHash = row[codeHash],
+    valid = row[valid],
+)

@@ -38,10 +38,7 @@ class TeamJoinTokenController(
     @GetMapping("/{token}")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
-    fun joinTeam(
-        @PathVariable("token") token: String,
-        authentication: Authentication
-    ): TeamMinResponse {
+    fun joinTeam(@PathVariable("token") token: String, authentication: Authentication): TeamMinResponse {
         val inviteeId = authentication.userId()
         val joinToken = teamJoinTokenService.validateToken(
             inviteeId = inviteeId,

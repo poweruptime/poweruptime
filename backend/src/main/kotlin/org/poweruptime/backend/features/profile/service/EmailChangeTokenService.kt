@@ -36,7 +36,6 @@ class EmailChangeTokenService(
     private val userService: UserService,
     private val sessionService: SessionService,
 ) {
-
     @Transactional
     fun create(user: UserRecord, email: String) {
         if (user.email == email) {
@@ -50,10 +49,11 @@ class EmailChangeTokenService(
             )
         }
 
-        if (EmailChangeToken.findByUserIdAndCreatedAfter(
-                user.id,
-                Instant.now().minusSeconds(60 * 60), // 1 hour
-            ).size > 2
+        if (EmailChangeToken
+                .findByUserIdAndCreatedAfter(
+                    user.id,
+                    Instant.now().minusSeconds(60 * 60), // 1 hour
+                ).size > 2
         ) {
             throw TooManyRequestsException()
         }
@@ -62,15 +62,16 @@ class EmailChangeTokenService(
             return
         }
 
-        val confirmToken = EmailChangeToken.insertAndGetId {
-            it[EmailChangeToken.email] = email
-            it[EmailChangeToken.userId] = user.id
-            it[EmailChangeToken.oldEmail] = user.email
-        }.let { id ->
-            EmailChangeToken.findByIdOrThrow(id.value) {
-                EmailChangeToken.rowToEmailChangeTokenRecord(it)
+        val confirmToken = EmailChangeToken
+            .insertAndGetId {
+                it[EmailChangeToken.email] = email
+                it[EmailChangeToken.userId] = user.id
+                it[EmailChangeToken.oldEmail] = user.email
+            }.let { id ->
+                EmailChangeToken.findByIdOrThrow(id.value) {
+                    EmailChangeToken.rowToEmailChangeTokenRecord(it)
+                }
             }
-        }
 
         systemEmailService.queueEmail(
             EmailChangeOldEmail(user = user, cancelToken = confirmToken.publicId),
@@ -82,10 +83,11 @@ class EmailChangeTokenService(
 
     @Transactional
     fun undo(token: String) {
-        val emailChangeToken = EmailChangeToken.findByTokenAndCreatedAfter(
-            token,
-            threeDaysAgo(),
-        )?.invalidate() ?: throw ForbiddenException()
+        val emailChangeToken = EmailChangeToken
+            .findByTokenAndCreatedAfter(
+                token,
+                threeDaysAgo(),
+            )?.invalidate() ?: throw ForbiddenException()
 
         val user = profileUserService.updateEmail(emailChangeToken.userId, emailChangeToken.oldEmail)
 
@@ -95,10 +97,11 @@ class EmailChangeTokenService(
 
     @Transactional
     fun validateToken(token: String) {
-        val emailChangeToken = EmailChangeToken.findValidByTokenAndCreatedAfter(
-            token,
-            threeHoursAgo(),
-        )?.invalidate() ?: throw ForbiddenException()
+        val emailChangeToken = EmailChangeToken
+            .findValidByTokenAndCreatedAfter(
+                token,
+                threeHoursAgo(),
+            )?.invalidate() ?: throw ForbiddenException()
 
         if (EmailChangeToken.countInvalidByUserIdAndCreatedAfter(emailChangeToken.userId, threeDaysAgo()) > 0) {
             throw TooManyRequestsException(

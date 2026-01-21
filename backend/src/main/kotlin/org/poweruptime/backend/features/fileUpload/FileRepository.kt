@@ -8,9 +8,8 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.features.statusPage.model.StatusPage
 import java.time.Instant
 
-fun File.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> =
-    selectAll().where {
+fun File.findUnusedCreatedAfterThan(createdAfter: Instant): List<FileRecord> = selectAll()
+    .where {
         (id notInSubQuery StatusPage.select(StatusPage.imageId)) and
             (createdAt less createdAfter)
-    }
-        .map { rowToFileRecord(it) }
+    }.map { rowToFileRecord(it) }

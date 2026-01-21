@@ -26,10 +26,7 @@ import org.poweruptime.backend.features.team.model.TeamUser
 import org.poweruptime.backend.features.team.model.rowToTeamRecord
 import java.time.Instant
 
-fun Notification.deleteByTeamIdAndOlderThan(
-    teamId: ULong,
-    before: Instant
-): Int = deleteWhere {
+fun Notification.deleteByTeamIdAndOlderThan(teamId: ULong, before: Instant): Int = deleteWhere {
     monitorId inSubQuery (
         Monitor.select(Monitor.id).where {
             Monitor.teamId eq teamId
@@ -73,14 +70,16 @@ suspend fun Notification.findAll(
         }
 
         teamId != null -> {
-            Team.innerJoin(Monitor)
+            Team
+                .innerJoin(Monitor)
                 .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)
         }
 
         userId != null -> {
             selectColumns = selectColumns + TeamUser.userId
-            TeamUser.innerJoin(Team)
+            TeamUser
+                .innerJoin(Team)
                 .innerJoin(Monitor)
                 .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)

@@ -33,16 +33,13 @@ object AuthUtils {
 @Configuration
 class AuthConfig(val keyUtils: KeyUtils) {
     @Bean
-    fun passwordEncoder(): PasswordEncoder =
-        PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    fun passwordEncoder(): PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     /**
      * Service to get an authenticated user from the database
      */
     @Bean(AuthUtils.AUTH_DETAILS_SERVICE)
-    fun userAuthDetailsService(authService: AuthService): AuthDetailsService {
-        return AuthDetailsService(authService)
-    }
+    fun userAuthDetailsService(authService: AuthService): AuthDetailsService = AuthDetailsService(authService)
 
     /**
      * Unused!
@@ -52,7 +49,7 @@ class AuthConfig(val keyUtils: KeyUtils) {
     @Bean(AuthUtils.ACCESS_TOKEN_AUTH_PROVIDER)
     fun accessTokenAuthProvider(
         @Qualifier(AuthUtils.JWT_ACCESS_TOKEN_DECODER) accessTokenDecoder: JwtDecoder,
-        jwtToUserConverter: JwtToUserConverter
+        jwtToUserConverter: JwtToUserConverter,
     ): JwtAuthenticationProvider {
         val provider = JwtAuthenticationProvider(accessTokenDecoder)
         provider.setJwtAuthenticationConverter(jwtToUserConverter)
@@ -66,7 +63,7 @@ class AuthConfig(val keyUtils: KeyUtils) {
     @Bean(AuthUtils.REFRESH_TOKEN_AUTH_PROVIDER)
     fun refreshTokenAuthProvider(
         @Qualifier(AuthUtils.JWT_REFRESH_TOKEN_DECODER) jwtRefreshTokenDecoder: JwtDecoder,
-        jwtToUserConverter: JwtToUserConverter
+        jwtToUserConverter: JwtToUserConverter,
     ): JwtAuthenticationProvider {
         val provider = JwtAuthenticationProvider(jwtRefreshTokenDecoder)
         provider.setJwtAuthenticationConverter(jwtToUserConverter)
@@ -81,7 +78,7 @@ class AuthConfig(val keyUtils: KeyUtils) {
     @Qualifier(AuthUtils.AUTHENTICATION_PROVIDER)
     fun authenticationProvider(
         authDetailsService: AuthDetailsService,
-        passwordEncoder: PasswordEncoder
+        passwordEncoder: PasswordEncoder,
     ): DaoAuthenticationProvider {
         val authProvider = DaoAuthenticationProvider(authDetailsService)
         authProvider.setPasswordEncoder(passwordEncoder)
@@ -94,11 +91,9 @@ class AuthConfig(val keyUtils: KeyUtils) {
     @Bean(AuthUtils.JWT_ACCESS_TOKEN_DECODER)
     @Qualifier(AuthUtils.JWT_ACCESS_TOKEN_DECODER)
     @Primary
-    fun jwtAccessTokenDecoder(): JwtDecoder {
-        return NimbusJwtDecoder
-            .withPublicKey(keyUtils.userAccessTokenPublicKey)
-            .build()
-    }
+    fun jwtAccessTokenDecoder(): JwtDecoder = NimbusJwtDecoder
+        .withPublicKey(keyUtils.userAccessTokenPublicKey)
+        .build()
 
     /**
      * JwtEncoder for user access tokens
@@ -120,11 +115,9 @@ class AuthConfig(val keyUtils: KeyUtils) {
      */
     @Bean(AuthUtils.JWT_REFRESH_TOKEN_DECODER)
     @Qualifier(AuthUtils.JWT_REFRESH_TOKEN_DECODER)
-    fun userJwtRefreshTokenDecoder(): JwtDecoder {
-        return NimbusJwtDecoder
-            .withPublicKey(keyUtils.userRefreshTokenPublicKey)
-            .build()
-    }
+    fun userJwtRefreshTokenDecoder(): JwtDecoder = NimbusJwtDecoder
+        .withPublicKey(keyUtils.userRefreshTokenPublicKey)
+        .build()
 
     /**
      * JwtEncoder for user refresh tokens
@@ -142,9 +135,7 @@ class AuthConfig(val keyUtils: KeyUtils) {
 }
 
 @Component
-class JwtToUserConverter(
-    private val authService: AuthService
-) : Converter<Jwt, UsernamePasswordAuthenticationToken> {
+class JwtToUserConverter(private val authService: AuthService) : Converter<Jwt, UsernamePasswordAuthenticationToken> {
     override fun convert(jwt: Jwt): UsernamePasswordAuthenticationToken {
         val authDetails = authService.getUserDetailsByPublicId(jwt.subject)
 

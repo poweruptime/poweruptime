@@ -31,13 +31,12 @@ fun Tag.findByMonitorId(monitorIds: List<ULong>): List<TagJoinMonitorRecord> =
             )
         }
 
-fun Tag.findByMonitorId(monitorId: ULong): List<TagRecord> =
-    innerJoin(MonitorTag, { Tag.id }, { MonitorTag.tagId })
-        .selectAll()
-        .where { MonitorTag.monitorId eq monitorId }
-        .map {
-            rowToTagRecord(it)
-        }
+fun Tag.findByMonitorId(monitorId: ULong): List<TagRecord> = innerJoin(MonitorTag, { Tag.id }, { MonitorTag.tagId })
+    .selectAll()
+    .where { MonitorTag.monitorId eq monitorId }
+    .map {
+        rowToTagRecord(it)
+    }
 
 fun Tag.findAll(
     pageable: Pageable,

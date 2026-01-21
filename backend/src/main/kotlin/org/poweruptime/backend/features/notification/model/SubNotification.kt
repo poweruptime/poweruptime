@@ -45,20 +45,19 @@ data class SubNotificationRecord(
     val error: String?,
 )
 
-fun SubNotification.rowToSubNotificationRecord(row: ResultRow): SubNotificationRecord =
-    SubNotificationRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        notificationId = row[notificationId],
-        methodId = row[methodId],
-        title = row[title],
-        message = row[message],
-        pickedUpAt = row[pickedUpAt],
-        sentAt = row[sentAt],
-        error = row[error],
-    )
+fun SubNotification.rowToSubNotificationRecord(row: ResultRow): SubNotificationRecord = SubNotificationRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    notificationId = row[notificationId],
+    methodId = row[methodId],
+    title = row[title],
+    message = row[message],
+    pickedUpAt = row[pickedUpAt],
+    sentAt = row[sentAt],
+    error = row[error],
+)
 
 open class SubNotificationJoinMethodRecord(
     open val subNotification: SubNotificationRecord,

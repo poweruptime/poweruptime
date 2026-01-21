@@ -23,5 +23,5 @@ enum class HttpMonitorDataMethod : ADatabaseEnumConvertable {
     },
     OPTIONS {
         override val code = "OPTIONS"
-    }
+    },
 }

@@ -53,44 +53,42 @@ data class CheckResultRecord(
     val message: String?,
 )
 
-fun CheckResult.rowToCheckResultRecord(row: ResultRow): CheckResultRecord =
-    CheckResultRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        monitorId = row[monitorId],
-        status = row[status],
-        timesRetried = row[timesRetried],
-        previousStatus = row[previousStatus],
-        pickedUpAt = row[pickedUpAt],
-        checkedAt = row[checkedAt],
-        pingMs = row[pingMs],
-        title = row[title],
-        message = row[message],
-    )
+fun CheckResult.rowToCheckResultRecord(row: ResultRow): CheckResultRecord = CheckResultRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    monitorId = row[monitorId],
+    status = row[status],
+    timesRetried = row[timesRetried],
+    previousStatus = row[previousStatus],
+    pickedUpAt = row[pickedUpAt],
+    checkedAt = row[checkedAt],
+    pingMs = row[pingMs],
+    title = row[title],
+    message = row[message],
+)
 
-fun CheckResult.rowToCheckResultRecord(row: ResultRow, alias: QueryAlias): CheckResultRecord =
-    CheckResultRecord(
-        id = row[alias[id]].value,
-        publicId = row[alias[publicId]],
-        createdAt = row[alias[createdAt]],
-        updatedAt = row[alias[updatedAt]],
-        monitorId = row[alias[monitorId]],
-        status = row[alias[status]],
-        timesRetried = row[alias[timesRetried]],
-        previousStatus = row[alias[previousStatus]],
-        pickedUpAt = row[alias[pickedUpAt]],
-        checkedAt = row[alias[checkedAt]],
-        pingMs = row[alias[pingMs]],
-        title = row[alias[title]],
-        message = row[alias[message]],
-    )
+fun CheckResult.rowToCheckResultRecord(row: ResultRow, alias: QueryAlias): CheckResultRecord = CheckResultRecord(
+    id = row[alias[id]].value,
+    publicId = row[alias[publicId]],
+    createdAt = row[alias[createdAt]],
+    updatedAt = row[alias[updatedAt]],
+    monitorId = row[alias[monitorId]],
+    status = row[alias[status]],
+    timesRetried = row[alias[timesRetried]],
+    previousStatus = row[alias[previousStatus]],
+    pickedUpAt = row[alias[pickedUpAt]],
+    checkedAt = row[alias[checkedAt]],
+    pingMs = row[alias[pingMs]],
+    title = row[alias[title]],
+    message = row[alias[message]],
+)
 
 open class CheckResultJoinMonitorRecord(open val checkResult: CheckResultRecord, open val monitor: MonitorRecord)
 
 data class CheckResultJoinMonitorAndTeamRecord(
     override val checkResult: CheckResultRecord,
     override val monitor: MonitorRecord,
-    val team: TeamRecord
+    val team: TeamRecord,
 ) : CheckResultJoinMonitorRecord(checkResult, monitor)

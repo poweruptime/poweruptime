@@ -11,11 +11,11 @@ import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.utils.DATETIME_FORMAT
-import org.poweruptime.backend.features.authentication.permission.PermissionsService
-import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.NOTIFICATION_MEMBER
 import org.poweruptime.backend.features.authentication.permission.Permission
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.MonitorService
@@ -76,17 +76,18 @@ class NotificationController(
             }
         }
 
-        return notificationService.getAllPaginated(
-            pageable = pageable,
-            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
-            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
-            userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
-            statuses = statuses,
-            start = start?.toInstant(),
-            end = end?.plusDays(1)?.toInstant(),
-        ).toDto {
-            NotificationResponse(it)
-        }
+        return notificationService
+            .getAllPaginated(
+                pageable = pageable,
+                monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+                teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+                userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
+                statuses = statuses,
+                start = start?.toInstant(),
+                end = end?.plusDays(1)?.toInstant(),
+            ).toDto {
+                NotificationResponse(it)
+            }
     }
 
     @Operation(
@@ -97,9 +98,7 @@ class NotificationController(
     @PreAuthorize("hasPermission(#publicId, '$NOTIFICATION_MEMBER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun get(
-        @PathVariable("id") publicId: String
-    ): NotificationResponse = NotificationResponse(
+    fun get(@PathVariable("id") publicId: String): NotificationResponse = NotificationResponse(
         notificationService.getByIdJoinMonitorAndTeam(notificationService.getIdByPublicId(publicId)),
     )
 }

@@ -18,12 +18,12 @@ import org.poweruptime.backend.core.utils.DAYS_PER_MONTH
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_MINUTE
 import org.poweruptime.backend.core.utils.MILLI_SECONDS_PER_SECONDS
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
-import org.poweruptime.backend.features.authentication.permission.PermissionsService
-import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.permission.CHECK_RESULT_MEMBER
 import org.poweruptime.backend.features.authentication.permission.MONITOR_MEMBER
 import org.poweruptime.backend.features.authentication.permission.Permission
+import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.TEAM_MEMBER
+import org.poweruptime.backend.features.authentication.permission.throwIfNotPartOf
 import org.poweruptime.backend.features.authentication.service.userId
 import org.poweruptime.backend.features.monitor.dto.CheckResultResponse
 import org.poweruptime.backend.features.monitor.dto.PingTimelineResponse
@@ -86,19 +86,20 @@ class CheckResultController(
             }
         }
 
-        return checkResultService.getAllPaginated(
-            pageable = pageable,
-            monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
-            teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
-            userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
-            statuses = statuses,
-            onlyChanges = onlyChanges,
-            hasNotification = hasNotification,
-            start = start?.toInstant(),
-            end = end?.plusDays(1)?.toInstant(),
-        ).toDto {
-            CheckResultResponse(it)
-        }
+        return checkResultService
+            .getAllPaginated(
+                pageable = pageable,
+                monitorId = publicMonitorId?.let { monitorService.getIdByPublicId(it) },
+                teamId = publicTeamId?.let { teamService.getIdByPublicId(it) },
+                userId = if (publicTeamId == null && publicMonitorId == null) auth.userId() else null,
+                statuses = statuses,
+                onlyChanges = onlyChanges,
+                hasNotification = hasNotification,
+                start = start?.toInstant(),
+                end = end?.plusDays(1)?.toInstant(),
+            ).toDto {
+                CheckResultResponse(it)
+            }
     }
 
     @Operation(

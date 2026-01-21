@@ -32,9 +32,7 @@ import java.time.Instant
 
 @Service
 @Transactional(readOnly = true)
-class SubNotificationService(
-    private val rabbitMQService: RabbitMQService,
-) {
+class SubNotificationService(private val rabbitMQService: RabbitMQService) {
     fun queueNotification(subNotificationId: ULong) {
         rabbitMQService.sendToProcessSubNotification(subNotificationId)
     }
@@ -54,7 +52,9 @@ class SubNotificationService(
             .selectAll()
             .where {
                 SubNotification.id eq subNotificationId
-            }.limit(1).firstOrNull()?.let {
+            }.limit(1)
+            .firstOrNull()
+            ?.let {
                 SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord(
                     subNotification = SubNotification.rowToSubNotificationRecord(it),
                     method = NotificationMethod.rowToNotificationMethodRecord(it),

@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1/secure")
 @Tag(name = "Default Secure API")
-class SecureDefaultController(
-    private val infoService: InfoService,
-) {
+class SecureDefaultController(private val infoService: InfoService) {
     @Operation(
         summary = "Get info",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -25,9 +23,7 @@ class SecureDefaultController(
 @RestController
 @RequestMapping("/v1/public")
 @Tag(name = "Default API")
-class DefaultController(
-    private val infoService: InfoService,
-) {
+class DefaultController(private val infoService: InfoService) {
     @Operation(summary = "Get info")
     @GetMapping
     fun api() = "Running ${infoService.name}! ( ͡° ͜ʖ ͡°) <br> Version: ${infoService.version}"

@@ -10,7 +10,7 @@ import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
 
 abstract class NotificationMethodDataTable(
-    @Suppress("PropertyName", "ConstructorParameterNaming") val _type: NotificationMethodType
+    @Suppress("PropertyName", "ConstructorParameterNaming") val _type: NotificationMethodType,
 ) : IdTable<ULong>("${NOTIFICATION_METHOD_DATA_TABLE_NAME}_${_type.name}"),
     HasModifiers {
     override val id: Column<EntityID<ULong>> = ulong("id")
@@ -24,6 +24,7 @@ abstract class NotificationMethodDataTable(
     abstract fun rowToRecord(row: ResultRow): NotificationMethodData
 
     abstract fun insert(notificationMethodId: ULong, data: NotificationMethodData)
+
     abstract fun update(notificationMethodId: ULong, data: NotificationMethodData)
 
     companion object {

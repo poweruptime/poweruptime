@@ -1,6 +1,8 @@
 complexity:
   LongParameterList:
-    active: false
+    allowedFunctionParameters: 10
+    allowedConstructorParameters: 10
+    ignoreAnnotatedParameter: [Value]
   CyclomaticComplexMethod:
     allowedComplexity: 30
     ignoreSimpleWhenEntries: true
@@ -14,19 +16,25 @@ complexity:
     active: true
     allowedConditions: 8
 
+potential-bugs:
+  UnsafeCallOnNullableType:
+    active: false
+
+naming:
+  NoNameShadowing:
+    active: false
+
 style:
   DestructuringDeclarationWithTooManyEntries:
     maxDestructuringEntries: 6
   WildcardImport:
     active: false
   ThrowsCount:
-    active: false
+    max: 10
   ReturnCount:
-    max: 4
+    max: 10
     excludeGuardClauses: true
   MagicNumber:
-    active: false
-  SerialVersionUIDInSerializableClass:
     active: false
 
 exceptions:
@@ -35,15 +43,11 @@ exceptions:
   SwallowedException:
     active: false
 
-    # Formatting contains some overlapping rules with the standard rule set -> deactivate them, so we do not get duplicate errors
-formatting:
+# Formatting contains some overlapping rules with the standard rule set -> deactivate them, so we do not get duplicate errors
+ktlint:
   NoWildcardImports: # style>WildcardImport
     active: false
   Filename: # naming>MatchingDeclarationName
-    active: false
-    #FinalNewline: # style>NewLineAtEndOfFile
-    #active: false
-  MaximumLineLength: # style>MaxLineLength
     active: false
   ModifierOrdering: # style>ModifierOrder
     active: false

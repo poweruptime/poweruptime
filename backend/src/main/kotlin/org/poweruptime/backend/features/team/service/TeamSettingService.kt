@@ -16,9 +16,7 @@ import java.time.ZoneId
 
 @Service
 @Transactional(readOnly = true)
-class TeamSettingService(
-    private val instanceSettingService: InstanceSettingService,
-) {
+class TeamSettingService(private val instanceSettingService: InstanceSettingService) {
     fun getCheckResultRetentionPeriodInDays(teamId: ULong): Int = getValueByKeyAndTeamId(
         SettingKey.CHECK_RESULT_RETENTION_PERIOD_IN_DAYS,
         teamId,
@@ -61,21 +59,18 @@ class TeamSettingService(
     )
 
     @Transactional
-    private fun setValueByKeyAndTeamId(
-        key: SettingKey,
-        teamId: ULong,
-        value: String
-    ): TeamSettingRecord {
+    private fun setValueByKeyAndTeamId(key: SettingKey, teamId: ULong, value: String): TeamSettingRecord {
         val teamSetting = TeamSetting.findValueByKeyAndTeamId(key, teamId)
-            ?: return TeamSetting.insertAndGetId {
-                it[TeamSetting.key] = key
-                it[TeamSetting.value] = value
-                it[TeamSetting.teamId] = teamId
-            }.let { id ->
-                TeamSetting.findByIdOrThrow(id.value) {
-                    TeamSetting.rowToTeamSettingRecord(it)
+            ?: return TeamSetting
+                .insertAndGetId {
+                    it[TeamSetting.key] = key
+                    it[TeamSetting.value] = value
+                    it[TeamSetting.teamId] = teamId
+                }.let { id ->
+                    TeamSetting.findByIdOrThrow(id.value) {
+                        TeamSetting.rowToTeamSettingRecord(it)
+                    }
                 }
-            }
 
         TeamSetting.update({ TeamSetting.id eq teamSetting.id }) {
             it[TeamSetting.value] = value
@@ -86,9 +81,6 @@ class TeamSettingService(
         }
     }
 
-    private fun getValueByKeyAndTeamId(
-        key: SettingKey,
-        teamId: ULong,
-        default: String,
-    ): String = TeamSetting.findValueByKeyAndTeamId(key, teamId)?.value ?: default
+    private fun getValueByKeyAndTeamId(key: SettingKey, teamId: ULong, default: String): String =
+        TeamSetting.findValueByKeyAndTeamId(key, teamId)?.value ?: default
 }

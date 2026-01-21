@@ -14,7 +14,7 @@ import java.time.ZoneId
 
 class TeamSettingsIntegrationTests(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val instanceSettingService: InstanceSettingService
+    @Autowired val instanceSettingService: InstanceSettingService,
 ) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/team/{teamId}/setting")
@@ -78,60 +78,65 @@ class TeamSettingsIntegrationTests(
     inner class UpdateTeamTimeZone {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("UTC").toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("UTC").toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if secured with team user`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("UTC").toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("UTC").toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if secured with wrong team user`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("UTC").toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("UTC").toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test invalid timezone`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("Invalid/ZoneId").toJSON()
-            }.andExpect {
-                status { isNotFound() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("Invalid/ZoneId").toJSON()
+                }.andExpect {
+                    status { isNotFound() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test success with admin`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("Europe/Berlin").toJSON()
-            }.andExpect {
-                status { isAccepted() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.timezone") { value("Europe/Berlin") }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("Europe/Berlin").toJSON()
+                }.andExpect {
+                    status { isAccepted() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        jsonPath("$.timezone") { value("Europe/Berlin") }
+                    }
                 }
-            }
         }
 
         @Test
@@ -158,27 +163,29 @@ class TeamSettingsIntegrationTests(
         @Test
         @MockUser
         fun `test success with team admin user`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("Asia/Tokyo").toJSON()
-            }.andExpect {
-                status { isAccepted() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.timezone") { value("Asia/Tokyo") }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("Asia/Tokyo").toJSON()
+                }.andExpect {
+                    status { isAccepted() }
+                    content {
+                        contentType(MediaType.APPLICATION_JSON)
+                        jsonPath("$.timezone") { value("Asia/Tokyo") }
+                    }
                 }
-            }
         }
 
         @Test
         @MockAdmin
         fun `test timezone persistence`() {
-            mockMvc.put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
-                contentType = MediaType.APPLICATION_JSON
-                content = SettingStringDto("Australia/Sydney").toJSON()
-            }.andExpect {
-                status { isAccepted() }
-            }
+            mockMvc
+                .put("/v1/team/4Lxhu5YKWPBr/setting/timezone") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = SettingStringDto("Australia/Sydney").toJSON()
+                }.andExpect {
+                    status { isAccepted() }
+                }
 
             mockMvc.get("/v1/team/4Lxhu5YKWPBr/setting").andExpect {
                 status { isOk() }

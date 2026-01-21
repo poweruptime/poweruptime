@@ -18,27 +18,25 @@ import org.poweruptime.backend.features.statusPage.model.StatusPageDomainName
 import org.poweruptime.backend.features.statusPage.model.StatusPageRecord
 import org.poweruptime.backend.features.statusPage.model.rowToStatusPageRecord
 
-fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? =
-    innerJoin(
-        StatusPageDomainName,
-        { StatusPage.id },
-        { StatusPageDomainName.statusPageId },
-    )
-        .leftJoin(File, { File.id }, { imageId })
-        .selectAll()
-        .where { StatusPageDomainName.name eq domainName }
-        .withDistinctOn(StatusPage.id)
-        .limit(1)
-        .firstOrNull()
-        ?.let {
-            rowToStatusPageRecord(it)
-        }
+fun StatusPage.findByDomainName(domainName: String): StatusPageRecord? = innerJoin(
+    StatusPageDomainName,
+    { StatusPage.id },
+    { StatusPageDomainName.statusPageId },
+).leftJoin(File, { File.id }, { imageId })
+    .selectAll()
+    .where { StatusPageDomainName.name eq domainName }
+    .withDistinctOn(StatusPage.id)
+    .limit(1)
+    .firstOrNull()
+    ?.let {
+        rowToStatusPageRecord(it)
+    }
 
 fun StatusPage.findAll(
     pageable: Pageable,
     teamId: ULong,
     name: String?,
-    deleted: Boolean = false
+    deleted: Boolean = false,
 ): Page<StatusPageRecord> {
     var condition: Op<Boolean> = StatusPage.deleted.deletedFilter(deleted) and (StatusPage.teamId eq teamId)
 
@@ -47,7 +45,8 @@ fun StatusPage.findAll(
     }
 
     val query = leftJoin(File, { imageId }, { File.id })
-        .selectAll().where(condition)
+        .selectAll()
+        .where(condition)
 
     return pageQuery(
         query,

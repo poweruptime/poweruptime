@@ -28,16 +28,15 @@ data class DeadLetterRecord(
     val updatedAt: Instant,
     val queue: String,
     val exchange: String,
-    val body: String
+    val body: String,
 )
 
-fun DeadLetter.rowToDeadLetterRecord(row: ResultRow): DeadLetterRecord =
-    DeadLetterRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        queue = row[queue],
-        exchange = row[exchange],
-        body = row[body],
-    )
+fun DeadLetter.rowToDeadLetterRecord(row: ResultRow): DeadLetterRecord = DeadLetterRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    queue = row[queue],
+    exchange = row[exchange],
+    body = row[body],
+)

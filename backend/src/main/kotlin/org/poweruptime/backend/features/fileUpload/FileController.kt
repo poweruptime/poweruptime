@@ -17,19 +17,19 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @Tag(name = "File API")
-class FileController(
-    private val fileService: FileService,
-) {
+class FileController(private val fileService: FileService) {
     @Operation(summary = "Download file")
     @GetMapping("/v1/public/file/{fileId}")
     fun serveFile(@PathVariable("fileId") fileId: String): ResponseEntity<Resource> {
         val dbFile = fileService.getByFileId(fileId)
         val file = fileService.loadAsResource(fileId).orThrowNotFound("File not found: $fileId")
 
-        return ResponseEntity.ok().header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=\"" + dbFile.name + "\"",
-        ).body(file)
+        return ResponseEntity
+            .ok()
+            .header(
+                HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + dbFile.name + "\"",
+            ).body(file)
     }
 
     @Operation(

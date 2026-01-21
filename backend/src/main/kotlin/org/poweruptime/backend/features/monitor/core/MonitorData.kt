@@ -23,8 +23,9 @@ import org.poweruptime.backend.features.monitor.model.MonitorTypes
     JsonSubTypes.Type(value = PushMonitorDataRecord::class, name = MonitorTypes.PUSH),
     JsonSubTypes.Type(value = SSLCertificateMonitorDataRecord::class, name = MonitorTypes.SSL_CERTIFICATE),
 )
+@Suppress("AbstractClassCanBeConcreteClass")
 abstract class MonitorData(
     @Suppress("PropertyName", "ConstructorParameterNaming")
     @JsonProperty("_type")
-    val _type: MonitorType
+    val _type: MonitorType,
 )

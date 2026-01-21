@@ -5,10 +5,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Service
 
 @Service
-class OAuth2ClientRegistrationService(
-    private val clientRegistrationRepository: ClientRegistrationRepository
-) {
+class OAuth2ClientRegistrationService(private val clientRegistrationRepository: ClientRegistrationRepository) {
     fun getProviders(): List<ClientRegistration> = (clientRegistrationRepository as? Iterable<*>)
         ?.filterIsInstance<ClientRegistration>()
-        ?: emptyList()
+        .orEmpty()
 }

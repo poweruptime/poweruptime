@@ -11,13 +11,9 @@ object MonitorTag : Table("monitor_tag") {
     override val primaryKey: PrimaryKey = PrimaryKey(monitorId, tagId)
 }
 
-data class MonitorTagRecord(
-    val monitorId: ULong,
-    val tagId: ULong,
-)
+data class MonitorTagRecord(val monitorId: ULong, val tagId: ULong)
 
-fun MonitorTag.rowToMonitorTagRecord(row: ResultRow): MonitorTagRecord =
-    MonitorTagRecord(
-        monitorId = row[monitorId],
-        tagId = row[tagId],
-    )
+fun MonitorTag.rowToMonitorTagRecord(row: ResultRow): MonitorTagRecord = MonitorTagRecord(
+    monitorId = row[monitorId],
+    tagId = row[tagId],
+)

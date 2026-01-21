@@ -22,18 +22,16 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
-open class SetupCompletedException : ForbiddenException(
-    "Setup is already completed.",
-    "SETUP_COMPLETED",
-)
+open class SetupCompletedException :
+    ForbiddenException(
+        "Setup is already completed.",
+        "SETUP_COMPLETED",
+    )
 
 @RestController
 @RequestMapping("/v1/public/setup")
 @Tag(name = "Setup API")
-class SetupController(
-    private val userService: UserService,
-    private val emailService: SystemEmailService,
-) {
+class SetupController(private val userService: UserService, private val emailService: SystemEmailService) {
     private val setupCode = RandomGenerator.int(111111, 999999).toString()
 
     @Operation(

@@ -130,9 +130,9 @@ class NotificationMethodController(
         @PathVariable(
             "id",
         ) publicId: String,
-        @RequestBody @Valid cloneDto: CloneDto
-    ): NotificationMethodResponse =
-        notificationMethodService.clone(
+        @RequestBody @Valid cloneDto: CloneDto,
+    ): NotificationMethodResponse = notificationMethodService
+        .clone(
             publicId,
             cloneDto.teamId?.let { teamService.getIdByPublicId(it) },
         ).toResponse()
@@ -157,13 +157,13 @@ class NotificationMethodController(
     @PreAuthorize("hasPermission(#publicId, '$NOTIFICATION_METHOD_ADMIN')")
     @DeleteMapping("/{id}/undo")
     @ResponseStatus(HttpStatus.OK)
-    fun undelete(@PathVariable("id") publicId: String): NotificationMethodResponse =
-        notificationMethodService.undeleteById(
+    fun undelete(@PathVariable("id") publicId: String): NotificationMethodResponse = notificationMethodService
+        .undeleteById(
             notificationMethodService.getIdByPublicId(publicId, includeDeleted = true),
         ).toResponse()
 
     private fun NotificationMethodWithDataRecord.toResponse(
-        usedByMonitors: List<MonitorRecord> = monitorService.getByNotificationMethodId(notificationMethod.id)
+        usedByMonitors: List<MonitorRecord> = monitorService.getByNotificationMethodId(notificationMethod.id),
     ) = NotificationMethodResponse(
         notificationMethod = notificationMethod,
         data = data,
@@ -172,7 +172,7 @@ class NotificationMethodController(
 
     private fun NotificationMethodRecord.toResponse(
         data: NotificationMethodData = notificationMethodDataService.findByIdAndType(this.id, this.type),
-        usedByMonitors: List<MonitorRecord> = monitorService.getByNotificationMethodId(this.id)
+        usedByMonitors: List<MonitorRecord> = monitorService.getByNotificationMethodId(this.id),
     ) = NotificationMethodResponse(
         notificationMethod = this,
         data = data,

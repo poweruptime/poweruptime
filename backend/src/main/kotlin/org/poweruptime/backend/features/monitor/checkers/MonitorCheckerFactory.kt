@@ -12,10 +12,7 @@ import org.poweruptime.backend.features.team.service.TeamSettingService
 import org.springframework.stereotype.Service
 
 @Service
-class MonitorCheckerFactory(
-    teamSettingService: TeamSettingService,
-    val monitorDataService: MonitorDataService,
-) {
+class MonitorCheckerFactory(teamSettingService: TeamSettingService, val monitorDataService: MonitorDataService) {
     private val checkers = listOf(
         DnsMonitorChecker(),
         HttpMonitorChecker(teamSettingService),

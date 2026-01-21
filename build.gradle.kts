@@ -1,5 +1,6 @@
 import dev.detekt.gradle.Detekt
 import dev.detekt.gradle.report.ReportMergeTask
+import org.gradle.kotlin.dsl.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.time.Instant
@@ -21,8 +22,6 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.kotlinx.kover") version "0.9.4"
-
     id("org.springframework.boot") version "4.0.1" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
@@ -31,10 +30,6 @@ plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
-}
-
-val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
-    output = layout.buildDirectory.file("reports/detekt/merge.sarif")
 }
 
 allprojects {
@@ -48,16 +43,14 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.1")
     }
 
     tasks.withType<Detekt>().configureEach {
         parallel = true
         reports {
             html.required = true
-            sarif.required = true
         }
-        finalizedBy(detektReportMergeSarif)
         jvmTarget = "24"
     }
 }
@@ -67,7 +60,6 @@ subprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    apply(plugin = "org.jetbrains.kotlinx.kover")
 
     repositories {
         mavenCentral()
@@ -90,32 +82,6 @@ subprojects {
         imports {
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.0")
         }
-    }
-}
-
-/**
- * Setup coverage report
- */
-tasks.register<TotalCoverageTask>("totalCoverage") {
-    dependsOn("koverXmlReport")
-}
-
-abstract class TotalCoverageTask : DefaultTask() {
-    @TaskAction
-    fun calculateTotalCoverage() = try {
-        val coverageLine = File("backend/build/reports/kover/report.xml")
-            .readLines()
-            .dropLastWhile { !it.contains("\"INSTRUCTION\"") }
-            .last()
-
-        val coverRegex = Regex("missed=\"(\\d+)\" covered=\"(\\d+)\"")
-        val (missed, covered) = coverRegex.find(coverageLine)!!.groupValues.drop(1).map(String::toInt)
-
-        val coverage = ((covered * 10_000) / (missed + covered)).toString().padStart(4, '0')
-
-        println("Total-Test-Coverage-${coverage.take(2).toInt()}.${coverage.takeLast(2).toInt()}")
-    } catch (e: Throwable) {
-        println("Calculation of test-coverage failed: ${e.stackTraceToString()}")
     }
 }
 

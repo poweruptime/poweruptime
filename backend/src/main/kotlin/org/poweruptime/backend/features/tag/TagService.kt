@@ -12,29 +12,26 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class TagService {
-
-    fun getByMonitorId(monitorIds: List<ULong>): Map<ULong, List<TagRecord>> =
-        Tag.findByMonitorId(monitorIds)
-            .groupBy { it.monitorTag.monitorId }
-            .mapValues {
-                it.value.map { tagJoinMonitor -> tagJoinMonitor.tag }
-            }
+    fun getByMonitorId(monitorIds: List<ULong>): Map<ULong, List<TagRecord>> = Tag
+        .findByMonitorId(monitorIds)
+        .groupBy { it.monitorTag.monitorId }
+        .mapValues {
+            it.value.map { tagJoinMonitor -> tagJoinMonitor.tag }
+        }
 
     fun getByMonitorId(monitorId: ULong): List<TagRecord> = Tag.findByMonitorId(monitorId)
 
     @Transactional
-    fun getByTeamIdAndNames(
-        teamId: ULong,
-        unsafeTags: List<TagDto>
-    ): List<TagRecord> {
+    @Suppress("MapGetWithNotNullAssertionOperator")
+    fun getByTeamIdAndNames(teamId: ULong, unsafeTags: List<TagDto>): List<TagRecord> {
         val tags = unsafeTags.distinctBy { it.name }
 
         // 1) fetch all existing tags for this team & name set
-        val existingByName = Tag.findByTeamIdAndNames(
-            teamId,
-            tags.map(TagDto::name),
-        )
-            .associateBy(TagRecord::name)
+        val existingByName = Tag
+            .findByTeamIdAndNames(
+                teamId,
+                tags.map(TagDto::name),
+            ).associateBy(TagRecord::name)
 
         // 2) index DTOs by name for quick lookup
         val tagDtosByName = tags.associateBy(TagDto::name)
@@ -44,8 +41,7 @@ class TagService {
             .filter { tag ->
                 val dto = tagDtosByName[tag.name]!!
                 tag.variant != dto.variant
-            }
-            .onEach { tag ->
+            }.onEach { tag ->
                 val dto = tagDtosByName[tag.name]!!
                 tag.variant = dto.variant
             }.map { tag ->
@@ -87,7 +83,7 @@ class TagService {
         teamId: ULong?,
         userId: ULong?,
         name: String?,
-        deleted: Boolean = false
+        deleted: Boolean = false,
     ): Page<TagRecord> = Tag.findAll(
         pageable = pageable,
         teamId = teamId,

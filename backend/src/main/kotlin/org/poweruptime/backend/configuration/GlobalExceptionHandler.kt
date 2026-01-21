@@ -31,10 +31,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     private final val puLogger = KotlinLogging.logger {}
 
     @ExceptionHandler(HttpException::class)
-    fun handleHttpException(
-        ex: HttpException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
+    fun handleHttpException(ex: HttpException, request: WebRequest): ResponseEntity<ErrorPayload> {
         val payload = ErrorPayload(
             message = ex.message,
             code = ex.httpCode,
@@ -45,10 +42,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @Suppress("UnusedParameter")
     @ExceptionHandler(BadCredentialsException::class)
-    fun handleBadCredentialsException(
-        ex: BadCredentialsException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
+    fun handleBadCredentialsException(ex: BadCredentialsException, request: WebRequest): ResponseEntity<ErrorPayload> {
         val payload = ErrorPayload(
             message = ex.message ?: ex.cause?.message ?: "Bad credentials",
             code = HttpStatus.UNAUTHORIZED.value(),
@@ -59,27 +53,16 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @Suppress("UnusedParameter")
     @ExceptionHandler(CredentialsExpiredException::class)
-    fun handleCredentialsExpired(
-        ex: CredentialsExpiredException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
-        return buildResponse(PasswordChangeRequiredException(), request)
-    }
+    fun handleCredentialsExpired(ex: CredentialsExpiredException, request: WebRequest): ResponseEntity<ErrorPayload> =
+        buildResponse(PasswordChangeRequiredException(), request)
 
     @Suppress("UnusedParameter")
     @ExceptionHandler(LockedException::class)
-    fun handleAccountLocked(
-        ex: LockedException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
-        return buildResponse(AccountNotActivatedException(), request)
-    }
+    fun handleAccountLocked(ex: LockedException, request: WebRequest): ResponseEntity<ErrorPayload> =
+        buildResponse(AccountNotActivatedException(), request)
 
     @ExceptionHandler(InvocationTargetException::class)
-    fun handleInvocationTarget(
-        ex: InvocationTargetException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
+    fun handleInvocationTarget(ex: InvocationTargetException, request: WebRequest): ResponseEntity<ErrorPayload> {
         val payload = ErrorPayload(
             message = ex.message ?: ex.cause?.message ?: "Invocation failure",
             code = HttpStatus.NOT_FOUND.value(),
@@ -92,7 +75,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         ex: MethodArgumentNotValidException,
         headers: HttpHeaders,
         status: HttpStatusCode,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val violations = ex.bindingResult.fieldErrors.mapNotNull { it.defaultMessage }
         val payload = ValidationErrorPayload(
@@ -105,10 +88,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDenied(
-        ex: AccessDeniedException,
-        request: WebRequest
-    ): ResponseEntity<ErrorPayload> {
+    fun handleAccessDenied(ex: AccessDeniedException, request: WebRequest): ResponseEntity<ErrorPayload> {
         val payload = ErrorPayload(
             message = "Insufficient permission",
             code = HttpStatus.FORBIDDEN.value(),
@@ -127,21 +107,19 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return buildResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, payload, request)
     }
 
-    private fun buildResponse(
-        httpException: HttpException,
-        webRequest: WebRequest
-    ): ResponseEntity<ErrorPayload> = buildResponse(
-        httpException,
-        httpException.httpStatus,
-        ErrorPayload(httpException),
-        webRequest,
-    )
+    private fun buildResponse(httpException: HttpException, webRequest: WebRequest): ResponseEntity<ErrorPayload> =
+        buildResponse(
+            httpException,
+            httpException.httpStatus,
+            ErrorPayload(httpException),
+            webRequest,
+        )
 
     private fun <T : Any> buildResponse(
         ex: Exception,
         status: HttpStatusCode,
         body: T,
-        webRequest: WebRequest
+        webRequest: WebRequest,
     ): ResponseEntity<T> {
         val servletReq = (webRequest as ServletWebRequest).request
         puLogger.warn {

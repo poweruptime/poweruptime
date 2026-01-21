@@ -34,15 +34,16 @@ class RateLimitEnabledIntegrationTest(
             }
         }
 
-        mvc.post("/v1/auth/login") {
-            content = LoginDto(
-                email = "admin@admin.org",
-                password = "admin",
-            ).toJSON()
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isTooManyRequests() }
-        }
+        mvc
+            .post("/v1/auth/login") {
+                content = LoginDto(
+                    email = "admin@admin.org",
+                    password = "admin",
+                ).toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                status { isTooManyRequests() }
+            }
     }
 }
 
@@ -59,15 +60,16 @@ class RateLimitDisabledIntegrationTest(
     @Test
     fun `check if rate limit is disabled`() {
         repeat((rateLimitTries + 2).toInt()) {
-            mvc.post("/v1/auth/login") {
-                content = LoginDto(
-                    email = "admin@admin.org",
-                    password = "admin1234",
-                ).toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isOk() }
-            }
+            mvc
+                .post("/v1/auth/login") {
+                    content = LoginDto(
+                        email = "admin@admin.org",
+                        password = "admin1234",
+                    ).toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isOk() }
+                }
         }
     }
 }

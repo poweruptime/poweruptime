@@ -36,33 +36,31 @@ data class TeamUserRecord(
     val teamId: ULong,
     val userId: ULong,
     val inviterId: ULong?,
-    val role: TeamRole
+    val role: TeamRole,
 )
 
-fun TeamUser.rowToTeamUserRecord(row: ResultRow): TeamUserRecord =
-    TeamUserRecord(
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        teamId = row[teamId],
-        userId = row[userId],
-        inviterId = row[inviterId],
-        role = row[role],
-    )
+fun TeamUser.rowToTeamUserRecord(row: ResultRow): TeamUserRecord = TeamUserRecord(
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    teamId = row[teamId],
+    userId = row[userId],
+    inviterId = row[inviterId],
+    role = row[role],
+)
 
 data class TeamUserJoinUserAndInviterRecord(
     val user: UserRecord,
     val inviter: UserRecord?,
-    val teamUser: TeamUserRecord
+    val teamUser: TeamUserRecord,
 )
 
 @Suppress("SENSELESS_COMPARISON")
 fun TeamUser.rowToTeamUserJoinUserAndInviterRecord(
     row: ResultRow,
     userAlias: Alias<User>,
-    inviterAlias: Alias<User>
-): TeamUserJoinUserAndInviterRecord =
-    TeamUserJoinUserAndInviterRecord(
-        user = User.rowToUserRecord(row, userAlias),
-        inviter = if (row[inviterAlias[User.id]] != null) User.rowToUserRecord(row, inviterAlias) else null,
-        teamUser = rowToTeamUserRecord(row),
-    )
+    inviterAlias: Alias<User>,
+): TeamUserJoinUserAndInviterRecord = TeamUserJoinUserAndInviterRecord(
+    user = User.rowToUserRecord(row, userAlias),
+    inviter = if (row[inviterAlias[User.id]] != null) User.rowToUserRecord(row, inviterAlias) else null,
+    teamUser = rowToTeamUserRecord(row),
+)

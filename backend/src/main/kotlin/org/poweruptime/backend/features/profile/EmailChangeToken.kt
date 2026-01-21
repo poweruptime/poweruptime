@@ -35,13 +35,12 @@ data class EmailChangeTokenRecord(
     val oldEmail: String,
 )
 
-fun EmailChangeToken.rowToEmailChangeTokenRecord(row: ResultRow): EmailChangeTokenRecord =
-    EmailChangeTokenRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        userId = row[userId],
-        email = row[email],
-        oldEmail = row[oldEmail],
-    )
+fun EmailChangeToken.rowToEmailChangeTokenRecord(row: ResultRow): EmailChangeTokenRecord = EmailChangeTokenRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    userId = row[userId],
+    email = row[email],
+    oldEmail = row[oldEmail],
+)

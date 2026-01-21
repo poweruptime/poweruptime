@@ -30,24 +30,22 @@ fun <IdType : Any, X> IdTable<IdType>.findAll(rowToRecordConverter: RowToRecordC
 
 fun <IdType : Any, X> IdTable<IdType>.findById(
     ids: Iterable<IdType>,
-    rowToRecordConverter: RowToRecordConverter<X>
+    rowToRecordConverter: RowToRecordConverter<X>,
 ): List<X> = selectAll().where { id inList ids }.map { rowToRecordConverter(it) }
 
-fun <IdType : Any, X> IdTable<IdType>.findById(
-    idValue: IdType,
-    rowToRecordConverter: RowToRecordConverter<X>
-): X? = selectAll().where { id eq idValue }.limit(1).firstOrNull()?.let {
-    rowToRecordConverter(it)
-}
+fun <IdType : Any, X> IdTable<IdType>.findById(idValue: IdType, rowToRecordConverter: RowToRecordConverter<X>): X? =
+    selectAll().where { id eq idValue }.limit(1).firstOrNull()?.let {
+        rowToRecordConverter(it)
+    }
 
 fun <IdType : Any, X> IdTable<IdType>.findByIdOrThrow(
     idValue: IdType,
-    rowToRecordConverter: RowToRecordConverter<X>
+    rowToRecordConverter: RowToRecordConverter<X>,
 ): X = findById(idValue, rowToRecordConverter) ?: throw NotFoundException("${javaClass.simpleName} not found")
 
 fun <IdType : Any, X> IdTable<IdType>.findByIdOrThrow(
     ids: List<IdType>,
-    rowToRecordConverter: RowToRecordConverter<X>
+    rowToRecordConverter: RowToRecordConverter<X>,
 ): List<X> {
     val entities = findById(ids, rowToRecordConverter)
     if (entities.size != ids.size) {
@@ -59,27 +57,33 @@ fun <IdType : Any, X> IdTable<IdType>.findByIdOrThrow(
 fun <IdType : Any> IdTable<IdType>.count(): Long = selectAll().count()
 
 fun <IdType : Any> IdTable<IdType>.deleteById(idValue: IdType): Int = deleteWhere { id eq idValue }
+
 fun <IdType : Any> IdTable<IdType>.deleteById(ids: Iterable<IdType>): Int = deleteWhere { id inList ids }
+
 fun <IdType : Any> IdTable<IdType>.deleteAll(): Int = deleteAll()
 
 // Public ID
 fun <TableType, X> TableType.findByPublicId(
     publicIdValue: String,
     rowToRecordConverter: RowToRecordConverter<X>,
-): X? where TableType : Table, TableType : HasPublicId = selectAll().where {
-    publicId eq publicIdValue
-}.limit(1).firstOrNull()?.let {
-    rowToRecordConverter(it)
-}
+): X? where TableType : Table, TableType : HasPublicId = selectAll()
+    .where {
+        publicId eq publicIdValue
+    }.limit(1)
+    .firstOrNull()
+    ?.let {
+        rowToRecordConverter(it)
+    }
 
 fun <TableType, X> TableType.findByPublicId(
     publicIdValue: List<String>,
     rowToRecordConverter: RowToRecordConverter<X>,
-): List<X> where TableType : Table, TableType : HasPublicId = selectAll().where {
-    publicId inList publicIdValue
-}.map {
-    rowToRecordConverter(it)
-}
+): List<X> where TableType : Table, TableType : HasPublicId = selectAll()
+    .where {
+        publicId inList publicIdValue
+    }.map {
+        rowToRecordConverter(it)
+    }
 
 fun <TableType, X> TableType.findByPublicIdOrThrow(
     publicId: String,
@@ -89,11 +93,15 @@ fun <TableType, X> TableType.findByPublicIdOrThrow(
 
 fun <TableType, X> TableType.findIdByPublicId(
     publicIdValue: String,
-): X? where TableType : IdTable<X>, TableType : HasPublicId = select(id).where {
-    publicId eq publicIdValue
-}.limit(1).firstOrNull()?.let {
-    it[id].value
-}
+): X? where TableType : IdTable<X>, TableType : HasPublicId = select(id)
+    .where {
+        publicId eq publicIdValue
+    }.limit(1)
+    .firstOrNull()
+    ?.let {
+        it[id].value
+    }
+
 fun <TableType, X> TableType.findIdByPublicIdOrThrow(
     publicId: String,
 ): X where TableType : IdTable<X>, TableType : HasPublicId =
@@ -101,11 +109,12 @@ fun <TableType, X> TableType.findIdByPublicIdOrThrow(
 
 fun <TableType, X> TableType.findIdsByPublicIds(
     publicIds: Iterable<String>,
-): List<X> where TableType : IdTable<X>, TableType : HasPublicId = select(id).where {
-    publicId inList publicIds
-}.map {
-    it[id].value
-}
+): List<X> where TableType : IdTable<X>, TableType : HasPublicId = select(id)
+    .where {
+        publicId inList publicIds
+    }.map {
+        it[id].value
+    }
 
 fun <TableType, X> TableType.findIdsByPublicIdsOrThrow(
     publicIds: List<String>,

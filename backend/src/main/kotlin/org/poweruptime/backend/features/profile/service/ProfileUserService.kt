@@ -14,11 +14,17 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class ProfileUserService {
     @Transactional
-    fun updateEmail(id: ULong, email: String): UserRecord = User.update({ User.id eq id }) {
-        it[User.email] = email
-    }.let {
-        User.selectAll().where { User.id eq id }.limit(1).firstOrNull()?.let {
-            User.rowToUserRecord(it)
-        }.orThrowNotFound()
-    }
+    fun updateEmail(id: ULong, email: String): UserRecord = User
+        .update({ User.id eq id }) {
+            it[User.email] = email
+        }.let {
+            User
+                .selectAll()
+                .where { User.id eq id }
+                .limit(1)
+                .firstOrNull()
+                ?.let {
+                    User.rowToUserRecord(it)
+                }.orThrowNotFound()
+        }
 }

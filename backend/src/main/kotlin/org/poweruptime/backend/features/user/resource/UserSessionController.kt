@@ -20,11 +20,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/v1/user/session")
 @Tag(name = "User Session API")
-class UserSessionController(
-    val sessionService: SessionService,
-    val userService: UserService,
-) {
-
+class UserSessionController(val sessionService: SessionService, val userService: UserService) {
     @Operation(
         summary = "Get sessions of user",
         security = [SecurityRequirement(name = BEARER_AUTH)],
@@ -36,10 +32,11 @@ class UserSessionController(
     fun getSessions(
         @ParameterObject pageable: Pageable,
         @RequestParam("userId") userId: String,
-    ): PaginatedResponse<SessionResponse> = sessionService.getAllPaginated(
-        pageable = pageable,
-        userId = userService.getIdByPublicId(userId),
-    ).toDto { SessionResponse(it) }
+    ): PaginatedResponse<SessionResponse> = sessionService
+        .getAllPaginated(
+            pageable = pageable,
+            userId = userService.getIdByPublicId(userId),
+        ).toDto { SessionResponse(it) }
 
     @Operation(
         summary = "Invalidate session of user",

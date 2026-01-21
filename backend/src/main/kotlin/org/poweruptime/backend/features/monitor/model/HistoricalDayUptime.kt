@@ -27,12 +27,7 @@ object HistoricalDayUptime : ULongIdTable("historical_day_uptime") {
     }
 }
 
-data class HistoricalDayUptimeRecord(
-    val id: ULong,
-    val monitorId: ULong,
-    val date: LocalDate,
-    val uptime: BigDecimal
-)
+data class HistoricalDayUptimeRecord(val id: ULong, val monitorId: ULong, val date: LocalDate, val uptime: BigDecimal)
 
 fun HistoricalDayUptime.rowToHistoricalDayUptimeRecord(row: ResultRow): HistoricalDayUptimeRecord =
     HistoricalDayUptimeRecord(

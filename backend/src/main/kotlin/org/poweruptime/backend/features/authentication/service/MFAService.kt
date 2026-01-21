@@ -32,10 +32,7 @@ import kotlin.jvm.Throws
 
 @Service
 @Transactional(readOnly = true)
-class MFAService(
-    private val passwordEncoder: PasswordEncoder,
-    private val systemEmailService: SystemEmailService,
-) {
+class MFAService(private val passwordEncoder: PasswordEncoder, private val systemEmailService: SystemEmailService) {
     fun findById(id: ULong): MFARecord? = MFA.findById(id) {
         MFA.rowToMFARecord(it)
     }
@@ -47,35 +44,36 @@ class MFAService(
     @Throws(MFACodeIncorrectException::class, MFACodeRequiredException::class)
     @Transactional
     fun validate(user: UserRecord, code: String?) {
-        user.mfaId?.let {
-            findById(it)
-        }?.let { mfa ->
-            if (!mfa.active) {
-                return
-            }
+        user.mfaId
+            ?.let {
+                findById(it)
+            }?.let { mfa ->
+                if (!mfa.active) {
+                    return
+                }
 
-            if (code == null) {
-                throw MFACodeRequiredException()
-            }
+                if (code == null) {
+                    throw MFACodeRequiredException()
+                }
 
-            if (!isValid(mfa.secret, code)) {
-                val backupCodes = MFABackupCode.findByMFAId(mfa.id)
-                val backupCode = backupCodes.matches(rawCode = code) ?: throw MFACodeIncorrectException()
+                if (!isValid(mfa.secret, code)) {
+                    val backupCodes = MFABackupCode.findByMFAId(mfa.id)
+                    val backupCode = backupCodes.matches(rawCode = code) ?: throw MFACodeIncorrectException()
 
-                MFABackupCode.invalidateCodeById(backupCode.id)
+                    MFABackupCode.invalidateCodeById(backupCode.id)
 
-                val remainingBackupCodes = backupCodes.size - 1
+                    val remainingBackupCodes = backupCodes.size - 1
 
-                if (remainingBackupCodes < 5) {
-                    systemEmailService.queueEmail(
-                        MFALowBackupCodesEmail(
-                            user = user,
-                            backupCodesCount = remainingBackupCodes,
-                        ),
-                    )
+                    if (remainingBackupCodes < 5) {
+                        systemEmailService.queueEmail(
+                            MFALowBackupCodesEmail(
+                                user = user,
+                                backupCodesCount = remainingBackupCodes,
+                            ),
+                        )
+                    }
                 }
             }
-        }
     }
 
     @Transactional
@@ -143,10 +141,9 @@ class MFAService(
         return GoogleAuthenticator(base32secret = base32EncodedSecret).isValid(code)
     }
 
-    private fun List<MFABackupCodeRecord>.matches(rawCode: String): MFABackupCodeRecord? =
-        filter {
-            it.valid
-        }.find {
-            passwordEncoder.matches(rawCode, it.codeHash)
-        }
+    private fun List<MFABackupCodeRecord>.matches(rawCode: String): MFABackupCodeRecord? = filter {
+        it.valid
+    }.find {
+        passwordEncoder.matches(rawCode, it.codeHash)
+    }
 }

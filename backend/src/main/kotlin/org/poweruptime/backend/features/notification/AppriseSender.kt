@@ -110,51 +110,46 @@ class AppriseSender(
         )
     }
 
-    private fun buildAppriseUrl(
-        dto: NotificationMethodDataAppriseDto,
-        type: NotificationMethodType,
-    ): String = buildString {
-        append(dto.url)
-        append("?footer=no&image=no&format=${mapFormatType(type.bodyType).value}")
-        dto.extras?.forEach { (k, v) -> append("&$k=$v") }
-    }
+    private fun buildAppriseUrl(dto: NotificationMethodDataAppriseDto, type: NotificationMethodType): String =
+        buildString {
+            append(dto.url)
+            append("?footer=no&image=no&format=${mapFormatType(type.bodyType).value}")
+            dto.extras?.forEach { (k, v) -> append("&$k=$v") }
+        }
 
-    private fun convertBody(body: String, type: NotificationMethodType): String =
-        HtmlConverterFactory()
-            .getConverter(type.bodyType)
-            .convert(body)
+    private fun convertBody(body: String, type: NotificationMethodType): String = HtmlConverterFactory()
+        .getConverter(type.bodyType)
+        .convert(body)
 
-    private fun mapStatusToNotificationType(
-        status: MonitorStatus,
-    ): AppriseNotificationType = when (status) {
+    private fun mapStatusToNotificationType(status: MonitorStatus): AppriseNotificationType = when (status) {
         MonitorStatus.UP -> AppriseNotificationType.INFO
         MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
         else -> throw IllegalArgumentException("Invalid status: $status")
     }
 
-    private fun mapFormatType(
-        templateType: NotificationMethodTemplateType,
-    ): AppriseNotificationFormat = when (templateType) {
-        NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
-        NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
-        NotificationMethodTemplateType.MARKDOWN,
-        NotificationMethodTemplateType.MRKDWN -> AppriseNotificationFormat.MARKDOWN
-    }
+    private fun mapFormatType(templateType: NotificationMethodTemplateType): AppriseNotificationFormat =
+        when (templateType) {
+            NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+            NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+            NotificationMethodTemplateType.MARKDOWN,
+            NotificationMethodTemplateType.MRKDWN,
+            -> AppriseNotificationFormat.MARKDOWN
+        }
 
     private fun renderTemplate(
         join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
-    ): NotificationTemplate =
-        notificationTemplateService.getRenderedNotification(
-            join,
-            previousOppositeCheckResult = checkResultService
-                .getLastOppositeByMonitorIdAndStatus(
-                    join.notification.monitorId,
-                    join.notification.status,
-                ),
-        )
+    ): NotificationTemplate = notificationTemplateService.getRenderedNotification(
+        join,
+        previousOppositeCheckResult = checkResultService
+            .getLastOppositeByMonitorIdAndStatus(
+                join.notification.monitorId,
+                join.notification.status,
+            ),
+    )
 
     private fun sendToApprise(request: AppriseNotificationRequest): String? = try {
-        restClient.post()
+        restClient
+            .post()
             .uri("$appriseUrl/notify")
             .contentType(MediaType.APPLICATION_JSON)
             .body(request.toJSON())

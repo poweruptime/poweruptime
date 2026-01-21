@@ -7,10 +7,7 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 
 class SlackNotificationMethodDataAppriseConverter :
     NotificationMethodDataAppriseConverter(NotificationMethodType.SLACK) {
-
-    override fun convert(
-        notificationMethodData: NotificationMethodData,
-    ): NotificationMethodDataAppriseDto {
+    override fun convert(notificationMethodData: NotificationMethodData): NotificationMethodDataAppriseDto {
         val data = notificationMethodData as SlackNotificationMethodDataRecord
 
         return NotificationMethodDataAppriseDto(

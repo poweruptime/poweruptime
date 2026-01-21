@@ -22,10 +22,7 @@ import kotlin.jvm.Throws
 
 @Service
 @Transactional(readOnly = true)
-class AuthService(
-    private val passwordEncoder: PasswordEncoder,
-    private val systemEmailService: SystemEmailService,
-) {
+class AuthService(private val passwordEncoder: PasswordEncoder, private val systemEmailService: SystemEmailService) {
     data class AuthDetails(val user: UserRecord) : UserDetails {
         override fun getUsername(): String = user.publicId
 
@@ -46,16 +43,21 @@ class AuthService(
     fun getUserDetailsByPublicId(publicId: String): AuthDetails = AuthDetails(getByPublicId(publicId))
 
     @Transactional
-    fun updateCredentials(userId: ULong, credentials: String, forcePasswordChange: Boolean? = null): UserRecord =
-        User.update({ User.id eq userId }) {
+    fun updateCredentials(userId: ULong, credentials: String, forcePasswordChange: Boolean? = null): UserRecord = User
+        .update({ User.id eq userId }) {
             it[User.passwordHash] = passwordEncoder.encode(credentials)!!
             if (forcePasswordChange != null) {
                 it[User.forcePasswordChange] = forcePasswordChange
             }
         }.let {
-            User.selectAll().where { User.id eq userId }.limit(1).firstOrNull()?.let {
-                User.rowToUserRecord(it)
-            }.orThrowNotFound()
+            User
+                .selectAll()
+                .where { User.id eq userId }
+                .limit(1)
+                .firstOrNull()
+                ?.let {
+                    User.rowToUserRecord(it)
+                }.orThrowNotFound()
         }.also {
             systemEmailService.queueEmail(PasswordChangedEmail(it))
         }
@@ -73,8 +75,7 @@ class AuthService(
         .selectAll()
         .where {
             User.publicId eq publicId
-        }
-        .limit(1)
+        }.limit(1)
         .firstOrNull()
         ?.let {
             User.rowToUserRecord(it)
@@ -82,8 +83,10 @@ class AuthService(
 }
 
 fun Authentication.publicUserId(): String = name
+
 fun Authentication.isAdmin(): Boolean = authorities.any { it == SystemRole.ADMIN.grantedAuthority }
 
 // Not safe in Authentication logic
 fun Authentication.user(): UserRecord = (principal as AuthService.AuthDetails).user
+
 fun Authentication.userId(): ULong = user().id

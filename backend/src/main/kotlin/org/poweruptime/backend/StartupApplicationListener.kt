@@ -27,7 +27,6 @@ class StartupApplicationListener(
     @Value(Config.NOTIFICATION_TEMP_ENABLED) private val tempNotificationsEnabled: Boolean = false,
     @Value(Config.MONITOR_AUTOSTART_ENABLED) private val monitorAutostartEnabled: Boolean = true,
 ) : ApplicationListener<ContextRefreshedEvent> {
-
     private final val logger = KotlinLogging.logger {}
 
     override fun onApplicationEvent(event: ContextRefreshedEvent) {

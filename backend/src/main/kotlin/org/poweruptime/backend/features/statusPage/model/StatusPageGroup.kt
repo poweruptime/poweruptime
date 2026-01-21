@@ -36,14 +36,13 @@ data class StatusPageGroupRecord(
     val description: String?,
 )
 
-fun StatusPageGroup.rowToStatusPageGroupRecord(row: ResultRow): StatusPageGroupRecord =
-    StatusPageGroupRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        name = row[name],
-        position = row[position],
-        statusPageId = row[statusPageId],
-        description = row[description],
-    )
+fun StatusPageGroup.rowToStatusPageGroupRecord(row: ResultRow): StatusPageGroupRecord = StatusPageGroupRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    name = row[name],
+    position = row[position],
+    statusPageId = row[statusPageId],
+    description = row[description],
+)

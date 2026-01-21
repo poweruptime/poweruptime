@@ -37,18 +37,17 @@ data class CheckResultLogEntryRecord(
     val stage: CheckResultLogStage,
     val level: CheckResultLogEntryLevel,
     val message: String,
-    val properties: Map<String, String>?
+    val properties: Map<String, String>?,
 )
 
-fun CheckResultLogEntry.rowToCheckResultLogEntry(row: ResultRow): CheckResultLogEntryRecord =
-    CheckResultLogEntryRecord(
-        id = row[id].value,
-        publicId = row[publicId],
-        createdAt = row[createdAt],
-        updatedAt = row[updatedAt],
-        checkResultId = row[checkResultId],
-        stage = row[stage],
-        level = row[level],
-        message = row[message],
-        properties = row[properties],
-    )
+fun CheckResultLogEntry.rowToCheckResultLogEntry(row: ResultRow): CheckResultLogEntryRecord = CheckResultLogEntryRecord(
+    id = row[id].value,
+    publicId = row[publicId],
+    createdAt = row[createdAt],
+    updatedAt = row[updatedAt],
+    checkResultId = row[checkResultId],
+    stage = row[stage],
+    level = row[level],
+    message = row[message],
+    properties = row[properties],
+)

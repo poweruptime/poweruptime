@@ -7,11 +7,12 @@ import org.poweruptime.backend.features.authentication.model.MFABackupCode
 import org.poweruptime.backend.features.authentication.model.MFABackupCodeRecord
 import org.poweruptime.backend.features.authentication.model.rowToMFABackupCodeRecord
 
-fun MFABackupCode.findByMFAId(mfaId: ULong): List<MFABackupCodeRecord> = selectAll().where {
-    MFABackupCode.mfaId eq mfaId
-}.map {
-    rowToMFABackupCodeRecord(it)
-}
+fun MFABackupCode.findByMFAId(mfaId: ULong): List<MFABackupCodeRecord> = selectAll()
+    .where {
+        MFABackupCode.mfaId eq mfaId
+    }.map {
+        rowToMFABackupCodeRecord(it)
+    }
 
 fun MFABackupCode.invalidateCodeById(id: ULong) = update({ MFABackupCode.id eq id }) {
     it[valid] = false

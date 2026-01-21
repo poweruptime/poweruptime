@@ -20,10 +20,7 @@ import org.poweruptime.backend.features.team.dto.TeamMinResponse
 import org.poweruptime.backend.features.team.model.TeamRecord
 import java.time.Instant
 
-data class PublicMonitorStatistics(
-    val uptime: PublicUptimeStatistics,
-    val ping: PublicPingStatistics,
-)
+data class PublicMonitorStatistics(val uptime: PublicUptimeStatistics, val ping: PublicPingStatistics)
 
 data class PublicPingStatistics(
     val oneHour: PingAnalysis?,
@@ -104,12 +101,7 @@ data class MonitorDashboardResponse(
     constructor() : this(0, 0, 0, 0, 0)
 }
 
-data class MonitorMinResponse(
-    val name: String,
-    val id: String,
-    val type: MonitorType,
-    val status: MonitorStatus,
-) {
+data class MonitorMinResponse(val name: String, val id: String, val type: MonitorType, val status: MonitorStatus) {
     constructor(
         it: MonitorRecord,
     ) : this(
@@ -134,7 +126,7 @@ data class MonitorResponse(
         monitor: MonitorRecord,
         team: TeamRecord,
         tags: List<TagRecord>,
-        oneDayUptime: String?
+        oneDayUptime: String?,
     ) : this(
         name = monitor.name,
         id = monitor.publicId,
@@ -217,7 +209,7 @@ data class MonitorFullResponse(
         tags: List<TagRecord>,
         statistics: PublicMonitorStatistics,
         lastCheckResults: List<CheckResultRecord>,
-        oneDayUptime: String?
+        oneDayUptime: String?,
     ) : this(
         name = monitor.name,
         id = monitor.publicId,
@@ -245,8 +237,7 @@ data class CreateMonitorDto(
     val description: String?,
     @get:NotNull @get:Min(
         Database.MIN_TEST_INTERVAL_SECONDS,
-    ) @get:Max(Database.MAX_TEST_INTERVAL_SECONDS) val testIntervalSeconds:
-    Long,
+    ) @get:Max(Database.MAX_TEST_INTERVAL_SECONDS) val testIntervalSeconds: Long,
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,
@@ -261,8 +252,7 @@ data class UpdateMonitorDto(
     val description: String?,
     @get:NotNull @get:Min(
         Database.MIN_TEST_INTERVAL_SECONDS,
-    ) @get:Max(Database.MAX_TEST_INTERVAL_SECONDS) val testIntervalSeconds:
-    Long,
+    ) @get:Max(Database.MAX_TEST_INTERVAL_SECONDS) val testIntervalSeconds: Long,
     @get:Min(1) val retries: Long?,
     @get:Min(1) val resendAfter: Long?,
     @get:NotNull val upsideDown: Boolean,

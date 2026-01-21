@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.*
 
 class TeamIntegrationTests(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val instanceSettingService: InstanceSettingService
+    @Autowired val instanceSettingService: InstanceSettingService,
 ) : BaseTestWithReusingContainers() {
     @Nested
     @DisplayName("API Get /v1/team")
@@ -183,12 +183,13 @@ class TeamIntegrationTests(
     inner class CreateTeam {
         @Test
         fun `test if secured`() {
-            mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getCreateTeamDto().toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getCreateTeamDto().toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
@@ -196,12 +197,13 @@ class TeamIntegrationTests(
         fun `test if instance setting works`() {
             instanceSettingService.setUserAllowedToCreateTeams(false)
             val model = ModelFactory.getCreateTeamDto()
-            mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
@@ -209,19 +211,20 @@ class TeamIntegrationTests(
         fun `test success with user`() {
             instanceSettingService.setUserAllowedToCreateTeams(true)
             val model = ModelFactory.getCreateTeamDto()
-            mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
                     content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
 
         @Test
@@ -229,19 +232,21 @@ class TeamIntegrationTests(
         fun `test success permission for newly created team`() {
             instanceSettingService.setUserAllowedToCreateTeams(true)
             val model = ModelFactory.getCreateTeamDto()
-            val (teamId) = mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            val (teamId) = mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
                     content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
-                }
-            }.andReturn().toDto<TeamResponse>()
+                }.andReturn()
+                .toDto<TeamResponse>()
 
             // Checks if user has team member access
             mockMvc.get("/v1/team/$teamId").andExpect {
@@ -265,19 +270,20 @@ class TeamIntegrationTests(
         @MockAdmin
         fun `test success with admin`() {
             val model = ModelFactory.getCreateTeamDto()
-            mockMvc.post("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .post("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isCreated() }
                     content {
-                        jsonPath("$.id") { exists() }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { exists() }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -286,74 +292,79 @@ class TeamIntegrationTests(
     inner class UpdateTeam {
         @Test
         fun `test if secured`() {
-            mockMvc.put("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr").toJSON()
-            }.andExpect {
-                status { isUnauthorized() }
-            }
+            mockMvc
+                .put("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr").toJSON()
+                }.andExpect {
+                    status { isUnauthorized() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER2)
         fun `test if secured with team user`() {
             val model = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr")
-            mockMvc.put("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockUser(MockUsers.USER3)
         fun `test if secured with wrong team user`() {
             val model = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr")
-            mockMvc.put("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isForbidden() }
-            }
+            mockMvc
+                .put("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isForbidden() }
+                }
         }
 
         @Test
         @MockAdmin
         fun `test success with admin`() {
             val model = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr", "Test Updated Team 2")
-            mockMvc.put("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("4Lxhu5YKWPBr") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("4Lxhu5YKWPBr") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
 
         @Test
         @MockUser
         fun `test success with team admin user`() {
             val model = ModelFactory.getUpdateTeamDto("4Lxhu5YKWPBr")
-            mockMvc.put("/v1/team") {
-                contentType = MediaType.APPLICATION_JSON
-                content = model.toJSON()
-            }.andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
+            mockMvc
+                .put("/v1/team") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = model.toJSON()
+                }.andExpect {
+                    status { isOk() }
                     content {
-                        jsonPath("$.id") { value("4Lxhu5YKWPBr") }
-                        jsonPath("$.name") { value(model.name) }
+                        contentType(MediaType.APPLICATION_JSON)
+                        content {
+                            jsonPath("$.id") { value("4Lxhu5YKWPBr") }
+                            jsonPath("$.name") { value(model.name) }
+                        }
                     }
                 }
-            }
         }
     }
 

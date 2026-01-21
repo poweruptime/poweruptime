@@ -20,34 +20,33 @@ import org.poweruptime.backend.features.authentication.model.rowToSessionRecord
 import org.poweruptime.backend.features.authentication.model.rowToUserRecord
 import java.time.Instant
 
-fun Session.findByRefreshToken(refreshToken: String): SessionRecord? =
-    innerJoin(RefreshToken).selectAll().where {
+fun Session.findByRefreshToken(refreshToken: String): SessionRecord? = innerJoin(RefreshToken)
+    .selectAll()
+    .where {
         RefreshToken.token eq refreshToken
-    }.firstOrNull()?.let {
+    }.firstOrNull()
+    ?.let {
         rowToSessionRecord(it)
     }
 
-fun Session.findJoinUserByRefreshToken(refreshToken: String): SessionJoinUserRecord? =
-    innerJoin(RefreshToken).innerJoin(User).selectAll().where {
+fun Session.findJoinUserByRefreshToken(refreshToken: String): SessionJoinUserRecord? = innerJoin(RefreshToken)
+    .innerJoin(User)
+    .selectAll()
+    .where {
         RefreshToken.token eq refreshToken
-    }.firstOrNull()?.let {
+    }.firstOrNull()
+    ?.let {
         SessionJoinUserRecord(
             session = rowToSessionRecord(it),
             user = User.rowToUserRecord(it),
         )
     }
 
-fun Session.findAllByUserId(
-    userId: ULong
-): List<SessionRecord> = selectAll().where { Session.userId eq userId }.map {
+fun Session.findAllByUserId(userId: ULong): List<SessionRecord> = selectAll().where { Session.userId eq userId }.map {
     rowToSessionRecord(it)
 }
 
-fun Session.findAll(
-    pageable: Pageable,
-    userId: ULong,
-    valid: Boolean = true
-): Page<SessionRecord> {
+fun Session.findAll(pageable: Pageable, userId: ULong, valid: Boolean = true): Page<SessionRecord> {
     val query = selectAll().where {
         (Session.userId eq userId) and (Session.valid eq valid)
     }
@@ -70,40 +69,32 @@ fun Session.findAll(
     )
 }
 
-fun Session.deleteAllUpdatedAtBefore(
-    updatedAt: Instant
-): Int = deleteWhere {
+fun Session.deleteAllUpdatedAtBefore(updatedAt: Instant): Int = deleteWhere {
     Session.updatedAt lessEq updatedAt
 }
 
-fun Session.deleteByPublicId(
-    publicId: String
-): Int = deleteWhere {
+fun Session.deleteByPublicId(publicId: String): Int = deleteWhere {
     Session.publicId eq publicId
 }
 
-fun Session.existsByRefreshToken(refreshToken: String): Boolean =
-    innerJoin(RefreshToken).selectAll().where {
+fun Session.existsByRefreshToken(refreshToken: String): Boolean = innerJoin(RefreshToken)
+    .selectAll()
+    .where {
         RefreshToken.token eq refreshToken
-    }.limit(1).count() > 0
+    }.limit(1)
+    .count() > 0
 
-fun Session.existsByPublicSessionAndUserId(
-    publicSessionId: String,
-    userId: ULong
-): Boolean =
-    selectAll().where {
+fun Session.existsByPublicSessionAndUserId(publicSessionId: String, userId: ULong): Boolean = selectAll()
+    .where {
         Session.publicId eq publicSessionId
         Session.userId eq userId
-    }.limit(1).count() > 0
+    }.limit(1)
+    .count() > 0
 
-fun Session.invalidateSession(
-    sessionId: ULong
-) = update({ Session.id eq sessionId }) {
+fun Session.invalidateSession(sessionId: ULong) = update({ Session.id eq sessionId }) {
     it[valid] = false
 }
 
-fun Session.invalidateSessions(
-    sessionIds: List<ULong>
-) = update({ id inList sessionIds }) {
+fun Session.invalidateSessions(sessionIds: List<ULong>) = update({ id inList sessionIds }) {
     it[valid] = false
 }

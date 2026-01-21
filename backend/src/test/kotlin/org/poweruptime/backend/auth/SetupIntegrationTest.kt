@@ -14,26 +14,24 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
-class SetupIntegrationTest(
-    @Autowired private val mvc: MockMvc,
-) : BaseTestWithReusingContainers() {
-
+class SetupIntegrationTest(@Autowired private val mvc: MockMvc) : BaseTestWithReusingContainers() {
     @DisplayName("API /v1/public/setup")
     @Nested
     inner class SetupApi {
         @Test
         @ClearInitDatabase
         fun `test fail already setup`() {
-            mvc.post("/v1/public/setup") {
-                content = ModelFactory.getTestSetupDto().toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isForbidden() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.codeName") { value("SETUP_COMPLETED") }
+            mvc
+                .post("/v1/public/setup") {
+                    content = ModelFactory.getTestSetupDto().toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isForbidden() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.codeName") { value("SETUP_COMPLETED") }
+                    }
                 }
-            }
 
             mvc.get("/v1/public/info/is-setup").andExpect {
                 status { isOk() }
@@ -55,16 +53,17 @@ class SetupIntegrationTest(
                 }
             }
 
-            mvc.post("/v1/public/setup") {
-                contentType = MediaType.APPLICATION_JSON
-                content = ModelFactory.getTestSetupDto().toJSON()
-            }.andExpect {
-                status { isOk() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.id") { exists() }
+            mvc
+                .post("/v1/public/setup") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = ModelFactory.getTestSetupDto().toJSON()
+                }.andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.id") { exists() }
+                    }
                 }
-            }
 
             mvc.get("/v1/public/info/is-setup").andExpect {
                 status { isOk() }
@@ -74,16 +73,17 @@ class SetupIntegrationTest(
                 }
             }
 
-            mvc.post("/v1/public/setup") {
-                content = ModelFactory.getTestSetupDto().toJSON()
-                contentType = MediaType.APPLICATION_JSON
-            }.andExpect {
-                status { isForbidden() }
-                content { contentType(MediaType.APPLICATION_JSON) }
-                content {
-                    jsonPath("$.codeName") { value("SETUP_COMPLETED") }
+            mvc
+                .post("/v1/public/setup") {
+                    content = ModelFactory.getTestSetupDto().toJSON()
+                    contentType = MediaType.APPLICATION_JSON
+                }.andExpect {
+                    status { isForbidden() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    content {
+                        jsonPath("$.codeName") { value("SETUP_COMPLETED") }
+                    }
                 }
-            }
         }
     }
 

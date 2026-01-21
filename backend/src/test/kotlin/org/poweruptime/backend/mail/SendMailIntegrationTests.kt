@@ -37,7 +37,6 @@ class SendMailIntegrationTests(
     @Autowired val systemEmailService: SystemEmailService,
     @Autowired val emailTemplateService: EmailTemplateService,
 ) : BaseTestWithReusingContainers() {
-
     @Nested
     @DisplayName("Send mail")
     inner class SendMail {

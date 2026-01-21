@@ -14,30 +14,30 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
-class SessionIntegrationTests(
-    @Autowired private val mvc: MockMvc,
-) : BaseTestWithReusingContainers() {
-
+class SessionIntegrationTests(@Autowired private val mvc: MockMvc) : BaseTestWithReusingContainers() {
     @Test
     fun `test success`() {
         // Make explicit a login attempt, so we definitely have a session stored
-        val jwtResponse = mvc.post("/v1/auth/login") {
-            content = ModelFactory.getAdminSignInDto().toJSON()
-            contentType = MediaType.APPLICATION_JSON
-        }.andReturn().toDto<JwtResponse>()
+        val jwtResponse = mvc
+            .post("/v1/auth/login") {
+                content = ModelFactory.getAdminSignInDto().toJSON()
+                contentType = MediaType.APPLICATION_JSON
+            }.andReturn()
+            .toDto<JwtResponse>()
 
-        mvc.get("/v1/profile/sessions") {
-            headers {
-                setBearerAuth(jwtResponse.accessToken)
+        mvc
+            .get("/v1/profile/sessions") {
+                headers {
+                    setBearerAuth(jwtResponse.accessToken)
+                }
+            }.andExpect {
+                status { isOk() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    jsonPath("$.data") { isArray() }
+                    jsonPath("$.numberOfItems") { value(1) }
+                }
             }
-        }.andExpect {
-            status { isOk() }
-            content {
-                contentType(MediaType.APPLICATION_JSON)
-                jsonPath("$.data") { isArray() }
-                jsonPath("$.numberOfItems") { value(1) }
-            }
-        }
     }
 
     @Test

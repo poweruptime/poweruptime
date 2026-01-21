@@ -7,10 +7,7 @@ import org.poweruptime.backend.features.notification.model.NotificationMethodDat
 
 class AppriseNotificationMethodDataAppriseConverter :
     NotificationMethodDataAppriseConverter(NotificationMethodType.APPRISE) {
-
-    override fun convert(
-        notificationMethodData: NotificationMethodData,
-    ): NotificationMethodDataAppriseDto {
+    override fun convert(notificationMethodData: NotificationMethodData): NotificationMethodDataAppriseDto {
         val data = notificationMethodData as AppriseNotificationMethodDataRecord
 
         val urlParts = data.url.split("?")

@@ -9,7 +9,7 @@ enum class SystemRole : ADatabaseEnumConvertable {
     },
     USER {
         override val code = "U"
-    };
+    }, ;
 
     val grantedAuthority = SimpleGrantedAuthority("ROLE_$name")
     val grantedAuthorities = listOf(grantedAuthority)
