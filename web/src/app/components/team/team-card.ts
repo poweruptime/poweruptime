@@ -1,17 +1,17 @@
-import {Component, computed, input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {MatIconAnchor, MatIconButton} from '@angular/material/button';
-import {MatChip, MatChipSet} from '@angular/material/chips';
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
-import {injectPattern} from '@app/util';
 
+import {Pattern} from '../../directives';
 import {TeamCardMonitorCount} from './team-card-monitor-count';
 
 @Component({
@@ -24,7 +24,7 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
           [style.background-color]="'#dfdbe5'">
           <div
             class="absolute inset-0 transition-transform duration-200 group-hover:scale-110"
-            [style.background-image]="backgroundPattern()"
+            [pu-pattern]="_team.id"
             [style.background-position]="'center'"></div>
         </div>
         <div class="rounded-b-xl border-r border-b border-l px-4 pb-4">
@@ -32,20 +32,22 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
             <div class="inline-flex items-center gap-2">
               <span class="text-2xl">{{ _team.name }}</span>
               @if (_team.personal) {
-                <mat-chip-set>
-                  <mat-chip>{{ 'general.personal' | transloco }}</mat-chip>
-                </mat-chip-set>
+                <span hlmBadge variant="secondary">{{ 'general.personal' | transloco }}</span>
               }
             </div>
 
-            <a
-              [routerLink]="_team.id + '/edit'"
-              [attr.aria-label]="'team.settings.settings' | transloco"
-              [matTooltip]="'team.settings.settings' | transloco"
-              stopPropagation
-              mat-icon-button>
-              <ng-icon name="bootstrapGear" size="24" aria-hidden="true" />
-            </a>
+            <hlm-tooltip>
+              <a
+                [routerLink]="_team.id + '/edit'"
+                hlmTooltipTrigger
+                hlmBtn
+                stopPropagation
+                variant="ghost"
+                size="icon-sm">
+                <ng-icon hlm size="sm" name="bootstrapGear" />
+              </a>
+              <span *brnTooltipContent>{{ 'team.settings.settings' | transloco }}</span>
+            </hlm-tooltip>
           </div>
 
           <pu-team-card-monitor-count [team]="_team" />
@@ -55,20 +57,18 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
   `,
   selector: 'pu-team-card',
   imports: [
-    MatChipSet,
-    MatChip,
     RouterLink,
-    NgIcon,
-    MatIconAnchor,
     StopPropagationDirective,
-    MatTooltip,
     TeamCardMonitorCount,
     TranslocoPipe,
-    MatIconButton,
+    HlmTooltipImports,
+    HlmButtonImports,
+    HlmIconImports,
+    BrnTooltipContentTemplate,
+    HlmBadgeImports,
+    Pattern,
   ],
 })
 export class TeamCard {
   readonly team = input.required<BackendType['TeamResponse']>();
-
-  readonly backgroundPattern = injectPattern(computed(() => this.team().id));
 }

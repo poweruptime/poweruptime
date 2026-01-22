@@ -48,7 +48,7 @@ import {toBackendDate} from '@app/services/util';
                   <a *isTeamAdmin hlmBtn routerLink="new">{{ 'monitor.new' | transloco }}</a>
                 } @else {
                   <pu-team-select
-                    (teamIdSelected)="router.navigate(['/', 't', $event, 'new-monitor'])"
+                    (teamIdChange)="router.navigate(['/', 't', $event, 'new-monitor'])"
                     adminOnly>
                     <button hlmBtn type="button">{{ 'monitor.new' | transloco }}</button>
                   </pu-team-select>

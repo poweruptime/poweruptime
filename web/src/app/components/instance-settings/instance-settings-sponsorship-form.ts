@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatButton} from '@angular/material/button';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
 
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -134,7 +133,6 @@ import {TableLoadingBar} from '../table-loading-bar';
           </div>
         </div>
 
-        <!-- Centered Material button, only when lookup is disabled -->
         @if (!_sponsorLookupEnabled) {
           <div class="absolute inset-0 z-10 bg-transparent"></div>
           <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-20">
@@ -148,7 +146,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                 <li>{{ 'instanceSettings.sponsorship.warning.4' | transloco }}</li>
               </ul>
             </div>
-            <button (click)="sponsorLookupEnabled.set(true)" type="button" mat-flat-button>
+            <button (click)="sponsorLookupEnabled.set(true)" type="button" hlmBtn variant="outline">
               {{ 'general.enable' | transloco }}
             </button>
           </div>
@@ -163,7 +161,6 @@ import {TableLoadingBar} from '../table-loading-bar';
     ReactiveFormsModule,
     SaveButton,
     TranslocoPipe,
-    MatButton,
     MatError,
     MatFormField,
     MatInput,

@@ -38,6 +38,7 @@ import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -48,7 +49,7 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database, injectAPI} from '@app/api';
-import {AlertDirective, FileUpload} from '@app/components';
+import {FileUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
 import {
   AbstractModelEditFormComponent,
@@ -234,7 +235,10 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 
         @let groupsErrors = form.controls.groups.errors;
         @if (groupsErrors?.['required']) {
-          <div puAlert type="INFO">{{ 'statusPage.edit.group.minOne' | transloco }}</div>
+          <div hlmAlert>
+            <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+            <h4 hlmAlertTitle>{{ 'statusPage.edit.group.minOne' | transloco }}</h4>
+          </div>
         }
 
         <div
@@ -339,7 +343,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     StatusPageEditFormGroupMonitors,
     CdkDragPlaceholder,
     FileUpload,
-    AlertDirective,
     MatChipGrid,
     MatChipRow,
     MatChipInput,
@@ -353,6 +356,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmFormFieldImports,
     HlmLabelImports,
     HlmInputImports,
+    HlmAlertImports,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

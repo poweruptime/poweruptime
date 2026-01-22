@@ -1,8 +1,8 @@
 import {Component, input} from '@angular/core';
 
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType} from '@app/api';
 
@@ -13,38 +13,38 @@ import {BackendType} from '@app/api';
     <div class="flex justify-between gap-4">
       <div>{{ 'team.monitors' | transloco: dashboard }}</div>
       <div>
-        <span
-          class="text-green-500"
-          [matTooltip]="'team.counts.up' | transloco"
-          matTooltipPosition="above">
-          {{ dashboard.upCount }}
-        </span>
+        <hlm-tooltip>
+          <span class="text-green-500" hlmTooltipTrigger>
+            {{ dashboard.upCount }}
+          </span>
+          <span *brnTooltipContent>{{ 'team.counts.up' | transloco }}</span>
+        </hlm-tooltip>
         /
-        <span
-          class="text-red-500"
-          [matTooltip]="'team.counts.down' | transloco"
-          matTooltipPosition="above">
-          {{ dashboard.downCount }}
-        </span>
+        <hlm-tooltip>
+          <span class="text-red-500" hlmTooltipTrigger>
+            {{ dashboard.downCount }}
+            <span *brnTooltipContent>{{ 'team.counts.down' | transloco }}</span>
+          </span>
+        </hlm-tooltip>
         /
-        <span
-          class="text-blue-500"
-          [matTooltip]="'team.counts.maintenance' | transloco"
-          matTooltipPosition="above">
-          {{ dashboard.maintenanceCount }}
-        </span>
+        <hlm-tooltip>
+          <span class="text-blue-500" hlmTooltipTrigger>
+            {{ dashboard.maintenanceCount }}
+          </span>
+          <span *brnTooltipContent>{{ 'team.counts.maintenance' | transloco }}</span>
+        </hlm-tooltip>
         /
-        <span
-          class="text-blue-500"
-          [matTooltip]="'team.counts.paused' | transloco"
-          matTooltipPosition="above">
-          {{ dashboard.pausedCount }}
-        </span>
+        <hlm-tooltip>
+          <span class="text-blue-500" hlmTooltipTrigger>
+            {{ dashboard.pausedCount }}
+          </span>
+          <span *brnTooltipContent>{{ 'team.counts.paused' | transloco }}</span>
+        </hlm-tooltip>
       </div>
     </div>
   `,
   selector: 'pu-team-card-monitor-count',
-  imports: [MatTooltip, TranslocoPipe],
+  imports: [TranslocoPipe, HlmTooltipImports, BrnTooltipContentTemplate],
 })
 export class TeamCardMonitorCount {
   readonly team = input.required<BackendType['TeamResponse']>();

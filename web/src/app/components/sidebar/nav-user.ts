@@ -55,20 +55,22 @@ import {AboutDialog} from '../_dialog/about-dialog';
 
     <ng-template #menu>
       <hlm-dropdown-menu class="min-w-56 rounded-lg" data-id="profile-menu">
-        <hlm-dropdown-menu-label>
-          <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <hlm-avatar class="rounded-lg">
-              <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
-                {{ profileInitials ?? 'UK' }}
-              </span>
-            </hlm-avatar>
-            <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{{ profileStore.name() }}</span>
-              <span class="truncate text-xs">{{ profileStore.email() }}</span>
+        @if (profileStore.email(); as email) {
+          <hlm-dropdown-menu-label>
+            <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <hlm-avatar class="rounded-lg">
+                <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
+                  {{ profileInitials ?? 'UK' }}
+                </span>
+              </hlm-avatar>
+              <div class="grid flex-1 text-left text-sm leading-tight">
+                <span class="truncate font-medium">{{ profileStore.name() }}</span>
+                <span class="truncate text-xs">{{ email }}</span>
+              </div>
             </div>
-          </div>
-        </hlm-dropdown-menu-label>
-        <hlm-dropdown-menu-separator />
+          </hlm-dropdown-menu-label>
+          <hlm-dropdown-menu-separator />
+        }
         <hlm-dropdown-menu-group>
           <button (click)="openAbout()" type="button" hlmDropdownMenuItem>
             <ng-icon hlm size="sm" name="bootstrapInfoCircle" />

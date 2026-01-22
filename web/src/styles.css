@@ -19,6 +19,8 @@
 
   --color-bg-light: #f2f2f2;
   --color-bg-dark: #000c07;
+
+  --animate-indeterminate: indeterminate 0.75s ease-in-out infinite;
 }
 
 /*

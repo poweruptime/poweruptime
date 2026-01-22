@@ -14,7 +14,11 @@ import {SelectedTeamStore} from '@app/services';
     @let _selectedTeam = selectedTeam();
 
     <hlm-sidebar-group>
-      <div hlmSidebarGroupLabel>{{ _selectedTeam.name }}</div>
+      <div hlmSidebarGroupLabel>
+        <span class="max-w-52 truncate">
+          {{ _selectedTeam.name }}
+        </span>
+      </div>
       <ul hlmSidebarMenu>
         <li hlmSidebarMenuItem>
           <a

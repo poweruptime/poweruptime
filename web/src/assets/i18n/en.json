@@ -2,7 +2,7 @@
   "auth": {
     "changePassword": "Change password",
     "forgotPassword": {
-      "mailSent": "Sent password reset email to your {{general.emailAddress}}.",
+      "mailSent": "Sent password {{general.reset}} email to your {{general.emailAddress}}.",
       "success": "Password reset successful. Please login now.",
       "title": "Forgot password?"
     },
@@ -12,8 +12,8 @@
     "newPasswordConfirm": "New {{general.password}} to confirm",
     "oauth2Login": "Or login with",
     "oldPassword": "Old {{general.password}}",
-    "requestPasswordReset": "Request password reset",
-    "resetPassword": "Reset password",
+    "requestPasswordReset": "Request password {{general.reset}}",
+    "resetPassword": "{{general.reset}} password",
     "setup": {
       "confirmEmail": {
         "invalidCode": "Invalid code. Try again.",
@@ -41,7 +41,7 @@
   },
   "backendOffline": {
     "description": "It seems like the backend is offline. Try in a few minutes again.",
-    "title": "{{general.error}}!"
+    "title": "Connection to backend failed."
   },
   "checkResult": {
     "details": {
@@ -166,6 +166,7 @@
     "public": "Public",
     "recycleBin": "Recycle Bin",
     "redirecting": "Redirecting...",
+    "reset": "Reset",
     "restore": "Restore",
     "restoreSuccess": "Successfully restored item(s).",
     "role": "Role",

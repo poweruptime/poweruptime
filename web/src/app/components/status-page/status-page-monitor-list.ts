@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {MatTooltip} from '@angular/material/tooltip';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType} from '@app/api';
 import {UptimeTimeline} from '@app/components/monitor';
@@ -16,25 +17,34 @@ import {MonitorStatusTextBackground} from '@app/directives';
       @for (monitor of monitors(); track monitor.id) {
         <div class="flex flex-col justify-between gap-y-2 lg:flex-row lg:items-center">
           <div class="inline-flex items-center gap-4">
-            <strong
-              class="max-w-24 truncate rounded-lg px-2 py-1"
-              [matTooltip]="
-                monitor.status === 'UP'
-                  ? ('monitor.oneDayUptime' | transloco)
-                  : ('general.status' | transloco)
-              "
-              [monitor-status-text-background]="monitor.status">
-              @if (monitor.status === 'UP') {
-                {{ monitor.oneDayUptime }}
-              } @else {
-                {{ monitor.status }}
-              }
-            </strong>
+            <hlm-tooltip>
+              <strong
+                class="max-w-24 truncate rounded-lg px-2 py-1"
+                [monitor-status-text-background]="monitor.status"
+                hlmTooltipTrigger>
+                @if (monitor.status === 'UP') {
+                  {{ monitor.oneDayUptime }}
+                } @else {
+                  {{ monitor.status }}
+                }
+              </strong>
+              <span *brnTooltipContent>
+                @if (monitor.status === 'UP') {
+                  {{ 'monitor.oneDayUptime' | transloco }}
+                } @else {
+                  {{ 'general.status' | transloco }}
+                }
+              </span>
+            </hlm-tooltip>
+
             <a
               class="inline-flex items-center gap-2 text-xl"
-              [routerLink]="'/public/m/' + monitor.id">
+              [routerLink]="'/public/m/' + monitor.id"
+              size="lg"
+              variant="ghost"
+              hlmBtn>
               {{ monitor.name }}
-              <ng-icon size="16" name="bootstrapBoxArrowUpRight" />
+              <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
             </a>
           </div>
           <div class="tl-container">
@@ -58,12 +68,14 @@ import {MonitorStatusTextBackground} from '@app/directives';
   selector: 'pu-status-page-monitor-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgIcon,
     RouterLink,
-    MatTooltip,
     TranslocoPipe,
     UptimeTimeline,
     MonitorStatusTextBackground,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmButtonImports,
+    HlmIconImports,
   ],
 })
 export class StatusPageMonitorList {

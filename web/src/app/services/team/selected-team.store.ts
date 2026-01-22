@@ -39,11 +39,11 @@ export const SelectedTeamStore = signalStore(
   withState<{
     loadedAll: boolean;
     page: number;
-    search: string | undefined;
+    name: string | undefined;
   }>({
     loadedAll: false,
     page: 0,
-    search: undefined,
+    name: undefined,
   }),
   withProps(() => ({
     storageSelectedTeamId: injectLocalStorage<string>('pu_selected_team_id'),
@@ -106,20 +106,20 @@ export const SelectedTeamStore = signalStore(
         void router.navigate(['m']);
       }
     },
-    setSearch: rxMethod<string | null>(
+    setName: rxMethod<string | null>(
       pipe(
         debounceTime(275),
         map((it) => it ?? undefined),
-        tap((search) => patchState(store, () => ({search}))),
+        tap((name) => patchState(store, () => ({name}))),
       ),
     ),
     loadAvailableTeams: rxMethod<{
       page: number;
-      search: string | undefined;
+      name: string | undefined;
     }>(
       pipe(
         distinctUntilChanged((prev, cur) => {
-          if (prev.search !== cur.search) {
+          if (prev.name !== cur.name) {
             patchState(store, removeAllEntities(), () => ({page: 0}));
             return false;
           }
@@ -127,12 +127,13 @@ export const SelectedTeamStore = signalStore(
           return prev.page === cur.page;
         }),
         tap(() => patchState(store, setPending())),
-        mergeMap(({page, ...query}) =>
+        mergeMap(({page, name}) =>
           api
             .get('/v1/team', {
               params: {
                 query: {
-                  ...query,
+                  page,
+                  name,
                   size: 60,
                   sort: ['personalUser.id_asc', 'name_asc'],
                 },

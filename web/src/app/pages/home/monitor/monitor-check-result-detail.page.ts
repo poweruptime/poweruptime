@@ -32,7 +32,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
         @if (checkResultDetailStore.checkResult(); as checkResult) {
           <div class="grid gap-6">
             <div>
-              <button (click)="history.back()" hlmBtn type="button">
+              <button (click)="goBack()" hlmBtn type="button">
                 <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
                 <span>{{ 'notFound.back' | transloco }}</span>
               </button>
@@ -218,8 +218,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
   ],
 })
 export class MonitorCheckResultDetailPage {
-  protected readonly history = history;
-
   readonly checkResultDetailStore = inject(CheckResultDetailStore);
   readonly checkResultLogEntriesStore = inject(CheckResultLogEntriesStore);
 
@@ -244,4 +242,8 @@ export class MonitorCheckResultDetailPage {
       {ignoreZero: true},
     );
   });
+
+  protected goBack() {
+    history.back();
+  }
 }

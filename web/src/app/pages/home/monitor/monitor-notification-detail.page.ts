@@ -2,23 +2,19 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import {MatButton} from '@angular/material/button';
-import {MatChipListbox, MatChipOption} from '@angular/material/chips';
-import {
-  MatAccordion,
-  MatExpansionPanel,
-  MatExpansionPanelDescription,
-  MatExpansionPanelHeader,
-  MatExpansionPanelTitle,
-} from '@angular/material/expansion';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
+import {HlmAlertImports} from '@spartan-ng/helm/alert';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmEmptyImports} from '@spartan-ng/helm/empty';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
-import {AlertDirective, ShadowRender} from '@app/components';
+import {ShadowRender} from '@app/components';
 import {MonitorStatus} from '@app/components/monitor';
-import {Tag} from '@app/directives';
 import {RelativeTimePipe, RelativeTimeWithTooltip} from '@app/pipes';
 import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
@@ -27,10 +23,10 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
     <div class="flex flex-col gap-4">
       @if (notificationDetailStore.notification(); as notification) {
         <div>
-          <a mat-stroked-button routerLink="../../" queryParamsHandling="merge">
-            <ng-icon class="me-1" name="bootstrapArrowLeft" />
+          <button (click)="goBack()" hlmBtn variant="ghost" type="button">
+            <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
             <span>{{ notification.monitor.name }}</span>
-          </a>
+          </button>
         </div>
         <div class="flex flex-wrap items-end gap-2 text-2xl">
           <pu-monitor-status [status]="notification.status" />
@@ -43,12 +39,11 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
           </span>
 
           <a
-            class="hover:cursor-pointer"
-            [routerLink]="'../../c/' + notification.checkResultId + '/logs'">
-            <mat-chip-option>
-              {{ 'notification.detail.openCheckResult' | transloco }}
-              <ng-icon name="bootstrapBoxArrowUpRight" size="16" />
-            </mat-chip-option>
+            [routerLink]="'../../c/' + notification.checkResultId + '/logs'"
+            hlmBtn
+            variant="ghost">
+            {{ 'notification.detail.openCheckResult' | transloco }}
+            <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
           </a>
         </div>
 
@@ -59,65 +54,82 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
             <div class="flex items-center justify-between gap-4">
               <h2 class="text-2xl">Notification Deliveries</h2>
               @let _expandAll = expandAll();
-              <mat-chip-listbox (change)="expandAll.set(!_expandAll)">
-                <mat-chip-option [selected]="_expandAll">
-                  <ng-icon name="bootstrapArrowsExpand" />
-                </mat-chip-option>
-              </mat-chip-listbox>
+              <hlm-tooltip>
+                <button
+                  [variant]="_expandAll ? 'default' : 'outline'"
+                  (click)="expandAll.set(!_expandAll)"
+                  hlmTooltipTrigger
+                  hlmBtn
+                  size="icon-sm"
+                  type="button">
+                  <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+                </button>
+                <span *brnTooltipContent>
+                  @if (_expandAll) {
+                    Hide all
+                  } @else {
+                    Show all
+                  }
+                </span>
+              </hlm-tooltip>
             </div>
 
-            <mat-accordion class="example-headers-align" multi>
+            <hlm-accordion class="pb-4" type="multiple">
               @for (subNotification of subNotificationsStore.entities(); track subNotification.id) {
-                <mat-expansion-panel [expanded]="_expandAll">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>{{ subNotification.method.name }}</mat-panel-title>
-                    <mat-panel-description>
-                      <div class="flex w-full justify-between">
-                        <div></div>
-
-                        <span>
-                          @if (subNotification.error) {
-                            <span pu-tag="RED">Error</span>
-                          } @else {
+                <hlm-accordion-item [isOpened]="_expandAll">
+                  <h3 class="contents">
+                    <button class="hover:no-underline" hlmAccordionTrigger type="button">
+                      <div class="flex flex-col gap-2">
+                        <span>{{ subNotification.method.name }}</span>
+                        @if (subNotification.error) {
+                          <span hlmBadge variant="destructive">
+                            {{ 'general.error' | transloco }}
+                          </span>
+                        } @else {
+                          <span class="text-muted-foreground text-sm font-light">
                             Sent {{ subNotification.sentAt | relativeTime }}
-                          }
-                        </span>
+                          </span>
+                        }
                       </div>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
+                      <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
+                    </button>
+                  </h3>
+                  <hlm-accordion-content>
+                    <pu-shadow-render [html]="subNotification.title" />
 
-                  <pu-shadow-render [html]="subNotification.title" />
+                    @if (subNotification.message; as message) {
+                      <pu-shadow-render [html]="message" />
+                    }
 
-                  @if (subNotification.message; as message) {
-                    <pu-shadow-render [html]="message" />
-                  }
-
-                  @if (subNotification.error; as error) {
-                    <div puAlert type="WARN">
-                      <strong>Error:</strong>
-                      {{ error }}
-                    </div>
-                  }
-                </mat-expansion-panel>
+                    @if (subNotification.error; as error) {
+                      <div hlmAlert variant="destructive">
+                        <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                        <h4 hlmAlertTitle>{{ 'general.error' | transloco }}</h4>
+                        <p hlmAlertDescription>{{ error }}</p>
+                      </div>
+                    }
+                  </hlm-accordion-content>
+                </hlm-accordion-item>
               }
-            </mat-accordion>
+            </hlm-accordion>
           </div>
         } @else {
-          <div class="flex flex-col items-center justify-center gap-2 pt-4">
-            <ng-icon size="28" name="bootstrapBell" />
-
-            <h2 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
-              Stay in the loop — set up notifications
-            </h2>
-
-            <p class="mb-4 max-w-md text-center text-gray-600 dark:text-gray-300">
-              This monitor doesn’t have any notification methods linked yet. Add one now to get
-              alerts when something important happens.
-            </p>
-
-            <a routerLink="/t/{{ notification.team.id }}/notification-methods" mat-flat-button>
-              Create or edit notification methods
-            </a>
+          <div hlmEmpty>
+            <div hlmEmptyHeader>
+              <div hlmEmptyMedia variant="icon">
+                <ng-icon name="bootstrapBell" />
+              </div>
+              <div hlmEmptyTitle>Stay in the loop — set up notifications</div>
+              <div hlmEmptyDescription>
+                This monitor doesn’t have any notification methods linked yet. Add one now to get
+                alerts when something important happens.
+              </div>
+            </div>
+            <div hlmEmptyContent>
+              <a hlmBtn routerLink="/t/{{ notification.team.id }}/notification-methods">
+                Create or edit notification methods
+              </a>
+            </div>
           </div>
         }
       }
@@ -126,40 +138,42 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
   selector: 'monitor-check-result-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgIcon,
-    RouterLink,
-    FormsModule,
     MonitorStatus,
     RelativeTimeWithTooltip,
     RelativeTimePipe,
-    TranslocoPipe,
-    MatChipListbox,
-    MatChipOption,
-    MatAccordion,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    MatExpansionPanelDescription,
     ShadowRender,
-    Tag,
-    AlertDirective,
-    MatButton,
+    RouterLink,
+    FormsModule,
+    TranslocoPipe,
+    HlmButtonImports,
+    HlmEmptyImports,
+    HlmIconImports,
+    HlmAccordionImports,
+    HlmBadgeImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmAlertImports,
   ],
 })
 export class MonitorNotificationDetailPage {
-  readonly notificationDetailStore = inject(NotificationDetailStore);
-  readonly subNotificationsStore = inject(SubNotificationsStore);
+  protected readonly notificationDetailStore = inject(NotificationDetailStore);
+  protected readonly subNotificationsStore = inject(SubNotificationsStore);
 
   readonly notificationId = input<string>();
 
-  readonly expandAll = linkedQueryParam('expand', {
+  protected readonly expandAll = linkedQueryParam('expand', {
     parse: paramToBoolean({defaultValue: false}),
     stringify: (value) => (!value ? null : value),
     queryParamsHandling: '',
+    skipLocationChange: true,
   });
 
   constructor() {
     this.notificationDetailStore.loadById(this.notificationId);
     this.subNotificationsStore.load(this.notificationId);
+  }
+
+  protected goBack() {
+    history.back();
   }
 }

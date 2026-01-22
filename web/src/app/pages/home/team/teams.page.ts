@@ -1,11 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
-
-import {MatButton} from '@angular/material/button';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatProgressBar} from '@angular/material/progress-bar';
 
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {
@@ -15,7 +10,12 @@ import {
 } from '@angular/cdk/scrolling';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmProgressImports} from '@spartan-ng/helm/progress';
 import {a_chunk} from 'dfts-helper';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {TeamCard} from '@app/components/team';
 import {InfoStore, SelectedTeamStore} from '@app/services';
@@ -23,17 +23,29 @@ import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
-    <div class="flex items-center justify-between gap-4 px-4 py-2">
+    <div class="flex items-center gap-4 px-4 py-2">
       @if (infoStore.isUserAllowedToCreateTeams()) {
-        <a class="w-48" mat-flat-button routerLink="new">
+        <a class="w-48" hlmBtn routerLink="new">
+          <ng-icon name="lucideCirclePlus" hlm size="sm" />
           {{ 'team.create.create' | transloco }}
         </a>
       }
 
-      <mat-form-field class="w-full" subscriptSizing="dynamic">
-        <mat-label>{{ 'team.search' | transloco }}</mat-label>
-        <input [formControl]="searchControl" matInput />
-      </mat-form-field>
+      <div class="w-72" hlmInputGroup>
+        <div hlmInputGroupAddon>
+          <ng-icon hlm name="bootstrapSearch" size="sm" />
+        </div>
+        <input
+          [(ngModel)]="nameFilter"
+          [placeholder]="'general.search' | transloco"
+          hlmInputGroupInput />
+        @if ((nameFilter()?.length ?? 0) > 0) {
+          <button (click)="nameFilter.set('')" hlmInputGroupButton type="button">
+            <ng-icon hlm name="bootstrapXLg" size="sm" />
+            <span class="sr-only">{{ 'general.clear' | transloco }}</span>
+          </button>
+        }
+      </div>
     </div>
     <cdk-virtual-scroll-viewport
       (scrolledIndexChange)="triggerNextPage()"
@@ -49,7 +61,9 @@ import {TailwindBreakpoints} from '@app/services/util';
       </div>
 
       @if (selectedTeamStore.isPending()) {
-        <mat-progress-bar class="mb-4" mode="indeterminate" />
+        <hlm-progress>
+          <hlm-progress-indicator />
+        </hlm-progress>
       }
     </cdk-virtual-scroll-viewport>
   `,
@@ -74,13 +88,12 @@ import {TailwindBreakpoints} from '@app/services/util';
     CdkFixedSizeVirtualScroll,
     CdkVirtualScrollViewport,
     CdkVirtualForOf,
-    MatProgressBar,
     TranslocoPipe,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatButton,
+    FormsModule,
+    HlmButtonImports,
+    HlmIconImports,
+    HlmInputGroupImports,
+    HlmProgressImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -91,18 +104,19 @@ export class TeamsPage {
 
   readonly viewport = viewChild.required(CdkVirtualScrollViewport);
 
-  readonly searchControl = new FormControl<string>('');
+  nameFilter = linkedQueryParam('name', {
+    stringify: (value) => (value.length > 0 ? value : null),
+  });
 
   constructor() {
     this.infoStore.loadIsUserAllowedToCreateTeams();
 
-    this.selectedTeamStore.setSearch(this.searchControl.valueChanges);
+    this.selectedTeamStore.setName(this.nameFilter);
 
     this.selectedTeamStore.loadAvailableTeams(
       computed(() => ({
         page: this.selectedTeamStore.page(),
-        size: 60,
-        search: this.selectedTeamStore.search(),
+        name: this.selectedTeamStore.name(),
       })),
     );
   }

@@ -1,17 +1,20 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
-import {MatProgressBar} from '@angular/material/progress-bar';
+
+import { HlmProgressImports} from '@spartan-ng/helm/progress';
 
 @Component({
   template: `
     @if (loading()) {
-      <mat-progress-bar mode="indeterminate" />
+      <hlm-progress>
+        <hlm-progress-indicator />
+      </hlm-progress>
     } @else {
-      <div class="h-[4px] w-full"></div>
+      <div class="h-2 w-full"></div>
     }
   `,
   selector: 'pu-table-loading-bar',
-  imports: [MatProgressBar],
+  imports: [HlmProgressImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableLoadingBar {

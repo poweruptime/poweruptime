@@ -1,5 +1,5 @@
 import {NgOptimizedImage} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -8,8 +8,8 @@ import {HlmSidebarImports} from '@spartan-ng/helm/sidebar';
 
 import {TeamSelect} from '@app/components/team-select';
 import {SelectedTeamStore} from '@app/services';
-import {injectPattern} from '@app/util';
 
+import {Pattern} from '../../directives';
 import {NavMain} from './nav-main';
 import {NavProjectDetail} from './nav-project-detail';
 import {NavSecondary} from './nav-secondary';
@@ -23,15 +23,11 @@ import {NavUser} from './nav-user';
         <hlm-sidebar-header>
           <ul hlmSidebarMenu>
             <li hlmSidebarMenuItem>
-              <pu-team-select
-                [teamId]="teamId()"
-                (teamIdSelected)="navigateToTeamDashboard($event)">
+              @let _teamId = teamId();
+              <pu-team-select [teamId]="_teamId" (teamIdChange)="navigateToTeamDashboard($event)">
                 <button type="button" hlmSidebarMenuButton size="lg">
-                  @if (selectedTeamStore.selectedTeam()) {
-                    <div
-                      class="aspect-square size-8 rounded-lg"
-                      [style.background-image]="backgroundPattern()"
-                      style="background-color: #dfdbe5"></div>
+                  @if (_teamId; as _teamId) {
+                    <div class="aspect-square size-8 rounded-lg" [pu-pattern]="_teamId"></div>
                   } @else {
                     <img
                       class="size-8 rounded-lg"
@@ -41,7 +37,7 @@ import {NavUser} from './nav-user';
                       height="48" />
                   }
                   <div class="grid flex-1 text-left text-sm leading-tight">
-                    @if (teamId()) {
+                    @if (_teamId) {
                       @if (selectedTeamStore.selectedTeam(); as selectedTeam) {
                         <span class="truncate font-medium">{{ selectedTeam.name }}</span>
                         <!--                        <span class="truncate text-xs">Enterprise</span>-->
@@ -89,6 +85,7 @@ import {NavUser} from './nav-user';
     TeamSelect,
     TranslocoPipe,
     NgOptimizedImage,
+    Pattern,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -96,13 +93,12 @@ export class Sidebar {
   private readonly router = inject(Router);
   protected readonly selectedTeamStore = inject(SelectedTeamStore);
 
-  protected readonly backgroundPattern = injectPattern(
-    computed(() => this.selectedTeamStore.selectedTeam()?.id ?? 'test'),
-  );
-
   teamId = input<string>();
 
-  navigateToTeamDashboard(newTeamId: string) {
+  navigateToTeamDashboard(newTeamId: string | undefined) {
+    if (!newTeamId) {
+      return;
+    }
     const current = this.router.url; // e.g. "/t/abc/notification-methods"
     if (teamSegmentRe.test(current)) {
       // replace "t/{oldId}" with "t/{newTeamId}"

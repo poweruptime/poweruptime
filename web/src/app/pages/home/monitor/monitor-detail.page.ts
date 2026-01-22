@@ -24,7 +24,7 @@ import {MonitorEditPage} from './monitor-edit.page';
   template: `
     @let _monitorId = monitorId();
 
-    <hlm-tabs class="mt-4" [tab]="tab()" (tabActivated)="tab.set($event)">
+    <hlm-tabs [tab]="tab()" (tabActivated)="tab.set($event)">
       <header class="bg-background sticky top-0 z-50 mb-4 grid gap-4 border-b pb-2">
         @if (monitorDetailStore.monitor(); as monitor) {
           <div class="flex flex-wrap justify-between gap-4">

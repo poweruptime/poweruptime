@@ -1,30 +1,31 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-
-import {MatButton} from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-} from '@angular/material/dialog';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BrnDialogClose, injectBrnDialogContext} from '@spartan-ng/brain/dialog';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDialogFooter} from '@spartan-ng/helm/dialog';
 
 @Component({
   template: `
-    <mat-dialog-content>
-      <div class="prose dark:prose-invert" [innerHTML]="data.changelog"></div>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button type="button" mat-flat-button mat-dialog-close>
+    <div class="flex-1 overflow-y-auto">
+      <div class="prose dark:prose-invert" [innerHTML]="changelog"></div>
+    </div>
+    <hlm-dialog-footer class="gap-3 border-t pt-4 sm:space-x-0">
+      <button type="button" hlmBtn variant="outline" brnDialogClose>
         {{ 'general.close' | transloco }}
       </button>
-    </mat-dialog-actions>
+    </hlm-dialog-footer>
   `,
+  host: {
+    class:
+      'top-1/2 left-1/2 flex max-h-[calc(100vh-2rem)] w-full max-w-[calc(100%-2rem)] flex-col gap-0 overflow-hidden rounded-lg p-0 sm:max-h-[min(640px,80vh)] sm:max-w-xl',
+  },
   selector: 'pu-changelog-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatDialogContent, MatDialogActions, MatButton, MatDialogClose, TranslocoPipe],
+  imports: [TranslocoPipe, BrnDialogClose, HlmDialogFooter, HlmButtonImports],
 })
 export class ChangelogDialog {
-  data = inject(MAT_DIALOG_DATA) as {changelog: string; autoDialog: boolean};
+  private readonly data = injectBrnDialogContext<{changelog: string}>();
+
+  protected readonly changelog = this.data.changelog;
 }

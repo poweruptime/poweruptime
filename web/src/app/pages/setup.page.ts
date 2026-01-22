@@ -5,6 +5,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
+import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -15,7 +16,6 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {Database} from '@app/api';
-import {AlertDirective} from '@app/components';
 import {injectIsValid} from '@app/form';
 import {SetupStore} from '@app/services';
 
@@ -36,32 +36,38 @@ import {SetupStore} from '@app/services';
 
           <div class="grid gap-4">
             @if (setupStore.error()?.codeName === 'SETUP_COMPLETED') {
-              <div puAlert type="WARN">Error while finishing setup... Already setup?</div>
+              <div hlmAlert variant="destructive">
+                <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                <h4 hlmAlertTitle>Error while finishing setup... Already setup?</h4>
+              </div>
             }
 
             @switch (setupStore.state()) {
               @case ('setupTestEmail') {
-                <div puAlert type="INFO">
-                  <strong>{{ 'general.info' | transloco }}!</strong>
-                  {{ 'auth.setup.testEmail.info' | transloco }}
+                <div hlmAlert>
+                  <h4 hlmAlertTitle>{{ 'general.info' | transloco }}!</h4>
+                  <p hlmAlertDescription>{{ 'auth.setup.testEmail.info' | transloco }}/p></p>
                 </div>
 
                 @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {
-                  <div puAlert type="WARN">
-                    {{ 'auth.setup.testEmail.failed' | transloco }}
-                    <br />
-                    <br />
-                    <span>Error message:</span>
-                    @if (setupStore.error()?.message; as errorMessage) {
-                      <div [innerHTML]="errorMessage"></div>
-                    }
+                  <div hlmAlert variant="destructive">
+                    <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                    <h4 hlmAlertTitle>{{ 'auth.setup.testEmail.failed' | transloco }}</h4>
+                    <div hlmAlertDescription>
+                      <br />
+                      <span>Error message:</span>
+                      @if (setupStore.error()?.message; as errorMessage) {
+                        <div [innerHTML]="errorMessage"></div>
+                      }
+                    </div>
                   </div>
                 }
               }
               @case ('confirmTestEmail') {
                 @if (setupStore.error()?.codeName === 'INVALID_CODE') {
-                  <div puAlert type="WARN">
-                    {{ 'auth.setup.confirmEmail.invalidCode' | transloco }}
+                  <div hlmAlert variant="destructive">
+                    <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                    <h4 hlmAlertTitle>{{ 'auth.setup.confirmEmail.invalidCode' | transloco }}</h4>
                   </div>
                 }
               }
@@ -257,14 +263,15 @@ import {SetupStore} from '@app/services';
                   style="color: var(--mat-sys-primary)" />
               </div>
 
-              <div puAlert type="INFO">
-                <b>{{ 'auth.setup.setupCompleted.info1' | transloco }}</b>
-                <br />
-                <br />
-                <!-- t(auth.setup.setupCompleted.info2) -->
-                <transloco
-                  [params]="{forgotPasswordUrl: '/auth/forgot-password'}"
-                  key="auth.setup.setupCompleted.info2" />
+              <div hlmAlert>
+                <ng-icon hlm hlmAlertIcon name="lucideCircleCheck" />
+                <h4 hlmAlertTitle>{{ 'auth.setup.setupCompleted.info1' | transloco }}</h4>
+                <p hlmAlertDescription>
+                  <!-- t(auth.setup.setupCompleted.info2) -->
+                  <transloco
+                    [params]="{forgotPasswordUrl: '/auth/forgot-password'}"
+                    key="auth.setup.setupCompleted.info2" />
+                </p>
               </div>
             }
           }
@@ -277,7 +284,6 @@ import {SetupStore} from '@app/services';
   imports: [
     ReactiveFormsModule,
     TranslocoPipe,
-    AlertDirective,
     TranslocoMarkupComponent,
     MatProgressBar,
     HlmInputOtpImports,
@@ -288,6 +294,7 @@ import {SetupStore} from '@app/services';
     HlmInputGroupImports,
     HlmFormFieldImports,
     HlmLabelImports,
+    HlmAlertImports,
   ],
 })
 export class SetupPage {

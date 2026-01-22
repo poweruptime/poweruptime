@@ -4,21 +4,22 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmAlertImports} from '@spartan-ng/helm/alert';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {injectWindow} from 'dfx-helper';
-
-import {AlertDirective} from './alert.directive';
 
 @Component({
   selector: 'pu-backend-offline-alert',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="mb-4" puAlert type="WARN">
-      <span class="font-bold">{{ 'backendOffline.title' | transloco }}</span>
-      {{ 'backendOffline.description' | transloco }}
+    <div class="mb-4" hlmAlert variant="destructive">
+      <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+      <h4 hlmAlertTitle>{{ 'backendOffline.title' | transloco }}</h4>
+      <p hlmAlertDescription>{{ 'backendOffline.description' | transloco }}</p>
     </div>
   `,
-  imports: [AlertDirective, TranslocoPipe],
+  imports: [TranslocoPipe, HlmAlertImports, HlmIconImports],
 })
 export class BackendOfflineAlert {
   private window = injectWindow();

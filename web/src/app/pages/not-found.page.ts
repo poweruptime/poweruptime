@@ -2,10 +2,9 @@ import {Location} from '@angular/common';
 import {Component, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {MatButton} from '@angular/material/button';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {OutsideBottomActions} from '@app/components';
 
@@ -22,12 +21,12 @@ import {OutsideBottomActions} from '@app/components';
           <p class="text-muted-foreground">{{ 'notFound.description' | transloco }}</p>
         </div>
         <div class="flex flex-col gap-2 min-[400px]:flex-row">
-          <a mat-button routerLink="/">
-            <ng-icon class="me-2" name="bootstrapHouse" />
+          <a hlmBtn variant="outline" routerLink="/">
+            <ng-icon hlm size="sm" name="bootstrapHouse" />
             {{ 'notFound.home' | transloco }}
           </a>
-          <button (click)="goBack()" type="button" mat-flat-button>
-            <ng-icon class="me-2" name="bootstrapArrowLeft" />
+          <button (click)="goBack()" type="button" hlmBtn>
+            <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
             {{ 'notFound.back' | transloco }}
           </button>
         </div>
@@ -38,7 +37,7 @@ import {OutsideBottomActions} from '@app/components';
   `,
   selector: 'not-found-page',
   standalone: true,
-  imports: [RouterLink, NgIcon, MatButton, TranslocoPipe, OutsideBottomActions],
+  imports: [RouterLink, TranslocoPipe, OutsideBottomActions, HlmButtonImports, HlmIconImports],
 })
 export class NotFoundPage {
   private readonly location = inject(Location);

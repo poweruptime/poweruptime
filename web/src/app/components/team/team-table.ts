@@ -24,6 +24,8 @@ import {TableLoadingBar} from '@app/components';
 import {TeamsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
+import {Pattern} from '../../directives';
+
 @Component({
   template: `
     @let _showDeleted = showDeleted();
@@ -57,7 +59,10 @@ import {trackBy} from '@app/util';
                 {{ 'general.name' | transloco }}
               </th>
               <td *hlmCellDef="let element" hlm-cell>
-                {{ element.name }}
+                <div class="flex items-center gap-2">
+                  <div class="aspect-square size-8 rounded-lg" [pu-pattern]="element.id"></div>
+                  <span>{{ element.name }}</span>
+                </div>
               </td>
             </ng-container>
 
@@ -161,6 +166,7 @@ import {trackBy} from '@app/util';
     HlmCheckboxImports,
     HlmTableContainer,
     BrnTooltipContentTemplate,
+    Pattern,
   ],
 })
 export class TeamTable {

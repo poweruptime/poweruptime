@@ -10,7 +10,6 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatButton} from '@angular/material/button';
 import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 
@@ -291,7 +290,8 @@ import {TableLoadingBar} from '../table-loading-bar';
             <button
               (click)="form.controls.versionCheckEnabled.patchValue(true); onSubmit()"
               type="button"
-              mat-flat-button>
+              hlmBtn
+              variant="outline">
               {{ 'general.enable' | transloco }}
             </button>
           </div>
@@ -320,7 +320,6 @@ import {TableLoadingBar} from '../table-loading-bar';
     MatLabel,
     MatError,
     MatLabel,
-    MatButton,
     MatChipInput,
     TranslocoPipe,
     CopyIconButton,

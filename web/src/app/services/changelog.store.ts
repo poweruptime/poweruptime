@@ -1,8 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {computed, inject} from '@angular/core';
 
-import {MatDialog} from '@angular/material/dialog';
-
 import {pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
@@ -15,6 +13,7 @@ import {
   withProps,
 } from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {ChangelogDialog} from '@app/components';
@@ -42,7 +41,7 @@ export const ChangelogStore = signalStore(
       return environment.version !== store.lastVersion();
     }),
   })),
-  withMethods((store, httpClient = inject(HttpClient), dialog = inject(MatDialog)) => ({
+  withMethods((store, httpClient = inject(HttpClient), dialog = inject(HlmDialogService)) => ({
     load: rxMethod<string | undefined>(
       pipe(
         tap(() => patchState(store, setPending())),
@@ -58,7 +57,7 @@ export const ChangelogStore = signalStore(
         tapResponse({
           next: (changelog) => {
             patchState(store, setFulfilled());
-            dialog.open(ChangelogDialog, {data: {changelog}});
+            dialog.open(ChangelogDialog, {context: {changelog}});
           },
           error: (error) => patchState(store, setError(error)),
         }),

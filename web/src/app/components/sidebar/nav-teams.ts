@@ -23,7 +23,9 @@ import {SelectedTeamStore} from '@app/services';
                 routerLink="/t/{{ team.id }}/{{ sidebarService.isMobile() ? 'mm' : 'm' }}"
                 routerLinkActive
                 hlmSidebarMenuButton>
-                {{ team.name }}
+                <span class="max-w-48 truncate">
+                  {{ team.name }}
+                </span>
               </a>
               <button
                 [hlmDropdownMenuTrigger]="menu"

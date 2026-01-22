@@ -16,14 +16,16 @@ import {
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
-import {MatButton} from '@angular/material/button';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
@@ -63,14 +65,19 @@ import {Editor} from '@app/components/editor';
       }
       @if (showReset()) {
         <div class="flex justify-end" [class.pt-2]="_html">
-          <button
-            [disabled]="disableReset()"
-            (click)="resetClick.emit()"
-            type="button"
-            mat-stroked-button>
-            <ng-icon name="bootstrapArrowCounterclockwise" />
-            Reset
-          </button>
+          <hlm-tooltip>
+            <button
+              [disabled]="disableReset()"
+              (click)="resetClick.emit()"
+              hlmTooltipTrigger
+              hlmBtn
+              type="button"
+              variant="outline"
+              size="icon-sm">
+              <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+            </button>
+            <span *brnTooltipContent>{{ 'general.reset' | transloco }}</span>
+          </hlm-tooltip>
         </div>
       }
 
@@ -112,8 +119,10 @@ import {Editor} from '@app/components/editor';
     Editor,
     ShadowRender,
     TranslocoPipe,
-    MatButton,
-    NgIcon,
+    HlmButtonImports,
+    HlmIconImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {

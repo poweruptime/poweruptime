@@ -5,23 +5,50 @@ import {
   computed,
   inject,
   input,
-  viewChild,
+  model,
+  output,
+  signal,
 } from '@angular/core';
-import {outputFromObservable, takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
-
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatProgressBar} from '@angular/material/progress-bar';
-import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
-
-import {distinctUntilChanged, filter} from 'rxjs';
+import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopover, BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmPopoverImports} from '@spartan-ng/helm/popover';
+import {HlmProgressImports} from '@spartan-ng/helm/progress';
 
+import {BackendType} from '@app/api';
+import {Pattern} from '@app/directives';
 import {TeamsStore} from '@app/services';
+
+@Component({
+  selector: 'pu-team-select-item',
+  template: `
+    <button
+      class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors"
+      [class.bg-accent]="isSelected()"
+      (click)="selectEmit.emit()"
+      type="button">
+      <div class="h-8 w-8 rounded-md" [pu-pattern]="team().id"></div>
+      <div class="flex-1">
+        <div class="text-foreground max-w-44 truncate text-sm font-medium">
+          {{ team().name }}
+        </div>
+      </div>
+      @if (isSelected()) {
+        <ng-icon hlm size="lg" name="lucideCheck" />
+      }
+    </button>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [HlmIconImports, Pattern],
+})
+export class TeamItemComponent {
+  team = input.required<BackendType['TeamResponse']>();
+  isSelected = input.required<boolean>();
+  selectEmit = output<void>();
+}
 
 @Component({
   template: `
@@ -29,97 +56,97 @@ import {TeamsStore} from '@app/services';
       <div hlmPopoverTrigger>
         <ng-content />
       </div>
-      <div class="flex max-w-80 flex-col" *brnPopoverContent="let ctx" hlmPopoverContent>
-        <mat-form-field class="mat-select-search-input" subscriptSizing="dynamic">
-          <mat-label>{{ 'team.search' | transloco }}</mat-label>
-          <input [formControl]="searchControl" matInput />
-        </mat-form-field>
-
-        <mat-radio-group
-          class="mt-3 flex flex-col gap-2"
-          [formControl]="selectedTeamControl"
-          aria-labelledby="example-radio-group-label">
-          @if (teamsStore.personalTeam(); as personalTeam) {
-            <h2 class="font-bold">{{ 'nav.teamSelect.personal' | transloco }}</h2>
-            <mat-radio-button [value]="personalTeam.id" (click)="close()">
-              {{ personalTeam.name }}
-            </mat-radio-button>
+      <div class="grid w-80 gap-6" *brnPopoverContent="let ctx" hlmPopoverContent>
+        <div class="full" hlmInputGroup>
+          <div hlmInputGroupAddon>
+            <ng-icon hlm name="bootstrapSearch" size="sm" />
+          </div>
+          <input
+            [(ngModel)]="searchFilter"
+            [placeholder]="'general.search' | transloco"
+            hlmInputGroupInput />
+          @if ((searchFilter()?.length ?? 0) > 0) {
+            <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
+              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <span class="sr-only">{{ 'general.clear' | transloco }}</span>
+            </button>
           }
+        </div>
 
-          @let entities = teamsStore.sortedEntitiesWithoutYourPersonal();
-          @if (entities.length > 0) {
-            <h2 class="font-bold">{{ 'general.teams' | transloco }}</h2>
+        @let _teamId = teamId();
+
+        @if (teamsStore.personalTeam(); as personalTeam) {
+          <div class="grid gap-2">
+            <div class="flex items-center gap-2">
+              <ng-icon hlm size="sm" name="lucideUser" />
+              <span class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                {{ 'nav.teamSelect.personal' | transloco }}
+              </span>
+            </div>
+
+            <pu-team-select-item
+              [team]="personalTeam"
+              [isSelected]="personalTeam.id === _teamId"
+              (selectEmit)="teamId.set(personalTeam.id)" />
+          </div>
+        }
+
+        @let entities = teamsStore.sortedEntitiesWithoutYourPersonal();
+        @if (entities.length > 0) {
+          <div class="grid gap-2">
+            <div class="flex items-center gap-2">
+              <ng-icon hlm size="sm" name="lucideUsers" />
+              <span class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                {{ 'general.teams' | transloco }}
+              </span>
+            </div>
+
             @for (team of entities; track team.id) {
-              <mat-radio-button [value]="team.id" (click)="close()">
-                {{ team.name }}
-              </mat-radio-button>
+              <pu-team-select-item
+                [team]="team"
+                [isSelected]="team.id === _teamId"
+                (selectEmit)="teamId.set(team.id)" />
             }
-          }
-        </mat-radio-group>
+          </div>
+        }
 
         @if (teamsStore.isEmpty()) {
           <span>{{ 'general.nothingFound' | transloco }}</span>
         }
 
         @if (teamsStore.isPending()) {
-          <mat-progress-bar mode="indeterminate" />
+          <hlm-progress>
+            <hlm-progress-indicator />
+          </hlm-progress>
         }
       </div>
     </hlm-popover>
   `,
-  styles: `
-    @reference "#styles.css";
-
-    ::ng-deep .mtx-popover-panel {
-      @apply rounded-md border bg-neutral-50 dark:border-none dark:bg-neutral-800;
-    }
-  `,
   providers: [TeamsStore],
   selector: 'pu-team-select',
   imports: [
-    ReactiveFormsModule,
-    MatRadioButton,
-    MatLabel,
-    MatFormField,
-    MatRadioGroup,
-    MatInput,
-    MatProgressBar,
+    TeamItemComponent,
+    FormsModule,
     TranslocoPipe,
     HlmPopoverImports,
     BrnPopoverContent,
+    HlmIconImports,
+    HlmInputGroupImports,
+    HlmProgressImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamSelect {
-  readonly teamsStore = inject(TeamsStore);
+  protected readonly teamsStore = inject(TeamsStore);
 
-  public readonly popoverRef = viewChild(BrnPopover);
-
-  readonly teamId = input(undefined, {
-    transform: (teamId: string | undefined) => {
-      if (teamId) {
-        this.selectedTeamControl.setValue(teamId, {emitEvent: false});
-      }
-
-      return teamId;
-    },
-  });
+  teamId = model<string | undefined>(undefined);
 
   readonly adminOnly = input(false, {transform: booleanAttribute});
 
-  readonly selectedTeamControl = new FormControl<string>('');
-  readonly searchControl = new FormControl<string>('');
-
-  teamIdSelected = outputFromObservable(
-    this.selectedTeamControl.valueChanges.pipe(
-      takeUntilDestroyed(),
-      filter((it): it is string => !!it),
-      distinctUntilChanged(),
-    ),
-  );
+  protected readonly searchFilter = signal('');
 
   constructor() {
-    this.teamsStore.setName(this.searchControl.valueChanges);
+    this.teamsStore.setName(this.searchFilter);
     this.teamsStore.setRole(computed(() => (this.adminOnly() ? 'ADMIN' : undefined)));
 
     this.teamsStore.load(
@@ -131,9 +158,5 @@ export class TeamSelect {
         sort: ['personalUser.id_asc', 'name_asc'],
       })),
     );
-  }
-
-  close() {
-    this.popoverRef()?.close();
   }
 }
