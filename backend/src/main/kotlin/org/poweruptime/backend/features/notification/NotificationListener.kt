@@ -37,19 +37,20 @@ class NotificationListener(
     fun notificationQueueConsumer(subNotificationId: String) {
         val join = subNotificationService.getByIdJoin(subNotificationId.toULong())
 
+        val pickedUpAt = Instant.now()
+
         try {
             validateNotification(join)
 
-            val pickedUpAt = Instant.now()
             handleLatePickup(join, pickedUpAt)
 
             val update = appriseSender.send(join)
-            applyUpdate(join, update)
+            applyUpdate(join, update, pickedUpAt)
             logSentResult(join, update)
             pushService.send(join.monitor.teamId, toPushDto(join, update))
         } catch (e: Throwable) {
             logger.error(e) { "Failed to send notification $subNotificationId" }
-            applyErrorUpdate(join, e)
+            applyErrorUpdate(join, e, pickedUpAt)
         }
     }
 
@@ -86,8 +87,13 @@ class NotificationListener(
         }
     }
 
-    private fun applyUpdate(join: SubNotificationJoinMethodAndNotificationRecord, update: SubNotificationUpdate) {
+    private fun applyUpdate(
+        join: SubNotificationJoinMethodAndNotificationRecord,
+        update: SubNotificationUpdate,
+        pickedUpAt: Instant,
+    ) {
         SubNotification.update({ SubNotification.id eq join.subNotification.id }) {
+            it[SubNotification.pickedUpAt] = pickedUpAt
             update.title?.let { title -> it[SubNotification.title] = title }
             update.message?.let { message -> it[SubNotification.message] = message }
             update.error?.let { error -> it[SubNotification.error] = error }
@@ -95,11 +101,15 @@ class NotificationListener(
         }
     }
 
-    private fun applyErrorUpdate(join: SubNotificationJoinMethodAndNotificationRecord, error: Throwable) {
+    private fun applyErrorUpdate(
+        join: SubNotificationJoinMethodAndNotificationRecord,
+        error: Throwable,
+        pickedUpAt: Instant,
+    ) {
         val message = (error.message ?: error.cause?.message ?: "Unknown error")
             .abbreviate(Database.MAX_MESSAGE_LENGTH)
 
-        applyUpdate(join, SubNotificationUpdate(error = message))
+        applyUpdate(join, SubNotificationUpdate(error = message), pickedUpAt)
     }
 
     private fun logSentResult(join: SubNotificationJoinMethodAndNotificationRecord, update: SubNotificationUpdate) {

@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.notification.service
 
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.domain.Page
@@ -48,7 +49,7 @@ class SubNotificationService(private val rabbitMQService: RabbitMQService) {
             .innerJoin(NotificationMethod)
             .innerJoin(Notification)
             .innerJoin(CheckResult)
-            .innerJoin(Monitor)
+            .innerJoin(Monitor, { Notification.monitorId }, { Monitor.id})
             .selectAll()
             .where {
                 SubNotification.id eq subNotificationId
