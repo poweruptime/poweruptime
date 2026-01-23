@@ -150,7 +150,7 @@ class MonitorService(
         .findByPublicIdOrThrow(dto.id) {
             Monitor.rowToMonitorRecord(it)
         }.let { monitor ->
-            val tags = tagService.getByTeamIdAndNames(monitor.id, dto.tags)
+            val tags = tagService.getByTeamIdAndNames(monitor.teamId, dto.tags)
 
             val notificationMethodIds = NotificationMethod
                 .findByPublicId(
