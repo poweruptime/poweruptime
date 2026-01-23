@@ -65,7 +65,7 @@ export class TeamItemComponent {
             [(ngModel)]="searchFilter"
             [placeholder]="'general.search' | transloco"
             hlmInputGroupInput />
-          @if ((searchFilter()?.length ?? 0) > 0) {
+          @if (searchFilter().length > 0) {
             <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
               <ng-icon hlm name="bootstrapXLg" size="sm" />
               <span class="sr-only">{{ 'general.clear' | transloco }}</span>

@@ -22,12 +22,13 @@ import {classes} from '@spartan-ng/helm/utils';
       inputs: [
         'disabled',
         'filter',
+        'search',
         'value',
         'itemToString',
         'filterOptions',
         'isItemEqualToValue',
       ],
-      outputs: ['valueChange'],
+      outputs: ['searchChange', 'valueChange'],
     },
     {
       directive: BrnPopover,

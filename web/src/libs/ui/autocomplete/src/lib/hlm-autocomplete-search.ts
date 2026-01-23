@@ -1,12 +1,12 @@
 import {Directive} from '@angular/core';
 
-import {BrnComboboxMultiple} from '@spartan-ng/brain/combobox';
+import {BrnAutocompleteSearch} from '@spartan-ng/brain/autocomplete';
 import {provideBrnDialogDefaultOptions} from '@spartan-ng/brain/dialog';
 import {BrnPopover, provideBrnPopoverConfig} from '@spartan-ng/brain/popover';
 import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
-  selector: '[hlmComboboxMultiple],hlm-combobox-multiple',
+  selector: '[hlmAutocompleteSearch],hlm-autocomplete-search',
   providers: [
     provideBrnPopoverConfig({
       align: 'start',
@@ -18,17 +18,9 @@ import {classes} from '@spartan-ng/helm/utils';
   ],
   hostDirectives: [
     {
-      directive: BrnComboboxMultiple,
-      inputs: [
-        'disabled',
-        'filter',
-        'search',
-        'value',
-        'itemToString',
-        'filterOptions',
-        'isItemEqualToValue',
-      ],
-      outputs: ['searchChange', 'valueChange'],
+      directive: BrnAutocompleteSearch,
+      inputs: ['disabled', 'value', 'search', 'itemToString'],
+      outputs: ['valueChange', 'searchChange'],
     },
     {
       directive: BrnPopover,
@@ -45,10 +37,10 @@ import {classes} from '@spartan-ng/helm/utils';
     },
   ],
   host: {
-    'data-slot': 'combobox',
+    'data-slot': 'autocomplete',
   },
 })
-export class HlmComboboxMultiple {
+export class HlmAutocompleteSearch {
   constructor() {
     classes(() => 'block');
   }

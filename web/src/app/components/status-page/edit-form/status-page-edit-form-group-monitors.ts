@@ -51,14 +51,18 @@ interface DragEventType {
       <div class="flex items-center justify-between">
         <span class="text-xl">{{ 'general.monitors' | transloco }}</span>
         <hlm-combobox
+          [(search)]="monitorSearch"
           [formControl]="selectedMonitor"
           (valueChange)="onAdd($event)"
           autoFocus="first-tabbable">
-          <hlm-combobox-trigger class="w-full justify-between font-normal">
+          <hlm-combobox-trigger class="w-44 justify-between font-normal">
             <span hlmComboboxValue></span>
           </hlm-combobox-trigger>
           <div *brnPopoverContent hlmComboboxContent>
-            <hlm-combobox-input showTrigger="false" mode="popup" />
+            <hlm-combobox-input
+              [placeholder]="'general.search' | transloco"
+              showTrigger="false"
+              mode="popup" />
             <hlm-combobox-empty>
               @if (monitorSearch() === '') {
                 {{ 'statusPage.edit.monitors.search.noLeft' | transloco }}
@@ -102,7 +106,7 @@ interface DragEventType {
               <div class="monitor-drag-placeholder" *cdkDragPlaceholder></div>
               <div class="flex items-center justify-between text-xl" hlmCardContent>
                 <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
-                  <ng-icon hlm size="sm" name="bootstrapGripVertical" size="20" />
+                  <ng-icon hlm size="sm" name="bootstrapGripVertical" />
                   <h3>{{ monitor.name }}</h3>
                 </div>
                 <div>
@@ -171,7 +175,6 @@ interface DragEventType {
 export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
   private readonly translocoService = inject(TranslocoService);
 
-  // TODO: make it async again
   monitorSearch = model.required<string>();
   monitorSearchPending = input.required<boolean>();
   allSelectedMonitors = model.required<BackendType['MonitorMinResponse'][]>();
@@ -261,6 +264,13 @@ export class StatusPageEditFormGroupMonitors implements ControlValueAccessor {
         monitorIds.splice(index, 1);
       }
       return [...monitorIds];
+    });
+    this.allSelectedMonitors.update((monitors) => {
+      const index = monitors.findIndex((it) => it.id === monitorId);
+      if (index !== -1) {
+        monitors.splice(index, 1);
+      }
+      return [...monitors];
     });
   }
 
