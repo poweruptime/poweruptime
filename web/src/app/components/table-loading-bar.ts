@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
-
-import { HlmProgressImports} from '@spartan-ng/helm/progress';
+import {HlmProgressImports} from '@spartan-ng/helm/progress';
 
 @Component({
   template: `
