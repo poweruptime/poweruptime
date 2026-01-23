@@ -6,6 +6,7 @@ import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
+import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
 
 import type {BackendType} from '@app/api';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
@@ -17,21 +18,27 @@ import {UptimeTimeline} from '../uptime-timeline';
   template: `
     @let _monitor = monitor();
     <a
-      class="h-[120px] py-2"
+      class="h-[115px] py-2"
       [routerLink]="_monitor.id"
       [queryParamsHandling]="'merge'"
       hlmCard
       routerLinkActive="bg-gray-100 dark:bg-card/5">
-      <div class="flex flex-col items-start gap-1 rounded-lg px-2" hlmCardContent>
-        <div class="flex max-w-80 items-center gap-1">
-          <span class="rounded-4xl px-2 py-0.5" [monitor-status-text-background]="_monitor.status">
+      <div class="grid items-start gap-1 rounded-lg px-2" hlmCardContent>
+        <div class="flex items-center justify-between gap-2 px-2">
+          <h3 class="text-foreground max-w-64 truncate font-medium tracking-tight">
+            {{ _monitor.name }}
+          </h3>
+
+          <span
+            class="rounded-4xl px-2 py-0.5 text-sm"
+            [monitor-status-text-background]="_monitor.status"
+            mono>
             @if (_monitor.status === 'UP') {
               {{ _monitor.oneDayUptime }}
             } @else {
-              {{ _monitor.status }}
+              {{ _monitor.status | s_lowerCaseAllExceptFirstLetter }}
             }
           </span>
-          <span class="truncate">{{ _monitor.name }}</span>
         </div>
 
         @let _isHovering = isHovering();
@@ -96,6 +103,7 @@ import {UptimeTimeline} from '../uptime-timeline';
     HlmSkeletonImports,
     HlmCardImports,
     RouterLinkActive,
+    DfxLowerCaseExceptFirstLettersPipe,
   ],
 })
 export class MonitorCard {

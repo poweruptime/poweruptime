@@ -28,6 +28,7 @@ import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} fro
       @if (_notificationMethodId) {
         @if (notificationMethodEditStore.isFulfilled()) {
           <pu-notification-method-edit-form
+            [(searchMonitors)]="searchMonitor"
             [notificationMethod]="notificationMethodEditStore.notificationMethod()"
             [selectedTeamId]="selectedTeamStore.selectedTeamId()"
             [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
@@ -40,6 +41,7 @@ import {MonitorsSearchStore, NotificationMethodEditStore, SelectedTeamStore} fro
         }
       } @else {
         <pu-notification-method-edit-form
+          [(searchMonitors)]="searchMonitor"
           [notificationMethod]="undefined"
           [selectedTeamId]="selectedTeamStore.selectedTeamId()"
           [allMonitors]="monitorsStore.entities()"

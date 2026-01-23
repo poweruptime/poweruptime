@@ -4,66 +4,72 @@ import {
   computed,
   effect,
   forwardRef,
-  inject,
   input,
   model,
   signal,
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatProgressBar} from '@angular/material/progress-bar';
-
-import {LiveAnnouncer} from '@angular/cdk/a11y';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-import {StopPropagationDirective} from 'dfx-helper';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
 import {BackendType} from '@app/api';
 
 @Component({
   template: `
-    <mat-form-field class="w-full">
-      <mat-label>{{ 'notificationMethod.selector.selected' | transloco }}</mat-label>
-      <mat-chip-grid #chipGrid [attr.aria-label]="'notificationMethod.selector.list' | transloco">
-        @for (notificationMethod of value(); track notificationMethod.id) {
-          <a (removed)="remove(notificationMethod)" mat-chip-row>
-            {{ notificationMethod.name }}
-            <button
-              [attr.aria-label]="
-                'notificationMethod.selector.remove' | transloco: notificationMethod
-              "
-              type="button"
-              matChipRemove
-              stopPropagation>
-              <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-            </button>
-          </a>
-        }
-      </mat-chip-grid>
-      <input
-        [(ngModel)]="searchNotificationMethod"
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto"
-        [placeholder]="'notificationMethod.selector.add' | transloco"
-        name="searchNotificationMethod" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        @if (isPending()) {
-          <mat-progress-bar mode="indeterminate" />
-        }
-        @for (notificationMethod of filteredNotificationMethods(); track notificationMethod.id) {
-          <mat-option [value]="notificationMethod">{{ notificationMethod.name }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
+    <div class="grid gap-2">
+      <label hlmLabel for="notificationMethods">
+        {{ 'notificationMethod.selector.selected' | transloco }}
+      </label>
+      <hlm-combobox-multiple
+        [(search)]="searchNotificationMethod"
+        [(value)]="value"
+        [disabled]="isDisabled()"
+        [itemToString]="itemToString"
+        [isItemEqualToValue]="isItemEqualToValue">
+        <hlm-combobox-chips>
+          <ng-template hlmComboboxValues let-values>
+            @for (value of values; track $index) {
+              <hlm-combobox-chip [value]="value">{{ value.name }}</hlm-combobox-chip>
+            }
+          </ng-template>
+
+          <input
+            id="notificationMethods"
+            [placeholder]="'notificationMethod.selector.add' | transloco"
+            hlmComboboxChipInput />
+        </hlm-combobox-chips>
+        <div *brnPopoverContent hlmComboboxContent>
+          @if (showStatus()) {
+            <hlm-combobox-status>
+              @if (isPending()) {
+                <hlm-spinner />
+                Loading...
+              } @else if (searchNotificationMethod().length === 0) {
+                Type to search Notification methods.
+              } @else {
+                No matches for "{{ searchNotificationMethod() }}".
+              }
+            </hlm-combobox-status>
+          }
+          @if (!isPending()) {
+            <hlm-combobox-empty>Try a different search term.</hlm-combobox-empty>
+          }
+          <div hlmComboboxList>
+            @if (notificationMethods(); as value) {
+              @for (notificationMethod of value; track notificationMethod.id) {
+                <hlm-combobox-item [value]="notificationMethod">
+                  {{ notificationMethod.name }}
+                </hlm-combobox-item>
+              }
+            }
+          </div>
+        </div>
+      </hlm-combobox-multiple>
+    </div>
   `,
   selector: 'pu-notification-method-selector',
   providers: [
@@ -75,63 +81,35 @@ import {BackendType} from '@app/api';
   ],
   imports: [
     FormsModule,
-    MatFormField,
-    MatLabel,
-    MatChipGrid,
-    MatChipRow,
-    MatChipInput,
-    MatChipRemove,
-    MatAutocompleteTrigger,
-    MatAutocomplete,
-    MatOption,
-    MatProgressBar,
-    NgIcon,
-    StopPropagationDirective,
     TranslocoPipe,
+    HlmComboboxImports,
+    BrnPopoverContent,
+    HlmSpinnerImports,
+    HlmLabelImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationMethodSelector implements ControlValueAccessor {
-  readonly announcer = inject(LiveAnnouncer);
+  protected itemToString = (method: BackendType['NotificationMethodMinResponse']) => method.name;
+  protected isItemEqualToValue = (
+    itemValue: BackendType['NotificationMethodMinResponse'],
+    selectedValue: BackendType['NotificationMethodMinResponse'] | null,
+  ) => itemValue.id === selectedValue?.id;
 
-  notificationMethods = input.required<BackendType['NotificationMethodMinResponse'][]>();
-  isPending = input.required<boolean>();
+  protected readonly showStatus = computed(
+    () =>
+      this.isPending() ||
+      this.searchNotificationMethod().length === 0 ||
+      (this.value() && this.value()!.length === 0),
+  );
+
+  readonly notificationMethods = input.required<BackendType['NotificationMethodMinResponse'][]>();
+  readonly isPending = input.required<boolean>();
   searchNotificationMethod = model('');
 
-  readonly filteredNotificationMethods = computed(() => {
-    const selectedNotificationMethods = this.value()?.map((it) => it.id);
-    return this.notificationMethods().filter((it) => !selectedNotificationMethods?.includes(it.id));
-  });
-
-  remove(notificationMethod: BackendType['NotificationMethodMinResponse']): void {
-    this.value.update((selectedNotificationMethods) => {
-      if (!selectedNotificationMethods) {
-        return null;
-      }
-
-      const index = selectedNotificationMethods.findIndex((it) => it.id === notificationMethod.id);
-      if (index < 0) {
-        return selectedNotificationMethods;
-      }
-
-      selectedNotificationMethods.splice(index, 1);
-      void this.announcer.announce(`Removed ${notificationMethod.name}`);
-      return [...selectedNotificationMethods];
-    });
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.value.update((notificationMethods) => [
-      ...(notificationMethods ?? []),
-      event.option.value,
-    ]);
-    this.searchNotificationMethod.set('');
-    event.option.deselect();
-  }
-
-  value = signal<BackendType['NotificationMethodMinResponse'][] | null>(null);
-  isDisabled = signal(false);
-  onChange?: (it: BackendType['NotificationMethodMinResponse'][] | null) => void;
+  protected readonly value = signal<BackendType['NotificationMethodMinResponse'][] | null>(null);
+  protected readonly isDisabled = signal(false);
+  protected onChange?: (it: BackendType['NotificationMethodMinResponse'][] | null) => void;
 
   constructor() {
     effect(() => {

@@ -30,7 +30,7 @@ import {MonitorCard} from './monitor-card';
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
       maxBufferPx="1500"
-      itemSize="130">
+      itemSize="123">
       <pu-monitor-card
         *cdkVirtualFor="let monitor of entities(); trackBy: trackById"
         [monitor]="monitor"
@@ -38,10 +38,10 @@ import {MonitorCard} from './monitor-card';
 
       @if (isPending()) {
         @for (i of 8 | repeat; track i) {
-          <div style="height: 130px">
+          <div style="height: 123px">
             <a
               class="flex animate-pulse flex-col items-start space-y-4 rounded-lg border border-solid border-black p-4 dark:border-gray-500"
-              style="height: 120px">
+              style="height: 115px">
               <div class="grid grid-cols-3 gap-6">
                 <hlm-skeleton class="col-span-8 h-5" />
               </div>
@@ -73,7 +73,7 @@ import {MonitorCard} from './monitor-card';
 
       pu-monitor-card {
         display: block;
-        height: 130px;
+        height: 123px;
       }
     }
   `,

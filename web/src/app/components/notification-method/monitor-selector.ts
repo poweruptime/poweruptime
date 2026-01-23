@@ -4,64 +4,72 @@ import {
   computed,
   effect,
   forwardRef,
-  inject,
   input,
   model,
   signal,
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatProgressBar} from '@angular/material/progress-bar';
-
-import {LiveAnnouncer} from '@angular/cdk/a11y';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
-import {StopPropagationDirective} from 'dfx-helper';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
-import {BackendType} from '../../api';
+import {BackendType} from '@app/api';
 
 @Component({
   template: `
-    <mat-form-field class="w-full">
-      <mat-label>{{ 'monitor.selector.selected' | transloco }}</mat-label>
-      <mat-chip-grid #chipGrid [attr.aria-label]="'monitor.selector.list' | transloco">
-        @for (monitor of value(); track monitor.id) {
-          <a (removed)="remove(monitor)" mat-chip-row>
-            {{ monitor.name }}
-            <button
-              [attr.aria-label]="'monitor.selector.remove' | transloco: monitor"
-              type="button"
-              matChipRemove
-              stopPropagation>
-              <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-            </button>
-          </a>
-        }
-      </mat-chip-grid>
-      <input
-        [(ngModel)]="searchMonitor"
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto"
-        [placeholder]="'monitor.selector.add' | transloco"
-        name="searchNotificationMethod" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        @if (isPending()) {
-          <mat-progress-bar mode="indeterminate" />
-        }
-        @for (monitor of filteredMonitors(); track monitor.id) {
-          <mat-option [value]="monitor">{{ monitor.name }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
+    <div class="grid gap-2">
+      <label hlmLabel for="notificationMethods">
+        {{ 'monitor.selector.selected' | transloco }}
+      </label>
+      <hlm-combobox-multiple
+        [(search)]="searchMonitor"
+        [(value)]="value"
+        [disabled]="isDisabled()"
+        [itemToString]="itemToString"
+        [isItemEqualToValue]="isItemEqualToValue">
+        <hlm-combobox-chips>
+          <ng-template hlmComboboxValues let-values>
+            @for (value of values; track $index) {
+              <hlm-combobox-chip [value]="value">{{ value.name }}</hlm-combobox-chip>
+            }
+          </ng-template>
+
+          <input
+            id="notificationMethods"
+            [placeholder]="'monitor.selector.add' | transloco"
+            hlmComboboxChipInput />
+        </hlm-combobox-chips>
+        <div *brnPopoverContent hlmComboboxContent>
+          @if (showStatus()) {
+            <hlm-combobox-status>
+              @if (isPending()) {
+                <hlm-spinner />
+                Loading...
+              } @else if (searchMonitor().length === 0) {
+                Type to search Monitors.
+              } @else {
+                No matches for "{{ searchMonitor() }}".
+              }
+            </hlm-combobox-status>
+          }
+          @if (!isPending()) {
+            <hlm-combobox-empty>Try a different search term.</hlm-combobox-empty>
+          }
+          <div hlmComboboxList>
+            @if (monitors(); as value) {
+              @for (monitor of value; track monitor.id) {
+                <hlm-combobox-item [value]="monitor">
+                  {{ monitor.name }}
+                </hlm-combobox-item>
+              }
+            }
+          </div>
+        </div>
+      </hlm-combobox-multiple>
+    </div>
   `,
   selector: 'pu-monitor-selector',
   providers: [
@@ -73,60 +81,35 @@ import {BackendType} from '../../api';
   ],
   imports: [
     FormsModule,
-    MatFormField,
-    MatLabel,
-    MatChipGrid,
-    MatChipRow,
-    MatChipInput,
-    MatChipRemove,
-    MatAutocompleteTrigger,
-    MatAutocomplete,
-    MatOption,
-    MatProgressBar,
-    NgIcon,
-    StopPropagationDirective,
     TranslocoPipe,
+    HlmComboboxImports,
+    BrnPopoverContent,
+    HlmSpinnerImports,
+    HlmLabelImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorSelector implements ControlValueAccessor {
-  readonly announcer = inject(LiveAnnouncer);
+  protected itemToString = (it: BackendType['MonitorMinResponse']) => it.name;
+  protected isItemEqualToValue = (
+    itemValue: BackendType['MonitorMinResponse'],
+    selectedValue: BackendType['MonitorMinResponse'] | null,
+  ) => itemValue.id === selectedValue?.id;
 
-  monitors = input.required<BackendType['MonitorMinResponse'][]>();
-  isPending = input.required<boolean>();
+  protected readonly showStatus = computed(
+    () =>
+      this.isPending() ||
+      this.searchMonitor().length === 0 ||
+      (this.value() && this.value()!.length === 0),
+  );
+
+  readonly monitors = input.required<BackendType['MonitorMinResponse'][]>();
+  readonly isPending = input.required<boolean>();
   searchMonitor = model('');
 
-  readonly filteredMonitors = computed(() => {
-    const selectedMonitors = this.value()?.map((it) => it.id);
-    return this.monitors().filter((it) => !selectedMonitors?.includes(it.id));
-  });
-
-  remove(monitor: BackendType['MonitorMinResponse']): void {
-    this.value.update((selectedMonitors) => {
-      if (!selectedMonitors) {
-        return null;
-      }
-
-      const index = selectedMonitors.findIndex((it) => it.id === monitor.id);
-      if (index < 0) {
-        return selectedMonitors;
-      }
-
-      selectedMonitors.splice(index, 1);
-      void this.announcer.announce(`Removed ${monitor.name}`);
-      return [...selectedMonitors];
-    });
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.value.update((monitors) => [...(monitors ?? []), event.option.value]);
-    this.searchMonitor.set('');
-    event.option.deselect();
-  }
-
-  value = signal<BackendType['MonitorMinResponse'][] | null>(null);
-  isDisabled = signal(false);
-  onChange?: (it: BackendType['MonitorMinResponse'][] | null) => void;
+  protected readonly value = signal<BackendType['MonitorMinResponse'][] | null>(null);
+  protected readonly isDisabled = signal(false);
+  protected onChange?: (it: BackendType['MonitorMinResponse'][] | null) => void;
 
   constructor() {
     effect(() => {

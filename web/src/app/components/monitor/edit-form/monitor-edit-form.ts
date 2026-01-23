@@ -1,39 +1,38 @@
 import {LowerCasePipe} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, inject, input, model} from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
-import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-
-import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatProgressBar} from '@angular/material/progress-bar';
-import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
+import {ChangeDetectionStrategy, Component, inject, input, model} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
-import {distinctUntilChanged, map} from 'rxjs';
+import {distinctUntilChanged} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmProgressImports} from '@spartan-ng/helm/progress';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
+import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {HlmTextareaImports} from '@spartan-ng/helm/textarea';
+import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
-import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 import {NANO_ID_SMALL_LENGTH, nanoid} from '@app/util';
 
-import {NotificationMethodSelector} from '../';
 import {TagSelector} from '../../tag-selector';
+import {NotificationMethodSelector} from '../notification-method-selector';
+import {MonitorEditFormData} from './monitor-edit-form-data';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
-import {MonitorEditFormDnsData} from './monitor-edit-form-dns-data';
-import {MonitorEditFormHttpData} from './monitor-edit-form-http-data';
-import {MonitorEditFormPingData} from './monitor-edit-form-ping-data';
-import {MonitorEditFormPushData} from './monitor-edit-form-push-data';
-import {MonitorEditFormSSLCertificateData} from './monitor-edit-form-ssl-certificate-data';
 import {MonitorEditNotificationMethodsEmpty} from './monitor-edit-notification-methods-empty';
 import {
   TestIntervalUnits,
@@ -45,199 +44,267 @@ import {
   testIntervalSecondsValidators,
 } from './test-interval';
 
+const times = [
+  {
+    value: 'seconds',
+    viewValue: 's',
+  },
+  {
+    value: 'minutes',
+    viewValue: 'm',
+  },
+  {
+    value: 'hours',
+    viewValue: 'h',
+  },
+  {
+    value: 'days',
+    viewValue: 'd',
+  },
+];
+
 @Component({
   template: `
     <form
-      class="mb-6 grid gap-6 lg:grid-cols-3"
+      class="mb-6 grid gap-8 lg:grid-cols-3"
       id="form"
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      <div class="col-span-2 grid grid-cols-6 gap-2">
-        <mat-form-field class="col-span-6 md:col-span-4">
-          <mat-label>{{ 'general.name' | transloco }}</mat-label>
-          <input matInput formControlName="name" />
-
-          @let nameErrors = form.controls.name.errors;
-          @if (nameErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (nameErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-          }
-          @if (nameErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field class="col-span-6 md:col-span-2">
-          <mat-label>{{ 'general.type' | transloco }}</mat-label>
-          <mat-select formControlName="type">
-            <mat-option class="pt-1">
-              <ngx-mat-select-search [formControl]="typeFilterControl">
-                <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
-              </ngx-mat-select-search>
-            </mat-option>
-            @for (type of filteredTypes(); track type.value) {
-              <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
-            }
-          </mat-select>
-          @let typeErrors = form.controls.type.errors;
-          @if (typeErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field class="col-span-6 md:col-span-6">
-          <mat-label>{{ 'general.description' | transloco }}</mat-label>
-          <textarea
-            matInput
-            formControlName="description"
-            cdkTextareaAutosize
-            cdkAutosizeMinRows="3"
-            cdkAutosizeMaxRows="12"></textarea>
-        </mat-form-field>
-
-        <mat-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
-          <mat-label>
-            {{
-              'monitor.edit.interval'
-                | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
-            }}
-          </mat-label>
-          <div class="flex">
-            <input matInput type="number" step="1" formControlName="testInterval" />
-            <div class="w-12 ps-1">
-              <mat-select formControlName="testIntervalUnit">
-                <mat-select-trigger>
-                  {{ form.controls.testIntervalUnit.getRawValue()[0] | lowercase }}
-                </mat-select-trigger>
-                @for (time of times; track time.value) {
-                  <mat-option [value]="time.value">{{ time.value }}</mat-option>
-                }
-              </mat-select>
-            </div>
-          </div>
-          @let testIntervalErrors = form.controls.testInterval.errors;
-          @if (testIntervalErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (testIntervalErrors?.['min']; as min) {
-            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-          }
-          @if (testIntervalErrors?.['max']; as max) {
-            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-          }
-          @if (testIntervalErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field class="col-span-6 md:col-span-3 2xl:col-span-1">
-          <mat-label>{{ 'monitor.edit.retries' | transloco }}</mat-label>
-          <input matInput type="number" formControlName="retries" />
-
-          @let retriesErrors = form.controls.retries.errors;
-          @if (retriesErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-          }
-          @if (retriesErrors?.['min']; as min) {
-            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-          }
-          @if (retriesErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field class="col-span-6 2xl:col-span-3">
-          <mat-label>{{ 'monitor.edit.resendAfter' | transloco }}</mat-label>
-          <input matInput type="number" formControlName="resendAfter" />
-          <span class="ms-2 break-keep" matTextSuffix>failed checks</span>
-          @let resendAfterErrors = form.controls.resendAfter.errors;
-          @if (resendAfterErrors?.['min']; as min) {
-            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-          }
-          @if (resendAfterErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-          }
-        </mat-form-field>
-
-        <label class="col-span-6 flex items-center" hlmLabel for="upsideDown">
-          <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
-          {{ 'monitor.edit.upsideDown' | transloco }}
-        </label>
-
-        <section class="col-span-6 mt-8" hlmCard>
-          @let typeValue = form.controls.type.getRawValue();
+      <div class="col-span-2 grid grid-cols-6 gap-8">
+        <section class="col-span-6" hlmCard>
           <div hlmCardHeader>
-            <h3 hlmCardTitle>
-              @if (typeValue !== '') {
-                {{ typeValue | monitorCheckerDataValueLabel | transloco }} -
-              }
-              {{ 'general.data' | transloco }}
-            </h3>
+            <div class="flex items-center gap-2">
+              <ng-icon name="bootstrapGlobe" />
+              <h3 hlmCardTitle>Basic Configuration</h3>
+            </div>
+            <p hlmCardDescription>Configure the monitor name and type</p>
           </div>
-          <div hlmCardContent>
-            @if (typeValue !== '') {
-              @defer (when typeValue === 'DNS') {
-                @if (typeValue === 'DNS') {
-                  <pu-monitor-edit-form-dns-data />
-                }
+          <div class="grid grid-cols-6 gap-6" hlmCardContent>
+            <hlm-form-field class="col-span-6 md:col-span-4">
+              <label hlmLabel for="name">
+                {{ 'general.name' | transloco }}
+              </label>
+              <div hlmInputGroup>
+                <input
+                  id="name"
+                  autocomplete="off"
+                  hlmInputGroupInput
+                  formControlName="name"
+                  type="text"
+                  placeholder="Monitor #1" />
+              </div>
+              @let nameErrors = form.controls.name.errors;
+              @if (nameErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
               }
+              @if (nameErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+              @if (nameErrors?.['maxlength']; as maxlength) {
+                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              }
+            </hlm-form-field>
 
-              @defer (when typeValue === 'HTTP') {
-                @if (typeValue === 'HTTP') {
-                  <pu-monitor-edit-form-http-data />
-                }
-              }
+            <hlm-form-field class="col-span-6 md:col-span-2">
+              <label hlmLabel for="type">
+                {{ 'general.type' | transloco }}
+              </label>
+              <brn-select
+                id="type"
+                [placeholder]="'general.type' | transloco"
+                formControlName="type">
+                <hlm-select-trigger class="w-full">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  @for (type of MONITOR_CHECKER_DATA_TYPES; track type.value) {
+                    <hlm-option [value]="type.value">{{ type.label | transloco }}</hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
 
-              @defer (when typeValue === 'PING') {
-                @if (typeValue === 'PING') {
-                  <pu-monitor-edit-form-ping-data />
-                }
+              @let typeErrors = form.controls.type.errors;
+              @if (typeErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
               }
+            </hlm-form-field>
 
-              @defer (when typeValue === 'PUSH') {
-                @if (typeValue === 'PUSH') {
-                  <pu-monitor-edit-form-push-data />
-                }
-              }
-
-              @defer (when typeValue === 'SSL_CERTIFICATE') {
-                @if (typeValue === 'SSL_CERTIFICATE') {
-                  <pu-monitor-edit-form-ssl-certificate-data />
-                }
-              }
-            } @else {
-              <span>{{ 'monitor.edit.selectTypeToContinue' | transloco }}</span>
-            }
+            <hlm-form-field class="col-span-6">
+              <label hlmLabel for="description">{{ 'general.description' | transloco }}</label>
+              <textarea
+                class="w-full"
+                id="description"
+                hlmTextarea
+                placeholder="Optional Description for this monitor..."
+                formControlName="description"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+                cdkAutosizeMaxRows="12"></textarea>
+            </hlm-form-field>
           </div>
         </section>
+
+        <section class="col-span-6" hlmCard>
+          <div hlmCardHeader>
+            <div class="flex items-center gap-2">
+              <ng-icon name="lucideClock" />
+              <h3 hlmCardTitle>Scheduling & Behavior</h3>
+            </div>
+            <p hlmCardDescription>Configure check frequency and retry behavior</p>
+          </div>
+          <div class="grid grid-cols-6 gap-6" hlmCardContent>
+            <hlm-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
+              <label hlmLabel for="testInterval">
+                {{
+                  'monitor.edit.interval'
+                    | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
+                }}
+              </label>
+              <div hlmInputGroup>
+                <input
+                  id="testInterval"
+                  hlmInputGroupInput
+                  type="number"
+                  step="1"
+                  formControlName="testInterval" />
+
+                <div hlmInputGroupAddon align="inline-end">
+                  <button
+                    class="!pr-1.5 text-xs"
+                    [hlmDropdownMenuTrigger]="testIntervalUnitMenu"
+                    type="button"
+                    hlmInputGroupButton
+                    variant="ghost"
+                    align="end">
+                    {{ form.controls.testIntervalUnit.getRawValue()[0] | lowercase }}
+                    <ng-icon name="lucideChevronDown" />
+                  </button>
+                </div>
+              </div>
+
+              <hlm-hint>How often to check</hlm-hint>
+
+              @let testIntervalErrors = form.controls.testInterval.errors;
+              @if (testIntervalErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+              @if (testIntervalErrors?.['min']; as min) {
+                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              }
+              @if (testIntervalErrors?.['max']; as max) {
+                <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+              }
+              @if (testIntervalErrors?.['pattern']) {
+                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              }
+
+              <ng-template #testIntervalUnitMenu>
+                <hlm-dropdown-menu class="w-48">
+                  @for (time of times; track time.value) {
+                    <button
+                      (click)="form.controls.testIntervalUnit.patchValue($any(time.value))"
+                      type="button"
+                      hlmDropdownMenuItem>
+                      {{ time.value }}
+                    </button>
+                  }
+                </hlm-dropdown-menu>
+              </ng-template>
+            </hlm-form-field>
+
+            <hlm-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
+              <label hlmLabel for="retries">{{ 'monitor.edit.retries' | transloco }}</label>
+
+              <input hlmInput formControlName="retries" type="number" />
+
+              <hlm-hint>Retry before alerting</hlm-hint>
+
+              @let retriesErrors = form.controls.retries.errors;
+              @if (retriesErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+              @if (retriesErrors?.['min']; as min) {
+                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              }
+              @if (retriesErrors?.['pattern']) {
+                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              }
+            </hlm-form-field>
+
+            <hlm-form-field class="col-span-6 2xl:col-span-2">
+              <label hlmLabel for="resendAfter">{{ 'monitor.edit.resendAfter' | transloco }}</label>
+              <div hlmInputGroup>
+                <input
+                  id="resendAfter"
+                  hlmInputGroupInput
+                  type="number"
+                  step="1"
+                  formControlName="resendAfter" />
+
+                <span class="break-keep" hlmInputGroupAddon align="inline-end">failed checks</span>
+              </div>
+
+              <hlm-hint>Notification resending</hlm-hint>
+
+              @let resendAfterErrors = form.controls.resendAfter.errors;
+              @if (resendAfterErrors?.['min']; as min) {
+                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              }
+              @if (resendAfterErrors?.['pattern']) {
+                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              }
+            </hlm-form-field>
+
+            <hlm-separator class="col-span-6" />
+
+            <label class="col-span-6 flex items-center" hlmLabel for="upsideDown">
+              <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
+              {{ 'monitor.edit.upsideDown' | transloco }}
+            </label>
+          </div>
+        </section>
+
+        <pu-monitor-edit-form-data class="col-span-6" [type]="form.controls.type.getRawValue()" />
       </div>
 
-      <div class="col-span-1 flex flex-col gap-6">
+      <div class="col-span-1 flex flex-col gap-8">
         <section hlmCard>
           <div hlmCardHeader>
             <h3 hlmCardTitle>{{ 'general.notificationMethods' | transloco }}</h3>
           </div>
           <div hlmCardContent>
-            @if (allNotificationMethods().length === 0) {
+            @if (
+              allNotificationMethods().length === 0 &&
+              searchNotificationMethod().length === 0 &&
+              !isNotificationMethodsSearchPending()
+            ) {
               <pu-monitor-edit-notification-methods-empty />
             } @else {
-              <pu-notification-method-selector
-                [(searchNotificationMethod)]="searchNotificationMethod"
-                [notificationMethods]="allNotificationMethods()"
-                [isPending]="isNotificationMethodsSearchPending()"
-                formControlName="notificationMethods" />
+              <div class="grid gap-6">
+                <pu-notification-method-selector
+                  [(searchNotificationMethod)]="searchNotificationMethod"
+                  [notificationMethods]="allNotificationMethods()"
+                  [isPending]="isNotificationMethodsSearchPending()"
+                  formControlName="notificationMethods" />
 
-              @if (!monitor() && isDefaultSelectedNotificationMethodsPending()) {
-                <mat-progress-bar mode="indeterminate" />
-              }
+                @if (!monitor() && isDefaultSelectedNotificationMethodsPending()) {
+                  <hlm-progress>
+                    <hlm-progress-indicator />
+                  </hlm-progress>
+                }
 
-              <a hlmBtn variant="link" routerLink="../../notification-methods/new" target="_blank">
-                {{ 'notificationMethod.edit.create' | transloco }}
-                <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
-              </a>
+                <div>
+                  <a
+                    hlmBtn
+                    variant="link"
+                    routerLink="../../notification-methods/new"
+                    target="_blank">
+                    {{ 'notificationMethod.edit.create' | transloco }}
+                    <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                  </a>
+                </div>
+              </div>
             }
           </div>
         </section>
@@ -262,36 +329,30 @@ import {
   selector: 'pu-monitor-edit-form',
   providers: [MonitorEditFormDataService],
   imports: [
+    SaveButton,
+    NotificationMethodSelector,
+    TagSelector,
+    MonitorEditNotificationMethodsEmpty,
     ReactiveFormsModule,
     LowerCasePipe,
     RouterLink,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatError,
-    MatSelect,
-    MatSelectTrigger,
-    MatOption,
-    MatSuffix,
-    MatProgressBar,
     CdkTextareaAutosize,
     TranslocoPipe,
-    NgxMatSelectSearchModule,
-    SaveButton,
-    NotificationMethodSelector,
-    MonitorEditFormDnsData,
-    MonitorEditFormHttpData,
-    MonitorEditFormSSLCertificateData,
-    MonitorEditFormPingData,
-    MonitorEditFormPushData,
-    MonitorCheckerDataValueLabelPipe,
-    TagSelector,
-    MonitorEditNotificationMethodsEmpty,
     HlmCardImports,
     HlmButtonImports,
     HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
+    HlmProgressImports,
+    HlmInputGroupImports,
+    HlmFormFieldImports,
+    HlmSelectImports,
+    BrnSelectImports,
+    HlmTextareaImports,
+    HlmSeparatorImports,
+    HlmDropdownMenuImports,
+    HlmInputImports,
+    MonitorEditFormData,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -300,37 +361,14 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   BackendType['CreateMonitorDto'],
   BackendType['UpdateMonitorDto']
 > {
+  protected readonly MONITOR_CHECKER_DATA_TYPES = MONITOR_CHECKER_DATA_TYPES;
+  protected readonly times = times;
+
   private readonly monitorEditFormDataService = inject(MonitorEditFormDataService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  readonly times = [
-    {
-      value: 'seconds',
-      viewValue: 's',
-    },
-    {
-      value: 'minutes',
-      viewValue: 'm',
-    },
-    {
-      value: 'hours',
-      viewValue: 'h',
-    },
-    {
-      value: 'days',
-      viewValue: 'd',
-    },
-  ];
-
-  readonly typeFilterControl = new FormControl<string>('');
-  readonly typeFilter = toSignal(this.typeFilterControl.valueChanges.pipe(map((it) => it ?? '')), {
-    initialValue: '',
-  });
-
-  readonly filteredTypes = computed(() => {
-    const filter = this.typeFilter().trim().toLowerCase();
-    return MONITOR_CHECKER_DATA_TYPES.filter((it) =>
-      it.value.trim().toLowerCase().includes(filter),
-    );
+  private readonly typeQueryParam = injectQueryParams<MonitorDataType | ''>('type', {
+    defaultValue: '',
   });
 
   override form = this.fb.nonNullable.group({
@@ -345,7 +383,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
       ],
     ],
     description: [undefined as string | undefined],
-    type: ['' as MonitorDataType | '', [Validators.required]],
+    type: [this.typeQueryParam() as MonitorDataType | '', [Validators.required]],
     testIntervalUnit: ['minutes' as TestIntervalUnits, [Validators.required]],
     testInterval: [
       1,
@@ -431,11 +469,19 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   constructor() {
     super();
 
+    const router = inject(Router);
+
     this.form.controls.type.valueChanges
       .pipe(takeUntilDestroyed(), distinctUntilChanged())
-      .subscribe((it) => {
-        if (it !== '') {
-          this.setFormCheckerType(it);
+      .subscribe((type) => {
+        if (type !== '') {
+          void router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+              type,
+            },
+          });
+          this.setFormCheckerType(type);
         }
       });
 
@@ -452,7 +498,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
     };
   }
 
-  private setFormCheckerType(type: BackendType['MonitorData']['_type']) {
+  private setFormCheckerType(type: MonitorDataType | '') {
     // @ts-expect-error Checker Form Control
     this.form.setControl('data', this.monitorEditFormDataService.formCheckerFactory(type));
 

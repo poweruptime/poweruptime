@@ -24,7 +24,7 @@ import {GroupedTimezones} from '@app/services';
       <div class="flex flex-col gap-6">
         <div hlmCardHeader>
           <div class="flex items-center gap-2">
-            <ng-icon name="bootstrapGlobe" helm />
+            <ng-icon name="bootstrapGlobe" />
             <h3 hlmCardTitle>{{ 'general.general' | transloco }}</h3>
           </div>
           <p hlmCardDescription>Configure your basic application settings</p>

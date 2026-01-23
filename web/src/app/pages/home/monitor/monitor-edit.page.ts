@@ -16,12 +16,9 @@ import {
 @Component({
   template: `
     @let _isEditing = isEditing();
-    <div class="flex flex-col gap-4">
-      @if (!_isEditing) {
-        <h1 class="text-3xl">{{ 'monitor.edit.create' | transloco }}</h1>
-      }
 
-      @if (monitorDetailStore.isFulfilled() || !_isEditing) {
+    @if (_isEditing) {
+      @if (monitorDetailStore.isFulfilled()) {
         <pu-monitor-edit-form
           class="mt-4"
           [(searchNotificationMethod)]="searchNotificationMethod"
@@ -36,14 +33,39 @@ import {
           "
           [allTags]="tagsStore.entities()"
           [isTagsSearchPending]="tagsStore.isPending()"
-          (submitCreate)="monitorEditStore.create($event)"
           (submitUpdate)="monitorEditStore.update($event)" />
       } @else {
         <hlm-skeleton class="h-12 w-64" />
 
         <pu-monitor-edit-form-placeholder />
       }
-    </div>
+    } @else {
+      <div class="mx-auto grid max-w-7xl gap-4 pb-8 sm:px-6 lg:px-8">
+        <h1 class="text-3xl">{{ 'monitor.edit.create' | transloco }}</h1>
+
+        @if (monitorDetailStore.isFulfilled() || !_isEditing) {
+          <pu-monitor-edit-form
+            class="mt-4"
+            [(searchNotificationMethod)]="searchNotificationMethod"
+            [(searchTag)]="searchTag"
+            [monitor]="undefined"
+            [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+            [allNotificationMethods]="notificationMethodsStore.entities()"
+            [isNotificationMethodsSearchPending]="notificationMethodsStore.isPending()"
+            [defaultNotificationMethods]="defaultSelectedNotificationMethodsStore.entities()"
+            [isDefaultSelectedNotificationMethodsPending]="
+              defaultSelectedNotificationMethodsStore.isPending()
+            "
+            [allTags]="tagsStore.entities()"
+            [isTagsSearchPending]="tagsStore.isPending()"
+            (submitCreate)="monitorEditStore.create($event)" />
+        } @else {
+          <hlm-skeleton class="h-12 w-64" />
+
+          <pu-monitor-edit-form-placeholder />
+        }
+      </div>
+    }
   `,
   selector: 'pu-monitor-edit-page',
   standalone: true,

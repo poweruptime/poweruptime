@@ -27,7 +27,8 @@ import {NgIcon} from '@ng-icons/core';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
-import {Database} from '../../../api';
+import {Database} from '@app/api';
+
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({

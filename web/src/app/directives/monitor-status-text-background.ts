@@ -1,4 +1,4 @@
-import {Directive, input} from '@angular/core';
+import {Directive, booleanAttribute, input} from '@angular/core';
 
 import {BackendType} from '@app/api';
 
@@ -9,7 +9,9 @@ import {MonitorStatusText} from './monitor-status-text';
   standalone: true,
   selector: '[monitor-status-text-background]',
   host: {
-    class: 'border border-1 font-bold',
+    class: 'border border-1',
+    '[class.font-bold]': '!mono()',
+    '[class.font-mono]': 'mono()',
     // UP (green)
     '[class.border-emerald-200]': 'status() === "UP"',
     '[class.dark:border-emerald-800]': 'status() === "UP"',
@@ -35,4 +37,6 @@ export class MonitorStatusTextBackground {
   status = input.required<BackendType['MonitorResponse']['status']>({
     alias: 'monitor-status-text-background',
   });
+
+  mono = input(false, {transform: booleanAttribute});
 }
