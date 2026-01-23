@@ -49,7 +49,7 @@ class SubNotificationService(private val rabbitMQService: RabbitMQService) {
             .innerJoin(NotificationMethod)
             .innerJoin(Notification)
             .innerJoin(CheckResult)
-            .innerJoin(Monitor, { Notification.monitorId }, { Monitor.id})
+            .innerJoin(Monitor, { Notification.monitorId }, { Monitor.id })
             .selectAll()
             .where {
                 SubNotification.id eq subNotificationId
