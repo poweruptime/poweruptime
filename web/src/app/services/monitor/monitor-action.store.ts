@@ -25,7 +25,7 @@ export const MonitorActionStore = signalStore(
       confirmDialog$ = injectConfirmDialog$(),
       monitorsStore = inject(InfiniteMonitorsStore),
       monitorsSearchStore = inject(MonitorsSearchStore, {optional: true}),
-      monitorDetailStore = inject(MonitorDetailStore),
+      monitorDetailStore = inject(MonitorDetailStore, {optional: true}),
     ) => {
       const undelete = (id: string) =>
         api.delete('/v1/monitor/{id}/undo', {params: {path: {id}}}).pipe(
@@ -63,7 +63,7 @@ export const MonitorActionStore = signalStore(
 
                       monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
-                      monitorDetailStore.updateMonitor(monitor);
+                      monitorDetailStore?.updateMonitor(monitor);
                     },
                     error: (error) => patchState(store, setError(error)),
                   }),
@@ -90,7 +90,7 @@ export const MonitorActionStore = signalStore(
 
                       monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
-                      monitorDetailStore.updateMonitor(monitor);
+                      monitorDetailStore?.updateMonitor(monitor);
                     },
                     error: (error) => patchState(store, setError(error)),
                   }),
@@ -117,7 +117,7 @@ export const MonitorActionStore = signalStore(
 
                       monitorsStore.updateMonitor(monitor);
                       monitorsSearchStore?.updateMonitor(monitor);
-                      monitorDetailStore.updateMonitor(monitor);
+                      monitorDetailStore?.updateMonitor(monitor);
                     },
                     error: (error) => patchState(store, setError(error)),
                   }),

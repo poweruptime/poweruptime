@@ -10,15 +10,23 @@ import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
 
 import type {BackendType} from '@app/api';
 import {MonitorStatusTextBackground, Tag} from '@app/directives';
-import {LastCheckResultsStore} from '@app/services';
+import {LastCheckResultsStore, MonitorActionStore} from '@app/services';
 
 import {UptimeTimeline} from '../uptime-timeline';
+import { HlmDropdownMenuImports
+} from '@spartan-ng/helm/dropdown-menu';
+import { HlmIconImports} from '@spartan-ng/helm/icon';
+import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
 
 @Component({
   template: `
     @let _monitor = monitor();
     <a
       class="h-[115px] py-2"
+      [hlmContextMenuTrigger]="menu"
+      align="start"
+      side="right"
       [routerLink]="_monitor.id"
       [queryParamsHandling]="'merge'"
       hlmCard
@@ -83,6 +91,54 @@ import {UptimeTimeline} from '../uptime-timeline';
         }
       </div>
     </a>
+    <ng-template #menu>
+      <hlm-dropdown-menu class="w-52">
+        <hlm-dropdown-menu-group>
+          @if (_monitor.status === 'PAUSED') {
+            <button
+              (click)="monitorActionStore.start(_monitor.id)"
+              hlmDropdownMenuItem
+              type="button">
+              <ng-icon hlm size="sm" name="bootstrapPlayBtn" />
+              {{ 'general.start' | transloco }}
+            </button>
+          } @else {
+            <button
+              (click)="monitorActionStore.pause(_monitor.id)"
+              hlmDropdownMenuItem
+              type="button">
+              <ng-icon hlm size="sm" name="bootstrapPauseBtn" />
+              {{ 'general.pause' | transloco }}
+            </button>
+          }
+          <button
+            (click)="monitorActionStore.clone({id: _monitor.id})"
+            hlmDropdownMenuItem
+            type="button">
+            <ng-icon hlm name="bootstrapCopy" size="sm" />
+            <span>{{ 'general.copy' | transloco }}</span>
+          </button>
+          <button
+            class="hover:bg-destructive/10 dark:hover:bg-destructive/40"
+            (click)="monitorActionStore.delete(_monitor.id)"
+            type="button"
+            hlmDropdownMenuItem
+            variant="destructive">
+            <ng-icon hlm name="lucideTrash" size="sm" />
+            <span>
+                        {{ 'general.delete' | transloco }}
+                      </span>
+          </button>
+        </hlm-dropdown-menu-group>
+        <hlm-dropdown-menu-separator />
+        <hlm-dropdown-menu-group>
+          <a hlmDropdownMenuItem href="/public/m/{{ _monitor.id }}" target="_blank">
+            <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
+            <span>{{ 'monitor.details.openPublic' | transloco }}</span>
+          </a>
+        </hlm-dropdown-menu-group>
+      </hlm-dropdown-menu>
+    </ng-template>
   `,
   styles: `
     .badge-container {
@@ -95,21 +151,27 @@ import {UptimeTimeline} from '../uptime-timeline';
   `,
   selector: 'pu-monitor-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [MonitorActionStore],
   imports: [
     RouterLink,
     UptimeTimeline,
     MonitorStatusTextBackground,
     Tag,
-    HlmSkeletonImports,
-    HlmCardImports,
     RouterLinkActive,
     DfxLowerCaseExceptFirstLettersPipe,
-  ],
+    TranslocoPipe,
+    HlmSkeletonImports,
+    HlmCardImports,
+    HlmContextMenuImports,
+    HlmDropdownMenuImports,
+    HlmIconImports,
+  ]
 })
 export class MonitorCard {
   monitor = input.required<BackendType['MonitorResponse']>();
 
   protected checkResultsStore = inject(LastCheckResultsStore);
+  protected readonly monitorActionStore = inject(MonitorActionStore);
 
   hoveringTrigger = signal(false);
   hoveringTrigger$ = toObservable(this.hoveringTrigger);
