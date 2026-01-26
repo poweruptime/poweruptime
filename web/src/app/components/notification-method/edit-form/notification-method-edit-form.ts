@@ -67,7 +67,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
       @let _typeValue = typeValue();
 
       <div class="grid gap-8">
-        <div class="grid grid-cols-12 gap-2">
+        <div class="col-span-6 grid grid-cols-8 gap-2">
           <mat-form-field class="col-span-8 md:col-span-6">
             <mat-label>{{ 'general.name' | transloco }}</mat-label>
             <input matInput formControlName="name" />
@@ -84,7 +84,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             }
           </mat-form-field>
 
-          <mat-form-field class="col-span-4 md:col-span-3">
+          <mat-form-field class="col-span-8 md:col-span-2">
             <mat-label>{{ 'general.type' | transloco }}</mat-label>
             <mat-select formControlName="type">
               <mat-option class="pt-1">

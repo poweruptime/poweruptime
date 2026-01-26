@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {
@@ -17,62 +17,76 @@ import {
 
 @Component({
   template: `
-    <form
-      class="flex flex-col"
-      id="password-form"
-      #formRef
-      [formGroup]="form"
-      (ngSubmit)="submit()">
-      <mat-form-field>
-        <mat-label>{{ 'profile.password.currentPassword' | transloco }}</mat-label>
-        <input matInput formControlName="oldPassword" type="password" />
+    <form class="grid gap-4" id="password-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+      <hlm-form-field>
+        <label hlmLabel for="oldPassword">
+          {{ 'profile.password.currentPassword' | transloco }}
+        </label>
 
-        @if (form.controls.oldPassword.errors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+        <div hlmInputGroup>
+          <input
+            id="oldPassword"
+            hlmInputGroupInput
+            formControlName="oldPassword"
+            type="password"
+            placeholder="********" />
+        </div>
+        @let oldPasswordErrors = form.controls.oldPassword.errors;
+        @if (oldPasswordErrors?.['required']) {
+          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
         }
-        @if (form.controls.oldPassword.errors?.['minlength']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+        @if (oldPasswordErrors?.['minlength']; as minlength) {
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
       <ng-container formGroupName="password">
-        <mat-form-field>
-          <mat-label>{{ 'auth.newPassword' | transloco }}</mat-label>
-          <input [type]="showButton.type()" matInput formControlName="newPassword" />
+        <hlm-form-field>
+          <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
-          <pu-password-show-button #showButton matSuffix />
-
-          @if (form.controls.password.controls.newPassword.errors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <div hlmInputGroup>
+            <input
+              id="newPassword"
+              [type]="showButton.type()"
+              [placeholder]="showButton.placeholder()"
+              hlmInputGroupInput
+              formControlName="newPassword" />
+            <pu-password-show-button #showButton hlmInputGroupAddon align="inline-end" />
+          </div>
+          @let newPasswordErrors = form.controls.password.controls.newPassword.errors;
+          @if (newPasswordErrors?.['required']) {
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
-          @if (form.controls.password.controls.newPassword.errors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          @if (newPasswordErrors?.['minlength']; as minlength) {
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
-        <mat-form-field>
-          <mat-label>{{ 'auth.newPasswordConfirm' | transloco }}</mat-label>
-          <input [type]="confirmShowButton.type()" matInput formControlName="confirmPassword" />
+        <hlm-form-field>
+          <label hlmLabel for="newPasswordConfirm">
+            {{ 'auth.newPasswordConfirm' | transloco }}
+          </label>
 
-          <pu-password-show-button #confirmShowButton matSuffix />
-
-          @if (form.controls.password.controls.confirmPassword.errors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <div hlmInputGroup>
+            <input
+              id="newPasswordConfirm"
+              [type]="showConfirmButton.type()"
+              [placeholder]="showConfirmButton.placeholder()"
+              hlmInputGroupInput
+              formControlName="confirmPassword" />
+            <pu-password-show-button #showConfirmButton hlmInputGroupAddon align="inline-end" />
+          </div>
+          @let confirmPasswordErrors = form.controls.password.controls.confirmPassword.errors;
+          @if (confirmPasswordErrors?.['required']) {
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
-          @if (
-            form.controls.password.controls.confirmPassword.errors?.['minlength'];
-            as minlength
-          ) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          @if (confirmPasswordErrors?.['minlength']; as minlength) {
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
-        @if (
-          (form.controls.password.controls.confirmPassword.value.length > 0 ||
-            form.controls.password.controls.newPassword.value.length > 0) &&
-          form.controls.password.errors?.['mismatch']
-        ) {
-          <mat-error>{{ 'form.validation.passwordMismatch' | transloco }}</mat-error>
+        @if (form.controls.password.errors?.['mismatch']) {
+          <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
         }
       </ng-container>
 
@@ -84,15 +98,13 @@ import {
   `,
   selector: 'pu-profile-password-form',
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
     SaveButton,
-    MatError,
-    MatSuffix,
     PasswordShowButton,
+    ReactiveFormsModule,
     TranslocoPipe,
+    HlmInputGroupImports,
+    HlmLabelImports,
+    HlmFormFieldImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

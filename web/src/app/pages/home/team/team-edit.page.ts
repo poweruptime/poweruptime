@@ -59,13 +59,13 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
                   }
                 </div>
               </section>
-            </div>
 
-            @if (teamSettingsStore.settings(); as settings) {
-              <pu-instance-settings-retention-form
-                [settings]="settings"
-                (submitCreate)="submitRetentionForm($event)" />
-            }
+              @if (teamSettingsStore.settings(); as settings) {
+                <pu-instance-settings-retention-form
+                  [settings]="settings"
+                  (submitCreate)="submitRetentionForm($event)" />
+              }
+            </div>
 
             @defer (when !team.personal) {
               @if (!team.personal) {

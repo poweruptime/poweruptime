@@ -8,12 +8,15 @@ import {
   MatChipRemove,
   MatChipRow,
 } from '@angular/material/chips';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatOption, MatSelect} from '@angular/material/select';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {cl_copy} from 'dfts-helper';
 import {toast} from 'ngx-sonner';
 
@@ -23,83 +26,90 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 @Component({
   template: `
     <pu-monitor-edit-form-data-card type="DNS">
-      <div class="grid grid-cols-8 gap-x-4 gap-y-2" [formGroup]="dnsDataFormGroup">
-        <mat-form-field class="col-span-8 xl:col-span-6">
-          <mat-label>{{ 'general.host' | transloco }}</mat-label>
-          <input matInput formControlName="host" />
+      <div class="grid grid-cols-8 gap-4" [formGroup]="dnsDataFormGroup">
+        <hlm-form-field class="col-span-8 xl:col-span-6">
+          <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
+          <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
           @let hostErrors = dnsDataFormGroup.controls.host.errors;
 
           @if (hostErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
           @if (hostErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
           }
           @if (hostErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
           }
           @if (hostErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
-        <mat-form-field class="col-span-8 xl:col-span-2">
-          <mat-label>{{ 'general.type' | transloco }}</mat-label>
-          <mat-select formControlName="type">
-            <mat-option value="A">A</mat-option>
-            <mat-option value="AAAA">AAAA</mat-option>
-            <mat-option value="CAA">CAA</mat-option>
-            <mat-option value="CNAME">CNAME</mat-option>
-            <mat-option value="MX">MX</mat-option>
-            <mat-option value="NS">NS</mat-option>
-            <mat-option value="PTR">PTR</mat-option>
-            <mat-option value="SOA">SOA</mat-option>
-            <mat-option value="SRV">SRV</mat-option>
-            <mat-option value="TXT">TXT</mat-option>
-          </mat-select>
+        <hlm-form-field class="col-span-8 xl:col-span-2">
+          <label hlmLabel for="method">{{ 'general.type' | transloco }}</label>
+          <brn-select id="method" [placeholder]="'general.type' | transloco" formControlName="type">
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              <hlm-option value="A">A</hlm-option>
+              <hlm-option value="AAAA">AAAA</hlm-option>
+              <hlm-option value="CAA">CAA</hlm-option>
+              <hlm-option value="CNAME">CNAME</hlm-option>
+              <hlm-option value="MX">MX</hlm-option>
+              <hlm-option value="NS">NS</hlm-option>
+              <hlm-option value="PTR">PTR</hlm-option>
+              <hlm-option value="SOA">SOA</hlm-option>
+              <hlm-option value="SRV">SRV</hlm-option>
+              <hlm-option value="TXT">TXT</hlm-option>
+            </hlm-select-content>
+          </brn-select>
 
           @let typeErrors = dnsDataFormGroup.controls.type.errors;
 
           @if (typeErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
-        <mat-form-field class="col-span-8 xl:col-span-6">
-          <mat-label>{{ 'monitor.edit.dns.server' | transloco }}</mat-label>
-          <input matInput formControlName="server" />
+        <hlm-form-field class="col-span-8 xl:col-span-6">
+          <label hlmLabel for="server">{{ 'monitor.edit.dns.server' | transloco }}</label>
+          <input id="server" hlmInput formControlName="server" type="text" placeholder="9.9.9.9" />
           @let serverErrors = dnsDataFormGroup.controls.server.errors;
           @if (serverErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
           @if (serverErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
           }
           @if (serverErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
           }
           @if (serverErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.ipv4' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.ipv4' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
-        <mat-form-field class="col-span-8 xl:col-span-2">
-          <mat-label>{{ 'general.port' | transloco }}</mat-label>
-          <input matInput type="number" formControlName="port" />
+        <hlm-form-field class="col-span-8 xl:col-span-2">
+          <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
+
+          <input id="port" hlmInput formControlName="port" step="1" type="number" />
+
           @let portErrors = dnsDataFormGroup.controls.port.errors;
           @if (portErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
           @if (portErrors?.['min']; as min) {
-            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+            <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
           }
           @if (portErrors?.['max']; as max) {
-            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+            <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
           }
           @if (portErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
 
         <mat-form-field class="col-span-8">
           <mat-label>{{ 'monitor.edit.dns.matches.label' | transloco }}</mat-label>
@@ -128,11 +138,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   imports: [
     ReactiveFormsModule,
     MatFormField,
-    MatInput,
     MatLabel,
-    MatError,
-    MatSelect,
-    MatOption,
     MatChipGrid,
     MatChipInput,
     MatChipRemove,
@@ -140,6 +146,11 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     NgIcon,
     TranslocoPipe,
     MonitorEditFormDataCard,
+    HlmSelectImports,
+    BrnSelectImports,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -13,56 +13,54 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   selector: 'pu-monitor-edit-form-ping-data',
   template: `
     <pu-monitor-edit-form-data-card type="PING">
-      <div class="flex flex-col gap-4" [formGroup]="pingDataFormGroup">
-        <div class="flex gap-2">
-          <mat-form-field class="w-full">
-            <mat-label>{{ 'general.ipAddress' | transloco }}</mat-label>
-            <input matInput formControlName="ip" />
-            @let ipErrors = pingDataFormGroup.controls.ip.errors;
-            @if (ipErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (ipErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (ipErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-            @if (ipErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.ipv4' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+      <div class="flex gap-4" [formGroup]="pingDataFormGroup">
+        <hlm-form-field class="flex-1">
+          <label hlmLabel for="ip">{{ 'general.ipAddress' | transloco }}</label>
+          <input id="ip" hlmInput formControlName="ip" type="text" placeholder="1.1.1.1" />
+          @let ipErrors = pingDataFormGroup.controls.ip.errors;
+          @if (ipErrors?.['required']) {
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          }
+          @if (ipErrors?.['minlength']; as minlength) {
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          }
+          @if (ipErrors?.['maxlength']; as maxlength) {
+            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          }
+          @if (ipErrors?.['pattern']) {
+            <hlm-error>{{ 'form.validation.ipv4' | transloco }}</hlm-error>
+          }
+        </hlm-form-field>
 
-          <mat-form-field class="w-48">
-            <mat-label>{{ 'general.port' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="port" />
+        <hlm-form-field class="w-48">
+          <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
 
-            @let portErrors = pingDataFormGroup.controls.port.errors;
-            @if (portErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (portErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (portErrors?.['max']; as max) {
-              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-            }
-            @if (portErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
+          <input id="port" hlmInput formControlName="port" step="1" type="number" />
+
+          @let portErrors = pingDataFormGroup.controls.port.errors;
+          @if (portErrors?.['required']) {
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          }
+          @if (portErrors?.['min']; as min) {
+            <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+          }
+          @if (portErrors?.['max']; as max) {
+            <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+          }
+          @if (portErrors?.['pattern']) {
+            <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+          }
+        </hlm-form-field>
       </div>
     </pu-monitor-edit-form-data-card>
   `,
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatError,
-    MatLabel,
-    TranslocoPipe,
     MonitorEditFormDataCard,
+    ReactiveFormsModule,
+    TranslocoPipe,
+    HlmFormFieldImports,
+    HlmInputImports,
+    HlmLabelImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

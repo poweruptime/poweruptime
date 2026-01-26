@@ -19,7 +19,7 @@ export const ROUTES: Routes = [
         path: 'password-change',
         canActivate: [isNotSetupGuard],
         loadComponent: () =>
-          import('./password-change-login-page.component').then((c) => c.PasswordChangeLoginPage),
+          import('./password-change-login.page').then((c) => c.PasswordChangeLoginPage),
       },
       {
         path: 'forgot-password',

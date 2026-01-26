@@ -20,7 +20,9 @@ import {BrnTooltipImports} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmError, HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
@@ -189,6 +191,121 @@ import {TableLoadingBar} from '../table-loading-bar';
                     </label>
 
                     @if (!form.controls.versionCheckAdminMailSendToEveryone.getRawValue()) {
+                      <!--                      <div class="col-span-8 grid gap-2 xl:col-span-5">-->
+                      <!--                        <div class="inline-flex items-end gap-2">-->
+                      <!--                          <div class="space-y-2">-->
+                      <!--                            <label for="allowedStatusCodeRange" hlmLabel>-->
+                      <!--                              {{ 'monitor.edit.http.allowedStatusCodeRanges.title' | transloco }}-->
+                      <!--                            </label>-->
+                      <!--                           <hlm-form-field>-->
+                      <!--            <label hlmLabel for="email">-->
+                      <!--              {{ 'general.emailAddress' | transloco }}-->
+                      <!--            </label>-->
+                      <!--            <div hlmInputGroup>-->
+                      <!--              <input-->
+                      <!--                id="email"-->
+                      <!--                hlmInputGroupInput-->
+                      <!--                formControlName="email"-->
+                      <!--                type="email"-->
+                      <!--                placeholder="you@example.com" />-->
+                      <!--              <div hlmInputGroupAddon>-->
+                      <!--                <ng-icon name="lucideMail" />-->
+                      <!--              </div>-->
+                      <!--            </div>-->
+                      <!--            @let emailErrors = form.controls.email.errors;-->
+                      <!--            @if (emailErrors?.['required']) {-->
+                      <!--              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>-->
+                      <!--            }-->
+                      <!--            @if (emailErrors?.['email']) {-->
+                      <!--              <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>-->
+                      <!--            }-->
+                      <!--            @if (emailErrors?.['minlength']; as minlength) {-->
+                      <!--              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>-->
+                      <!--            }-->
+                      <!--            @if (emailErrors?.['maxlength']; as maxlength) {-->
+                      <!--              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>-->
+                      <!--            }-->
+                      <!--          </hlm-form-field>-->
+                      <!--                          </div>-->
+                      <!--                          <hlm-tooltip>-->
+                      <!--                            <button-->
+                      <!--                              (click)="-->
+                      <!--                    select(-->
+                      <!--                      httpDataFormGroup.controls.allowedStatusCodeRanges,-->
+                      <!--                      statusCodeRangeInput()-->
+                      <!--                    )-->
+                      <!--                  "-->
+                      <!--                              hlmBtn-->
+                      <!--                              hlmTooltipTrigger-->
+                      <!--                              variant="outline"-->
+                      <!--                              type="button">-->
+                      <!--                              <ng-icon hlm name="lucideCirclePlus" size="sm" />-->
+                      <!--                            </button>-->
+                      <!--                            <span *brnTooltipContent>-->
+                      <!--                  {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}-->
+                      <!--                </span>-->
+                      <!--                          </hlm-tooltip>-->
+                      <!--                        </div>-->
+
+                      <!--                        <div class="flex flex-wrap gap-2">-->
+                      <!--                          @for (-->
+                      <!--                            statusCodeRange of httpDataFormGroup.controls.allowedStatusCodeRanges.getRawValue();-->
+                      <!--                            track statusCodeRange-->
+                      <!--                            ) {-->
+                      <!--                            <span hlmBadge variant="secondary">-->
+                      <!--                  <div class="flex items-center justify-center gap-1">-->
+                      <!--                    <span>{{ statusCodeRange }}</span>-->
+                      <!--                    <button-->
+                      <!--                      [attr.aria-label]="-->
+                      <!--                        'monitor.edit.http.allowedStatusCodeRanges.remove'-->
+                      <!--                          | transloco: {email: statusCodeRange}-->
+                      <!--                      "-->
+                      <!--                      (click)="-->
+                      <!--                        remove(httpDataFormGroup.controls.allowedStatusCodeRanges, statusCodeRange)-->
+                      <!--                      "-->
+                      <!--                      hlmBtn-->
+                      <!--                      variant="ghost"-->
+                      <!--                      size="icon-xs"-->
+                      <!--                      type="button">-->
+                      <!--                      <ng-icon hlm name="lucideX" size="xs" />-->
+                      <!--                    </button>-->
+                      <!--                  </div>-->
+                      <!--                </span>-->
+                      <!--                          }-->
+                      <!--                        </div>-->
+                      <!--                        @let allowedStatusCodeRangeErrors =-->
+                      <!--                          httpDataFormGroup.controls.allowedStatusCodeRanges.errors;-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['required']) {-->
+                      <!--                          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['patternArrayItem']) {-->
+                      <!--                          {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['minLengthArrayItem']; as minlength) {-->
+                      <!--                          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['maxLengthArrayItem']; as maxlength) {-->
+                      <!--                          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['inputRegex']) {-->
+                      <!--                          <hlm-error>-->
+                      <!--                            {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}-->
+                      <!--                          </hlm-error>-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['inputStartBiggerThenEnd']) {-->
+                      <!--                          <hlm-error>-->
+                      <!--                            {{-->
+                      <!--                              'monitor.edit.http.allowedStatusCodeRanges.inputStartBiggerThenEndError'-->
+                      <!--                                | transloco-->
+                      <!--                            }}-->
+                      <!--                          </hlm-error>-->
+                      <!--                        }-->
+                      <!--                        @if (allowedStatusCodeRangeErrors?.['rangeIncorrect']) {-->
+                      <!--                          <hlm-error>-->
+                      <!--                            {{ 'monitor.edit.http.allowedStatusCodeRanges.rangeIncorrectError' | transloco }}-->
+                      <!--                          </hlm-error>-->
+                      <!--                        }-->
+                      <!--                      </div>-->
                       <mat-form-field
                         class="duration-300"
                         animate.enter="animate-in fade-in slide-in-from-top-20"
@@ -333,6 +450,9 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmBadgeImports,
     HlmLabelImports,
     HlmSwitchImports,
+    HlmError,
+    HlmFormFieldImports,
+    HlmInputGroupImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

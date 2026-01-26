@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -13,35 +13,41 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   template: `
     @let valid = isValid();
 
-    <form class="grid" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field>
-        <mat-label>{{ 'general.name' | transloco }}</mat-label>
-        <input matInput formControlName="name" />
-
+    <form class="grid gap-4" id="form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+      <hlm-form-field>
+        <label hlmLabel for="name">
+          {{ 'general.name' | transloco }}
+        </label>
+        <input
+          id="name"
+          autocomplete="off"
+          hlmInput
+          formControlName="name"
+          type="text"
+          placeholder="Team #1" />
         @let nameErrors = form.controls.name.errors;
         @if (nameErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
         }
         @if (nameErrors?.['minlength']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
         @if (nameErrors?.['maxlength']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
       <pu-save-button [valid]="valid" />
     </form>
   `,
   selector: 'pu-team-edit-form',
   imports: [
+    SaveButton,
     ReactiveFormsModule,
     TranslocoPipe,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    SaveButton,
-    MatError,
+    HlmFormFieldImports,
+    HlmInputImports,
+    HlmLabelImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

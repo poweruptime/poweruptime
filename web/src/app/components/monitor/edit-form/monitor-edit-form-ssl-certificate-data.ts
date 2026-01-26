@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
@@ -13,55 +13,67 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   selector: 'pu-monitor-edit-form-ssl-certificate-data',
   template: `
     <pu-monitor-edit-form-data-card type="SSL_CERTIFICATE">
-      <div class="flex flex-col gap-4" [formGroup]="sslCertificateDataFormGroup">
-        <div class="flex gap-2">
-          <mat-form-field class="w-full">
-            <mat-label>{{ 'general.url' | transloco }}</mat-label>
-            <input matInput formControlName="url" />
+      <div class="flex gap-4" [formGroup]="sslCertificateDataFormGroup">
+        <hlm-form-field class="flex-1">
+          <label hlmLabel for="url">
+            {{ 'general.url' | transloco }}
+          </label>
+          <input
+            id="url"
+            hlmInput
+            formControlName="url"
+            type="url"
+            placeholder="https://google.com" />
+          @let urlErrors = sslCertificateDataFormGroup.controls.url.errors;
+          @if (urlErrors?.['required']) {
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          }
+          @if (urlErrors?.['minlength']; as minlength) {
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          }
+          @if (urlErrors?.['maxlength']; as maxlength) {
+            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          }
+          @if (urlErrors?.['pattern']) {
+            <hlm-error>{{ 'form.validation.url' | transloco }}</hlm-error>
+          }
+        </hlm-form-field>
 
-            @let urlErrors = sslCertificateDataFormGroup.controls.url.errors;
-            @if (urlErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (urlErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (urlErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-            @if (urlErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.url' | transloco }}</mat-error>
-            }
-          </mat-form-field>
+        <hlm-form-field class="w-64">
+          <label hlmLabel for="validDaysLeft">
+            {{ 'monitor.edit.ssl.validDaysLeft' | transloco }}
+          </label>
 
-          <mat-form-field class="w-64">
-            <mat-label>{{ 'monitor.edit.ssl.validDaysLeft' | transloco }}</mat-label>
-            <input matInput type="number" step="1" formControlName="validDaysLeft" />
+          <input
+            id="validDaysLeft"
+            hlmInput
+            formControlName="validDaysLeft"
+            step="1"
+            type="number" />
 
-            @let validDaysLeftErrors = sslCertificateDataFormGroup.controls.validDaysLeft.errors;
-            @if (validDaysLeftErrors?.['min']; as min) {
-              <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-            }
-            @if (validDaysLeftErrors?.['max']; as max) {
-              <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-            }
-            @if (validDaysLeftErrors?.['pattern']) {
-              <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
+          <hlm-hint>Alert when certificate expires within this many days</hlm-hint>
+
+          @let validDaysLeftErrors = sslCertificateDataFormGroup.controls.validDaysLeft.errors;
+          @if (validDaysLeftErrors?.['min']; as min) {
+            <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+          }
+          @if (validDaysLeftErrors?.['max']; as max) {
+            <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+          }
+          @if (validDaysLeftErrors?.['pattern']) {
+            <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+          }
+        </hlm-form-field>
       </div>
     </pu-monitor-edit-form-data-card>
   `,
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatError,
-    MatLabel,
-    TranslocoPipe,
-    MatError,
     MonitorEditFormDataCard,
+    ReactiveFormsModule,
+    TranslocoPipe,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

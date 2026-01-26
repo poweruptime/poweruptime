@@ -118,7 +118,7 @@ export const MonitorEditFormDataService = createInjectable(
         ],
       ],
       port: [
-        undefined as number | undefined,
+        80 as number | undefined,
         [
           Validators.required,
           Validators.min(Database.MIN_PORT),

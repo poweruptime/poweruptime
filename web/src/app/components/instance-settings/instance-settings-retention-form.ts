@@ -1,12 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -14,7 +13,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
 @Component({
   template: `
     <form
-      class="flex h-full flex-col justify-between"
+      class="h-full"
       id="retention-form"
       #formRef
       [formGroup]="form"
@@ -27,50 +26,70 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           </div>
           <p hlmCardDescription>Configure how long data is stored</p>
         </div>
-        <div class="space-y-6" hlmCardContent>
-          <div class="flex flex-wrap items-center justify-between space-x-2 md:justify-start">
-            <mat-form-field>
-              <mat-label>{{ 'instanceSettings.retention.checkResult' | transloco }}</mat-label>
-              <input matInput type="number" formControlName="checkResultRetentionPeriodInDays" />
-              <span matSuffix>days</span>
-              @let checkResultRetentionPeriodInDaysErrors =
-                form.controls.checkResultRetentionPeriodInDays.errors;
+        <div class="grid gap-4 md:grid-cols-2" hlmCardContent>
+          <hlm-form-field>
+            <label hlmLabel for="checkResultRetentionPeriodInDays">
+              {{ 'instanceSettings.retention.checkResult' | transloco }}
+            </label>
 
-              @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
-                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-              }
-              @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
-                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-              }
-              @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
-                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-              }
-            </mat-form-field>
+            <div hlmInputGroup>
+              <input
+                id="checkResultRetentionPeriodInDays"
+                hlmInputGroupInput
+                formControlName="checkResultRetentionPeriodInDays"
+                step="1"
+                type="number" />
+              <div hlmInputGroupAddon align="inline-end">days</div>
+            </div>
 
-            <mat-form-field>
-              <mat-label>{{ 'instanceSettings.retention.logs' | transloco }}</mat-label>
-              <input matInput type="number" formControlName="checkResultLogRetentionPeriodInDays" />
-              <span matSuffix>days</span>
-              @let checkResultLogRetentionPeriodInDaysErrors =
-                form.controls.checkResultLogRetentionPeriodInDays.errors;
+            @let checkResultRetentionPeriodInDaysErrors =
+              form.controls.checkResultRetentionPeriodInDays.errors;
 
-              @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
-                <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-              }
-              @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
-                <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
-              }
-              @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
-                <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
-              }
-              @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
-                <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
-              }
-            </mat-form-field>
-          </div>
+            @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            }
+            @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
+              <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+            }
+            @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
+              <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+            }
+            @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
+              <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+            }
+          </hlm-form-field>
+
+          <hlm-form-field>
+            <label hlmLabel for="checkResultLogRetentionPeriodInDays">
+              {{ 'instanceSettings.retention.logs' | transloco }}
+            </label>
+
+            <div hlmInputGroup>
+              <input
+                id="checkResultLogRetentionPeriodInDays"
+                hlmInputGroupInput
+                formControlName="checkResultLogRetentionPeriodInDays"
+                step="1"
+                type="number" />
+              <div hlmInputGroupAddon align="inline-end">days</div>
+            </div>
+
+            @let checkResultLogRetentionPeriodInDaysErrors =
+              form.controls.checkResultLogRetentionPeriodInDays.errors;
+
+            @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
+              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            }
+            @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
+              <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+            }
+            @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
+              <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+            }
+            @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
+              <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+            }
+          </hlm-form-field>
         </div>
       </div>
       <div hlmCardFooter>
@@ -80,16 +99,13 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
   `,
   selector: 'pu-instance-settings-retention-form',
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatError,
-    MatSuffix,
-    NgxMatSelectSearchModule,
     SaveButton,
+    ReactiveFormsModule,
     TranslocoPipe,
     HlmCardImports,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputGroupImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

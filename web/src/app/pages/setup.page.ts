@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component, effect, inject, input} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatProgressBar} from '@angular/material/progress-bar';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
@@ -13,6 +11,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmProgressImports} from '@spartan-ng/helm/progress';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {Database} from '@app/api';
@@ -31,7 +30,9 @@ import {SetupStore} from '@app/services';
         </div>
         <div class="grid gap-10" hlmCardContent>
           @if (setupStore.isPending()) {
-            <mat-progress-bar mode="indeterminate" />
+            <hlm-progress>
+              <hlm-progress-indicator />
+            </hlm-progress>
           }
 
           <div class="grid gap-4">
@@ -285,7 +286,6 @@ import {SetupStore} from '@app/services';
     ReactiveFormsModule,
     TranslocoPipe,
     TranslocoMarkupComponent,
-    MatProgressBar,
     HlmInputOtpImports,
     BrnInputOtpImports,
     HlmCardImports,
@@ -295,6 +295,7 @@ import {SetupStore} from '@app/services';
     HlmFormFieldImports,
     HlmLabelImports,
     HlmAlertImports,
+    HlmProgressImports,
   ],
 })
 export class SetupPage {

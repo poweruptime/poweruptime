@@ -10,13 +10,13 @@ import {
 } from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
@@ -93,18 +93,30 @@ import {TableLoadingBar} from '../table-loading-bar';
               #formRef
               [formGroup]="form"
               (ngSubmit)="submit()">
-              <mat-form-field>
-                <mat-label>{{ 'instanceSettings.sponsorship.githubHandle' | transloco }}</mat-label>
-                <input matInput formControlName="supportLookup" autocomplete="off" />
-
+              <hlm-form-field>
+                <label hlmLabel for="supportLookup">
+                  {{ 'instanceSettings.sponsorship.githubHandle' | transloco }}
+                </label>
+                <div hlmInputGroup>
+                  <input
+                    id="supportLookup"
+                    autocomplete="off"
+                    hlmInputGroupInput
+                    formControlName="supportLookup"
+                    type="text"
+                    placeholder="GitHubUser1234" />
+                  <div hlmInputGroupAddon>
+                    <ng-icon hlm size="sm" name="lucideGithub" />
+                  </div>
+                </div>
                 @let supportLookup = form.controls.supportLookup.errors;
                 @if (supportLookup?.['minlength']; as minlength) {
-                  <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
                 }
                 @if (supportLookup?.['maxlength']; as maxlength) {
-                  <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+                  <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
                 }
-              </mat-form-field>
+              </hlm-form-field>
 
               <label class="flex items-center" hlmLabel for="showSupportBadge">
                 <hlm-switch class="mr-2" id="showSupportBadge" formControlName="showSupportBadge" />
@@ -158,16 +170,12 @@ import {TableLoadingBar} from '../table-loading-bar';
   `,
   selector: 'pu-instance-settings-sponsorship-form',
   imports: [
-    ReactiveFormsModule,
     SaveButton,
-    TranslocoPipe,
-    MatError,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    DatePipe,
     SupporterBadge,
     TableLoadingBar,
+    ReactiveFormsModule,
+    TranslocoPipe,
+    DatePipe,
     HlmCardImports,
     HlmTooltipImports,
     BrnTooltipContentTemplate,
@@ -175,6 +183,8 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
+    HlmFormFieldImports,
+    HlmInputGroupImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

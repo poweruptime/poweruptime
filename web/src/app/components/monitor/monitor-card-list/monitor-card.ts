@@ -4,7 +4,11 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 
 import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 
+import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
+import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
 
@@ -13,11 +17,6 @@ import {MonitorStatusTextBackground, Tag} from '@app/directives';
 import {LastCheckResultsStore, MonitorActionStore} from '@app/services';
 
 import {UptimeTimeline} from '../uptime-timeline';
-import { HlmDropdownMenuImports
-} from '@spartan-ng/helm/dropdown-menu';
-import { HlmIconImports} from '@spartan-ng/helm/icon';
-import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
 
 @Component({
   template: `
@@ -25,10 +24,10 @@ import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
     <a
       class="h-[115px] py-2"
       [hlmContextMenuTrigger]="menu"
-      align="start"
-      side="right"
       [routerLink]="_monitor.id"
       [queryParamsHandling]="'merge'"
+      align="start"
+      side="right"
       hlmCard
       routerLinkActive="bg-gray-100 dark:bg-card/5">
       <div class="grid items-start gap-1 rounded-lg px-2" hlmCardContent>
@@ -126,8 +125,8 @@ import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
             variant="destructive">
             <ng-icon hlm name="lucideTrash" size="sm" />
             <span>
-                        {{ 'general.delete' | transloco }}
-                      </span>
+              {{ 'general.delete' | transloco }}
+            </span>
           </button>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
@@ -165,7 +164,7 @@ import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
     HlmContextMenuImports,
     HlmDropdownMenuImports,
     HlmIconImports,
-  ]
+  ],
 })
 export class MonitorCard {
   monitor = input.required<BackendType['MonitorResponse']>();

@@ -2,10 +2,10 @@ import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/cor
 import {toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 
-import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {CopyIconButton} from '@app/components';
 
@@ -17,23 +17,26 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <pu-monitor-edit-form-data-card type="PUSH">
       <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
-        <mat-form-field>
-          <mat-label>{{ 'monitor.edit.pushUrl' | transloco }}</mat-label>
-          <input [value]="pushUrl()" readonly matInput />
-          <pu-copy-icon-button [content]="pushUrl()" matSuffix />
-        </mat-form-field>
+        <hlm-form-field class="col-span-8">
+          <label hlmLabel for="url">{{ 'monitor.edit.pushUrl' | transloco }}</label>
+          <div hlmInputGroup>
+            <input id="url" [value]="pushUrl()" hlmInputGroupInput readonly type="url" />
+            <div hlmInputGroupAddon align="inline-end">
+              <pu-copy-icon-button [content]="pushUrl()" />
+            </div>
+          </div>
+        </hlm-form-field>
       </div>
     </pu-monitor-edit-form-data-card>
   `,
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatSuffix,
-    TranslocoPipe,
     CopyIconButton,
     MonitorEditFormDataCard,
+    ReactiveFormsModule,
+    TranslocoPipe,
+    HlmFormFieldImports,
+    HlmLabelImports,
+    HlmInputGroupImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

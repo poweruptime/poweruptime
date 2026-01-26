@@ -1,17 +1,14 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
-import {MatFormField, MatInput} from '@angular/material/input';
-
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
-
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnDialogClose, BrnDialogContent} from '@spartan-ng/brain/dialog';
+import {BrnDialogImports} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 
-import {InfoStore, InstanceSettingsStore} from '../../services';
-import {environment} from '../../util';
+import {InfoStore, InstanceSettingsStore} from '@app/services';
+import {environment} from '@app/util';
+
 import {CopyButton} from '../copy-button';
 
 @Component({
@@ -35,15 +32,12 @@ import {CopyButton} from '../copy-button';
             <h2 class="mb-0 px-4 pt-6 text-lg font-semibold">Debug information</h2>
           </hlm-dialog-header>
 
-          <mat-form-field class="w-full px-4">
-            <textarea
-              class="w-full"
-              #autosize="cdkTextareaAutosize"
-              [value]="_info"
-              matInput
-              cdkTextareaAutosize
-              readonly></textarea>
-          </mat-form-field>
+          <div class="group relative p-4">
+            <code
+              class="bg-secondary/50 border-border/50 text-foreground flex items-start justify-between rounded-md border px-4 py-3 font-mono text-sm">
+              <pre>{{ _info }}</pre>
+            </code>
+          </div>
         </div>
         <hlm-dialog-footer class="flex items-center gap-3 border-t px-6 py-4 sm:space-x-0">
           <pu-copy-button [content]="_info">
@@ -59,16 +53,12 @@ import {CopyButton} from '../copy-button';
   selector: 'pu-debug-info-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CopyButton,
     TranslocoPipe,
-    MatFormField,
-    CdkTextareaAutosize,
-    MatInput,
-    BrnDialogClose,
-    BrnDialogContent,
+    BrnDialogImports,
     HlmButtonImports,
     HlmDialogImports,
     HlmIconImports,
-    CopyButton,
   ],
 })
 export class DebugInfoDialog {

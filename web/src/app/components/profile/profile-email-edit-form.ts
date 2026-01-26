@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} from '@app/form';
@@ -13,40 +14,56 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
   template: `
     @let valid = isValid();
 
-    <form class="flex flex-col" id="email-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
+    <form class="grid gap-4" id="email-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <span class="mb-4">{{ 'profile.email.current' | transloco }}: {{ email() }}</span>
 
-      <mat-form-field>
-        <mat-label>{{ 'profile.email.new' | transloco }}</mat-label>
-        <input type="email" matInput formControlName="email" />
-
+      <hlm-form-field>
+        <label hlmLabel for="email">{{ 'profile.email.new' | transloco }}</label>
+        <div hlmInputGroup>
+          <input
+            id="email"
+            hlmInputGroupInput
+            formControlName="email"
+            type="email"
+            placeholder="you@example.com" />
+          <div hlmInputGroupAddon>
+            <ng-icon name="lucideMail" />
+          </div>
+        </div>
         @let emailErrors = form.controls.email.errors;
         @if (emailErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
         }
         @if (emailErrors?.['email']) {
-          <mat-error>{{ 'form.validation.email' | transloco }}</mat-error>
+          <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
         }
         @if (emailErrors?.['minlength']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
         @if (emailErrors?.['maxlength']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
-      <mat-form-field>
-        <mat-label>{{ 'general.password' | transloco }}</mat-label>
-        <input matInput formControlName="password" type="password" />
+      <hlm-form-field>
+        <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
 
+        <div hlmInputGroup>
+          <input
+            id="password"
+            hlmInputGroupInput
+            formControlName="password"
+            type="password"
+            placeholder="********" />
+        </div>
         @let passwordErrors = form.controls.password.errors;
         @if (passwordErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
         }
         @if (passwordErrors?.['minlength']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
       <pu-save-button
         [valid]="valid"
@@ -56,13 +73,13 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
   `,
   selector: 'pu-profile-email-form',
   imports: [
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatError,
     SaveButton,
+    ReactiveFormsModule,
     TranslocoPipe,
+    HlmFormFieldImports,
+    HlmInputGroupImports,
+    HlmIconImports,
+    HlmLabelImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
