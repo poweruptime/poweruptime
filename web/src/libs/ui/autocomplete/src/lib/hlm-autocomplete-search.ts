@@ -32,6 +32,7 @@ import {classes} from '@spartan-ng/helm/utils';
         'sideOffset',
         'state',
         'offsetX',
+        'restoreFocus',
       ],
       outputs: ['stateChanged', 'closed'],
     },

@@ -88,7 +88,7 @@
     "admin": "Admin",
     "backupCode": "Backup Code",
     "backupCodes": "{{general.backupCode}}s",
-    "body": "Body",
+    "body": "Request Body",
     "cancel": "Cancel",
     "checkResult": "Check result",
     "checkResults": "Check results",
@@ -326,7 +326,7 @@
           "enter": "Enter status code range",
           "inputRegexError": "Please follow the pattern: 'XXX - YYY'",
           "inputStartBiggerThenEndError": "The second status code has to be higher than the first one",
-          "new": "New status code range",
+          "new": "e.g. 200 - 299",
           "rangeIncorrectError": "Status codes have to be in the range of 100 - 599",
           "remove": "Remove status code range",
           "title": "Allowed Status Code Range"

@@ -9,18 +9,21 @@ import {TranslocoPipe} from '@jsverse/transloco';
 
 import {CopyIconButton} from '@app/components';
 
+import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({
   selector: 'pu-monitor-edit-form-push-data',
   template: `
-    <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
-      <mat-form-field>
-        <mat-label>{{ 'monitor.edit.pushUrl' | transloco }}</mat-label>
-        <input [value]="pushUrl()" readonly matInput />
-        <pu-copy-icon-button [content]="pushUrl()" matSuffix />
-      </mat-form-field>
-    </div>
+    <pu-monitor-edit-form-data-card type="PUSH">
+      <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
+        <mat-form-field>
+          <mat-label>{{ 'monitor.edit.pushUrl' | transloco }}</mat-label>
+          <input [value]="pushUrl()" readonly matInput />
+          <pu-copy-icon-button [content]="pushUrl()" matSuffix />
+        </mat-form-field>
+      </div>
+    </pu-monitor-edit-form-data-card>
   `,
   imports: [
     ReactiveFormsModule,
@@ -30,6 +33,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     MatSuffix,
     TranslocoPipe,
     CopyIconButton,
+    MonitorEditFormDataCard,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

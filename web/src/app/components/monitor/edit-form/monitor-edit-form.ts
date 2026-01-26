@@ -2,7 +2,7 @@ import {LowerCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, input, model} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
@@ -23,7 +23,6 @@ import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTextareaImports} from '@spartan-ng/helm/textarea';
-import {injectQueryParams} from 'ngxtension/inject-query-params';
 
 import {BackendType, Database, MONITOR_CHECKER_DATA_TYPES, MonitorDataType} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
@@ -85,15 +84,13 @@ const times = [
               <label hlmLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
-              <div hlmInputGroup>
-                <input
-                  id="name"
-                  autocomplete="off"
-                  hlmInputGroupInput
-                  formControlName="name"
-                  type="text"
-                  placeholder="Monitor #1" />
-              </div>
+              <input
+                id="name"
+                autocomplete="off"
+                hlmInput
+                formControlName="name"
+                type="text"
+                placeholder="Monitor #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
                 <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
@@ -216,7 +213,7 @@ const times = [
             <hlm-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
               <label hlmLabel for="retries">{{ 'monitor.edit.retries' | transloco }}</label>
 
-              <input hlmInput formControlName="retries" type="number" />
+              <input id="retries" hlmInput formControlName="retries" step="1" type="number" />
 
               <hlm-hint>Retry before alerting</hlm-hint>
 
@@ -365,11 +362,6 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   protected readonly times = times;
 
   private readonly monitorEditFormDataService = inject(MonitorEditFormDataService);
-  private readonly activatedRoute = inject(ActivatedRoute);
-
-  private readonly typeQueryParam = injectQueryParams<MonitorDataType | ''>('type', {
-    defaultValue: '',
-  });
 
   override form = this.fb.nonNullable.group({
     id: [undefined as string | undefined],
@@ -383,7 +375,7 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
       ],
     ],
     description: [undefined as string | undefined],
-    type: [this.typeQueryParam() as MonitorDataType | '', [Validators.required]],
+    type: ['' as MonitorDataType | '', [Validators.required]],
     testIntervalUnit: ['minutes' as TestIntervalUnits, [Validators.required]],
     testInterval: [
       1,
@@ -469,18 +461,10 @@ export class MonitorEditForm extends AbstractModelEditFormComponent<
   constructor() {
     super();
 
-    const router = inject(Router);
-
     this.form.controls.type.valueChanges
       .pipe(takeUntilDestroyed(), distinctUntilChanged())
       .subscribe((type) => {
         if (type !== '') {
-          void router.navigate([], {
-            relativeTo: this.activatedRoute,
-            queryParams: {
-              type,
-            },
-          });
           this.setFormCheckerType(type);
         }
       });
