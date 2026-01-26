@@ -10,13 +10,13 @@ import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
 @Component({
   template: `
     <section class="w-full" hlmCard>
-      @let typeValue = type();
+      @let _type = type();
       <div hlmCardHeader>
         <div class="flex items-center gap-2">
           <ng-icon name="lucideServer" />
           <h3 hlmCardTitle>
-            @if (typeValue !== '') {
-              {{ typeValue | monitorCheckerDataValueLabel | transloco }}
+            @if (_type !== '') {
+              {{ _type | monitorCheckerDataValueLabel | transloco }}
               {{ 'general.configuration' | transloco }}
             } @else {
               {{ 'monitor.edit.selectTypeToContinue' | transloco }}

@@ -9,29 +9,25 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {CopyIconButton} from '@app/components';
 
-import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({
-  selector: 'pu-monitor-edit-form-push-data',
   template: `
-    <pu-monitor-edit-form-data-card type="PUSH">
-      <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
-        <hlm-form-field class="col-span-8">
-          <label hlmLabel for="url">{{ 'monitor.edit.pushUrl' | transloco }}</label>
-          <div hlmInputGroup>
-            <input id="url" [value]="pushUrl()" hlmInputGroupInput readonly type="url" />
-            <div hlmInputGroupAddon align="inline-end">
-              <pu-copy-icon-button [content]="pushUrl()" />
-            </div>
+    <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
+      <hlm-form-field class="col-span-8">
+        <label hlmLabel for="url">{{ 'monitor.edit.pushUrl' | transloco }}</label>
+        <div hlmInputGroup>
+          <input id="url" [value]="pushUrl()" hlmInputGroupInput readonly type="url" />
+          <div hlmInputGroupAddon align="inline-end">
+            <pu-copy-icon-button [content]="pushUrl()" />
           </div>
-        </hlm-form-field>
-      </div>
-    </pu-monitor-edit-form-data-card>
+        </div>
+      </hlm-form-field>
+    </div>
   `,
+  selector: 'pu-monitor-edit-form-push-data',
   imports: [
     CopyIconButton,
-    MonitorEditFormDataCard,
     ReactiveFormsModule,
     TranslocoPipe,
     HlmFormFieldImports,

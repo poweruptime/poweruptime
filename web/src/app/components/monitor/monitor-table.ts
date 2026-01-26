@@ -10,10 +10,10 @@ import {RouterLink} from '@angular/router';
 
 import {map} from 'rxjs';
 
+import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
+import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
-import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';

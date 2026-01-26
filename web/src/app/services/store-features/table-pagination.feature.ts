@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs';
 
+import {HlmPaginator} from '@dafnik/paginator';
+import {HlmSort, SortDirection} from '@dafnik/sort';
 import {
   patchState,
   signalStoreFeature,
@@ -15,8 +17,6 @@ import {
 } from '@ngrx/signals';
 import {EntityState} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {HlmPaginator} from '@spartan-ng/helm/paginator';
-import {HlmSort, SortDirection} from '@spartan-ng/helm/sort';
 import {loggerOf, n_from} from 'dfts-helper';
 
 import {RequestStatusState} from './request-status.feature';

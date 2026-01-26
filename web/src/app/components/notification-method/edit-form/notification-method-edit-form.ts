@@ -12,33 +12,33 @@ import {
 import {toSignal} from '@angular/core/rxjs-interop';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatDivider} from '@angular/material/divider';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatOption, MatSelect} from '@angular/material/select';
-
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
+import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {typeOfArrayElement} from 'dfts-helper';
-import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
-import {BackendType, Database, NOTIFICATION_METHOD_SENDER_DATA_TYPES} from '@app/api';
+import {
+  BackendType,
+  Database,
+  MONITOR_CHECKER_DATA_TYPES,
+  NOTIFICATION_METHOD_SENDER_DATA_TYPES,
+} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
-import {NotificationSenderDataValueLabelPipe} from '@app/pipes';
 import {NotificationMethodTemplateStore} from '@app/services';
 
 import {MonitorSelector} from '../monitor-selector';
-import {NotificationMethodEditFormAppriseData} from './notification-method-edit-form-apprise-data';
+import {NotificationMethodEditFormData} from './notification-method-edit-form-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
-import {NotificationMethodEditFormDiscordData} from './notification-method-edit-form-discord-data';
-import {NotificationMethodEditFormEmailData} from './notification-method-edit-form-email-data';
-import {NotificationMethodEditFormSlackData} from './notification-method-edit-form-slack-data';
 import {NotificationMethodEditTemplate} from './notification-method-edit-template';
 
 type TemplateFeatures = NonNullable<BackendType['NotificationMethodTemplateResponse']['features']>;
@@ -66,92 +66,74 @@ class HasTemplateFeatureEnabled implements PipeTransform {
       (ngSubmit)="submit()">
       @let _typeValue = typeValue();
 
-      <div class="grid gap-8">
-        <div class="col-span-6 grid grid-cols-8 gap-2">
-          <mat-form-field class="col-span-8 md:col-span-6">
-            <mat-label>{{ 'general.name' | transloco }}</mat-label>
-            <input matInput formControlName="name" />
-
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field class="col-span-8 md:col-span-2">
-            <mat-label>{{ 'general.type' | transloco }}</mat-label>
-            <mat-select formControlName="type">
-              <mat-option class="pt-1">
-                <ngx-mat-select-search [formControl]="typeFilterControl">
-                  <ng-icon name="bootstrapXLg" ngxMatSelectSearchClear />
-                </ngx-mat-select-search>
-              </mat-option>
-              @for (type of filteredTypes(); track type.value) {
-                <mat-option [value]="type.value">{{ type.label | transloco }}</mat-option>
-              }
-            </mat-select>
-            @let typeErrors = form.controls.type.errors;
-            @if (typeErrors?.['required']) {
-              <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
-            }
-          </mat-form-field>
-
-          <label class="col-span-6 flex items-center" hlmLabel for="useByDefault">
-            <hlm-switch class="mr-2" id="useByDefault" formControlName="useByDefault" />
-            {{ 'notificationMethod.edit.useByDefault' | transloco }}
-          </label>
-        </div>
-
-        <div class="col-span-6">
-          <section hlmCard>
-            <div hlmCardHeader>
-              <h3 hlmCardTitle>
-                @if (_typeValue !== '') {
-                  {{ _typeValue | notificationSenderDataValueLabel | transloco }} -
-                }
-                {{ 'general.data' | transloco }}
-              </h3>
+      <div class="flex flex-col gap-8">
+        <section class="col-span-6" hlmCard>
+          <div hlmCardHeader>
+            <div class="flex items-center gap-2">
+              <ng-icon name="bootstrapGlobe" />
+              <h3 hlmCardTitle>Basic Configuration</h3>
             </div>
-            <div hlmCardContent>
-              @if (_typeValue !== '') {
-                @defer (when _typeValue === 'APPRISE') {
-                  @if (_typeValue === 'APPRISE') {
-                    <pu-notification-method-edit-form-apprise-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'DISCORD') {
-                  @if (_typeValue === 'DISCORD') {
-                    <pu-notification-method-edit-form-discord-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'EMAIL') {
-                  @if (_typeValue === 'EMAIL') {
-                    <pu-notification-method-edit-form-email-data />
-                  }
-                }
-
-                @defer (when _typeValue === 'SLACK') {
-                  @if (_typeValue === 'SLACK') {
-                    <pu-notification-method-edit-form-slack-data />
-                  }
-                }
-              } @else {
-                <span>{{ 'notificationMethod.edit.selectTypeToContinue' | transloco }}</span>
+            <p hlmCardDescription>Configure the notification method name and type</p>
+          </div>
+          <div class="grid gap-6 md:grid-cols-6" hlmCardContent>
+            <hlm-form-field class="md:col-span-4">
+              <label hlmLabel for="name">
+                {{ 'general.name' | transloco }}
+              </label>
+              <input
+                id="name"
+                autocomplete="off"
+                hlmInput
+                formControlName="name"
+                type="text"
+                placeholder="Monitor #1" />
+              @let nameErrors = form.controls.name.errors;
+              @if (nameErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
               }
-            </div>
-          </section>
-        </div>
+              @if (nameErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+              @if (nameErrors?.['maxlength']; as maxlength) {
+                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              }
+            </hlm-form-field>
 
-        <div class="col-span-6">
-          <section hlmCard>
+            <hlm-form-field class="md:col-span-2">
+              <label hlmLabel for="type">
+                {{ 'general.type' | transloco }}
+              </label>
+              <brn-select
+                id="type"
+                [placeholder]="'general.type' | transloco"
+                formControlName="type">
+                <hlm-select-trigger class="w-full">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  @for (type of NOTIFICATION_METHOD_SENDER_DATA_TYPES; track type.value) {
+                    <hlm-option [value]="type.value">{{ type.label | transloco }}</hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
+
+              @let typeErrors = form.controls.type.errors;
+              @if (typeErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+            </hlm-form-field>
+
+            <label class="col-span-6 flex items-center" hlmLabel for="useByDefault">
+              <hlm-switch class="mr-2" id="useByDefault" formControlName="useByDefault" />
+              {{ 'notificationMethod.edit.useByDefault' | transloco }}
+            </label>
+          </div>
+        </section>
+
+        <pu-notification-method-edit-form-data [type]="form.controls.type.getRawValue()" />
+
+        <div>
+          <section class="w-full" hlmCard>
             <div hlmCardContent>
               <pu-monitor-selector
                 [(searchMonitor)]="searchMonitors"
@@ -162,7 +144,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
           </section>
         </div>
 
-        <div class="col-span-6 flex gap-4">
+        <div class="flex gap-4">
           <pu-save-button [valid]="isValid()" />
           <!-- i(bootstrapSendCheck) -->
           <pu-save-button
@@ -205,7 +187,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
                     (resetClick)="form.patchValue({titleTemplate: template.titleTemplate})"
                     formControlName="titleTemplate" />
 
-                  <mat-divider />
+                  <hlm-separator />
                 }
 
                 @let _html =
@@ -232,30 +214,23 @@ class HasTemplateFeatureEnabled implements PipeTransform {
   providers: [NotificationMethodEditFormDataService, NotificationMethodTemplateStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ReactiveFormsModule,
-    TranslocoPipe,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatSelect,
-    MatOption,
     SaveButton,
-    NotificationMethodEditTemplate,
-    NotificationMethodEditFormAppriseData,
-    NotificationMethodEditFormEmailData,
-    NotificationMethodEditFormDiscordData,
-    NotificationMethodEditFormSlackData,
-    MatDivider,
-    MatError,
-    NotificationSenderDataValueLabelPipe,
-    NgxMatSelectSearchModule,
-    NgIcon,
     MonitorSelector,
     HasTemplateFeatureEnabled,
+    NotificationMethodEditTemplate,
+    NotificationMethodEditFormData,
+    ReactiveFormsModule,
+    TranslocoPipe,
     HlmSkeletonImports,
     HlmCardImports,
     HlmLabelImports,
     HlmSwitchImports,
+    HlmFormFieldImports,
+    HlmInputImports,
+    HlmSelectImports,
+    BrnSelectImports,
+    HlmIconImports,
+    HlmSeparatorImports,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
@@ -387,4 +362,7 @@ export class NotificationMethodEditForm extends AbstractModelEditFormComponent<
       _type: type,
     });
   }
+
+  protected readonly MONITOR_CHECKER_DATA_TYPES = MONITOR_CHECKER_DATA_TYPES;
+  protected readonly NOTIFICATION_METHOD_SENDER_DATA_TYPES = NOTIFICATION_METHOD_SENDER_DATA_TYPES;
 }

@@ -154,6 +154,8 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
     {key: 'previousStatusDuration', default: '4d 20h 69m 12s'},
   ];
 
+  itemToString = (user: {key: string}) => user.key;
+
   readonly variableKeys = this.variables.map((it) => it.key);
 
   mentionFilter = signal('');

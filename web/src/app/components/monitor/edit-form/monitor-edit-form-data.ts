@@ -13,35 +13,43 @@ import {MonitorEditFormSSLCertificateData} from './monitor-edit-form-ssl-certifi
 
 @Component({
   template: `
-    @let typeValue = type();
-    @if (typeValue !== '') {
-      @defer (when typeValue === 'DNS') {
-        @if (typeValue === 'DNS') {
-          <pu-monitor-edit-form-dns-data />
+    @let _type = type();
+    @if (_type !== '') {
+      @defer (when _type === 'DNS') {
+        @if (_type === 'DNS') {
+          <pu-monitor-edit-form-data-card [type]="_type">
+            <pu-monitor-edit-form-dns-data />
+          </pu-monitor-edit-form-data-card>
         }
       }
 
-      @defer (when typeValue === 'HTTP') {
-        @if (typeValue === 'HTTP') {
+      @defer (when _type === 'HTTP') {
+        @if (_type === 'HTTP') {
           <pu-monitor-edit-form-http-data />
         }
       }
 
-      @defer (when typeValue === 'PING') {
-        @if (typeValue === 'PING') {
-          <pu-monitor-edit-form-ping-data />
+      @defer (when _type === 'PING') {
+        @if (_type === 'PING') {
+          <pu-monitor-edit-form-data-card [type]="_type">
+            <pu-monitor-edit-form-ping-data />
+          </pu-monitor-edit-form-data-card>
         }
       }
 
-      @defer (when typeValue === 'PUSH') {
-        @if (typeValue === 'PUSH') {
-          <pu-monitor-edit-form-push-data />
+      @defer (when _type === 'PUSH') {
+        @if (_type === 'PUSH') {
+          <pu-monitor-edit-form-data-card [type]="_type">
+            <pu-monitor-edit-form-push-data />
+          </pu-monitor-edit-form-data-card>
         }
       }
 
-      @defer (when typeValue === 'SSL_CERTIFICATE') {
-        @if (typeValue === 'SSL_CERTIFICATE') {
-          <pu-monitor-edit-form-ssl-certificate-data />
+      @defer (when _type === 'SSL_CERTIFICATE') {
+        @if (_type === 'SSL_CERTIFICATE') {
+          <pu-monitor-edit-form-data-card [type]="_type">
+            <pu-monitor-edit-form-ssl-certificate-data />
+          </pu-monitor-edit-form-data-card>
         }
       }
     } @else {

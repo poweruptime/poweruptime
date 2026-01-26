@@ -1,14 +1,14 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, viewChild} from '@angular/core';
 
+import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
+import {HlmSort, HlmSortImports} from '@dafnik/sort';
+import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
-import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
-import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 
 import {TableLoadingBar} from '@app/components';

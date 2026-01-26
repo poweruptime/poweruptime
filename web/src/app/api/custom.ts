@@ -3,6 +3,7 @@ import type {components, operations} from './api-types';
 export type BackendType = components['schemas'];
 export type BackendOperation = operations;
 
+export type NotificationMethodDataType = BackendType['NotificationMethodData']['_type'];
 export type MonitorDataType = BackendType['MonitorData']['_type'];
 
 /**

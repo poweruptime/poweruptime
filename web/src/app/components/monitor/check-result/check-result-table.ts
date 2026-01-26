@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, inject, input, viewChild} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
+import {HlmPaginator} from '@dafnik/paginator';
+import {HlmSort, HlmSortImports} from '@dafnik/sort';
+import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmPaginator} from '@spartan-ng/helm/paginator';
-import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';

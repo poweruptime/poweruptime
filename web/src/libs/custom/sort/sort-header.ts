@@ -27,7 +27,7 @@ import {ENTER, SPACE} from '@angular/cdk/keycodes';
 
 import {Subscription, merge} from 'rxjs';
 
-import {hlmSortHeaderColumnDef} from '@spartan-ng/helm/data-table';
+import {hlmSortHeaderColumnDef} from '@dafnik/table';
 
 import {
   HLM_SORT_DEFAULT_OPTIONS,

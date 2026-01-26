@@ -7,6 +7,9 @@ import {
   viewChild,
 } from '@angular/core';
 
+import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
+import {HlmSort, HlmSortImports} from '@dafnik/sort';
+import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
@@ -14,11 +17,8 @@ import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
-import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
 import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
-import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';
 

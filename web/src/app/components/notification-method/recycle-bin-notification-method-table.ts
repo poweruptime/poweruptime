@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject, viewChild} from '@angular/core';
 
+import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
+import {HlmSort, HlmSortImports} from '@dafnik/sort';
+import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
-import {HlmDataTableImports} from '@spartan-ng/helm/data-table';
-import {HlmPaginator, HlmPaginatorImports} from '@spartan-ng/helm/paginator';
-import {HlmSort, HlmSortImports} from '@spartan-ng/helm/sort';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 
 import {TableLoadingBar} from '@app/components';
