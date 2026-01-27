@@ -6,6 +6,6 @@
     "types": ["node"]
   },
   "extends": "./tsconfig.json",
-  "files": ["src/main.ts", "src/main.server.ts", "src/server.ts"],
+  "files": ["src/main.ts", "src/main.server.ts", "src/server/server.ts"],
   "include": ["src/**/*.d.ts"]
 }

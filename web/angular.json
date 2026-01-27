@@ -63,7 +63,7 @@
             "outputPath": "dist/poweruptime-web",
             "server": "src/main.server.ts",
             "ssr": {
-              "entry": "src/server.ts"
+              "entry": "src/server/server.ts"
             },
             "styles": ["src/styles/material.scss", "src/styles.css"],
             "tsConfig": "tsconfig.app.json"

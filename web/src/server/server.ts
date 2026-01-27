@@ -13,6 +13,8 @@ import {fileURLToPath} from 'node:url';
 
 import {environment} from '@app/util';
 
+import og from './og';
+
 export async function app() {
   const server = fastify();
 
@@ -21,6 +23,8 @@ export async function app() {
     prefix: '/api',
     http2: false,
   });
+
+  server.register(og, {prefix: '/bff/v1/og'});
 
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');

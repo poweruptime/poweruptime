@@ -14,13 +14,11 @@ import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {s_cut} from 'dfts-helper';
 
 import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusText} from '@app/directives';
 import {PublicStatusPageStore} from '@app/services';
-import {BACKEND_API_URL} from '@app/util';
 
 @Component({
   template: `
@@ -120,8 +118,7 @@ export class PublicStatusPagePage {
   preview = input(false, {transform: booleanAttribute});
 
   readonly host = this.document.location.host;
-
-  readonly imageBaseUrl = `${this.document.location.origin}${BACKEND_API_URL}/v1/public/file`;
+  readonly origin = this.document.location.origin;
 
   constructor() {
     this.publicStatusPageStore.loadBySlug(
@@ -140,11 +137,8 @@ export class PublicStatusPagePage {
 
       const status = this.publicStatusPageStore.status();
 
-      const description = s_cut(
-        `${status === 'UP' ? 'All services operational' : 'Some services experience issues'}. ${statusPage.description ?? ''}`,
-        200,
-        '...',
-      );
+      const description =
+        status === 'UP' ? 'All services operational' : 'Some services experience issues';
 
       this.ngxMetaService.set({
         title: `${statusPage.name} - poweruptime`,
@@ -156,12 +150,8 @@ export class PublicStatusPagePage {
           url: this.document.location.href,
           title: statusPage.name,
           image: {
-            url: statusPage.image
-              ? `${this.imageBaseUrl}/${statusPage.image.fileId}`
-              : `${this.document.location.origin}/assets/og-image/${status}.png`,
-            alt: statusPage.image
-              ? `${statusPage.name} Logo`
-              : `Image representing the ${status} status`,
+            url: `${this.origin}/bff/v1/og/status-page?slug=${statusPage.slug}`,
+            alt: `Image showing the name, description and the ${status} status`,
             type: 'image/png',
           },
         },
