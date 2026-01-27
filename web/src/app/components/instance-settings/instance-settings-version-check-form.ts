@@ -10,9 +10,6 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
-import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -20,7 +17,7 @@ import {BrnTooltipImports} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmError, HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -28,12 +25,12 @@ import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database} from '@app/api';
+import {SaveButton, arrayItemMaxLength, arrayItemMinLength, injectIsValid} from '@app/form';
 import {InfoStore, InstanceSettingsVersionCheckStore} from '@app/services';
-import {chipInputAdd, chipInputRemove} from '@app/util';
 
-import {SaveButton, arrayItemMaxLength, arrayItemMinLength, injectIsValid} from '../../form';
-import {CopyIconButton} from '../copy-icon-button';
 import {TableLoadingBar} from '../table-loading-bar';
+import {VersionCheckDisabled} from './version-check-disabled';
+import {VersionCheckInfo} from './version-check-info';
 
 @Component({
   template: `
@@ -67,85 +64,8 @@ import {TableLoadingBar} from '../table-loading-bar';
           [class.blur-lg]="!_versionCheckEnabled"
           [class.pointer-events-none]="!_versionCheckEnabled"
           [class.saturate-50]="!_versionCheckEnabled">
-          <div class="space-y-4" hlmCardContent>
-            @if (instanceSettingsVersionCheckStore.versionCheck()?.version; as latestVersion) {
-              <section hlmCard>
-                <div class="flex items-center gap-2" hlmCardHeader>
-                  <div class="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
-                  <h4 class="text-sm font-medium" hlmCardTitle>New version available</h4>
-                </div>
-                <div class="space-y-4" hlmCardContent>
-                  <div class="flex items-center gap-3">
-                    <span class="font-mono" hlmBadge variant="outline">
-                      {{ currentVersion }}
-                    </span>
-                    <ng-icon hlm name="bootstrapArrowRight" size="sm" />
-                    <span
-                      class="bg-blue-500 font-mono text-white dark:bg-blue-600"
-                      variant="secondary"
-                      hlmBadge>
-                      {{ latestVersion }}
-                    </span>
-                  </div>
-                  <div class="grid grid-cols-2 gap-2">
-                    <button
-                      (click)="
-                        instanceSettingsVersionCheckStore.makeVersionCheck({
-                          versionCheckEnabled: true,
-                          skipCache: true,
-                        })
-                      "
-                      hlmBtn
-                      variant="outline"
-                      type="button">
-                      <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
-                      Check for Updates
-                    </button>
-
-                    @let link =
-                      latestVersion.includes('beta')
-                        ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
-                        : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
-                    <a [href]="link" hlmBtn variant="outline" target="_blank" rel="noopener">
-                      View on GitHub
-                      <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
-                    </a>
-                  </div>
-                </div>
-              </section>
-
-              <div class="space-y-2">
-                <span class="text-muted-foreground text-xs tracking-wide uppercase">
-                  Update via terminal
-                </span>
-                <div class="group relative">
-                  <div
-                    class="bg-secondary/50 border-border/50 flex items-center justify-between rounded-md border px-4 py-3 font-mono text-sm">
-                    <code class="text-foreground">./pu update</code>
-                    <pu-copy-icon-button [content]="'./pu update'" />
-                  </div>
-                </div>
-              </div>
-            } @else {
-              <div class="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
-                <ng-icon hlm name="bootstrapCheck2Circle" />
-                <span class="font-medium">You're running the latest version</span>
-              </div>
-
-              <button
-                (click)="
-                  instanceSettingsVersionCheckStore.makeVersionCheck({
-                    versionCheckEnabled: true,
-                    skipCache: true,
-                  })
-                "
-                hlmBtn
-                variant="outline"
-                type="button">
-                <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
-                Check for Updates
-              </button>
-            }
+          <div class="flex flex-col gap-4" hlmCardContent>
+            <pu-version-check-info />
 
             <hr />
 
@@ -177,7 +97,7 @@ import {TableLoadingBar} from '../table-loading-bar';
 
                 @if (form.controls.versionCheckAdminMailEnabled.getRawValue()) {
                   <div
-                    class="grid gap-2 duration-300"
+                    class="flex flex-col gap-2 duration-300"
                     animate.enter="animate-in fade-in slide-in-from-top-20"
                     animate.leave="animate-out fade-out slide-out-to-top-20">
                     <label
@@ -191,179 +111,85 @@ import {TableLoadingBar} from '../table-loading-bar';
                     </label>
 
                     @if (!form.controls.versionCheckAdminMailSendToEveryone.getRawValue()) {
-                      <!--                      <div class="col-span-8 grid gap-2 xl:col-span-5">-->
-                      <!--                        <div class="inline-flex items-end gap-2">-->
-                      <!--                          <div class="space-y-2">-->
-                      <!--                            <label for="allowedStatusCodeRange" hlmLabel>-->
-                      <!--                              {{ 'monitor.edit.http.allowedStatusCodeRanges.title' | transloco }}-->
-                      <!--                            </label>-->
-                      <!--                           <hlm-form-field>-->
-                      <!--            <label hlmLabel for="email">-->
-                      <!--              {{ 'general.emailAddress' | transloco }}-->
-                      <!--            </label>-->
-                      <!--            <div hlmInputGroup>-->
-                      <!--              <input-->
-                      <!--                id="email"-->
-                      <!--                hlmInputGroupInput-->
-                      <!--                formControlName="email"-->
-                      <!--                type="email"-->
-                      <!--                placeholder="you@example.com" />-->
-                      <!--              <div hlmInputGroupAddon>-->
-                      <!--                <ng-icon name="lucideMail" />-->
-                      <!--              </div>-->
-                      <!--            </div>-->
-                      <!--            @let emailErrors = form.controls.email.errors;-->
-                      <!--            @if (emailErrors?.['required']) {-->
-                      <!--              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>-->
-                      <!--            }-->
-                      <!--            @if (emailErrors?.['email']) {-->
-                      <!--              <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>-->
-                      <!--            }-->
-                      <!--            @if (emailErrors?.['minlength']; as minlength) {-->
-                      <!--              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>-->
-                      <!--            }-->
-                      <!--            @if (emailErrors?.['maxlength']; as maxlength) {-->
-                      <!--              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>-->
-                      <!--            }-->
-                      <!--          </hlm-form-field>-->
-                      <!--                          </div>-->
-                      <!--                          <hlm-tooltip>-->
-                      <!--                            <button-->
-                      <!--                              (click)="-->
-                      <!--                    select(-->
-                      <!--                      httpDataFormGroup.controls.allowedStatusCodeRanges,-->
-                      <!--                      statusCodeRangeInput()-->
-                      <!--                    )-->
-                      <!--                  "-->
-                      <!--                              hlmBtn-->
-                      <!--                              hlmTooltipTrigger-->
-                      <!--                              variant="outline"-->
-                      <!--                              type="button">-->
-                      <!--                              <ng-icon hlm name="lucideCirclePlus" size="sm" />-->
-                      <!--                            </button>-->
-                      <!--                            <span *brnTooltipContent>-->
-                      <!--                  {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}-->
-                      <!--                </span>-->
-                      <!--                          </hlm-tooltip>-->
-                      <!--                        </div>-->
+                      <div class="col-span-8 grid gap-2 xl:col-span-5">
+                        <div class="flex items-end gap-2">
+                          <form
+                            class="space-y-2"
+                            id="mailToForm"
+                            [formGroup]="mailToForm"
+                            (ngSubmit)="onMailToSubmit()">
+                            <hlm-form-field>
+                              <label for="to" hlmLabel>
+                                {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
+                              </label>
+                              <div hlmInputGroup>
+                                <input
+                                  id="to"
+                                  hlmInputGroupInput
+                                  formControlName="to"
+                                  type="email"
+                                  placeholder="you@example.com" />
+                                <div hlmInputGroupAddon>
+                                  <ng-icon name="lucideMail" />
+                                </div>
+                              </div>
+                            </hlm-form-field>
+                          </form>
+                          <hlm-tooltip>
+                            <button
+                              [disabled]="mailToForm.invalid"
+                              hlmBtn
+                              hlmTooltipTrigger
+                              variant="outline"
+                              form="mailToForm"
+                              type="submit">
+                              <ng-icon hlm name="lucideCirclePlus" size="sm" />
+                            </button>
+                            <span *brnTooltipContent>
+                              {{ 'instanceSettings.versionCheck.adminMail.to.enter' | transloco }}
+                            </span>
+                          </hlm-tooltip>
+                        </div>
 
-                      <!--                        <div class="flex flex-wrap gap-2">-->
-                      <!--                          @for (-->
-                      <!--                            statusCodeRange of httpDataFormGroup.controls.allowedStatusCodeRanges.getRawValue();-->
-                      <!--                            track statusCodeRange-->
-                      <!--                            ) {-->
-                      <!--                            <span hlmBadge variant="secondary">-->
-                      <!--                  <div class="flex items-center justify-center gap-1">-->
-                      <!--                    <span>{{ statusCodeRange }}</span>-->
-                      <!--                    <button-->
-                      <!--                      [attr.aria-label]="-->
-                      <!--                        'monitor.edit.http.allowedStatusCodeRanges.remove'-->
-                      <!--                          | transloco: {email: statusCodeRange}-->
-                      <!--                      "-->
-                      <!--                      (click)="-->
-                      <!--                        remove(httpDataFormGroup.controls.allowedStatusCodeRanges, statusCodeRange)-->
-                      <!--                      "-->
-                      <!--                      hlmBtn-->
-                      <!--                      variant="ghost"-->
-                      <!--                      size="icon-xs"-->
-                      <!--                      type="button">-->
-                      <!--                      <ng-icon hlm name="lucideX" size="xs" />-->
-                      <!--                    </button>-->
-                      <!--                  </div>-->
-                      <!--                </span>-->
-                      <!--                          }-->
-                      <!--                        </div>-->
-                      <!--                        @let allowedStatusCodeRangeErrors =-->
-                      <!--                          httpDataFormGroup.controls.allowedStatusCodeRanges.errors;-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['required']) {-->
-                      <!--                          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['patternArrayItem']) {-->
-                      <!--                          {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['minLengthArrayItem']; as minlength) {-->
-                      <!--                          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['maxLengthArrayItem']; as maxlength) {-->
-                      <!--                          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['inputRegex']) {-->
-                      <!--                          <hlm-error>-->
-                      <!--                            {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}-->
-                      <!--                          </hlm-error>-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['inputStartBiggerThenEnd']) {-->
-                      <!--                          <hlm-error>-->
-                      <!--                            {{-->
-                      <!--                              'monitor.edit.http.allowedStatusCodeRanges.inputStartBiggerThenEndError'-->
-                      <!--                                | transloco-->
-                      <!--                            }}-->
-                      <!--                          </hlm-error>-->
-                      <!--                        }-->
-                      <!--                        @if (allowedStatusCodeRangeErrors?.['rangeIncorrect']) {-->
-                      <!--                          <hlm-error>-->
-                      <!--                            {{ 'monitor.edit.http.allowedStatusCodeRanges.rangeIncorrectError' | transloco }}-->
-                      <!--                          </hlm-error>-->
-                      <!--                        }-->
-                      <!--                      </div>-->
-                      <mat-form-field
-                        class="duration-300"
-                        animate.enter="animate-in fade-in slide-in-from-top-20"
-                        animate.leave="animate-out fade-out slide-out-to-top-20">
-                        <mat-label>
-                          {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
-                        </mat-label>
-                        <mat-chip-grid
-                          #toGrid
-                          [attr.aria-label]="
-                            'instanceSettings.versionCheck.adminMail.to.enter' | transloco
-                          "
-                          formControlName="versionCheckAdminMailTo">
+                        <div class="flex flex-wrap gap-2">
                           @for (
                             email of form.controls.versionCheckAdminMailTo.getRawValue();
                             track email
                           ) {
-                            <mat-chip-row
-                              (removed)="
-                                chipInputRemove(form.controls.versionCheckAdminMailTo, email)
-                              ">
-                              {{ email }}
-                              <button
-                                [attr.aria-label]="
-                                  'instanceSettings.versionCheck.adminMail.to.remove'
-                                    | transloco: {email}
-                                "
-                                type="button"
-                                matChipRemove>
-                                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-                              </button>
-                            </mat-chip-row>
+                            <span hlmBadge variant="secondary">
+                              <div class="flex items-center justify-center gap-1">
+                                <span>{{ email }}</span>
+                                <button
+                                  [attr.aria-label]="
+                                    'instanceSettings.versionCheck.adminMail.to.remove'
+                                      | transloco: {email: email}
+                                  "
+                                  (click)="removeMailTo(email)"
+                                  hlmBtn
+                                  variant="ghost"
+                                  size="icon-xs"
+                                  type="button">
+                                  <ng-icon hlm name="lucideX" size="xs" />
+                                </button>
+                              </div>
+                            </span>
                           }
-                        </mat-chip-grid>
-                        <input
-                          [matChipInputFor]="toGrid"
-                          [placeholder]="
-                            'instanceSettings.versionCheck.adminMail.to.new' | transloco
-                          "
-                          (matChipInputTokenEnd)="
-                            chipInputAdd(form.controls.versionCheckAdminMailTo, $event)
-                          " />
-
+                        </div>
                         @let toErrors = form.controls.versionCheckAdminMailTo.errors;
                         @if (toErrors?.['required']) {
-                          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+                          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
                         }
                         @if (toErrors?.['minLengthArrayItem']; as minlength) {
-                          <mat-error>
+                          <hlm-error>
                             {{ 'form.validation.minlength' | transloco: minlength }}
-                          </mat-error>
+                          </hlm-error>
                         }
                         @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
-                          <mat-error>
+                          <hlm-error>
                             {{ 'form.validation.maxlength' | transloco: maxlength }}
-                          </mat-error>
+                          </hlm-error>
                         }
-                      </mat-form-field>
+                      </div>
                     }
                   </div>
                 }
@@ -390,58 +216,21 @@ import {TableLoadingBar} from '../table-loading-bar';
           </div>
         </div>
 
-        <!-- Centered Material button, only when lookup is disabled -->
         @if (!_versionCheckEnabled) {
-          <div class="absolute inset-0 z-10 bg-transparent"></div>
-          <div class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-20">
-            <div>
-              <strong>{{ 'instanceSettings.versionCheck.warning.1' | transloco }}</strong>
-              <div class="mt-4">
-                <i>{{ 'instanceSettings.versionCheck.warning.2' | transloco }}</i>
-              </div>
-              <ul class="list-disc">
-                <li>{{ 'instanceSettings.versionCheck.warning.3' | transloco }}</li>
-                <li>{{ 'instanceSettings.versionCheck.warning.4' | transloco }}</li>
-              </ul>
-            </div>
-            <button
-              (click)="form.controls.versionCheckEnabled.patchValue(true); onSubmit()"
-              type="button"
-              hlmBtn
-              variant="outline">
-              {{ 'general.enable' | transloco }}
-            </button>
-          </div>
+          <pu-version-check-disabled
+            (enableVersionCheck)="form.controls.versionCheckEnabled.patchValue(true); onSubmit()" />
         }
       </div>
     </section>
   `,
-  styles: `
-    ::ng-deep mat-slide-toggle > .mdc-form-field.mdc-form-field--align-end {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    ::ng-deep mat-slide-toggle > .mdc-form-field.mdc-form-field--align-end > .mdc-label {
-      margin-left: 0 !important;
-      width: 100%;
-    }
-  `,
   selector: 'pu-instance-settings-version-check-form',
   imports: [
-    ReactiveFormsModule,
-    MatChipGrid,
-    MatChipRow,
-    MatChipRemove,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatLabel,
-    MatChipInput,
-    TranslocoPipe,
-    CopyIconButton,
+    VersionCheckInfo,
+    VersionCheckDisabled,
     TableLoadingBar,
     SaveButton,
+    ReactiveFormsModule,
+    TranslocoPipe,
     HlmCardImports,
     HlmButtonImports,
     HlmTooltipImports,
@@ -450,20 +239,17 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmBadgeImports,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmError,
     HlmFormFieldImports,
     HlmInputGroupImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstanceSettingsVersionCheckForm {
-  readonly instanceSettingsVersionCheckStore = inject(InstanceSettingsVersionCheckStore);
-  readonly infoStore = inject(InfoStore);
+  protected readonly infoStore = inject(InfoStore);
 
-  protected readonly chipInputAdd = chipInputAdd;
-  protected readonly chipInputRemove = chipInputRemove;
+  private readonly fb = inject(NonNullableFormBuilder);
 
-  form = inject(NonNullableFormBuilder).group({
+  protected readonly form = this.fb.group({
     versionCheckEnabled: [false, [Validators.required]],
     versionCheckAdminMailEnabled: [false, [Validators.required]],
     versionCheckAdminMailSendToEveryone: [true, [Validators.required]],
@@ -475,21 +261,23 @@ export class InstanceSettingsVersionCheckForm {
     ]),
   });
 
-  readonly isValid = injectIsValid(this.form);
+  protected readonly mailToForm = this.fb.group({
+    to: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(Database.MIN_MAIL_LENGTH),
+        Validators.maxLength(Database.MAX_MAIL_LENGTH),
+      ],
+    ],
+  });
 
-  submitSettings = output<BackendType['InstanceSettingVersionCheckDto']>();
+  protected readonly isValid = injectIsValid(this.form);
 
-  onSubmit() {
-    const it = this.form.getRawValue();
-    this.submitSettings.emit({
-      ...it,
-      versionCheckAdminMailTo: it.versionCheckAdminMailSendToEveryone
-        ? undefined
-        : (it.versionCheckAdminMailTo ?? undefined),
-    });
-  }
+  readonly submitSettings = output<BackendType['InstanceSettingVersionCheckDto']>();
 
-  settings = input.required({
+  readonly settings = input.required({
     transform: (it: BackendType['InstanceSettingsResponse']) => {
       this.form.patchValue({
         ...it,
@@ -499,14 +287,40 @@ export class InstanceSettingsVersionCheckForm {
     },
   });
 
-  isLoading = input(false, {transform: booleanAttribute});
+  readonly isLoading = input(false, {transform: booleanAttribute});
 
-  readonly versionCheckEnabled = computed(() => this.settings().versionCheckEnabled);
+  protected readonly versionCheckEnabled = computed(() => this.settings().versionCheckEnabled);
+
+  protected onSubmit() {
+    const it = this.form.getRawValue();
+    this.submitSettings.emit({
+      ...it,
+      versionCheckAdminMailTo: it.versionCheckAdminMailSendToEveryone
+        ? undefined
+        : (it.versionCheckAdminMailTo ?? undefined),
+    });
+  }
+
+  protected onMailToSubmit() {
+    this.form.controls.versionCheckAdminMailTo.setValue([
+      ...(this.form.controls.versionCheckAdminMailTo.getRawValue() ?? []),
+      this.mailToForm.getRawValue().to,
+    ]);
+    this.mailToForm.reset();
+  }
+
+  protected removeMailTo(email: string) {
+    this.form.controls.versionCheckAdminMailTo.setValue([
+      ...(this.form.controls.versionCheckAdminMailTo.getRawValue() ?? []).filter(
+        (it) => it !== email,
+      ),
+    ]);
+  }
 
   constructor() {
     this.infoStore.loadVersion();
 
-    this.instanceSettingsVersionCheckStore.makeVersionCheck(
+    inject(InstanceSettingsVersionCheckStore).makeVersionCheck(
       computed(() => ({
         versionCheckEnabled: this.versionCheckEnabled(),
       })),

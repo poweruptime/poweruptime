@@ -66,7 +66,7 @@ export class Editor implements ControlValueAccessor {
 
         editor.ui.registry.addAutocompleter('variables', {
           trigger: '!',
-          minChars: 1,
+          minChars: 0,
           highlightOn: ['char_name'],
           columns: 1,
           onAction,

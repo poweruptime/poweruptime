@@ -17,15 +17,6 @@ import {
 } from '@angular/forms';
 
 import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-
-import {
   CdkDrag,
   CdkDragDrop,
   CdkDragHandle,
@@ -39,6 +30,7 @@ import {map, of} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -133,48 +125,86 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             [label]="'statusPage.edit.image' | transloco"
             (fileId)="form.controls.imageId.setValue($event)" />
 
-          <div class="col-span-2 2xl:col-span-1">
-            <mat-form-field class="w-full">
-              <mat-label>{{ 'general.domainNames' | transloco }}</mat-label>
-              <mat-chip-grid
-                #domainNamesGrid
-                [attr.aria-label]="'statusPage.edit.domainNames.enter' | transloco"
-                formControlName="domainNames">
-                @for (domainName of form.controls.domainNames.getRawValue(); track domainName) {
-                  <mat-chip-row (removed)="removeDomainName(form.controls.domainNames, domainName)">
-                    {{ domainName }}
+          <div class="col-span-2 grid gap-2 2xl:col-span-1">
+            <div class="flex items-end gap-2">
+              <form
+                class="space-y-2"
+                id="domainNameForm"
+                [formGroup]="domainNameForm"
+                (ngSubmit)="onDomainNameSubmit()">
+                <hlm-form-field>
+                  <label for="domainName" hlmLabel>
+                    {{ 'general.domainNames' | transloco }}
+                  </label>
+                  <div hlmInputGroup>
+                    <input
+                      id="domainName"
+                      [placeholder]="'statusPage.edit.domainNames.new' | transloco"
+                      hlmInputGroupInput
+                      formControlName="domainName"
+                      type="text" />
+                    <div hlmInputGroupAddon>
+                      <ng-icon name="lucideServer" />
+                    </div>
+                  </div>
+                </hlm-form-field>
+              </form>
+              <hlm-tooltip>
+                <button
+                  [disabled]="
+                    domainNameForm.invalid ||
+                    (form.controls.domainNames.getRawValue() ?? '').includes(
+                      domainNameForm.controls.domainName.getRawValue()
+                    )
+                  "
+                  hlmBtn
+                  hlmTooltipTrigger
+                  variant="outline"
+                  form="domainNameForm"
+                  type="submit">
+                  <ng-icon hlm name="lucideCirclePlus" size="sm" />
+                </button>
+                <span *brnTooltipContent>
+                  {{ 'statusPage.edit.domainNames.enter' | transloco }}
+                </span>
+              </hlm-tooltip>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              @for (domainName of form.controls.domainNames.getRawValue(); track $index) {
+                <span hlmBadge variant="secondary">
+                  <div class="flex items-center justify-center gap-1">
+                    <span>{{ domainName }}</span>
                     <button
                       [attr.aria-label]="
                         'statusPage.edit.domainNames.remove' | transloco: {domainName}
                       "
-                      type="button"
-                      matChipRemove>
-                      <ng-icon name="bootstrapXCircle" aria-hidden="true" />
+                      (click)="removeDomainName(domainName)"
+                      hlmBtn
+                      variant="ghost"
+                      size="icon-xs"
+                      type="button">
+                      <ng-icon hlm name="lucideX" size="xs" />
                     </button>
-                  </mat-chip-row>
-                }
-              </mat-chip-grid>
-              <input
-                [matChipInputFor]="domainNamesGrid"
-                [placeholder]="'statusPage.edit.domainNames.new' | transloco"
-                (matChipInputTokenEnd)="addDomainName(form.controls.domainNames, $event)" />
-
-              @let domainNameErrors = form.controls.domainNames.errors;
-              @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
-                <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+                  </div>
+                </span>
               }
-              @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
-                <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
-              }
-              @if (domainNameErrors?.['patternArrayItem']) {
-                <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
-              }
-              @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
-                <mat-error>
-                  {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
-                </mat-error>
-              }
-            </mat-form-field>
+            </div>
+            @let domainNameErrors = form.controls.domainNames.errors;
+            @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
+              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            }
+            @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
+              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+            }
+            @if (domainNameErrors?.['patternArrayItem']) {
+              <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
+            }
+            @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
+              <hlm-error>
+                {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
+              </hlm-error>
+            }
           </div>
 
           <div class="col-span-2">
@@ -330,23 +360,16 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [MonitorsSearchStore],
   imports: [
+    StatusPageEditFormGroupMonitors,
+    SaveButton,
+    Editor,
+    FileUpload,
     ReactiveFormsModule,
     TranslocoPipe,
-    MatFormField,
-    MatLabel,
-    MatError,
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    SaveButton,
-    Editor,
-    StatusPageEditFormGroupMonitors,
     CdkDragPlaceholder,
-    FileUpload,
-    MatChipGrid,
-    MatChipRow,
-    MatChipInput,
-    MatChipRemove,
     HlmCardImports,
     HlmTooltipImports,
     HlmButtonImports,
@@ -357,6 +380,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmLabelImports,
     HlmInputImports,
     HlmAlertImports,
+    HlmBadgeImports,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<
@@ -442,10 +466,21 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
         arrayItemPattern(Database.DOMAIN_REGEX),
       ],
       asyncValidators: [this.asyncDomainNameUseValidator()],
-      updateOn: 'blur',
     }),
   });
   readonly isValid = injectIsValid(this.form);
+
+  protected readonly domainNameForm = this.fb.nonNullable.group({
+    domainName: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(Database.DOMAIN_REGEX),
+        Validators.minLength(Database.MIN_DOMAIN_LENGTH),
+        Validators.maxLength(Database.MAX_DOMAIN_LENGTH),
+      ],
+    ],
+  });
 
   selectedTeamId = input.required({
     transform: (it?: string) => {
@@ -506,32 +541,18 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
     moveItemInArray(items, event.previousIndex, event.currentIndex);
   }
 
-  removeDomainName(control: FormControl<string[] | null>, keyword: string) {
-    const values = control.value;
-
-    if (!values) {
-      return;
-    }
-
-    const index = values.indexOf(keyword);
-    if (index < 0) {
-      return;
-    }
-
-    values.splice(index, 1);
-    control.setValue([...values]);
+  protected onDomainNameSubmit() {
+    this.form.controls.domainNames.setValue([
+      ...(this.form.controls.domainNames.getRawValue() ?? []),
+      this.domainNameForm.getRawValue().domainName,
+    ]);
+    this.domainNameForm.reset();
   }
 
-  addDomainName(control: FormControl<string[] | null>, event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our keyword
-    if (value) {
-      control.setValue([...(control.value ?? []), value]);
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
+  protected removeDomainName(domainName: string) {
+    this.form.controls.domainNames.setValue([
+      ...(this.form.controls.domainNames.getRawValue() ?? []).filter((it) => it !== domainName),
+    ]);
   }
 
   private asyncSlugInUseValidator(): AsyncValidatorFn {

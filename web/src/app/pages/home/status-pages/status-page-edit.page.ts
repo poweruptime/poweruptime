@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
-import {MatTab, MatTabContent, MatTabGroup} from '@angular/material/tabs';
-
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
-import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
+import {HlmTabsImports} from '@spartan-ng/helm/tabs';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {StatusPageEditForm} from '@app/components/status-page';
 import {PublicStatusPagePage} from '@app/pages/public/public-status-page.page';
@@ -21,30 +21,31 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
 
       @if (_statusPageId) {
         @if (statusPageEditStore.isFulfilled()) {
-          <mat-tab-group
-            [(selectedIndex)]="preview"
-            mat-stretch-tabs="false"
-            mat-align-tabs="start">
-            <mat-tab [label]="'statusPage.edit.edit' | transloco: statusPage">
-              <ng-template matTabContent>
-                <div class="overflow-x-hidden">
-                  <div class="h-8"></div>
-                  <pu-status-page-edit-form
-                    [statusPage]="statusPage"
-                    [selectedTeamId]="selectedTeamStore.selectedTeamId()"
-                    [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
-                    (submitCreate)="statusPageEditStore.create($event)"
-                    (submitUpdate)="statusPageEditStore.update($event)" />
-                </div>
-              </ng-template>
-            </mat-tab>
-            <mat-tab label="Preview">
-              <ng-template matTabContent>
+          <hlm-tabs class="w-full" [tab]="tab()" (tabActivated)="tab.set($event)">
+            <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
+              <button class="gap-1.5" type="button" hlmTabsTrigger="edit">
+                {{ 'statusPage.edit.edit' | transloco: statusPage }}
+              </button>
+              <button class="gap-1.5" type="button" hlmTabsTrigger="preview">
+                <ng-icon hlm name="lucideEye" size="sm" />
+                Preview
+              </button>
+            </hlm-tabs-list>
+            <div hlmTabsContent="edit">
+              <div class="overflow-x-hidden">
                 <div class="h-8"></div>
-                <pu-public-status-page-page [statusPageSlug]="statusPage!.slug" preview />
-              </ng-template>
-            </mat-tab>
-          </mat-tab-group>
+                <pu-status-page-edit-form
+                  [statusPage]="statusPage"
+                  [selectedTeamId]="selectedTeamStore.selectedTeamId()"
+                  [formDisabled]="selectedTeamStore.selectedTeam()?.role === 'MEMBER'"
+                  (submitCreate)="statusPageEditStore.create($event)"
+                  (submitUpdate)="statusPageEditStore.update($event)" />
+              </div>
+            </div>
+            <div hlmTabsContent="preview">
+              <pu-public-status-page-page [statusPageSlug]="statusPage!.slug" preview />
+            </div>
+          </hlm-tabs>
         } @else {
           <div class="flex animate-pulse justify-between gap-12">
             <div class="flex flex-col gap-3">
@@ -78,12 +79,11 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
   providers: [StatusPageEditStore],
   imports: [
     StatusPageEditForm,
-    HlmSkeletonImports,
-    TranslocoPipe,
     PublicStatusPagePage,
-    MatTabGroup,
-    MatTab,
-    MatTabContent,
+    TranslocoPipe,
+    HlmSkeletonImports,
+    HlmIconImports,
+    HlmTabsImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -93,9 +93,9 @@ export class StatusPageEditPage {
 
   readonly statusPageId = input<string>();
 
-  preview = linkedQueryParam('preview', {
-    parse: paramToNumber({defaultValue: 0}),
-    stringify: (it) => (it === 0 ? null : it),
+  readonly tab = linkedQueryParam<string>('tab', {
+    defaultValue: 'edit',
+    queryParamsHandling: 'replace',
   });
 
   constructor() {

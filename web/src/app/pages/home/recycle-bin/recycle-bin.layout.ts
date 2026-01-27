@@ -52,7 +52,7 @@ import {RecycleBinStatusPageList} from '@app/components/status-page';
 export class RecycleBinLayout {
   readonly teamId = input.required<string>();
 
-  readonly tab = linkedQueryParam<string>('tab', {
+  readonly tab = linkedQueryParam('tab', {
     defaultValue: 'monitors',
     queryParamsHandling: 'replace',
   });
