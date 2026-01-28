@@ -11,8 +11,6 @@ services:
       context: web
     ports:
       - '4200:4200'
-    environment:
-      - POWERUPTIME_HOST=localhost:4200
     networks:
       - poweruptime-local-dev-network
 

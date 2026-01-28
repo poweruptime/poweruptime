@@ -31,7 +31,7 @@ const og: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
       : ('UP' as const);
 
     const statusPageImageUrl = statusPage.image
-      ? `${process.env['POWERUPTIME_HOST'] ?? environment.backendHost}/api/v1/public/file/${statusPage.image.fileId}`
+      ? `${environment.backendHost}/api/v1/public/file/${statusPage.image.fileId}`
       : undefined;
 
     const template = `

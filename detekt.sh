@@ -4,7 +4,7 @@
 spinner() {
   local spinner_chars=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
   local i=0
-  local pids=("${!1}")   # array ref trick for bash 3
+  local pids=("${!1}")
   local names=("${!2}")
   local colors=("${!3}")
 
@@ -49,10 +49,13 @@ ansi_color() {
   esac
 }
 
-# Define tools: (name|color|command...)
-tools=(
-  "Prettier|green|pnpm format"
+# Define tools in two groups
+sequential_tools=(
   "eslint|yellow|pnpm -C web lint:fix"
+)
+
+parallel_tools=(
+  "Prettier|green|pnpm format"
   "Detekt|cyan|./gradlew detekt"
 )
 
@@ -64,8 +67,8 @@ exit_codes=()
 start_times=()
 end_times=()
 
-# Start all tools
-for tool in "${tools[@]}"; do
+# Run sequential tools first
+for tool in "${sequential_tools[@]}"; do
   name=${tool%%|*}
   rest=${tool#*|}
   color=${rest%%|*}
@@ -80,21 +83,67 @@ for tool in "${tools[@]}"; do
   start_times+=($(date +%s%N))
 
   eval "$cmd" >"$output" 2>&1 &
-  pids+=($!)
-done
+  pid=$!
+  pids+=($pid)
 
-# Run spinner
-spinner pids[@] names[@] colors[@] & spinner_pid=$!
+  # Run spinner for this single process
+  spinner_pids=($pid)
+  spinner_names=("$name")
+  spinner_colors=("$(ansi_color "$color")")
+  spinner spinner_pids[@] spinner_names[@] spinner_colors[@] & spinner_pid=$!
 
-# Wait for each process
-for idx in "${!pids[@]}"; do
-  wait "${pids[$idx]}"
-  exit_codes[$idx]=$?
+  wait "$pid"
+  exit_codes+=($?)
   end_times+=($(date +%s%N))
+
+  kill "$spinner_pid" 2>/dev/null
+  echo ""
 done
 
-kill "$spinner_pid" 2>/dev/null
-echo ""
+# Start parallel tools
+parallel_start=${#names[@]}
+parallel_pids=()
+
+for tool in "${parallel_tools[@]}"; do
+  name=${tool%%|*}
+  rest=${tool#*|}
+  color=${rest%%|*}
+  cmd=${rest#*|}
+
+  names+=("$name")
+  colors+=("$(ansi_color "$color")")
+
+  output=$(mktemp)
+  outputs+=("$output")
+
+  start_times+=($(date +%s%N))
+
+  eval "$cmd" >"$output" 2>&1 &
+  pid=$!
+  pids+=($pid)
+  parallel_pids+=($pid)
+done
+
+# Run spinner for parallel tools
+if [ ${#parallel_pids[@]} -gt 0 ]; then
+  parallel_names=()
+  parallel_colors=()
+  for idx in $(seq $parallel_start $((${#names[@]} - 1))); do
+    parallel_names+=("${names[$idx]}")
+    parallel_colors+=("${colors[$idx]}")
+  done
+  spinner parallel_pids[@] parallel_names[@] parallel_colors[@] & spinner_pid=$!
+
+  # Wait for parallel processes
+  for idx in "${!parallel_pids[@]}"; do
+    wait "${parallel_pids[$idx]}"
+    exit_codes+=($?)
+    end_times+=($(date +%s%N))
+  done
+
+  kill "$spinner_pid" 2>/dev/null
+  echo ""
+fi
 
 # Print outputs with colors
 for idx in "${!names[@]}"; do
