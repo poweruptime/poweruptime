@@ -1,4 +1,3 @@
-// brn-mention.token.ts
 import {
   type ExistingProvider,
   InjectionToken,
@@ -10,29 +9,28 @@ import {
   inject,
 } from '@angular/core';
 
-import {ActiveDescendantKeyManager} from '@angular/cdk/a11y';
+import type {ActiveDescendantKeyManager} from '@angular/cdk/a11y';
 
-import {BrnAutocompleteItem} from '@spartan-ng/brain/autocomplete';
+import type {BrnMentionItem} from './brn-mention-item';
 
 export interface BrnMentionBase<T> {
-  trigger: InputSignal<string>;
   itemToString: InputSignal<MentionItemToString<T> | undefined>;
   search: ModelSignal<string>;
   disabled: Signal<boolean>;
   disabledState: Signal<boolean>;
-  keyManager: ActiveDescendantKeyManager<BrnAutocompleteItem<T>>;
-  value: ModelSignal<string | null>;
+  keyManager: ActiveDescendantKeyManager<BrnMentionItem<T>>;
+  value: ModelSignal<T | null> | ModelSignal<string | null>;
   visibleItems: Signal<boolean>;
   isExpanded: Signal<boolean>;
   searchInputWrapperWidth: Signal<number | null>;
 
-  updateSearch: (value: string, cursorPosition: number) => void;
+  updateSearch: (value: string) => void;
   isSelected: (itemValue: T) => boolean;
   select: (itemValue: T) => void;
   open: () => void;
-  close: () => void;
+  resetValue: () => void;
+  /** Select the active item with Enter key. */
   selectActiveItem: () => void;
-  insertMention: (itemValue: T) => void;
 }
 
 export const BrnMentionBaseToken = new InjectionToken<BrnMentionBase<unknown>>(
@@ -47,16 +45,19 @@ export function injectBrnMentionBase<T>(): BrnMentionBase<T> {
   return inject(BrnMentionBaseToken) as BrnMentionBase<T>;
 }
 
+// config
+export type MentionItemEqualToValue<T> = (itemValue: T, selectedValue: T | null) => boolean;
 export type MentionItemToString<T> = (itemValue: T) => string;
 
 export interface BrnMentionConfig<T> {
-  trigger: string;
+  isItemEqualToValue: MentionItemEqualToValue<T>;
   itemToString?: MentionItemToString<T>;
 }
 
-function getDefaultMentionConfig<T>(): BrnMentionConfig<T> {
+function getDefaultConfig<T>(): BrnMentionConfig<T> {
   return {
-    trigger: '@',
+    isItemEqualToValue: (itemValue: T, selectedValue: T | null) =>
+      Object.is(itemValue, selectedValue),
     itemToString: undefined,
   };
 }
@@ -64,10 +65,10 @@ function getDefaultMentionConfig<T>(): BrnMentionConfig<T> {
 const BrnMentionConfigToken = new InjectionToken<BrnMentionConfig<unknown>>('BrnMentionConfig');
 
 export function provideBrnMentionConfig<T>(config: Partial<BrnMentionConfig<T>>): ValueProvider {
-  return {provide: BrnMentionConfigToken, useValue: {...getDefaultMentionConfig(), ...config}};
+  return {provide: BrnMentionConfigToken, useValue: {...getDefaultConfig(), ...config}};
 }
 
 export function injectBrnMentionConfig<T>(): BrnMentionConfig<T> {
   const injectedConfig = inject(BrnMentionConfigToken, {optional: true});
-  return injectedConfig ? (injectedConfig as BrnMentionConfig<T>) : getDefaultMentionConfig();
+  return injectedConfig ? (injectedConfig as BrnMentionConfig<T>) : getDefaultConfig();
 }

@@ -1,6 +1,68 @@
-export * from './brn-mention.token';
-export * from './brn-mention';
-export * from './brn-mention-content';
-export * from './brn-mention-input';
-export * from './hlm-mention';
-export * from './hlm-mention-content';
+import {
+  BrnMention,
+  BrnMentionAnchor,
+  BrnMentionContent,
+  BrnMentionEmpty,
+  BrnMentionGroup,
+  BrnMentionInput,
+  BrnMentionInputWrapper,
+  BrnMentionItem,
+  BrnMentionLabel,
+  BrnMentionList,
+  BrnMentionSeparator,
+  BrnMentionStatus,
+} from './brain';
+import {HlmMention} from './helm/hlm-mention';
+import {HlmMentionContent} from './helm/hlm-mention-content';
+import {HlmMentionEmpty} from './helm/hlm-mention-empty';
+import {HlmMentionGroup} from './helm/hlm-mention-group';
+import {HlmMentionInput} from './helm/hlm-mention-input';
+import {HlmMentionItem} from './helm/hlm-mention-item';
+import {HlmMentionLabel} from './helm/hlm-mention-label';
+import {HlmMentionList} from './helm/hlm-mention-list';
+import {HlmMentionSearch} from './helm/hlm-mention-search';
+import {HlmMentionSeparator} from './helm/hlm-mention-separator';
+import {HlmMentionStatus} from './helm/hlm-mention-status';
+
+export * from './brain';
+
+export * from './helm/hlm-mention';
+export * from './helm/hlm-mention-content';
+export * from './helm/hlm-mention-empty';
+export * from './helm/hlm-mention-group';
+export * from './helm/hlm-mention-input';
+export * from './helm/hlm-mention-item';
+export * from './helm/hlm-mention-label';
+export * from './helm/hlm-mention-list';
+export * from './helm/hlm-mention-search';
+export * from './helm/hlm-mention-separator';
+export * from './helm/hlm-mention-status';
+
+export const BrnMentionImports = [
+  BrnMention,
+  BrnMentionAnchor,
+  BrnMentionContent,
+  BrnMentionEmpty,
+  BrnMentionGroup,
+  BrnMentionInput,
+  BrnMentionInputWrapper,
+  BrnMentionItem,
+  BrnMentionLabel,
+  BrnMentionList,
+  BrnMentionSeparator,
+  BrnMentionStatus,
+];
+
+export const HlmMentionImports = [
+  HlmMention,
+  HlmMentionContent,
+  HlmMentionEmpty,
+  HlmMentionGroup,
+  HlmMentionInput,
+  HlmMentionItem,
+  HlmMentionLabel,
+  HlmMentionList,
+  HlmMentionSearch,
+  HlmMentionSeparator,
+  HlmMentionStatus,
+];

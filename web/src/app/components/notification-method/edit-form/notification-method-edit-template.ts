@@ -21,10 +21,13 @@ import {MatInput} from '@angular/material/input';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 
+import {HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
@@ -42,6 +45,30 @@ import {Editor} from '@app/components/editor';
           [placeholder]="_label"
           [autocompleteVariables]="variableKeys" />
       } @else {
+        <div class="w-full space-y-2">
+          <label for="editor" hlmLabel>
+            {{ _label }}
+          </label>
+          <!--              (keydown.enter)=""-->
+          <hlm-mention-search
+            [(search)]="mentionFilter"
+            [(value)]="mentionInput"
+            [disabled]="isDisabled()"
+            [restoreFocus]="false">
+            <hlm-mention-input class="w-full" id="editor" [placeholder]="_label" />
+            <div *brnPopoverContent hlmMentionContent>
+              <hlm-mention-empty>Nothing found...</hlm-mention-empty>
+              <div hlmMentionList>
+                @for (option of filteredItems(); track option) {
+                  <hlm-mention-item [value]="option.key">
+                    {{ option.key }}
+                  </hlm-mention-item>
+                }
+              </div>
+            </div>
+          </hlm-mention-search>
+        </div>
+
         <mat-form-field>
           <mat-label>{{ _label }}</mat-label>
           <textarea
@@ -123,6 +150,9 @@ import {Editor} from '@app/components/editor';
     HlmIconImports,
     HlmTooltipImports,
     BrnTooltipContentTemplate,
+    HlmMentionImports,
+    HlmLabelImports,
+    BrnPopoverContent,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -130,6 +160,10 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   private readonly dateFormat = new DatePipe(this.locale);
   private readonly document = inject(DOCUMENT);
   private readonly now = this.dateFormat.transform(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS z (Z)');
+
+  protected readonly mentionInput = signal<string | null>(null);
+
+  public readonly itemToString = (item: {key: string}): string => item.key;
 
   label = input.required<string>();
   html = input(false, {transform: booleanAttribute});
@@ -153,8 +187,6 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
     {key: 'previousStatusLabel', default: 'Online'},
     {key: 'previousStatusDuration', default: '4d 20h 69m 12s'},
   ];
-
-  itemToString = (user: {key: string}) => user.key;
 
   readonly variableKeys = this.variables.map((it) => it.key);
 
