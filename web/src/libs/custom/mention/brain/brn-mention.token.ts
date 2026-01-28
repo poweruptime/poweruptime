@@ -1,11 +1,11 @@
 import {
   type ExistingProvider,
   InjectionToken,
-  type InputSignal,
   type ModelSignal,
   type Signal,
   type Type,
   type ValueProvider,
+  type WritableSignal,
   inject,
 } from '@angular/core';
 
@@ -13,62 +13,52 @@ import type {ActiveDescendantKeyManager} from '@angular/cdk/a11y';
 
 import type {BrnMentionItem} from './brn-mention-item';
 
-export interface BrnMentionBase<T> {
-  itemToString: InputSignal<MentionItemToString<T> | undefined>;
+export interface BrnMentionBase {
   search: ModelSignal<string>;
   disabled: Signal<boolean>;
   disabledState: Signal<boolean>;
-  keyManager: ActiveDescendantKeyManager<BrnMentionItem<T>>;
-  value: ModelSignal<T | null> | ModelSignal<string | null>;
+  keyManager: ActiveDescendantKeyManager<BrnMentionItem>;
+  value: ModelSignal<string | null>;
   visibleItems: Signal<boolean>;
   isExpanded: Signal<boolean>;
   searchInputWrapperWidth: Signal<number | null>;
+  caretStartPosition: WritableSignal<number>;
+  currentCaretPosition: WritableSignal<number>;
 
+  update: (value: string) => void;
   updateSearch: (value: string) => void;
-  isSelected: (itemValue: T) => boolean;
-  select: (itemValue: T) => void;
+  isSelected: (itemValue: string) => boolean;
+  select: (itemValue: string) => void;
   open: () => void;
+  close: () => void;
   resetValue: () => void;
   /** Select the active item with Enter key. */
   selectActiveItem: () => void;
 }
 
-export const BrnMentionBaseToken = new InjectionToken<BrnMentionBase<unknown>>(
-  'BrnMentionBaseToken',
-);
+export const BrnMentionBaseToken = new InjectionToken<BrnMentionBase>('BrnMentionBaseToken');
 
-export function provideBrnMentionBase<T>(mention: Type<BrnMentionBase<T>>): ExistingProvider {
+export function provideBrnMentionBase(mention: Type<BrnMentionBase>): ExistingProvider {
   return {provide: BrnMentionBaseToken, useExisting: mention};
 }
 
-export function injectBrnMentionBase<T>(): BrnMentionBase<T> {
-  return inject(BrnMentionBaseToken) as BrnMentionBase<T>;
+export function injectBrnMentionBase(): BrnMentionBase {
+  return inject(BrnMentionBaseToken);
 }
 
-// config
-export type MentionItemEqualToValue<T> = (itemValue: T, selectedValue: T | null) => boolean;
-export type MentionItemToString<T> = (itemValue: T) => string;
+export interface BrnMentionConfig {}
 
-export interface BrnMentionConfig<T> {
-  isItemEqualToValue: MentionItemEqualToValue<T>;
-  itemToString?: MentionItemToString<T>;
+function getDefaultConfig(): BrnMentionConfig {
+  return {};
 }
 
-function getDefaultConfig<T>(): BrnMentionConfig<T> {
-  return {
-    isItemEqualToValue: (itemValue: T, selectedValue: T | null) =>
-      Object.is(itemValue, selectedValue),
-    itemToString: undefined,
-  };
-}
+const BrnMentionConfigToken = new InjectionToken<BrnMentionConfig>('BrnMentionConfig');
 
-const BrnMentionConfigToken = new InjectionToken<BrnMentionConfig<unknown>>('BrnMentionConfig');
-
-export function provideBrnMentionConfig<T>(config: Partial<BrnMentionConfig<T>>): ValueProvider {
+export function provideBrnMentionConfig<T>(config: Partial<BrnMentionConfig>): ValueProvider {
   return {provide: BrnMentionConfigToken, useValue: {...getDefaultConfig(), ...config}};
 }
 
-export function injectBrnMentionConfig<T>(): BrnMentionConfig<T> {
+export function injectBrnMentionConfig<T>(): BrnMentionConfig {
   const injectedConfig = inject(BrnMentionConfigToken, {optional: true});
-  return injectedConfig ? (injectedConfig as BrnMentionConfig<T>) : getDefaultConfig();
+  return injectedConfig ? (injectedConfig as BrnMentionConfig) : getDefaultConfig();
 }

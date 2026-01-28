@@ -1,7 +1,5 @@
 export * from './brn-mention.token';
-export * from './brn-mention';
 export * from './brn-mention-anchor';
-export * from './brn-mention-clear';
 export * from './brn-mention-content';
 export * from './brn-mention-empty';
 export * from './brn-mention-group';

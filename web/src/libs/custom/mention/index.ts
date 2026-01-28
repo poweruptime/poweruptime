@@ -1,5 +1,4 @@
 import {
-  BrnMention,
   BrnMentionAnchor,
   BrnMentionContent,
   BrnMentionEmpty,
@@ -12,7 +11,6 @@ import {
   BrnMentionSeparator,
   BrnMentionStatus,
 } from './brain';
-import {HlmMention} from './helm/hlm-mention';
 import {HlmMentionContent} from './helm/hlm-mention-content';
 import {HlmMentionEmpty} from './helm/hlm-mention-empty';
 import {HlmMentionGroup} from './helm/hlm-mention-group';
@@ -26,7 +24,6 @@ import {HlmMentionStatus} from './helm/hlm-mention-status';
 
 export * from './brain';
 
-export * from './helm/hlm-mention';
 export * from './helm/hlm-mention-content';
 export * from './helm/hlm-mention-empty';
 export * from './helm/hlm-mention-group';
@@ -39,7 +36,6 @@ export * from './helm/hlm-mention-separator';
 export * from './helm/hlm-mention-status';
 
 export const BrnMentionImports = [
-  BrnMention,
   BrnMentionAnchor,
   BrnMentionContent,
   BrnMentionEmpty,
@@ -54,7 +50,6 @@ export const BrnMentionImports = [
 ];
 
 export const HlmMentionImports = [
-  HlmMention,
   HlmMentionContent,
   HlmMentionEmpty,
   HlmMentionGroup,

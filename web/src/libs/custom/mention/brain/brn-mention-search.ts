@@ -11,25 +11,20 @@ import {
   input,
   linkedSignal,
   model,
+  signal,
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import {ActiveDescendantKeyManager} from '@angular/cdk/a11y';
 import type {BooleanInput} from '@angular/cdk/coercion';
 
-import {stringifyAsLabel} from '@spartan-ng/brain/core';
 import {ChangeFn, TouchFn} from '@spartan-ng/brain/forms';
 import {BrnPopover} from '@spartan-ng/brain/popover';
 
 import {BrnMentionInputWrapper} from './brn-mention-input-wrapper';
 import {BrnMentionItem} from './brn-mention-item';
 import {BrnMentionItemToken} from './brn-mention-item.token';
-import {
-  BrnMentionBase,
-  MentionItemToString,
-  injectBrnMentionConfig,
-  provideBrnMentionBase,
-} from './brn-mention.token';
+import {BrnMentionBase, injectBrnMentionConfig, provideBrnMentionBase} from './brn-mention.token';
 
 export const BRN_MENTION_SEARCH_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -41,10 +36,10 @@ export const BRN_MENTION_SEARCH_VALUE_ACCESSOR = {
   selector: '[brnMention]',
   providers: [provideBrnMentionBase(BrnMentionSearch), BRN_MENTION_SEARCH_VALUE_ACCESSOR],
 })
-export class BrnMentionSearch<T> implements BrnMentionBase<T>, ControlValueAccessor {
+export class BrnMentionSearch implements BrnMentionBase, ControlValueAccessor {
   private readonly _injector = inject(Injector);
 
-  private readonly _config = injectBrnMentionConfig<T>();
+  private readonly _config = injectBrnMentionConfig();
 
   /** Access the popover if present */
   private readonly _brnPopover = inject(BrnPopover, {optional: true});
@@ -56,11 +51,6 @@ export class BrnMentionSearch<T> implements BrnMentionBase<T>, ControlValueAcces
 
   /** @internal The disabled state as a readonly signal */
   public readonly disabledState = this._disabled.asReadonly();
-
-  /** A function to convert an item to a string for display. */
-  public readonly itemToString = input<MentionItemToString<T> | undefined>(
-    this._config.itemToString,
-  );
 
   /** The selected value of the mention. */
   public readonly value = model<string | null>(null);
@@ -79,7 +69,7 @@ export class BrnMentionSearch<T> implements BrnMentionBase<T>, ControlValueAcces
   });
 
   /** @internal Access all the items within the mention */
-  public readonly items = contentChildren<BrnMentionItem<T>>(BrnMentionItemToken, {
+  public readonly items = contentChildren<BrnMentionItem>(BrnMentionItemToken, {
     descendants: true,
   });
 
@@ -91,6 +81,9 @@ export class BrnMentionSearch<T> implements BrnMentionBase<T>, ControlValueAcces
 
   /** @internal Whether the mention is expanded */
   public readonly isExpanded = computed(() => this._brnPopover?.stateComputed() === 'open');
+
+  public readonly caretStartPosition = signal(-1);
+  public readonly currentCaretPosition = signal(-1);
 
   protected _onChange?: ChangeFn<string | null>;
   protected _onTouched?: TouchFn;
@@ -107,27 +100,29 @@ export class BrnMentionSearch<T> implements BrnMentionBase<T>, ControlValueAcces
     });
   }
 
-  updateSearch(value: string) {
+  update(value: string) {
     this.value.set(value);
-    this.search.set(value);
     this._onChange?.(value);
-    this.open();
-
-    if (value === '') {
-      this.resetValue();
-    }
   }
 
-  isSelected(itemValue: T): boolean {
-    return stringifyAsLabel(itemValue, this.itemToString()) === this.value();
+  updateSearch(value: string) {
+    this.search.set(value);
   }
 
-  select(itemValue: T) {
-    const label = stringifyAsLabel(itemValue, this.itemToString());
+  isSelected(itemValue: string): boolean {
+    return itemValue === this.value();
+  }
 
-    this.value.set(label);
-    this._onChange?.(label);
-    this.search.set(label);
+  select(itemValue: string) {
+    const currentValue = this.value() ?? '';
+    const before = currentValue.slice(0, this.caretStartPosition());
+    const after = currentValue.slice(this.currentCaretPosition());
+
+    // For example, we might insert "@someValue "
+    const newValue = before + '!' + itemValue + ' ' + after;
+    this.value.set(newValue);
+    this._onChange?.(newValue);
+    this.search.set('');
     this.close();
   }
 

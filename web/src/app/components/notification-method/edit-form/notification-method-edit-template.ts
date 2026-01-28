@@ -15,12 +15,6 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
-
 import {HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnPopoverContent} from '@spartan-ng/brain/popover';
@@ -30,7 +24,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
-import {MentionAutocompleteTrigger, ShadowRender} from '@app/components';
+import {ShadowRender} from '@app/components';
 import {Editor} from '@app/components/editor';
 
 @Component({
@@ -38,21 +32,40 @@ import {Editor} from '@app/components/editor';
     @let _label = label();
     @let _html = html();
 
-    <div class="flex flex-col">
-      @if (_html) {
-        <pu-editor
-          [(ngModel)]="value"
-          [placeholder]="_label"
-          [autocompleteVariables]="variableKeys" />
-      } @else {
-        <div class="w-full space-y-2">
+    <div class="flex flex-col gap-4">
+      <div class="w-full space-y-2">
+        <div class="flex items-end justify-between gap-4">
           <label for="editor" hlmLabel>
             {{ _label }}
           </label>
-          <!--              (keydown.enter)=""-->
+          @if (showReset()) {
+            <div class="flex justify-end" [class.pt-2]="_html">
+              <hlm-tooltip>
+                <button
+                  [disabled]="disableReset()"
+                  (click)="resetClick.emit()"
+                  hlmTooltipTrigger
+                  hlmBtn
+                  type="button"
+                  variant="outline"
+                  size="icon-sm">
+                  <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+                </button>
+                <span *brnTooltipContent>{{ 'general.reset' | transloco }}</span>
+              </hlm-tooltip>
+            </div>
+          }
+        </div>
+        @if (_html) {
+          <pu-editor
+            [(ngModel)]="value"
+            [placeholder]="_label"
+            [autocompleteVariables]="variableKeys" />
+        } @else {
           <hlm-mention-search
+            class="w-full"
             [(search)]="mentionFilter"
-            [(value)]="mentionInput"
+            [(value)]="value"
             [disabled]="isDisabled()"
             [restoreFocus]="false">
             <hlm-mention-input class="w-full" id="editor" [placeholder]="_label" />
@@ -67,49 +80,11 @@ import {Editor} from '@app/components/editor';
               </div>
             </div>
           </hlm-mention-search>
-        </div>
-
-        <mat-form-field>
-          <mat-label>{{ _label }}</mat-label>
-          <textarea
-            class="flex"
-            [(mentionFilter)]="mentionFilter"
-            [(ngModel)]="value"
-            [matMentions]="auto"
-            [disabled]="isDisabled()"
-            style="width: 36rem"
-            mentionTriggerChar="!"
-            rows="3"
-            matInput
-            cdkTextareaAutosize
-            cdkAutosizeMinRows="3"></textarea>
-        </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-          @for (option of filteredItems(); track option) {
-            <mat-option [value]="option.key">{{ option.key }}</mat-option>
-          }
-        </mat-autocomplete>
-      }
-      @if (showReset()) {
-        <div class="flex justify-end" [class.pt-2]="_html">
-          <hlm-tooltip>
-            <button
-              [disabled]="disableReset()"
-              (click)="resetClick.emit()"
-              hlmTooltipTrigger
-              hlmBtn
-              type="button"
-              variant="outline"
-              size="icon-sm">
-              <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
-            </button>
-            <span *brnTooltipContent>{{ 'general.reset' | transloco }}</span>
-          </hlm-tooltip>
-        </div>
-      }
+        }
+      </div>
 
       <div
-        class="dark:bg-bg-dark relative mt-4 min-h-24 rounded-sm border border-1 border-dashed border-gray-500 bg-white"
+        class="dark:bg-bg-dark relative min-h-24 rounded-sm border border-1 border-dashed border-gray-500 bg-white"
         [class.px-4]="_html"
         [class.p-4]="!_html">
         <span
@@ -135,16 +110,9 @@ import {Editor} from '@app/components/editor';
     },
   ],
   imports: [
-    FormsModule,
-    MatFormField,
-    MatInput,
-    MatOption,
-    MatLabel,
-    MatAutocomplete,
-    MentionAutocompleteTrigger,
-    CdkTextareaAutosize,
     Editor,
     ShadowRender,
+    FormsModule,
     TranslocoPipe,
     HlmButtonImports,
     HlmIconImports,
@@ -160,10 +128,6 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
   private readonly dateFormat = new DatePipe(this.locale);
   private readonly document = inject(DOCUMENT);
   private readonly now = this.dateFormat.transform(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS z (Z)');
-
-  protected readonly mentionInput = signal<string | null>(null);
-
-  public readonly itemToString = (item: {key: string}): string => item.key;
 
   label = input.required<string>();
   html = input(false, {transform: booleanAttribute});

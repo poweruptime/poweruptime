@@ -20,7 +20,7 @@ import {BrnMentionSearch} from '../brain';
   hostDirectives: [
     {
       directive: BrnMentionSearch,
-      inputs: ['disabled', 'value', 'search', 'itemToString'],
+      inputs: ['disabled', 'value', 'search'],
       outputs: ['valueChange', 'searchChange'],
     },
     {

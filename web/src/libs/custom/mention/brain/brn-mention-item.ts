@@ -32,7 +32,7 @@ import {injectBrnMentionBase} from './brn-mention.token';
     '(mouseenter)': 'activate()',
   },
 })
-export class BrnMentionItem<T> implements Highlightable {
+export class BrnMentionItem implements Highlightable {
   private static _id = 0;
 
   private readonly _platform = inject(PLATFORM_ID);
@@ -40,13 +40,13 @@ export class BrnMentionItem<T> implements Highlightable {
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** Access the mention component */
-  private readonly _mention = injectBrnMentionBase<T>();
+  private readonly _mention = injectBrnMentionBase();
 
   /** A unique id for the item */
   public readonly id = input<string>(`brn-mention-item-${++BrnMentionItem._id}`);
 
   /** The value this item represents. */
-  public readonly value = input.required<T>();
+  public readonly value = input.required<string>();
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public readonly _disabled = input<boolean, BooleanInput>(false, {
@@ -78,7 +78,7 @@ export class BrnMentionItem<T> implements Highlightable {
   }
 
   getLabel(): string {
-    return stringifyAsLabel(this.value(), this._mention.itemToString());
+    return this.value();
   }
 
   protected select(): void {

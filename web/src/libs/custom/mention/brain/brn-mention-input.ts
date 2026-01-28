@@ -1,11 +1,9 @@
-import {Directive, ElementRef, effect, inject, input} from '@angular/core';
-
-import {stringifyAsLabel} from '@spartan-ng/brain/core';
+import {Directive, ElementRef, effect, inject, input, signal} from '@angular/core';
 
 import {injectBrnMentionBase} from './brn-mention.token';
 
 @Directive({
-  selector: 'input[brnMentionInput]',
+  selector: 'textarea[brnMentionInput]',
   exportAs: 'brnMentionInput',
   host: {
     '[id]': 'id()',
@@ -26,7 +24,7 @@ import {injectBrnMentionBase} from './brn-mention.token';
 export class BrnMentionInput<T> {
   private static _id = 0;
   private readonly _el = inject(ElementRef);
-  private readonly _mention = injectBrnMentionBase<T>();
+  private readonly _mention = injectBrnMentionBase();
 
   /** The id of the mention input */
   public readonly id = input<string>(`brn-mention-input-${++BrnMentionInput._id}`);
@@ -38,23 +36,39 @@ export class BrnMentionInput<T> {
 
   constructor() {
     effect(() => {
-      const value = this._mention.value();
-      const search = this._mention.search();
-
-      const valueLabel = stringifyAsLabel(value, this._mention.itemToString());
-
-      if (valueLabel === search) {
-        this._el.nativeElement.value = valueLabel;
-      } else if (search === '') {
-        this._el.nativeElement.value = '';
-      }
+      this._el.nativeElement.value = this._mention.value();
     });
   }
 
+  private _getCurrentCaretPosition(): number {
+    return getCurrentCaretPosition(this._el.nativeElement);
+  }
+
+  private _previousValue?: string;
+
   protected onInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
+    const currentCaretPosition = this._getCurrentCaretPosition();
 
-    this._mention.updateSearch(value);
+    this._mention.currentCaretPosition.set(currentCaretPosition);
+
+    if (this._previousValue !== value) {
+      this._previousValue = value;
+      this._mention.update(value);
+
+      const caretStartPosition = this._mention.caretStartPosition();
+
+      if (this._isExpanded() && caretStartPosition >= 0) {
+        if (currentCaretPosition > caretStartPosition) {
+          // The user is typing after the trigger char, so you can do filtering logic here.
+          const mentionText = value.substring(caretStartPosition + 1, currentCaretPosition);
+          this._mention.updateSearch(mentionText);
+        } else {
+          this._mention.updateSearch('');
+          this._mention.close();
+        }
+      }
+    }
   }
 
   protected onKeyDown(event: KeyboardEvent) {
@@ -73,8 +87,23 @@ export class BrnMentionInput<T> {
       if (event.key === 'Escape') {
         this._mention.resetValue();
       }
+
+      if (event.key === '!') {
+        this._mention.open();
+        this._mention.caretStartPosition.set(this._getCurrentCaretPosition());
+
+        return;
+      }
+    } else {
+      if (event.key === ' ') {
+        this._mention.close();
+      }
     }
 
     this._mention.keyManager.onKeydown(event);
   }
+}
+export function getCurrentCaretPosition(el: HTMLInputElement) {
+  const val = el.value;
+  return val.slice(0, el.selectionStart ?? 0).length;
 }
