@@ -30,95 +30,88 @@ import {Tag} from '@app/directives';
 
 @Component({
   template: `
-    <div class="col-span-8 grid gap-2 xl:col-span-5">
-      <div class="inline-flex items-end gap-2">
-        <div class="w-full space-y-2">
-          <label for="tags" hlmLabel>
-            {{ 'tag.selector.selected' | transloco }}
-          </label>
-          <hlm-autocomplete-search
-            [(value)]="tagInput"
-            [(search)]="searchTag"
-            [disabled]="isDisabled()"
-            [restoreFocus]="false">
-            <hlm-autocomplete-input
-              class="w-full"
-              id="tags"
-              [placeholder]="'tag.selector.add' | transloco"
-              (keydown.enter)="add(tagInput())" />
-            <div *brnPopoverContent hlmAutocompleteContent>
-              @if (isPending()) {
-                <hlm-autocomplete-status class="justify-center">
-                  <hlm-spinner />
-                  Loading...
-                </hlm-autocomplete-status>
+    <div class="flex items-end gap-2">
+      <div class="w-full space-y-2">
+        <label for="tags" hlmLabel>
+          {{ 'tag.selector.selected' | transloco }}
+        </label>
+        <hlm-autocomplete-search
+          [(value)]="tagInput"
+          [(search)]="searchTag"
+          [disabled]="isDisabled()"
+          [restoreFocus]="false">
+          <hlm-autocomplete-input
+            class="w-full"
+            id="tags"
+            [placeholder]="'tag.selector.add' | transloco"
+            (keydown.enter)="add(tagInput())" />
+          <div *brnPopoverContent hlmAutocompleteContent>
+            @if (isPending()) {
+              <hlm-autocomplete-status class="justify-center">
+                <hlm-spinner />
+                Loading...
+              </hlm-autocomplete-status>
+            }
+            <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
+            <div hlmAutocompleteList>
+              @for (tag of filteredTags(); track tag) {
+                <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
+                  {{ tag.name }}
+                </hlm-autocomplete-item>
               }
-              <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
-              <div hlmAutocompleteList>
-                @for (tag of filteredTags(); track tag) {
-                  <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
-                    {{ tag.name }}
-                  </hlm-autocomplete-item>
-                }
-              </div>
             </div>
-          </hlm-autocomplete-search>
-        </div>
-        <hlm-tooltip>
-          <button
-            (click)="add(tagInput())"
-            hlmBtn
-            hlmTooltipTrigger
-            variant="outline"
-            type="button">
-            <ng-icon hlm name="lucideCirclePlus" size="sm" />
-          </button>
-          <span *brnTooltipContent>
-            {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}
-          </span>
-        </hlm-tooltip>
+          </div>
+        </hlm-autocomplete-search>
       </div>
+      <hlm-tooltip>
+        <button (click)="add(tagInput())" hlmBtn hlmTooltipTrigger variant="outline" type="button">
+          <ng-icon hlm name="lucideCirclePlus" size="sm" />
+        </button>
+        <span *brnTooltipContent>
+          {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}
+        </span>
+      </hlm-tooltip>
+    </div>
 
-      <div class="flex flex-wrap gap-2">
-        @for (tag of value(); track $index) {
-          <button [pu-tag]="tag.variant" [hlmDropdownMenuTrigger]="menu" type="button">
-            <div class="flex items-center justify-center gap-1">
-              <span>{{ tag.name }}</span>
-              <button
-                [attr.aria-label]="
-                  'monitor.edit.http.allowedStatusCodeRanges.remove' | transloco: {email: tag}
-                "
-                (click)="remove(tag)"
-                stopPropagation
-                hlmBtn
-                variant="ghost"
-                size="icon-xs"
-                type="button">
-                <ng-icon hlm name="lucideX" size="xs" />
-              </button>
-            </div>
-          </button>
+    <div class="flex flex-wrap gap-2">
+      @for (tag of value(); track $index) {
+        <button [pu-tag]="tag.variant" [hlmDropdownMenuTrigger]="menu" type="button">
+          <div class="flex items-center justify-center gap-1">
+            <span>{{ tag.name }}</span>
+            <button
+              [attr.aria-label]="
+                'monitor.edit.http.allowedStatusCodeRanges.remove' | transloco: {email: tag}
+              "
+              (click)="remove(tag)"
+              stopPropagation
+              hlmBtn
+              variant="ghost"
+              size="icon-xs"
+              type="button">
+              <ng-icon hlm name="lucideX" size="xs" />
+            </button>
+          </div>
+        </button>
 
-          <ng-template #menu>
-            <hlm-dropdown-menu class="w-56">
-              <hlm-dropdown-menu-label>Variant</hlm-dropdown-menu-label>
-              <hlm-dropdown-menu-separator />
-              <hlm-dropdown-menu-group>
-                @for (tagVariant of tagVariants; track tagVariant) {
-                  <button
-                    [checked]="tag.variant === tagVariant"
-                    (triggered)="updateTagVariant(tag, tagVariant)"
-                    hlmDropdownMenuCheckbox
-                    type="button">
-                    <hlm-dropdown-menu-checkbox-indicator />
-                    {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
-                  </button>
-                }
-              </hlm-dropdown-menu-group>
-            </hlm-dropdown-menu>
-          </ng-template>
-        }
-      </div>
+        <ng-template #menu>
+          <hlm-dropdown-menu class="w-56">
+            <hlm-dropdown-menu-label>Variant</hlm-dropdown-menu-label>
+            <hlm-dropdown-menu-separator />
+            <hlm-dropdown-menu-group>
+              @for (tagVariant of tagVariants; track tagVariant) {
+                <button
+                  [checked]="tag.variant === tagVariant"
+                  (triggered)="updateTagVariant(tag, tagVariant)"
+                  hlmDropdownMenuCheckbox
+                  type="button">
+                  <hlm-dropdown-menu-checkbox-indicator />
+                  {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
+                </button>
+              }
+            </hlm-dropdown-menu-group>
+          </hlm-dropdown-menu>
+        </ng-template>
+      }
     </div>
   `,
   selector: 'pu-tag-selector',
