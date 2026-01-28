@@ -1,37 +1,22 @@
 import {FormControl} from '@angular/forms';
 
-import {MatChipInputEvent} from '@angular/material/chips';
-
-export function chipInputRemove(
-  control: FormControl<string[] | null | undefined>,
-  keyword: string,
+export function chipInputAdd(
+  listControl: FormControl<string[] | null>,
+  inputControl: FormControl<string>,
 ) {
-  const values = control.value;
+  listControl.setValue([...(listControl.getRawValue() ?? []), inputControl.getRawValue()]);
+  inputControl.reset();
+}
 
-  if (!values) {
-    return;
-  }
+export function chipInputRemove(listControl: FormControl<string[] | null>, toRemove: string) {
+  const list = listControl.getRawValue() ?? [];
+  const index = list.findIndex((it) => it === toRemove);
 
-  const index = values.indexOf(keyword);
   if (index < 0) {
     return;
   }
 
-  values.splice(index, 1);
-  control.setValue([...values]);
-}
+  list.splice(index, 1);
 
-export function chipInputAdd(
-  control: FormControl<string[] | null | undefined>,
-  event: MatChipInputEvent,
-): void {
-  const value = (event.value || '').trim();
-
-  // Add our keyword
-  if (value) {
-    control.setValue([...(control.value ?? []), value]);
-  }
-
-  // Clear the input value
-  event.chipInput!.clear();
+  listControl.setValue([...list]);
 }

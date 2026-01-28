@@ -315,6 +315,7 @@
       "create": "Create new {{general.monitor}}",
       "dns": {
         "matches": {
+          "enter": "Enter match",
           "label": "Matches",
           "new": "New match",
           "remove": "remove {{match}}"

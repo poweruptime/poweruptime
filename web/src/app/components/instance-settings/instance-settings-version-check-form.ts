@@ -27,6 +27,7 @@ import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {BackendType, Database} from '@app/api';
 import {SaveButton, arrayItemMaxLength, arrayItemMinLength, injectIsValid} from '@app/form';
 import {InfoStore, InstanceSettingsVersionCheckStore} from '@app/services';
+import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {TableLoadingBar} from '../table-loading-bar';
 import {VersionCheckDisabled} from './version-check-disabled';
@@ -117,7 +118,12 @@ import {VersionCheckInfo} from './version-check-info';
                             class="space-y-2"
                             id="mailToForm"
                             [formGroup]="mailToForm"
-                            (ngSubmit)="onMailToSubmit()">
+                            (ngSubmit)="
+                              chipInputAdd(
+                                form.controls.versionCheckAdminMailTo,
+                                mailToForm.controls.to
+                              )
+                            ">
                             <hlm-form-field>
                               <label for="to" hlmLabel>
                                 {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
@@ -164,7 +170,9 @@ import {VersionCheckInfo} from './version-check-info';
                                     'instanceSettings.versionCheck.adminMail.to.remove'
                                       | transloco: {email: email}
                                   "
-                                  (click)="removeMailTo(email)"
+                                  (click)="
+                                    chipInputRemove(form.controls.versionCheckAdminMailTo, email)
+                                  "
                                   hlmBtn
                                   variant="ghost"
                                   size="icon-xs"
@@ -245,6 +253,9 @@ import {VersionCheckInfo} from './version-check-info';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstanceSettingsVersionCheckForm {
+  protected readonly chipInputAdd = chipInputAdd;
+  protected readonly chipInputRemove = chipInputRemove;
+
   protected readonly infoStore = inject(InfoStore);
 
   private readonly fb = inject(NonNullableFormBuilder);
@@ -299,22 +310,6 @@ export class InstanceSettingsVersionCheckForm {
         ? undefined
         : (it.versionCheckAdminMailTo ?? undefined),
     });
-  }
-
-  protected onMailToSubmit() {
-    this.form.controls.versionCheckAdminMailTo.setValue([
-      ...(this.form.controls.versionCheckAdminMailTo.getRawValue() ?? []),
-      this.mailToForm.getRawValue().to,
-    ]);
-    this.mailToForm.reset();
-  }
-
-  protected removeMailTo(email: string) {
-    this.form.controls.versionCheckAdminMailTo.setValue([
-      ...(this.form.controls.versionCheckAdminMailTo.getRawValue() ?? []).filter(
-        (it) => it !== email,
-      ),
-    ]);
   }
 
   constructor() {

@@ -33,7 +33,7 @@ import {injectHlmSidebarConfig} from './hlm-sidebar.token';
         [state]="_sidebarService.openMobile() ? 'open' : 'closed'"
         (stateChanged)="_sidebarService.setOpenMobile($event === 'open')">
         <hlm-sheet-content
-          class="bg-sidebar text-sidebar-foreground h-screen w-[var(--sidebar-width)] p-0 [&>button]:hidden"
+          class="bg-sidebar text-sidebar-foreground h-svh w-[var(--sidebar-width)] p-0 [&>button]:hidden"
           *brnSheetContent="let ctx"
           [style.--sidebar-width]="sidebarWidthMobile()"
           data-slot="sidebar"

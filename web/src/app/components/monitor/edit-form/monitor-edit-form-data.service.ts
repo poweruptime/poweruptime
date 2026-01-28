@@ -51,7 +51,7 @@ export const MonitorEditFormDataService = createInjectable(
         ],
       ],
       type: ['CNAME' as DnsMonitorDataType, [Validators.required]],
-      matches: new FormControl<string[] | undefined>(undefined),
+      matches: new FormControl<string[] | null>(null),
     });
 
     const httpDataFormGroup = fb.group({

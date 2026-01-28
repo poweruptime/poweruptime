@@ -1,16 +1,22 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-
-import {MatChipGrid, MatChipInput, MatChipRemove, MatChipRow} from '@angular/material/chips';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatOption, MatSelect} from '@angular/material/select';
+import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
+import {Database} from '@app/api';
+import {PasswordShowButton} from '@app/form';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
@@ -18,89 +24,134 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 @Component({
   template: `
     <div class="grid grid-cols-2 gap-4" [formGroup]="emailDataFormGroup">
-      <mat-form-field class="col-span-2">
-        <mat-label>{{ 'general.to' | transloco }}</mat-label>
-        <mat-chip-grid
-          #toGrid
-          [attr.aria-label]="'notificationMethod.edit.email.to.enter' | transloco"
-          formControlName="to">
-          @for (email of emailDataFormGroup.controls.to.getRawValue(); track email) {
-            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.to, email)">
-              {{ email }}
-              <button
-                [attr.aria-label]="'notificationMethod.edit.email.to.remove' | transloco: {email}"
-                type="button"
-                matChipRemove>
-                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-              </button>
-            </mat-chip-row>
-          }
-        </mat-chip-grid>
-        <input
-          [matChipInputFor]="toGrid"
-          [placeholder]="'notificationMethod.edit.email.to.new' | transloco"
-          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.to, $event)" />
+      <div class="col-span-2 grid gap-2">
+        <div class="flex items-end gap-2">
+          <form
+            class="w-full space-y-2"
+            id="toForm"
+            [formGroup]="toForm"
+            (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.to, toForm.controls.to)">
+            <hlm-form-field class="w-full">
+              <label for="to" hlmLabel>
+                {{ 'general.to' | transloco }}
+              </label>
+              <div hlmInputGroup>
+                <input
+                  id="to"
+                  [placeholder]="'notificationMethod.edit.email.to.new' | transloco"
+                  hlmInputGroupInput
+                  formControlName="to"
+                  type="email" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideMail" />
+                </div>
+              </div>
+            </hlm-form-field>
+          </form>
+          <hlm-tooltip>
+            <button
+              [disabled]="toForm.invalid"
+              hlmBtn
+              hlmTooltipTrigger
+              variant="outline"
+              form="toForm"
+              type="submit">
+              <ng-icon hlm name="lucideCirclePlus" size="sm" />
+            </button>
+            <span *brnTooltipContent>
+              {{ 'notificationMethod.edit.email.to.enter' | transloco }}
+            </span>
+          </hlm-tooltip>
+        </div>
 
+        <div class="flex flex-wrap gap-2">
+          @for (email of emailDataFormGroup.controls.to.getRawValue(); track email) {
+            <span hlmBadge variant="secondary">
+              <div class="flex items-center justify-center gap-1">
+                <span>{{ email }}</span>
+                <button
+                  [attr.aria-label]="
+                    'notificationMethod.edit.email.to.remove' | transloco: {email: email}
+                  "
+                  (click)="chipInputRemove(emailDataFormGroup.controls.to, email)"
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button">
+                  <ng-icon hlm name="lucideX" size="xs" />
+                </button>
+              </div>
+            </span>
+          }
+        </div>
         @let toErrors = emailDataFormGroup.controls.to.errors;
         @if (toErrors?.['required']) {
-          <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
         }
         @if (toErrors?.['minLengthArrayItem']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
         @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </div>
 
-      <div class="col-span-2 grid grid-cols-12 gap-4">
-        <mat-form-field class="col-span-9">
-          <mat-label>{{ 'general.host' | transloco }}</mat-label>
-          <input matInput formControlName="host" />
-
+      <div class="col-span-2 grid grid-cols-6 gap-4">
+        <hlm-form-field class="col-span-4">
+          <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
+          <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
           @let hostErrors = emailDataFormGroup.controls.host.errors;
+
           @if (hostErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
           @if (hostErrors?.['minlength']; as minlength) {
-            <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
           }
           @if (hostErrors?.['maxlength']; as maxlength) {
-            <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
           }
           @if (hostErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.domain' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
+        <hlm-form-field class="col-span-2">
+          <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
 
-        <mat-form-field class="col-span-3">
-          <mat-label>{{ 'general.port' | transloco }}</mat-label>
-          <input matInput type="number" formControlName="port" step="1" />
+          <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
           @let portErrors = emailDataFormGroup.controls.port.errors;
           @if (portErrors?.['required']) {
-            <mat-error>{{ 'form.validation.required' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
           }
           @if (portErrors?.['min']; as min) {
-            <mat-error>{{ 'form.validation.min' | transloco: min }}</mat-error>
+            <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
           }
           @if (portErrors?.['max']; as max) {
-            <mat-error>{{ 'form.validation.max' | transloco: max }}</mat-error>
+            <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
           }
           @if (portErrors?.['pattern']) {
-            <mat-error>{{ 'form.validation.integer' | transloco }}</mat-error>
+            <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
           }
-        </mat-form-field>
+        </hlm-form-field>
       </div>
 
       <div class="col-span-2 mb-5 grid items-center gap-4 xl:grid-cols-6">
-        <mat-form-field class="col-span-4" subscriptSizing="dynamic">
-          <mat-label>{{ 'general.security' | transloco }}</mat-label>
-          <mat-select formControlName="security">
-            <mat-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</mat-option>
-            <mat-option value="TLS">TLS (465)</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <hlm-form-field class="col-span-4">
+          <label hlmLabel for="security">{{ 'general.security' | transloco }}</label>
+          <brn-select
+            id="security"
+            [placeholder]="'general.security' | transloco"
+            formControlName="security">
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              <hlm-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</hlm-option>
+              <hlm-option value="TLS">TLS (465)</hlm-option>
+            </hlm-select-content>
+          </brn-select>
+        </hlm-form-field>
 
         <label class="col-span-2 flex items-center" hlmLabel for="ignoreTLSErrors">
           <hlm-switch class="mr-2" id="ignoreTLSErrors" formControlName="ignoreTLSErrors" />
@@ -108,112 +159,223 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </label>
       </div>
 
-      <mat-form-field class="col-span-1">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" />
+      <hlm-form-field class="col-span-1">
+        <label hlmLabel for="username">Username</label>
+        <div hlmInputGroup>
+          <input id="username" hlmInputGroupInput formControlName="username" />
+          <div hlmInputGroupAddon>
+            <ng-icon name="lucideUser" />
+          </div>
+        </div>
         @let usernameErrors = emailDataFormGroup.controls.username.errors;
         @if (usernameErrors?.['maxlength']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
-      <mat-form-field class="col-span-1">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
+      <hlm-form-field class="col-span-1">
+        <label hlmLabel for="password">Username</label>
+        <div hlmInputGroup>
+          <input
+            id="password"
+            [type]="showPasswordButton.type()"
+            [placeholder]="showPasswordButton.placeholder()"
+            hlmInputGroupInput
+            formControlName="username" />
+          <div hlmInputGroupAddon>
+            <ng-icon name="lucideUser" />
+          </div>
+          <pu-password-show-button #showPasswordButton hlmInputGroupAddon align="inline-end" />
+        </div>
         @let passwordErrors = emailDataFormGroup.controls.password.errors;
         @if (passwordErrors?.['maxlength']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </hlm-form-field>
 
-      <mat-form-field class="col-span-2">
-        <mat-label>CC</mat-label>
-        <mat-chip-grid
-          #ccGrid
-          [attr.aria-label]="'notificationMethod.edit.email.cc.enter' | transloco"
-          formControlName="cc">
+      <div class="col-span-2 grid gap-2">
+        <div class="flex items-end gap-2">
+          <form
+            class="w-full space-y-2"
+            id="ccForm"
+            [formGroup]="ccForm"
+            (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.cc, ccForm.controls.cc)">
+            <hlm-form-field class="w-full">
+              <label for="cc" hlmLabel>CC</label>
+              <div hlmInputGroup>
+                <input
+                  id="cc"
+                  [placeholder]="'notificationMethod.edit.email.cc.new' | transloco"
+                  hlmInputGroupInput
+                  formControlName="cc"
+                  type="email" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideMail" />
+                </div>
+              </div>
+            </hlm-form-field>
+          </form>
+          <hlm-tooltip>
+            <button
+              [disabled]="ccForm.invalid"
+              hlmBtn
+              hlmTooltipTrigger
+              variant="outline"
+              form="ccForm"
+              type="submit">
+              <ng-icon hlm name="lucideCirclePlus" size="sm" />
+            </button>
+            <span *brnTooltipContent>
+              {{ 'notificationMethod.edit.email.cc.enter' | transloco }}
+            </span>
+          </hlm-tooltip>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
           @for (email of emailDataFormGroup.controls.cc.getRawValue(); track email) {
-            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.cc, email)">
-              {{ email }}
-              <button
-                [attr.aria-label]="'notificationMethod.edit.email.cc.remove' | transloco: {email}"
-                type="button"
-                matChipRemove>
-                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-              </button>
-            </mat-chip-row>
+            <span hlmBadge variant="secondary">
+              <div class="flex items-center justify-center gap-1">
+                <span>{{ email }}</span>
+                <button
+                  [attr.aria-label]="
+                    'notificationMethod.edit.email.cc.remove' | transloco: {email: email}
+                  "
+                  (click)="chipInputRemove(emailDataFormGroup.controls.cc, email)"
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button">
+                  <ng-icon hlm name="lucideX" size="xs" />
+                </button>
+              </div>
+            </span>
           }
-        </mat-chip-grid>
-        <input
-          [matChipInputFor]="ccGrid"
-          [placeholder]="'notificationMethod.edit.email.cc.new' | transloco"
-          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.cc, $event)" />
-
+        </div>
         @let ccErrors = emailDataFormGroup.controls.cc.errors;
         @if (ccErrors?.['minLengthArrayItem']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
         @if (ccErrors?.['maxLengthArrayItem']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </div>
 
-      <mat-form-field class="col-span-2">
-        <mat-label>BCC</mat-label>
-        <mat-chip-grid
-          #bccGrid
-          [attr.aria-label]="'notificationMethod.edit.email.bcc.enter' | transloco"
-          formControlName="bcc">
+      <div class="col-span-2 grid gap-2">
+        <div class="flex items-end gap-2">
+          <form
+            class="w-full space-y-2"
+            id="bccForm"
+            [formGroup]="bccForm"
+            (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.bcc, bccForm.controls.bcc)">
+            <hlm-form-field class="w-full">
+              <label for="bcc" hlmLabel>BCC</label>
+              <div hlmInputGroup>
+                <input
+                  id="bcc"
+                  [placeholder]="'notificationMethod.edit.email.bcc.new' | transloco"
+                  hlmInputGroupInput
+                  formControlName="bcc"
+                  type="email" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideMail" />
+                </div>
+              </div>
+            </hlm-form-field>
+          </form>
+          <hlm-tooltip>
+            <button
+              [disabled]="bccForm.invalid"
+              hlmBtn
+              hlmTooltipTrigger
+              variant="outline"
+              form="bccForm"
+              type="submit">
+              <ng-icon hlm name="lucideCirclePlus" size="sm" />
+            </button>
+            <span *brnTooltipContent>
+              {{ 'notificationMethod.edit.email.bcc.enter' | transloco }}
+            </span>
+          </hlm-tooltip>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
           @for (email of emailDataFormGroup.controls.bcc.getRawValue(); track email) {
-            <mat-chip-row (removed)="chipInputRemove(emailDataFormGroup.controls.bcc, email)">
-              {{ email }}
-              <button
-                [attr.aria-label]="'notificationMethod.edit.email.bcc.remove' | transloco: {email}"
-                type="button"
-                matChipRemove>
-                <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-              </button>
-            </mat-chip-row>
+            <span hlmBadge variant="secondary">
+              <div class="flex items-center justify-center gap-1">
+                <span>{{ email }}</span>
+                <button
+                  [attr.aria-label]="
+                    'notificationMethod.edit.email.bcc.remove' | transloco: {email: email}
+                  "
+                  (click)="chipInputRemove(emailDataFormGroup.controls.bcc, email)"
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button">
+                  <ng-icon hlm name="lucideX" size="xs" />
+                </button>
+              </div>
+            </span>
           }
-        </mat-chip-grid>
-        <input
-          [matChipInputFor]="bccGrid"
-          [placeholder]="'notificationMethod.edit.email.bcc.new' | transloco"
-          (matChipInputTokenEnd)="chipInputAdd(emailDataFormGroup.controls.bcc, $event)" />
-
+        </div>
         @let bccErrors = emailDataFormGroup.controls.bcc.errors;
         @if (bccErrors?.['minLengthArrayItem']; as minlength) {
-          <mat-error>{{ 'form.validation.minlength' | transloco: minlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
         }
         @if (bccErrors?.['maxLengthArrayItem']; as maxlength) {
-          <mat-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</mat-error>
+          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
         }
-      </mat-form-field>
+      </div>
     </div>
   `,
   selector: 'pu-notification-method-edit-form-email-data',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PasswordShowButton,
     ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatChipGrid,
-    MatChipRow,
-    MatChipRemove,
-    MatChipInput,
-    NgIcon,
     TranslocoPipe,
-    MatSelect,
-    MatOption,
-    MatError,
     HlmLabelImports,
     HlmSwitchImports,
+    HlmBadgeImports,
+    HlmButtonImports,
+    HlmLabelImports,
+    HlmFormFieldImports,
+    HlmInputImports,
+    HlmInputGroupImports,
+    HlmIconImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    HlmSelectImports,
+    BrnSelectImports,
   ],
 })
 export class NotificationMethodEditFormEmailData {
-  emailDataFormGroup = inject(NotificationMethodEditFormDataService).emailDataFormGroup;
-
   protected readonly chipInputAdd = chipInputAdd;
   protected readonly chipInputRemove = chipInputRemove;
+
+  private readonly fb = inject(NonNullableFormBuilder);
+  protected readonly emailDataFormGroup = inject(NotificationMethodEditFormDataService)
+    .emailDataFormGroup;
+
+  private readonly emailFormControl = [
+    '',
+    [
+      Validators.required,
+      Validators.email,
+      Validators.minLength(Database.MIN_MAIL_LENGTH),
+      Validators.maxLength(Database.MAX_MAIL_LENGTH),
+    ],
+  ];
+
+  protected readonly toForm = this.fb.group({
+    to: this.emailFormControl,
+  });
+
+  protected readonly ccForm = this.fb.group({
+    cc: this.emailFormControl,
+  });
+
+  protected readonly bccForm = this.fb.group({
+    bcc: this.emailFormControl,
+  });
 }

@@ -11,81 +11,115 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
-import {MatProgressBar} from '@angular/material/progress-bar';
-
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
+import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {DfxLowerCaseExceptFirstLettersPipe, StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
-
-import {Tag} from '../directives';
+import {Tag} from '@app/directives';
 
 @Component({
   template: `
-    <mat-form-field class="w-full">
-      <mat-label>{{ 'tag.selector.selected' | transloco }}</mat-label>
-      <mat-chip-grid #chipGrid [attr.aria-label]="'tag.selector.list' | transloco">
-        @for (tag of value(); track tag.name) {
-          <a [matMenuTriggerFor]="menu" [pu-tag]="tag.variant" (removed)="remove(tag)" mat-chip-row>
-            {{ tag.name }}
-            <button
-              [attr.aria-label]="'tag.selector.remove' | transloco: tag"
-              type="button"
-              matChipRemove
-              stopPropagation>
-              <ng-icon name="bootstrapXCircle" aria-hidden="true" />
-            </button>
-          </a>
-          <mat-menu #menu="matMenu">
-            @for (tagVariant of tagVariants; track tagVariant) {
-              <button (click)="updateTagVariant(tag, tagVariant)" mat-menu-item type="button">
-                <!-- i(bootstrapCheckCircleFill, bootstrapCircle) -->
-                <ng-icon
-                  [name]="
-                    tag.variant === tagVariant ? 'bootstrapCheckCircleFill' : 'bootstrapCircle'
-                  " />
-                <span>
-                  {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
-                </span>
+    <div class="col-span-8 grid gap-2 xl:col-span-5">
+      <div class="inline-flex items-end gap-2">
+        <div class="w-full space-y-2">
+          <label for="tags" hlmLabel>
+            {{ 'tag.selector.selected' | transloco }}
+          </label>
+          <hlm-autocomplete-search
+            [(value)]="tagInput"
+            [(search)]="searchTag"
+            [disabled]="isDisabled()"
+            [restoreFocus]="false">
+            <hlm-autocomplete-input
+              class="w-full"
+              id="tags"
+              [placeholder]="'tag.selector.add' | transloco"
+              (keydown.enter)="add(tagInput())" />
+            <div *brnPopoverContent hlmAutocompleteContent>
+              @if (isPending()) {
+                <hlm-autocomplete-status class="justify-center">
+                  <hlm-spinner />
+                  Loading...
+                </hlm-autocomplete-status>
+              }
+              <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
+              <div hlmAutocompleteList>
+                @for (tag of filteredTags(); track tag) {
+                  <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
+                    {{ tag.name }}
+                  </hlm-autocomplete-item>
+                }
+              </div>
+            </div>
+          </hlm-autocomplete-search>
+        </div>
+        <hlm-tooltip>
+          <button
+            (click)="add(tagInput())"
+            hlmBtn
+            hlmTooltipTrigger
+            variant="outline"
+            type="button">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
+          <span *brnTooltipContent>
+            {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}
+          </span>
+        </hlm-tooltip>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        @for (tag of value(); track $index) {
+          <button [pu-tag]="tag.variant" [hlmDropdownMenuTrigger]="menu" type="button">
+            <div class="flex items-center justify-center gap-1">
+              <span>{{ tag.name }}</span>
+              <button
+                [attr.aria-label]="
+                  'monitor.edit.http.allowedStatusCodeRanges.remove' | transloco: {email: tag}
+                "
+                (click)="remove(tag)"
+                stopPropagation
+                hlmBtn
+                variant="ghost"
+                size="icon-xs"
+                type="button">
+                <ng-icon hlm name="lucideX" size="xs" />
               </button>
-            }
-          </mat-menu>
+            </div>
+          </button>
+
+          <ng-template #menu>
+            <hlm-dropdown-menu class="w-56">
+              <hlm-dropdown-menu-label>Variant</hlm-dropdown-menu-label>
+              <hlm-dropdown-menu-separator />
+              <hlm-dropdown-menu-group>
+                @for (tagVariant of tagVariants; track tagVariant) {
+                  <button
+                    [checked]="tag.variant === tagVariant"
+                    (triggered)="updateTagVariant(tag, tagVariant)"
+                    hlmDropdownMenuCheckbox
+                    type="button">
+                    <hlm-dropdown-menu-checkbox-indicator />
+                    {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
+                  </button>
+                }
+              </hlm-dropdown-menu-group>
+            </hlm-dropdown-menu>
+          </ng-template>
         }
-      </mat-chip-grid>
-      <input
-        [(ngModel)]="searchTag"
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto"
-        [placeholder]="'tag.selector.add' | transloco"
-        (matChipInputTokenEnd)="add($event)"
-        name="searchTags" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        @if (isPending()) {
-          <mat-progress-bar mode="indeterminate" />
-        }
-        @for (tag of filteredTags(); track tag.name) {
-          <mat-option [value]="tag">{{ tag.name }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
+      </div>
+    </div>
   `,
   selector: 'pu-tag-selector',
   providers: [
@@ -96,25 +130,20 @@ import {Tag} from '../directives';
     },
   ],
   imports: [
-    FormsModule,
-    MatFormField,
-    MatLabel,
-    MatChipGrid,
-    MatChipRow,
-    MatChipInput,
-    MatChipRemove,
-    MatAutocompleteTrigger,
-    MatAutocomplete,
-    MatOption,
-    MatProgressBar,
-    NgIcon,
     StopPropagationDirective,
-    TranslocoPipe,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
-    DfxLowerCaseExceptFirstLettersPipe,
     Tag,
+    DfxLowerCaseExceptFirstLettersPipe,
+    FormsModule,
+    TranslocoPipe,
+    HlmAutocompleteImports,
+    HlmButtonImports,
+    HlmIconImports,
+    HlmLabelImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
+    BrnPopoverContent,
+    HlmDropdownMenuImports,
+    HlmSpinnerImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -129,16 +158,18 @@ export class TagSelector implements ControlValueAccessor {
     'YELLOW' as const,
   ];
 
-  tags = input.required<BackendType['TagDto'][]>();
-  isPending = input.required<boolean>();
-  searchTag = model('');
+  public readonly tags = input.required<BackendType['TagDto'][]>();
+  public readonly isPending = input.required<boolean>();
+  public readonly searchTag = model('');
 
-  readonly filteredTags = computed(() => {
+  protected readonly tagInput = signal<string | null>(null);
+
+  protected readonly filteredTags = computed(() => {
     const selectedTags = this.value()?.map((it) => it.name);
     return this.tags().filter((it) => !selectedTags?.includes(it.name));
   });
 
-  remove(tag: BackendType['TagDto']): void {
+  protected remove(tag: BackendType['TagDto']): void {
     this.value.update((selectedTags) => {
       if (!selectedTags) {
         return null;
@@ -155,30 +186,27 @@ export class TagSelector implements ControlValueAccessor {
     });
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.value.update((selectedTags) => [...(selectedTags ?? []), event.option.value]);
-    this.searchTag.set('');
-    event.option.deselect();
-  }
-
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    if (value && this.value()?.find((it) => it.name === value) === undefined) {
-      this.value.update((selectedTags) => [
-        ...(selectedTags ?? []),
-        {
-          name: value,
-          variant: 'BLUE',
-        },
-      ]);
+  protected add(tag: string | null) {
+    if (!tag) {
+      return;
     }
 
-    // Clear the input value
+    this.select({
+      name: tag,
+      variant: 'BLUE',
+    });
+  }
+
+  protected select(tag: BackendType['TagDto']) {
+    this.value.update((selectedTags) => [...(selectedTags ?? []), tag]);
+    this.tagInput.set('');
     this.searchTag.set('');
   }
 
-  updateTagVariant(tag: BackendType['TagDto'], variant: BackendType['TagDto']['variant']) {
+  protected updateTagVariant(
+    tag: BackendType['TagDto'],
+    variant: BackendType['TagDto']['variant'],
+  ) {
     this.value.update((selectedTags) => {
       const index = selectedTags?.findIndex((it) => it.name === tag.name) ?? -1;
 
@@ -186,26 +214,18 @@ export class TagSelector implements ControlValueAccessor {
         return selectedTags;
       }
 
-      // Tag found. Create a new array with the updated tag at the same index.
-      // We create a copy of the tag at 'index' and update its variant.
       const updatedTag = {
-        ...selectedTags[index], // Copy all existing properties
-        variant: variant, // Overwrite or set the variant property
+        ...selectedTags[index],
+        variant: variant,
       };
 
-      // Return a new array with the updated tag replacing the old one.
-      // This is a common pattern for immutability in state updates.
-      return [
-        ...selectedTags.slice(0, index), // Elements before the found index
-        updatedTag, // The updated tag
-        ...selectedTags.slice(index + 1), // Elements after the found index
-      ];
+      return [...selectedTags.slice(0, index), updatedTag, ...selectedTags.slice(index + 1)];
     });
   }
 
-  value = signal<BackendType['TagDto'][] | null>(null);
-  isDisabled = signal(false);
-  onChange?: (it: BackendType['TagDto'][] | null) => void;
+  protected readonly value = signal<BackendType['TagDto'][] | null>(null);
+  protected readonly isDisabled = signal(false);
+  protected onChange?: (it: BackendType['TagDto'][] | null) => void;
 
   constructor() {
     effect(() => {

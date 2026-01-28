@@ -1,25 +1,22 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-
-import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {NgIcon} from '@ng-icons/core';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
-import {cl_copy} from 'dfts-helper';
-import {toast} from 'ngx-sonner';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
+import {chipInputAdd, chipInputRemove} from '@app/util';
+
+import {CopyIconButton} from '../../copy-icon-button';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
 @Component({
@@ -109,86 +106,94 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
         }
       </hlm-form-field>
 
-      <mat-form-field class="col-span-8">
-        <mat-label>{{ 'monitor.edit.dns.matches.label' | transloco }}</mat-label>
-        <mat-chip-grid #chipGrid [attr.aria-label]="'monitor.edit.dns.matches.label' | transloco">
+      <div class="col-span-8 grid gap-2">
+        <div class="flex items-end gap-2">
+          <form
+            class="w-full space-y-2"
+            id="matchForm"
+            [formGroup]="matchForm"
+            (ngSubmit)="chipInputAdd(dnsDataFormGroup.controls.matches, matchForm.controls.match)">
+            <hlm-form-field class="w-full">
+              <label for="match" hlmLabel>{{ 'monitor.edit.dns.matches.label' | transloco }}</label>
+              <div hlmInputGroup>
+                <input
+                  id="match"
+                  [placeholder]="'monitor.edit.dns.matches.new' | transloco"
+                  hlmInputGroupInput
+                  type="text"
+                  formControlName="match" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideMail" />
+                </div>
+              </div>
+            </hlm-form-field>
+          </form>
+          <hlm-tooltip>
+            <button
+              [disabled]="matchForm.invalid"
+              hlmBtn
+              hlmTooltipTrigger
+              variant="outline"
+              form="matchForm"
+              type="submit">
+              <ng-icon hlm name="lucideCirclePlus" size="sm" />
+            </button>
+            <span *brnTooltipContent>
+              {{ 'monitor.edit.dns.matches.enter' | transloco }}
+            </span>
+          </hlm-tooltip>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
           @for (match of dnsDataFormGroup.controls.matches.getRawValue(); track match) {
-            <mat-chip-row (removed)="removeDNSMatch(match)" (click)="copyToClipboard(match)">
-              {{ match }}
-              <button
-                [attr.aria-label]="'monitor.edit.dns.matches.remove' | transloco: {match}"
-                type="button"
-                matChipRemove>
-                <ng-icon name="bootstrapX" />
-              </button>
-            </mat-chip-row>
+            <span hlmBadge variant="secondary">
+              <div class="flex items-center justify-center gap-1">
+                <span>{{ match }}</span>
+                <div>
+                  <pu-copy-icon-button [content]="match" size="xs" />
+                  <button
+                    [attr.aria-label]="'monitor.edit.dns.matches.remove' | transloco: {match}"
+                    (click)="chipInputRemove(dnsDataFormGroup.controls.matches, match)"
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-xs"
+                    type="button">
+                    <ng-icon hlm name="lucideX" size="xs" />
+                  </button>
+                </div>
+              </div>
+            </span>
           }
-        </mat-chip-grid>
-        <input
-          [matChipInputFor]="chipGrid"
-          [placeholder]="'monitor.edit.dns.matches.new' | transloco"
-          (matChipInputTokenEnd)="addDNSMatch($event)" />
-      </mat-form-field>
+        </div>
+      </div>
     </div>
   `,
   selector: 'pu-monitor-edit-form-dns-data',
   imports: [
+    CopyIconButton,
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatChipGrid,
-    MatChipInput,
-    MatChipRemove,
-    MatChipRow,
-    NgIcon,
     TranslocoPipe,
     HlmSelectImports,
     BrnSelectImports,
     HlmFormFieldImports,
     HlmLabelImports,
     HlmInputImports,
+    HlmBadgeImports,
+    HlmButtonImports,
+    HlmInputGroupImports,
+    HlmIconImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorEditFormDnsData {
-  dnsDataFormGroup = inject(MonitorEditFormDataService).dnsDataFormGroup;
+  protected readonly chipInputRemove = chipInputRemove;
+  protected readonly chipInputAdd = chipInputAdd;
 
-  addDNSMatch(event: MatChipInputEvent) {
-    const value = (event.value || '').trim();
+  protected readonly dnsDataFormGroup = inject(MonitorEditFormDataService).dnsDataFormGroup;
 
-    // Add our keyword
-    if (value.length > 0) {
-      const matches = this.dnsDataFormGroup.controls.matches.getRawValue() ?? [];
-
-      matches.push(value);
-
-      this.dnsDataFormGroup.controls.matches.setValue(matches);
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-  }
-
-  removeDNSMatch(match: string) {
-    const matches = this.dnsDataFormGroup.controls.matches.getRawValue() ?? [];
-    const index = matches.findIndex((it) => match.includes(it));
-
-    if (index !== -1) {
-      matches!.splice(index, 1);
-    }
-
-    this.dnsDataFormGroup.controls.matches.setValue(matches);
-  }
-
-  copyToClipboard(it: string) {
-    cl_copy(it);
-
-    toast.success(`"${it}" copied to clipboard`);
-
-    toast.promise(() => new Promise((resolve) => setTimeout(resolve, 0)), {
-      loading: '',
-      success: `"${it}" copied to clipboard`,
-      error: '',
-    });
-  }
+  protected readonly matchForm = inject(NonNullableFormBuilder).group({
+    match: [''],
+  });
 }

@@ -76,7 +76,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             <section hlmCard>
               <div class="flex items-start justify-between gap-2" hlmCardContent>
                 <pre class="flex-1 whitespace-pre-wrap">{{ message }}</pre>
-                <pu-copy-icon-button [content]="message" matTooltipPosition="left" />
+                <pu-copy-icon-button [content]="message" tooltipPosition="left" />
               </div>
             </section>
           }

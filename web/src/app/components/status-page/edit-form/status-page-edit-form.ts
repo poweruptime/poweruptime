@@ -52,6 +52,7 @@ import {
   injectIsValid,
 } from '@app/form';
 import {MonitorsSearchStore} from '@app/services';
+import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-monitors';
 
@@ -131,7 +132,9 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 class="space-y-2"
                 id="domainNameForm"
                 [formGroup]="domainNameForm"
-                (ngSubmit)="onDomainNameSubmit()">
+                (ngSubmit)="
+                  chipInputAdd(form.controls.domainNames, domainNameForm.controls.domainName)
+                ">
                 <hlm-form-field>
                   <label for="domainName" hlmLabel>
                     {{ 'general.domainNames' | transloco }}
@@ -179,7 +182,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       [attr.aria-label]="
                         'statusPage.edit.domainNames.remove' | transloco: {domainName}
                       "
-                      (click)="removeDomainName(domainName)"
+                      (click)="chipInputRemove(form.controls.domainNames, domainName)"
                       hlmBtn
                       variant="ghost"
                       size="icon-xs"
@@ -387,10 +390,13 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   BackendType['CreateStatusPageDto'],
   BackendType['UpdateStatusPageDto']
 > {
-  private readonly api = injectAPI();
-  readonly monitorsSearchStore = inject(MonitorsSearchStore);
+  protected readonly chipInputAdd = chipInputAdd;
+  protected readonly chipInputRemove = chipInputRemove;
 
-  readonly oldDomainNames = signal<string[]>([]);
+  private readonly api = injectAPI();
+  protected readonly monitorsSearchStore = inject(MonitorsSearchStore);
+
+  private readonly oldDomainNames = signal<string[]>([]);
 
   statusPage = input(undefined, {
     transform: (statusPage: BackendType['StatusPageResponse'] | undefined) => {
@@ -539,20 +545,6 @@ export class StatusPageEditForm extends AbstractModelEditFormComponent<
   onGroupDrop(event: CdkDragDrop<BackendType['StatusPageGroupResponse'][]>) {
     const items = this.form.controls.groups.controls;
     moveItemInArray(items, event.previousIndex, event.currentIndex);
-  }
-
-  protected onDomainNameSubmit() {
-    this.form.controls.domainNames.setValue([
-      ...(this.form.controls.domainNames.getRawValue() ?? []),
-      this.domainNameForm.getRawValue().domainName,
-    ]);
-    this.domainNameForm.reset();
-  }
-
-  protected removeDomainName(domainName: string) {
-    this.form.controls.domainNames.setValue([
-      ...(this.form.controls.domainNames.getRawValue() ?? []).filter((it) => it !== domainName),
-    ]);
   }
 
   private asyncSlugInUseValidator(): AsyncValidatorFn {

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate, TooltipPosition} from '@spartan-ng/brain/tooltip';
@@ -10,29 +10,33 @@ import {toast} from 'ngx-sonner';
 
 @Component({
   template: `
+    @let _size = size();
     <hlm-tooltip>
       <button
-        [position]="matTooltipPosition()"
+        [position]="tooltipPosition()"
         [attr.aria-label]="'general.copy' | transloco"
+        [size]="$any('icon-' + _size)"
         (click)="copy()"
         hlmTooltipTrigger
-        size="icon"
         type="button"
         hlmBtn
         variant="ghost">
         @if (state() === 'BUTTON') {
-          <ng-icon hlm name="lucideCopy" size="sm" />
+          <ng-icon [size]="_size" hlm name="lucideCopy" />
         } @else {
           <ng-icon
             class="text-blue-700 dark:text-blue-500"
+            [size]="_size"
             hlm
-            name="lucideClipboardCheck"
-            size="sm" />
+            name="lucideClipboardCheck" />
         }
       </button>
       <span *brnTooltipContent>{{ 'general.copy' | transloco }}</span>
     </hlm-tooltip>
   `,
+  host: {
+    '[class]': 'classSize()',
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'pu-copy-icon-button',
   imports: [
@@ -44,15 +48,16 @@ import {toast} from 'ngx-sonner';
   ],
 })
 export class CopyIconButton {
-  content = input.required<string | undefined | null>();
-
-  matTooltipPosition = input<TooltipPosition>('above');
-
-  readonly state = signal<'BUTTON' | 'CHECK'>('BUTTON');
-
   private readonly translocoService = inject(TranslocoService);
 
-  copy(): void {
+  public readonly content = input.required<string | undefined | null>();
+  public readonly tooltipPosition = input<TooltipPosition>('above');
+  public readonly size = input<'sm' | 'xs'>('sm');
+
+  protected readonly state = signal<'BUTTON' | 'CHECK'>('BUTTON');
+  protected readonly classSize = computed(() => (this.size() === 'sm' ? 'size-8' : 'size-6'));
+
+  protected copy(): void {
     const content = this.content();
     if (content) {
       cl_copy(content);

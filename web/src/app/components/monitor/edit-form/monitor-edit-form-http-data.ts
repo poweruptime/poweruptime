@@ -29,6 +29,7 @@ import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {Database} from '@app/api';
 import {PasswordShowButton} from '@app/form';
 
+import {chipInputRemove} from '../../../util';
 import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
@@ -258,7 +259,10 @@ const predefinedStatusCodeRanges = [
                           | transloco: {email: statusCodeRange}
                       "
                       (click)="
-                        remove(httpDataFormGroup.controls.allowedStatusCodeRanges, statusCodeRange)
+                        chipInputRemove(
+                          httpDataFormGroup.controls.allowedStatusCodeRanges,
+                          statusCodeRange
+                        )
                       "
                       hlmBtn
                       variant="ghost"
@@ -464,7 +468,8 @@ const predefinedStatusCodeRanges = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorEditFormHttpData {
-  protected httpDataFormGroup = inject(MonitorEditFormDataService).httpDataFormGroup;
+  protected readonly chipInputRemove = chipInputRemove;
+  protected readonly httpDataFormGroup = inject(MonitorEditFormDataService).httpDataFormGroup;
 
   private readonly allowedStatusCodeRanges = toSignal(
     this.httpDataFormGroup.controls.allowedStatusCodeRanges.valueChanges.pipe(
@@ -473,8 +478,8 @@ export class MonitorEditFormHttpData {
     {initialValue: this.httpDataFormGroup.controls.allowedStatusCodeRanges.getRawValue() ?? []},
   );
 
-  protected statusCodeRangeInput = signal<string | null>(null);
-  protected statusCodeRangeSearch = signal('');
+  protected readonly statusCodeRangeInput = signal<string | null>(null);
+  protected readonly statusCodeRangeSearch = signal('');
 
   protected readonly filteredPredefinedStatusCodeRanges = computed(() => {
     const allowedStatusCodeRanges = this.allowedStatusCodeRanges();
@@ -490,34 +495,15 @@ export class MonitorEditFormHttpData {
     return statusCodeRanges.filter((it) => it.trim().toLowerCase().includes(value));
   });
 
-  protected remove(control: FormControl<string[] | null>, keyword: string) {
-    const values = control.value;
-
-    if (!values) {
+  protected select(control: FormControl<string[] | null>, rawValue: string | null): void {
+    if (!rawValue) {
       return;
     }
 
-    const index = values.indexOf(keyword);
-    if (index < 0) {
-      return;
-    }
-
-    values.splice(index, 1);
-    control.setValue([...values]);
-  }
-
-  protected select(control: FormControl<string[] | null>, range: string | null): void {
-    if (range && this.add(control, range)) {
-      this.statusCodeRangeInput.set(null);
-      this.statusCodeRangeSearch.set('');
-    }
-  }
-
-  private add(control: FormControl<string[] | null>, rawValue: string): boolean {
     const value = rawValue.trim();
 
     if (value.length === 0) {
-      return false;
+      return;
     }
 
     // HACK
@@ -527,7 +513,7 @@ export class MonitorEditFormHttpData {
       setTimeout(() => {
         control.setErrors({inputRegex: true});
       }, 10);
-      return false;
+      return;
     }
 
     const parts = value.split('-').map((it) => it.trim());
@@ -538,18 +524,19 @@ export class MonitorEditFormHttpData {
       setTimeout(() => {
         control.setErrors({rangeIncorrect: true});
       }, 10);
-      return false;
+      return;
     }
 
     if (start > end) {
       setTimeout(() => {
         control.setErrors({inputStartBiggerThenEnd: true});
       }, 10);
-      return false;
+      return;
     }
 
     control.setValue([...(control.value ?? []), `${start} - ${end}`]);
 
-    return true;
+    this.statusCodeRangeInput.set(null);
+    this.statusCodeRangeSearch.set('');
   }
 }

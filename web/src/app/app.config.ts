@@ -1,15 +1,11 @@
 import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {ApplicationConfig, LOCALE_ID, inject, isDevMode} from '@angular/core';
-import {provideDateFnsAdapter} from '@angular/material-date-fns-adapter';
 import {
   provideClientHydration,
   withEventReplay,
   withIncrementalHydration,
 } from '@angular/platform-browser';
 import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
-
-import {MAT_DATE_LOCALE, MatDateFormats} from '@angular/material/core';
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
@@ -42,18 +38,6 @@ import {
 import {ROUTES} from './pages/pages.routes';
 import {provideTransferableLocalStorageImpl} from './util/transferable-localstorage';
 
-const MY_DATE_FNS_FORMATS: MatDateFormats = {
-  parse: {
-    dateInput: 'yyyy-MM-dd',
-  },
-  display: {
-    dateInput: 'dd.M.yyyy',
-    monthYearLabel: 'yyyy',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'yyyy',
-  },
-};
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(
@@ -68,6 +52,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
     provideTheme(withThemeStorage({key: 'pu_theme'})),
+    {provide: LOCALE_ID, useValue: 'en-US'},
     provideTransloco({
       config: {
         availableLangs: [
@@ -91,6 +76,9 @@ export const appConfig: ApplicationConfig = {
     provideTranslationMarkupTranspiler(LinkTranspiler),
     provideLinkRenderer(CustomLinkRenderer),
     provideLinkRenderer(CustomExternalLinkObjectLinkRenderer),
+    provideNgxMetaCore(),
+    provideNgxMetaStandard(),
+    provideNgxMetaOpenGraph(),
     provideNgIconLoader((name) => {
       const http = inject(HttpClient);
       return http.get(`/assets/icons/${name}.svg`, {responseType: 'text'});
@@ -105,17 +93,5 @@ export const appConfig: ApplicationConfig = {
     provideHlmSidebarConfig({
       mobileBreakpoint: '1920px',
     }),
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {
-        appearance: 'outline',
-      },
-    },
-    {provide: LOCALE_ID, useValue: 'en-US'},
-    {provide: MAT_DATE_LOCALE, useValue: dateFnsLocale},
-    provideDateFnsAdapter(MY_DATE_FNS_FORMATS),
-    provideNgxMetaCore(),
-    provideNgxMetaStandard(),
-    provideNgxMetaOpenGraph(),
   ],
 };
