@@ -14,7 +14,6 @@ import {
 import {HlmMentionContent} from './helm/hlm-mention-content';
 import {HlmMentionEmpty} from './helm/hlm-mention-empty';
 import {HlmMentionGroup} from './helm/hlm-mention-group';
-import {HlmMentionInput} from './helm/hlm-mention-input';
 import {HlmMentionItem} from './helm/hlm-mention-item';
 import {HlmMentionLabel} from './helm/hlm-mention-label';
 import {HlmMentionList} from './helm/hlm-mention-list';
@@ -27,7 +26,6 @@ export * from './brain';
 export * from './helm/hlm-mention-content';
 export * from './helm/hlm-mention-empty';
 export * from './helm/hlm-mention-group';
-export * from './helm/hlm-mention-input';
 export * from './helm/hlm-mention-item';
 export * from './helm/hlm-mention-label';
 export * from './helm/hlm-mention-list';
@@ -53,7 +51,6 @@ export const HlmMentionImports = [
   HlmMentionContent,
   HlmMentionEmpty,
   HlmMentionGroup,
-  HlmMentionInput,
   HlmMentionItem,
   HlmMentionLabel,
   HlmMentionList,

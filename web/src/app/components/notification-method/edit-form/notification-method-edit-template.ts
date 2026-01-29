@@ -15,13 +15,16 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {HlmMentionImports} from '@dafnik/mention';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+
+import {BrnMentionImports, HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
+import {HlmTextareaImports} from '@spartan-ng/helm/textarea';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {ShadowRender} from '@app/components';
@@ -68,7 +71,15 @@ import {Editor} from '@app/components/editor';
             [(value)]="value"
             [disabled]="isDisabled()"
             [restoreFocus]="false">
-            <hlm-mention-input class="w-full" id="editor" [placeholder]="_label" />
+            <textarea
+              class="w-full"
+              id="editor"
+              #mentionInput="brnMentionInput"
+              [placeholder]="_label"
+              rows="3"
+              brnMentionInput
+              brnMentionAnchor
+              hlmTextarea></textarea>
             <div *brnPopoverContent hlmMentionContent>
               <hlm-mention-empty>Nothing found...</hlm-mention-empty>
               <div hlmMentionList>
@@ -121,6 +132,9 @@ import {Editor} from '@app/components/editor';
     HlmMentionImports,
     HlmLabelImports,
     BrnPopoverContent,
+    BrnMentionImports,
+    HlmTextareaImports,
+    CdkTextareaAutosize,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
@@ -142,7 +156,7 @@ export class NotificationMethodEditTemplate implements ControlValueAccessor {
 
   readonly variables = [
     {key: 'monitorName', default: 'First monitor'},
-    {key: 'status', default: '✅UP'},
+    {key: 'status', default: '✅ UP'},
     {key: 'title', default: '200 - OK'},
     {key: 'pingMs', default: '420'},
     {key: 'checkStartedAt', default: this.now ?? ''},

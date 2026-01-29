@@ -72,22 +72,7 @@ export class BrnMentionInput<T> {
   }
 
   protected onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      // prevent form submission if inside a form
-      event.preventDefault();
-
-      this._mention.selectActiveItem();
-    }
-
     if (!this._isExpanded()) {
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        this._mention.open();
-      }
-
-      if (event.key === 'Escape') {
-        this._mention.resetValue();
-      }
-
       if (event.key === '!') {
         this._mention.open();
         this._mention.caretStartPosition.set(this._getCurrentCaretPosition());
@@ -95,12 +80,19 @@ export class BrnMentionInput<T> {
         return;
       }
     } else {
+      if (event.key === 'Enter') {
+        // prevent form submission if inside a form
+        event.preventDefault();
+
+        this._mention.selectActiveItem();
+      }
+
       if (event.key === ' ') {
         this._mention.close();
       }
-    }
 
-    this._mention.keyManager.onKeydown(event);
+      this._mention.keyManager.onKeydown(event);
+    }
   }
 }
 export function getCurrentCaretPosition(el: HTMLInputElement) {
