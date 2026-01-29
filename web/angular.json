@@ -65,7 +65,7 @@
             "ssr": {
               "entry": "src/server/server.ts"
             },
-            "styles": ["src/styles/material.scss", "src/styles.css"],
+            "styles": ["src/styles.css"],
             "tsConfig": "tsconfig.app.json"
           }
         },

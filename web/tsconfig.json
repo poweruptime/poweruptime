@@ -21,6 +21,7 @@
     "outDir": "./dist/out-tsc",
     "paths": {
       "@app/*": ["src/app/*"],
+      "@dafnik/file": ["./src/libs/custom/file/index.ts"],
       "@dafnik/mention": ["./src/libs/custom/mention/index.ts"],
       "@dafnik/paginator": ["./src/libs/custom/paginator/index.ts"],
       "@dafnik/sort": ["./src/libs/custom/sort/index.ts"],

@@ -15,8 +15,6 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
-
 import {BrnMentionImports, HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnPopoverContent} from '@spartan-ng/brain/popover';
@@ -134,7 +132,6 @@ import {Editor} from '@app/components/editor';
     BrnPopoverContent,
     BrnMentionImports,
     HlmTextareaImports,
-    CdkTextareaAutosize,
   ],
 })
 export class NotificationMethodEditTemplate implements ControlValueAccessor {
