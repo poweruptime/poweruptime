@@ -23,7 +23,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.14")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.0.3")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
