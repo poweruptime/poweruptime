@@ -21,8 +21,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0(prettier@3.8.1)
       prettier-plugin-sort-json:
-        specifier: 4.1.1
-        version: 4.1.1(prettier@3.8.1)
+        specifier: 4.2.0
+        version: 4.2.0(prettier@3.8.1)
       prettier-plugin-tailwindcss:
         specifier: 0.7.2
         version: 0.7.2(@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.8.1))(prettier-plugin-organize-attributes@1.0.0(prettier@3.8.1))(prettier@3.8.1)
@@ -7070,8 +7070,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  prettier-plugin-sort-json@4.1.1:
-    resolution: {integrity: sha512-uJ49wCzwJ/foKKV4tIPxqi4jFFvwUzw4oACMRG2dcmDhBKrxBv0L2wSKkAqHCmxKCvj0xcCZS4jO2kSJO/tRJw==}
+  prettier-plugin-sort-json@4.2.0:
+    resolution: {integrity: sha512-jK1w3/7otTvHtv1eoLji2U9mEoOGeyl7QQQ/afLnjht1YtRLSUUk8o0rIIC/HUVXhoGPCFe4SVZbRGYjjUVgvA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       prettier: ^3.0.0
@@ -16128,7 +16128,7 @@ snapshots:
     dependencies:
       prettier: 3.8.1
 
-  prettier-plugin-sort-json@4.1.1(prettier@3.8.1):
+  prettier-plugin-sort-json@4.2.0(prettier@3.8.1):
     dependencies:
       prettier: 3.8.1
 
