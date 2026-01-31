@@ -79,7 +79,7 @@
     "@jsverse/transloco-optimize": "8.2.1",
     "@jsverse/transloco-utils": "8.2.1",
     "@jsverse/transloco-validator": "8.2.1",
-    "@playwright/test": "1.57.0",
+    "@playwright/test": "1.58.0",
     "@spartan-ng/cli": "0.0.1-alpha.612",
     "@tailwindcss/typography": "0.5.19",
     "@types/canvas-confetti": "1.9.0",
