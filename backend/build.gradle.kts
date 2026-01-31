@@ -41,7 +41,7 @@ dependencies {
     implementation("io.viascom.nanoid:nanoid:1.0.1")
 
     // DNS Checker lib
-    implementation("dnsjava:dnsjava:3.6.3")
+    implementation("dnsjava:dnsjava:3.6.4")
 
     // HttpClient library
     implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
