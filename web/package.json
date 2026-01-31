@@ -42,7 +42,7 @@
     "@ngrx/operators": "21.0.1",
     "@ngrx/signals": "21.0.1",
     "@spartan-ng/brain": "0.0.1-alpha.612",
-    "@std/fmt": "npm:@jsr/std__fmt@1.0.8",
+    "@std/fmt": "npm:@jsr/std__fmt@1.0.9",
     "@tailwindcss/postcss": "4.1.18",
     "@tinymce/tinymce-angular": "9.1.1",
     "canvas-confetti": "1.9.4",
