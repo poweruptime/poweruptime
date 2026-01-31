@@ -4,10 +4,10 @@ import {provideBrnDialogDefaultOptions} from '@spartan-ng/brain/dialog';
 import {BrnPopover, provideBrnPopoverConfig} from '@spartan-ng/brain/popover';
 import {classes} from '@spartan-ng/helm/utils';
 
-import {BrnMentionSearch} from '../brain';
+import {BrnMention} from '../brain';
 
 @Directive({
-  selector: '[hlmMentionSearch],hlm-mention-search',
+  selector: '[hlmMention],hlm-mention',
   providers: [
     provideBrnPopoverConfig({
       align: 'start',
@@ -19,7 +19,7 @@ import {BrnMentionSearch} from '../brain';
   ],
   hostDirectives: [
     {
-      directive: BrnMentionSearch,
+      directive: BrnMention,
       inputs: ['disabled', 'value', 'search'],
       outputs: ['valueChange', 'searchChange'],
     },
@@ -42,7 +42,7 @@ import {BrnMentionSearch} from '../brain';
     'data-slot': 'mention',
   },
 })
-export class HlmMentionSearch {
+export class HlmMention {
   constructor() {
     classes(() => 'block');
   }

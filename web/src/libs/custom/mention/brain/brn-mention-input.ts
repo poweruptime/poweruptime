@@ -36,7 +36,7 @@ export class BrnMentionInput<T> {
 
   constructor() {
     effect(() => {
-      this._el.nativeElement.value = this._mention.value();
+      this._el.nativeElement.value = this._mention.value() ?? '';
     });
   }
 

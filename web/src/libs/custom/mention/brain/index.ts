@@ -9,6 +9,6 @@ export * from './brn-mention-item.token';
 export * from './brn-mention-item';
 export * from './brn-mention-label';
 export * from './brn-mention-list';
-export * from './brn-mention-search';
+export * from './brn-mention';
 export * from './brn-mention-separator';
 export * from './brn-mention-status';

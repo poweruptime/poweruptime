@@ -174,7 +174,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </hlm-form-field>
 
       <hlm-form-field class="col-span-1">
-        <label hlmLabel for="password">Username</label>
+        <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
         <div hlmInputGroup>
           <input
             id="password"
@@ -183,7 +183,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             hlmInputGroupInput
             formControlName="username" />
           <div hlmInputGroupAddon>
-            <ng-icon name="lucideUser" />
+            <ng-icon name="lucideKey" />
           </div>
           <pu-password-show-button #showPasswordButton hlmInputGroupAddon align="inline-end" />
         </div>

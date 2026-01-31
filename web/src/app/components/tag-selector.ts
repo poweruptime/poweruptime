@@ -20,7 +20,6 @@ import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {DfxLowerCaseExceptFirstLettersPipe, StopPropagationDirective} from 'dfx-helper';
@@ -31,44 +30,39 @@ import {Tag} from '@app/directives';
 @Component({
   template: `
     <div class="flex items-end gap-2">
-      <div class="w-full space-y-2">
-        <label for="tags" hlmLabel>
-          {{ 'tag.selector.selected' | transloco }}
-        </label>
-        <hlm-autocomplete-search
-          [(value)]="tagInput"
-          [(search)]="searchTag"
-          [disabled]="isDisabled()"
-          [restoreFocus]="false">
-          <hlm-autocomplete-input
-            class="w-full"
-            id="tags"
-            [placeholder]="'tag.selector.add' | transloco"
-            (keydown.enter)="add(tagInput())" />
-          <div *brnPopoverContent hlmAutocompleteContent>
-            @if (isPending()) {
-              <hlm-autocomplete-status class="justify-center">
-                <hlm-spinner />
-                Loading...
-              </hlm-autocomplete-status>
+      <hlm-autocomplete-search
+        class="w-full"
+        [(value)]="tagInput"
+        [(search)]="searchTag"
+        [disabled]="isDisabled()"
+        [restoreFocus]="false">
+        <hlm-autocomplete-input
+          class="w-full"
+          [placeholder]="'tag.selector.selected' | transloco"
+          (keydown.enter)="add(tagInput())" />
+        <div *brnPopoverContent hlmAutocompleteContent>
+          @if (isPending()) {
+            <hlm-autocomplete-status class="justify-center">
+              <hlm-spinner />
+              Loading...
+            </hlm-autocomplete-status>
+          }
+          <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
+          <div hlmAutocompleteList>
+            @for (tag of filteredTags(); track tag) {
+              <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
+                {{ tag.name }}
+              </hlm-autocomplete-item>
             }
-            <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
-            <div hlmAutocompleteList>
-              @for (tag of filteredTags(); track tag) {
-                <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
-                  {{ tag.name }}
-                </hlm-autocomplete-item>
-              }
-            </div>
           </div>
-        </hlm-autocomplete-search>
-      </div>
+        </div>
+      </hlm-autocomplete-search>
       <hlm-tooltip>
         <button (click)="add(tagInput())" hlmBtn hlmTooltipTrigger variant="outline" type="button">
           <ng-icon hlm name="lucideCirclePlus" size="sm" />
         </button>
         <span *brnTooltipContent>
-          {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}
+          {{ 'tag.selector.add' | transloco }}
         </span>
       </hlm-tooltip>
     </div>
@@ -79,9 +73,7 @@ import {Tag} from '@app/directives';
           <div class="flex items-center justify-center gap-1">
             <span>{{ tag.name }}</span>
             <button
-              [attr.aria-label]="
-                'monitor.edit.http.allowedStatusCodeRanges.remove' | transloco: {email: tag}
-              "
+              [attr.aria-label]="'tag.selector.remove' | transloco: tag"
               (click)="remove(tag)"
               stopPropagation
               hlmBtn
@@ -131,7 +123,6 @@ import {Tag} from '@app/directives';
     HlmAutocompleteImports,
     HlmButtonImports,
     HlmIconImports,
-    HlmLabelImports,
     HlmTooltipImports,
     BrnTooltipContentTemplate,
     BrnPopoverContent,

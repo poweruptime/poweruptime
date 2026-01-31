@@ -22,8 +22,12 @@ import {BackendImage} from './backend-image';
     @let _fileToShow = fileToShow();
     <div class="flex flex-col items-center justify-center gap-2">
       <div class="relative inline-flex">
+        <div class="sr-only">
+          <label for="ppUpload">{{ label() }}</label>
+        </div>
         <button
           class="border-input relative size-16 overflow-hidden rounded-full border-dashed p-0"
+          id="ppUpload"
           [maxSize]="maxSize"
           (click)="fileInput?.click()"
           type="button"

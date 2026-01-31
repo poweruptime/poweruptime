@@ -26,17 +26,17 @@ import {BrnMentionItem} from './brn-mention-item';
 import {BrnMentionItemToken} from './brn-mention-item.token';
 import {BrnMentionBase, injectBrnMentionConfig, provideBrnMentionBase} from './brn-mention.token';
 
-export const BRN_MENTION_SEARCH_VALUE_ACCESSOR = {
+export const BRN_MENTION_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => BrnMentionSearch),
+  useExisting: forwardRef(() => BrnMention),
   multi: true,
 };
 
 @Directive({
   selector: '[brnMention]',
-  providers: [provideBrnMentionBase(BrnMentionSearch), BRN_MENTION_SEARCH_VALUE_ACCESSOR],
+  providers: [provideBrnMentionBase(BrnMention), BRN_MENTION_VALUE_ACCESSOR],
 })
-export class BrnMentionSearch implements BrnMentionBase, ControlValueAccessor {
+export class BrnMention implements BrnMentionBase, ControlValueAccessor {
   private readonly _injector = inject(Injector);
 
   private readonly _config = injectBrnMentionConfig();

@@ -63,7 +63,7 @@ import {Editor} from '@app/components/editor';
             [placeholder]="_label"
             [autocompleteVariables]="variableKeys" />
         } @else {
-          <hlm-mention-search
+          <hlm-mention
             class="w-full"
             [(search)]="mentionFilter"
             [(value)]="value"
@@ -88,7 +88,7 @@ import {Editor} from '@app/components/editor';
                 }
               </div>
             </div>
-          </hlm-mention-search>
+          </hlm-mention>
         }
       </div>
 
