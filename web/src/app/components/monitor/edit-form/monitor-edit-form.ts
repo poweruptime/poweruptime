@@ -255,10 +255,12 @@ const times = [
 
             <hlm-separator class="col-span-6" />
 
-            <label class="col-span-6 flex items-center" hlmLabel for="upsideDown">
-              <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
-              {{ 'monitor.edit.upsideDown' | transloco }}
-            </label>
+            <div class="col-span-6">
+              <label class="inline-flex items-center" hlmLabel for="upsideDown">
+                <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
+                {{ 'monitor.edit.upsideDown' | transloco }}
+              </label>
+            </div>
           </div>
         </section>
 

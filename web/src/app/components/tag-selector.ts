@@ -29,81 +29,95 @@ import {Tag} from '@app/directives';
 
 @Component({
   template: `
-    <div class="flex items-end gap-2">
-      <hlm-autocomplete-search
-        class="w-full"
-        [(value)]="tagInput"
-        [(search)]="searchTag"
-        [disabled]="isDisabled()"
-        [restoreFocus]="false">
-        <hlm-autocomplete-input
+    <div class="grid gap-2">
+      @let disabled = isDisabled();
+      <div class="flex items-end gap-2">
+        <hlm-autocomplete-search
           class="w-full"
-          [placeholder]="'tag.selector.selected' | transloco"
-          (keydown.enter)="add(tagInput())" />
-        <div *brnPopoverContent hlmAutocompleteContent>
-          @if (isPending()) {
-            <hlm-autocomplete-status class="justify-center">
-              <hlm-spinner />
-              Loading...
-            </hlm-autocomplete-status>
-          }
-          <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
-          <div hlmAutocompleteList>
-            @for (tag of filteredTags(); track tag) {
-              <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
-                {{ tag.name }}
-              </hlm-autocomplete-item>
+          [(value)]="tagInput"
+          [(search)]="searchTag"
+          [disabled]="disabled"
+          [restoreFocus]="false">
+          <hlm-autocomplete-input
+            class="w-full"
+            [placeholder]="'tag.selector.selected' | transloco"
+            (keydown.enter)="add(tagInput())" />
+          <div *brnPopoverContent hlmAutocompleteContent>
+            @if (isPending()) {
+              <hlm-autocomplete-status class="justify-center">
+                <hlm-spinner />
+                Loading...
+              </hlm-autocomplete-status>
             }
-          </div>
-        </div>
-      </hlm-autocomplete-search>
-      <hlm-tooltip>
-        <button (click)="add(tagInput())" hlmBtn hlmTooltipTrigger variant="outline" type="button">
-          <ng-icon hlm name="lucideCirclePlus" size="sm" />
-        </button>
-        <span *brnTooltipContent>
-          {{ 'tag.selector.add' | transloco }}
-        </span>
-      </hlm-tooltip>
-    </div>
-
-    <div class="flex flex-wrap gap-2">
-      @for (tag of value(); track $index) {
-        <button [pu-tag]="tag.variant" [hlmDropdownMenuTrigger]="menu" type="button">
-          <div class="flex items-center justify-center gap-1">
-            <span>{{ tag.name }}</span>
-            <button
-              [attr.aria-label]="'tag.selector.remove' | transloco: tag"
-              (click)="remove(tag)"
-              stopPropagation
-              hlmBtn
-              variant="ghost"
-              size="icon-xs"
-              type="button">
-              <ng-icon hlm name="lucideX" size="xs" />
-            </button>
-          </div>
-        </button>
-
-        <ng-template #menu>
-          <hlm-dropdown-menu class="w-56">
-            <hlm-dropdown-menu-label>Variant</hlm-dropdown-menu-label>
-            <hlm-dropdown-menu-separator />
-            <hlm-dropdown-menu-group>
-              @for (tagVariant of tagVariants; track tagVariant) {
-                <button
-                  [checked]="tag.variant === tagVariant"
-                  (triggered)="updateTagVariant(tag, tagVariant)"
-                  hlmDropdownMenuCheckbox
-                  type="button">
-                  <hlm-dropdown-menu-checkbox-indicator />
-                  {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
-                </button>
+            <hlm-autocomplete-empty>Add a new one</hlm-autocomplete-empty>
+            <div hlmAutocompleteList>
+              @for (tag of filteredTags(); track tag) {
+                <hlm-autocomplete-item [value]="tag" (click)="select(tag)">
+                  {{ tag.name }}
+                </hlm-autocomplete-item>
               }
-            </hlm-dropdown-menu-group>
-          </hlm-dropdown-menu>
-        </ng-template>
-      }
+            </div>
+          </div>
+        </hlm-autocomplete-search>
+        <hlm-tooltip>
+          <button
+            [disabled]="disabled || (tagInput()?.trim()?.length ?? 0) === 0"
+            (click)="add(tagInput())"
+            hlmBtn
+            hlmTooltipTrigger
+            variant="outline"
+            type="button">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
+          <span *brnTooltipContent>
+            {{ 'tag.selector.add' | transloco }}
+          </span>
+        </hlm-tooltip>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        @for (tag of value(); track $index) {
+          <button
+            [pu-tag]="tag.variant"
+            [hlmDropdownMenuTrigger]="menu"
+            [disabled]="disabled"
+            type="button">
+            <div class="flex items-center justify-center gap-1">
+              <span>{{ tag.name }}</span>
+              <button
+                [attr.aria-label]="'tag.selector.remove' | transloco: tag"
+                [disabled]="disabled"
+                (click)="remove(tag)"
+                stopPropagation
+                hlmBtn
+                variant="ghost"
+                size="icon-xs"
+                type="button">
+                <ng-icon hlm name="lucideX" size="xs" />
+              </button>
+            </div>
+          </button>
+
+          <ng-template #menu>
+            <hlm-dropdown-menu class="w-56">
+              <hlm-dropdown-menu-label>Variant</hlm-dropdown-menu-label>
+              <hlm-dropdown-menu-separator />
+              <hlm-dropdown-menu-group>
+                @for (tagVariant of tagVariants; track tagVariant) {
+                  <button
+                    [checked]="tag.variant === tagVariant"
+                    (triggered)="updateTagVariant(tag, tagVariant)"
+                    hlmDropdownMenuCheckbox
+                    type="button">
+                    <hlm-dropdown-menu-checkbox-indicator />
+                    {{ tagVariant | s_lowerCaseAllExceptFirstLetter }}
+                  </button>
+                }
+              </hlm-dropdown-menu-group>
+            </hlm-dropdown-menu>
+          </ng-template>
+        }
+      </div>
     </div>
   `,
   selector: 'pu-tag-selector',
@@ -175,8 +189,12 @@ export class TagSelector implements ControlValueAccessor {
       return;
     }
 
+    if (tag.trim().length === 0) {
+      return;
+    }
+
     this.select({
-      name: tag,
+      name: tag.trim(),
       variant: 'BLUE',
     });
   }
