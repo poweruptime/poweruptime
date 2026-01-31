@@ -41,7 +41,7 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType, Database, injectAPI} from '@app/api';
-import {FileUpload} from '@app/components';
+import {ProfilePictureUpload} from '@app/components';
 import {Editor} from '@app/components/editor';
 import {
   AbstractModelEditFormComponent,
@@ -66,30 +66,37 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
       (ngSubmit)="submit()">
       <div>
         <div class="grid grid-cols-2 gap-6">
-          <hlm-form-field class="col-span-1">
-            <label hlmLabel for="name">
-              {{ 'general.name' | transloco }}
-            </label>
+          <div class="col-span-1 flex items-end gap-4">
+            <pu-profile-picture-upload
+              [file]="statusPage()?.image"
+              [label]="'statusPage.edit.image' | transloco"
+              (fileId)="form.controls.imageId.setValue($event)" />
 
-            <div hlmInputGroup>
-              <input id="name" hlmInputGroupInput formControlName="name" type="text" />
-              <div hlmInputGroupAddon>
-                <ng-icon name="lucideUser" />
+            <hlm-form-field class="w-full">
+              <label hlmLabel for="name">
+                {{ 'general.name' | transloco }}
+              </label>
+
+              <div hlmInputGroup>
+                <input id="name" hlmInputGroupInput formControlName="name" type="text" />
+                <div hlmInputGroupAddon>
+                  <ng-icon name="lucideUser" />
+                </div>
               </div>
-            </div>
-            @let nameErrors = form.controls.name.errors;
-            @if (nameErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
-            }
-            @if (nameErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
-            }
-            @if (nameErrors?.['maxlength']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
-            }
-          </hlm-form-field>
+              @let nameErrors = form.controls.name.errors;
+              @if (nameErrors?.['required']) {
+                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              }
+              @if (nameErrors?.['minlength']; as minlength) {
+                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              }
+              @if (nameErrors?.['maxlength']; as maxlength) {
+                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              }
+            </hlm-form-field>
+          </div>
 
-          <hlm-form-field class="col-span-1">
+          <hlm-form-field class="col-span-1 flex flex-col justify-end">
             <label hlmLabel for="slug">
               {{ 'general.slug' | transloco }}
             </label>
@@ -119,12 +126,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
               </hlm-error>
             }
           </hlm-form-field>
-
-          <pu-file-upload
-            class="col-span-2 2xl:col-span-1"
-            [file]="statusPage()?.image"
-            [label]="'statusPage.edit.image' | transloco"
-            (fileId)="form.controls.imageId.setValue($event)" />
 
           <div class="col-span-2 grid gap-2 2xl:col-span-1">
             <div class="flex items-end gap-2">
@@ -366,7 +367,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     StatusPageEditFormGroupMonitors,
     SaveButton,
     Editor,
-    FileUpload,
     ReactiveFormsModule,
     TranslocoPipe,
     CdkDropList,
@@ -384,6 +384,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmInputImports,
     HlmAlertImports,
     HlmBadgeImports,
+    ProfilePictureUpload,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

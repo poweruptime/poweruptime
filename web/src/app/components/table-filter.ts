@@ -44,9 +44,7 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
             <ng-icon [class.rotate-90]="expanded()" hlm name="bootstrapFilter" size="sm" />
             @if (hasActiveFilters) {
               <span
-                class="absolute -top-2 left-full flex min-w-5 -translate-x-1/2 items-center justify-center rounded-full px-1 py-[1px]"
-                hlmBadge
-                variant="destructive">
+                class="absolute -top-2 left-full flex h-5 w-5 -translate-x-1/2 items-center justify-center rounded-full bg-red-600 px-1 py-[1px] font-medium text-white">
                 {{ _activeFiltersCount }}
               </span>
             }

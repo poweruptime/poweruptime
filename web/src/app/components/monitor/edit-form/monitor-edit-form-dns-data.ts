@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
@@ -123,7 +123,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                   type="text"
                   formControlName="match" />
                 <div hlmInputGroupAddon>
-                  <ng-icon name="lucideMail" />
+                  <ng-icon name="lucideEqual" />
                 </div>
               </div>
             </hlm-form-field>
@@ -194,6 +194,6 @@ export class MonitorEditFormDnsData {
   protected readonly dnsDataFormGroup = inject(MonitorEditFormDataService).dnsDataFormGroup;
 
   protected readonly matchForm = inject(NonNullableFormBuilder).group({
-    match: [''],
+    match: ['', Validators.required],
   });
 }

@@ -1,11 +1,10 @@
-// hlm-mention.directive.ts
 import {Directive} from '@angular/core';
 
 import {provideBrnDialogDefaultOptions} from '@spartan-ng/brain/dialog';
 import {BrnPopover, provideBrnPopoverConfig} from '@spartan-ng/brain/popover';
 import {classes} from '@spartan-ng/helm/utils';
 
-import {BrnMention} from './brn-mention';
+import {BrnMention} from '../brain';
 
 @Directive({
   selector: '[hlmMention],hlm-mention',
@@ -21,12 +20,21 @@ import {BrnMention} from './brn-mention';
   hostDirectives: [
     {
       directive: BrnMention,
-      inputs: ['disabled', 'value', 'search', 'trigger', 'itemToString'],
+      inputs: ['disabled', 'value', 'search'],
       outputs: ['valueChange', 'searchChange'],
     },
     {
       directive: BrnPopover,
-      inputs: ['align', 'sideOffset', 'state', 'closeOnOutsidePointerEvents'],
+      inputs: [
+        'align',
+        'autoFocus',
+        'closeDelay',
+        'closeOnOutsidePointerEvents',
+        'sideOffset',
+        'state',
+        'offsetX',
+        'restoreFocus',
+      ],
       outputs: ['stateChanged', 'closed'],
     },
   ],

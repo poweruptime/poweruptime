@@ -1,4 +1,3 @@
-// brn-mention-content.directive.ts
 import {Directive} from '@angular/core';
 
 import {injectBrnMentionBase} from './brn-mention.token';
@@ -13,6 +12,8 @@ import {injectBrnMentionBase} from './brn-mention.token';
 export class BrnMentionContent {
   private readonly _mention = injectBrnMentionBase();
 
+  /** Determine if the autocomplete has any visible items */
   protected readonly _visibleItems = this._mention.visibleItems;
+
   protected readonly _mentionWidth = this._mention.searchInputWrapperWidth;
 }
