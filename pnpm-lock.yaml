@@ -163,8 +163,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       fastify:
-        specifier: 5.6.2
-        version: 5.6.2
+        specifier: 5.7.2
+        version: 5.7.2
       nanoid:
         specifier: 5.1.6
         version: 5.1.6
@@ -5163,8 +5163,8 @@ packages:
   fastify-plugin@5.1.0:
     resolution: {integrity: sha512-FAIDA8eovSt5qcDgcBvDuX/v0Cjz0ohGhENZ/wpc3y+oZCY2afZ9Baqql3g/lC+OHRnciQol4ww7tuthOb9idw==}
 
-  fastify@5.6.2:
-    resolution: {integrity: sha512-dPugdGnsvYkBlENLhCgX8yhyGCsCPrpA8lFWbTNU428l+YOnLgYHR69hzV8HWPC79n536EqzqQtvhtdaCE0dKg==}
+  fastify@5.7.2:
+    resolution: {integrity: sha512-dBJolW+hm6N/yJVf6J5E1BxOBNkuXNl405nrfeR8SpvGWG3aCC2XDHyiFBdow8Win1kj7sjawQc257JlYY6M/A==}
 
   fastq@1.20.1:
     resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
@@ -14136,7 +14136,7 @@ snapshots:
 
   fastify-plugin@5.1.0: {}
 
-  fastify@5.6.2:
+  fastify@5.7.2:
     dependencies:
       '@fastify/ajv-compiler': 4.0.5
       '@fastify/error': 4.2.0
@@ -14883,7 +14883,7 @@ snapshots:
       acorn: 8.15.0
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
-      semver: 7.5.4
+      semver: 7.7.3
 
   jsonc-parser@3.2.0: {}
 
