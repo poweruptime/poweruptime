@@ -94,11 +94,11 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       '@jsverse/transloco':
-        specifier: 8.2.0
-        version: 8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
+        specifier: 8.2.1
+        version: 8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
       '@jsverse/transloco-persist-lang':
-        specifier: 8.2.0
-        version: 8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@jsverse/transloco@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)
+        specifier: 8.2.1
+        version: 8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@jsverse/transloco@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)
       '@ng-icons/bootstrap-icons':
         specifier: 33.0.0
         version: 33.0.0
@@ -158,7 +158,7 @@ importers:
         version: 0.0.1(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))
       dfx-transloco-markup:
         specifier: 0.0.2
-        version: 0.0.2(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@jsverse/transloco@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(rxjs@7.8.2)
+        version: 0.0.2(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@jsverse/transloco@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(rxjs@7.8.2)
       eventsource:
         specifier: 4.1.0
         version: 4.1.0
@@ -212,17 +212,17 @@ importers:
         specifier: 9.39.2
         version: 9.39.2
       '@jsverse/transloco-keys-manager':
-        specifier: 7.1.0
-        version: 7.1.0(typescript@5.9.3)
+        specifier: 7.2.0
+        version: 7.2.0(typescript@5.9.3)
       '@jsverse/transloco-optimize':
-        specifier: 8.2.0
-        version: 8.2.0
+        specifier: 8.2.1
+        version: 8.2.1
       '@jsverse/transloco-utils':
-        specifier: 8.2.0
-        version: 8.2.0(typescript@5.9.3)
+        specifier: 8.2.1
+        version: 8.2.1(typescript@5.9.3)
       '@jsverse/transloco-validator':
-        specifier: 8.2.0
-        version: 8.2.0
+        specifier: 8.2.1
+        version: 8.2.1
       '@playwright/test':
         specifier: 1.57.0
         version: 1.57.0
@@ -2053,18 +2053,18 @@ packages:
     peerDependencies:
       '@angular/compiler': '>=18.1.0'
 
-  '@jsverse/transloco-keys-manager@7.1.0':
-    resolution: {integrity: sha512-a4dX3ba3luCMbgfbNWl+PszL5dE5H1fora7gpvg1xSVT9EVaY9ZBVDqlmDhuicqwEah5Fw4IGB0bVxHWLMrwNA==}
+  '@jsverse/transloco-keys-manager@7.2.0':
+    resolution: {integrity: sha512-Z1vM3BBaf6nRssAO651I7LzUVdYAAwXRAiB+TdgrKVks1z9UsU3itLuWZ0qb68kGnKogdtqt+hzzu3Hg8qUfEQ==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
-  '@jsverse/transloco-optimize@8.2.0':
-    resolution: {integrity: sha512-/I4XBBkRstPLRllAcZiJSAbVGNv4eqQY4sV9WsHfzcpVvHFYvq0FwRtQmPS0mdk7qn5J7K9lpgJa5Sf+ooyxTQ==}
+  '@jsverse/transloco-optimize@8.2.1':
+    resolution: {integrity: sha512-V4RwLSW9oQzyy8lY4u/WOntOM8yxfPgh2Q5wgMcLabL3mYVUkXnmKGFBA6CLmVAnux0AbXjnhxONiZ/niKplPA==}
     engines: {node: '>=18'}
     hasBin: true
 
-  '@jsverse/transloco-persist-lang@8.2.0':
-    resolution: {integrity: sha512-accsQa5eFgR4yv+v7Uv5gydexb8jHIKymP/tYzGqOavpThkqUzlbVS1A8VhhsiB98w3FPy7lx+pn+pSCye7noA==}
+  '@jsverse/transloco-persist-lang@8.2.1':
+    resolution: {integrity: sha512-7M/uvPFvOq2pCMIQHD20o8DnsrCIFncc2J98U+DNPn/DatgZRn+YJVjJ697Y8MzRnvjJF4D7YoZvQ+GzZ5ka8Q==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
       '@jsverse/transloco': '>=8.0.0'
@@ -2074,13 +2074,17 @@ packages:
     resolution: {integrity: sha512-rDactF2Qmu4JKBpecyYLzD3spPZ0U+6wgoQS2OIcVraq5riV8eE3sPYb5dgL2wxMgGtJRuT8PgMMAD7LUOcCNw==}
     engines: {node: '>=18'}
 
-  '@jsverse/transloco-validator@8.2.0':
-    resolution: {integrity: sha512-B2HCNfkLMKsDZamUfsApBX1JriH8UYEnMcyeDIcc4MEN/5RBjc6pskcWWSFur5GPGhhoKveJnfbFsEm+TaUA0Q==}
+  '@jsverse/transloco-utils@8.2.1':
+    resolution: {integrity: sha512-sAKJQuGgAYRYwndM8X1xVbwOrjENBxKxOwhXE7gFnS8fWUEwBGMswp3wbAOS5jZlLDhyaReesU16ToXLegBCjg==}
+    engines: {node: '>=18'}
+
+  '@jsverse/transloco-validator@8.2.1':
+    resolution: {integrity: sha512-6QwdXjY9hG5JbE65wcMIWLkn6aTCLZrU16wHnHkGFbA5PKisilgL5CYi4QsgWfkZpxNop5BUo1padNgiWt8cBg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  '@jsverse/transloco@8.2.0':
-    resolution: {integrity: sha512-5SU9mjmKHlTraW/GKSUsWEjt7ATBLzKcKd6w+mTbRrnU38ZyYdCJoR2W/ii8lWiRwhfgbXTFCsTUueW5Ak61WA==}
+  '@jsverse/transloco@8.2.1':
+    resolution: {integrity: sha512-uuapT1vNi/P9wqklO2VY/sIj8HPVQJ1h+IJFhPbiQvk1FP/vgn2LLwGz/iIcet2bAMJVKKxO8FXytdrwRXXyvg==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
       rxjs: '>=6.0.0'
@@ -10435,7 +10439,7 @@ snapshots:
       '@angular/compiler': 21.0.8
       tslib: 2.8.1
 
-  '@jsverse/transloco-keys-manager@7.1.0(typescript@5.9.3)':
+  '@jsverse/transloco-keys-manager@7.2.0(typescript@5.9.3)':
     dependencies:
       '@angular/compiler': 21.0.8
       '@jsverse/angular-utils': 1.0.0-beta.6(@angular/compiler@21.0.8)
@@ -10460,16 +10464,16 @@ snapshots:
       - supports-color
       - typescript
 
-  '@jsverse/transloco-optimize@8.2.0':
+  '@jsverse/transloco-optimize@8.2.1':
     dependencies:
       command-line-args: 5.2.1
       flat: 5.0.2
       glob: 10.5.0
 
-  '@jsverse/transloco-persist-lang@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@jsverse/transloco@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)':
+  '@jsverse/transloco-persist-lang@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(@jsverse/transloco@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)':
     dependencies:
       '@angular/core': 21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)
-      '@jsverse/transloco': 8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
+      '@jsverse/transloco': 8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
       '@jsverse/utils': 1.0.0-beta.5
       tslib: 2.8.1
 
@@ -10480,14 +10484,21 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@jsverse/transloco-validator@8.2.0':
+  '@jsverse/transloco-utils@8.2.1(typescript@5.9.3)':
+    dependencies:
+      cosmiconfig: 8.3.6(typescript@5.9.3)
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - typescript
+
+  '@jsverse/transloco-validator@8.2.1':
     dependencies:
       find-duplicated-property-keys: 1.2.9
 
-  '@jsverse/transloco@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)':
+  '@jsverse/transloco@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)':
     dependencies:
       '@angular/core': 21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)
-      '@jsverse/transloco-utils': 8.2.0(typescript@5.9.3)
+      '@jsverse/transloco-utils': 8.2.1(typescript@5.9.3)
       '@jsverse/utils': 1.0.0-beta.5
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -13651,10 +13662,10 @@ snapshots:
       '@angular/core': 21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  dfx-transloco-markup@0.0.2(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@jsverse/transloco@8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(rxjs@7.8.2):
+  dfx-transloco-markup@0.0.2(@angular/common@21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@jsverse/transloco@8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(rxjs@7.8.2):
     dependencies:
       '@angular/common': 21.0.8(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@jsverse/transloco': 8.2.0(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
+      '@jsverse/transloco': 8.2.1(@angular/core@21.0.8(@angular/compiler@21.0.8)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3)
       rxjs: 7.8.2
       tslib: 2.8.1
 
