@@ -41,6 +41,7 @@ class PushMonitorCheckerEntryController {
                     it[PushMonitorCheckerEntry.pingMs] = pingMs
                 }
             }
+
             else -> throw BadRequestException("Status has to be UP or DOWN")
         }
     }

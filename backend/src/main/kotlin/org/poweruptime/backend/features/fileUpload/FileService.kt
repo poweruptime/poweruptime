@@ -162,6 +162,7 @@ class FileService(@Value(Config.STORAGE_DIRECTORY) private val directoryPath: St
 
         when (file.contentType) {
             "image/jpeg", "image/png", "image/webp", "image/avif" -> {}
+
             else -> {
                 logger.debug { "File type '${file.contentType}' is not allowed." }
                 throw BadRequestException("""File type "${file.contentType}" is not allowed.""")

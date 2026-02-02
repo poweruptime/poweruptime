@@ -1,5 +1,4 @@
 import dev.detekt.gradle.Detekt
-import dev.detekt.gradle.report.ReportMergeTask
 import org.gradle.kotlin.dsl.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
@@ -25,7 +24,7 @@ plugins {
     id("org.springframework.boot") version "4.0.2" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("dev.detekt") version "2.0.0-alpha.1"
+    id("dev.detekt") version "2.0.0-alpha.2"
 
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
@@ -43,7 +42,7 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.1")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.2")
     }
 
     tasks.withType<Detekt>().configureEach {

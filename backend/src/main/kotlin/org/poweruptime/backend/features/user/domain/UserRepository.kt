@@ -62,9 +62,13 @@ fun User.findAll(
         sort = {
             when (it) {
                 "name" -> User.name
+
                 "activated" -> User.activated
+
                 "role" -> User.role
+
                 "createdAt" -> User.createdAt
+
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )

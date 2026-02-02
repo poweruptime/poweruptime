@@ -52,7 +52,9 @@ class NotificationTemplateService(
             "status",
             when (notification.status) {
                 MonitorStatus.UP -> """✅ UP"""
+
                 MonitorStatus.DOWN -> """🔴 DOWN"""
+
                 else -> throw InvalidAttributesException(
                     "Check result status not allowed to be ${notification.status}",
                 )
@@ -112,7 +114,9 @@ class NotificationTemplateService(
 
     private fun MonitorStatus.toStatusLabel() = when (this) {
         MonitorStatus.UP -> """Online"""
+
         MonitorStatus.DOWN -> """Offline"""
+
         else -> throw InvalidAttributesException(
             "Last inverted check result status not allowed to be $this",
         )

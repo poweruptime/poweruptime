@@ -137,6 +137,7 @@ private fun isDateOnlyException(e: CertificateException): Boolean {
             is CertificateExpiredException,
             is CertificateNotYetValidException,
             -> return true
+
             is CertPathValidatorException -> {
                 val reason = curr.reason
                 // only swallow EXPIRED or NOT_YET_VALID

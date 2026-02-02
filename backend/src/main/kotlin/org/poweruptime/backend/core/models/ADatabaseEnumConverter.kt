@@ -32,6 +32,7 @@ class EnumColumnType<T>(private val length: Int, private val enumValues: Array<T
     override fun valueFromDB(value: Any): T = when (value) {
         is String -> enumValues.firstOrNull { it.code == value }
             ?: error("Unknown enum code '$value'")
+
         else -> error(
             "Cannot convert ${value::class.qualifiedName} to enum",
         )

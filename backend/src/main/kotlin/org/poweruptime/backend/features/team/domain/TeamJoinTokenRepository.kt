@@ -64,9 +64,13 @@ fun TeamJoinToken.findAll(pageable: Pageable, teamId: ULong): Page<TeamJoinToken
         sort = {
             when (it) {
                 "invitee.email" -> invitee[User.email]
+
                 "inviter.email" -> inviter[User.email]
+
                 "role" -> TeamJoinToken.role
+
                 "createdAt" -> TeamJoinToken.createdAt
+
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )
