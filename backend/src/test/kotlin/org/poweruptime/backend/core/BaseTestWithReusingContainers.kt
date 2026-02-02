@@ -28,7 +28,7 @@ abstract class BaseTestWithReusingContainers {
             .withReuse(true)
 
         @JvmStatic
-        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:4.2.0-management")
+        private val rabbitMQContainer = RabbitMQContainer("rabbitmq:4.2.3-management")
             .withReuse(true)
 
         @DynamicPropertySource
