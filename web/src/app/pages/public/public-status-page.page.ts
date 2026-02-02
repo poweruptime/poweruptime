@@ -1,3 +1,4 @@
+import {NgOptimizedImage} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,9 +19,8 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusText} from '@app/directives';
+import {BackendImagePipe} from '@app/pipes';
 import {PublicStatusPageStore} from '@app/services';
-import {NgOptimizedImage} from '@angular/common';
-import {BackendImagePipe} from '../../pipes';
 
 @Component({
   template: `
@@ -30,13 +30,13 @@ import {BackendImagePipe} from '../../pipes';
         @if (publicStatusPageStore.statusPage(); as statusPage) {
           <div class="flex items-center gap-4">
             @if (statusPage.image; as image) {
-              <img [ngSrc]="image.fileId | backendImage"
-                   width="75"
-                   height="75"
-                   priority
-                   [alt]="statusPage.name + ' Logo'"
-                   class="rounded-xl"
-              />
+              <img
+                class="rounded-xl"
+                [ngSrc]="image.fileId | backendImage"
+                [alt]="statusPage.name + ' Logo'"
+                width="75"
+                height="75"
+                priority />
             }
             <h1 class="text-4xl font-bold">{{ statusPage.name }}</h1>
           </div>
@@ -109,8 +109,8 @@ import {BackendImagePipe} from '../../pipes';
     HlmIconImports,
     MonitorStatusText,
     NgOptimizedImage,
-    BackendImagePipe
-  ]
+    BackendImagePipe,
+  ],
 })
 export class PublicStatusPagePage {
   private readonly ngxMetaService = inject(NgxMetaService);

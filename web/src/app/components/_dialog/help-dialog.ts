@@ -8,10 +8,10 @@ import {HlmDialogImports} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
-import {IsSystemAdmin} from '../../directives';
-import {AuthStore, ChangelogStore} from '../../services';
-import {environment} from '../../util';
-import {BACKEND_API_URL} from '../../util';
+import {IsSystemAdmin} from '@app/directives';
+import {AuthStore, ChangelogStore} from '@app/services';
+import {BACKEND_API_URL, environment} from '@app/util';
+
 import {DebugInfoDialog} from './debug-info-dialog';
 import {Dependency, LicenseDialog} from './license-dialog';
 

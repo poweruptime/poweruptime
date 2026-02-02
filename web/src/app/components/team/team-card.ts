@@ -12,9 +12,9 @@ import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {BackendType} from '@app/api';
-
 import {Pattern} from '@app/directives';
 import {BackendImagePipe} from '@app/pipes';
+
 import {TeamCardMonitorCount} from './team-card-monitor-count';
 
 @Component({
