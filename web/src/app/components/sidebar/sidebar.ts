@@ -31,14 +31,16 @@ import {NavUser} from './nav-user';
                 <button type="button" hlmSidebarMenuButton size="lg">
                   <hlm-avatar class="rounded-lg after:rounded-lg">
                     @if (selectedTeam; as selectedTeam) {
-                      <img
-                        class="rounded-lg"
-                        [ngSrc]="(selectedTeam.image?.fileId | backendImage) ?? ''"
-                        [alt]="selectedTeam.name + ' logo'"
-                        priority
-                        hlmAvatarImage
-                        width="32"
-                        height="32" />
+                      @if (selectedTeam.image?.fileId; as imageId) {
+                        <img
+                          class="rounded-lg"
+                          [ngSrc]="imageId | backendImage"
+                          [alt]="selectedTeam.name + ' logo'"
+                          priority
+                          hlmAvatarImage
+                          width="32"
+                          height="32" />
+                      }
                     }
                     <span hlmAvatarFallback>
                       @if (_teamId; as _teamId) {

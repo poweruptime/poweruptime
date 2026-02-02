@@ -60,7 +60,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                       @if (_totalDuration === '') {
                         > 1ms
                       } @else {
-                        {{ totalDuration() }}
+                        {{ _totalDuration }}
                       }
                     </span>
                   </div>

@@ -15,6 +15,7 @@ import org.poweruptime.backend.core.models.softDelete
 import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
+import org.poweruptime.backend.features.fileUpload.File
 import java.time.Instant
 
 object User : ULongIdTable(""""user""""), HasPublicId, HasModifiers, HasSoftDelete, HasName {
@@ -28,6 +29,8 @@ object User : ULongIdTable(""""user""""), HasPublicId, HasModifiers, HasSoftDele
     val passwordHash = varchar("password_hash", Database.MAX_BCRYPT_LENGTH)
 
     val mfaId = ulong("mfa_id").references(MFA.id).nullable()
+
+    val imageId = ulong("image_id").references(File.id).nullable()
 
     val activated = bool("activated")
     val forcePasswordChange = bool("force_password_change")

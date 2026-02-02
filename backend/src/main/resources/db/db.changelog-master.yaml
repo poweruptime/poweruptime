@@ -97,6 +97,12 @@ databaseChangeLog:
       id: 9
       author: Dafnik
       changes:
+        - createIndex:
+            tableName: status_page
+            indexName: status_page_image_id
+            columns:
+              - column:
+                  name: image_id
         - addColumn:
             tableName: team
             columns:
@@ -108,6 +114,12 @@ databaseChangeLog:
                     foreignKeyName: fk_team_image_id__id
                     onUpdate: RESTRICT
                     onDelete: RESTRICT
+        - createIndex:
+            tableName: team
+            indexName: team_image_id
+            columns:
+              - column:
+                  name: image_id
         - addColumn:
             tableName: user
             columns:
@@ -119,3 +131,9 @@ databaseChangeLog:
                     foreignKeyName: fk_user_image_id__id
                     onUpdate: RESTRICT
                     onDelete: RESTRICT
+        - createIndex:
+            tableName: user
+            indexName: user_image_id
+            columns:
+              - column:
+                  name: image_id

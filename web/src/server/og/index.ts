@@ -43,7 +43,7 @@ const og: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
         <div tw="flex flex-col">
           <span tw="text-6xl">${statusPage.name}</span>
           ${
-            (statusPage.description?.length ?? 0 > 0)
+            (statusPage.description?.length ?? 0) > 0
               ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>`
               : '<span tw="flex h-6"></span>'
           }
@@ -83,6 +83,11 @@ const og: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
 
     const lastCheckResults = monitor.lastCheckResults.slice(0, 30);
 
+    const lastCheckResultTime =
+      lastCheckResults.length > 9
+        ? format(lastCheckResults[lastCheckResults.length - 1]?.createdAt, 'HH:mm')
+        : '';
+
     const template = `
       <div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
         <div tw="flex flex-col">
@@ -93,7 +98,7 @@ const og: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
             </div>
           </div>
           ${
-            (monitor.description?.length ?? 0 > 0)
+            (monitor.description?.length ?? 0) > 0
               ? `<span tw="text-lg">${s_cut(monitor.description, 100)}</span>`
               : ''
           }
@@ -113,7 +118,7 @@ const og: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
             </div>
             <div tw="flex justify-between mt-4">
               <span>Latest</span>
-              <span tw="pr-2">${format(lastCheckResults[lastCheckResults.length - 1]?.createdAt, 'HH:mm')}</span>
+              <span tw="pr-2">${lastCheckResultTime}</span>
             </div>
           </div>
           <div tw="flex justify-between items-end">
