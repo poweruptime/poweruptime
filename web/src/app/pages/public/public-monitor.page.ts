@@ -139,6 +139,7 @@ import {MonitorDetailsYearlyUptimeStore, PublicMonitorDetailStore} from '@app/se
 export class PublicMonitorPage {
   private readonly ngxMetaService = inject(NgxMetaService);
   private readonly document = inject(DOCUMENT);
+  private readonly origin = this.document.location.origin;
 
   readonly monitorId = input<string>();
 
@@ -173,8 +174,8 @@ export class PublicMonitorPage {
           url: this.document.location.href,
           title: `${title} - ${monitor.status}`,
           image: {
-            url: `${this.document.location.origin}/assets/og-image/${monitor.status}.png`,
-            alt: `Image representing the ${monitor.status} status`,
+            url: `${this.origin}/bff/v1/og/monitor?id=${monitor.id}`,
+            alt: `Image showing the name, description and the ${monitor.status} status`,
             type: 'image/png',
           },
         },

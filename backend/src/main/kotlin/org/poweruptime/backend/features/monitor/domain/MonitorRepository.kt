@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.inSubQuery
 import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.andWhere
@@ -18,6 +19,7 @@ import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.model.MonitorRecordJoinTeamRecord
@@ -40,6 +42,7 @@ fun Monitor.updateStatus(id: ULong, newStatus: MonitorStatus): Int = update({ Mo
 }
 
 fun Monitor.findJoinTeamByIdOrThrow(id: ULong): MonitorRecordJoinTeamRecord = innerJoin(Team)
+    .leftJoin(File, { File.id }, { Team.imageId })
     .selectAll()
     .where { Monitor.id eq id }
     .limit(1)
@@ -84,9 +87,10 @@ fun Monitor.findAll(
         "teamId, or userId needs to be provided"
     }
 
-    var selectColumns = columns + Team.columns
+    var selectColumns = columns + Team.columns + File.columns
 
     val query = innerJoin(Team)
+        .leftJoin(File, { File.id }, { Team.imageId })
         .select(selectColumns)
 
     query.andWhere { Monitor.deleted.deletedFilter(deleted) }

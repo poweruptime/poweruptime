@@ -1,7 +1,6 @@
 export * from './_dialog';
 export * from './outside-bottom-actions';
 export * from './alert.directive';
-export * from './backend-image';
 export * from './backend-offline-alert';
 export * from './copy-icon-button';
 export * from './dot-background';

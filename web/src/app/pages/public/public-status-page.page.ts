@@ -1,3 +1,4 @@
+import {NgOptimizedImage} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,9 +16,10 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 
-import {BackendImage, RefreshInComponent, ShadowRender} from '@app/components';
+import {RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
 import {MonitorStatusText} from '@app/directives';
+import {BackendImagePipe} from '@app/pipes';
 import {PublicStatusPageStore} from '@app/services';
 
 @Component({
@@ -28,11 +30,13 @@ import {PublicStatusPageStore} from '@app/services';
         @if (publicStatusPageStore.statusPage(); as statusPage) {
           <div class="flex items-center gap-4">
             @if (statusPage.image; as image) {
-              <pu-backend-image
+              <img
                 class="rounded-xl"
-                [fileId]="image.fileId"
+                [ngSrc]="image.fileId | backendImage"
                 [alt]="statusPage.name + ' Logo'"
-                size="75" />
+                width="75"
+                height="75"
+                priority />
             }
             <h1 class="text-4xl font-bold">{{ statusPage.name }}</h1>
           </div>
@@ -99,26 +103,26 @@ import {PublicStatusPageStore} from '@app/services';
   imports: [
     RefreshInComponent,
     StatusPageMonitorList,
-    BackendImage,
     ShadowRender,
     TranslocoPipe,
     HlmCardImports,
     HlmIconImports,
     MonitorStatusText,
+    NgOptimizedImage,
+    BackendImagePipe,
   ],
 })
 export class PublicStatusPagePage {
   private readonly ngxMetaService = inject(NgxMetaService);
   private readonly document = inject(DOCUMENT);
+  private readonly host = this.document.location.host;
+  private readonly origin = this.document.location.origin;
 
   readonly publicStatusPageStore = inject(PublicStatusPageStore);
 
   statusPageSlug = input<string>();
 
   preview = input(false, {transform: booleanAttribute});
-
-  readonly host = this.document.location.host;
-  readonly origin = this.document.location.origin;
 
   constructor() {
     this.publicStatusPageStore.loadBySlug(

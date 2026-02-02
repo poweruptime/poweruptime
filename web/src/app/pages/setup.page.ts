@@ -47,7 +47,7 @@ import {SetupStore} from '@app/services';
               @case ('setupTestEmail') {
                 <div hlmAlert>
                   <h4 hlmAlertTitle>{{ 'general.info' | transloco }}!</h4>
-                  <p hlmAlertDescription>{{ 'auth.setup.testEmail.info' | transloco }}/p></p>
+                  <p hlmAlertDescription>{{ 'auth.setup.testEmail.info' | transloco }}</p>
                 </div>
 
                 @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {

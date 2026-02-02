@@ -2,6 +2,7 @@ package org.poweruptime.backend.features.notification.service
 
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -10,6 +11,7 @@ import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
@@ -39,6 +41,7 @@ class NotificationService(private val notificationMethodService: NotificationMet
     fun getByIdJoinMonitorAndTeam(id: ULong): NotificationJoinMonitorAndTeamRecord = Notification
         .innerJoin(Monitor)
         .innerJoin(Team)
+        .leftJoin(File, { File.id }, { Team.imageId })
         .selectAll()
         .where {
             Notification.id eq id

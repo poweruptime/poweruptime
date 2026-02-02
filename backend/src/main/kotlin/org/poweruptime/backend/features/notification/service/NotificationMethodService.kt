@@ -241,6 +241,8 @@ private fun NotificationMethodRecord.getTestSubNotification():
         deleted = null,
         personalUserId = null,
         name = teamName,
+        imageId = null,
+        image = null,
     )
 
     val monitor = MonitorRecord(

@@ -77,12 +77,12 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 {{ 'general.name' | transloco }}
               </label>
 
-              <div hlmInputGroup>
-                <input id="name" hlmInputGroupInput formControlName="name" type="text" />
-                <div hlmInputGroupAddon>
-                  <ng-icon name="lucideUser" />
-                </div>
-              </div>
+              <input
+                id="name"
+                hlmInput
+                formControlName="name"
+                type="text"
+                placeholder="Status Page #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
                 <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>

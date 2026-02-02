@@ -4,21 +4,24 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.poweruptime.backend.core.utils.Database
+import org.poweruptime.backend.features.fileUpload.FileResponse
 import org.poweruptime.backend.features.monitor.dto.MonitorDashboardResponse
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
 import java.time.Instant
 
-data class TeamMinResponse(val id: String, val name: String) {
+data class TeamMinResponse(val id: String, val name: String, val image: FileResponse?) {
     constructor(team: TeamRecord) : this(
         id = team.publicId,
         name = team.name,
+        image = team.image?.let { FileResponse(it) },
     )
 }
 
 data class TeamResponse(
     val id: String,
     val name: String,
+    val image: FileResponse?,
     val deleted: Instant?,
     val personal: Boolean,
     val yourPersonal: Boolean,
@@ -27,6 +30,7 @@ data class TeamResponse(
     constructor(team: TeamRecord, yourPersonal: Boolean, dashboard: MonitorDashboardResponse) : this(
         id = team.publicId,
         name = team.name,
+        image = team.image?.let { FileResponse(it) },
         deleted = team.deleted,
         personal = team.personalUserId != null,
         yourPersonal = yourPersonal,
@@ -37,6 +41,7 @@ data class TeamResponse(
 data class TeamMaxResponse(
     val id: String,
     val name: String,
+    val image: FileResponse?,
     val deleted: Instant?,
     val personal: Boolean,
     val yourPersonal: Boolean,
@@ -46,6 +51,7 @@ data class TeamMaxResponse(
     constructor(team: TeamRecord, yourPersonal: Boolean, dashboard: MonitorDashboardResponse, role: TeamRole) : this(
         id = team.publicId,
         name = team.name,
+        image = team.image?.let { FileResponse(it) },
         deleted = team.deleted,
         personal = team.personalUserId != null,
         yourPersonal = yourPersonal,
@@ -56,9 +62,11 @@ data class TeamMaxResponse(
 
 data class CreateTeamDto(
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
+    val imageId: String? = null,
 )
 
 data class UpdateTeamDto(
     @get:NotNull val id: String,
     @get:NotBlank @get:Size(min = Database.MIN_NAME_LENGTH, max = Database.MAX_NAME_LENGTH) val name: String,
+    val imageId: String? = null,
 )

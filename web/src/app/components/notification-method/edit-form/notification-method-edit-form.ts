@@ -86,7 +86,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
                 hlmInput
                 formControlName="name"
                 type="text"
-                placeholder="Monitor #1" />
+                placeholder="Notification Method #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
                 <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>

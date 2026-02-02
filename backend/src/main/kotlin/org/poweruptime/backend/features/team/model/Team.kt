@@ -13,6 +13,9 @@ import org.poweruptime.backend.core.models.softDelete
 import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.NANO_ID_SMALL_LENGTH
 import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.fileUpload.File
+import org.poweruptime.backend.features.fileUpload.FileRecord
+import org.poweruptime.backend.features.fileUpload.rowToFileRecord
 import java.time.Instant
 
 object Team : ULongIdTable("team"), HasPublicId, HasModifiers, HasSoftDelete, HasName {
@@ -27,6 +30,8 @@ object Team : ULongIdTable("team"), HasPublicId, HasModifiers, HasSoftDelete, Ha
         .nullable()
         .index()
         .uniqueIndex()
+
+    val imageId = ulong("image_id").references(File.id).nullable()
 }
 
 data class TeamRecord(
@@ -36,6 +41,8 @@ data class TeamRecord(
     val updatedAt: Instant,
     val deleted: Instant?,
     val personalUserId: ULong?,
+    val imageId: ULong?,
+    val image: FileRecord?,
     val name: String,
 )
 
@@ -46,5 +53,7 @@ fun Team.rowToTeamRecord(row: ResultRow): TeamRecord = TeamRecord(
     updatedAt = row[updatedAt],
     deleted = row[deleted],
     personalUserId = row[personalUserId],
+    imageId = row[Team.imageId],
+    image = if (row[Team.imageId] != null) File.rowToFileRecord(row) else null,
     name = row[name],
 )

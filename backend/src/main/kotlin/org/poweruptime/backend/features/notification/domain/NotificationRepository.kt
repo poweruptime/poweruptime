@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.inSubQuery
 import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.jdbc.andWhere
@@ -15,6 +16,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.model.rowToMonitorRecord
@@ -60,17 +62,19 @@ suspend fun Notification.findAll(
         )
     },
 ) {
-    var selectColumns = columns + Monitor.columns + Team.columns
+    var selectColumns = columns + Monitor.columns + Team.columns + File.columns
 
     val query = when {
         monitorId != null -> {
             innerJoin(Monitor)
                 .innerJoin(Team, { Monitor.teamId }, { Team.id })
+                .leftJoin(File, { File.id }, { Team.imageId })
                 .select(selectColumns)
         }
 
         teamId != null -> {
             Team
+                .leftJoin(File, { File.id }, { Team.imageId })
                 .innerJoin(Monitor)
                 .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)
@@ -80,6 +84,7 @@ suspend fun Notification.findAll(
             selectColumns = selectColumns + TeamUser.userId
             TeamUser
                 .innerJoin(Team)
+                .leftJoin(File, { File.id }, { Team.imageId })
                 .innerJoin(Monitor)
                 .innerJoin(Notification, { Monitor.id }, { Notification.monitorId })
                 .select(selectColumns)

@@ -1768,6 +1768,11 @@ export interface components {
     UpdateTeamDto: {
       id: string;
       name: string;
+      imageId?: string;
+    };
+    FileResponse: {
+      name: string;
+      fileId: string;
     };
     MonitorDashboardResponse: {
       /** Format: int64 */
@@ -1784,6 +1789,7 @@ export interface components {
     TeamMaxResponse: {
       id: string;
       name: string;
+      image?: components['schemas']['FileResponse'];
       /** Format: date-time */
       deleted?: string;
       personal: boolean;
@@ -1839,10 +1845,6 @@ export interface components {
       footer?: string;
       imageId?: string;
       domainNames: string[];
-    };
-    FileResponse: {
-      name: string;
-      fileId: string;
     };
     MonitorMinResponse: {
       name: string;
@@ -2115,6 +2117,7 @@ export interface components {
     TeamMinResponse: {
       id: string;
       name: string;
+      image?: components['schemas']['FileResponse'];
     };
     InstanceSettingVersionCheckDto: {
       versionCheckEnabled: boolean;
@@ -2158,6 +2161,7 @@ export interface components {
     };
     CreateTeamDto: {
       name: string;
+      imageId?: string;
     };
     InviteTeamUserDto: {
       /** @enum {string} */
@@ -2288,6 +2292,7 @@ export interface components {
     TeamResponse: {
       id: string;
       name: string;
+      image?: components['schemas']['FileResponse'];
       /** Format: date-time */
       deleted?: string;
       personal: boolean;

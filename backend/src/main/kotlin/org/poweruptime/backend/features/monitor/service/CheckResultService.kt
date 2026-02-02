@@ -2,12 +2,14 @@ package org.poweruptime.backend.features.monitor.service
 
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findIdByPublicIdOrThrow
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.monitor.domain.deleteByTeamIdAndOlderThan
 import org.poweruptime.backend.features.monitor.domain.findAll
 import org.poweruptime.backend.features.monitor.domain.findByStatusUpMonitorIdAndPickedUpBetween
@@ -35,6 +37,7 @@ class CheckResultService {
     fun getByIdJoinMonitorAndTeam(id: ULong): CheckResultJoinMonitorAndTeamRecord = CheckResult
         .innerJoin(Monitor)
         .innerJoin(Team)
+        .leftJoin(File, { File.id }, { Team.imageId })
         .selectAll()
         .where {
             CheckResult.id eq id

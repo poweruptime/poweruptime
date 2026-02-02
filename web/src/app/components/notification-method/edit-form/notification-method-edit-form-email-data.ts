@@ -181,7 +181,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             [type]="showPasswordButton.type()"
             [placeholder]="showPasswordButton.placeholder()"
             hlmInputGroupInput
-            formControlName="username" />
+            formControlName="password" />
           <div hlmInputGroupAddon>
             <ng-icon name="lucideKey" />
           </div>
