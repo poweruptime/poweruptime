@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
 
-import {_DisposeViewRepeaterStrategy, _VIEW_REPEATER_STRATEGY} from '@angular/cdk/collections';
 import {
   CDK_TABLE,
   CdkTable,
@@ -48,7 +47,6 @@ import {HlmTBody, HlmTFoot, HlmTHead, HlmTable} from '@spartan-ng/helm/table';
   providers: [
     {provide: CdkTable, useExisting: HlmDataTable},
     {provide: CDK_TABLE, useExisting: HlmDataTable},
-    {provide: _VIEW_REPEATER_STRATEGY, useClass: _DisposeViewRepeaterStrategy},
     // Prevent nested tables from seeing this table's StickyPositioningListener.
     {provide: STICKY_POSITIONING_LISTENER, useValue: null},
   ],
