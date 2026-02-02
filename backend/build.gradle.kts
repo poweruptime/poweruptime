@@ -261,7 +261,7 @@ tasks.register<BootRun>("seed") {
 configurations.detekt {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.2.20")
+            useVersion("2.3.0")
         }
     }
 }

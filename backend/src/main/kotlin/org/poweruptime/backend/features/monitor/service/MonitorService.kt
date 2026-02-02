@@ -314,6 +314,7 @@ class MonitorService(
                     MonitorStatus.DOWN,
                     MonitorStatus.UP,
                     -> true
+
                     MonitorStatus.MAINTENANCE,
                     MonitorStatus.PAUSED,
                     -> false

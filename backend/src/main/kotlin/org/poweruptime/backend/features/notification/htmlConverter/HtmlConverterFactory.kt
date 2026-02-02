@@ -7,7 +7,9 @@ class HtmlConverterFactory {
         NotificationMethodTemplateType.PLAIN,
         NotificationMethodTemplateType.HTML,
         -> NoneHtmlConverter()
+
         NotificationMethodTemplateType.MARKDOWN -> HtmlToCommonMarkdownConverter()
+
         NotificationMethodTemplateType.MRKDWN -> HtmlToMrkdwnConverter()
     }
 }

@@ -54,6 +54,7 @@ class VersionInfo(
                     commitUrl = commitUrl,
                 )
             }
+
             // Normal version pattern: x.y.z
             else -> {
                 val normalRegex = Regex("""^(\d+)\.(\d+)\.(\d+)$""")

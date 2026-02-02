@@ -33,6 +33,7 @@ class SendEmailService {
                     props["mail.smtp.starttls.required"] = "true"
                 }
             }
+
             EmailSecurity.TLS -> {
                 props["mail.transport.protocol"] = "smtps"
                 if (emailSenderDto.ignoreTLSErrors) {

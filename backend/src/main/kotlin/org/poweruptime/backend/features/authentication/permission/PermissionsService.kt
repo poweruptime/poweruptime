@@ -40,6 +40,7 @@ class PermissionsService {
                 permissionRequest.permission,
                 TeamRole.ADMIN,
             )
+
             TeamRole.MEMBER, null -> isPartOf(publicUserId, entityId, permissionRequest.permission)
         }
 }

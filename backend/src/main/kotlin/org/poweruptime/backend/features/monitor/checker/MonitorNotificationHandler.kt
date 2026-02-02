@@ -198,6 +198,7 @@ class MonitorNotificationHandler(
                     },
                 )
             }
+
             is NotificationAction.Skip -> {
                 checkResultLogEntryService.action(
                     stage = CheckResultLogStage.NOTIFICATION,

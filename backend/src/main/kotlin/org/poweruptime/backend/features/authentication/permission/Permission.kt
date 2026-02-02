@@ -104,12 +104,14 @@ enum class Permission(val baseName: String, private val checker: PermissionCheck
                     .find { it.baseName == baseName }
                     ?.let { PermissionRequest(it, TeamRole.ADMIN) }
             }
+
             permissionName.endsWith("_MEMBER") -> {
                 val baseName = permissionName.removeSuffix("_MEMBER")
                 entries
                     .find { it.baseName == baseName }
                     ?.let { PermissionRequest(it, TeamRole.MEMBER) }
             }
+
             else -> null
         }
     }

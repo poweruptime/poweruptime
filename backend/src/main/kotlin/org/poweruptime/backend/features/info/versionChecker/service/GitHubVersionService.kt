@@ -86,6 +86,7 @@ class GitHubVersionService(private val restClient: RestClient, private val infoS
                 logger.warn { "No valid versions found on GitHub" }
                 null
             }
+
             latestVersion > currentVersionInfo -> {
                 logger.info {
                     "Newer version available: ${latestVersion.originalVersion} > ${currentVersionInfo.originalVersion}"
@@ -95,6 +96,7 @@ class GitHubVersionService(private val restClient: RestClient, private val infoS
                     date = makeCommitRequest(latestVersionCommitUrl!!)?.commit?.author?.date ?: "Unknown",
                 )
             }
+
             else -> {
                 logger.debug {
                     "Current version is up to date: ${currentVersionInfo.originalVersion} >= " +

@@ -181,7 +181,9 @@ fun CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId: ULong, status: M
             (
                 CheckResult.status eq when (status) {
                     MonitorStatus.UP -> MonitorStatus.DOWN
+
                     MonitorStatus.DOWN -> MonitorStatus.UP
+
                     else -> throw InvalidAttributesException(
                         "Check result status not allowed to be $status",
                     )

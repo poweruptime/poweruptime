@@ -130,7 +130,9 @@ class AppriseSender(
     private fun mapFormatType(templateType: NotificationMethodTemplateType): AppriseNotificationFormat =
         when (templateType) {
             NotificationMethodTemplateType.PLAIN -> AppriseNotificationFormat.TEXT
+
             NotificationMethodTemplateType.HTML -> AppriseNotificationFormat.HTML
+
             NotificationMethodTemplateType.MARKDOWN,
             NotificationMethodTemplateType.MRKDWN,
             -> AppriseNotificationFormat.MARKDOWN

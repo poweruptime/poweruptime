@@ -128,7 +128,9 @@ data class Sort(val property: String, val sortOrder: SortOrder) {
                 property = property,
                 sortOrder = when (direction) {
                     "asc" -> SortOrder.ASC
+
                     "desc" -> SortOrder.DESC
+
                     else -> throw BadRequestException(
                         "Invalid sort direction: '$direction'. Must be 'asc' or 'desc'",
                     )

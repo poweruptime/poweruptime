@@ -57,7 +57,9 @@ fun Session.findAll(pageable: Pageable, userId: ULong, valid: Boolean = true): P
         sort = {
             when (it) {
                 "createdAt" -> Session.createdAt
+
                 "updatedAt" -> Session.createdAt
+
                 else -> throw BadRequestException(
                     """Sort parameter "$it" not found""",
                 )

@@ -201,8 +201,10 @@ class HttpMonitorChecker(private val teamSettingService: TeamSettingService) : M
             "Content-Type",
             when (httpMonitorCheckerData.contentType) {
                 HttpMonitorDataContentType.HTML -> "text/html"
+
                 HttpMonitorDataContentType.JSON ->
                     "application/json"
+
                 HttpMonitorDataContentType.XML -> "application/xml"
             },
         )
