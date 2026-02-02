@@ -1,3 +1,4 @@
+import {NgOptimizedImage} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -13,9 +14,8 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {BackendType} from '@app/api';
+import {BackendImagePipe} from '@app/pipes';
 import {BACKEND_API_URL} from '@app/util';
-
-import {BackendImage} from './backend-image';
 
 @Component({
   template: `
@@ -37,10 +37,10 @@ import {BackendImage} from './backend-image';
           dragClass="border-[2px] bg-accent/50"
           accept="image/*">
           @if (_fileToShow; as fileToShow) {
-            <pu-backend-image
-              class="h-full w-full object-cover"
-              [fileId]="fileToShow.fileId"
-              size="140"
+            <img
+              [ngSrc]="fileToShow.fileId | backendImage"
+              width="140"
+              height="140"
               alt="Preview of uploaded image" />
           } @else {
             <ng-icon class="opacity-60" hlm name="lucideCircleUserRound" size="sm" />
@@ -71,7 +71,13 @@ import {BackendImage} from './backend-image';
     </div>
   `,
   selector: 'pu-profile-picture-upload',
-  imports: [BackendImage, FileDragDropDirective, HlmButtonImports, HlmIconImports],
+  imports: [
+    FileDragDropDirective,
+    HlmButtonImports,
+    HlmIconImports,
+    NgOptimizedImage,
+    BackendImagePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePictureUpload {

@@ -23,6 +23,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultJoinMonitorAndTeamRecord
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
@@ -67,15 +68,18 @@ suspend fun CheckResult.findAll(
         )
     },
 ) {
-    var selectColumns = columns + Monitor.columns + Team.columns
+    var selectColumns = columns + Monitor.columns + Team.columns + File.columns
 
     val query = when {
         monitorId != null -> {
-            innerJoin(Monitor).innerJoin(Team).select(selectColumns)
+            innerJoin(Monitor).innerJoin(Team)
+                .leftJoin(File, { File.id }, { Team.imageId })
+                .select(selectColumns)
         }
 
         teamId != null -> {
             Team
+                .leftJoin(File, { File.id }, { Team.imageId })
                 .innerJoin(Monitor)
                 .innerJoin(CheckResult)
                 .select(selectColumns)
@@ -85,6 +89,7 @@ suspend fun CheckResult.findAll(
             selectColumns = selectColumns + TeamUser.userId
             TeamUser
                 .innerJoin(Team)
+                .leftJoin(File, { File.id }, { Team.imageId })
                 .innerJoin(Monitor)
                 .innerJoin(CheckResult)
                 .select(selectColumns)

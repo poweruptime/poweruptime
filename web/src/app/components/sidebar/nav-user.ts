@@ -29,7 +29,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
           size="lg"
           align="end">
           <div class="relative">
-            <hlm-avatar class="rounded-lg">
+            <hlm-avatar class="rounded-lg after:rounded-lg">
               <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
                 {{ profileInitials ?? 'UK' }}
               </span>
@@ -37,7 +37,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
             @if (infoStore.support(); as support) {
               @if (support.supportsSince && support.showSupportBadge) {
                 <ng-icon
-                  class="absolute -top-2 -left-1 -rotate-20 text-yellow-500"
+                  class="absolute -top-2 -left-1 -rotate-25 text-yellow-500"
                   size="16"
                   name="lucideCrown"
                   aria-label="Crown" />

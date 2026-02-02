@@ -57,6 +57,8 @@ class CheckResultLogEntryService {
             it[CheckResultLogEntry.stage] = stage
             it[CheckResultLogEntry.message] = message
             it[CheckResultLogEntry.properties] = properties
+            it[CheckResultLogEntry.createdAt] = Instant.now()
+            it[CheckResultLogEntry.updatedAt] = Instant.now()
         }
     }
 

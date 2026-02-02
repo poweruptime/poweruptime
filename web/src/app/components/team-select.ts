@@ -1,3 +1,4 @@
+import {NgOptimizedImage} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +14,7 @@ import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnPopoverContent} from '@spartan-ng/brain/popover';
+import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmPopoverImports} from '@spartan-ng/helm/popover';
@@ -20,17 +22,33 @@ import {HlmProgressImports} from '@spartan-ng/helm/progress';
 
 import {BackendType} from '@app/api';
 import {Pattern} from '@app/directives';
+import {BackendImagePipe} from '@app/pipes';
 import {TeamsStore} from '@app/services';
 
 @Component({
   selector: 'pu-team-select-item',
   template: `
+    @let _team = team();
     <button
       class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors"
       [class.bg-accent]="isSelected()"
       (click)="selectEmit.emit()"
       type="button">
-      <div class="h-8 w-8 rounded-md" [pu-pattern]="team().id"></div>
+      <hlm-avatar class="size-8 rounded-lg after:rounded-lg">
+        @if (_team.image?.fileId; as fileId) {
+          <img
+            class="rounded-lg"
+            [ngSrc]="fileId | backendImage"
+            [alt]="_team.name + ' logo'"
+            priority
+            hlmAvatarImage
+            width="32"
+            height="32" />
+        }
+        <span hlmAvatarFallback>
+          <div class="aspect-square size-8 rounded-lg" [pu-pattern]="_team.id"></div>
+        </span>
+      </hlm-avatar>
       <div class="flex-1">
         <div class="text-foreground max-w-44 truncate text-sm font-medium">
           {{ team().name }}
@@ -42,7 +60,7 @@ import {TeamsStore} from '@app/services';
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmIconImports, Pattern],
+  imports: [HlmIconImports, Pattern, BackendImagePipe, NgOptimizedImage, HlmAvatarImports],
 })
 export class TeamItemComponent {
   team = input.required<BackendType['TeamResponse']>();

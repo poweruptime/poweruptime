@@ -40,7 +40,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             <div class="flex flex-wrap gap-2 text-2xl">
               <pu-monitor-status [status]="checkResult.status" />
               <h1>{{ checkResult.title }}</h1>
-              <span class="text-gray-400">#{{ checkResult.id }}</span>
             </div>
 
             <section hlmCard>
@@ -57,7 +56,12 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                   <div class="flex flex-col gap-2">
                     <h3 class="text-gray-400">{{ 'general.totalDuration' | transloco }}</h3>
                     <span class="text-lg font-bold">
-                      {{ totalDuration() }}
+                      @let _totalDuration = totalDuration();
+                      @if (_totalDuration === '') {
+                        > 1ms
+                      } @else {
+                        {{ totalDuration() }}
+                      }
                     </span>
                   </div>
                 }

@@ -37,7 +37,7 @@ import {trackBy} from '@app/util';
               </th>
               <td *hlmCellDef="let element" hlm-cell>
                 <div class="flex items-center gap-1.5">
-                  <hlm-avatar class="rounded-lg">
+                  <hlm-avatar class="rounded-lg after:rounded-lg">
                     <span class="bg-muted text-muted-foreground rounded-lg" hlmAvatarFallback>
                       {{ element.name | initials }}
                     </span>

@@ -9,7 +9,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
 import {IsSystemAdmin} from '../../directives';
-import {ChangelogStore} from '../../services';
+import {AuthStore, ChangelogStore} from '../../services';
 import {environment} from '../../util';
 import {BACKEND_API_URL} from '../../util';
 import {DebugInfoDialog} from './debug-info-dialog';
@@ -23,6 +23,32 @@ interface ImportedModule {
 export interface LicenseData {
   dependencies: Dependency[];
   importedModules: ImportedModule[];
+}
+
+@Component({
+  template: `
+    @let changelogPending = changelogStore.isPending();
+    <button
+      class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
+      [disabled]="changelogPending"
+      (click)="changelogStore.load(undefined)"
+      type="button"
+      hlmBtn
+      variant="ghost">
+      @if (changelogPending) {
+        <hlm-spinner />
+      } @else {
+        <ng-icon hlm name="lucideScrollText" size="sm" />
+      }
+      Changelog
+    </button>
+  `,
+  selector: 'pu-help-dialog-changelog-button',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [HlmButtonImports, HlmIconImports, HlmSpinnerImports],
+})
+export class HelpDialogChangelogButton {
+  protected readonly changelogStore = inject(ChangelogStore);
 }
 
 @Component({
@@ -65,22 +91,13 @@ export interface LicenseData {
           <span class="bg-secondary rounded px-2 py-0.5 font-mono text-xs">{{ version }}</span>
         </div>
       </button>
-      @let changelogPending = changelogStore.isPending();
-      <button
-        class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
-        [disabled]="changelogPending"
-        (click)="changelogStore.load(undefined)"
-        type="button"
-        hlmBtn
-        variant="ghost">
-        @if (changelogPending) {
-          <hlm-spinner />
-        } @else {
-          <ng-icon hlm name="lucideScrollText" size="sm" />
+      @let isLoggedIn = authStore.isLoggedIn();
+      @defer (when isLoggedIn) {
+        @if (isLoggedIn) {
+          <pu-help-dialog-changelog-button />
+          <pu-debug-info-dialog *isSystemAdmin />
         }
-        Changelog
-      </button>
-      <pu-debug-info-dialog *isSystemAdmin />
+      }
     </div>
 
     <h2 class="text-xl font-bold">Licenses ❤</h2>
@@ -112,13 +129,13 @@ export interface LicenseData {
     BrnDialogClose,
     LicenseDialog,
     DebugInfoDialog,
-    HlmSpinnerImports,
+    HelpDialogChangelogButton,
   ],
 })
 export class HelpDialog {
   protected readonly version = environment.version;
 
-  protected readonly changelogStore = inject(ChangelogStore);
+  protected readonly authStore = inject(AuthStore);
 
   protected readonly licenses = httpResource<LicenseData>(
     () => `${BACKEND_API_URL}/v1/public/static-files/licenses.json`,

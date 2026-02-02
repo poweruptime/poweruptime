@@ -1,3 +1,4 @@
+import {NgOptimizedImage} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +14,7 @@ import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -25,6 +27,7 @@ import {TeamsStore} from '@app/services';
 import {trackBy} from '@app/util';
 
 import {Pattern} from '../../directives';
+import {BackendImagePipe} from '../../pipes';
 
 @Component({
   template: `
@@ -60,7 +63,21 @@ import {Pattern} from '../../directives';
               </th>
               <td *hlmCellDef="let element" hlm-cell>
                 <div class="flex items-center gap-2">
-                  <div class="aspect-square size-8 rounded-lg" [pu-pattern]="element.id"></div>
+                  <hlm-avatar class="size-8 rounded-lg after:rounded-lg">
+                    @if (element.image?.fileId; as fileId) {
+                      <img
+                        class="rounded-lg"
+                        [ngSrc]="fileId | backendImage"
+                        [alt]="element.name + ' logo'"
+                        priority
+                        hlmAvatarImage
+                        width="32"
+                        height="32" />
+                    }
+                    <span hlmAvatarFallback>
+                      <div class="aspect-square size-8 rounded-lg" [pu-pattern]="element.id"></div>
+                    </span>
+                  </hlm-avatar>
                   <span>{{ element.name }}</span>
                 </div>
               </td>
@@ -153,10 +170,13 @@ import {Pattern} from '../../directives';
   selector: 'pu-team-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    Pattern,
+    BackendImagePipe,
     TableLoadingBar,
     RouterLink,
     StopPropagationDirective,
     TranslocoPipe,
+    NgOptimizedImage,
     HlmPaginatorImports,
     HlmSortImports,
     HlmDataTableImports,
@@ -166,7 +186,7 @@ import {Pattern} from '../../directives';
     HlmCheckboxImports,
     HlmTableContainer,
     BrnTooltipContentTemplate,
-    Pattern,
+    HlmAvatarImports,
   ],
 })
 export class TeamTable {

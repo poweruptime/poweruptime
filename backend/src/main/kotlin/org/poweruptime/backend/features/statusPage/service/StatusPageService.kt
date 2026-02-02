@@ -100,8 +100,6 @@ class StatusPageService(
             throw BadRequestException("All monitors should be in the same team as of status page")
         }
 
-        val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
-
         val statusPage = StatusPage
             .insertAndGetId {
                 it[StatusPage.name] = dto.name
@@ -109,7 +107,7 @@ class StatusPageService(
                 it[StatusPage.description] = dto.description
                 it[StatusPage.footer] = dto.footer
                 it[StatusPage.teamId] = teamId
-                it[StatusPage.imageId] = fileId
+                it[StatusPage.imageId] = dto.imageId?.let { fileService.getIdByFileId(it) }
             }.let { getById(it.value) }
 
         StatusPageDomainName
@@ -165,15 +163,13 @@ class StatusPageService(
             throw BadRequestException("All monitors should be in the same team as the status page")
         }
 
-        val fileId = dto.imageId?.let { fileService.getIdByFileId(it) }
-
         val statusPage = StatusPage
             .update({ StatusPage.id eq oldStatusPage.id }) {
                 it[StatusPage.name] = dto.name
                 it[StatusPage.publicId] = dto.slug
                 it[StatusPage.description] = dto.description
                 it[StatusPage.footer] = dto.footer
-                it[StatusPage.imageId] = fileId
+                it[StatusPage.imageId] = dto.imageId?.let { fileService.getIdByFileId(it) }
             }.let { getById(oldStatusPage.id) }
 
         StatusPageDomainName.deleteWhere { StatusPageDomainName.statusPageId eq oldStatusPage.id }

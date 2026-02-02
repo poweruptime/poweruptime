@@ -35,7 +35,7 @@ import {toBackendDate} from '@app/services/util';
       !monitorsStore.isPending() &&
       monitorsStore.sortedEntities().length === 0;
     @if (notSearchingNotPendingAndEmpty) {
-      <pu-monitors-empty />
+      <pu-monitors-empty [inTeam]="!!teamId()" />
     } @else {
       <div class="flex gap-4">
         <div

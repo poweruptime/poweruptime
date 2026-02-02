@@ -50,8 +50,6 @@ import {BackendType} from '@app/api';
                 Loading...
               } @else if (searchMonitor().length === 0) {
                 Type to search Monitors.
-              } @else {
-                No matches for "{{ searchMonitor() }}".
               }
             </hlm-combobox-status>
           }
@@ -97,10 +95,7 @@ export class MonitorSelector implements ControlValueAccessor {
   ) => itemValue.id === selectedValue?.id;
 
   protected readonly showStatus = computed(
-    () =>
-      this.isPending() ||
-      this.searchMonitor().length === 0 ||
-      (this.value() && this.value()!.length === 0),
+    () => this.isPending() || this.searchMonitor().length === 0,
   );
 
   readonly monitors = input.required<BackendType['MonitorMinResponse'][]>();

@@ -1,6 +1,7 @@
 package org.poweruptime.backend.features.team.domain
 
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.leftJoin
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.jdbc.andWhere
@@ -9,6 +10,7 @@ import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
 import org.poweruptime.backend.core.domain.pageQuery
 import org.poweruptime.backend.core.dto.Pageable
+import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.team.model.Team
 import org.poweruptime.backend.features.team.model.TeamRecord
 import org.poweruptime.backend.features.team.model.TeamRole
@@ -23,9 +25,10 @@ fun Team.findAll(
     role: TeamRole?,
     deleted: Boolean = false,
 ): Page<TeamRecord> {
-    var selectColumns = columns
+    var selectColumns = columns + File.columns
 
-    val query = select(selectColumns).where { Team.deleted.deletedFilter(deleted) }
+    val query = leftJoin(File, { File.id }, { Team.imageId })
+        .select(selectColumns).where { Team.deleted.deletedFilter(deleted) }
 
     userId?.let {
         query

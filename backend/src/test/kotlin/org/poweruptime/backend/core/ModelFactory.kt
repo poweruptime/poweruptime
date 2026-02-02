@@ -50,6 +50,8 @@ object ModelFactory {
         deleted = null,
         personalUserId = null,
         name = name,
+        imageId = null,
+        image = null,
     )
 
     fun getTestUser(name: String = "Franz Huber", email: String = "franz.huber@gmail1234.com") = UserRecord(

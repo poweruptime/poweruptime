@@ -3,8 +3,11 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
+import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
+import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {SelectedTeamStore} from '@app/services';
 
@@ -47,16 +50,39 @@ import {SelectedTeamStore} from '@app/services';
     <ng-template #menu let-ctx>
       <hlm-dropdown-menu class="w-48">
         <hlm-dropdown-menu-group>
-          <hlm-dropdown-menu-label>{{ ctx.team.name }}</hlm-dropdown-menu-label>
+          <hlm-dropdown-menu-label class="flex items-center justify-between">
+            <span>{{ ctx.team.name }}</span>
+            <hlm-tooltip>
+              <button
+                (click)="selectedTeamStore.removeSelectedTeam(ctx.team.id)"
+                hlmBtn
+                hlmTooltipTrigger
+                type="button"
+                variant="ghost"
+                size="icon-sm">
+                <ng-icon name="lucidePinOff" />
+              </button>
+              <span *brnTooltipContent>Unpin Team</span>
+            </hlm-tooltip>
+          </hlm-dropdown-menu-label>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
-        <button
-          (click)="selectedTeamStore.removeSelectedTeam(ctx.team.id)"
-          type="button"
-          hlmDropdownMenuItem>
-          <ng-icon name="lucidePinOff" />
-          Unpin Team
-        </button>
+        <a routerLink="/t/{{ ctx.team.id }}/notification-methods" hlmDropdownMenuItem>
+          <ng-icon name="bootstrapBell" />
+          {{ 'general.notificationMethods' | transloco }}
+        </a>
+        <a routerLink="/t/{{ ctx.team.id }}/status-pages" hlmDropdownMenuItem>
+          <ng-icon name="bootstrapChatLeftQuote" />
+          {{ 'general.statusPages' | transloco }}
+        </a>
+        <a routerLink="/t/{{ ctx.team.id }}/recycle-bin" hlmDropdownMenuItem>
+          <ng-icon name="bootstrapTrash3" />
+          {{ 'general.recycleBin' | transloco }}
+        </a>
+        <a routerLink="/t/{{ ctx.team.id }}/edit" hlmDropdownMenuItem>
+          <ng-icon name="bootstrapGearWide" />
+          {{ 'general.settings' | transloco }}
+        </a>
       </hlm-dropdown-menu>
     </ng-template>
   `,
@@ -68,6 +94,9 @@ import {SelectedTeamStore} from '@app/services';
     HlmDropdownMenuImports,
     TranslocoPipe,
     RouterLinkActive,
+    HlmButtonImports,
+    HlmTooltipImports,
+    BrnTooltipContentTemplate,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
