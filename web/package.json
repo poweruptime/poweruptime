@@ -57,7 +57,7 @@
     "dfx-theme": "^0.0.1",
     "dfx-transloco-markup": "0.0.2",
     "eventsource": "4.1.0",
-    "fastify": "5.7.0",
+    "fastify": "5.7.2",
     "nanoid": "5.1.6",
     "ngx-sonner": "3.1.0",
     "ngxtension": "7.0.2",
