@@ -21,7 +21,12 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
 
       @if (_statusPageId) {
         @if (statusPageEditStore.isFulfilled()) {
-          <hlm-tabs class="w-full" [tab]="tab()" (tabActivated)="tab.set($event)">
+          <hlm-tabs
+            class="w-full"
+            [tab]="tab()"
+            (tabActivated)="
+              tab.set($event); $event === 'preview' ? publicStatusPagePage.reload() : undefined
+            ">
             <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
               <button class="gap-1.5" type="button" hlmTabsTrigger="edit">
                 {{ 'statusPage.edit.edit' | transloco: statusPage }}
@@ -43,7 +48,12 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
               </div>
             </div>
             <div hlmTabsContent="preview">
-              <pu-public-status-page-page [statusPageSlug]="statusPage!.slug" preview />
+              <div class="px-4 pt-4 sm:container sm:mx-auto" style="max-width: 70rem">
+                <pu-public-status-page-page
+                  #publicStatusPagePage
+                  [statusPageSlug]="statusPage!.slug"
+                  preview />
+              </div>
             </div>
           </hlm-tabs>
         } @else {

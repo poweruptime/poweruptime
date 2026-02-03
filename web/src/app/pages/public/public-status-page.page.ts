@@ -162,4 +162,11 @@ export class PublicStatusPagePage {
       } satisfies GlobalMetadata & OpenGraphMetadata);
     });
   }
+
+  public reload() {
+    this.publicStatusPageStore.loadBySlug({
+      slug: this.statusPageSlug(),
+      domain: this.host,
+    });
+  }
 }
