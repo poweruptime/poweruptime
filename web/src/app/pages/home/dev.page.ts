@@ -1,16 +1,22 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {NgOptimizedImage} from '@angular/common';
+import {ChangeDetectionStrategy, Component, DOCUMENT, inject} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
+import {BrnSelectImports} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmItemImports} from '@spartan-ng/helm/item';
+import {HlmSelectImports} from '@spartan-ng/helm/select';
+import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {AuthStore, ChangelogStore} from '@app/services';
 
 @Component({
   template: `
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <div>
+      <div class="flex flex-col gap-4">
         <section hlmCard>
           <div hlmCardHeader>
             <h3 hlmCardTitle>Auth</h3>
@@ -22,6 +28,44 @@ import {AuthStore, ChangelogStore} from '@app/services';
             <button (click)="setInvalidRefreshToken()" hlmBtn variant="outline" type="button">
               Refresh token invalidate
             </button>
+          </div>
+        </section>
+
+        <section hlmCard>
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>OG Image</h3>
+          </div>
+          <div class="grid gap-6" hlmCardContent>
+            <div class="flex gap-4">
+              <brn-select class="inline-block" [(value)]="ogType" placeholder="Select an option">
+                <hlm-select-trigger class="w-56">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  <hlm-option value="monitor">Monitor</hlm-option>
+                  <hlm-option value="status">Status Page</hlm-option>
+                </hlm-select-content>
+              </brn-select>
+              <input
+                class="w-80"
+                [(ngModel)]="ogId"
+                hlmInput
+                type="text"
+                placeholder="Monitor / status page id" />
+            </div>
+            @if (ogType() && ogId()) {
+              <img
+                class="h-auto w-92 rounded-md"
+                [ngSrc]="
+                  origin +
+                  '/bff/v1/og/' +
+                  (ogType() === 'monitor' ? 'monitor?id=' : 'status-page?slug=') +
+                  ogId()
+                "
+                width="1200"
+                height="630"
+                alt="Social Preview" />
+            }
           </div>
         </section>
       </div>
@@ -191,11 +235,27 @@ import {AuthStore, ChangelogStore} from '@app/services';
   `,
   selector: 'pu-profile-dev-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, HlmCardImports, HlmButtonImports, HlmItemImports],
+  imports: [
+    RouterLink,
+    HlmCardImports,
+    HlmButtonImports,
+    HlmItemImports,
+    BrnSelectImports,
+    HlmSelectImports,
+    HlmInputImports,
+    FormsModule,
+    NgOptimizedImage,
+  ],
 })
 export class DevPage {
   private readonly authStore = inject(AuthStore);
   private readonly changelogStore = inject(ChangelogStore);
+
+  private readonly document = inject(DOCUMENT);
+  protected readonly origin = this.document.location.origin;
+
+  protected readonly ogType = linkedQueryParam('og.type');
+  protected readonly ogId = linkedQueryParam('og.id');
 
   setOldVersion() {
     this.changelogStore.lastVersion.set('0.0.1');
