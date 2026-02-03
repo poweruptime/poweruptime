@@ -34,7 +34,7 @@ import {MonitorCard} from './monitor-card';
       <pu-monitor-card
         *cdkVirtualFor="let monitor of entities(); trackBy: trackById"
         [monitor]="monitor"
-        style="width: 21rem; min-width: 21rem;" />
+        style="width: 21rem; min-width: 21rem; padding-left: 2px; padding-right: 2px; padding-top: 2px" />
 
       @if (isPending()) {
         @for (i of 8 | repeat; track i) {
