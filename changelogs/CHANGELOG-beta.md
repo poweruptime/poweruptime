@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.5.0-beta-1770147756 - 2026-02-03
+
+### <!-- 0 -->🚀 Features
+
+- Spartan migration by Dafnik ([40fe027](https://github.com/poweruptime/poweruptime/commit/40fe027e490db708ed25bdda3baf03762e7268f5))
+- Spartan migration by Dafnik ([67651f9](https://github.com/poweruptime/poweruptime/commit/67651f9eaaeffa66990b73f09241f61ccb59419a))
+- Mentions & file upload spartan rewrite (#577) by Dafnik ([f0c8754](https://github.com/poweruptime/poweruptime/commit/f0c87544aebd1740082a5da325757e69c350a794))
+- Team profile picture (#610) by Dafnik ([5e06dc7](https://github.com/poweruptime/poweruptime/commit/5e06dc72e1ac1811289978de26e1540b12a8df73))
+- Status page preview enhancements by Dafnik ([6046a37](https://github.com/poweruptime/poweruptime/commit/6046a3758df4f706cec007c2846f3b074a3cb05e))
+- Enhance DNS & SSL Certificate logs by Dafnik ([0a7df92](https://github.com/poweruptime/poweruptime/commit/0a7df92bccf330b52ac23db32399735e91a33c42))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Check result store not updating correctly by Dafnik ([2aa6e4a](https://github.com/poweruptime/poweruptime/commit/2aa6e4a856857c5e312e874d6d2dc0eaf60c2dd4))
+- Monitor card list styling issue by Dafnik ([c384422](https://github.com/poweruptime/poweruptime/commit/c3844228651e2b7d4d8acb98054da9f8f069372d))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Fix by Dafnik ([46b581b](https://github.com/poweruptime/poweruptime/commit/46b581b5be4064cca06a35b9c22c5814295275cb))
+- Add og image preview to dev page by Dafnik ([eb78026](https://github.com/poweruptime/poweruptime/commit/eb78026e4b5debb9f68568d64d02aa24f8aa30b3))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1769536404...0.5.0-beta-1770147756)
+
 ## 0.5.0-beta-1769536404 - 2026-01-27
 
 ### <!-- 0 -->🚀 Features
