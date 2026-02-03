@@ -22,6 +22,7 @@ private const val DNS_ANSWER_SECTION = 1
 class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
     private final val logger = KotlinLogging.logger {}
 
+    @Suppress("LongMethod")
     override fun execute(monitor: MonitorRecord, data: MonitorData): CheckResultDto {
         data as DnsMonitorDataRecord
 
@@ -44,7 +45,7 @@ class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
 
             logger.debug { "Monitor '${monitor.id}', dns response '$answerSection'" }
 
-            if (data.matches == null) {
+            if (data.matches.isNullOrEmpty()) {
                 return if (answerSection.isEmpty()) {
                     result.error("DNS record(s) not found")
                 } else {
@@ -54,30 +55,66 @@ class DnsMonitorChecker : MonitorChecker(MonitorType.DNS) {
 
             val answers = parseAnswerSection(answerSection, data.type)
 
-            logger.info { "Mapped answers '${answers.joinToString()}'" }
-
-            if (answers.isEmpty()) {
-                return result.error("DNS record(s) not found")
+            logger.debug {
+                "Monitor '${monitor.id}' found ${answers.size} DNS record(s): [${answers.joinToString(", ")}]"
             }
 
-            if (!data.matches.all { answers.contains(it) }) {
+            if (answers.isEmpty()) {
                 return result.error(
-                    title = "DNS record(s) not corresponding with specified matches",
-                    message = """
-                        |$answerSection
-                        |
-                        |=========
-                        |Specified matches
-                        |${data.matches.joinToString("\n")}
-                    """.trimMargin(),
+                    title = "DNS record(s) could not be parsed",
+                    message = buildDnsMessage(
+                        data.matches.toExpectedDnsRecordsString(),
+                        answerSection.toFullAnswerString(),
+                    ),
                 )
             }
 
-            return result.success("DNS record(s) found", answers.joinToString("\n"))
+            val missingMatches = data.matches.filter { !answers.contains(it) }
+
+            if (missingMatches.isNotEmpty()) {
+                return result.error(
+                    title = "DNS record(s) not corresponding with specified matches",
+                    message = buildDnsMessage(
+                        data.matches.toExpectedDnsRecordsString(),
+                        answers.toActualDnsRecordsString(),
+                        """
+        |Missing Records: ${missingMatches.size}
+        |${missingMatches.joinToString("\n") { "  ✗ $it" }}
+                        """.trimMargin(),
+                        answerSection.toFullAnswerString(),
+                    ),
+                )
+            }
+
+            return result.success(
+                title = "DNS record(s) found",
+                message = buildDnsMessage(
+                    data.matches.toExpectedDnsRecordsString(),
+                    answers.toActualDnsRecordsString(),
+                    answerSection.toFullAnswerString(),
+                ),
+            )
         } catch (_: Exception) {
             return result.error("DNS server unreachable")
         }
     }
+
+    private fun buildDnsMessage(vararg sections: String): String = sections.joinToString("\n\n\n") { it.trimMargin() }
+
+    private fun List<String>.toExpectedDnsRecordsString() = """
+        |Expected DNS Records: $size
+        |${joinToString("\n") { "  ✓ $it" }}
+    """.trimMargin()
+
+    private fun List<String>.toActualDnsRecordsString() = """
+        |Actual DNS Records: $size
+        |${joinToString("\n") { "  • $it" }}
+    """.trimMargin()
+
+    private fun String.toFullAnswerString() = """
+        |Full answer:
+        |$this
+    """.trimMargin()
 
     private fun getDNSAnswerSection(resolver: Resolver, host: String, type: DnsMonitorDataType): String = resolver
         .send(

@@ -57,13 +57,13 @@ class SSLCertificateMonitorChecker(private val teamSettingService: TeamSettingSe
                 grouped[false]?.isNotEmpty() == true -> result.error(
                     title = "Certificate valid, but expiry check failed",
                     message = grouped[false]!!
-                        .toMessage(now, tz),
+                        .toMessage(data.validDaysLeft, now, tz),
                 )
 
                 else -> result.success(
                     title = "All certificates valid",
                     message = grouped[true]!!
-                        .toMessage(now, tz),
+                        .toMessage(data.validDaysLeft, now, tz),
                 )
             }
         } catch (e: SSLHandshakeException) {
@@ -153,27 +153,33 @@ private fun isDateOnlyException(e: CertificateException): Boolean {
     return false
 }
 
-private fun List<X509Certificate>.toMessage(currentTime: Instant, zoneId: ZoneId) = this.joinToString("\n") {
-    // Calculate remaining days
-    val notAfter = it.notAfter.toInstant()
-    val duration = Duration.between(currentTime, notAfter)
+private fun List<X509Certificate>.toMessage(validDaysLeft: Long?, currentTime: Instant, zoneId: ZoneId) = """
+    |Minimum valid days: ${validDaysLeft ?: 0}
+    |
+    |${
+    joinToString("\n") {
+        // Calculate remaining days
+        val notAfter = it.notAfter.toInstant()
+        val duration = Duration.between(currentTime, notAfter)
 
-    "${
-        subjectNameRegex.find(it.subjectX500Principal.name)?.value ?: it.subjectX500Principal.name
-    }: ${duration.abs().toDays()} day(s) ${
-        if (duration.toDays() >= 0) {
-            "remaining, expires on"
-        } else {
-            "overdue, expired on"
-        }
-    } ${it.notAfter
-        .toInstant()
-        .atZone(zoneId)
-        .format(DateTimeUtils.simpleDateTimeFormatter)
-    } - ${
-        issuerNameRegex.find(it.issuerX500Principal.name)?.value ?: it.issuerX500Principal.name
-    }"
+        "${
+            subjectNameRegex.find(it.subjectX500Principal.name)?.value ?: it.subjectX500Principal.name
+        }: ${duration.abs().toDays()} day(s) ${
+            if (duration.toDays() >= 0) {
+                "remaining, expires on"
+            } else {
+                "overdue, expired on"
+            }
+        } ${it.notAfter
+            .toInstant()
+            .atZone(zoneId)
+            .format(DateTimeUtils.simpleDateTimeFormatter)
+        } - ${
+            issuerNameRegex.find(it.issuerX500Principal.name)?.value ?: it.issuerX500Principal.name
+        }"
+    }
 }
+""".trimMargin()
 
 private val issuerNameRegex = Regex("""(?<=O=)[^,]+""")
 private val subjectNameRegex = Regex("""(?<=CN=)[^,]+""")
