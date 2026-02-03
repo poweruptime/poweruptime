@@ -112,6 +112,8 @@ export const CheckResultsStore = signalStore(
 
 const CACHE_DURATION_MS = 60_000; // 1 minute
 
+const PAGE_SIZE = 22;
+
 export const LastCheckResultsStore = signalStore(
   {providedIn: 'root'},
   withState<{
@@ -127,10 +129,7 @@ export const LastCheckResultsStore = signalStore(
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       const monitorId = checkResult.monitor.id;
       const currentResults = store.resultsMap().get(monitorId) ?? [];
-      const updated = [
-        checkResult,
-        ...currentResults.slice(0, Math.max(0, currentResults.length - 1)),
-      ];
+      const updated = [checkResult, ...currentResults.slice(0, PAGE_SIZE - 1)];
 
       patchState(store, () => ({
         resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
@@ -165,7 +164,7 @@ export const LastCheckResultsStore = signalStore(
                     query: {
                       monitorId,
                       page: 0,
-                      size: 22,
+                      size: PAGE_SIZE,
                       sort: ['createdAt_desc'],
                     },
                   },
