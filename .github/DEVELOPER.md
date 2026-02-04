@@ -56,9 +56,9 @@ Run everything (backend + web + dependencies) in containers.
 Use the `Containerized` run config or run:
 
 ```shell
-pnpm web:build && \
+pnpm web:build:docker && \
 ./gradlew backend:build -x test -Pversion=local && \
-docker compose -f compose-dev.yml -f ./backend/compose.yml up --build
+docker compose -f compose-dev.yml -f ./backend/compose.yml -f ./web/compose.yml up --build
 ```
 
 **Available services:**
