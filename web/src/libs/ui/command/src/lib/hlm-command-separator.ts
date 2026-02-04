@@ -12,6 +12,6 @@ import {classes} from '@spartan-ng/helm/utils';
 })
 export class HlmCommandSeparator {
   constructor() {
-    classes(() => 'bg-border -mx-1 block h-px data-hidden:hidden');
+    classes(() => 'bg-border -mx-1 block h-px w-auto data-hidden:hidden');
   }
 }

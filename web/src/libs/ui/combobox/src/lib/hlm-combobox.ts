@@ -20,6 +20,7 @@ import {classes} from '@spartan-ng/helm/utils';
     {
       directive: BrnCombobox,
       inputs: [
+        'autoHighlight',
         'disabled',
         'filter',
         'search',
@@ -40,6 +41,7 @@ import {classes} from '@spartan-ng/helm/utils';
         'sideOffset',
         'state',
         'offsetX',
+        'restoreFocus',
       ],
       outputs: ['stateChanged', 'closed'],
     },
