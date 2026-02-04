@@ -10,7 +10,7 @@ import {createProxyMiddleware} from 'http-proxy-middleware';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {environment} from '@app/util';
+import {BACKEND_API_URL, environment} from '@app/util';
 
 import og from './og';
 
@@ -22,9 +22,8 @@ export async function app() {
   server.use(
     '/api',
     createProxyMiddleware({
-      target: environment.backendHost,
+      target: environment.backendHost + BACKEND_API_URL,
       changeOrigin: true,
-      pathRewrite: {'^/': '/api/'},
       logger: logLevel === 'DEBUG' ? console : undefined,
     }),
   );
