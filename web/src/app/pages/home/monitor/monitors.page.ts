@@ -26,7 +26,6 @@ import {
   MonitorsSearchStore,
   TagsStore,
 } from '@app/services';
-import {toBackendDate} from '@app/services/util';
 
 @Component({
   template: `
@@ -146,22 +145,22 @@ import {toBackendDate} from '@app/services/util';
   selector: 'pu-monitors-page',
 })
 export class MonitorsPage {
-  readonly router = inject(Router);
-  readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
-  readonly monitorsStore = inject(InfiniteMonitorsStore);
-  readonly monitorsSearchStore = inject(MonitorsSearchStore);
-  readonly tagsStore = inject(TagsStore);
+  protected readonly router = inject(Router);
+  protected readonly monitorsDashboardStore = inject(MonitorsDashboardStore);
+  protected readonly monitorsStore = inject(InfiniteMonitorsStore);
+  protected readonly monitorsSearchStore = inject(MonitorsSearchStore);
+  protected readonly tagsStore = inject(TagsStore);
 
   readonly teamId = input<string | undefined>(undefined);
 
-  readonly showFilter = linkedQueryParam('search.show', {
+  protected readonly showFilter = linkedQueryParam('search.show', {
     parse: paramToBoolean({defaultValue: false}),
     stringify: (value) => (!value ? null : value),
     queryParamsHandling: '',
   });
 
   @HostListener('window:keydown.control.f', ['$event'])
-  toggleSearch(event: Event) {
+  protected toggleSearch(event: Event) {
     event.preventDefault();
     this.showFilter.set(!this.showFilter());
   }
@@ -195,6 +194,4 @@ export class MonitorsPage {
       })),
     );
   }
-
-  protected readonly toBackendDate = toBackendDate;
 }

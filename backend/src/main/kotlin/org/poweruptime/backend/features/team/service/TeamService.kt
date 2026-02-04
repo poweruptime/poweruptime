@@ -17,8 +17,9 @@ import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.utils.orThrowNotFound
 import org.poweruptime.backend.features.fileUpload.File
 import org.poweruptime.backend.features.fileUpload.FileService
-import org.poweruptime.backend.features.monitor.domain.findIdsByTeamId
+import org.poweruptime.backend.features.monitor.domain.findByTeamId
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.team.domain.findAll
 import org.poweruptime.backend.features.team.dto.CreateTeamDto
 import org.poweruptime.backend.features.team.dto.UpdateTeamDto
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional(readOnly = true)
-class TeamService(private val fileService: FileService) {
+class TeamService(private val monitorService: MonitorService, private val fileService: FileService) {
     fun getAll(): List<TeamRecord> = Team
         .leftJoin(File, { File.id }, { Team.imageId })
         .selectAll()
@@ -68,7 +69,7 @@ class TeamService(private val fileService: FileService) {
         .insertAndGetId {
             it[Team.name] = dto.name
             it[Team.personalUserId] = personalUserId
-            it[Team.imageId] = dto.imageId?.let { fileService.getIdByFileId(it) }
+            it[Team.imageId] = dto.imageId?.let { imageId -> fileService.getIdByFileId(imageId) }
         }.let { getById(it.value) }
         .also { team ->
             if (creatorId != null) {
@@ -110,7 +111,9 @@ class TeamService(private val fileService: FileService) {
             throw BadRequestException("Can't delete personal team")
         }
 
-        Monitor.deleteById(Monitor.findIdsByTeamId(id))
+        Monitor.findByTeamId(id).forEach {
+            monitorService.stop(it)
+        }
 
         return Team.deleteById(id)
     }

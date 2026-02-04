@@ -71,6 +71,15 @@ fun Monitor.findByNotificationMethodId(notificationMethodIds: List<ULong>): Map<
             valueTransform = { rowToMonitorRecord(it) },
         )
 
+fun Monitor.findByTeamId(teamId: ULong): List<MonitorRecord> = selectAll().where { Monitor.teamId eq teamId }.map {
+    rowToMonitorRecord(it)
+}
+
+fun Monitor.findAllNoneDeleted(): List<MonitorRecord> = innerJoin(Team)
+    .selectAll().where { Monitor.deleted.isNull() and Team.deleted.isNull() }.map {
+        rowToMonitorRecord(it)
+    }
+
 @Suppress("LongMethod")
 fun Monitor.findAll(
     pageable: Pageable,
@@ -184,11 +193,6 @@ fun Monitor.findAll(
         },
     )
 }
-
-fun Monitor.findIdsByTeamId(teamId: ULong): List<ULong> = select(id)
-    .where {
-        Monitor.teamId eq teamId and deleted.isNull()
-    }.map { it[id].value }
 
 fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> = select(
     teamId,

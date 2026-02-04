@@ -20,6 +20,7 @@ import org.poweruptime.backend.features.monitor.MonitorScheduler
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByTeamIdsGrouped
 import org.poweruptime.backend.features.monitor.domain.countMonitorsByUserGrouped
 import org.poweruptime.backend.features.monitor.domain.findAll
+import org.poweruptime.backend.features.monitor.domain.findAllNoneDeleted
 import org.poweruptime.backend.features.monitor.domain.findByNotificationMethodId
 import org.poweruptime.backend.features.monitor.domain.findJoinTeamByIdOrThrow
 import org.poweruptime.backend.features.monitor.domain.updateStatus
@@ -73,9 +74,7 @@ class MonitorService(
     fun getByNotificationMethodId(ids: List<ULong>): Map<ULong, List<MonitorRecord>> =
         Monitor.findByNotificationMethodId(ids)
 
-    fun getAllNoneDeleted(): List<MonitorRecord> = Monitor.findAll(includeDeleted = false) {
-        Monitor.rowToMonitorRecord(it)
-    }
+    fun getAllNoneDeleted(): List<MonitorRecord> = Monitor.findAllNoneDeleted()
 
     fun getAllPaginated(
         pageable: Pageable,
@@ -327,6 +326,10 @@ class MonitorService(
             }
 
         monitors.forEach { it.start(true) }
+    }
+
+    fun stop(monitor: MonitorRecord) {
+        monitor.stop()
     }
 
     private fun MonitorRecord.start(booting: Boolean = false): MonitorRecord = apply {
