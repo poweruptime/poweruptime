@@ -67,11 +67,14 @@ jobs:
       - name: Build backend
         run: ./gradlew backend:build -x test -Pversion=local -Dspring.profiles.active=container --scan --no-daemon
 
+      - name: Build web
+        run: pnpm web:build:docker
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Start Docker Compose stack
-        run: docker compose -f ./compose-dev.yml -f ./backend/compose.yml up -d
+        run: docker compose -f ./compose-dev.yml -f ./backend/compose.yml -f ./web/compose.yml up -d
 
       - name: Wait for services to be healthy (max 5 minutes)
         run: |
