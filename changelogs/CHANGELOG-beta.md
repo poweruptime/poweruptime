@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0-beta-1770208085 - 2026-02-04
+
+### <!-- 2 -->🚜 Refactor
+
+- Remove weird reverse proxy pathRewrite by Dafnik ([63786fe](https://github.com/poweruptime/poweruptime/commit/63786fe50e534eea5c2b34328cc401c06e857614))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Add web e2e tests, update infra e2e tests to run against web docker container by Dafnik ([628779a](https://github.com/poweruptime/poweruptime/commit/628779add54fddcc1520f8b6b9e44db26506acfa))
+- Only run e2e tests against dockerized application by Dafnik ([adc01e2](https://github.com/poweruptime/poweruptime/commit/adc01e27886ca91857bea2cfbedfc23e113eac03))
+- Remove playwright asset upload by Dafnik ([f9d366f](https://github.com/poweruptime/poweruptime/commit/f9d366f67c8a3ca6095523408e036e7b50d3033b))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1770147756...0.5.0-beta-1770208085)
+
 ## 0.5.0-beta-1770147756 - 2026-02-03
 
 ### <!-- 0 -->🚀 Features
