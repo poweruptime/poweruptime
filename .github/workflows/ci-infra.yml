@@ -104,9 +104,3 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm web:e2e
-
-      - uses: actions/upload-artifact@v6
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: ./web/playwright-report/
