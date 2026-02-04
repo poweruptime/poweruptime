@@ -58,15 +58,6 @@
               }
             ],
             "browser": "src/main.ts",
-            "externalDependencies": [
-              "fastify",
-              "@fastify/http-proxy",
-              "@fastify/static",
-              "fast-json-stringify",
-              "sharp",
-              "satori",
-              "satori-html"
-            ],
             "index": "src/index.html",
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",

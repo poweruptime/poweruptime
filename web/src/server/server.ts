@@ -5,9 +5,8 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 
-import fastifyProxy from '@fastify/http-proxy';
-import fastifyStatic from '@fastify/static';
-import fastify from 'fastify';
+import express, {type Request, type Response} from 'express';
+import {createProxyMiddleware} from 'http-proxy-middleware';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -16,56 +15,60 @@ import {environment} from '@app/util';
 import og from './og';
 
 export async function app() {
-  const server = fastify();
+  const server = express();
 
-  server.register(fastifyProxy, {
-    upstream: `${environment.backendHost}/api`,
-    prefix: '/api',
-    http2: false,
-  });
+  const logLevel = process.env['LOG_LEVEL'];
 
-  server.register(og, {prefix: '/bff/v1/og'});
+  server.use(
+    '/api',
+    createProxyMiddleware({
+      target: environment.backendHost,
+      changeOrigin: true,
+      pathRewrite: {'^/': '/api/'},
+      logger: logLevel === 'DEBUG' ? console : undefined,
+    }),
+  );
+
+  server.use('/bff/v1/og', og);
 
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
-  server.register(fastifyStatic, {
-    root: browserDistFolder,
-    wildcard: false,
-    cacheControl: false,
-    setHeaders: (res, pathName) => {
-      if (/index\.html$/.test(pathName)) {
-        // no cache for index.html
-        res.setHeader(
-          'Cache-Control',
-          'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        );
-      } else if (/\.json$/.test(pathName)) {
-        // no cache for .json
-        res.setHeader(
-          'Cache-Control',
-          'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
-        );
-      } else if (/\.(css|js)$/.test(pathName)) {
-        // one year for css/js
-        res.setHeader('Cache-Control', 'public, max-age=31449600');
-      } else {
-        // fallback: 3 days
-        res.setHeader('Cache-Control', 'public, max-age=259200');
-      }
-    },
-  });
 
-  server.get('*', async (req, reply) => {
+  server.use(
+    express.static(browserDistFolder, {
+      setHeaders: (res, pathName) => {
+        if (/index\.html$/.test(pathName)) {
+          res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          );
+        } else if (/\.json$/.test(pathName)) {
+          res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          );
+        } else if (/\.(css|js)$/.test(pathName)) {
+          res.setHeader('Cache-Control', 'public, max-age=31449600');
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=259200');
+        }
+      },
+    }),
+  );
+
+  server.all(/.*/, async (req: Request, res: Response) => {
     try {
       const engine = new AngularNodeAppEngine();
-      const response = await engine.handle(req.raw, {server: 'fastify'});
+      const response = await engine.handle(req, {server: 'express'});
+
       if (response) {
-        await writeResponseToNodeResponse(response, reply.raw);
+        await writeResponseToNodeResponse(response, res);
       } else {
-        reply.callNotFound();
+        res.status(404).end();
       }
     } catch (err) {
-      reply.send(err);
+      console.error(err);
+      res.status(500).send(err);
     }
   });
 
@@ -74,17 +77,18 @@ export async function app() {
 
 if (isMainModule(import.meta.url)) {
   (async () => {
-    const host = process.env['HOST'] || '0.0.0.0';
+    const host = process.env['HOST'] ?? '0.0.0.0';
     const ports = [4200, 80];
 
     await Promise.all(
       ports.map(async (port) => {
         const server = await app();
         try {
-          await server.listen({host, port});
-          console.log(
-            `✅ Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
-          );
+          server.listen(port, host, () => {
+            console.log(
+              `✅ Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
+            );
+          });
         } catch (err) {
           console.error(`❌ Failed to start server on port ${port}:`, err);
         }
@@ -93,9 +97,7 @@ if (isMainModule(import.meta.url)) {
   })();
 }
 
-// For serverless / cloud-function usage
 export const reqHandler = createNodeRequestHandler(async (req, res) => {
   const server = await app();
-  await server.ready();
-  server.server.emit('request', req, res);
+  server(req, res);
 });
