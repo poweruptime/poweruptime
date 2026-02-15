@@ -245,8 +245,8 @@ importers:
         specifier: 21.2.0
         version: 21.2.0(@angular/cli@21.1.2(@types/node@24.10.13)(chokidar@5.0.0)(hono@4.11.9))(chokidar@5.0.0)(eslint@9.39.2(jiti@2.6.1))(typescript-eslint@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(typescript@5.9.3)
       autoprefixer:
-        specifier: 10.4.23
-        version: 10.4.23(postcss@8.5.6)
+        specifier: 10.4.24
+        version: 10.4.24(postcss@8.5.6)
       chokidar:
         specifier: 5.0.0
         version: 5.0.0
@@ -3967,8 +3967,8 @@ packages:
   atomically@2.1.1:
     resolution: {integrity: sha512-P4w9o2dqARji6P7MHprklbfiArZAWvo07yW7qs3pdljb3BWr12FIB7W+p0zJiuiVsUpRO0iZn1kFFcpPegg0tQ==}
 
-  autoprefixer@10.4.23:
-    resolution: {integrity: sha512-YYTXSFulfwytnjAPlw8QHncHJmlvFKtczb8InXaAx9Q0LbfDnfEYDE55omerIJKihhmU61Ft+cAOSzQVaBUmeA==}
+  autoprefixer@10.4.24:
+    resolution: {integrity: sha512-uHZg7N9ULTVbutaIsDRoUkoS8/h3bdsmVJYZ5l3wv8Cp/6UIIoRDm90hZ+BwxUj/hGBEzLxdHNSKuFpn8WOyZw==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -11049,7 +11049,7 @@ snapshots:
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
       '@rspack/dev-server': 1.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(tslib@2.8.1)(webpack@5.105.0)
       '@rspack/plugin-react-refresh': 1.6.0(react-refresh@0.18.0)
-      autoprefixer: 10.4.23(postcss@8.5.6)
+      autoprefixer: 10.4.24(postcss@8.5.6)
       browserslist: 4.28.1
       css-loader: 6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.0)
       enquirer: 2.3.6
@@ -11119,7 +11119,7 @@ snapshots:
       '@nx/js': 22.4.5(@babel/traverse@7.29.0)(nx@22.4.5)
       '@phenomnomnominal/tsquery': 6.1.4(typescript@5.9.3)
       ajv: 8.17.1
-      autoprefixer: 10.4.23(postcss@8.5.6)
+      autoprefixer: 10.4.24(postcss@8.5.6)
       babel-loader: 9.2.1(@babel/core@7.29.0)(webpack@5.105.0)
       browserslist: 4.28.1
       copy-webpack-plugin: 10.2.4(webpack@5.105.0)
@@ -12514,7 +12514,7 @@ snapshots:
       stubborn-fs: 2.0.0
       when-exit: 2.1.5
 
-  autoprefixer@10.4.23(postcss@8.5.6):
+  autoprefixer@10.4.24(postcss@8.5.6):
     dependencies:
       browserslist: 4.28.1
       caniuse-lite: 1.0.30001769
