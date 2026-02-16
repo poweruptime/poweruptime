@@ -172,8 +172,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))
       ngxtension:
-        specifier: 7.0.2
-        version: 7.0.2(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 7.1.0
+        version: 7.1.0(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -6448,8 +6448,8 @@ packages:
       '@angular/common': '>=19.0.0'
       '@angular/core': '>=19.0.0'
 
-  ngxtension@7.0.2:
-    resolution: {integrity: sha512-msCX6tVv1WOpxIfKsQnJiDubVi9DnU267N0McfdpwXVUOGZ8BJYoSb17aO64y69DkKziMwPUNJ+LOsO/kmgTUw==}
+  ngxtension@7.1.0:
+    resolution: {integrity: sha512-LUsBbDhqeKFKYBxuR7hUWLlAt+UwHBvpMsh9Rz4hwK3a3UoSYfMnF1cYL4NRIrakp7CcExRl4p3nExWwKhAn4w==}
     engines: {node: '>=18'}
     peerDependencies:
       '@angular/common': '>=19.0.0'
@@ -7938,6 +7938,7 @@ packages:
   tar@7.5.7:
     resolution: {integrity: sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   terser-webpack-plugin@5.3.16:
     resolution: {integrity: sha512-h9oBFCWrq78NyWWVcSwZarJkZ01c2AyGrzs1crmHZO3QUg9D61Wu4NPjBy69n7JqylFF5y+CsUZYmYEIZ3mR+Q==}
@@ -15297,7 +15298,7 @@ snapshots:
       '@angular/core': 21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  ngxtension@7.0.2(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2):
+  ngxtension@7.1.0(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2):
     dependencies:
       '@angular/common': 21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)
