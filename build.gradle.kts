@@ -96,6 +96,8 @@ tasks.register("releaseBeta") {
 
         execOps.exec {
             commandLine(
+                "pnpm",
+                "exec",
                 "git-cliff",
                 "--count-tags",
                 "beta",
@@ -146,6 +148,8 @@ tasks.register("releaseProd") {
 
         execOps.exec {
             commandLine(
+                "pnpm",
+                "exec",
                 "git-cliff",
                 "--ignore-tags",
                 "beta",
