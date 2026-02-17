@@ -175,37 +175,44 @@ open class CheckResultStatisticsService {
 
     @Transactional
     fun syncCheckResultsToHistoricalDayUptime(monitorId: ULong) {
-        val currentDate = LocalDate.now()
-        val startOfYearAgo = currentDate.minusYears(1)
-        val existing = HistoricalDayUptime
+        val zoneId = ZoneId.systemDefault()
+        val today = LocalDate.now(zoneId)
+
+        // We want full past days only
+        val endDate = today.minusDays(1)
+        val startDate = endDate.minusYears(1).plusDays(1)
+
+        val existingDates = HistoricalDayUptime
             .findByMonitorIdBetweenDates(
-                monitorId,
-                startOfYearAgo,
-                currentDate,
-            ).map { it.date }
+                monitorId = monitorId,
+                start = startDate,
+                end = endDate,
+            )
+            .map { it.date }
             .toSet()
 
-        val totalDays = (TimeOption.ONE_YEAR.hours / HOURS_PER_DAY).toInt()
-        val zoneId = ZoneId.systemDefault()
+        val missingDates = generateSequence(startDate) { it.plusDays(1) }
+            .takeWhile { it <= endDate }
+            .filterNot { it in existingDates }
+            .toList()
 
-        // Use a sequence to generate dates and filter out existing ones
-        val newEntries = (1 until totalDays)
-            .asSequence()
-            .map { currentDate.minusDays(it.toLong()) }
-            .filterNot { existing.contains(it) }
-            .map { dateToProcess ->
-                val startOfDay = dateToProcess.atStartOfDay(zoneId).toInstant()
-                val endOfDay = dateToProcess.plusDays(1).atStartOfDay(zoneId).toInstant()
-                val uptime = calculateUptimeByMonitorId(monitorId, startOfDay, endOfDay)
-                Pair(dateToProcess, uptime)
-            }.toList() // Convert the sequence to a list for saveAll
+        if (missingDates.isEmpty()) return
 
-        if (newEntries.isNotEmpty()) {
-            HistoricalDayUptime.batchInsert(newEntries) { (date, uptime) ->
-                this[HistoricalDayUptime.monitorId] = monitorId
-                this[HistoricalDayUptime.date] = date
-                this[HistoricalDayUptime.uptime] = uptime
-            }
+        val entries = missingDates.map { date ->
+            val startOfDay = date.atStartOfDay(zoneId).toInstant()
+            val endOfDay = date.plusDays(1).atStartOfDay(zoneId).toInstant()
+            val uptime = calculateUptimeByMonitorId(
+                monitorId,
+                startOfDay,
+                endOfDay,
+            )
+            date to uptime
+        }
+
+        HistoricalDayUptime.batchInsert(entries, ignore = true) {
+            this[HistoricalDayUptime.monitorId] = monitorId
+            this[HistoricalDayUptime.date] = it.first
+            this[HistoricalDayUptime.uptime] = it.second
         }
     }
 
