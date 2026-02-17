@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.5.0-beta-1771362795 - 2026-02-17
+
+### <!-- 0 -->🚀 Features
+
+- Enhance og image by Dafnik ([cc5b0d5](https://github.com/poweruptime/poweruptime/commit/cc5b0d574eadbeaf042b24797a3ae096341e2df2))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Team delete, deleting monitors by Dafnik ([36fa9f4](https://github.com/poweruptime/poweruptime/commit/36fa9f4165876d6e026b44c3873293d8b62d370f))
+- Satori by Dafnik ([3ef9e0d](https://github.com/poweruptime/poweruptime/commit/3ef9e0d2cfc77ffa47ea774d0513a36bc8add695))
+- Historical sync by Dafnik ([b32c542](https://github.com/poweruptime/poweruptime/commit/b32c5428d03f908cbfe7968075e139abd0b27b15))
+
+### <!-- 3 -->📚 Documentation
+
+- Update by Dafnik ([05903b5](https://github.com/poweruptime/poweruptime/commit/05903b56a7147af9e1b288aa86271d0042803dc9))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Spartan update by Dafnik ([46689da](https://github.com/poweruptime/poweruptime/commit/46689da13cd5c885131c1f8f7f6c164872ec4d0a))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1770208085...0.5.0-beta-1771362795)
+
 ## 0.5.0-beta-1770208085 - 2026-02-04
 
 ### <!-- 2 -->🚜 Refactor
