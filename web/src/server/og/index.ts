@@ -6,136 +6,86 @@ import {type Request, type Response, Router} from 'express';
 import {BackendType} from '@app/api';
 import {environment} from '@app/util';
 
-import {ImageResponse} from './render-to-image';
+import {sendImageResponse} from './render-to-image';
 
-const fontFile = await fetch('https://og-playground.vercel.app/inter-latin-ext-700-normal.woff');
-const fontData: ArrayBuffer = await fontFile.arrayBuffer();
+const fontData: ArrayBuffer = await fetch(
+  'https://og-playground.vercel.app/inter-latin-ext-700-normal.woff',
+).then((r) => r.arrayBuffer());
+
+const fonts = [{name: 'Inter Latin', data: fontData, style: 'normal' as const}];
+
+const sendImage = (template: string, res: Response) => sendImageResponse(template, res, {fonts});
+
+const statusBadge = (isUp: boolean, label: string) =>
+  `<div tw="${isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} p-3 rounded-lg text-lg">${label}</div>`;
 
 const ogRouter = Router();
 
-/* --------------------------- /status-page route --------------------------- */
 ogRouter.get('/status-page', async (req: Request<{}, {}, {}, {slug?: string}>, res: Response) => {
-  const slug = req.query.slug;
-
-  if (!slug) {
-    res.status(400).send('Missing slug');
-    return;
-  }
+  const {slug} = req.query;
+  if (!slug) return void res.status(400).send('Missing slug');
 
   let statusPage: BackendType['PublicStatusPageResponse'];
-
   try {
     statusPage = await fetch(`${environment.backendHost}/api/v1/public/status-page/${slug}`).then(
-      (it) => it.json(),
+      (r) => r.json(),
     );
   } catch (e) {
     console.error(e);
-    res.status(500).send(`Could not load status page: ${slug}`);
-    return;
+    return void res.status(500).send(`Could not load status page: ${slug}`);
   }
 
-  const statusPageStatus = statusPage.groups
-    .flatMap((it) => it.monitors)
-    .some((it) => it.status === 'DOWN')
-    ? ('DOWN' as const)
-    : ('UP' as const);
+  const isUp = !statusPage.groups.flatMap((g) => g.monitors).some((m) => m.status === 'DOWN');
 
-  const statusPageImageUrl = statusPage.image
+  const imageUrl = statusPage.image
     ? `${environment.backendHost}/api/v1/public/file/${statusPage.image.fileId}`
-    : undefined;
+    : null;
 
-  const template = `
-      <div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
+  await sendImage(
+    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
         <div tw="flex flex-col items-center justify-center">
-          ${
-            statusPageImageUrl
-              ? `<img src="${statusPageImageUrl}" height="70%" />`
-              : '<div tw="flex h-40"></div>'
-          }
+          ${imageUrl ? `<img src="${imageUrl}" height="70%" />` : '<div tw="flex h-40"></div>'}
         </div>
         <div tw="flex flex-col">
           <span tw="text-6xl">${statusPage.name}</span>
-          ${
-            (statusPage.description?.length ?? 0) > 0
-              ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>`
-              : '<span tw="flex h-6"></span>'
-          }
+          ${(statusPage.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>` : '<span tw="flex h-6"></span>'}
           <div tw="flex justify-between items-center">
-            <div tw="${
-              statusPageStatus === 'UP'
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-red-100 text-red-700'
-            } p-3 rounded-lg text-lg">
-              ${
-                statusPageStatus === 'UP'
-                  ? 'All services operational'
-                  : 'Some services experience issues'
-              }
-            </div>
+            ${statusBadge(isUp, isUp ? 'All services operational' : 'Some services experience issues')}
             <span>by poweruptime</span>
           </div>
         </div>
-      </div>
-    `;
-
-  const imageResponse = new ImageResponse(template, {
-    fonts: [
-      {
-        name: 'Inter Latin',
-        data: fontData,
-        style: 'normal',
-      },
-    ],
-  });
-
-  await imageResponse.writeTo(res);
+      </div>`,
+    res,
+  );
 });
 
 ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Response) => {
-  const monitorId = req.query.id;
-
-  if (!monitorId) {
-    res.status(400).send('Missing id');
-    return;
-  }
+  const {id: monitorId} = req.query;
+  if (!monitorId) return void res.status(400).send('Missing id');
 
   let monitor: BackendType['PublicMonitorResponse'];
-
   try {
     monitor = await fetch(`${environment.backendHost}/api/v1/public/monitor/${monitorId}`).then(
-      (it) => it.json(),
+      (r) => r.json(),
     );
   } catch (e) {
     console.error(e);
-    res.status(500).send(`Could not load monitor: ${monitorId}`);
-    return;
+    return void res.status(500).send(`Could not load monitor: ${monitorId}`);
   }
 
   const lastCheckResults = monitor.lastCheckResults.slice(0, 30);
-
   const lastCheckResultTime =
-    lastCheckResults.length > 9
-      ? format(lastCheckResults[lastCheckResults.length - 1]!.createdAt, 'HH:mm')
-      : '';
+    lastCheckResults.length > 9 ? format(lastCheckResults.at(-1)!.createdAt, 'HH:mm') : '';
+  const isUp = monitor.status === 'UP';
 
-  const template = `
-      <div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
+  await sendImage(
+    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
         <div tw="flex flex-col">
           <div tw="flex items-center justify-between">
             <span tw="text-6xl">${monitor.name}</span>
-            <div tw="${
-              monitor.status === 'UP'
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-red-100 text-red-700'
-            } p-3 rounded-lg text-lg">
-              ${monitor.status === 'UP' ? monitor.statistics.uptime.oneDay : monitor.status}
-            </div>
+            ${statusBadge(isUp, isUp ? monitor.statistics.uptime.oneDay : monitor.status)}
           </div>
-          ${
-            (monitor.description?.length ?? 0) > 0
-              ? `<span tw="text-lg">${s_cut(monitor.description, 100)}</span>`
-              : ''
-          }
+          ${(monitor.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(monitor.description, 100)}</span>` : ''}
         </div>
         <div tw="flex flex-col items-center justify-center">
           <div tw="flex h-32"></div>
@@ -143,17 +93,7 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
         <div tw="flex justify-between items-end">
           <div tw="flex flex-col">
             <div tw="flex items-center">
-              ${lastCheckResults
-                .map(
-                  (it) => `
-                    <div
-                      tw="flex mr-2 rounded-xl h-14 w-5 ${
-                        it.status === 'UP' ? 'bg-emerald-700' : 'bg-red-600'
-                      }"
-                    ></div>
-                  `,
-                )
-                .join('')}
+              ${lastCheckResults.map((it) => `<div tw="flex mr-2 rounded-xl h-14 w-5 ${it.status === 'UP' ? 'bg-emerald-700' : 'bg-red-600'}"></div>`).join('')}
             </div>
             <div tw="flex justify-between mt-4">
               <span>Latest</span>
@@ -162,20 +102,9 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
           </div>
           <span>by poweruptime</span>
         </div>
-      </div>
-    `;
-
-  const imageResponse = new ImageResponse(template, {
-    fonts: [
-      {
-        name: 'Inter Latin',
-        data: fontData,
-        style: 'normal',
-      },
-    ],
-  });
-
-  await imageResponse.writeTo(res);
+      </div>`,
+    res,
+  );
 });
 
 export default ogRouter;

@@ -58,6 +58,7 @@
               }
             ],
             "browser": "src/main.ts",
+            "externalDependencies": ["sharp"],
             "index": "src/index.html",
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",
