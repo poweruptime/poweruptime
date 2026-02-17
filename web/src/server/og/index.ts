@@ -17,7 +17,7 @@ const fonts = [{name: 'Inter Latin', data: fontData, style: 'normal' as const}];
 const sendImage = (template: string, res: Response) => sendImageResponse(template, res, {fonts});
 
 const statusBadge = (isUp: boolean, label: string) =>
-  `<div tw="${isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} p-3 rounded-lg text-lg">${label}</div>`;
+  `<div tw="${isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} p-7 rounded-lg text-5xl">${label}</div>`;
 
 const ogRouter = Router();
 
@@ -43,15 +43,17 @@ ogRouter.get('/status-page', async (req: Request<{}, {}, {}, {slug?: string}>, r
 
   await sendImage(
     `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
-        <div tw="flex flex-col items-center justify-center">
-          ${imageUrl ? `<img src="${imageUrl}" height="70%" />` : '<div tw="flex h-40"></div>'}
+        <div tw="flex items-start justify-between">
+        <div tw="flex flex-col">
+          <span tw="text-9xl mt-3">${statusPage.name}</span>
+          ${(statusPage.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>` : '<span tw="flex h-6"></span>'}
+        </div>
+          ${imageUrl && `<img src="${imageUrl}" height="60%" />`}
         </div>
         <div tw="flex flex-col">
-          <span tw="text-6xl">${statusPage.name}</span>
-          ${(statusPage.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>` : '<span tw="flex h-6"></span>'}
           <div tw="flex justify-between items-center">
             ${statusBadge(isUp, isUp ? 'All services operational' : 'Some services experience issues')}
-            <span>by poweruptime</span>
+            <span tw="text-3xl">by poweruptime</span>
           </div>
         </div>
       </div>`,
@@ -73,7 +75,7 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
     return void res.status(500).send(`Could not load monitor: ${monitorId}`);
   }
 
-  const lastCheckResults = monitor.lastCheckResults.slice(0, 30);
+  const lastCheckResults = monitor.lastCheckResults.slice(0, 29);
   const lastCheckResultTime =
     lastCheckResults.length > 9 ? format(lastCheckResults.at(-1)!.createdAt, 'HH:mm') : '';
   const isUp = monitor.status === 'UP';
@@ -85,7 +87,7 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
             <span tw="text-6xl">${monitor.name}</span>
             ${statusBadge(isUp, isUp ? monitor.statistics.uptime.oneDay : monitor.status)}
           </div>
-          ${(monitor.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(monitor.description, 100)}</span>` : ''}
+          ${(monitor.description?.length ?? 0) > 0 ? `<span tw="text-3xl">${s_cut(monitor.description, 100)}</span>` : ''}
         </div>
         <div tw="flex flex-col items-center justify-center">
           <div tw="flex h-32"></div>
@@ -93,14 +95,13 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
         <div tw="flex justify-between items-end">
           <div tw="flex flex-col">
             <div tw="flex items-center">
-              ${lastCheckResults.map((it) => `<div tw="flex mr-2 rounded-xl h-14 w-5 ${it.status === 'UP' ? 'bg-emerald-700' : 'bg-red-600'}"></div>`).join('')}
+              ${lastCheckResults.map((it) => `<div tw="flex mr-3 rounded-xl h-18 w-7 ${it.status === 'UP' ? 'bg-emerald-700' : 'bg-red-600'}"></div>`).join('')}
             </div>
-            <div tw="flex justify-between mt-4">
+            <div tw="flex justify-between mt-4 text-3xl">
               <span>Latest</span>
               <span tw="pr-2">${lastCheckResultTime}</span>
             </div>
           </div>
-          <span>by poweruptime</span>
         </div>
       </div>`,
     res,
