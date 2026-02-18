@@ -3,7 +3,6 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
@@ -54,24 +53,24 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
             <div class="flex items-center justify-between gap-4">
               <h2 class="text-2xl">Notification Deliveries</h2>
               @let _expandAll = expandAll();
-              <hlm-tooltip>
-                <button
-                  [variant]="_expandAll ? 'default' : 'outline'"
-                  (click)="expandAll.set(!_expandAll)"
-                  hlmTooltipTrigger
-                  hlmBtn
-                  size="icon-sm"
-                  type="button">
-                  <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
-                </button>
-                <span *brnTooltipContent>
+              <button
+                [variant]="_expandAll ? 'default' : 'outline'"
+                [hlmTooltip]="tooltip"
+                (click)="expandAll.set(!_expandAll)"
+                hlmBtn
+                size="icon-sm"
+                type="button">
+                <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+              </button>
+              <ng-template #tooltip>
+                <span>
                   @if (_expandAll) {
                     Hide all
                   } @else {
                     Show all
                   }
                 </span>
-              </hlm-tooltip>
+              </ng-template>
             </div>
 
             <hlm-accordion class="pb-4" type="multiple">
@@ -151,7 +150,6 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
     HlmAccordionImports,
     HlmBadgeImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmAlertImports,
   ],
 })

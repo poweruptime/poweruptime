@@ -5,7 +5,6 @@ import {HlmPaginator} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
@@ -71,25 +70,22 @@ import {trackBy} from '@app/util';
             <ng-container hlmColumnDef="actions">
               <th *hlmHeaderCellDef hlm-header-cell></th>
               <td *hlmCellDef="let element" hlm-cell>
-                <hlm-tooltip>
-                  <a
-                    [attr.aria-label]="'checkResult.list.action.view' | transloco"
-                    [routerLink]="
-                      teamId() || (!teamId() && !monitorId())
-                        ? element.monitor.id + '/c/' + element.id + '/logs'
-                        : 'c/' + element.id + '/logs'
-                    "
-                    hlmTooltipTrigger
-                    position="left"
-                    hlmBtn
-                    variant="ghost"
-                    size="icon"
-                    target="_blank"
-                    stopPropagation>
-                    <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
-                  </a>
-                  <span *brnTooltipContent>{{ 'checkResult.list.action.view' | transloco }}</span>
-                </hlm-tooltip>
+                <a
+                  [attr.aria-label]="'checkResult.list.action.view' | transloco"
+                  [routerLink]="
+                    teamId() || (!teamId() && !monitorId())
+                      ? element.monitor.id + '/c/' + element.id + '/logs'
+                      : 'c/' + element.id + '/logs'
+                  "
+                  [hlmTooltip]="'checkResult.list.action.view' | transloco"
+                  position="left"
+                  hlmBtn
+                  variant="ghost"
+                  size="icon"
+                  target="_blank"
+                  stopPropagation>
+                  <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                </a>
               </td>
             </ng-container>
 
@@ -144,7 +140,6 @@ import {trackBy} from '@app/util';
     HlmButtonImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
   ],
 })
 export class CheckResultTable {

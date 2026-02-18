@@ -9,7 +9,6 @@ import {
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
@@ -56,21 +55,18 @@ import {
 
               @let _showFilter = showFilter();
 
-              <hlm-tooltip>
-                <button
-                  class="relative"
-                  type="button"
-                  hlmBtn
-                  position="after"
-                  hlmCollapsibleTrigger
-                  hlmTooltipTrigger
-                  variant="outline"
-                  size="icon">
-                  <!--              [class.rotate-90]="expanded()"-->
-                  <ng-icon hlm name="bootstrapFilter" size="sm" />
-                </button>
-                <span *brnTooltipContent>Ctrl + F</span>
-              </hlm-tooltip>
+              <button
+                class="relative"
+                type="button"
+                hlmBtn
+                hlmTooltip="Ctrl + F"
+                position="right"
+                hlmCollapsibleTrigger
+                variant="outline"
+                size="icon">
+                <!--              [class.rotate-90]="expanded()"-->
+                <ng-icon hlm name="bootstrapFilter" size="sm" />
+              </button>
             </div>
 
             <hlm-collapsible-content>
@@ -139,7 +135,6 @@ import {
     HlmCollapsibleImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmCardImports,
   ],
   selector: 'pu-monitors-page',

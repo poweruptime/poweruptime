@@ -13,7 +13,6 @@ import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} fr
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipImports} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
@@ -44,16 +43,11 @@ import {VersionCheckInfo} from './version-check-info';
             <h3 hlmCardTitle>{{ 'instanceSettings.versionCheck.title' | transloco }}</h3>
             <p hlmCardDescription>Check for application updates and manage notifications</p>
           </div>
-          <hlm-tooltip>
-            <span
-              class="bg-secondary text-secondary-foreground rounded px-2 py-1 text-lg font-semibold"
-              hlmTooltipTrigger>
-              {{ currentVersion }}
-            </span>
-            <span *brnTooltipContent>
-              {{ 'instanceSettings.versionCheck.currentVersion' | transloco }}
-            </span>
-          </hlm-tooltip>
+          <span
+            class="bg-secondary text-secondary-foreground rounded px-2 py-1 text-lg font-semibold"
+            [hlmTooltip]="'instanceSettings.versionCheck.currentVersion' | transloco">
+            {{ currentVersion }}
+          </span>
         </div>
 
         <pu-table-loading-bar [loading]="isLoading()" />
@@ -141,20 +135,18 @@ import {VersionCheckInfo} from './version-check-info';
                               </div>
                             </hlm-form-field>
                           </form>
-                          <hlm-tooltip>
-                            <button
-                              [disabled]="mailToForm.invalid"
-                              hlmBtn
-                              hlmTooltipTrigger
-                              variant="outline"
-                              form="mailToForm"
-                              type="submit">
-                              <ng-icon hlm name="lucideCirclePlus" size="sm" />
-                            </button>
-                            <span *brnTooltipContent>
-                              {{ 'instanceSettings.versionCheck.adminMail.to.enter' | transloco }}
-                            </span>
-                          </hlm-tooltip>
+                          <button
+                            [disabled]="mailToForm.invalid"
+                            [hlmTooltip]="
+                              'instanceSettings.versionCheck.adminMail.to.enter' | transloco
+                            "
+                            hlmBtn
+                            hlmTooltipTrigger
+                            variant="outline"
+                            form="mailToForm"
+                            type="submit">
+                            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+                          </button>
                         </div>
 
                         <div class="flex flex-wrap gap-2">
@@ -242,7 +234,6 @@ import {VersionCheckInfo} from './version-check-info';
     HlmCardImports,
     HlmButtonImports,
     HlmTooltipImports,
-    BrnTooltipImports,
     HlmIconImports,
     HlmBadgeImports,
     HlmLabelImports,

@@ -11,7 +11,6 @@ import {
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
@@ -42,7 +41,7 @@ import {BackendType} from '@app/api';
             [placeholder]="'monitor.selector.add' | transloco"
             hlmComboboxChipInput />
         </hlm-combobox-chips>
-        <div *brnPopoverContent hlmComboboxContent>
+        <div *hlmComboboxPortal hlmComboboxContent>
           @if (showStatus()) {
             <hlm-combobox-status>
               @if (isPending()) {
@@ -77,14 +76,7 @@ import {BackendType} from '@app/api';
       multi: true,
     },
   ],
-  imports: [
-    FormsModule,
-    TranslocoPipe,
-    HlmComboboxImports,
-    BrnPopoverContent,
-    HlmSpinnerImports,
-    HlmLabelImports,
-  ],
+  imports: [FormsModule, TranslocoPipe, HlmComboboxImports, HlmSpinnerImports, HlmLabelImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorSelector implements ControlValueAccessor {

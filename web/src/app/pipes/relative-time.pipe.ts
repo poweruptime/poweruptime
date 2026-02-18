@@ -4,7 +4,6 @@ import {toSignal} from '@angular/core/rxjs-interop';
 
 import {map, timer} from 'rxjs';
 
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {formatDistanceStrict} from 'date-fns';
 
@@ -24,16 +23,13 @@ export class RelativeTimePipe implements PipeTransform {
 
 @Component({
   template: `
-    <hlm-tooltip>
-      <span [class]="_class()" hlmTooltipTrigger>
-        {{ value() | relativeTime: currentDate() }}
-      </span>
-      <span *brnTooltipContent>{{ value() | date: format() }}</span>
-    </hlm-tooltip>
+    <span [hlmTooltip]="value() | date: format()" [class]="_class()">
+      {{ value() | relativeTime: currentDate() }}
+    </span>
   `,
   selector: 'pu-relative-time',
   standalone: true,
-  imports: [RelativeTimePipe, DatePipe, HlmTooltipImports, BrnTooltipContentTemplate],
+  imports: [RelativeTimePipe, DatePipe, HlmTooltipImports],
 })
 export class RelativeTimeWithTooltip {
   currentDate = toSignal(timer(0, 30000).pipe(map(() => new Date())), {initialValue: new Date()});

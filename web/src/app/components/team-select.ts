@@ -13,7 +13,6 @@ import {
 import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -74,7 +73,7 @@ export class TeamItemComponent {
       <div hlmPopoverTrigger>
         <ng-content />
       </div>
-      <div class="grid w-80 gap-6" *brnPopoverContent="let ctx" hlmPopoverContent>
+      <div class="grid w-80 gap-6" *hlmPopoverPortal="let ctx" hlmPopoverContent>
         <div class="full" hlmInputGroup>
           <div hlmInputGroupAddon>
             <ng-icon hlm name="bootstrapSearch" size="sm" />
@@ -147,7 +146,6 @@ export class TeamItemComponent {
     FormsModule,
     TranslocoPipe,
     HlmPopoverImports,
-    BrnPopoverContent,
     HlmIconImports,
     HlmInputGroupImports,
     HlmProgressImports,

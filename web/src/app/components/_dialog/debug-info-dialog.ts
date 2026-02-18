@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnDialogImports} from '@spartan-ng/brain/dialog';
+import {BrnDialogClose} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -25,7 +25,7 @@ import {CopyButton} from '../copy-button';
       </button>
       <hlm-dialog-content
         class="top-1/2 left-1/2 flex max-h-[calc(100vh-2rem)] w-[calc(100%-2rem)] w-full -translate-x-1/2 flex-col gap-0 overflow-hidden rounded-lg p-0 sm:max-h-[min(640px,80vh)] sm:w-lg"
-        *brnDialogContent="let ctx">
+        *hlmDialogPortal="let ctx">
         <div class="flex-1 overflow-y-auto">
           @let _info = info();
           <hlm-dialog-header>
@@ -55,10 +55,10 @@ import {CopyButton} from '../copy-button';
   imports: [
     CopyButton,
     TranslocoPipe,
-    BrnDialogImports,
     HlmButtonImports,
     HlmDialogImports,
     HlmIconImports,
+    BrnDialogClose,
   ],
 })
 export class DebugInfoDialog {

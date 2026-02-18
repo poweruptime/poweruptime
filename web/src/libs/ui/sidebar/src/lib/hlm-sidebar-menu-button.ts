@@ -2,7 +2,7 @@ import {Directive, booleanAttribute, computed, inject, input} from '@angular/cor
 
 import {type BooleanInput} from '@angular/cdk/coercion';
 
-import {BrnTooltipTrigger, provideBrnTooltipDefaultOptions} from '@spartan-ng/brain/tooltip';
+import {BrnTooltip, provideBrnTooltipDefaultOptions} from '@spartan-ng/brain/tooltip';
 import {DEFAULT_TOOLTIP_CONTENT_CLASSES} from '@spartan-ng/helm/tooltip';
 import {classes} from '@spartan-ng/helm/utils';
 import {cva} from 'class-variance-authority';
@@ -37,15 +37,14 @@ const sidebarMenuButtonVariants = cva(
     provideBrnTooltipDefaultOptions({
       showDelay: 150,
       hideDelay: 0,
-      exitAnimationDuration: 150,
       tooltipContentClasses: DEFAULT_TOOLTIP_CONTENT_CLASSES,
       position: 'left',
     }),
   ],
   hostDirectives: [
     {
-      directive: BrnTooltipTrigger,
-      inputs: ['brnTooltipTrigger: tooltip', 'aria-describedby'],
+      directive: BrnTooltip,
+      inputs: ['brnTooltip: tooltip'],
     },
   ],
   host: {

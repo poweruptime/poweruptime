@@ -28,7 +28,6 @@ import {
 } from '@angular/cdk/drag-drop';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
@@ -58,7 +57,7 @@ interface DragEventType {
           <hlm-combobox-trigger class="w-44 justify-between font-normal">
             <span hlmComboboxValue></span>
           </hlm-combobox-trigger>
-          <div *brnPopoverContent hlmComboboxContent>
+          <div *hlmComboboxPortal hlmComboboxContent>
             <hlm-combobox-input
               [placeholder]="'general.search' | transloco"
               showTrigger="false"
@@ -166,7 +165,6 @@ interface DragEventType {
     TranslocoPipe,
     HlmCardImports,
     HlmComboboxImports,
-    BrnPopoverContent,
     HlmButtonImports,
     HlmIconImports,
     HlmSeparatorImports,

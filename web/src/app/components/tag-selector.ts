@@ -14,8 +14,6 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
@@ -42,7 +40,7 @@ import {Tag} from '@app/directives';
             class="w-full"
             [placeholder]="'tag.selector.selected' | transloco"
             (keydown.enter)="add(tagInput())" />
-          <div *brnPopoverContent hlmAutocompleteContent>
+          <div *hlmAutocompletePortal hlmAutocompleteContent>
             @if (isPending()) {
               <hlm-autocomplete-status class="justify-center">
                 <hlm-spinner />
@@ -59,20 +57,15 @@ import {Tag} from '@app/directives';
             </div>
           </div>
         </hlm-autocomplete-search>
-        <hlm-tooltip>
-          <button
-            [disabled]="disabled || (tagInput()?.trim()?.length ?? 0) === 0"
-            (click)="add(tagInput())"
-            hlmBtn
-            hlmTooltipTrigger
-            variant="outline"
-            type="button">
-            <ng-icon hlm name="lucideCirclePlus" size="sm" />
-          </button>
-          <span *brnTooltipContent>
-            {{ 'tag.selector.add' | transloco }}
-          </span>
-        </hlm-tooltip>
+        <button
+          [disabled]="disabled || (tagInput()?.trim()?.length ?? 0) === 0"
+          [hlmTooltip]="'tag.selector.add' | transloco"
+          (click)="add(tagInput())"
+          hlmBtn
+          variant="outline"
+          type="button">
+          <ng-icon hlm name="lucideCirclePlus" size="sm" />
+        </button>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -138,8 +131,6 @@ import {Tag} from '@app/directives';
     HlmButtonImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
-    BrnPopoverContent,
     HlmDropdownMenuImports,
     HlmSpinnerImports,
   ],

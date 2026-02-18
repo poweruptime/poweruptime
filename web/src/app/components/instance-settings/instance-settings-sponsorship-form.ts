@@ -11,7 +11,6 @@ import {
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -41,12 +40,11 @@ import {TableLoadingBar} from '../table-loading-bar';
           <p hlmCardDescription>Support the project and show your appreciation</p>
         </div>
         @if (time?.serverSetupTime; as serverSetupTime) {
-          <hlm-tooltip>
-            <span class="text-gray-600 dark:text-gray-300" hlmTooltipTrigger>
-              {{ usingPoweruptimeFor() }} running
-            </span>
-            <span *brnTooltipContent>{{ 'Since ' + (serverSetupTime | date: 'dd.MM.yyyy') }}</span>
-          </hlm-tooltip>
+          <span
+            class="text-gray-600 dark:text-gray-300"
+            [hlmTooltip]="'Since ' + (serverSetupTime | date: 'dd.MM.yyyy')">
+            {{ usingPoweruptimeFor() }} running
+          </span>
         }
       </div>
 
@@ -178,7 +176,6 @@ import {TableLoadingBar} from '../table-loading-bar';
     DatePipe,
     HlmCardImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmButtonImports,
     HlmIconImports,
     HlmLabelImports,

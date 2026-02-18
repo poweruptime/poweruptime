@@ -19,6 +19,7 @@ import {HlmMentionGroup} from './helm/hlm-mention-group';
 import {HlmMentionItem} from './helm/hlm-mention-item';
 import {HlmMentionLabel} from './helm/hlm-mention-label';
 import {HlmMentionList} from './helm/hlm-mention-list';
+import {HlmMentionPortal} from './helm/hlm-mention-portal';
 import {HlmMentionSeparator} from './helm/hlm-mention-separator';
 import {HlmMentionStatus} from './helm/hlm-mention-status';
 
@@ -30,6 +31,7 @@ export * from './helm/hlm-mention-group';
 export * from './helm/hlm-mention-item';
 export * from './helm/hlm-mention-label';
 export * from './helm/hlm-mention-list';
+export * from './helm/hlm-mention-portal';
 export * from './helm/hlm-mention';
 export * from './helm/hlm-mention-separator';
 export * from './helm/hlm-mention-status';
@@ -59,4 +61,5 @@ export const HlmMentionImports = [
   HlmMention,
   HlmMentionSeparator,
   HlmMentionStatus,
+  HlmMentionPortal,
 ];

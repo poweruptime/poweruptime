@@ -3,7 +3,6 @@ import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -128,20 +127,15 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
               </div>
             </hlm-form-field>
           </form>
-          <hlm-tooltip>
-            <button
-              [disabled]="matchForm.invalid"
-              hlmBtn
-              hlmTooltipTrigger
-              variant="outline"
-              form="matchForm"
-              type="submit">
-              <ng-icon hlm name="lucideCirclePlus" size="sm" />
-            </button>
-            <span *brnTooltipContent>
-              {{ 'monitor.edit.dns.matches.enter' | transloco }}
-            </span>
-          </hlm-tooltip>
+          <button
+            [disabled]="matchForm.invalid"
+            [hlmTooltip]="'monitor.edit.dns.matches.enter' | transloco"
+            hlmBtn
+            variant="outline"
+            form="matchForm"
+            type="submit">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -183,7 +177,6 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     HlmInputGroupImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

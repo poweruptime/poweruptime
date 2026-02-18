@@ -13,7 +13,6 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
@@ -103,32 +102,26 @@ import {BackendImagePipe} from '../../pipes';
               <th *hlmHeaderCellDef hlm-header-cell></th>
               <td *hlmCellDef="let element" hlm-cell>
                 <div class="flex gap-2">
-                  <hlm-tooltip>
-                    <a
-                      [routerLink]="'/t/' + element.id + '/edit'"
-                      hlmTooltipTrigger
+                  <a
+                    [routerLink]="'/t/' + element.id + '/edit'"
+                    [hlmTooltip]="'general.edit' | transloco"
+                    hlmBtn
+                    size="icon"
+                    variant="ghost"
+                    stopPropagation>
+                    <ng-icon hlm size="sm" name="bootstrapGear" />
+                  </a>
+                  @if (!element.personal) {
+                    <button
+                      [hlmTooltip]="'general.delete' | transloco"
+                      (click)="teamsStore.delete(element.id)"
                       hlmBtn
                       size="icon"
-                      variant="ghost"
+                      variant="secondary"
+                      type="button"
                       stopPropagation>
-                      <ng-icon hlm size="sm" name="bootstrapGear" />
-                    </a>
-                    <span *brnTooltipContent>{{ 'general.edit' | transloco }}</span>
-                  </hlm-tooltip>
-                  @if (!element.personal) {
-                    <hlm-tooltip>
-                      <button
-                        (click)="teamsStore.delete(element.id)"
-                        hlmTooltipTrigger
-                        hlmBtn
-                        size="icon"
-                        variant="secondary"
-                        type="button"
-                        stopPropagation>
-                        <ng-icon hlm size="sm" name="bootstrapTrash" />
-                      </button>
-                      <span *brnTooltipContent>{{ 'general.delete' | transloco }}</span>
-                    </hlm-tooltip>
+                      <ng-icon hlm size="sm" name="bootstrapTrash" />
+                    </button>
                   }
                 </div>
               </td>
@@ -185,7 +178,6 @@ import {BackendImagePipe} from '../../pipes';
     HlmTooltipImports,
     HlmCheckboxImports,
     HlmTableContainer,
-    BrnTooltipContentTemplate,
     HlmAvatarImports,
   ],
 })

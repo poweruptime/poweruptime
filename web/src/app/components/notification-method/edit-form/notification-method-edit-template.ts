@@ -17,8 +17,6 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 
 import {BrnMentionImports, HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -41,19 +39,16 @@ import {Editor} from '@app/components/editor';
           </label>
           @if (showReset()) {
             <div class="flex justify-end" [class.pt-2]="_html">
-              <hlm-tooltip>
-                <button
-                  [disabled]="disableReset()"
-                  (click)="resetClick.emit()"
-                  hlmTooltipTrigger
-                  hlmBtn
-                  type="button"
-                  variant="outline"
-                  size="icon-sm">
-                  <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
-                </button>
-                <span *brnTooltipContent>{{ 'general.reset' | transloco }}</span>
-              </hlm-tooltip>
+              <button
+                [disabled]="disableReset()"
+                [hlmTooltip]="'general.reset' | transloco"
+                (click)="resetClick.emit()"
+                hlmBtn
+                type="button"
+                variant="outline"
+                size="icon-sm">
+                <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+              </button>
             </div>
           }
         </div>
@@ -78,7 +73,7 @@ import {Editor} from '@app/components/editor';
               brnMentionInput
               brnMentionAnchor
               hlmTextarea></textarea>
-            <div *brnPopoverContent hlmMentionContent>
+            <div *hlmMentionPortal hlmMentionContent>
               <hlm-mention-empty>Nothing found...</hlm-mention-empty>
               <div hlmMentionList>
                 @for (option of filteredItems(); track option) {
@@ -126,10 +121,8 @@ import {Editor} from '@app/components/editor';
     HlmButtonImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmMentionImports,
     HlmLabelImports,
-    BrnPopoverContent,
     BrnMentionImports,
     HlmTextareaImports,
   ],

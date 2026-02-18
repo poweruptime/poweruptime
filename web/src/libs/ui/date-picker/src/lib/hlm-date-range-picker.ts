@@ -18,7 +18,6 @@ import {provideIcons} from '@ng-icons/core';
 import {lucideChevronDown} from '@ng-icons/lucide';
 import type {BrnDialogState} from '@spartan-ng/brain/dialog';
 import type {ChangeFn, TouchFn} from '@spartan-ng/brain/forms';
-import {BrnPopoverImports} from '@spartan-ng/brain/popover';
 import {HlmCalendarRange} from '@spartan-ng/helm/calendar';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmPopoverImports} from '@spartan-ng/helm/popover';
@@ -37,7 +36,7 @@ let nextId = 0;
 
 @Component({
   selector: 'hlm-date-range-picker',
-  imports: [HlmIconImports, BrnPopoverImports, HlmPopoverImports, HlmCalendarRange],
+  imports: [HlmIconImports, HlmPopoverImports, HlmCalendarRange],
   providers: [HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR, provideIcons({lucideChevronDown})],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -66,7 +65,7 @@ let nextId = 0;
         <ng-icon hlm size="sm" name="lucideChevronDown" />
       </button>
 
-      <div class="w-auto p-0" *brnPopoverContent="let ctx" hlmPopoverContent>
+      <hlm-popover-content class="w-auto p-0" *hlmPopoverPortal="let ctx">
         <hlm-calendar-range
           [startDate]="_start()"
           [captionLayout]="captionLayout()"
@@ -77,7 +76,7 @@ let nextId = 0;
           (startDateChange)="_handleStartDayChange($event)"
           (endDateChange)="_handleEndDateChange($event)"
           calendarClass="border-0 rounded-none" />
-      </div>
+      </hlm-popover-content>
     </hlm-popover>
   `,
 })

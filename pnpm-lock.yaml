@@ -109,8 +109,8 @@ importers:
         specifier: 21.0.1
         version: 21.0.1(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@spartan-ng/brain':
-        specifier: 0.0.1-alpha.614
-        version: 0.0.1-alpha.614(@angular/cdk@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/forms@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.18)
+        specifier: 0.0.1-alpha.637
+        version: 0.0.1-alpha.637(@angular/cdk@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/forms@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.18)
       '@std/fmt':
         specifier: npm:@jsr/std__fmt@1.0.9
         version: '@jsr/std__fmt@1.0.9'
@@ -224,8 +224,8 @@ importers:
         specifier: 1.58.2
         version: 1.58.2
       '@spartan-ng/cli':
-        specifier: 0.0.1-alpha.614
-        version: 0.0.1-alpha.614(@angular-devkit/core@21.1.4(chokidar@5.0.0))(@angular-devkit/schematics@21.1.4(chokidar@5.0.0))(@angular/build@21.1.4(90aabb89400d80ce1461c26b5fb24340))(@angular/compiler@21.1.4)(@babel/traverse@7.29.0)(@module-federation/enhanced@2.0.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@module-federation/node@2.7.31(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@9.39.2(jiti@2.6.1))(less@4.5.1)(lightningcss@1.30.2)(react-dom@19.2.4(react@19.2.4))(react-refresh@0.18.0)(react@19.2.4)(rxjs@7.8.2)(tslib@2.8.1)
+        specifier: 0.0.1-alpha.637
+        version: 0.0.1-alpha.637(@angular-devkit/core@21.1.4(chokidar@5.0.0))(@angular-devkit/schematics@21.1.4(chokidar@5.0.0))(@angular/build@21.1.4(90aabb89400d80ce1461c26b5fb24340))(@angular/compiler@21.1.4)(@babel/traverse@7.29.0)(@module-federation/enhanced@2.0.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@module-federation/node@2.7.31(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@9.39.2(jiti@2.6.1))(less@4.5.1)(lightningcss@1.30.2)(react-dom@19.2.4(react@19.2.4))(react-refresh@0.18.0)(react@19.2.4)(rxjs@7.8.2)(tslib@2.8.1)
       '@tailwindcss/typography':
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.1.18)
@@ -3516,8 +3516,8 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@spartan-ng/brain@0.0.1-alpha.614':
-    resolution: {integrity: sha512-AY1D66cR8dxV04D+wGRMJlPF/pPOUMv5UisNhcWl6Tvlo81VnXiCOK8dBv8HYtWKW5SmsP0eGadqUOoaVvUdZQ==}
+  '@spartan-ng/brain@0.0.1-alpha.637':
+    resolution: {integrity: sha512-r67aF4zldTWvEKrYCKnDqrst+ynd6nhQBGAR7+q5oNsbz69JDbcCGuLVyUVyJDC6FxlcYAA7rw/oR1sqZ16Efw==}
     peerDependencies:
       '@angular/cdk': '>=20.0.0 <22.0.0'
       '@angular/common': '>=20.0.0 <22.0.0'
@@ -3531,8 +3531,8 @@ packages:
       luxon:
         optional: true
 
-  '@spartan-ng/cli@0.0.1-alpha.614':
-    resolution: {integrity: sha512-NAjs+Vy/UN0JD2xM6SOYuTWC00dKlDxIPOe/lTArP2uBMWHJm5IcaSH8ZvjOeuG6u/JK9K+xtFiJ+oGbYHAiDg==}
+  '@spartan-ng/cli@0.0.1-alpha.637':
+    resolution: {integrity: sha512-7iqA/K2iUkZWzYl0Gtog6ULNHKC6AH931TmaO2SnGtwlyZPRZBNvDAAtEj8NrziVux3NrBIGhHQOeOgcCWW2BQ==}
     peerDependencies:
       tslib: ^2.3.0
 
@@ -12098,7 +12098,7 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@spartan-ng/brain@0.0.1-alpha.614(@angular/cdk@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/forms@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.18)':
+  '@spartan-ng/brain@0.0.1-alpha.637(@angular/cdk@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/forms@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.18)':
     dependencies:
       '@angular/cdk': 21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(@angular/platform-browser@21.1.4(@angular/common@21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common': 21.1.4(@angular/core@21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -12111,7 +12111,7 @@ snapshots:
     optionalDependencies:
       luxon: 3.7.2
 
-  '@spartan-ng/cli@0.0.1-alpha.614(@angular-devkit/core@21.1.4(chokidar@5.0.0))(@angular-devkit/schematics@21.1.4(chokidar@5.0.0))(@angular/build@21.1.4(90aabb89400d80ce1461c26b5fb24340))(@angular/compiler@21.1.4)(@babel/traverse@7.29.0)(@module-federation/enhanced@2.0.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@module-federation/node@2.7.31(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@9.39.2(jiti@2.6.1))(less@4.5.1)(lightningcss@1.30.2)(react-dom@19.2.4(react@19.2.4))(react-refresh@0.18.0)(react@19.2.4)(rxjs@7.8.2)(tslib@2.8.1)':
+  '@spartan-ng/cli@0.0.1-alpha.637(@angular-devkit/core@21.1.4(chokidar@5.0.0))(@angular-devkit/schematics@21.1.4(chokidar@5.0.0))(@angular/build@21.1.4(90aabb89400d80ce1461c26b5fb24340))(@angular/compiler@21.1.4)(@babel/traverse@7.29.0)(@module-federation/enhanced@2.0.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@module-federation/node@2.7.31(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@9.39.2(jiti@2.6.1))(less@4.5.1)(lightningcss@1.30.2)(react-dom@19.2.4(react@19.2.4))(react-refresh@0.18.0)(react@19.2.4)(rxjs@7.8.2)(tslib@2.8.1)':
     dependencies:
       '@angular/core': 21.1.4(@angular/compiler@21.1.4)(rxjs@7.8.2)
       '@nx/angular': 22.4.5(@angular-devkit/core@21.1.4(chokidar@5.0.0))(@angular-devkit/schematics@21.1.4(chokidar@5.0.0))(@angular/build@21.1.4(90aabb89400d80ce1461c26b5fb24340))(@babel/traverse@7.29.0)(@module-federation/enhanced@2.0.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@module-federation/node@2.7.31(@rspack/core@1.6.8(@swc/helpers@0.5.15))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(webpack@5.105.0))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@schematics/angular@20.0.6(chokidar@5.0.0))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2(jiti@2.6.1))(less@4.5.1)(lightningcss@1.30.2)(nx@22.4.5)(react-dom@19.2.4(react@19.2.4))(react-refresh@0.18.0)(react@19.2.4)(rxjs@7.8.2)(typescript@5.9.3)

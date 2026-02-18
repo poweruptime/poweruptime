@@ -6,7 +6,6 @@ import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
@@ -75,18 +74,15 @@ import {trackBy} from '@app/util';
             <ng-container hlmColumnDef="actions">
               <th *hlmHeaderCellDef hlm-header-cell></th>
               <td *hlmCellDef="let element" hlm-cell>
-                <hlm-tooltip>
-                  <a
-                    [routerLink]="element.id + '/edit'"
-                    hlmTooltipTrigger
-                    hlmBtn
-                    variant="ghost"
-                    size="icon"
-                    stopPropagation>
-                    <ng-icon hlm size="sm" name="bootstrapGear" />
-                  </a>
-                  <span *brnTooltipContent>{{ 'general.edit' | transloco }}</span>
-                </hlm-tooltip>
+                <a
+                  [routerLink]="element.id + '/edit'"
+                  [hlmTooltip]="'general.edit' | transloco"
+                  hlmBtn
+                  variant="ghost"
+                  size="icon"
+                  stopPropagation>
+                  <ng-icon hlm size="sm" name="bootstrapGear" />
+                </a>
               </td>
             </ng-container>
 
@@ -125,7 +121,6 @@ import {trackBy} from '@app/util';
     HlmButtonImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     InitialsPipe,
   ],
 })

@@ -14,7 +14,6 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 import {map, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
 
 import {GroupedTimezones} from '@app/services';
@@ -25,7 +24,7 @@ import {GroupedTimezones} from '@app/services';
       <hlm-combobox-trigger class="w-full justify-between font-normal">
         <span hlmComboboxValue></span>
       </hlm-combobox-trigger>
-      <div *brnPopoverContent hlmComboboxContent>
+      <div *hlmComboboxPortal hlmComboboxContent>
         <hlm-combobox-input
           [placeholder]="'general.timezone' | transloco"
           showTrigger="false"
@@ -63,7 +62,7 @@ import {GroupedTimezones} from '@app/services';
     },
   ],
   selector: 'pu-timezone-input',
-  imports: [FormsModule, TranslocoPipe, DatePipe, HlmComboboxImports, BrnPopoverContent],
+  imports: [FormsModule, TranslocoPipe, DatePipe, HlmComboboxImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimezoneInput implements ControlValueAccessor {

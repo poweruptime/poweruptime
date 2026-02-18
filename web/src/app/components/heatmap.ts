@@ -1,7 +1,6 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, input, signal} from '@angular/core';
 
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
@@ -36,26 +35,26 @@ import {BackendType} from '../api';
           [style.margin-bottom]="_firstWeekNotFull ? '1.85rem' : ''">
           @for (day of entry.series; track day.date) {
             @let number = day.value | heatmapDotNumber;
-            <hlm-tooltip>
-              @if (!_selected || _selected <= number) {
-                <div
-                  class="heatmap-dot hover:scale-125"
-                  [class.animate-pulse]="
-                    (day.date | date: 'yyyy-MM-dd') === (currentDate() | date: 'yyyy-MM-dd')
-                  "
-                  [style.background-color]="number | heatmapDotBackground"
-                  hlmTooltipTrigger></div>
-              } @else {
-                <div
-                  class="heatmap-dot border border-solid border-slate-900 hover:scale-125 dark:border-slate-700"
-                  hlmTooltipTrigger></div>
-              }
+            @if (!_selected || _selected <= number) {
+              <div
+                class="heatmap-dot hover:scale-125"
+                [class.animate-pulse]="
+                  (day.date | date: 'yyyy-MM-dd') === (currentDate() | date: 'yyyy-MM-dd')
+                "
+                [style.background-color]="number | heatmapDotBackground"
+                [hlmTooltip]="tooltip"></div>
+            } @else {
+              <div
+                class="heatmap-dot border border-solid border-slate-900 hover:scale-125 dark:border-slate-700"
+                [hlmTooltip]="tooltip"></div>
+            }
 
-              <div class="flex flex-col" *brnTooltipContent>
+            <ng-template #tooltip>
+              <div class="flex flex-col">
                 <span>{{ day.date | date: 'E, dd.MM.yyyy' }}</span>
                 <span class="text-center font-bold">{{ day.value }}</span>
               </div>
-            </hlm-tooltip>
+            </ng-template>
           }
 
           @let xAxis = entry.name | heatmapXAxisFormatting;
@@ -127,7 +126,6 @@ import {BackendType} from '../api';
     RepeatPipe,
     HeatmapDotNumberPipe,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmCardImports,
   ],
 })

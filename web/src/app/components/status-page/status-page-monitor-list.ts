@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
@@ -17,25 +16,25 @@ import {MonitorStatusTextBackground} from '@app/directives';
       @for (monitor of monitors(); track monitor.id) {
         <div class="flex flex-col justify-between gap-y-2 lg:flex-row lg:items-center">
           <div class="inline-flex items-center gap-4">
-            <hlm-tooltip>
-              <strong
-                class="max-w-24 truncate rounded-lg px-2 py-1"
-                [monitor-status-text-background]="monitor.status"
-                hlmTooltipTrigger>
-                @if (monitor.status === 'UP') {
-                  {{ monitor.oneDayUptime }}
-                } @else {
-                  {{ monitor.status }}
-                }
-              </strong>
-              <span *brnTooltipContent>
+            <strong
+              class="max-w-24 truncate rounded-lg px-2 py-1"
+              [monitor-status-text-background]="monitor.status"
+              [hlmTooltip]="tooltip">
+              @if (monitor.status === 'UP') {
+                {{ monitor.oneDayUptime }}
+              } @else {
+                {{ monitor.status }}
+              }
+            </strong>
+            <ng-template #tooltip>
+              <span>
                 @if (monitor.status === 'UP') {
                   {{ 'monitor.oneDayUptime' | transloco }}
                 } @else {
                   {{ 'general.status' | transloco }}
                 }
               </span>
-            </hlm-tooltip>
+            </ng-template>
 
             <a
               class="inline-flex items-center gap-2 text-xl"
@@ -73,7 +72,6 @@ import {MonitorStatusTextBackground} from '@app/directives';
     UptimeTimeline,
     MonitorStatusTextBackground,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmButtonImports,
     HlmIconImports,
   ],

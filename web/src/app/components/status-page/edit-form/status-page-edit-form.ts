@@ -28,7 +28,6 @@ import {
 import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
@@ -153,25 +152,20 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                   </div>
                 </hlm-form-field>
               </form>
-              <hlm-tooltip>
-                <button
-                  [disabled]="
-                    domainNameForm.invalid ||
-                    (form.controls.domainNames.getRawValue() ?? '').includes(
-                      domainNameForm.controls.domainName.getRawValue()
-                    )
-                  "
-                  hlmBtn
-                  hlmTooltipTrigger
-                  variant="outline"
-                  form="domainNameForm"
-                  type="submit">
-                  <ng-icon hlm name="lucideCirclePlus" size="sm" />
-                </button>
-                <span *brnTooltipContent>
-                  {{ 'statusPage.edit.domainNames.enter' | transloco }}
-                </span>
-              </hlm-tooltip>
+              <button
+                [disabled]="
+                  domainNameForm.invalid ||
+                  (form.controls.domainNames.getRawValue() ?? '').includes(
+                    domainNameForm.controls.domainName.getRawValue()
+                  )
+                "
+                [hlmTooltip]="'statusPage.edit.domainNames.enter' | transloco"
+                hlmBtn
+                variant="outline"
+                form="domainNameForm"
+                type="submit">
+                <ng-icon hlm name="lucideCirclePlus" size="sm" />
+              </button>
             </div>
 
             <div class="flex flex-wrap gap-2">
@@ -243,28 +237,28 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             </button>
           </div>
 
-          <hlm-tooltip>
-            <button
-              (click)="collapsed.set(!isCollapsed)"
-              hlmBtn
-              variant="ghost"
-              size="icon-sm"
-              type="button"
-              hlmTooltipTrigger>
-              @if (isCollapsed) {
-                <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
-              } @else {
-                <ng-icon hlm size="sm" name="bootstrapArrowsCollapse" />
-              }
-            </button>
-            <span *brnTooltipContent>
+          <button
+            [hlmTooltip]="tooltip"
+            (click)="collapsed.set(!isCollapsed)"
+            hlmBtn
+            variant="ghost"
+            size="icon-sm"
+            type="button">
+            @if (isCollapsed) {
+              <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+            } @else {
+              <ng-icon hlm size="sm" name="bootstrapArrowsCollapse" />
+            }
+          </button>
+          <ng-template #tooltip>
+            <span>
               @if (isCollapsed) {
                 {{ 'statusPage.edit.monitors.show' | transloco }}
               } @else {
                 {{ 'statusPage.edit.monitors.hide' | transloco }}
               }
             </span>
-          </hlm-tooltip>
+          </ng-template>
         </div>
 
         @let groupsErrors = form.controls.groups.errors;
@@ -306,19 +300,16 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                     </hlm-form-field>
                   </div>
 
-                  <hlm-tooltip>
-                    <button
-                      [disabled]="form.disabled"
-                      (click)="form.controls.groups.removeAt($index)"
-                      hlmBtn
-                      hlmTooltipTrigger
-                      variant="ghost"
-                      size="icon-sm"
-                      type="button">
-                      <ng-icon hlm size="sm" name="bootstrapTrashFill" />
-                    </button>
-                    <span *brnTooltipContent>{{ 'general.delete' | transloco }}</span>
-                  </hlm-tooltip>
+                  <button
+                    [disabled]="form.disabled"
+                    [hlmTooltip]="'general.delete' | transloco"
+                    (click)="form.controls.groups.removeAt($index)"
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    type="button">
+                    <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                  </button>
                 </div>
 
                 <pu-editor
@@ -366,6 +357,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
   imports: [
     StatusPageEditFormGroupMonitors,
     SaveButton,
+    ProfilePictureUpload,
     Editor,
     ReactiveFormsModule,
     TranslocoPipe,
@@ -376,7 +368,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmCardImports,
     HlmTooltipImports,
     HlmButtonImports,
-    BrnTooltipContentTemplate,
     HlmIconImports,
     HlmInputGroupImports,
     HlmFormFieldImports,
@@ -384,7 +375,6 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmInputImports,
     HlmAlertImports,
     HlmBadgeImports,
-    ProfilePictureUpload,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

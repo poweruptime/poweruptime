@@ -3,7 +3,6 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
@@ -52,18 +51,15 @@ import {SelectedTeamStore} from '@app/services';
         <hlm-dropdown-menu-group>
           <hlm-dropdown-menu-label class="flex items-center justify-between">
             <span>{{ ctx.team.name }}</span>
-            <hlm-tooltip>
-              <button
-                (click)="selectedTeamStore.removeSelectedTeam(ctx.team.id)"
-                hlmBtn
-                hlmTooltipTrigger
-                type="button"
-                variant="ghost"
-                size="icon-sm">
-                <ng-icon name="lucidePinOff" />
-              </button>
-              <span *brnTooltipContent>Unpin Team</span>
-            </hlm-tooltip>
+            <button
+              (click)="selectedTeamStore.removeSelectedTeam(ctx.team.id)"
+              hlmBtn
+              hlmTooltip="Unpin Team"
+              type="button"
+              variant="ghost"
+              size="icon-sm">
+              <ng-icon name="lucidePinOff" />
+            </button>
           </hlm-dropdown-menu-label>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
@@ -96,7 +92,6 @@ import {SelectedTeamStore} from '@app/services';
     RouterLinkActive,
     HlmButtonImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -3,7 +3,6 @@ import {Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
@@ -47,18 +46,15 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
             @if (_team.personal) {
               <span hlmBadge variant="secondary">{{ 'general.personal' | transloco }}</span>
             }
-            <hlm-tooltip>
-              <a
-                [routerLink]="_team.id + '/edit'"
-                hlmTooltipTrigger
-                hlmBtn
-                stopPropagation
-                variant="ghost"
-                size="icon-sm">
-                <ng-icon hlm size="sm" name="bootstrapGear" />
-              </a>
-              <span *brnTooltipContent>{{ 'team.settings.settings' | transloco }}</span>
-            </hlm-tooltip>
+            <a
+              [routerLink]="_team.id + '/edit'"
+              [hlmTooltip]="'team.settings.settings' | transloco"
+              hlmBtn
+              stopPropagation
+              variant="ghost"
+              size="icon-sm">
+              <ng-icon hlm size="sm" name="bootstrapGear" />
+            </a>
           </div>
         </div>
         <pu-team-card-monitor-count [team]="_team" hlmCardDescription />
@@ -74,7 +70,6 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
     HlmTooltipImports,
     HlmButtonImports,
     HlmIconImports,
-    BrnTooltipContentTemplate,
     HlmBadgeImports,
     Pattern,
     HlmCardImports,

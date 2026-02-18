@@ -3,7 +3,6 @@ import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
@@ -48,20 +47,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               </div>
             </hlm-form-field>
           </form>
-          <hlm-tooltip>
-            <button
-              [disabled]="toForm.invalid"
-              hlmBtn
-              hlmTooltipTrigger
-              variant="outline"
-              form="toForm"
-              type="submit">
-              <ng-icon hlm name="lucideCirclePlus" size="sm" />
-            </button>
-            <span *brnTooltipContent>
-              {{ 'notificationMethod.edit.email.to.enter' | transloco }}
-            </span>
-          </hlm-tooltip>
+          <button
+            [disabled]="toForm.invalid"
+            [hlmTooltip]="'notificationMethod.edit.email.to.enter' | transloco"
+            hlmBtn
+            variant="outline"
+            form="toForm"
+            type="submit">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -215,20 +209,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               </div>
             </hlm-form-field>
           </form>
-          <hlm-tooltip>
-            <button
-              [disabled]="ccForm.invalid"
-              hlmBtn
-              hlmTooltipTrigger
-              variant="outline"
-              form="ccForm"
-              type="submit">
-              <ng-icon hlm name="lucideCirclePlus" size="sm" />
-            </button>
-            <span *brnTooltipContent>
-              {{ 'notificationMethod.edit.email.cc.enter' | transloco }}
-            </span>
-          </hlm-tooltip>
+          <button
+            [disabled]="ccForm.invalid"
+            [hlmTooltip]="'notificationMethod.edit.email.cc.enter' | transloco"
+            hlmBtn
+            variant="outline"
+            form="ccForm"
+            type="submit">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -282,20 +271,15 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
               </div>
             </hlm-form-field>
           </form>
-          <hlm-tooltip>
-            <button
-              [disabled]="bccForm.invalid"
-              hlmBtn
-              hlmTooltipTrigger
-              variant="outline"
-              form="bccForm"
-              type="submit">
-              <ng-icon hlm name="lucideCirclePlus" size="sm" />
-            </button>
-            <span *brnTooltipContent>
-              {{ 'notificationMethod.edit.email.bcc.enter' | transloco }}
-            </span>
-          </hlm-tooltip>
+          <button
+            [disabled]="bccForm.invalid"
+            [hlmTooltip]="'notificationMethod.edit.email.bcc.enter' | transloco"
+            hlmBtn
+            variant="outline"
+            form="bccForm"
+            type="submit">
+            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          </button>
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -344,7 +328,6 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     HlmInputGroupImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmSelectImports,
     BrnSelectImports,
   ],

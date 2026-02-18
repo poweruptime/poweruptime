@@ -7,9 +7,7 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnPopoverContent} from '@spartan-ng/brain/popover';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
-import {BrnTooltipContentTemplate} from '@spartan-ng/brain/tooltip';
 import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
 import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
@@ -203,7 +201,7 @@ const predefinedStatusCodeRanges = [
                         statusCodeRangeInput()
                       )
                     " />
-                  <div *brnPopoverContent hlmAutocompleteContent>
+                  <div *hlmAutocompletePortal hlmAutocompleteContent>
                     <hlm-autocomplete-empty>Add a custom one</hlm-autocomplete-empty>
                     <div hlmAutocompleteList>
                       @for (
@@ -225,24 +223,16 @@ const predefinedStatusCodeRanges = [
                   </div>
                 </hlm-autocomplete-search>
               </div>
-              <hlm-tooltip>
-                <button
-                  (click)="
-                    select(
-                      httpDataFormGroup.controls.allowedStatusCodeRanges,
-                      statusCodeRangeInput()
-                    )
-                  "
-                  hlmBtn
-                  hlmTooltipTrigger
-                  variant="outline"
-                  type="button">
-                  <ng-icon hlm name="lucideCirclePlus" size="sm" />
-                </button>
-                <span *brnTooltipContent>
-                  {{ 'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco }}
-                </span>
-              </hlm-tooltip>
+              <button
+                [hlmTooltip]="'monitor.edit.http.allowedStatusCodeRanges.enter' | transloco"
+                (click)="
+                  select(httpDataFormGroup.controls.allowedStatusCodeRanges, statusCodeRangeInput())
+                "
+                hlmBtn
+                variant="outline"
+                type="button">
+                <ng-icon hlm name="lucideCirclePlus" size="sm" />
+              </button>
             </div>
 
             <div class="flex flex-wrap gap-2">
@@ -458,10 +448,8 @@ const predefinedStatusCodeRanges = [
     HlmCardImports,
     HlmIconImports,
     HlmTooltipImports,
-    BrnTooltipContentTemplate,
     HlmBadgeImports,
     HlmAutocompleteImports,
-    BrnPopoverContent,
     HlmAccordionImports,
     HlmTextareaImports,
   ],
