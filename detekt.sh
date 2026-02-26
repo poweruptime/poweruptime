@@ -57,6 +57,7 @@ sequential_tools=(
 parallel_tools=(
   "Prettier|green|pnpm format"
   "Detekt|cyan|./gradlew detekt"
+  "gofmt|magenta|gofmt -w ./cli"
 )
 
 names=()

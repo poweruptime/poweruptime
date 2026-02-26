@@ -71,6 +71,43 @@ jobs:
           path: ./backend/build/libs/backend.jar
           retention-days: 1
 
+  build-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          cache: true
+          cache-dependency-path: cli/go.sum
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          args: build --clean
+          workdir: cli
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Reorganize artifacts
+        run: |
+          cd ./cli
+          chmod +x ./reorganize-dist.sh
+          ./reorganize-dist.sh ${{ github.ref_name }}
+          cd -
+
+      - name: Archive CLI artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: cli-artifacts
+          path: ./cli/dist/binaries
+          retention-days: 1
+
   build-publish-docker:
     strategy:
       matrix:
@@ -154,80 +191,16 @@ jobs:
             dafnik/poweruptime-${{ matrix.containers }}:${{ github.ref_name }}
             dafnik/poweruptime-${{ matrix.containers }}:latest
 
-  mirror-infra-beta:
-    runs-on: ubuntu-latest
-    if: contains(github.ref_name, 'beta')
-    needs: [build-publish-docker]
-    container: pandoc/latex
-    steps:
-      - uses: actions/checkout@v6
-      - name: Pushes to docker-compose repository on main branch
-        id: push_directory
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.INFRA_MIRROR_DEPLOY_TOKEN }}
-        with:
-          source-directory: ./infrastructure
-          destination-github-username: 'poweruptime'
-          destination-repository-name: 'docker-compose'
-          user-email: github-actions[bot]@users.noreply.github.com
-          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
-          target-branch: beta
-      - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY
-
-  tag-infra-mirror-beta:
-    runs-on: ubuntu-latest
-    if: contains(github.ref_name, 'beta')
-    needs: [mirror-infra-beta]
-    steps:
-      - name: Check out docker-compose repository
-        uses: actions/checkout@v6
-        with:
-          repository: poweruptime/docker-compose
-          ref: beta
-          token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
-
-      - name: Configure Git
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Create Tag ${{github.ref_name}}
-        env:
-          GITHUB_TOKEN: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
-        run: |
-          git tag ${{ github.ref_name }}
-          git push origin ${{ github.ref_name }}
-
-  release-github-beta:
-    runs-on: ubuntu-latest
-    if: contains(github.ref_name, 'beta')
-    needs: [mirror-infra-beta]
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: get only latest changelog
-        run: |
-          chmod +x ./.github/extractLatestChangelog.sh
-          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG-beta.md
-          cat RELEASE_CHANGELOG.md
-
-      - name: create release ${{ github.ref_name }}
-        uses: softprops/action-gh-release@v2.5.0
-        with:
-          prerelease: true
-          body_path: ./RELEASE_CHANGELOG.md
-
   mirror-infra:
     runs-on: ubuntu-latest
-    if: "!contains(github.ref_name, 'beta')"
     needs: [build-publish-docker]
     container: pandoc/latex
+    env:
+      TARGET_BRANCH: ${{ contains(github.ref_name, 'beta') && 'beta' || 'main' }}
     steps:
       - uses: actions/checkout@v6
-      - name: Pushes to docker-compose repository on main branch
+
+      - name: Pushes to docker-compose repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
@@ -238,27 +211,29 @@ jobs:
           destination-repository-name: 'docker-compose'
           user-email: github-actions[bot]@users.noreply.github.com
           commit-message: See ORIGIN_COMMIT from $GITHUB_REF
-          target-branch: main
+          target-branch: ${{ env.TARGET_BRANCH }}
+
       - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY
+        run: echo "$DESTINATION_CLONED_DIRECTORY"
 
   tag-infra-mirror:
     runs-on: ubuntu-latest
-    if: "!contains(github.ref_name, 'beta')"
     needs: [mirror-infra]
+    env:
+      TARGET_BRANCH: ${{ contains(github.ref_name, 'beta') && 'beta' || 'main' }}
     steps:
       - name: Check out docker-compose repository
         uses: actions/checkout@v6
         with:
           repository: poweruptime/docker-compose
-          ref: main
+          ref: ${{ env.TARGET_BRANCH }}
           token: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
 
       - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create Tag ${{github.ref_name}}
+      - name: Create Tag ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.INFRA_MIRROR_TAG_TOKEN }}
         run: |
@@ -267,20 +242,30 @@ jobs:
 
   release-github:
     runs-on: ubuntu-latest
-    if: "!contains(github.ref_name, 'beta')"
-    needs: [mirror-infra]
+    needs: [mirror-infra, build-cli]
+    env:
+      CHANGELOG_FILE: ${{ contains(github.ref_name, 'beta') && './changelogs/CHANGELOG-beta.md' || './changelogs/CHANGELOG.md' }}
+      IS_PRERELEASE: ${{ contains(github.ref_name, 'beta') }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: get only latest changelog
+      - name: Download CLI artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: cli-artifacts
+          path: ./cli-artifacts
+
+      - name: Get only latest changelog
         run: |
           chmod +x ./.github/extractLatestChangelog.sh
-          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG.md
+          ./.github/extractLatestChangelog.sh ${{ env.CHANGELOG_FILE }}
           cat RELEASE_CHANGELOG.md
 
-      - name: create release ${{ github.ref_name }}
+      - name: Create release ${{ github.ref_name }}
         uses: softprops/action-gh-release@v2.5.0
         with:
+          prerelease: ${{ env.IS_PRERELEASE == 'true' }}
           body_path: ./RELEASE_CHANGELOG.md
+          files: ./cli-artifacts/*

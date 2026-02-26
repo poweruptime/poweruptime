@@ -3,6 +3,7 @@ services:
   # Therefore, a proxy that only allows access to the really needed parts is used
   dockersocket:
     container_name: dockersocket
+    profiles: ['proxy']
     image: ${DOCKER_SOCKET_IMAGE:?}
     restart: unless-stopped
     volumes:
@@ -14,6 +15,7 @@ services:
 
   traefik:
     container_name: traefik
+    profiles: ['proxy']
     image: ${TRAEFIK_IMAGE:?}
     restart: unless-stopped
     # command is not merged, always the value of the latest compose file is used
