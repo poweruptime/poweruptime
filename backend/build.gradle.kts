@@ -11,7 +11,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 plugins {
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
-    id ("com.github.jk1.dependency-license-report") version "3.0.1"
+    id ("com.github.jk1.dependency-license-report") version "3.1.1"
 }
 
 springBoot {
