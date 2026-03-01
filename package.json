@@ -15,7 +15,7 @@
     "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.30.3",
   "private": true,
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
