@@ -85,7 +85,7 @@
     "@types/canvas-confetti": "1.9.0",
     "@types/d3-shape": "3.1.8",
     "@types/express": "5.0.6",
-    "@types/node": "24.10.14",
+    "@types/node": "24.11.0",
     "angular-eslint": "21.2.0",
     "autoprefixer": "10.4.27",
     "chokidar": "5.0.0",
