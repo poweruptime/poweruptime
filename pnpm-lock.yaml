@@ -109,8 +109,8 @@ importers:
         specifier: 21.0.1
         version: 21.0.1(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2)
       '@spartan-ng/brain':
-        specifier: 0.0.1-alpha.637
-        version: 0.0.1-alpha.637(@angular/cdk@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/forms@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.2.1)
+        specifier: 0.0.1-alpha.648
+        version: 0.0.1-alpha.648(@angular/cdk@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/forms@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.2.1)
       '@std/fmt':
         specifier: npm:@jsr/std__fmt@1.0.9
         version: '@jsr/std__fmt@1.0.9'
@@ -3511,8 +3511,8 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@spartan-ng/brain@0.0.1-alpha.637':
-    resolution: {integrity: sha512-r67aF4zldTWvEKrYCKnDqrst+ynd6nhQBGAR7+q5oNsbz69JDbcCGuLVyUVyJDC6FxlcYAA7rw/oR1sqZ16Efw==}
+  '@spartan-ng/brain@0.0.1-alpha.648':
+    resolution: {integrity: sha512-I0s5wXXkPRYYk8A9nrPUZsmrIIGLHzxGbzHZU175wT3JCKyzYP+iE1BmiKGVviP9JQncZrlFopwucVDJ2sREEQ==}
     peerDependencies:
       '@angular/cdk': '>=20.0.0 <22.0.0'
       '@angular/common': '>=20.0.0 <22.0.0'
@@ -12031,7 +12031,7 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@spartan-ng/brain@0.0.1-alpha.637(@angular/cdk@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/forms@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.2.1)':
+  '@spartan-ng/brain@0.0.1-alpha.648(@angular/cdk@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/forms@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.2.1)':
     dependencies:
       '@angular/cdk': 21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(@angular/platform-browser@21.2.0(@angular/common@21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common': 21.2.0(@angular/core@21.1.6(@angular/compiler@21.2.0)(rxjs@7.8.2))(rxjs@7.8.2)
