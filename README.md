@@ -20,8 +20,8 @@
 - In-depth monitor analytics
 - 2FA & OAuth2 authentication
 
-| ![Team dashboard](./.github/screenshots/team_dashboard.webp) | ![Monitor info](./.github/screenshots/monitor_info.webp) | ![Notification method edit](./.github/screenshots/notification_method_edit.webp) |
-| :----------------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------------------------------: |
+| ![Team dashboard](./.github/screenshots/team_dashboard.webp) | ![Monitor info](./.github/screenshots/monitor_info.webp) | ![Monitor settings](./.github/screenshots/monitor_settings.webp) |
+| :----------------------------------------------------------: | :------------------------------------------------------: | :--------------------------------------------------------------: |
 
 ## Installation
 
@@ -49,12 +49,11 @@ Follow the update instructions [here](./infrastructure/README.md).
 
 ## Screenshots
 
-|    ![Team dashboard](./.github/screenshots/team_dashboard.webp)    |    ![Team dashboard search](./.github/screenshots/team_dashboard_search.webp)    |      ![Monitor info](./.github/screenshots/monitor_info.webp)      |
-| :----------------------------------------------------------------: | :------------------------------------------------------------------------------: | :----------------------------------------------------------------: |
-|    ![Monitor info 2](./.github/screenshots/monitor_info2.webp)     |             ![Monitor edit](./.github/screenshots/monitor_edit.webp)             | ![Check result info](./.github/screenshots/check_result_info.webp) |
-| ![Notification info](./.github/screenshots/notification_info.webp) | ![Notification method edit](./.github/screenshots/notification_method_edit.webp) |  ![Status page edit](./.github/screenshots/status_page_edit.webp)  |
-|       ![Recycle bin](./.github/screenshots/recycle_bin.webp)       |            ![Team settings](./.github/screenshots/team_settings.webp)            |  ![Profile security](./.github/screenshots/profile_security.webp)  |
-| ![Instance settings](./.github/screenshots/instance_settings.webp) |                ![User edit](./.github/screenshots/user_edit.webp)                |    ![Instance infos](./.github/screenshots/instance_infos.webp)    |
+|   ![Team dashboard](./.github/screenshots/team_dashboard.webp)   |          ![Monitor info](./.github/screenshots/monitor_info.webp)          |    ![Monitor info 2](./.github/screenshots/monitor_info_2.webp)    |
+| :--------------------------------------------------------------: | :------------------------------------------------------------------------: | :----------------------------------------------------------------: |
+|   ![Monitor edit](./.github/screenshots/monitor_settings.webp)   | ![Monitor notifications](./.github/screenshots/monitor_notifications.webp) |  ![Status page edit](./.github/screenshots/status_page_edit.webp)  |
+|            ![Teams](./.github/screenshots/teams.webp)            |         ![Team settings](./.github/screenshots/team_settings.webp)         | ![Instance settings](./.github/screenshots/instance_settings.webp) |
+| ![Profile settings](./.github/screenshots/profile_settings.webp) |                                                                            |                                                                    |
 
 ## Contributing to the project
 
