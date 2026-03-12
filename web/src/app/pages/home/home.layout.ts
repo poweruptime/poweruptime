@@ -20,7 +20,7 @@ import {isMobileBreakpoints} from '@app/services/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <pu-sidebar [teamId]="selectedTeamStore.storageSelectedTeamId()">
-      <main class="ps-4 pe-2" hlmSidebarInset>
+      <main class="px-3" hlmSidebarInset>
         <pu-site-header-inset />
 
         <div class="main-content max-w-full">

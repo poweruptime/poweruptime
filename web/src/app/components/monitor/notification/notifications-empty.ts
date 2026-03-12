@@ -17,7 +17,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
         <div hlmEmptyDescription>{{ 'notification.list.empty.description' | transloco }}</div>
       </div>
       <div hlmEmptyContent>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap justify-center gap-2 md:flex-nowrap">
           <a hlmBtn routerLink="../notification-methods">
             {{ 'notification.list.empty.manageNotificationMethods' | transloco }}
           </a>

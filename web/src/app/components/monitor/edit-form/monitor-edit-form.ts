@@ -70,7 +70,7 @@ const times = [
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      <div class="col-span-2 grid grid-cols-6 gap-8">
+      <div class="grid grid-cols-6 gap-8 lg:col-span-2">
         <section class="col-span-6" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
@@ -267,7 +267,7 @@ const times = [
         <pu-monitor-edit-form-data class="col-span-6" [type]="form.controls.type.getRawValue()" />
       </div>
 
-      <div class="col-span-1 flex flex-col gap-8">
+      <div class="flex flex-col gap-8 lg:col-span-1">
         <section hlmCard>
           <div hlmCardHeader>
             <h3 hlmCardTitle>{{ 'general.notificationMethods' | transloco }}</h3>

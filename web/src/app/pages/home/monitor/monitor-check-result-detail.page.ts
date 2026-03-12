@@ -176,7 +176,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
                     }"
                     [showTimestamps]="showTimestamps()" />
                 }
-                <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="mt-4 grid gap-4 lg:grid-cols-2">
                   @for (
                     item of checkResultLogEntriesStore.notificationsGrouped() | keyvalue;
                     track item.key

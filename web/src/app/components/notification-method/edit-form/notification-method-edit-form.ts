@@ -75,8 +75,8 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             </div>
             <p hlmCardDescription>Configure the notification method name and type</p>
           </div>
-          <div class="grid gap-6 md:grid-cols-6" hlmCardContent>
-            <hlm-form-field class="md:col-span-4">
+          <div class="grid gap-6 sm:grid-cols-6" hlmCardContent>
+            <hlm-form-field class="sm:col-span-4">
               <label hlmLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
@@ -99,7 +99,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
               }
             </hlm-form-field>
 
-            <hlm-form-field class="md:col-span-2">
+            <hlm-form-field class="sm:col-span-2">
               <label hlmLabel for="type">
                 {{ 'general.type' | transloco }}
               </label>
@@ -123,7 +123,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
               }
             </hlm-form-field>
 
-            <label class="col-span-6 flex items-center" hlmLabel for="useByDefault">
+            <label class="flex items-center sm:col-span-6" hlmLabel for="useByDefault">
               <hlm-switch class="mr-2" id="useByDefault" formControlName="useByDefault" />
               {{ 'notificationMethod.edit.useByDefault' | transloco }}
             </label>

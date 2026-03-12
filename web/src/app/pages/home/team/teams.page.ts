@@ -23,15 +23,15 @@ import {TailwindBreakpoints} from '@app/services/util';
 
 @Component({
   template: `
-    <div class="flex items-center gap-4 px-4 py-2">
+    <div class="flex flex-wrap items-center gap-4 px-4 py-2">
       @if (infoStore.isUserAllowedToCreateTeams()) {
-        <a class="w-48" hlmBtn routerLink="new">
+        <a class="w-full md:w-48" hlmBtn routerLink="new">
           <ng-icon name="lucideCirclePlus" hlm size="sm" />
           {{ 'team.create.create' | transloco }}
         </a>
       }
 
-      <div class="w-72" hlmInputGroup>
+      <div class="w-full md:w-72" hlmInputGroup>
         <div hlmInputGroupAddon>
           <ng-icon hlm name="bootstrapSearch" size="sm" />
         </div>

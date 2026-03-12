@@ -28,7 +28,11 @@ import {NavUser} from './nav-user';
               @let _teamId = teamId();
               @let selectedTeam = selectedTeamStore.selectedTeam();
               <pu-team-select [teamId]="_teamId" (teamIdChange)="navigateToTeamDashboard($event)">
-                <button type="button" hlmSidebarMenuButton size="lg">
+                <button
+                  type="button"
+                  hlmSidebarMenuButton
+                  closeMobileSidebarOnClick="false"
+                  size="lg">
                   <hlm-avatar class="rounded-lg after:rounded-lg">
                     @if (selectedTeam; as selectedTeam) {
                       @if (selectedTeam.image?.fileId; as imageId) {

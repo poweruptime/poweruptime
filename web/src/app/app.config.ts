@@ -92,6 +92,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideHlmSidebarConfig({
       mobileBreakpoint: '1920px',
+      closeMobileSidebarOnMenuButtonClick: true,
     }),
   ],
 };

@@ -31,7 +31,7 @@ import {BackendImagePipe} from '../../pipes';
 @Component({
   template: `
     @let _showDeleted = showDeleted();
-    <div class="flex flex-col gap-2">
+    <div class="grid gap-2">
       <div class="overflow-hidden">
         <div hlmTableContainer>
           <table

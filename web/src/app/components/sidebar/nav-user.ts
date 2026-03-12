@@ -26,6 +26,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
           [side]="_menuSide()"
           type="button"
           hlmSidebarMenuButton
+          closeMobileSidebarOnClick="false"
           size="lg"
           align="end">
           <div class="relative">

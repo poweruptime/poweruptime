@@ -11,21 +11,23 @@ import {RecycleBinStatusPageList} from '@app/components/status-page';
 
 @Component({
   template: `
-    <hlm-tabs class="w-full" [tab]="tab()" (tabActivated)="tab.set($event)">
-      <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
-        <button class="gap-1.5" type="button" hlmTabsTrigger="monitors">
-          <ng-icon hlm name="lucideScreenShare" size="sm" />
-          {{ 'general.monitors' | transloco }}
-        </button>
-        <button class="gap-1.5" type="button" hlmTabsTrigger="notificationMethods">
-          <ng-icon hlm name="bootstrapBell" size="sm" />
-          {{ 'general.notificationMethods' | transloco }}
-        </button>
-        <button class="gap-1.5" type="button" hlmTabsTrigger="statusPages">
-          <ng-icon hlm name="bootstrapChatLeftQuote" size="sm" />
-          {{ 'general.statusPages' | transloco }}
-        </button>
-      </hlm-tabs-list>
+    <hlm-tabs [tab]="tab()" (tabActivated)="tab.set($event)">
+      <div class="overflow-x-auto overflow-y-hidden pb-2">
+        <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
+          <button class="gap-1.5" type="button" hlmTabsTrigger="monitors">
+            <ng-icon hlm name="lucideScreenShare" size="sm" />
+            {{ 'general.monitors' | transloco }}
+          </button>
+          <button class="gap-1.5" type="button" hlmTabsTrigger="notificationMethods">
+            <ng-icon hlm name="bootstrapBell" size="sm" />
+            {{ 'general.notificationMethods' | transloco }}
+          </button>
+          <button class="gap-1.5" type="button" hlmTabsTrigger="statusPages">
+            <ng-icon hlm name="bootstrapChatLeftQuote" size="sm" />
+            {{ 'general.statusPages' | transloco }}
+          </button>
+        </hlm-tabs-list>
+      </div>
       @let _teamId = teamId();
       <div hlmTabsContent="monitors">
         <pu-recycle-bin-monitor-list [teamId]="_teamId" />

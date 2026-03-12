@@ -33,8 +33,8 @@ import {NotificationsEmpty} from './notifications-empty';
             [(value)]="statuses"
             [placeholder]="'general.status' | transloco"
             multiple>
-            <hlm-select-trigger>
-              <hlm-select-value class="min-w-38" />
+            <hlm-select-trigger class="w-full lg:min-w-38">
+              <hlm-select-value />
             </hlm-select-trigger>
             <hlm-select-content>
               @for (status of availableStatuses(); track status.status) {
@@ -44,7 +44,7 @@ import {NotificationsEmpty} from './notifications-empty';
           </brn-select>
 
           <hlm-date-range-picker
-            class="max-w-52"
+            class="w-full lg:max-w-52"
             [max]="max"
             [autoCloseOnEndSelection]="true"
             [formatDates]="formatDates"

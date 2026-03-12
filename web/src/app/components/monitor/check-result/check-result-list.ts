@@ -35,7 +35,7 @@ import {CheckResultsEmpty} from './check-results-empty';
     } @else {
       <div class="flex flex-col gap-2">
         <pu-table-filter [key]="tableKey">
-          <label class="inline-flex min-w-36 items-center" hlmLabel for="showDuplicates">
+          <label class="inline-flex w-full items-center lg:min-w-36" hlmLabel for="showDuplicates">
             {{ 'general.showDuplicates' | transloco }}
             <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
           </label>
@@ -74,8 +74,8 @@ import {CheckResultsEmpty} from './check-results-empty';
             [(value)]="statuses"
             [placeholder]="'general.status' | transloco"
             multiple>
-            <hlm-select-trigger>
-              <hlm-select-value class="min-w-38" />
+            <hlm-select-trigger class="w-full lg:min-w-38">
+              <hlm-select-value />
             </hlm-select-trigger>
             <hlm-select-content>
               @for (status of availableStatuses(); track status.status) {
@@ -85,7 +85,7 @@ import {CheckResultsEmpty} from './check-results-empty';
           </brn-select>
 
           <hlm-date-range-picker
-            class="max-w-52"
+            class="w-full lg:max-w-52"
             [max]="max"
             [autoCloseOnEndSelection]="true"
             [formatDates]="formatDates"
