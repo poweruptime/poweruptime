@@ -28,10 +28,14 @@ export function backendOfflineInterceptor(
     return next(request);
   } else {
     return next(request).pipe(
-      tap(() => backendOfflineService.set(false)),
+      tap(() => {
+        if (backendOfflineService.isOffline()) {
+          backendOfflineService.set(false);
+        }
+      }),
       catchError((error) => {
         console.error('HTTP request error', error);
-        if (error instanceof HttpErrorResponse) {
+        if (!backendOfflineService.isOffline() && error instanceof HttpErrorResponse) {
           switch (error.status) {
             case 0:
             case 500:
