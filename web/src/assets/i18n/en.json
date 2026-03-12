@@ -308,7 +308,7 @@
         },
         "exceedsMaxWindow": "Selected window may not exceed 1 month"
       },
-      "resendAfter": "Resend notification after {{resendAfter}}x three consecutive failed {{general.checks}}",
+      "resendAfter": "Resend notification after {{resendAfter}}x consecutive failed {{general.checks}}",
       "retries": "{{retries}}x retries"
     },
     "edit": {
