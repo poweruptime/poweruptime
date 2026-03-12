@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.0-beta-1773327559 - 2026-03-12
+
+### <!-- 0 -->🚀 Features
+
+- Backend offline update only if affected by Dafnik ([13ffa99](https://github.com/poweruptime/poweruptime/commit/13ffa999073fde0edcbd27635d51ac8a209ed819))
+- Ui & ux improvements by Dafnik ([5860fcd](https://github.com/poweruptime/poweruptime/commit/5860fcddfa9db4b169cc415645945acd8d58576d))
+
+### <!-- 3 -->📚 Documentation
+
+- Screenshot updates by Dafnik ([c2bea45](https://github.com/poweruptime/poweruptime/commit/c2bea4513017478bf6200408ccb39f6d3e116d5e))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Spartan update by Dafnik ([73efe5b](https://github.com/poweruptime/poweruptime/commit/73efe5b4cbb718f401ed13e650fbe8a8339c5cf4))
+- Spartan update by Dafnik ([4b849c8](https://github.com/poweruptime/poweruptime/commit/4b849c8994bf3a12fc6df48098be73ee196b8c23))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1771362795...0.5.0-beta-1773327559)
+
 ## 0.5.0-beta-1771362795 - 2026-02-17
 
 ### <!-- 0 -->🚀 Features
