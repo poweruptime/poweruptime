@@ -1,8 +1,11 @@
-import {Directive, booleanAttribute, input} from '@angular/core';
+import {Directive, booleanAttribute, inject, input} from '@angular/core';
 
 import {type BooleanInput} from '@angular/cdk/coercion';
 
 import {classes} from '@spartan-ng/helm/utils';
+
+import {HlmSidebarService} from './hlm-sidebar.service';
+import {injectHlmSidebarConfig} from './hlm-sidebar.token';
 
 @Directive({
   selector: 'a[hlmSidebarMenuSubButton], button[hlmSidebarMenuSubButton]',
@@ -11,9 +14,18 @@ import {classes} from '@spartan-ng/helm/utils';
     'data-sidebar': 'menu-sub-button',
     '[attr.data-active]': 'isActive()',
     '[attr.data-size]': 'size()',
+    '(click)': 'onClick()',
   },
 })
 export class HlmSidebarMenuSubButton {
+  private readonly _sidebarService = inject(HlmSidebarService);
+  private readonly _config = injectHlmSidebarConfig();
+
+  public readonly closeMobileSidebarOnClick = input<boolean, BooleanInput>(
+    this._config.closeMobileSidebarOnMenuButtonClick,
+    {transform: booleanAttribute},
+  );
+
   public readonly size = input<'sm' | 'md'>('md');
   public readonly isActive = input<boolean, BooleanInput>(false, {transform: booleanAttribute});
   constructor() {
@@ -23,5 +35,11 @@ export class HlmSidebarMenuSubButton {
       'data-[size=md]:text-sm data-[size=sm]:text-xs',
       'group-data-[collapsible=icon]:hidden',
     ]);
+  }
+
+  protected onClick(): void {
+    if (this.closeMobileSidebarOnClick()) {
+      this._sidebarService.setOpenMobile(false);
+    }
   }
 }
