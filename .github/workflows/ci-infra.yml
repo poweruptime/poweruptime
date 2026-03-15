@@ -71,7 +71,7 @@ jobs:
         run: pnpm web:build:docker
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Start Docker Compose stack
         run: docker compose -f ./compose-dev.yml -f ./backend/compose.yml -f ./web/compose.yml up -d
