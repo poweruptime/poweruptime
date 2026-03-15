@@ -169,8 +169,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(@angular/common@21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))
       ngxtension:
-        specifier: 7.1.0
-        version: 7.1.0(@angular/common@21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: 7.2.0
+        version: 7.2.0(@angular/common@21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -6440,8 +6440,8 @@ packages:
       '@angular/common': '>=19.0.0'
       '@angular/core': '>=19.0.0'
 
-  ngxtension@7.1.0:
-    resolution: {integrity: sha512-LUsBbDhqeKFKYBxuR7hUWLlAt+UwHBvpMsh9Rz4hwK3a3UoSYfMnF1cYL4NRIrakp7CcExRl4p3nExWwKhAn4w==}
+  ngxtension@7.2.0:
+    resolution: {integrity: sha512-ohTUzbYSGAZQzvbeRGP5tkIRWxn7246zzQU4cVhcPjyzHU7O+EXYsCkuQktu4LZHcQ+KyVEQP90u5W1+xizH2A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@angular/common': '>=19.0.0'
@@ -15267,7 +15267,7 @@ snapshots:
       '@angular/core': 21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  ngxtension@7.1.0(@angular/common@21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2):
+  ngxtension@7.2.0(@angular/common@21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2):
     dependencies:
       '@angular/common': 21.2.3(@angular/core@21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.4(@angular/compiler@21.2.4)(rxjs@7.8.2)
