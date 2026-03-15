@@ -122,7 +122,7 @@ jobs:
 
       - name: Build and push beta Docker image
         if: contains(github.ref_name, 'beta')
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.containers }}
           push: true
@@ -140,7 +140,7 @@ jobs:
 
       - name: Build and push prod Docker image
         if: "!contains(github.ref_name, 'beta')"
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.containers }}
           push: true
