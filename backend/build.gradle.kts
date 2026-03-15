@@ -61,7 +61,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 
     // Database stuff
-    implementation("org.liquibase:liquibase-core:5.0.1")
+    implementation("org.liquibase:liquibase-core:5.0.2")
     runtimeOnly("org.postgresql:postgresql:42.7.10")
 
     implementation("com.zaxxer:HikariCP:7.0.2")
