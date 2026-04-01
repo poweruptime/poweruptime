@@ -95,7 +95,7 @@
     "glob": "13.0.6",
     "ng-icons-manager": "1.1.4",
     "openapi-typescript": "7.13.0",
-    "playwright-ng-schematics": "21.0.5",
+    "playwright-ng-schematics": "21.0.9",
     "postcss": "8.5.8",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
