@@ -45,7 +45,7 @@ services:
 
   poweruptime-apprise:
     container_name: poweruptime-apprise
-    image: caronc/apprise:v1.3.2
+    image: caronc/apprise:v1.3.3
     restart: unless-stopped
     user: '${UID}:${GID}'
     environment:
