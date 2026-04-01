@@ -26,8 +26,8 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin:3.1.1")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.2")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
