@@ -97,8 +97,8 @@ importers:
         specifier: 33.2.0
         version: 33.2.0
       '@ng-icons/core':
-        specifier: 33.1.0
-        version: 33.1.0(@angular-devkit/schematics@21.2.5(chokidar@5.0.0))(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@schematics/angular@21.2.5(chokidar@5.0.0))(rxjs@7.8.2)
+        specifier: 33.2.0
+        version: 33.2.0(@angular-devkit/schematics@21.2.5(chokidar@5.0.0))(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@schematics/angular@21.2.5(chokidar@5.0.0))(rxjs@7.8.2)
       '@ng-icons/lucide':
         specifier: 33.2.0
         version: 33.2.0
@@ -2270,8 +2270,8 @@ packages:
   '@ng-icons/bootstrap-icons@33.2.0':
     resolution: {integrity: sha512-h8rg7XheuVW1r38pLdGLWJ2WbrKATyq3rPHuAV6V8TIpNmEC9ty7McrtOlb6/gtZ+b3VHpDJ5xZA00J3m7dIRw==}
 
-  '@ng-icons/core@33.1.0':
-    resolution: {integrity: sha512-kNkVt+saULAZp6f84PXmMRbNiiBVdqpM71ajiTAyTqOZCjKxXJe6gnpBfuOd0QvnkxEKSkFuswu4xFYbRPVXUQ==}
+  '@ng-icons/core@33.2.0':
+    resolution: {integrity: sha512-BdAzCKZzLKuRPbZLBTmuBuCVI0Fk0WM+sPNzmhWv3PG+yXUKPpRt3O3dCIxqO5djb9S/x50OJkfOJH+IBxLUgg==}
     peerDependencies:
       '@angular-devkit/schematics': '>=21.0.0'
       '@angular/common': '>=21.0.0'
@@ -10234,7 +10234,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@ng-icons/core@33.1.0(@angular-devkit/schematics@21.2.5(chokidar@5.0.0))(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@schematics/angular@21.2.5(chokidar@5.0.0))(rxjs@7.8.2)':
+  '@ng-icons/core@33.2.0(@angular-devkit/schematics@21.2.5(chokidar@5.0.0))(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@schematics/angular@21.2.5(chokidar@5.0.0))(rxjs@7.8.2)':
     dependencies:
       '@angular-devkit/schematics': 21.2.5(chokidar@5.0.0)
       '@angular/common': 21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
