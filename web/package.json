@@ -98,7 +98,7 @@
     "playwright-ng-schematics": "21.0.9",
     "postcss": "8.5.8",
     "tailwindcss": "4.2.2",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "typescript-eslint": "8.57.2"
   },
   "imports": {
