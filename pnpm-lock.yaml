@@ -94,8 +94,8 @@ importers:
         specifier: 8.2.1
         version: 8.2.1(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@jsverse/transloco@8.2.1(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)
       '@ng-icons/bootstrap-icons':
-        specifier: 33.1.0
-        version: 33.1.0
+        specifier: 33.2.0
+        version: 33.2.0
       '@ng-icons/core':
         specifier: 33.1.0
         version: 33.1.0(@angular-devkit/schematics@21.2.5(chokidar@5.0.0))(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@schematics/angular@21.2.5(chokidar@5.0.0))(rxjs@7.8.2)
@@ -2267,8 +2267,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ng-icons/bootstrap-icons@33.1.0':
-    resolution: {integrity: sha512-TZv4NMgWx45ZMnyQLH8HDQOrGnFGWehC+IqoGdIWT7IvEFzAJ04Bp5IINYh7SjBR7plpP+YmIYDCXe5+0v2p1Q==}
+  '@ng-icons/bootstrap-icons@33.2.0':
+    resolution: {integrity: sha512-h8rg7XheuVW1r38pLdGLWJ2WbrKATyq3rPHuAV6V8TIpNmEC9ty7McrtOlb6/gtZ+b3VHpDJ5xZA00J3m7dIRw==}
 
   '@ng-icons/core@33.1.0':
     resolution: {integrity: sha512-kNkVt+saULAZp6f84PXmMRbNiiBVdqpM71ajiTAyTqOZCjKxXJe6gnpBfuOd0QvnkxEKSkFuswu4xFYbRPVXUQ==}
@@ -10230,7 +10230,7 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.1.7':
     optional: true
 
-  '@ng-icons/bootstrap-icons@33.1.0':
+  '@ng-icons/bootstrap-icons@33.2.0':
     dependencies:
       tslib: 2.8.1
 
