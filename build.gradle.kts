@@ -21,7 +21,7 @@ repositories {
 }
 
 plugins {
-    id("org.springframework.boot") version "4.0.3" apply false
+    id("org.springframework.boot") version "4.0.5" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
     id("dev.detekt") version "2.0.0-alpha.2"
