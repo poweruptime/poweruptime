@@ -34,83 +34,6 @@
   },
   "packageRules": [
     {
-      "groupName": "Jackson dependencies",
-      "matchPackageNames": ["/^com.fasterxml.jackson/i"]
-    },
-    {
-      "groupName": "spring boot",
-      "matchDepNames": ["/^org.springframework.boot/i"]
-    },
-    {
-      "groupName": "Kotlin dependencies",
-      "matchPackageNames": ["/^org.jetbrains.kotlin/i"]
-    },
-    {
-      "groupName": "JWT dependencies",
-      "matchPackageNames": ["/^io.jsonwebtoken/i"]
-    },
-    {
-      "groupName": "NanoID",
-      "matchPackageNames": ["/^io.viascom.nanoid/i"]
-    },
-    {
-      "groupName": "DNS Java",
-      "matchPackageNames": ["/^dnsjava/i"]
-    },
-    {
-      "groupName": "Apache dependencies",
-      "matchPackageNames": ["/^org.apache/i"]
-    },
-    {
-      "groupName": "Liquibase dependencies",
-      "matchPackageNames": ["/^org.liquibase/"]
-    },
-    {
-      "groupName": "Postgres",
-      "matchPackageNames": ["/^org.postgresql/i", "/^io.hypersistence/i"]
-    },
-    {
-      "groupName": "Springdoc dependencies",
-      "matchPackageNames": ["/^org.springdoc/i"]
-    },
-    {
-      "groupName": "Bucket4j dependencies",
-      "matchPackageNames": ["/^com.bucket4j/i"]
-    },
-    {
-      "groupName": "Testcontainers",
-      "matchPackageNames": ["/^org.testcontainers/i", "/^com.icegreen/i"]
-    },
-    {
-      "groupName": "React",
-      "matchPackageNames": [
-        "/^react$/i",
-        "/^react-dom$/i",
-        "/^@types/react$/i",
-        "/^@types/react-dom$/i"
-      ]
-    },
-    {
-      "groupName": "React Email",
-      "matchPackageNames": ["/^react-email/i", "/^@react-email//i"]
-    },
-    {
-      "groupName": "ngx-dropzone",
-      "matchPackageNames": ["/^@ngx-dropzone/i"]
-    },
-    {
-      "groupName": "ngrx",
-      "matchPackageNames": ["/^@ngrx/i"]
-    },
-    {
-      "groupName": "transloco",
-      "matchPackageNames": ["/^@jsverse/i"]
-    },
-    {
-      "groupName": "typescript types",
-      "matchPackageNames": ["/^@types/i", "!@types/react", "!@types/react-dom"]
-    },
-    {
       "groupName": "typescript dependencies",
       "matchPackageNames": ["typescript", "tslib"]
     },
@@ -123,11 +46,18 @@
       "groupName": "angular monorepo"
     },
     {
-      "groupName": "Lint packages",
-      "matchPackageNames": ["/lint/i"]
+      "description": "Group minor and patch updates by package manager",
+      "groupName": "{{manager}} minor & patch updates",
+      "groupSlug": "{{manager}}-minor-patch",
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Group major updates by package manager",
+      "groupName": "{{manager}} major updates",
+      "groupSlug": "{{manager}}-major",
+      "matchUpdateTypes": ["major"]
     }
   ],
-  "prHourlyLimit": 5,
   "schedule": ["* * 1,15 * *"],
   "semanticCommitScope": "",
   "semanticCommitType": "build",
