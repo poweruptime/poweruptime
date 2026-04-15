@@ -11,7 +11,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 plugins {
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
-    id ("com.github.jk1.dependency-license-report") version "3.1.1"
+    id ("com.github.jk1.dependency-license-report") version "3.1.2"
 }
 
 springBoot {
@@ -23,7 +23,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.01")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.1.1")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.1.2")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.2")
@@ -44,7 +44,7 @@ dependencies {
     implementation("dnsjava:dnsjava:3.6.4")
 
     // HttpClient library
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.6")
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
@@ -58,7 +58,7 @@ dependencies {
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.2")
@@ -101,7 +101,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:2.0.12")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
