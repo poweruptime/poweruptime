@@ -1,5 +1,160 @@
 # Changelog
 
+## 0.5.0 - 2026-05-04
+
+### <!-- 0 -->🚀 Features
+
+- Exposed rewrite (#440) by Dominik ([defed34](https://github.com/poweruptime/poweruptime/commit/defed343be403301c9a960675093f7fd1573e889)), feat:web exposed migration
+- Help center (#465) by Dominik ([974d957](https://github.com/poweruptime/poweruptime/commit/974d95747f98d3f6dcd5105d6393f1e4c872caf4))
+- Jackson v3 by Dafnik ([6b9953c](https://github.com/poweruptime/poweruptime/commit/6b9953cdda61d99213191adca7da87e41282cbf9))
+- Migrate svgs to icons by Dafnik ([a88c461](https://github.com/poweruptime/poweruptime/commit/a88c461d3b8ab32e5f23bde12b6247cc70397991))
+- Performance improvements by Dafnik ([2d94a0b](https://github.com/poweruptime/poweruptime/commit/2d94a0b513eaefb3ba3f8d7bc2d2f7ea9c833f68))
+- Spartan ui by Dafnik ([04424dc](https://github.com/poweruptime/poweruptime/commit/04424dc0e8c2adcf7b1263b300d4a165fda87581)), feat:migrate material sidenav to spartan sidebar
+- Instance settings navigation by Dafnik ([a1f375c](https://github.com/poweruptime/poweruptime/commit/a1f375cd0b0ae46d4f0ef0c4927cac960a528f2d))
+- Breadcrumbs by Dafnik ([d907e45](https://github.com/poweruptime/poweruptime/commit/d907e453ae8071bbbffc94df70b61e0b65844bb0))
+- Version check updates by Dafnik ([70c2c85](https://github.com/poweruptime/poweruptime/commit/70c2c8593d94d92d15499b7444ee2236f1fa792b))
+- Remove notification dependency on check result by Dafnik ([5750445](https://github.com/poweruptime/poweruptime/commit/575044513e0f212a8619026ed578810c84f09bfd))
+- Add hlm paginator and table by Dafnik ([e281ddf](https://github.com/poweruptime/poweruptime/commit/e281ddf2fe0ca9f5c7fcc8147e70fd7af214be91)), feat:migrate injectQueryParams
+- Checkresult and notification list refactor by Dafnik ([82ddad1](https://github.com/poweruptime/poweruptime/commit/82ddad17b81d75879bbc7144c53b6585cf6e319d))
+- Checkresult and notification list refactor by Dafnik ([13ce39d](https://github.com/poweruptime/poweruptime/commit/13ce39da64be10f97525c2f4e3d6188ab6a515d7))
+- Add generic filter & user table refactor by Dafnik ([86368e5](https://github.com/poweruptime/poweruptime/commit/86368e502a9f1332caa061f9fb6267db50f27991))
+- Team & instance info refactor by Dafnik ([76c5b43](https://github.com/poweruptime/poweruptime/commit/76c5b436a31d3b1aee69808064eaebb4ca5e3c5d))
+- Update to dfx-theme by Dafnik ([a1f6ef0](https://github.com/poweruptime/poweruptime/commit/a1f6ef0f37c1358c348c56d794042e14e1548f55)), feat:refactor user profile settings design
+- About dialog style refactor by Dafnik ([e45d830](https://github.com/poweruptime/poweruptime/commit/e45d8305945853ec96fce5ee18eee9e745b53b4a))
+- Profile hlm migration by Dafnik ([c00eee4](https://github.com/poweruptime/poweruptime/commit/c00eee4b05411f231dea81bb7d63f8c322e7c05e))
+- Migrate monitor detail to spartan by Dafnik ([c50e6da](https://github.com/poweruptime/poweruptime/commit/c50e6dadb00b26350eb82edb7599142cbf13f9c8))
+- Monitor detail, team setting lists by Dafnik ([50b8a73](https://github.com/poweruptime/poweruptime/commit/50b8a7384d1bc4f02d6cefc4883084b29c95ab34))
+- Remove material extensions and tailwindcss-motion by Dafnik ([7bc5728](https://github.com/poweruptime/poweruptime/commit/7bc572819787a87c2e74558dec74247af84a8b4c))
+- Refactor mfa ui by Dafnik ([a19d07c](https://github.com/poweruptime/poweruptime/commit/a19d07cdd8b26090de1859e13f31e84d44e1b6dd))
+- Ping statistics by Dafnik ([be58bc7](https://github.com/poweruptime/poweruptime/commit/be58bc7032174b500a07e54df4522d2ad3cc5495))
+- Ping statistics by Dafnik ([8a9e6ff](https://github.com/poweruptime/poweruptime/commit/8a9e6ffaa8f105143f855d10c717c350c9df3bf1))
+- Eslint remove unused imports automatically by Dafnik ([8e7ec3e](https://github.com/poweruptime/poweruptime/commit/8e7ec3e510306e242e5a7de1b900b8f1a975111f))
+- Add playwright auth tests by Dafnik ([a58dde3](https://github.com/poweruptime/poweruptime/commit/a58dde3eab06e96e7c190e23d98ea2450e722957))
+- Add placeholder to password show button by Dafnik ([230b646](https://github.com/poweruptime/poweruptime/commit/230b64639889c78a7a3f10cf61ba8ac08784591a))
+- Optimize public status page by Dafnik ([ec8ddf8](https://github.com/poweruptime/poweruptime/commit/ec8ddf872172675ca99c1b24936fc604dc99edf7))
+- Migrate status page and notification method table by Dafnik ([8ff452e](https://github.com/poweruptime/poweruptime/commit/8ff452e51c2d0dddc667d944981426fca1477154))
+- Migrate monitor list by Dafnik ([3fb79f8](https://github.com/poweruptime/poweruptime/commit/3fb79f88febfc1f6cc28d889dd3f5608017ff96b))
+- Remove mat-slide-toggle by Dafnik ([963a8b3](https://github.com/poweruptime/poweruptime/commit/963a8b38c9db515c9a457e796be91247fa380e71))
+- Select & select search migration by Dafnik ([ef55ef0](https://github.com/poweruptime/poweruptime/commit/ef55ef0b68f008e7f79d82b3fbc702cc0996961d))
+- Spartan migration by Dafnik ([014278f](https://github.com/poweruptime/poweruptime/commit/014278f96484214e22a26a41ee670e6b96b79411)), feat:team invites migration, feat:monitor edit enhancements
+- Simplify permission handling by Dafnik ([33a6215](https://github.com/poweruptime/poweruptime/commit/33a6215fd260b68693bf3723506c2d0cea961c44))
+- Spartan migration by Dafnik ([7e30ae5](https://github.com/poweruptime/poweruptime/commit/7e30ae51e42d0dfd78bb01a7e41493c4da5c7344)), refactor:pattern directive, refactor:team-select dropdown
+- Spartan migration by Dafnik ([0f23d98](https://github.com/poweruptime/poweruptime/commit/0f23d9872c1676dc069df35bc72e5da343b5350b))
+- Readd search to status page group edit by Dafnik ([eafad76](https://github.com/poweruptime/poweruptime/commit/eafad7633687bcdf221ab2b4877be764694d9a00))
+- Refactor monitor edit form by Dafnik ([c027607](https://github.com/poweruptime/poweruptime/commit/c0276073dd1c1eebc6fb505495982324560d856c))
+- Http monitor data refactor by Dafnik ([74285fa](https://github.com/poweruptime/poweruptime/commit/74285faef1a010c3f8ecc47b040c6012cb514444))
+- Add monitor card context menu by Dafnik ([55f5a2f](https://github.com/poweruptime/poweruptime/commit/55f5a2f6044b0e8d79787e8837f76be2459291a9))
+- Spartan migration by Dafnik ([c003412](https://github.com/poweruptime/poweruptime/commit/c003412e886212df3d808b807a2181c9a54cc77c))
+- Spartan migration by Dafnik ([4319bb9](https://github.com/poweruptime/poweruptime/commit/4319bb92e18519a66041b343758491080c8979b4))
+- Status page satori open graph image preview by Dafnik ([a727d89](https://github.com/poweruptime/poweruptime/commit/a727d89c1a5490ec1ec8964afdc0ccced9364937))
+- Version check form migration by Dafnik ([91aaf23](https://github.com/poweruptime/poweruptime/commit/91aaf238d48e0b3a212d0452823116506bf51ac1)), feat:status page tab migration
+- Spartan migration by Dafnik ([40fe027](https://github.com/poweruptime/poweruptime/commit/40fe027e490db708ed25bdda3baf03762e7268f5))
+- Spartan migration by Dafnik ([67651f9](https://github.com/poweruptime/poweruptime/commit/67651f9eaaeffa66990b73f09241f61ccb59419a))
+- Mentions & file upload spartan rewrite (#577) by Dafnik ([f0c8754](https://github.com/poweruptime/poweruptime/commit/f0c87544aebd1740082a5da325757e69c350a794))
+- Team profile picture (#610) by Dafnik ([5e06dc7](https://github.com/poweruptime/poweruptime/commit/5e06dc72e1ac1811289978de26e1540b12a8df73))
+- Status page preview enhancements by Dafnik ([6046a37](https://github.com/poweruptime/poweruptime/commit/6046a3758df4f706cec007c2846f3b074a3cb05e))
+- Enhance DNS & SSL Certificate logs by Dafnik ([0a7df92](https://github.com/poweruptime/poweruptime/commit/0a7df92bccf330b52ac23db32399735e91a33c42))
+- Enhance og image by Dafnik ([cc5b0d5](https://github.com/poweruptime/poweruptime/commit/cc5b0d574eadbeaf042b24797a3ae096341e2df2))
+- Backend offline update only if affected by Dafnik ([13ffa99](https://github.com/poweruptime/poweruptime/commit/13ffa999073fde0edcbd27635d51ac8a209ed819))
+- Ui & ux improvements by Dafnik ([5860fcd](https://github.com/poweruptime/poweruptime/commit/5860fcddfa9db4b169cc415645945acd8d58576d))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Try to downgrade fastify again by Dafnik ([b6b004f](https://github.com/poweruptime/poweruptime/commit/b6b004f2ea627994c065bed80508d2a0408cf4d3))
+- Try to fix angular reverse proxy by Dafnik ([f874c13](https://github.com/poweruptime/poweruptime/commit/f874c13397744c06a710835e26c652eb9046c6a4))
+- Try to fix angular reverse proxy by Dafnik ([f5c75e4](https://github.com/poweruptime/poweruptime/commit/f5c75e41172f494aceea727bc05f6f6778bea3d6))
+- Run fastify on 80 and 4200 port (#456) by Dominik ([b978d82](https://github.com/poweruptime/poweruptime/commit/b978d82ba6393f2bb246d8ad232ab0b4097abd39))
+- Mobile monitor table by Dafnik ([b30db12](https://github.com/poweruptime/poweruptime/commit/b30db1299854f3247a3450f7d27635465d394e68)), feat:add new template variables
+  previousStatusLabel and previousStatusDuration
+- NotificationId missing in check result logs by Dafnik ([f1bf51a](https://github.com/poweruptime/poweruptime/commit/f1bf51ac8e4c23a860e7f744280b6cc8f7fbd8c6))
+- Apprise payload problem by Dafnik ([77d0c64](https://github.com/poweruptime/poweruptime/commit/77d0c6428aa2ee5facb1f2697733bbfeecfeb0d2)), fix:isUserAllowedToCreateTeams debug info null
+- Health check triggering error by Dafnik ([743179d](https://github.com/poweruptime/poweruptime/commit/743179de60b6ef5dd09dffc56f22e9ea10068b34))
+- Status page guard can never error by Dafnik ([8c985c7](https://github.com/poweruptime/poweruptime/commit/8c985c72ef84131bf085e149a74eb1613257c8af))
+- Status page findByDomainName by Dafnik ([d93ce1b](https://github.com/poweruptime/poweruptime/commit/d93ce1b2e6bf7eb53e74629efe8d09320e89952d))
+- Apprise sender (#507) by Dominik ([d005547](https://github.com/poweruptime/poweruptime/commit/d00554773e460fdbf7bef386ba3e823b15b3cfd7))
+- Instance settings autofocus by Dafnik ([a2a468b](https://github.com/poweruptime/poweruptime/commit/a2a468b0c1dab37549169093ba4867bc4c20cbda))
+- Check result log view by Dafnik ([9e7ef8b](https://github.com/poweruptime/poweruptime/commit/9e7ef8bfe871c626d5e75f154a0299e01b12c642)), feat:instance settings design refactor, feat:help dialog, licenses & debug information dialog refactor
+- Session invalidate not working by Dafnik ([4bf5136](https://github.com/poweruptime/poweruptime/commit/4bf513622580267378ac4f99e254be41e8c659cf))
+- Check result statistics ping not available by Dafnik ([f25780f](https://github.com/poweruptime/poweruptime/commit/f25780ff9aa063d1479a1f3dc32b75962bdf9937))
+- HlmBtn available to a tag by Dafnik ([670d866](https://github.com/poweruptime/poweruptime/commit/670d8664dbb7f8c333b7534ecfdc00070611d6c8)), refactor:login and password change login page
+- Notification methods empty by Dafnik ([7afdfa8](https://github.com/poweruptime/poweruptime/commit/7afdfa8dbbe09788c2c6055e0ced9e4ebd946c68))
+- Broken notifications by Dafnik ([3aa5ee6](https://github.com/poweruptime/poweruptime/commit/3aa5ee64a0648e7546bd07bdbce4d588b548a043))
+- Tag update not working by Dafnik ([59a9134](https://github.com/poweruptime/poweruptime/commit/59a91343bf1455434e2c2ced0812563aa97d7cf0))
+- Check result store not updating correctly by Dafnik ([2aa6e4a](https://github.com/poweruptime/poweruptime/commit/2aa6e4a856857c5e312e874d6d2dc0eaf60c2dd4))
+- Monitor card list styling issue by Dafnik ([c384422](https://github.com/poweruptime/poweruptime/commit/c3844228651e2b7d4d8acb98054da9f8f069372d))
+- Team delete, deleting monitors by Dafnik ([36fa9f4](https://github.com/poweruptime/poweruptime/commit/36fa9f4165876d6e026b44c3873293d8b62d370f))
+- Satori by Dafnik ([3ef9e0d](https://github.com/poweruptime/poweruptime/commit/3ef9e0d2cfc77ffa47ea774d0513a36bc8add695))
+- Historical sync by Dafnik ([b32c542](https://github.com/poweruptime/poweruptime/commit/b32c5428d03f908cbfe7968075e139abd0b27b15))
+- Typo by Dafnik ([f5f0852](https://github.com/poweruptime/poweruptime/commit/f5f0852cffaa16364db1890c44fd0c956a35aac2))
+- Beta version display by Dafnik ([190fcc8](https://github.com/poweruptime/poweruptime/commit/190fcc843330875b0530d7f8fcf23e3153ff944e))
+
+### <!-- 2 -->🚜 Refactor
+
+- MonitorListener and NotificationListener by Dafnik ([ebf7cde](https://github.com/poweruptime/poweruptime/commit/ebf7cdeb2c0dde53c4ac192fb52c4ef3479a9d82))
+- SupporterService and VersionChecker to RestClient by Dafnik ([878ba51](https://github.com/poweruptime/poweruptime/commit/878ba5112db3e356c5c7437091e7d14e4237d12e))
+- Frontend license reporter (#464) by Dominik ([2381305](https://github.com/poweruptime/poweruptime/commit/2381305eede09ffab3ea0d8bafeec51b98ead633))
+- Update CheckResult, CheckResultLog and Notification findAll calls by Dafnik ([0cd2017](https://github.com/poweruptime/poweruptime/commit/0cd201799d97f529879335fe15177d208ee91ece))
+- Ng-icons (#506) by Dominik ([9042d10](https://github.com/poweruptime/poweruptime/commit/9042d10af30502b6854e2ef77c92cc60be040ede))
+- Replace pu-placeholder with hlm skeleton by Dafnik ([b77caa0](https://github.com/poweruptime/poweruptime/commit/b77caa03f0ead5d7518b3dd590e7c8abe5481982))
+- Outside actions by Dafnik ([4d62ed6](https://github.com/poweruptime/poweruptime/commit/4d62ed6dd1a8f4761c64e21726c9697541494b85))
+- Timezone input by Dafnik ([d1f08ff](https://github.com/poweruptime/poweruptime/commit/d1f08ffe9d7c32d4a5473f10d809dae3eb7df3cb))
+- Monitor card by Dafnik ([627b23e](https://github.com/poweruptime/poweruptime/commit/627b23e1b838665cb4b6f52df6eabae76339f675))
+- Status page table by Dafnik ([2c69a7a](https://github.com/poweruptime/poweruptime/commit/2c69a7a252a68c42e777ca7c460ce8f2da7138f2))
+- Remove mat-card by Dafnik ([70dcc47](https://github.com/poweruptime/poweruptime/commit/70dcc4716b3900b7b7408201fef3d71304a1d4be))
+- Material table by Dafnik ([d36f05a](https://github.com/poweruptime/poweruptime/commit/d36f05a58bd9f4cbe39a2be4323157dddfde6d81))
+- User-edit by Dafnik ([58608ee](https://github.com/poweruptime/poweruptime/commit/58608ee25046db12cba75efab5473b8289e5d517))
+- Remove weird reverse proxy pathRewrite by Dafnik ([63786fe](https://github.com/poweruptime/poweruptime/commit/63786fe50e534eea5c2b34328cc401c06e857614))
+
+### <!-- 3 -->📚 Documentation
+
+- Add alpha disclaimer by Dafnik ([2893746](https://github.com/poweruptime/poweruptime/commit/289374646eacf4c802f31d6e9ad385cabbc2b7b3))
+- Update README, DEVELOPER and CONTRIBUTING guides by Dafnik ([bacfc64](https://github.com/poweruptime/poweruptime/commit/bacfc64b444cf0deb23f85e9c3b26bec5c1d7d32))
+- Update by Dafnik ([05903b5](https://github.com/poweruptime/poweruptime/commit/05903b56a7147af9e1b288aa86271d0042803dc9))
+- Screenshot updates by Dafnik ([c2bea45](https://github.com/poweruptime/poweruptime/commit/c2bea4513017478bf6200408ccb39f6d3e116d5e))
+
+### <!-- 5 -->🎨 Styling
+
+- Prettier by Dafnik ([e28b5e5](https://github.com/poweruptime/poweruptime/commit/e28b5e59af536ea754a2ef1865e8575e2286ad81))
+- Format by Dafnik ([c1b742c](https://github.com/poweruptime/poweruptime/commit/c1b742ced6c626a48932a3b41e2a1130bfeaa079))
+- Format by Dafnik ([8eb46f6](https://github.com/poweruptime/poweruptime/commit/8eb46f649eb24847e4468786374d5d1bbcec345b))
+- Format by Dafnik ([c1b81f0](https://github.com/poweruptime/poweruptime/commit/c1b81f08747a31a3ebac7c3f7f7b87419a9c99cf))
+
+### <!-- 6 -->🧪 Testing
+
+- Fix by Dafnik ([3e9ba57](https://github.com/poweruptime/poweruptime/commit/3e9ba578a1a4996d8458ef21c93e3744ba3baf69))
+- Add version check test by Dafnik ([169bf7e](https://github.com/poweruptime/poweruptime/commit/169bf7edc45d301b0473abe3d1ae0b80fabfcaa3))
+- Playwright by Dafnik ([c66d30b](https://github.com/poweruptime/poweruptime/commit/c66d30b820920ceb432f9e6c459a7fc19c5b617d))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Set test LOG_LEVEL to INFO by Dafnik ([bf8f1cd](https://github.com/poweruptime/poweruptime/commit/bf8f1cd58aa0ad728bf5d4056611447e07615925))
+- Change run config by Dafnik ([84e3ceb](https://github.com/poweruptime/poweruptime/commit/84e3ceb957e88d308e29345e3a856e8a24749723))
+- Angular v21 update (#482) by Dafnik ([62dc19e](https://github.com/poweruptime/poweruptime/commit/62dc19e999cca45b120e5ca0a1446c1012887d72))
+- Renovate custom manager fix by Dafnik ([d7a9111](https://github.com/poweruptime/poweruptime/commit/d7a9111e0b93d3ddcec2797c32564108c30004b3))
+- Remove unused import by Dafnik ([8f20e35](https://github.com/poweruptime/poweruptime/commit/8f20e35e5cb653216c13ea8d5adcb5df932341b7))
+- Enable HMR by Dafnik ([3dff3af](https://github.com/poweruptime/poweruptime/commit/3dff3af0dfb0e9f16f066970d1bd280c77ba8a25))
+- Remove unused module by Dafnik ([551ea1f](https://github.com/poweruptime/poweruptime/commit/551ea1fd2aa147aefda37dafbf190db96896c4b9))
+- Make uptime timeline smaller by Dafnik ([fa426b9](https://github.com/poweruptime/poweruptime/commit/fa426b9a3694bca5ab4b96d7f641044511321e1b))
+- Pnpm fixes by Dafnik ([a4c162f](https://github.com/poweruptime/poweruptime/commit/a4c162f847ec5fe880b294c9b31c634340135844))
+- Add @eslint/js by Dafnik ([948fa85](https://github.com/poweruptime/poweruptime/commit/948fa85779f6b2928bc6fa45821a4d8f2418cc2d))
+- Can't be null by Dafnik ([07697ae](https://github.com/poweruptime/poweruptime/commit/07697ae2c74d669fd0174853cd27d08cd6002a89))
+- Seed updates by Dafnik ([82c89b0](https://github.com/poweruptime/poweruptime/commit/82c89b0578e2c19ed2957d142a1ed4b8f3372085))
+- Image optimizer by Dafnik ([79fdddf](https://github.com/poweruptime/poweruptime/commit/79fdddfa03e26b3901c313190241b27cef3aff80))
+- Fix by Dafnik ([46b581b](https://github.com/poweruptime/poweruptime/commit/46b581b5be4064cca06a35b9c22c5814295275cb))
+- Add og image preview to dev page by Dafnik ([eb78026](https://github.com/poweruptime/poweruptime/commit/eb78026e4b5debb9f68568d64d02aa24f8aa30b3))
+- Add web e2e tests, update infra e2e tests to run against web docker container by Dafnik ([628779a](https://github.com/poweruptime/poweruptime/commit/628779add54fddcc1520f8b6b9e44db26506acfa))
+- Only run e2e tests against dockerized application by Dafnik ([adc01e2](https://github.com/poweruptime/poweruptime/commit/adc01e27886ca91857bea2cfbedfc23e113eac03))
+- Remove playwright asset upload by Dafnik ([f9d366f](https://github.com/poweruptime/poweruptime/commit/f9d366f67c8a3ca6095523408e036e7b50d3033b))
+- Spartan update by Dafnik ([46689da](https://github.com/poweruptime/poweruptime/commit/46689da13cd5c885131c1f8f7f6c164872ec4d0a))
+- Spartan update by Dafnik ([73efe5b](https://github.com/poweruptime/poweruptime/commit/73efe5b4cbb718f401ed13e650fbe8a8339c5cf4))
+- Spartan update by Dafnik ([4b849c8](https://github.com/poweruptime/poweruptime/commit/4b849c8994bf3a12fc6df48098be73ee196b8c23))
+- Better group dependencies by Dafnik ([5830aab](https://github.com/poweruptime/poweruptime/commit/5830aabd62e9068c8721878f73f7538c598e988f))
+- Align dependency versions by Dafnik ([2c14d65](https://github.com/poweruptime/poweruptime/commit/2c14d65c09e58b7db5630af0996c96c7a8d0bc59))
+- Downgrade httpclient version by Dafnik ([7f6c1e5](https://github.com/poweruptime/poweruptime/commit/7f6c1e574b1639e7ab57c596f1d91ea7782a0582))
+- Spartan update by Dafnik ([46974a3](https://github.com/poweruptime/poweruptime/commit/46974a30c5c0eb5c5de64996d776d8f2ebc18b28))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.4.0...0.5.0)
+
 ## 0.4.0 - 2025-11-20
 
 ### <!-- 0 -->🚀 Features
