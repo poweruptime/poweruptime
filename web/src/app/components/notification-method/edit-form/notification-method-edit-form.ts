@@ -17,6 +17,7 @@ import {map} from 'rxjs';
 import {TranslocoPipe} from '@jsverse/transloco';
 import '@spartan-ng/brain/select';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -39,7 +40,6 @@ import {MonitorSelector} from '../monitor-selector';
 import {NotificationMethodEditFormData} from './notification-method-edit-form-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditTemplate} from './notification-method-edit-template';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 type TemplateFeatures = NonNullable<BackendType['NotificationMethodTemplateResponse']['features']>;
 

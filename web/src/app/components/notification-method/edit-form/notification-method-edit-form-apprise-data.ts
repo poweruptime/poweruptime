@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

@@ -6,6 +6,7 @@ import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
@@ -16,7 +17,6 @@ import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 import {Database} from '@app/api';
 import {injectIsValid} from '@app/form';
 import {SetupStore} from '@app/services';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

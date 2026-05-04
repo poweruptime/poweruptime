@@ -1,3 +1,4 @@
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {outputFromObservable} from '@angular/core/rxjs-interop';
 import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
@@ -12,7 +13,6 @@ import {HlmSelectImports} from '@spartan-ng/helm/select';
 
 import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
-import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `

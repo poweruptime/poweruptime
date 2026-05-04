@@ -1,3 +1,4 @@
+import {SlicePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
@@ -21,7 +22,6 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../table-filter';
 import {NotificationMethodTable} from './notification-method-table';
 import {NotificationMethodsEmpty} from './notification-methods-empty';
-import {SlicePipe} from '@angular/common';
 
 @Component({
   template: `

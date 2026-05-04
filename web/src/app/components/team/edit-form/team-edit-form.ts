@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
@@ -9,7 +10,6 @@ import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 
 import {ProfilePictureUpload} from '../../profile-picture-upload';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

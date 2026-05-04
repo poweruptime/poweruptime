@@ -3,13 +3,13 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {CopyIconButton} from '@app/components';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

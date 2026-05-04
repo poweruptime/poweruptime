@@ -5,6 +5,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import '@spartan-ng/brain/select';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -18,7 +19,6 @@ import {PasswordShowButton} from '@app/form';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

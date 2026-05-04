@@ -2,8 +2,9 @@ import {UpperCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 
-import {environment} from '@app/util';
 import {HlmToasterImports} from '@spartan-ng/helm/sonner';
+
+import {environment} from '@app/util';
 
 @Component({
   selector: 'app-root',

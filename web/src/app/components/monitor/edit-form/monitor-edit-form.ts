@@ -13,6 +13,7 @@ import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -41,7 +42,6 @@ import {
   testIntervalMinutesValidators,
   testIntervalSecondsValidators,
 } from './test-interval';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 const times = [
   {

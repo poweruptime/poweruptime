@@ -4,6 +4,7 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -16,7 +17,6 @@ import {
   SaveButton,
   injectIsValid,
 } from '@app/form';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

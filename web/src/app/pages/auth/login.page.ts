@@ -15,6 +15,7 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -23,7 +24,6 @@ import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid} from '@app/form';
 import {AuthStore, InfoStore} from '@app/services';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

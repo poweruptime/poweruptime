@@ -32,6 +32,7 @@ import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -53,7 +54,6 @@ import {MonitorsSearchStore} from '@app/services';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-monitors';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

@@ -13,6 +13,7 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -26,7 +27,6 @@ import {InfoStore} from '@app/services';
 
 import {SupporterBadge} from '../supporter-badge';
 import {TableLoadingBar} from '../table-loading-bar';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
@@ -13,7 +14,6 @@ import {
   injectIsValid,
   passwordMatchValidator,
 } from '@app/form';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `

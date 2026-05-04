@@ -1,3 +1,4 @@
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
@@ -27,7 +28,6 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../../table-filter';
 import {CheckResultTable} from './check-result-table';
 import {CheckResultsEmpty} from './check-results-empty';
-import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `
