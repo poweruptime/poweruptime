@@ -20,14 +20,14 @@ springBoot {
 
 dependencies {
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:8.0.01")
+    implementation("io.github.oshai:kotlin-logging-jvm:8.0.02")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.1.2")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.1.3")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.2")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.3")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
@@ -48,12 +48,12 @@ dependencies {
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
-    implementation("commons-codec:commons-codec:1.21.0")
+    implementation("commons-codec:commons-codec:1.22.0")
 
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     // HTML to Mrkdown (Slack) Converter
-    implementation("org.jsoup:jsoup:1.22.1")
+    implementation("org.jsoup:jsoup:1.22.2")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -62,7 +62,7 @@ dependencies {
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.2")
-    runtimeOnly("org.postgresql:postgresql:42.7.10")
+    runtimeOnly("org.postgresql:postgresql:42.7.11")
 
     implementation("com.zaxxer:HikariCP:7.0.2")
 
@@ -95,7 +95,7 @@ dependencies {
 
     // Spring Cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.12")
