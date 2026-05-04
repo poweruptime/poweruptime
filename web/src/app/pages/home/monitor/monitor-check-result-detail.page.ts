@@ -43,7 +43,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
             </div>
 
             <section hlmCard>
-              <div class="flex gap-10" hlmCardContent>
+              <div class="flex flex-wrap gap-x-10 gap-y-5" hlmCardContent>
                 @if (checkResult.pingMs; as pingMs) {
                   <div class="flex flex-col gap-2">
                     <h3 class="text-gray-400">{{ 'general.ping' | transloco }}</h3>

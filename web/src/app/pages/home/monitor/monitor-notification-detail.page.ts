@@ -76,23 +76,20 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
             <hlm-accordion class="pb-4" type="multiple">
               @for (subNotification of subNotificationsStore.entities(); track subNotification.id) {
                 <hlm-accordion-item [isOpened]="_expandAll">
-                  <h3 class="contents">
-                    <button class="hover:no-underline" hlmAccordionTrigger type="button">
-                      <div class="flex flex-col gap-2">
-                        <span>{{ subNotification.method.name }}</span>
-                        @if (subNotification.error) {
-                          <span hlmBadge variant="destructive">
-                            {{ 'general.error' | transloco }}
-                          </span>
-                        } @else {
-                          <span class="text-muted-foreground text-sm font-light">
-                            Sent {{ subNotification.sentAt | relativeTime }}
-                          </span>
-                        }
-                      </div>
-                      <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
-                    </button>
-                  </h3>
+                  <hlm-accordion-trigger>
+                    <div class="flex flex-col items-start gap-1">
+                      <span>{{ subNotification.method.name }}</span>
+                      @if (subNotification.error) {
+                        <span hlmBadge variant="destructive">
+                          {{ 'general.error' | transloco }}
+                        </span>
+                      } @else {
+                        <span class="text-muted-foreground text-sm font-light">
+                          Sent {{ subNotification.sentAt | relativeTime }}
+                        </span>
+                      }
+                    </div>
+                  </hlm-accordion-trigger>
                   <hlm-accordion-content>
                     <pu-shadow-render [html]="subNotification.title" />
 
