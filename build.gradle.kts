@@ -21,14 +21,14 @@ repositories {
 }
 
 plugins {
-    id("org.springframework.boot") version "4.0.5" apply false
+    id("org.springframework.boot") version "4.0.6" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("dev.detekt") version "2.0.0-alpha.2"
+    id("dev.detekt") version "2.0.0-alpha.3"
 
-    kotlin("jvm") version "2.3.20"
-    kotlin("plugin.spring") version "2.3.20"
-    kotlin("plugin.serialization") version "2.3.20"
+    kotlin("jvm") version "2.3.21"
+    kotlin("plugin.spring") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
 }
 
 allprojects {
@@ -42,7 +42,7 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.2")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.3")
     }
 
     tasks.withType<Detekt>().configureEach {
