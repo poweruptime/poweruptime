@@ -20,7 +20,7 @@ services:
       traefik.http.routers.traefik.entrypoints: http
 
   poweruptime-db:
-    #image: postgres:17.2-bookworm # Uncomment to use a custom version for local testing
+    #image: postgres:17.9-bookworm # Uncomment to use a custom version for local testing
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-poweruptime}
       POSTGRES_USER: ${DATABASE_USERNAME:-poweruptime}
