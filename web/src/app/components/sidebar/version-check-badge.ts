@@ -1,3 +1,4 @@
+import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
@@ -13,14 +14,15 @@ import {InstanceSettingsStore, InstanceSettingsVersionCheckStore} from '@app/ser
         <a routerLink="/settings/overview" fragment="version-check">
           <span class="bg-blue-500 text-white dark:bg-blue-600" hlmBadge variant="secondary">
             <ng-icon name="bootstrapArrowDownCircleFill" />
-            Update Available: {{ version.version }} ({{ version.date.split('T')[0] }})
+            <span class="hidden md:block">Update Available:</span>
+            {{ version.version }} ({{ version.date.split('T')[0] | date: 'dd.MM.yyyy' }})
           </span>
         </a>
       }
     }
   `,
   selector: 'pu-version-check-badge',
-  imports: [HlmIconImports, HlmBadgeImports, RouterLink],
+  imports: [HlmIconImports, HlmBadgeImports, RouterLink, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionCheckBadge {

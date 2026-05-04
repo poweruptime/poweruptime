@@ -16,6 +16,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -30,7 +31,6 @@ import {chipInputAdd, chipInputRemove} from '@app/util';
 import {TableLoadingBar} from '../table-loading-bar';
 import {VersionCheckDisabled} from './version-check-disabled';
 import {VersionCheckInfo} from './version-check-info';
-import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -38,16 +38,16 @@ import {HlmFieldImports} from '@spartan-ng/helm/field';
 
     <section hlmCard>
       <div hlmCardHeader>
-        <div class="flex items-center justify-between">
-          <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
             <h3 hlmCardTitle>{{ 'instanceSettings.versionCheck.title' | transloco }}</h3>
-            <p hlmCardDescription>Check for application updates and manage notifications</p>
+            <span
+              class="bg-secondary text-secondary-foreground rounded px-2 py-1 text-lg font-semibold"
+              [hlmTooltip]="'instanceSettings.versionCheck.currentVersion' | transloco">
+              {{ currentVersion }}
+            </span>
           </div>
-          <span
-            class="bg-secondary text-secondary-foreground rounded px-2 py-1 text-lg font-semibold"
-            [hlmTooltip]="'instanceSettings.versionCheck.currentVersion' | transloco">
-            {{ currentVersion }}
-          </span>
+          <p hlmCardDescription>Check for application updates and manage notifications</p>
         </div>
 
         <pu-table-loading-bar [loading]="isLoading()" />
