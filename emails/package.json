@@ -8,14 +8,13 @@
     "export": "email export --outDir ../backend/src/main/resources/templates/html"
   },
   "dependencies": {
-    "@react-email/components": "1.0.12",
+    "@react-email/ui": "6.0.7",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "react-email": "5.2.11",
-    "@react-email/preview-server": "5.2.10",
     "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
+    "@types/react-dom": "19.2.3",
+    "react-email": "6.0.7"
   }
 }

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import {Text} from '@react-email/components';
+import {Text} from 'react-email';
 import * as React from 'react';
 import Layout, {FOOTER_INTENDED_RECIPIENT, FOOTER_TEXT} from './_components/Layout';
 import PuHeading from './_components/puHeading';

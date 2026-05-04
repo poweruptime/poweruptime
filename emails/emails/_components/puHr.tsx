@@ -1,4 +1,4 @@
-import {Hr} from '@react-email/components';
+import {Hr} from 'react-email';
 import * as React from 'react';
 
 export default function () {

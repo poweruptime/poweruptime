@@ -1,5 +1,5 @@
 import {PropsWithChildren} from 'react';
-import {Text} from '@react-email/components';
+import {Text} from 'react-email';
 import * as React from 'react';
 
 export default function (props: PropsWithChildren) {

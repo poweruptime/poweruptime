@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import {Section, Button, Link} from '@react-email/components';
+import {Section, Button, Link} from 'react-email';
 import * as React from 'react';
 import Layout, {CALL_TO_ACTION, SECONDARY_BUTTON} from './_components/Layout';
 import PuHeading from './_components/puHeading';
