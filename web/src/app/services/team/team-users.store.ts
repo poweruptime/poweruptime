@@ -9,7 +9,7 @@ import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {removeEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {BrnDialogRef} from '@spartan-ng/brain/dialog';
-import {toast} from 'ngx-sonner';
+import {toast} from '@spartan-ng/brain/sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {injectConfirmDeleteDialog$} from '@app/components';

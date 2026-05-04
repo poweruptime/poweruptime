@@ -42,7 +42,7 @@ import {GroupedTimezones} from '@app/services';
             <label class="flex items-center" hlmLabel for="showNewVersionDialog">
               <hlm-switch
                 class="mr-2"
-                id="showNewVersionDialog"
+                inputId="showNewVersionDialog"
                 formControlName="showNewVersionDialog" />
               {{ 'instanceSettings.showNewVersionDialog' | transloco }}
             </label>

@@ -16,7 +16,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -31,6 +30,7 @@ import {chipInputAdd, chipInputRemove} from '@app/util';
 import {TableLoadingBar} from '../table-loading-bar';
 import {VersionCheckDisabled} from './version-check-disabled';
 import {VersionCheckInfo} from './version-check-info';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -86,7 +86,7 @@ import {VersionCheckInfo} from './version-check-info';
                     </div>
                   </div>
                   <hlm-switch
-                    id="versionCheckAdminMailEnabled"
+                    inputId="versionCheckAdminMailEnabled"
                     formControlName="versionCheckAdminMailEnabled" />
                 </label>
 
@@ -101,7 +101,7 @@ import {VersionCheckInfo} from './version-check-info';
                       for="versionCheckAdminMailSendToEveryone">
                       {{ 'instanceSettings.versionCheck.adminMail.everyone' | transloco }}
                       <hlm-switch
-                        id="versionCheckAdminMailSendToEveryone"
+                        inputId="versionCheckAdminMailSendToEveryone"
                         formControlName="versionCheckAdminMailSendToEveryone" />
                     </label>
 
@@ -118,7 +118,7 @@ import {VersionCheckInfo} from './version-check-info';
                                 mailToForm.controls.to
                               )
                             ">
-                            <hlm-form-field>
+                            <hlm-field>
                               <label for="to" hlmLabel>
                                 {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
                               </label>
@@ -133,7 +133,7 @@ import {VersionCheckInfo} from './version-check-info';
                                   <ng-icon name="lucideMail" />
                                 </div>
                               </div>
-                            </hlm-form-field>
+                            </hlm-field>
                           </form>
                           <button
                             [disabled]="mailToForm.invalid"
@@ -177,17 +177,19 @@ import {VersionCheckInfo} from './version-check-info';
                         </div>
                         @let toErrors = form.controls.versionCheckAdminMailTo.errors;
                         @if (toErrors?.['required']) {
-                          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                          <hlm-field-error>
+                            {{ 'form.validation.required' | transloco }}
+                          </hlm-field-error>
                         }
                         @if (toErrors?.['minLengthArrayItem']; as minlength) {
-                          <hlm-error>
+                          <hlm-field-error>
                             {{ 'form.validation.minlength' | transloco: minlength }}
-                          </hlm-error>
+                          </hlm-field-error>
                         }
                         @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
-                          <hlm-error>
+                          <hlm-field-error>
                             {{ 'form.validation.maxlength' | transloco: maxlength }}
-                          </hlm-error>
+                          </hlm-field-error>
                         }
                       </div>
                     }
@@ -238,8 +240,8 @@ import {VersionCheckInfo} from './version-check-info';
     HlmBadgeImports,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmFormFieldImports,
     HlmInputGroupImports,
+    HlmFieldImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

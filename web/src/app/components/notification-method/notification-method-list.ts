@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -39,24 +39,22 @@ import {NotificationMethodsEmpty} from './notification-methods-empty';
               hlmLabel
               for="showDuplicates">
               {{ 'notificationMethod.edit.useByDefault' | transloco }}
-              <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="useByDefaultFilter" />
+              <hlm-switch class="mr-2" [(checked)]="useByDefaultFilter" inputId="showDuplicates" />
             </label>
           </div>
 
-          <brn-select
-            class="inline-block"
-            [(value)]="typesFilter"
-            [placeholder]="'general.type' | transloco"
-            multiple>
+          <hlm-select-multiple class="inline-block" [(value)]="typesFilter">
             <hlm-select-trigger>
-              <hlm-select-value class="min-w-38" />
+              <hlm-select-value class="min-w-38" [placeholder]="'general.type' | transloco" />
             </hlm-select-trigger>
-            <hlm-select-content>
-              @for (type of types; track type.value) {
-                <hlm-option [value]="type.value">{{ type.name }}</hlm-option>
-              }
+            <hlm-select-content *hlmSelectPortal>
+              <hlm-select-group>
+                @for (type of types; track type.value) {
+                  <hlm-select-item [value]="type.value">{{ type.name }}</hlm-select-item>
+                }
+              </hlm-select-group>
             </hlm-select-content>
-          </brn-select>
+          </hlm-select-multiple>
 
           <div class="w-72" hlmInputGroup>
             <div hlmInputGroupAddon>
@@ -90,7 +88,6 @@ import {NotificationMethodsEmpty} from './notification-methods-empty';
     HlmButtonImports,
     HlmIconImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmInputGroupImports,
     HlmLabelImports,
     HlmSwitchImports,

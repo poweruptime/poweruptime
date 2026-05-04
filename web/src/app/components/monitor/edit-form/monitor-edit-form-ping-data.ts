@@ -2,62 +2,60 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
     <div class="flex gap-4" [formGroup]="pingDataFormGroup">
-      <hlm-form-field class="flex-1">
+      <hlm-field class="flex-1">
         <label hlmLabel for="ip">{{ 'general.ipAddress' | transloco }}</label>
         <input id="ip" hlmInput formControlName="ip" type="text" placeholder="1.1.1.1" />
         @let ipErrors = pingDataFormGroup.controls.ip.errors;
         @if (ipErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (ipErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (ipErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
         @if (ipErrors?.['pattern']) {
-          <hlm-error>{{ 'form.validation.ipv4' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.ipv4' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field class="w-48">
+      <hlm-field class="w-48">
         <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
 
         <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
         @let portErrors = pingDataFormGroup.controls.port.errors;
         @if (portErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (portErrors?.['min']; as min) {
-          <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
         }
         @if (portErrors?.['max']; as max) {
-          <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
         }
         @if (portErrors?.['pattern']) {
-          <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
     </div>
   `,
   selector: 'pu-monitor-edit-form-ping-data',
-  imports: [
-    ReactiveFormsModule,
-    TranslocoPipe,
-    HlmFormFieldImports,
-    HlmInputImports,
-    HlmLabelImports,
-  ],
+  imports: [ReactiveFormsModule, TranslocoPipe, HlmInputImports, HlmLabelImports, HlmFieldImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorEditFormPingData {

@@ -4,7 +4,6 @@ import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -12,6 +11,7 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
 import {ForgotPasswordStore} from '@app/services';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -29,7 +29,7 @@ import {ForgotPasswordStore} from '@app/services';
             [formGroup]="requestPasswordResetForm"
             (ngSubmit)="submitRequest()"
             hlmCardContent>
-            <hlm-form-field>
+            <hlm-field>
               <label hlmLabel for="email">
                 {{ 'general.emailAddress' | transloco }}
               </label>
@@ -46,18 +46,22 @@ import {ForgotPasswordStore} from '@app/services';
               </div>
               @let emailErrors = requestPasswordResetForm.controls.email.errors;
               @if (emailErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (emailErrors?.['email']) {
-                <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
               }
               @if (emailErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
               @if (emailErrors?.['maxlength']; as maxlength) {
-                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.maxlength' | transloco: maxlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
             <button [disabled]="!isRequestPasswordResetFormValid()" hlmBtn type="submit">
               <ng-icon hlm size="sm" name="lucideMailQuestionMark" />
@@ -71,7 +75,7 @@ import {ForgotPasswordStore} from '@app/services';
             (ngSubmit)="submitReset()"
             hlmCardContent>
             <ng-container formGroupName="newPassword">
-              <hlm-form-field>
+              <hlm-field>
                 <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
                 <div hlmInputGroup>
@@ -86,14 +90,16 @@ import {ForgotPasswordStore} from '@app/services';
                 @let newPasswordErrors =
                   resetPasswordForm.controls.newPassword.controls.newPassword.errors;
                 @if (newPasswordErrors?.['required']) {
-                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                 }
                 @if (newPasswordErrors?.['minlength']; as minlength) {
-                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.minlength' | transloco: minlength }}
+                  </hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
 
-              <hlm-form-field>
+              <hlm-field>
                 <label hlmLabel for="newPasswordConfirm">
                   {{ 'auth.newPasswordConfirm' | transloco }}
                 </label>
@@ -113,15 +119,19 @@ import {ForgotPasswordStore} from '@app/services';
                 @let confirmPasswordErrors =
                   resetPasswordForm.controls.newPassword.controls.confirmPassword.errors;
                 @if (confirmPasswordErrors?.['required']) {
-                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                 }
                 @if (confirmPasswordErrors?.['minlength']; as minlength) {
-                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.minlength' | transloco: minlength }}
+                  </hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
 
               @if (resetPasswordForm.controls.newPassword.errors?.['mismatch']) {
-                <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.passwordMismatch' | transloco }}
+                </hlm-field-error>
               }
             </ng-container>
 
@@ -141,11 +151,11 @@ import {ForgotPasswordStore} from '@app/services';
     TranslocoPipe,
     PasswordShowButton,
     HlmCardImports,
-    HlmFormFieldImports,
     HlmInputGroupImports,
     HlmLabelImports,
     HlmButtonImports,
     HlmIconImports,
+    HlmFieldImports,
   ],
 })
 export class ForgotPasswordPage {

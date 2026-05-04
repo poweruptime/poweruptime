@@ -3,12 +3,12 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -27,7 +27,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           <p hlmCardDescription>Configure how long data is stored</p>
         </div>
         <div class="grid gap-4 md:grid-cols-2" hlmCardContent>
-          <hlm-form-field>
+          <hlm-field>
             <label hlmLabel for="checkResultRetentionPeriodInDays">
               {{ 'instanceSettings.retention.checkResult' | transloco }}
             </label>
@@ -46,20 +46,20 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
               form.controls.checkResultRetentionPeriodInDays.errors;
 
             @if (checkResultRetentionPeriodInDaysErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (checkResultRetentionPeriodInDaysErrors?.['min']; as min) {
-              <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
             }
             @if (checkResultRetentionPeriodInDaysErrors?.['max']; as max) {
-              <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
             }
             @if (checkResultRetentionPeriodInDaysErrors?.['pattern']) {
-              <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
-          <hlm-form-field>
+          <hlm-field>
             <label hlmLabel for="checkResultLogRetentionPeriodInDays">
               {{ 'instanceSettings.retention.logs' | transloco }}
             </label>
@@ -78,18 +78,18 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
               form.controls.checkResultLogRetentionPeriodInDays.errors;
 
             @if (checkResultLogRetentionPeriodInDaysErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (checkResultLogRetentionPeriodInDaysErrors?.['min']; as min) {
-              <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
             }
             @if (checkResultLogRetentionPeriodInDaysErrors?.['max']; as max) {
-              <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
             }
             @if (checkResultLogRetentionPeriodInDaysErrors?.['pattern']) {
-              <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
         </div>
       </div>
       <div hlmCardFooter>
@@ -103,9 +103,9 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     ReactiveFormsModule,
     TranslocoPipe,
     HlmCardImports,
-    HlmFormFieldImports,
     HlmLabelImports,
     HlmInputGroupImports,
+    HlmFieldImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

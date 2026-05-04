@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -37,45 +37,44 @@ import {MonitorTable} from './monitor-table';
           }
         </div>
 
-        <brn-select
-          [(value)]="statusesFilter"
-          [placeholder]="'general.status' | transloco"
-          multiple>
+        <hlm-select-multiple [(value)]="statusesFilter">
           <hlm-select-trigger class="w-full">
-            <hlm-select-value />
+            <hlm-select-value [placeholder]="'general.status' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            @for (status of availableStatuses(); track status.status) {
-              <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
-            }
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              @for (status of availableStatuses(); track status.status) {
+                <hlm-select-item [value]="status.status">{{ status.name }}</hlm-select-item>
+              }
+            </hlm-select-group>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select-multiple>
 
-        <brn-select [(value)]="typesFilter" [placeholder]="'general.type' | transloco" multiple>
+        <hlm-select-multiple [(value)]="typesFilter">
           <hlm-select-trigger class="w-full">
-            <hlm-select-value />
+            <hlm-select-value [placeholder]="'general.type' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            @for (type of types; track type.value) {
-              <hlm-option [value]="type.value">{{ type.name }}</hlm-option>
-            }
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              @for (type of types; track type.value) {
+                <hlm-select-item [value]="type.value">{{ type.name }}</hlm-select-item>
+              }
+            </hlm-select-group>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select-multiple>
 
-        <brn-select
-          [(value)]="tagsFilter"
-          [placeholder]="'general.tags' | transloco"
-          [disabled]="tags().length === 0"
-          multiple>
+        <hlm-select-multiple [(value)]="tagsFilter" [disabled]="tags().length === 0">
           <hlm-select-trigger class="w-full">
-            <hlm-select-value />
+            <hlm-select-value [placeholder]="'general.tags' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            @for (tag of tags(); track tag.name) {
-              <hlm-option [value]="tag.name">{{ tag.name }}</hlm-option>
-            }
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              @for (tag of tags(); track tag.name) {
+                <hlm-select-item [value]="tag.name">{{ tag.name }}</hlm-select-item>
+              }
+            </hlm-select-group>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select-multiple>
       </pu-table-filter>
 
       <pu-monitor-table [teamId]="teamId()" />
@@ -91,7 +90,6 @@ import {MonitorTable} from './monitor-table';
     HlmInputGroupImports,
     HlmIconImports,
     HlmSelectImports,
-    BrnSelectImports,
   ],
 })
 export class MonitorList {

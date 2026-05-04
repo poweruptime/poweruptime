@@ -5,7 +5,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
@@ -37,7 +37,7 @@ import {CheckResultsEmpty} from './check-results-empty';
         <pu-table-filter [key]="tableKey">
           <label class="inline-flex w-full items-center lg:min-w-36" hlmLabel for="showDuplicates">
             {{ 'general.showDuplicates' | transloco }}
-            <hlm-switch class="mr-2" id="showDuplicates" [(checked)]="showDuplicates" />
+            <hlm-switch class="mr-2" [(checked)]="showDuplicates" inputId="showDuplicates" />
           </label>
 
           <hlm-toggle-group
@@ -69,20 +69,18 @@ import {CheckResultsEmpty} from './check-results-empty';
             }
           </hlm-toggle-group>
 
-          <brn-select
-            class="inline-block"
-            [(value)]="statuses"
-            [placeholder]="'general.status' | transloco"
-            multiple>
+          <hlm-select-multiple class="inline-block" [(value)]="statuses">
             <hlm-select-trigger class="w-full lg:min-w-38">
-              <hlm-select-value />
+              <hlm-select-value [placeholder]="'general.status' | transloco" />
             </hlm-select-trigger>
-            <hlm-select-content>
-              @for (status of availableStatuses(); track status.status) {
-                <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
-              }
+            <hlm-select-content *hlmSelectPortal>
+              <hlm-select-group>
+                @for (status of availableStatuses(); track status.status) {
+                  <hlm-select-item [value]="status.status">{{ status.name }}</hlm-select-item>
+                }
+              </hlm-select-group>
             </hlm-select-content>
-          </brn-select>
+          </hlm-select-multiple>
 
           <hlm-date-range-picker
             class="w-full lg:max-w-52"
@@ -118,7 +116,6 @@ import {CheckResultsEmpty} from './check-results-empty';
     HlmToggleGroupImports,
     HlmTooltipImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmDatePickerImports,
     TableFilter,
   ],

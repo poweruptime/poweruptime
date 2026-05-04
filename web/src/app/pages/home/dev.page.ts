@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, DOCUMENT, inject} from '@angular/cor
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmInputImports} from '@spartan-ng/helm/input';
@@ -37,15 +37,17 @@ import {AuthStore, ChangelogStore} from '@app/services';
           </div>
           <div class="grid gap-6" hlmCardContent>
             <div class="flex gap-4">
-              <brn-select class="inline-block" [(value)]="ogType" placeholder="Select an option">
+              <hlm-select class="inline-block" [(value)]="ogType">
                 <hlm-select-trigger class="w-56">
-                  <hlm-select-value />
+                  <hlm-select-value placeholder="Select an option" />
                 </hlm-select-trigger>
-                <hlm-select-content>
-                  <hlm-option value="monitor">Monitor</hlm-option>
-                  <hlm-option value="status">Status Page</hlm-option>
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-group>
+                    <hlm-select-item value="monitor">Monitor</hlm-select-item>
+                    <hlm-select-item value="status">Status Page</hlm-select-item>
+                  </hlm-select-group>
                 </hlm-select-content>
-              </brn-select>
+              </hlm-select>
               <input
                 class="w-80"
                 [(ngModel)]="ogId"
@@ -240,7 +242,6 @@ import {AuthStore, ChangelogStore} from '@app/services';
     HlmCardImports,
     HlmButtonImports,
     HlmItemImports,
-    BrnSelectImports,
     HlmSelectImports,
     HlmInputImports,
     FormsModule,

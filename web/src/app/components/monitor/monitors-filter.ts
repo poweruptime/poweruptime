@@ -5,7 +5,7 @@ import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -32,38 +32,44 @@ import {MonitorSearchParams} from '@app/services';
         }
       </div>
 
-      <brn-select [placeholder]="'general.status' | transloco" formControlName="statuses" multiple>
+      <hlm-select formControlName="statuses" multiple>
         <hlm-select-trigger class="w-full">
-          <hlm-select-value />
+          <hlm-select-value [placeholder]="'general.status' | transloco" />
         </hlm-select-trigger>
-        <hlm-select-content>
-          @for (status of availableStatuses(); track status.status) {
-            <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
-          }
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-group>
+            @for (status of availableStatuses(); track status.status) {
+              <hlm-select-item [value]="status.status">{{ status.name }}</hlm-select-item>
+            }
+          </hlm-select-group>
         </hlm-select-content>
-      </brn-select>
+      </hlm-select>
 
-      <brn-select [placeholder]="'general.type' | transloco" formControlName="types" multiple>
+      <hlm-select formControlName="types" multiple>
         <hlm-select-trigger class="w-full">
-          <hlm-select-value />
+          <hlm-select-value [placeholder]="'general.type' | transloco" />
         </hlm-select-trigger>
-        <hlm-select-content>
-          @for (type of types; track type.value) {
-            <hlm-option [value]="type.value">{{ type.name }}</hlm-option>
-          }
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-group>
+            @for (type of types; track type.value) {
+              <hlm-select-item [value]="type.value">{{ type.name }}</hlm-select-item>
+            }
+          </hlm-select-group>
         </hlm-select-content>
-      </brn-select>
+      </hlm-select>
 
-      <brn-select [placeholder]="'general.tags' | transloco" formControlName="tags" multiple>
+      <hlm-select formControlName="tags" multiple>
         <hlm-select-trigger class="w-full">
-          <hlm-select-value />
+          <hlm-select-value [placeholder]="'general.tags' | transloco" />
         </hlm-select-trigger>
-        <hlm-select-content>
-          @for (tag of tags(); track tag.name) {
-            <hlm-option [value]="tag.name">{{ tag.name }}</hlm-option>
-          }
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-group>
+            @for (tag of tags(); track tag.name) {
+              <hlm-select-item [value]="tag.name">{{ tag.name }}</hlm-select-item>
+            }
+          </hlm-select-group>
         </hlm-select-content>
-      </brn-select>
+      </hlm-select>
     </form>
   `,
   selector: 'pu-monitors-filter',
@@ -74,7 +80,6 @@ import {MonitorSearchParams} from '@app/services';
     HlmIconImports,
     HlmInputGroupImports,
     HlmSelectImports,
-    BrnSelectImports,
   ],
 })
 export class MonitorsFilter {

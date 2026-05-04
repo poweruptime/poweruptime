@@ -4,8 +4,8 @@ import {translate} from '@jsverse/transloco';
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {toast} from '@spartan-ng/brain/sonner';
 import confetti from 'canvas-confetti';
-import {toast} from 'ngx-sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 

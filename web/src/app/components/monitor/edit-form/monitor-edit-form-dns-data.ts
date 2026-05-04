@@ -2,10 +2,9 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -17,93 +16,104 @@ import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {CopyIconButton} from '../../copy-icon-button';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
     <div class="grid grid-cols-8 gap-4" [formGroup]="dnsDataFormGroup">
-      <hlm-form-field class="col-span-8 xl:col-span-6">
+      <hlm-field class="col-span-8 xl:col-span-6">
         <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
         <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
         @let hostErrors = dnsDataFormGroup.controls.host.errors;
 
         @if (hostErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (hostErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (hostErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
         @if (hostErrors?.['pattern']) {
-          <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.domain' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field class="col-span-8 xl:col-span-2">
+      <hlm-field class="col-span-8 xl:col-span-2">
         <label hlmLabel for="method">{{ 'general.type' | transloco }}</label>
-        <brn-select id="method" [placeholder]="'general.type' | transloco" formControlName="type">
+        <hlm-select id="method" formControlName="type">
           <hlm-select-trigger class="w-full">
-            <hlm-select-value />
+            <hlm-select-value [placeholder]="'general.type' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            <hlm-option value="A">A</hlm-option>
-            <hlm-option value="AAAA">AAAA</hlm-option>
-            <hlm-option value="CAA">CAA</hlm-option>
-            <hlm-option value="CNAME">CNAME</hlm-option>
-            <hlm-option value="MX">MX</hlm-option>
-            <hlm-option value="NS">NS</hlm-option>
-            <hlm-option value="PTR">PTR</hlm-option>
-            <hlm-option value="SOA">SOA</hlm-option>
-            <hlm-option value="SRV">SRV</hlm-option>
-            <hlm-option value="TXT">TXT</hlm-option>
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              <hlm-select-item value="A">A</hlm-select-item>
+              <hlm-select-item value="AAAA">AAAA</hlm-select-item>
+              <hlm-select-item value="CAA">CAA</hlm-select-item>
+              <hlm-select-item value="CNAME">CNAME</hlm-select-item>
+              <hlm-select-item value="MX">MX</hlm-select-item>
+              <hlm-select-item value="NS">NS</hlm-select-item>
+              <hlm-select-item value="PTR">PTR</hlm-select-item>
+              <hlm-select-item value="SOA">SOA</hlm-select-item>
+              <hlm-select-item value="SRV">SRV</hlm-select-item>
+              <hlm-select-item value="TXT">TXT</hlm-select-item>
+            </hlm-select-group>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select>
 
         @let typeErrors = dnsDataFormGroup.controls.type.errors;
 
         @if (typeErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field class="col-span-8 xl:col-span-6">
+      <hlm-field class="col-span-8 xl:col-span-6">
         <label hlmLabel for="server">{{ 'monitor.edit.dns.server' | transloco }}</label>
         <input id="server" hlmInput formControlName="server" type="text" placeholder="9.9.9.9" />
         @let serverErrors = dnsDataFormGroup.controls.server.errors;
         @if (serverErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (serverErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (serverErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
         @if (serverErrors?.['pattern']) {
-          <hlm-error>{{ 'form.validation.ipv4' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.ipv4' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field class="col-span-8 xl:col-span-2">
+      <hlm-field class="col-span-8 xl:col-span-2">
         <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
 
         <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
         @let portErrors = dnsDataFormGroup.controls.port.errors;
         @if (portErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (portErrors?.['min']; as min) {
-          <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
         }
         @if (portErrors?.['max']; as max) {
-          <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
         }
         @if (portErrors?.['pattern']) {
-          <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
       <div class="col-span-8 grid gap-2">
         <div class="flex items-end gap-2">
@@ -112,7 +122,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
             id="matchForm"
             [formGroup]="matchForm"
             (ngSubmit)="chipInputAdd(dnsDataFormGroup.controls.matches, matchForm.controls.match)">
-            <hlm-form-field class="w-full">
+            <hlm-field class="w-full">
               <label for="match" hlmLabel>{{ 'monitor.edit.dns.matches.label' | transloco }}</label>
               <div hlmInputGroup>
                 <input
@@ -125,7 +135,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                   <ng-icon name="lucideEqual" />
                 </div>
               </div>
-            </hlm-form-field>
+            </hlm-field>
           </form>
           <button
             [disabled]="matchForm.invalid"
@@ -168,8 +178,6 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     ReactiveFormsModule,
     TranslocoPipe,
     HlmSelectImports,
-    BrnSelectImports,
-    HlmFormFieldImports,
     HlmLabelImports,
     HlmInputImports,
     HlmBadgeImports,
@@ -177,6 +185,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     HlmInputGroupImports,
     HlmIconImports,
     HlmTooltipImports,
+    HlmFieldImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

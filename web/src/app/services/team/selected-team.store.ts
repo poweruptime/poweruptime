@@ -24,7 +24,7 @@ import {
 } from '@ngrx/signals';
 import {removeAllEntities, setEntities, setEntity, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {toast} from 'ngx-sonner';
+import {toast} from '@spartan-ng/brain/sonner';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
 
 import {BackendType, injectAPI} from '@app/api';

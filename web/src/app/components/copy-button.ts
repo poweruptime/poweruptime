@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
 
 import {TranslocoService} from '@jsverse/transloco';
+import {toast} from '@spartan-ng/brain/sonner';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {cl_copy} from 'dfts-helper';
-import {toast} from 'ngx-sonner';
 
 @Component({
   template: `

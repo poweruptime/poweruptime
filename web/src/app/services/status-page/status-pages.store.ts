@@ -7,7 +7,7 @@ import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withComputed, withMethods, withState} from '@ngrx/signals';
 import {removeAllEntities, removeEntity, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {toast} from 'ngx-sonner';
+import {toast} from '@spartan-ng/brain/sonner';
 
 import {BackendType, injectAPI} from '@app/api';
 import {injectConfirmDialog$} from '@app/components';

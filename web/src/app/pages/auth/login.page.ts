@@ -15,7 +15,6 @@ import {RouterLink} from '@angular/router';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -24,6 +23,7 @@ import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid} from '@app/form';
 import {AuthStore, InfoStore} from '@app/services';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -36,7 +36,7 @@ import {AuthStore, InfoStore} from '@app/services';
           </h3>
         </div>
         <form class="grid gap-4" [formGroup]="form" (ngSubmit)="submit()" hlmCardContent>
-          <hlm-form-field>
+          <hlm-field>
             <label hlmLabel for="email">
               {{ 'general.emailAddress' | transloco }}
             </label>
@@ -53,19 +53,23 @@ import {AuthStore, InfoStore} from '@app/services';
             </div>
             @let emailErrors = form.controls.email.errors;
             @if (emailErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (emailErrors?.['email']) {
-              <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
             }
             @if (emailErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (emailErrors?.['maxlength']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
-          </hlm-form-field>
-          <hlm-form-field>
+          </hlm-field>
+          <hlm-field>
             <div class="flex justify-between gap-4">
               <label hlmLabel for="password">
                 {{ 'general.password' | transloco }}
@@ -89,19 +93,21 @@ import {AuthStore, InfoStore} from '@app/services';
             </div>
             @let passwordErrors = form.controls.password.errors;
             @if (passwordErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (passwordErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
           @if (authStore.error() === 'INVALID_CREDENTIALS') {
-            <hlm-error>{{ 'auth.invalidCredentials' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'auth.invalidCredentials' | transloco }}</hlm-field-error>
           }
 
           <label class="flex items-center" hlmLabel for="stayLoggedIn">
-            <hlm-switch class="mr-2" id="stayLoggedIn" formControlName="stayLoggedIn" />
+            <hlm-switch class="mr-2" inputId="stayLoggedIn" formControlName="stayLoggedIn" />
             {{ 'auth.stayLoggedIn' | transloco }}
           </label>
 
@@ -161,10 +167,10 @@ import {AuthStore, InfoStore} from '@app/services';
     HlmCardImports,
     HlmLabelImports,
     HlmInputGroupImports,
-    HlmFormFieldImports,
     HlmButtonImports,
     HlmSwitchImports,
     HlmIconImports,
+    HlmFieldImports,
     PasswordShowButton,
   ],
 })

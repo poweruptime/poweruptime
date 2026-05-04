@@ -6,7 +6,7 @@ import {CdkMenuItem} from '@angular/cdk/menu';
 import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
-  selector: '[hlmDropdownMenuItem]',
+  selector: '[hlmDropdownMenuItem],hlm-dropdown-menu-item',
   hostDirectives: [
     {
       directive: CdkMenuItem,

@@ -5,7 +5,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -13,6 +12,7 @@ import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {Database} from '@app/api';
 import {PasswordShowButton, injectIsValid, passwordMatchValidator} from '@app/form';
 import {AuthStore} from '@app/services';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -26,7 +26,7 @@ import {AuthStore} from '@app/services';
 
       <form class="grid gap-10" [formGroup]="form" (ngSubmit)="submit()" hlmCardContent>
         <div class="grid gap-4">
-          <hlm-form-field>
+          <hlm-field>
             <label hlmLabel for="email">
               {{ 'general.emailAddress' | transloco }}
             </label>
@@ -43,20 +43,24 @@ import {AuthStore} from '@app/services';
             </div>
             @let emailErrors = form.controls.email.errors;
             @if (emailErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (emailErrors?.['email']) {
-              <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
             }
             @if (emailErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (emailErrors?.['maxlength']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
-          <hlm-form-field>
+          <hlm-field>
             <label hlmLabel for="oldPassword">
               {{ 'auth.oldPassword' | transloco }}
             </label>
@@ -71,16 +75,18 @@ import {AuthStore} from '@app/services';
             </div>
             @let oldPasswordErrors = form.controls.oldPassword.errors;
             @if (oldPasswordErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (oldPasswordErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
           <ng-container formGroupName="newPassword">
-            <hlm-form-field>
-              <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
+            <hlm-field>
+              <label hlmFieldLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
               <div hlmInputGroup>
                 <input
@@ -93,15 +99,17 @@ import {AuthStore} from '@app/services';
               </div>
               @let newPasswordErrors = form.controls.newPassword.controls.newPassword.errors;
               @if (newPasswordErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (newPasswordErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field>
-              <label hlmLabel for="newPasswordConfirm">
+            <hlm-field>
+              <label hlmFieldLabel for="newPasswordConfirm">
                 {{ 'auth.newPasswordConfirm' | transloco }}
               </label>
 
@@ -117,29 +125,33 @@ import {AuthStore} from '@app/services';
               @let confirmPasswordErrors =
                 form.controls.newPassword.controls.confirmPassword.errors;
               @if (confirmPasswordErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (confirmPasswordErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
             @if (form.controls.newPassword.errors?.['mismatch']) {
-              <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.passwordMismatch' | transloco }}
+              </hlm-field-error>
             }
           </ng-container>
 
           @if (authStore.error() === 'INVALID_CREDENTIALS') {
-            <hlm-error>Invalid credentials.</hlm-error>
+            <hlm-field-error>Invalid credentials.</hlm-field-error>
           }
           @if (authStore.error() === 'PASSWORDS_IDENTICAL') {
-            <hlm-error>Please provide a new and different password.</hlm-error>
+            <hlm-field-error>Please provide a new and different password.</hlm-field-error>
           }
         </div>
 
         <div class="grid gap-3">
           <label class="flex items-center" hlmLabel for="stayLoggedIn">
-            <hlm-switch class="mr-2" id="stayLoggedIn" formControlName="stayLoggedIn" />
+            <hlm-switch class="mr-2" inputId="stayLoggedIn" formControlName="stayLoggedIn" />
             {{ 'auth.stayLoggedIn' | transloco }}
           </label>
 
@@ -158,11 +170,11 @@ import {AuthStore} from '@app/services';
     TranslocoPipe,
     PasswordShowButton,
     HlmCardImports,
-    HlmFormFieldImports,
     HlmLabelImports,
     HlmInputGroupImports,
     HlmSwitchImports,
     HlmButtonImports,
+    HlmFieldImports,
   ],
 })
 export class PasswordChangeLoginPage {

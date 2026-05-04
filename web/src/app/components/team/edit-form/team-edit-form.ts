@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
@@ -10,6 +9,7 @@ import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/form';
 
 import {ProfilePictureUpload} from '../../profile-picture-upload';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -22,7 +22,7 @@ import {ProfilePictureUpload} from '../../profile-picture-upload';
           [label]="'statusPage.edit.image' | transloco"
           (fileId)="form.controls.imageId.setValue($event)" />
 
-        <hlm-form-field>
+        <hlm-field>
           <label hlmLabel for="name">
             {{ 'general.name' | transloco }}
           </label>
@@ -35,15 +35,19 @@ import {ProfilePictureUpload} from '../../profile-picture-upload';
             placeholder="Team #1" />
           @let nameErrors = form.controls.name.errors;
           @if (nameErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (nameErrors?.['minlength']; as minlength) {
-            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.minlength' | transloco: minlength }}
+            </hlm-field-error>
           }
           @if (nameErrors?.['maxlength']; as maxlength) {
-            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.maxlength' | transloco: maxlength }}
+            </hlm-field-error>
           }
-        </hlm-form-field>
+        </hlm-field>
       </div>
 
       <pu-save-button [valid]="valid" />
@@ -54,10 +58,10 @@ import {ProfilePictureUpload} from '../../profile-picture-upload';
     SaveButton,
     ReactiveFormsModule,
     TranslocoPipe,
-    HlmFormFieldImports,
     HlmInputImports,
     HlmLabelImports,
     ProfilePictureUpload,
+    HlmFieldImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

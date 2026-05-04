@@ -32,7 +32,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
             <label class="flex items-center" hlmLabel for="isUserAllowedToCreateTeams">
               <hlm-switch
                 class="mr-2"
-                id="isUserAllowedToCreateTeams"
+                inputId="isUserAllowedToCreateTeams"
                 formControlName="isUserAllowedToCreateTeams" />
               {{ 'instanceSettings.permissions.allowUsersToCreateTeams' | transloco }}
             </label>

@@ -7,8 +7,12 @@ import {classes} from '@spartan-ng/helm/utils';
   selector: 'hlm-accordion-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [{directive: BrnAccordionContent, inputs: ['style']}],
+  host: {
+    'data-slot': 'accordion-content',
+  },
   template: `
-    <div class="flex flex-col gap-4 pt-0 pb-4 text-balance">
+    <div
+      class="[&_a]:hover:text-foreground pt-0 pb-4 [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4">
       <ng-content />
     </div>
   `,
@@ -17,7 +21,7 @@ export class HlmAccordionContent {
   constructor() {
     classes(
       () =>
-        'text-sm transition-all data-[state=closed]:h-0 data-[state=open]:h-[var(--brn-accordion-content-height)]',
+        'text-sm transition-all data-[state=closed]:h-0 data-[state=open]:h-(--brn-accordion-content-height)',
     );
   }
 }

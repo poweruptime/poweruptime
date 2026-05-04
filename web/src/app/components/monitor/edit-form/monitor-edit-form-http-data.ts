@@ -7,13 +7,12 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
 import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -30,6 +29,7 @@ import {PasswordShowButton} from '@app/form';
 import {chipInputRemove} from '../../../util';
 import {MonitorEditFormDataCard} from './monitor-edit-form-data-card';
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 const predefinedStatusCodeRanges = [
   '100 - 199',
@@ -45,7 +45,7 @@ const predefinedStatusCodeRanges = [
     <div class="grid gap-4" [formGroup]="httpDataFormGroup">
       <pu-monitor-edit-form-data-card type="HTTP">
         <div class="grid grid-cols-8 gap-6">
-          <hlm-form-field class="col-span-8">
+          <hlm-field class="col-span-8">
             <label hlmLabel for="url">
               {{ 'general.url' | transloco }}
             </label>
@@ -57,75 +57,76 @@ const predefinedStatusCodeRanges = [
               placeholder="https://google.com" />
             @let urlErrors = httpDataFormGroup.controls.url.errors;
             @if (urlErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (urlErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (urlErrors?.['maxlength']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
             @if (urlErrors?.['pattern']) {
-              <hlm-error>{{ 'form.validation.url' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.url' | transloco }}</hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
-          <hlm-form-field class="col-span-8 xl:col-span-2">
+          <hlm-field class="col-span-8 xl:col-span-2">
             <label hlmLabel for="method">{{ 'general.method' | transloco }}</label>
-            <brn-select
-              id="method"
-              [placeholder]="'general.method' | transloco"
-              formControlName="method">
+            <hlm-select id="method" formControlName="method">
               <hlm-select-trigger class="w-full">
-                <hlm-select-value />
+                <hlm-select-value [placeholder]="'general.method' | transloco" />
               </hlm-select-trigger>
-              <hlm-select-content>
-                <hlm-option value="GET">GET</hlm-option>
-                <hlm-option value="POST">POST</hlm-option>
-                <hlm-option value="PUT">PUT</hlm-option>
-                <hlm-option value="PATCH">PATCH</hlm-option>
-                <hlm-option value="DELETE">DELETE</hlm-option>
-                <hlm-option value="HEAD">HEAD</hlm-option>
-                <hlm-option value="OPTIONS">OPTIONS</hlm-option>
+              <hlm-select-content *hlmSelectPortal>
+                <hlm-select-group>
+                  <hlm-select-item value="GET">GET</hlm-select-item>
+                  <hlm-select-item value="POST">POST</hlm-select-item>
+                  <hlm-select-item value="PUT">PUT</hlm-select-item>
+                  <hlm-select-item value="PATCH">PATCH</hlm-select-item>
+                  <hlm-select-item value="DELETE">DELETE</hlm-select-item>
+                  <hlm-select-item value="HEAD">HEAD</hlm-select-item>
+                  <hlm-select-item value="OPTIONS">OPTIONS</hlm-select-item>
+                </hlm-select-group>
               </hlm-select-content>
-            </brn-select>
-          </hlm-form-field>
+            </hlm-select>
+          </hlm-field>
 
-          <hlm-form-field class="col-span-8 xl:col-span-2">
+          <hlm-field class="col-span-8 xl:col-span-2">
             <label hlmLabel for="contentType">{{ 'general.contentType' | transloco }}</label>
-            <brn-select
-              id="contentType"
-              [placeholder]="'general.contentType' | transloco"
-              formControlName="contentType">
+            <hlm-select id="contentType" formControlName="contentType">
               <hlm-select-trigger class="w-full">
-                <hlm-select-value />
+                <hlm-select-value [placeholder]="'general.contentType' | transloco" />
               </hlm-select-trigger>
-              <hlm-select-content>
-                <hlm-option value="JSON">JSON</hlm-option>
-                <hlm-option value="XML">XML</hlm-option>
+              <hlm-select-content *hlmSelectPortal>
+                <hlm-select-group>
+                  <hlm-select-item value="JSON">JSON</hlm-select-item>
+                  <hlm-select-item value="XML">XML</hlm-select-item>
+                </hlm-select-group>
               </hlm-select-content>
-            </brn-select>
-          </hlm-form-field>
+            </hlm-select>
+          </hlm-field>
 
           <div class="col-span-8 grid grid-cols-8 gap-4">
-            <hlm-form-field class="col-span-8 xl:col-span-2">
+            <hlm-field class="col-span-8 xl:col-span-2">
               <label hlmLabel for="authType">{{ 'monitor.edit.http.authType' | transloco }}</label>
-              <brn-select
-                id="authType"
-                [placeholder]="'monitor.edit.http.authType' | transloco"
-                formControlName="authType">
+              <hlm-select id="authType" formControlName="authType">
                 <hlm-select-trigger class="w-full">
-                  <hlm-select-value />
+                  <hlm-select-value [placeholder]="'monitor.edit.http.authType' | transloco" />
                 </hlm-select-trigger>
-                <hlm-select-content>
-                  <hlm-option [value]="undefined">None</hlm-option>
-                  <hlm-option value="BASIC_AUTH">Basic auth</hlm-option>
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-group>
+                    <hlm-select-item [value]="undefined">None</hlm-select-item>
+                    <hlm-select-item value="BASIC_AUTH">Basic auth</hlm-select-item>
+                  </hlm-select-group>
                 </hlm-select-content>
-              </brn-select>
-            </hlm-form-field>
+              </hlm-select>
+            </hlm-field>
 
             @if (httpDataFormGroup.controls.authType.getRawValue() === 'BASIC_AUTH') {
-              <hlm-form-field class="col-span-8 xl:col-span-3">
+              <hlm-field class="col-span-8 xl:col-span-3">
                 <label hlmLabel for="basicAuthDataUsername">
                   {{ 'general.username' | transloco }}
                 </label>
@@ -137,14 +138,16 @@ const predefinedStatusCodeRanges = [
                 @let basicAuthUsernameErrors =
                   httpDataFormGroup.controls.basicAuthDataUsername.errors;
                 @if (basicAuthUsernameErrors?.['required']) {
-                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                 }
                 @if (basicAuthUsernameErrors?.['maxlength']; as maxlength) {
-                  <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.maxlength' | transloco: maxlength }}
+                  </hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
 
-              <hlm-form-field class="col-span-8 xl:col-span-3">
+              <hlm-field class="col-span-8 xl:col-span-3">
                 <label hlmLabel for="basicAuthDataPassword">
                   {{ 'general.password' | transloco }}
                 </label>
@@ -167,12 +170,14 @@ const predefinedStatusCodeRanges = [
                 @let basicAuthPasswordErrors =
                   httpDataFormGroup.controls.basicAuthDataPassword.errors;
                 @if (basicAuthPasswordErrors?.['required']) {
-                  <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                 }
                 @if (basicAuthPasswordErrors?.['maxlength']; as maxlength) {
-                  <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.maxlength' | transloco: maxlength }}
+                  </hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
             }
           </div>
 
@@ -267,38 +272,42 @@ const predefinedStatusCodeRanges = [
             @let allowedStatusCodeRangeErrors =
               httpDataFormGroup.controls.allowedStatusCodeRanges.errors;
             @if (allowedStatusCodeRangeErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (allowedStatusCodeRangeErrors?.['patternArrayItem']) {
               {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}
             }
             @if (allowedStatusCodeRangeErrors?.['minLengthArrayItem']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (allowedStatusCodeRangeErrors?.['maxLengthArrayItem']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
             @if (allowedStatusCodeRangeErrors?.['inputRegex']) {
-              <hlm-error>
+              <hlm-field-error>
                 {{ 'monitor.edit.http.allowedStatusCodeRanges.inputRegexError' | transloco }}
-              </hlm-error>
+              </hlm-field-error>
             }
             @if (allowedStatusCodeRangeErrors?.['inputStartBiggerThenEnd']) {
-              <hlm-error>
+              <hlm-field-error>
                 {{
                   'monitor.edit.http.allowedStatusCodeRanges.inputStartBiggerThenEndError'
                     | transloco
                 }}
-              </hlm-error>
+              </hlm-field-error>
             }
             @if (allowedStatusCodeRangeErrors?.['rangeIncorrect']) {
-              <hlm-error>
+              <hlm-field-error>
                 {{ 'monitor.edit.http.allowedStatusCodeRanges.rangeIncorrectError' | transloco }}
-              </hlm-error>
+              </hlm-field-error>
             }
           </div>
 
-          <hlm-form-field class="col-span-8 xl:col-span-3">
+          <hlm-field class="col-span-8 xl:col-span-3">
             <label hlmLabel for="maxRedirects">
               {{ 'monitor.edit.http.maxRedirects.label' | transloco }}
             </label>
@@ -310,19 +319,19 @@ const predefinedStatusCodeRanges = [
               type="number"
               step="1" />
 
-            <hlm-hint>{{ 'monitor.edit.http.maxRedirects.hint' | transloco }}</hlm-hint>
+            <p hlmFieldDescription>{{ 'monitor.edit.http.maxRedirects.hint' | transloco }}</p>
 
             @let maxRedirectErrors = httpDataFormGroup.controls.maxRedirects.errors;
             @if (maxRedirectErrors?.['min']; as min) {
-              <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
             }
             @if (maxRedirectErrors?.['max']; as max) {
-              <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
             }
             @if (maxRedirectErrors?.['pattern']) {
-              <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
           <hlm-accordion class="col-span-8">
             <hlm-accordion-item>
@@ -333,7 +342,7 @@ const predefinedStatusCodeRanges = [
                 </button>
               </h3>
               <hlm-accordion-content class="space-y-2">
-                <hlm-form-field>
+                <hlm-field>
                   <label hlmLabel for="searchTerm">
                     {{ 'monitor.edit.http.searchTerm' | transloco }}
                   </label>
@@ -346,9 +355,9 @@ const predefinedStatusCodeRanges = [
                     rows="3"
                     cdkTextareaAutosize
                     cdkAutosizeMinRows="3"></textarea>
-                </hlm-form-field>
+                </hlm-field>
 
-                <hlm-form-field>
+                <hlm-field>
                   <label hlmLabel for="body">{{ 'general.body' | transloco }}</label>
                   <textarea
                     class="w-full"
@@ -359,7 +368,7 @@ const predefinedStatusCodeRanges = [
                     rows="3"
                     cdkTextareaAutosize
                     cdkAutosizeMinRows="3"></textarea>
-                </hlm-form-field>
+                </hlm-field>
               </hlm-accordion-content>
             </hlm-accordion-item>
           </hlm-accordion>
@@ -379,7 +388,7 @@ const predefinedStatusCodeRanges = [
                 Get notified before SSL certificate expires
               </p>
             </div>
-            <hlm-switch id="certificateExpiry" formControlName="certificateExpiry" />
+            <hlm-switch inputId="certificateExpiry" formControlName="certificateExpiry" />
           </label>
 
           @if (httpDataFormGroup.controls.certificateExpiry.getRawValue()) {
@@ -387,7 +396,7 @@ const predefinedStatusCodeRanges = [
               class="border-muted ml-0 space-y-2 border-l-0 pl-0 sm:ml-2 sm:border-l-2 sm:pl-4"
               animate.enter="animate-in fade-in slide-in-from-top-20"
               animate.leave="animate-out fade-out slide-out-to-top-20">
-              <hlm-form-field>
+              <hlm-field>
                 <label hlmLabel for="certificateValidDaysLeft">
                   {{ 'monitor.edit.ssl.validDaysLeft' | transloco }}
                 </label>
@@ -399,20 +408,20 @@ const predefinedStatusCodeRanges = [
                   step="1"
                   type="number" />
 
-                <hlm-hint>Alert when certificate expires within this many days</hlm-hint>
+                <p hlmFieldDescription>Alert when certificate expires within this many days</p>
 
                 @let validDaysLeftErrors =
                   httpDataFormGroup.controls.certificateValidDaysLeft.errors;
                 @if (validDaysLeftErrors?.['min']; as min) {
-                  <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
                 }
                 @if (validDaysLeftErrors?.['max']; as max) {
-                  <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
                 }
                 @if (validDaysLeftErrors?.['pattern']) {
-                  <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+                  <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
             </div>
           }
 
@@ -423,7 +432,7 @@ const predefinedStatusCodeRanges = [
                 Skip certificate validation (not recommended)
               </p>
             </div>
-            <hlm-switch id="ignoreTLS" formControlName="ignoreTLS" />
+            <hlm-switch inputId="ignoreTLS" formControlName="ignoreTLS" />
           </label>
         </div>
       </section>
@@ -438,9 +447,7 @@ const predefinedStatusCodeRanges = [
     CdkTextareaAutosize,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmFormFieldImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmSeparatorImports,
     HlmInputImports,
     HlmInputGroupImports,
@@ -452,6 +459,7 @@ const predefinedStatusCodeRanges = [
     HlmAutocompleteImports,
     HlmAccordionImports,
     HlmTextareaImports,
+    HlmFieldImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
