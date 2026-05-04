@@ -4,9 +4,8 @@ import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {BrnDialogRef, injectBrnDialogContext} from '@spartan-ng/brain/dialog';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -15,6 +14,7 @@ import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 import {BackendType, Database} from '@app/api';
 import {injectIsValid} from '@app/form';
 import {TeamUsersStore} from '@app/services';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -33,7 +33,7 @@ import {TeamUsersStore} from '@app/services';
           @for (memberControl of form.controls.members.controls; track $index) {
             <div class="flex gap-2" [formGroup]="memberControl">
               <div class="flex flex-1 gap-2">
-                <hlm-form-field class="w-56">
+                <hlm-field class="w-56">
                   <div hlmInputGroup>
                     <input
                       id="email"
@@ -48,33 +48,38 @@ import {TeamUsersStore} from '@app/services';
                   </div>
                   @let emailErrors = memberControl.controls.email.errors;
                   @if (emailErrors?.['required']) {
-                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                   }
                   @if (emailErrors?.['email']) {
-                    <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
                   }
                   @if (emailErrors?.['minlength']; as minlength) {
-                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.minlength' | transloco: minlength }}
+                    </hlm-field-error>
                   }
                   @if (emailErrors?.['maxlength']; as maxlength) {
-                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.maxlength' | transloco: maxlength }}
+                    </hlm-field-error>
                   }
-                </hlm-form-field>
-                <brn-select
-                  class="inline-block"
-                  [placeholder]="'general.role' | transloco"
-                  formControlName="role">
+                </hlm-field>
+                <hlm-select class="inline-block" formControlName="role">
                   <hlm-select-trigger class="w-28">
-                    <hlm-select-value />
+                    <hlm-select-value [placeholder]="'general.role' | transloco" />
                   </hlm-select-trigger>
-                  <hlm-select-content>
-                    <hlm-option value="ADMIN">
-                      <ng-icon class="mr-1" name="bootstrapStarFill" />
-                      {{ 'general.admin' | transloco }}
-                    </hlm-option>
-                    <hlm-option value="MEMBER">{{ 'general.member' | transloco }}</hlm-option>
+                  <hlm-select-content *hlmSelectPortal>
+                    <hlm-select-group>
+                      <hlm-select-item value="ADMIN">
+                        <ng-icon class="mr-1" name="bootstrapStarFill" />
+                        {{ 'general.admin' | transloco }}
+                      </hlm-select-item>
+                      <hlm-select-item value="MEMBER">
+                        {{ 'general.member' | transloco }}
+                      </hlm-select-item>
+                    </hlm-select-group>
                   </hlm-select-content>
-                </brn-select>
+                </hlm-select>
               </div>
               @if (form.controls.members.length > 1) {
                 <button
@@ -91,19 +96,19 @@ import {TeamUsersStore} from '@app/services';
 
             @let memberErrors = memberControl.errors;
             @if (memberErrors?.['mailNotFound']) {
-              <hlm-error>Mail not found on poweruptime</hlm-error>
+              <hlm-field-error>Mail not found on poweruptime</hlm-field-error>
             }
             @if (memberErrors?.['rateLimitExceeded']) {
-              <hlm-error>User can't be invited for some time</hlm-error>
+              <hlm-field-error>User can't be invited for some time</hlm-field-error>
             }
             @if (memberErrors?.['personalTeam']) {
-              <hlm-error>User can't be invited to a personal team</hlm-error>
+              <hlm-field-error>User can't be invited to a personal team</hlm-field-error>
             }
             @if (memberErrors?.['alreadyInTeam']) {
-              <hlm-error>User is already a member of the team</hlm-error>
+              <hlm-field-error>User is already a member of the team</hlm-field-error>
             }
             @if (memberErrors?.['unknownError']) {
-              <hlm-error>Unknown error</hlm-error>
+              <hlm-field-error>Unknown error</hlm-field-error>
             }
           }
           <button
@@ -141,10 +146,9 @@ import {TeamUsersStore} from '@app/services';
     HlmIconImports,
     HlmButtonImports,
     HlmSelectImports,
-    BrnSelectImports,
-    HlmFormFieldImports,
     HlmInputGroupImports,
     HlmSpinnerImports,
+    HlmFieldImports,
   ],
 })
 export class TeamInviteDialog {

@@ -13,7 +13,6 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -27,6 +26,7 @@ import {InfoStore} from '@app/services';
 
 import {SupporterBadge} from '../supporter-badge';
 import {TableLoadingBar} from '../table-loading-bar';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -91,7 +91,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               #formRef
               [formGroup]="form"
               (ngSubmit)="submit()">
-              <hlm-form-field>
+              <hlm-field>
                 <label hlmLabel for="supportLookup">
                   {{ 'instanceSettings.sponsorship.githubHandle' | transloco }}
                 </label>
@@ -109,15 +109,22 @@ import {TableLoadingBar} from '../table-loading-bar';
                 </div>
                 @let supportLookup = form.controls.supportLookup.errors;
                 @if (supportLookup?.['minlength']; as minlength) {
-                  <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.minlength' | transloco: minlength }}
+                  </hlm-field-error>
                 }
                 @if (supportLookup?.['maxlength']; as maxlength) {
-                  <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                  <hlm-field-error>
+                    {{ 'form.validation.maxlength' | transloco: maxlength }}
+                  </hlm-field-error>
                 }
-              </hlm-form-field>
+              </hlm-field>
 
               <label class="flex items-center" hlmLabel for="showSupportBadge">
-                <hlm-switch class="mr-2" id="showSupportBadge" formControlName="showSupportBadge" />
+                <hlm-switch
+                  class="mr-2"
+                  inputId="showSupportBadge"
+                  formControlName="showSupportBadge" />
                 {{ 'instanceSettings.sponsorship.showBadge' | transloco }}
               </label>
             </form>
@@ -180,8 +187,8 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmFormFieldImports,
     HlmInputGroupImports,
+    HlmFieldImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -2,9 +2,17 @@ import {Directive, booleanAttribute, computed, effect, inject, input} from '@ang
 
 import {type BooleanInput} from '@angular/cdk/coercion';
 
-import {BrnTooltip, provideBrnTooltipDefaultOptions} from '@spartan-ng/brain/tooltip';
-import {DEFAULT_TOOLTIP_CONTENT_CLASSES} from '@spartan-ng/helm/tooltip';
-import {classes} from '@spartan-ng/helm/utils';
+import {
+  BrnTooltip,
+  BrnTooltipPosition,
+  provideBrnTooltipDefaultOptions,
+} from '@spartan-ng/brain/tooltip';
+import {
+  DEFAULT_TOOLTIP_CONTENT_CLASSES,
+  DEFAULT_TOOLTIP_SVG_CLASS,
+  tooltipPositionVariants,
+} from '@spartan-ng/helm/tooltip';
+import {classes, hlm} from '@spartan-ng/helm/utils';
 import {cva} from 'class-variance-authority';
 
 import {HlmSidebarService} from './hlm-sidebar.service';
@@ -39,6 +47,8 @@ const sidebarMenuButtonVariants = cva(
       showDelay: 150,
       hideDelay: 0,
       tooltipContentClasses: DEFAULT_TOOLTIP_CONTENT_CLASSES,
+      svgClasses: DEFAULT_TOOLTIP_SVG_CLASS,
+      arrowClasses: (position: BrnTooltipPosition) => hlm(tooltipPositionVariants({position})),
       position: 'right',
     }),
   ],

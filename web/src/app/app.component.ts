@@ -2,16 +2,15 @@ import {UpperCasePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 
-import {NgxSonnerToaster} from 'ngx-sonner';
-
 import {environment} from '@app/util';
+import {HlmToasterImports} from '@spartan-ng/helm/sonner';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NgxSonnerToaster, UpperCasePipe],
+  imports: [RouterOutlet, UpperCasePipe, HlmToasterImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ngx-sonner-toaster duration="5000" visibleToasts="6" />
+    <hlm-toaster duration="5000" visibleToasts="6" />
     <router-outlet />
     @if (isBetaOrDev) {
       <div class="pointer-events-none fixed top-0 right-0 z-50">

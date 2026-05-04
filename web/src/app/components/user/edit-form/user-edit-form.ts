@@ -4,7 +4,6 @@ import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -17,6 +16,7 @@ import {
   SaveButton,
   injectIsValid,
 } from '@app/form';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -28,7 +28,7 @@ import {
       #formRef
       [formGroup]="form"
       (ngSubmit)="submit()">
-      <hlm-form-field>
+      <hlm-field>
         <label hlmLabel for="name">
           {{ 'general.name' | transloco }}
         </label>
@@ -41,16 +41,20 @@ import {
         </div>
         @let nameErrors = form.controls.name.errors;
         @if (nameErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (nameErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (nameErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
-      <hlm-form-field>
+      </hlm-field>
+      <hlm-field>
         <label hlmLabel for="email">
           {{ 'general.emailAddress' | transloco }}
         </label>
@@ -67,18 +71,22 @@ import {
         </div>
         @let emailErrors = form.controls.email.errors;
         @if (emailErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (emailErrors?.['email']) {
-          <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
         }
         @if (emailErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (emailErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
       @let _isCreating = isCreating();
 
@@ -101,11 +109,11 @@ import {
                 </p>
               </div>
             </div>
-            <hlm-switch id="updatedPassword" formControlName="updatePassword" />
+            <hlm-switch inputId="updatedPassword" formControlName="updatePassword" />
           </label>
 
           @if (form.controls.updatePassword.getRawValue()) {
-            <hlm-form-field>
+            <hlm-field>
               <label hlmLabel for="password">
                 {{ 'general.password' | transloco }}
               </label>
@@ -127,16 +135,18 @@ import {
               </div>
               @let passwordErrors = form.controls.password.errors;
               @if (passwordErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (passwordErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
           }
         </div>
       } @else {
-        <hlm-form-field>
+        <hlm-field>
           <label hlmLabel for="password">
             {{ 'general.password' | transloco }}
           </label>
@@ -155,12 +165,14 @@ import {
           </div>
           @let passwordErrors = form.controls.password.errors;
           @if (passwordErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (passwordErrors?.['minlength']; as minlength) {
-            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.minlength' | transloco: minlength }}
+            </hlm-field-error>
           }
-        </hlm-form-field>
+        </hlm-field>
       }
 
       <div>
@@ -184,7 +196,7 @@ import {
                 </p>
               </div>
             </div>
-            <hlm-switch id="forcePasswordChange" formControlName="forcePasswordChange" />
+            <hlm-switch inputId="forcePasswordChange" formControlName="forcePasswordChange" />
           </label>
         </div>
       </div>
@@ -214,7 +226,7 @@ import {
                 Full administrative privileges
               </p>
             </div>
-            <hlm-switch id="isAdmin" formControlName="isAdmin" />
+            <hlm-switch inputId="isAdmin" formControlName="isAdmin" />
           </label>
         </div>
         @if (!_isCreating) {
@@ -240,7 +252,7 @@ import {
                 </div>
                 <p class="text-muted-foreground text-xs font-normal">User can access the system</p>
               </div>
-              <hlm-switch id="activated" formControlName="activated" />
+              <hlm-switch inputId="activated" formControlName="activated" />
             </label>
           </div>
         }
@@ -265,7 +277,7 @@ import {
                 </p>
               </div>
             </div>
-            <hlm-switch id="sendInvitation" formControlName="sendInvitation" />
+            <hlm-switch inputId="sendInvitation" formControlName="sendInvitation" />
           </label>
         </div>
       </div>
@@ -282,10 +294,10 @@ import {
     TranslocoPipe,
     HlmSwitchImports,
     HlmLabelImports,
-    HlmFormFieldImports,
     HlmInputGroupImports,
     HlmIconImports,
     HlmBadgeImports,
+    HlmFieldImports,
   ],
 })
 export class UserEditForm extends AbstractModelEditFormComponent<

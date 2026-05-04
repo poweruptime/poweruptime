@@ -108,7 +108,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
 
               <label class="inline-flex items-center" hlmLabel for="showTimestamps">
                 {{ 'checkResult.details.showTimestamps' | transloco }}
-                <hlm-switch class="mr-2" id="showTimestamps" [(checked)]="showTimestamps" />
+                <hlm-switch class="mr-2" [(checked)]="showTimestamps" inputId="showTimestamps" />
               </label>
             </div>
 

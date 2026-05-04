@@ -3,8 +3,8 @@ import {inject} from '@angular/core';
 
 import {BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError} from 'rxjs';
 
+import {toast} from '@spartan-ng/brain/sonner';
 import {loggerOf} from 'dfts-helper';
-import {toast} from 'ngx-sonner';
 
 import {injectAPI} from '@app/api';
 import {AuthStore, getSessionInformation} from '@app/services';

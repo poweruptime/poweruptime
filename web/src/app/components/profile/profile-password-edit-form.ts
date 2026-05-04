@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
@@ -14,11 +13,12 @@ import {
   injectIsValid,
   passwordMatchValidator,
 } from '@app/form';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
     <form class="grid gap-4" id="password-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
-      <hlm-form-field>
+      <hlm-field>
         <label hlmLabel for="oldPassword">
           {{ 'profile.password.currentPassword' | transloco }}
         </label>
@@ -33,15 +33,17 @@ import {
         </div>
         @let oldPasswordErrors = form.controls.oldPassword.errors;
         @if (oldPasswordErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (oldPasswordErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
       <ng-container formGroupName="password">
-        <hlm-form-field>
+        <hlm-field>
           <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
           <div hlmInputGroup>
@@ -55,14 +57,16 @@ import {
           </div>
           @let newPasswordErrors = form.controls.password.controls.newPassword.errors;
           @if (newPasswordErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (newPasswordErrors?.['minlength']; as minlength) {
-            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.minlength' | transloco: minlength }}
+            </hlm-field-error>
           }
-        </hlm-form-field>
+        </hlm-field>
 
-        <hlm-form-field>
+        <hlm-field>
           <label hlmLabel for="newPasswordConfirm">
             {{ 'auth.newPasswordConfirm' | transloco }}
           </label>
@@ -78,15 +82,17 @@ import {
           </div>
           @let confirmPasswordErrors = form.controls.password.controls.confirmPassword.errors;
           @if (confirmPasswordErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (confirmPasswordErrors?.['minlength']; as minlength) {
-            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.minlength' | transloco: minlength }}
+            </hlm-field-error>
           }
-        </hlm-form-field>
+        </hlm-field>
 
         @if (form.controls.password.errors?.['mismatch']) {
-          <hlm-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.passwordMismatch' | transloco }}</hlm-field-error>
         }
       </ng-container>
 
@@ -104,7 +110,7 @@ import {
     TranslocoPipe,
     HlmInputGroupImports,
     HlmLabelImports,
-    HlmFormFieldImports,
+    HlmFieldImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

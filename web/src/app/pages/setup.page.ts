@@ -6,7 +6,6 @@ import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
@@ -17,6 +16,7 @@ import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 import {Database} from '@app/api';
 import {injectIsValid} from '@app/form';
 import {SetupStore} from '@app/services';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -81,7 +81,7 @@ import {SetupStore} from '@app/services';
                 class="animate-in fade-in zoom-in slide-out-to-end-20 grid gap-6"
                 [formGroup]="testEmailForm"
                 (ngSubmit)="submitTestEmail()">
-                <hlm-form-field>
+                <hlm-field>
                   <label hlmLabel for="test-email">
                     {{ 'general.emailAddress' | transloco }}
                   </label>
@@ -98,18 +98,22 @@ import {SetupStore} from '@app/services';
                   </div>
                   @let testEmailErrors = testEmailForm.controls.email.errors;
                   @if (testEmailErrors?.['required']) {
-                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                   }
                   @if (testEmailErrors?.['email']) {
-                    <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
                   }
                   @if (testEmailErrors?.['minlength']; as minlength) {
-                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.minlength' | transloco: minlength }}
+                    </hlm-field-error>
                   }
                   @if (testEmailErrors?.['maxlength']; as maxlength) {
-                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.maxlength' | transloco: maxlength }}
+                    </hlm-field-error>
                   }
-                </hlm-form-field>
+                </hlm-field>
 
                 <div class="grid gap-4">
                   <button
@@ -189,7 +193,7 @@ import {SetupStore} from '@app/services';
             @case ('setup') {
               <form class="grid gap-4" [formGroup]="setupForm" (ngSubmit)="submitSetup()">
                 <h3>{{ 'auth.setup.description' | transloco }}:</h3>
-                <hlm-form-field>
+                <hlm-field>
                   <label hlmLabel for="name">
                     {{ 'general.name' | transloco }}
                   </label>
@@ -206,17 +210,21 @@ import {SetupStore} from '@app/services';
                   </div>
                   @let nameErrors = setupForm.controls.name.errors;
                   @if (nameErrors?.['required']) {
-                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                   }
                   @if (nameErrors?.['minlength']; as minlength) {
-                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.minlength' | transloco: minlength }}
+                    </hlm-field-error>
                   }
                   @if (nameErrors?.['maxlength']; as maxlength) {
-                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.maxlength' | transloco: maxlength }}
+                    </hlm-field-error>
                   }
-                </hlm-form-field>
+                </hlm-field>
 
-                <hlm-form-field>
+                <hlm-field>
                   <label hlmLabel for="email">
                     {{ 'general.emailAddress' | transloco }}
                   </label>
@@ -233,18 +241,22 @@ import {SetupStore} from '@app/services';
                   </div>
                   @let setupEmailErrors = setupForm.controls.email.errors;
                   @if (setupEmailErrors?.['required']) {
-                    <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
                   }
                   @if (setupEmailErrors?.['email']) {
-                    <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+                    <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
                   }
                   @if (setupEmailErrors?.['minlength']; as minlength) {
-                    <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.minlength' | transloco: minlength }}
+                    </hlm-field-error>
                   }
                   @if (setupEmailErrors?.['maxlength']; as maxlength) {
-                    <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                    <hlm-field-error>
+                      {{ 'form.validation.maxlength' | transloco: maxlength }}
+                    </hlm-field-error>
                   }
-                </hlm-form-field>
+                </hlm-field>
 
                 <button
                   id="send-invite-button"
@@ -292,10 +304,10 @@ import {SetupStore} from '@app/services';
     HlmButtonImports,
     HlmIconImports,
     HlmInputGroupImports,
-    HlmFormFieldImports,
     HlmLabelImports,
     HlmAlertImports,
     HlmProgressImports,
+    HlmFieldImports,
   ],
 })
 export class SetupPage {

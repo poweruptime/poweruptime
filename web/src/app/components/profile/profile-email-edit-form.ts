@@ -2,13 +2,13 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {BackendType, Database} from '@app/api';
 import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} from '@app/form';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -17,7 +17,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
     <form class="grid gap-4" id="email-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <span class="mb-4">{{ 'profile.email.current' | transloco }}: {{ email() }}</span>
 
-      <hlm-form-field>
+      <hlm-field>
         <label hlmLabel for="email">{{ 'profile.email.new' | transloco }}</label>
         <div hlmInputGroup>
           <input
@@ -32,20 +32,24 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
         </div>
         @let emailErrors = form.controls.email.errors;
         @if (emailErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (emailErrors?.['email']) {
-          <hlm-error>{{ 'form.validation.email' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.email' | transloco }}</hlm-field-error>
         }
         @if (emailErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (emailErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field>
+      <hlm-field>
         <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
 
         <div hlmInputGroup>
@@ -58,12 +62,14 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
         </div>
         @let passwordErrors = form.controls.password.errors;
         @if (passwordErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (passwordErrors?.['minlength']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
       <pu-save-button
         [valid]="valid"
@@ -76,10 +82,10 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
     SaveButton,
     ReactiveFormsModule,
     TranslocoPipe,
-    HlmFormFieldImports,
     HlmInputGroupImports,
     HlmIconImports,
     HlmLabelImports,
+    HlmFieldImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

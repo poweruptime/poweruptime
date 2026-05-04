@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -21,22 +21,35 @@ import {PingChart} from './ping-chart';
   template: `
     <div class="flex flex-col gap-2">
       <pu-table-filter [key]="tableKey">
-        <hlm-select
-          class="inline-block"
-          [(value)]="precision"
-          [placeholder]="'general.status' | transloco"
-          multiple>
+        <hlm-select class="inline-block" [(value)]="precision">
           <hlm-select-trigger>
-            <hlm-select-value class="min-w-38" />
+            <hlm-select-value class="min-w-38" [placeholder]="'Grouped time range' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            <hlm-option [value]="2">{{ 'general.xMinutes' | transloco: {value: 2} }}</hlm-option>
-            <hlm-option [value]="5">{{ 'general.xMinutes' | transloco: {value: 5} }}</hlm-option>
-            <hlm-option [value]="15">{{ 'general.xMinutes' | transloco: {value: 15} }}</hlm-option>
-            <hlm-option [value]="30">{{ 'general.xMinutes' | transloco: {value: 30} }}</hlm-option>
-            <hlm-option [value]="60">{{ 'general.xMinutes' | transloco: {value: 60} }}</hlm-option>
-            <hlm-option [value]="180">{{ 'general.xHours' | transloco: {value: 3} }}</hlm-option>
-            <hlm-option [value]="360">{{ 'general.xHours' | transloco: {value: 6} }}</hlm-option>
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              <hlm-select-label>{{ 'Grouped time range' | transloco }}</hlm-select-label>
+              <hlm-select-item [value]="2">
+                {{ 'general.xMinutes' | transloco: {value: 2} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="5">
+                {{ 'general.xMinutes' | transloco: {value: 5} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="15">
+                {{ 'general.xMinutes' | transloco: {value: 15} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="30">
+                {{ 'general.xMinutes' | transloco: {value: 30} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="60">
+                {{ 'general.xMinutes' | transloco: {value: 60} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="180">
+                {{ 'general.xHours' | transloco: {value: 3} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="360">
+                {{ 'general.xHours' | transloco: {value: 6} }}
+              </hlm-select-item>
+            </hlm-select-group>
           </hlm-select-content>
         </hlm-select>
 
@@ -95,7 +108,6 @@ import {PingChart} from './ping-chart';
     ChartPlaceholder,
     TranslocoPipe,
     HlmSelectImports,
-    BrnSelectImports,
     HlmDatePickerImports,
     HlmIconImports,
     HlmEmptyImports,

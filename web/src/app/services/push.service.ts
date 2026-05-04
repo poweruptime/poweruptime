@@ -3,8 +3,8 @@ import {toObservable} from '@angular/core/rxjs-interop';
 
 import {filter, map, share, switchMap, tap} from 'rxjs';
 
+import {toast} from '@spartan-ng/brain/sonner';
 import {loggerOf} from 'dfts-helper';
-import {toast} from 'ngx-sonner';
 import {createInjectable} from 'ngxtension/create-injectable';
 
 import {BackendType, PushDto} from '@app/api';

@@ -32,7 +32,6 @@ import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -54,6 +53,7 @@ import {MonitorsSearchStore} from '@app/services';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-monitors';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -71,7 +71,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
               [label]="'statusPage.edit.image' | transloco"
               (fileId)="form.controls.imageId.setValue($event)" />
 
-            <hlm-form-field class="w-full">
+            <hlm-field class="w-full">
               <label hlmLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
@@ -84,18 +84,22 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 placeholder="Status Page #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (nameErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
               @if (nameErrors?.['maxlength']; as maxlength) {
-                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.maxlength' | transloco: maxlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
           </div>
 
-          <hlm-form-field class="col-span-1 flex flex-col justify-end">
+          <hlm-field class="col-span-1 flex flex-col justify-end">
             <label hlmLabel for="slug">
               {{ 'general.slug' | transloco }}
             </label>
@@ -108,23 +112,27 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             </div>
             @let slugErrors = form.controls.slug.errors;
             @if (slugErrors?.['required']) {
-              <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
             }
             @if (slugErrors?.['pattern']) {
-              <hlm-error>{{ 'form.validation.slug' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.slug' | transloco }}</hlm-field-error>
             }
             @if (slugErrors?.['minlength']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (slugErrors?.['maxlength']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
             @if (slugErrors?.['slugInUse']) {
-              <hlm-error>
+              <hlm-field-error>
                 {{ 'statusPage.edit.slugInUse' | transloco }}
-              </hlm-error>
+              </hlm-field-error>
             }
-          </hlm-form-field>
+          </hlm-field>
 
           <div class="col-span-2 grid gap-2 2xl:col-span-1">
             <div class="flex items-end gap-2">
@@ -135,7 +143,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 (ngSubmit)="
                   chipInputAdd(form.controls.domainNames, domainNameForm.controls.domainName)
                 ">
-                <hlm-form-field>
+                <hlm-field>
                   <label for="domainName" hlmLabel>
                     {{ 'general.domainNames' | transloco }}
                   </label>
@@ -150,7 +158,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       <ng-icon name="lucideServer" />
                     </div>
                   </div>
-                </hlm-form-field>
+                </hlm-field>
               </form>
               <button
                 [disabled]="
@@ -190,18 +198,22 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             </div>
             @let domainNameErrors = form.controls.domainNames.errors;
             @if (domainNameErrors?.['minLengthArrayItem']; as minlength) {
-              <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.minlength' | transloco: minlength }}
+              </hlm-field-error>
             }
             @if (domainNameErrors?.['maxLengthArrayItem']; as maxlength) {
-              <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+              <hlm-field-error>
+                {{ 'form.validation.maxlength' | transloco: maxlength }}
+              </hlm-field-error>
             }
             @if (domainNameErrors?.['patternArrayItem']) {
-              <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
+              <hlm-field-error>{{ 'form.validation.domain' | transloco }}</hlm-field-error>
             }
             @if (domainNameErrors?.['domainNameInUse']; as domainNameInUse) {
-              <hlm-error>
+              <hlm-field-error>
                 {{ 'statusPage.edit.domainNames.inUse' | transloco: domainNameInUse }}
-              </hlm-error>
+              </hlm-field-error>
             }
           </div>
 
@@ -263,10 +275,10 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
 
         @let groupsErrors = form.controls.groups.errors;
         @if (groupsErrors?.['required']) {
-          <div hlmAlert>
-            <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+          <hlm-alert>
+            <ng-icon name="lucideCircleAlert" />
             <h4 hlmAlertTitle>{{ 'statusPage.edit.group.minOne' | transloco }}</h4>
-          </div>
+          </hlm-alert>
         }
 
         <div
@@ -284,7 +296,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       <ng-icon hlm name="bootstrapGripVertical" />
                     </div>
 
-                    <hlm-form-field>
+                    <hlm-field>
                       <input
                         [id]="'group-name-' + $index"
                         [placeholder]="'general.name' | transloco"
@@ -293,11 +305,11 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                         type="text" />
                       @let groupNameErrors = statusPageGroupControl.controls.name.errors;
                       @if (groupNameErrors?.['maxlength']; as maxlength) {
-                        <hlm-error>
+                        <hlm-field-error>
                           {{ 'form.validation.maxlength' | transloco: maxlength }}
-                        </hlm-error>
+                        </hlm-field-error>
                       }
-                    </hlm-form-field>
+                    </hlm-field>
                   </div>
 
                   <button
@@ -370,11 +382,11 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmButtonImports,
     HlmIconImports,
     HlmInputGroupImports,
-    HlmFormFieldImports,
     HlmLabelImports,
     HlmInputImports,
     HlmAlertImports,
     HlmBadgeImports,
+    HlmFieldImports,
   ],
 })
 export class StatusPageEditForm extends AbstractModelEditFormComponent<

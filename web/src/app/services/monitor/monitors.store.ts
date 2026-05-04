@@ -23,7 +23,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {toast} from 'ngx-sonner';
+import {toast} from '@spartan-ng/brain/sonner';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
 import {BackendType, MonitorDataType, injectAPI} from '@app/api';

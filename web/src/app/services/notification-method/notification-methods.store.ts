@@ -5,7 +5,7 @@ import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods} from '@ngrx/signals';
 import {removeEntity} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {toast} from 'ngx-sonner';
+import {toast} from '@spartan-ng/brain/sonner';
 
 import {injectAPI} from '@app/api';
 import {injectConfirmDialog$} from '@app/components';

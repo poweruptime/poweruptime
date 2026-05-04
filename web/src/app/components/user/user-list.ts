@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -29,22 +29,21 @@ import {UserTable} from './user-table';
 
         <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="activated">
           {{ 'general.activated' | transloco }}
-          <hlm-switch class="ms-2" id="activated" [(checked)]="activatedFilter" />
+          <hlm-switch class="ms-2" [(checked)]="activatedFilter" inputId="activated" />
         </label>
 
-        <brn-select
-          class="inline-block"
-          [(value)]="roleFilter"
-          [placeholder]="'general.role' | transloco">
+        <hlm-select class="inline-block" [(value)]="roleFilter">
           <hlm-select-trigger>
-            <hlm-select-value class="min-w-38" />
+            <hlm-select-value class="min-w-38" [placeholder]="'general.role' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            @for (role of roles; track role.value) {
-              <hlm-option [value]="role.value">{{ role.name }}</hlm-option>
-            }
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              @for (role of roles; track role.value) {
+                <hlm-select-item [value]="role.value">{{ role.name }}</hlm-select-item>
+              }
+            </hlm-select-group>
           </hlm-select-content>
-        </brn-select>
+        </hlm-select>
 
         <div class="w-72" hlmInputGroup>
           <div hlmInputGroupAddon>
@@ -80,7 +79,6 @@ import {UserTable} from './user-table';
     HlmLabelImports,
     HlmSwitchImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmInputGroupImports,
   ],
 })

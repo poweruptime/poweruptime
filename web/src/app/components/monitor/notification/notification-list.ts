@@ -5,7 +5,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmDateRangePicker} from '@spartan-ng/helm/date-picker';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {format} from 'date-fns';
@@ -20,6 +20,7 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../../table-filter';
 import {NotificationTable} from './notification-table';
 import {NotificationsEmpty} from './notifications-empty';
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `
@@ -28,20 +29,29 @@ import {NotificationsEmpty} from './notifications-empty';
     } @else {
       <div class="grid gap-2">
         <pu-table-filter [key]="tableKey">
-          <brn-select
-            class="inline-block"
-            [(value)]="statuses"
-            [placeholder]="'general.status' | transloco"
-            multiple>
+          <hlm-select-multiple class="inline-block" [(value)]="statuses">
             <hlm-select-trigger class="w-full lg:min-w-38">
-              <hlm-select-value />
+              <hlm-select-placeholder>{{ 'general.status' | transloco }}</hlm-select-placeholder>
+              <ng-template hlmSelectValues let-values>
+                <hlm-select-values-content>
+                  @for (value of values | slice: 0 : 2; track value) {
+                    <!-- For whatever reason any is needed here! Makes no sense.. -->
+                    {{ $any(value) | titlecase }}{{ !$last ? ',' : '' }}
+                  }
+                  @if (values.length > 2) {
+                    (+{{ values.length - 2 }} more)
+                  }
+                </hlm-select-values-content>
+              </ng-template>
             </hlm-select-trigger>
-            <hlm-select-content>
-              @for (status of availableStatuses(); track status.status) {
-                <hlm-option [value]="status.status">{{ status.name }}</hlm-option>
-              }
+            <hlm-select-content *hlmSelectPortal>
+              <hlm-select-group>
+                @for (status of availableStatuses(); track status.status) {
+                  <hlm-select-item [value]="status.status">{{ status.name }}</hlm-select-item>
+                }
+              </hlm-select-group>
             </hlm-select-content>
-          </brn-select>
+          </hlm-select-multiple>
 
           <hlm-date-range-picker
             class="w-full lg:max-w-52"
@@ -69,9 +79,10 @@ import {NotificationsEmpty} from './notifications-empty';
     NotificationTable,
     NotificationsEmpty,
     HlmSelectImports,
-    BrnSelectImports,
     HlmDateRangePicker,
     TableFilter,
+    TitleCasePipe,
+    SlicePipe,
   ],
 })
 export class NotificationList {

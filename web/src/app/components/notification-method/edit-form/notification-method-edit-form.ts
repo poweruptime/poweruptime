@@ -15,9 +15,8 @@ import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -40,6 +39,7 @@ import {MonitorSelector} from '../monitor-selector';
 import {NotificationMethodEditFormData} from './notification-method-edit-form-data';
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
 import {NotificationMethodEditTemplate} from './notification-method-edit-template';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 type TemplateFeatures = NonNullable<BackendType['NotificationMethodTemplateResponse']['features']>;
 
@@ -76,7 +76,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             <p hlmCardDescription>Configure the notification method name and type</p>
           </div>
           <div class="grid gap-6 sm:grid-cols-6" hlmCardContent>
-            <hlm-form-field class="sm:col-span-4">
+            <hlm-field class="sm:col-span-4">
               <label hlmLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
@@ -89,42 +89,47 @@ class HasTemplateFeatureEnabled implements PipeTransform {
                 placeholder="Notification Method #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (nameErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
               @if (nameErrors?.['maxlength']; as maxlength) {
-                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.maxlength' | transloco: maxlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field class="sm:col-span-2">
+            <hlm-field class="sm:col-span-2">
               <label hlmLabel for="type">
                 {{ 'general.type' | transloco }}
               </label>
-              <brn-select
-                id="type"
-                [placeholder]="'general.type' | transloco"
-                formControlName="type">
+              <hlm-select id="type" formControlName="type">
                 <hlm-select-trigger class="w-full">
-                  <hlm-select-value />
+                  <hlm-select-value [placeholder]="'general.type' | transloco" />
                 </hlm-select-trigger>
-                <hlm-select-content>
-                  @for (type of NOTIFICATION_METHOD_SENDER_DATA_TYPES; track type.value) {
-                    <hlm-option [value]="type.value">{{ type.label | transloco }}</hlm-option>
-                  }
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-group>
+                    @for (type of NOTIFICATION_METHOD_SENDER_DATA_TYPES; track type.value) {
+                      <hlm-select-item [value]="type.value">
+                        {{ type.label | transloco }}
+                      </hlm-select-item>
+                    }
+                  </hlm-select-group>
                 </hlm-select-content>
-              </brn-select>
+              </hlm-select>
 
               @let typeErrors = form.controls.type.errors;
               @if (typeErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
             <label class="flex items-center sm:col-span-6" hlmLabel for="useByDefault">
-              <hlm-switch class="mr-2" id="useByDefault" formControlName="useByDefault" />
+              <hlm-switch class="mr-2" inputId="useByDefault" formControlName="useByDefault" />
               {{ 'notificationMethod.edit.useByDefault' | transloco }}
             </label>
           </div>
@@ -225,12 +230,11 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     HlmCardImports,
     HlmLabelImports,
     HlmSwitchImports,
-    HlmFormFieldImports,
     HlmInputImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmIconImports,
     HlmSeparatorImports,
+    HlmFieldImports,
   ],
 })
 export class NotificationMethodEditForm extends AbstractModelEditFormComponent<

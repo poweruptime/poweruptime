@@ -46,7 +46,7 @@ import {TeamTable} from './team-table';
         <div class="flex justify-end">
           <label class="inline-flex min-w-40 items-center justify-end" hlmLabel for="showDeleted">
             {{ 'general.deleted' | transloco }}
-            <hlm-switch class="mr-2" id="showDeleted" [(checked)]="showDeleted" />
+            <hlm-switch class="mr-2" [(checked)]="showDeleted" inputId="showDeleted" />
           </label>
         </div>
 

@@ -16,7 +16,7 @@ import {classes} from '@spartan-ng/helm/utils';
       class="bg-input/30 border-input/30 h-8 rounded-lg shadow-none *:data-[slot=input-group-addon]:pl-2">
       <input
         class="w-full text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
-        [id]="id()"
+        [id]="inputId()"
         [placeholder]="placeholder()"
         brnCommandInput
         data-slot="command-input" />
@@ -28,7 +28,7 @@ import {classes} from '@spartan-ng/helm/utils';
   `,
 })
 export class HlmCommandInput {
-  public readonly id = input<string | undefined>();
+  public readonly inputId = input<string | undefined>();
   public readonly placeholder = input<string>('');
 
   constructor() {

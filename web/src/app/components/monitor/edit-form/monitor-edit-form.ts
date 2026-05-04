@@ -9,11 +9,10 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {distinctUntilChanged} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -42,6 +41,7 @@ import {
   testIntervalMinutesValidators,
   testIntervalSecondsValidators,
 } from './test-interval';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 const times = [
   {
@@ -80,7 +80,7 @@ const times = [
             <p hlmCardDescription>Configure the monitor name and type</p>
           </div>
           <div class="grid grid-cols-6 gap-6" hlmCardContent>
-            <hlm-form-field class="col-span-6 md:col-span-4">
+            <hlm-field class="col-span-6 md:col-span-4">
               <label hlmLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
@@ -93,41 +93,46 @@ const times = [
                 placeholder="Monitor #1" />
               @let nameErrors = form.controls.name.errors;
               @if (nameErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (nameErrors?.['minlength']; as minlength) {
-                <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.minlength' | transloco: minlength }}
+                </hlm-field-error>
               }
               @if (nameErrors?.['maxlength']; as maxlength) {
-                <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+                <hlm-field-error>
+                  {{ 'form.validation.maxlength' | transloco: maxlength }}
+                </hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field class="col-span-6 md:col-span-2">
+            <hlm-field class="col-span-6 md:col-span-2">
               <label hlmLabel for="type">
                 {{ 'general.type' | transloco }}
               </label>
-              <brn-select
-                id="type"
-                [placeholder]="'general.type' | transloco"
-                formControlName="type">
+              <hlm-select id="type" formControlName="type">
                 <hlm-select-trigger class="w-full">
-                  <hlm-select-value />
+                  <hlm-select-value [placeholder]="'general.type' | transloco" />
                 </hlm-select-trigger>
-                <hlm-select-content>
-                  @for (type of MONITOR_CHECKER_DATA_TYPES; track type.value) {
-                    <hlm-option [value]="type.value">{{ type.label | transloco }}</hlm-option>
-                  }
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-group>
+                    @for (type of MONITOR_CHECKER_DATA_TYPES; track type.value) {
+                      <hlm-select-item [value]="type.value">
+                        {{ type.label | transloco }}
+                      </hlm-select-item>
+                    }
+                  </hlm-select-group>
                 </hlm-select-content>
-              </brn-select>
+              </hlm-select>
 
               @let typeErrors = form.controls.type.errors;
               @if (typeErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field class="col-span-6">
+            <hlm-field class="col-span-6">
               <label hlmLabel for="description">{{ 'general.description' | transloco }}</label>
               <textarea
                 class="w-full"
@@ -138,7 +143,7 @@ const times = [
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
                 cdkAutosizeMaxRows="12"></textarea>
-            </hlm-form-field>
+            </hlm-field>
           </div>
         </section>
 
@@ -151,7 +156,7 @@ const times = [
             <p hlmCardDescription>Configure check frequency and retry behavior</p>
           </div>
           <div class="grid grid-cols-6 gap-6" hlmCardContent>
-            <hlm-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
+            <hlm-field class="col-span-6 md:col-span-3 2xl:col-span-2">
               <label hlmLabel for="testInterval">
                 {{
                   'monitor.edit.interval'
@@ -180,20 +185,20 @@ const times = [
                 </div>
               </div>
 
-              <hlm-hint>How often to check</hlm-hint>
+              <p hlmFieldDescription>How often to check</p>
 
               @let testIntervalErrors = form.controls.testInterval.errors;
               @if (testIntervalErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (testIntervalErrors?.['min']; as min) {
-                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
               }
               @if (testIntervalErrors?.['max']; as max) {
-                <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
               }
               @if (testIntervalErrors?.['pattern']) {
-                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
               }
 
               <ng-template #testIntervalUnitMenu>
@@ -208,28 +213,28 @@ const times = [
                   }
                 </hlm-dropdown-menu>
               </ng-template>
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field class="col-span-6 md:col-span-3 2xl:col-span-2">
+            <hlm-field class="col-span-6 md:col-span-3 2xl:col-span-2">
               <label hlmLabel for="retries">{{ 'monitor.edit.retries' | transloco }}</label>
 
               <input id="retries" hlmInput formControlName="retries" step="1" type="number" />
 
-              <hlm-hint>Retry before alerting</hlm-hint>
+              <p hlmFieldDescription>Retry before alerting</p>
 
               @let retriesErrors = form.controls.retries.errors;
               @if (retriesErrors?.['required']) {
-                <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
               }
               @if (retriesErrors?.['min']; as min) {
-                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
               }
               @if (retriesErrors?.['pattern']) {
-                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
-            <hlm-form-field class="col-span-6 2xl:col-span-2">
+            <hlm-field class="col-span-6 2xl:col-span-2">
               <label hlmLabel for="resendAfter">{{ 'monitor.edit.resendAfter' | transloco }}</label>
               <div hlmInputGroup>
                 <input
@@ -242,22 +247,22 @@ const times = [
                 <span class="break-keep" hlmInputGroupAddon align="inline-end">failed checks</span>
               </div>
 
-              <hlm-hint>Notification resending</hlm-hint>
+              <p hlmFieldDescription>Notification resending</p>
 
               @let resendAfterErrors = form.controls.resendAfter.errors;
               @if (resendAfterErrors?.['min']; as min) {
-                <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
               }
               @if (resendAfterErrors?.['pattern']) {
-                <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+                <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
               }
-            </hlm-form-field>
+            </hlm-field>
 
             <hlm-separator class="col-span-6" />
 
             <div class="col-span-6">
               <label class="inline-flex items-center" hlmLabel for="upsideDown">
-                <hlm-switch class="mr-2" id="upsideDown" formControlName="upsideDown" />
+                <hlm-switch class="mr-2" inputId="upsideDown" formControlName="upsideDown" />
                 {{ 'monitor.edit.upsideDown' | transloco }}
               </label>
             </div>
@@ -344,14 +349,13 @@ const times = [
     HlmSwitchImports,
     HlmProgressImports,
     HlmInputGroupImports,
-    HlmFormFieldImports,
     HlmSelectImports,
-    BrnSelectImports,
     HlmTextareaImports,
     HlmSeparatorImports,
     HlmDropdownMenuImports,
     HlmInputImports,
     MonitorEditFormData,
+    HlmFieldImports,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

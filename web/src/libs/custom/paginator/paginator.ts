@@ -12,7 +12,7 @@ import {FormsModule} from '@angular/forms';
 import {Subject} from 'rxjs';
 
 import {computedPrevious} from '@spartan-ng/brain/core';
-import {BrnSelect, BrnSelectImports} from '@spartan-ng/brain/select';
+import {BrnSelect} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabel} from '@spartan-ng/helm/label';
@@ -47,20 +47,18 @@ export interface BrnDataTablePageEvent {
             @let _displayedPageSizeOptions = displayedPageSizeOptions();
             @if (_displayedPageSizeOptions.length > 1) {
               <label class="whitespace-nowrap" hlmLabel>Rows per page</label>
-              <brn-select
-                class="ml-auto"
-                [(ngModel)]="pageSize"
-                (ngModelChange)="changePageSize()"
-                placeholder="Page size">
+              <hlm-select class="ml-auto" [(ngModel)]="pageSize" (ngModelChange)="changePageSize()">
                 <hlm-select-trigger class="w-fit">
-                  <hlm-select-value />
+                  <hlm-select-value placeholder="Page size" />
                 </hlm-select-trigger>
-                <hlm-select-content>
-                  @for (pageSize of _displayedPageSizeOptions; track pageSize) {
-                    <hlm-option [value]="pageSize">{{ pageSize }}</hlm-option>
-                  }
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-group>
+                    @for (pageSize of _displayedPageSizeOptions; track pageSize) {
+                      <hlm-select-item [value]="pageSize">{{ pageSize }}</hlm-select-item>
+                    }
+                  </hlm-select-group>
                 </hlm-select-content>
-              </brn-select>
+              </hlm-select>
             } @else {
               <span class="text-sm">{{ pageSize() }} Rows per page</span>
             }
@@ -108,7 +106,6 @@ export interface BrnDataTablePageEvent {
   `,
   selector: 'hlm-paginator',
   imports: [
-    BrnSelectImports,
     HlmButtonImports,
     HlmPaginationImports,
     HlmSelectImports,

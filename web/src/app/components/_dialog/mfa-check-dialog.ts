@@ -53,7 +53,7 @@ import {injectIsValid} from '../../form';
         }
 
         <label class="flex items-center" hlmLabel for="useBackupCode">
-          <hlm-switch class="mr-2" id="useBackupCode" formControlName="useBackupCode" />
+          <hlm-switch class="mr-2" inputId="useBackupCode" formControlName="useBackupCode" />
           {{ 'mfa.dialog.useBackupCode' | transloco }}
         </label>
       </form>

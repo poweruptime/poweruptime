@@ -52,7 +52,12 @@ class RabbitMQService(
         val queueName = rabbitMQConfiguration.getPushQueueName(teamId)
         val routingKey = rabbitMQConfiguration.getPushRoutingKey(teamId)
 
-        val queue = QueueBuilder.nonDurable(queueName).expires(ONE_SECOND_IN_MILLIS).build()
+        val queue = QueueBuilder
+            .nonDurable(queueName)
+            .exclusive()
+            .autoDelete()
+            .expires(ONE_SECOND_IN_MILLIS)
+            .build()
 
         rabbitAdmin.declareQueue(queue)
         val binding = BindingBuilder.bind(queue).to(rabbitMQConfiguration.pushDirectExchange()).with(routingKey)

@@ -2,10 +2,9 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {BrnSelectImports} from '@spartan-ng/brain/select';
+import '@spartan-ng/brain/select';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmFormFieldImports} from '@spartan-ng/helm/form-field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
@@ -19,6 +18,7 @@ import {PasswordShowButton} from '@app/form';
 import {chipInputAdd, chipInputRemove} from '@app/util';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
+import {HlmFieldImports} from '@spartan-ng/helm/field';
 
 @Component({
   template: `
@@ -30,7 +30,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             id="toForm"
             [formGroup]="toForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.to, toForm.controls.to)">
-            <hlm-form-field class="w-full">
+            <hlm-field class="w-full">
               <label for="to" hlmLabel>
                 {{ 'general.to' | transloco }}
               </label>
@@ -45,7 +45,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                   <ng-icon name="lucideMail" />
                 </div>
               </div>
-            </hlm-form-field>
+            </hlm-field>
           </form>
           <button
             [disabled]="toForm.invalid"
@@ -80,80 +80,87 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </div>
         @let toErrors = emailDataFormGroup.controls.to.errors;
         @if (toErrors?.['required']) {
-          <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+          <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
         }
         @if (toErrors?.['minLengthArrayItem']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (toErrors?.['maxLengthArrayItem']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
       </div>
 
       <div class="col-span-2 grid grid-cols-6 gap-4">
-        <hlm-form-field class="col-span-4">
+        <hlm-field class="col-span-4">
           <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
           <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
           @let hostErrors = emailDataFormGroup.controls.host.errors;
 
           @if (hostErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (hostErrors?.['minlength']; as minlength) {
-            <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.minlength' | transloco: minlength }}
+            </hlm-field-error>
           }
           @if (hostErrors?.['maxlength']; as maxlength) {
-            <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+            <hlm-field-error>
+              {{ 'form.validation.maxlength' | transloco: maxlength }}
+            </hlm-field-error>
           }
           @if (hostErrors?.['pattern']) {
-            <hlm-error>{{ 'form.validation.domain' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.domain' | transloco }}</hlm-field-error>
           }
-        </hlm-form-field>
-        <hlm-form-field class="col-span-2">
+        </hlm-field>
+        <hlm-field class="col-span-2">
           <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
 
           <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
           @let portErrors = emailDataFormGroup.controls.port.errors;
           @if (portErrors?.['required']) {
-            <hlm-error>{{ 'form.validation.required' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.required' | transloco }}</hlm-field-error>
           }
           @if (portErrors?.['min']; as min) {
-            <hlm-error>{{ 'form.validation.min' | transloco: min }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.min' | transloco: min }}</hlm-field-error>
           }
           @if (portErrors?.['max']; as max) {
-            <hlm-error>{{ 'form.validation.max' | transloco: max }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.max' | transloco: max }}</hlm-field-error>
           }
           @if (portErrors?.['pattern']) {
-            <hlm-error>{{ 'form.validation.integer' | transloco }}</hlm-error>
+            <hlm-field-error>{{ 'form.validation.integer' | transloco }}</hlm-field-error>
           }
-        </hlm-form-field>
+        </hlm-field>
       </div>
 
       <div class="col-span-2 mb-5 grid items-center gap-4 xl:grid-cols-6">
-        <hlm-form-field class="col-span-4">
+        <hlm-field class="col-span-4">
           <label hlmLabel for="security">{{ 'general.security' | transloco }}</label>
-          <brn-select
-            id="security"
-            [placeholder]="'general.security' | transloco"
-            formControlName="security">
+          <hlm-select id="security" formControlName="security">
             <hlm-select-trigger class="w-full">
-              <hlm-select-value />
+              <hlm-select-value [placeholder]="'general.security' | transloco" />
             </hlm-select-trigger>
-            <hlm-select-content>
-              <hlm-option value="NONE_STARTTLS">None / STARTTLS (25, 587)</hlm-option>
-              <hlm-option value="TLS">TLS (465)</hlm-option>
+            <hlm-select-content *hlmSelectPortal>
+              <hlm-select-group>
+                <hlm-select-item value="NONE_STARTTLS">None / STARTTLS (25, 587)</hlm-select-item>
+                <hlm-select-item value="TLS">TLS (465)</hlm-select-item>
+              </hlm-select-group>
             </hlm-select-content>
-          </brn-select>
-        </hlm-form-field>
+          </hlm-select>
+        </hlm-field>
 
         <label class="col-span-2 flex items-center" hlmLabel for="ignoreTLSErrors">
-          <hlm-switch class="mr-2" id="ignoreTLSErrors" formControlName="ignoreTLSErrors" />
+          <hlm-switch class="mr-2" inputId="ignoreTLSErrors" formControlName="ignoreTLSErrors" />
           {{ 'notificationMethod.edit.email.ignoreTLSErrors' | transloco }}
         </label>
       </div>
 
-      <hlm-form-field class="col-span-1">
+      <hlm-field class="col-span-1">
         <label hlmLabel for="username">Username</label>
         <div hlmInputGroup>
           <input id="username" hlmInputGroupInput formControlName="username" />
@@ -163,11 +170,13 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </div>
         @let usernameErrors = emailDataFormGroup.controls.username.errors;
         @if (usernameErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
-      <hlm-form-field class="col-span-1">
+      <hlm-field class="col-span-1">
         <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
         <div hlmInputGroup>
           <input
@@ -183,9 +192,11 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </div>
         @let passwordErrors = emailDataFormGroup.controls.password.errors;
         @if (passwordErrors?.['maxlength']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
-      </hlm-form-field>
+      </hlm-field>
 
       <div class="col-span-2 grid gap-2">
         <div class="flex items-end gap-2">
@@ -194,7 +205,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             id="ccForm"
             [formGroup]="ccForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.cc, ccForm.controls.cc)">
-            <hlm-form-field class="w-full">
+            <hlm-field class="w-full">
               <label for="cc" hlmLabel>CC</label>
               <div hlmInputGroup>
                 <input
@@ -207,7 +218,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                   <ng-icon name="lucideMail" />
                 </div>
               </div>
-            </hlm-form-field>
+            </hlm-field>
           </form>
           <button
             [disabled]="ccForm.invalid"
@@ -242,10 +253,14 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </div>
         @let ccErrors = emailDataFormGroup.controls.cc.errors;
         @if (ccErrors?.['minLengthArrayItem']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (ccErrors?.['maxLengthArrayItem']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
       </div>
 
@@ -256,7 +271,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             id="bccForm"
             [formGroup]="bccForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.bcc, bccForm.controls.bcc)">
-            <hlm-form-field class="w-full">
+            <hlm-field class="w-full">
               <label for="bcc" hlmLabel>BCC</label>
               <div hlmInputGroup>
                 <input
@@ -269,7 +284,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
                   <ng-icon name="lucideMail" />
                 </div>
               </div>
-            </hlm-form-field>
+            </hlm-field>
           </form>
           <button
             [disabled]="bccForm.invalid"
@@ -304,10 +319,14 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
         </div>
         @let bccErrors = emailDataFormGroup.controls.bcc.errors;
         @if (bccErrors?.['minLengthArrayItem']; as minlength) {
-          <hlm-error>{{ 'form.validation.minlength' | transloco: minlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.minlength' | transloco: minlength }}
+          </hlm-field-error>
         }
         @if (bccErrors?.['maxLengthArrayItem']; as maxlength) {
-          <hlm-error>{{ 'form.validation.maxlength' | transloco: maxlength }}</hlm-error>
+          <hlm-field-error>
+            {{ 'form.validation.maxlength' | transloco: maxlength }}
+          </hlm-field-error>
         }
       </div>
     </div>
@@ -323,13 +342,12 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     HlmBadgeImports,
     HlmButtonImports,
     HlmLabelImports,
-    HlmFormFieldImports,
     HlmInputImports,
     HlmInputGroupImports,
     HlmIconImports,
     HlmTooltipImports,
     HlmSelectImports,
-    BrnSelectImports,
+    HlmFieldImports,
   ],
 })
 export class NotificationMethodEditFormEmailData {
