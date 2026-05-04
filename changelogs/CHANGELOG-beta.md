@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0-beta-1777913261 - 2026-05-04
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Typo by Dafnik ([f5f0852](https://github.com/poweruptime/poweruptime/commit/f5f0852cffaa16364db1890c44fd0c956a35aac2))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Better group dependencies by Dafnik ([5830aab](https://github.com/poweruptime/poweruptime/commit/5830aabd62e9068c8721878f73f7538c598e988f))
+- Align dependency versions by Dafnik ([2c14d65](https://github.com/poweruptime/poweruptime/commit/2c14d65c09e58b7db5630af0996c96c7a8d0bc59))
+- Downgrade httpclient version by Dafnik ([7f6c1e5](https://github.com/poweruptime/poweruptime/commit/7f6c1e574b1639e7ab57c596f1d91ea7782a0582))
+- Spartan update by Dafnik ([46974a3](https://github.com/poweruptime/poweruptime/commit/46974a30c5c0eb5c5de64996d776d8f2ebc18b28))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1773327559...0.5.0-beta-1777913261)
+
 ## 0.5.0-beta-1773327559 - 2026-03-12
 
 ### <!-- 0 -->🚀 Features
