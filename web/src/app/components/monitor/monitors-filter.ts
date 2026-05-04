@@ -12,6 +12,7 @@ import {HlmSelectImports} from '@spartan-ng/helm/select';
 
 import {BackendType, MonitorDataType} from '@app/api';
 import {MonitorSearchParams} from '@app/services';
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `
@@ -32,9 +33,20 @@ import {MonitorSearchParams} from '@app/services';
         }
       </div>
 
-      <hlm-select formControlName="statuses" multiple>
+      <hlm-select-multiple formControlName="statuses">
         <hlm-select-trigger class="w-full">
-          <hlm-select-value [placeholder]="'general.status' | transloco" />
+          <hlm-select-placeholder>{{ 'general.status' | transloco }}</hlm-select-placeholder>
+          <ng-template hlmSelectValues let-values>
+            <hlm-select-values-content>
+              @for (value of values | slice: 0 : 2; track value) {
+                <!-- For whatever reason any is needed here! Makes no sense.. -->
+                {{ $any(value) | titlecase }}{{ !$last ? ',' : '' }}
+              }
+              @if (values.length > 2) {
+                (+{{ values.length - 2 }} more)
+              }
+            </hlm-select-values-content>
+          </ng-template>
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           <hlm-select-group>
@@ -43,11 +55,21 @@ import {MonitorSearchParams} from '@app/services';
             }
           </hlm-select-group>
         </hlm-select-content>
-      </hlm-select>
+      </hlm-select-multiple>
 
-      <hlm-select formControlName="types" multiple>
+      <hlm-select-multiple formControlName="types">
         <hlm-select-trigger class="w-full">
-          <hlm-select-value [placeholder]="'general.type' | transloco" />
+          <hlm-select-placeholder>{{ 'general.type' | transloco }}</hlm-select-placeholder>
+          <ng-template hlmSelectValues let-values>
+            <hlm-select-values-content>
+              @for (value of values | slice: 0 : 2; track value) {
+                {{ value }}{{ !$last ? ',' : '' }}
+              }
+              @if (values.length > 2) {
+                (+{{ values.length - 2 }} more)
+              }
+            </hlm-select-values-content>
+          </ng-template>
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           <hlm-select-group>
@@ -56,11 +78,21 @@ import {MonitorSearchParams} from '@app/services';
             }
           </hlm-select-group>
         </hlm-select-content>
-      </hlm-select>
+      </hlm-select-multiple>
 
-      <hlm-select formControlName="tags" multiple>
+      <hlm-select-multiple formControlName="tags">
         <hlm-select-trigger class="w-full">
-          <hlm-select-value [placeholder]="'general.tags' | transloco" />
+          <hlm-select-placeholder>{{ 'general.tags' | transloco }}</hlm-select-placeholder>
+          <ng-template hlmSelectValues let-values>
+            <hlm-select-values-content>
+              @for (value of values | slice: 0 : 2; track value) {
+                {{ value }}{{ !$last ? ',' : '' }}
+              }
+              @if (values.length > 2) {
+                (+{{ values.length - 2 }} more)
+              }
+            </hlm-select-values-content>
+          </ng-template>
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           <hlm-select-group>
@@ -69,7 +101,7 @@ import {MonitorSearchParams} from '@app/services';
             }
           </hlm-select-group>
         </hlm-select-content>
-      </hlm-select>
+      </hlm-select-multiple>
     </form>
   `,
   selector: 'pu-monitors-filter',
@@ -80,6 +112,8 @@ import {MonitorSearchParams} from '@app/services';
     HlmIconImports,
     HlmInputGroupImports,
     HlmSelectImports,
+    TitleCasePipe,
+    SlicePipe,
   ],
 })
 export class MonitorsFilter {

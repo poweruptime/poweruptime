@@ -11,7 +11,7 @@
     "web:ng:e2e:docker": "pnpm -C web ng:e2e:docker",
     "emails:start": "pnpm -C emails start",
     "emails:export": "pnpm -C emails export",
-    "format:check": "prettier --check .",
+    "format:check": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --check .",
     "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },

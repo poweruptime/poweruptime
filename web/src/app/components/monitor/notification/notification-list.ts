@@ -20,6 +20,7 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../../table-filter';
 import {NotificationTable} from './notification-table';
 import {NotificationsEmpty} from './notifications-empty';
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `
@@ -30,7 +31,18 @@ import {NotificationsEmpty} from './notifications-empty';
         <pu-table-filter [key]="tableKey">
           <hlm-select-multiple class="inline-block" [(value)]="statuses">
             <hlm-select-trigger class="w-full lg:min-w-38">
-              <hlm-select-value [placeholder]="'general.status' | transloco" />
+              <hlm-select-placeholder>{{ 'general.status' | transloco }}</hlm-select-placeholder>
+              <ng-template hlmSelectValues let-values>
+                <hlm-select-values-content>
+                  @for (value of values | slice: 0 : 2; track value) {
+                    <!-- For whatever reason any is needed here! Makes no sense.. -->
+                    {{ $any(value) | titlecase }}{{ !$last ? ',' : '' }}
+                  }
+                  @if (values.length > 2) {
+                    (+{{ values.length - 2 }} more)
+                  }
+                </hlm-select-values-content>
+              </ng-template>
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               <hlm-select-group>
@@ -69,6 +81,8 @@ import {NotificationsEmpty} from './notifications-empty';
     HlmSelectImports,
     HlmDateRangePicker,
     TableFilter,
+    TitleCasePipe,
+    SlicePipe,
   ],
 })
 export class NotificationList {

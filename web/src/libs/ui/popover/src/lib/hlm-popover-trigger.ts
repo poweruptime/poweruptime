@@ -3,7 +3,7 @@ import {Directive} from '@angular/core';
 import {BrnPopoverTrigger} from '@spartan-ng/brain/popover';
 
 @Directive({
-  selector: 'button[hlmPopoverTrigger],button[hlmPopoverTriggerFor]',
+  selector: 'button[hlmPopoverTrigger],button[hlmPopoverTriggerFor],[hlmPopoverTrigger]',
   hostDirectives: [
     {
       directive: BrnPopoverTrigger,

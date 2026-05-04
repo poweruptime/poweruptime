@@ -275,10 +275,10 @@ import {HlmFieldImports} from '@spartan-ng/helm/field';
 
         @let groupsErrors = form.controls.groups.errors;
         @if (groupsErrors?.['required']) {
-          <div hlmAlert>
-            <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+          <hlm-alert>
+            <ng-icon name="lucideCircleAlert" />
             <h4 hlmAlertTitle>{{ 'statusPage.edit.group.minOne' | transloco }}</h4>
-          </div>
+          </hlm-alert>
         }
 
         <div

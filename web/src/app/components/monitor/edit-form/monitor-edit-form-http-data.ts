@@ -335,13 +335,8 @@ const predefinedStatusCodeRanges = [
 
           <hlm-accordion class="col-span-8">
             <hlm-accordion-item>
-              <h3 class="contents">
-                <button hlmAccordionTrigger type="button">
-                  Advanced Response Validation
-                  <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
-                </button>
-              </h3>
-              <hlm-accordion-content class="space-y-2">
+              <hlm-accordion-trigger>Advanced Response Validation</hlm-accordion-trigger>
+              <hlm-accordion-content>
                 <hlm-field>
                   <label hlmLabel for="searchTerm">
                     {{ 'monitor.edit.http.searchTerm' | transloco }}

@@ -27,6 +27,7 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../../table-filter';
 import {CheckResultTable} from './check-result-table';
 import {CheckResultsEmpty} from './check-results-empty';
+import {SlicePipe, TitleCasePipe} from '@angular/common';
 
 @Component({
   template: `
@@ -35,7 +36,10 @@ import {CheckResultsEmpty} from './check-results-empty';
     } @else {
       <div class="flex flex-col gap-2">
         <pu-table-filter [key]="tableKey">
-          <label class="inline-flex w-full items-center lg:min-w-36" hlmLabel for="showDuplicates">
+          <label
+            class="inline-flex w-full items-center break-keep whitespace-nowrap lg:min-w-36"
+            hlmLabel
+            for="showDuplicates">
             {{ 'general.showDuplicates' | transloco }}
             <hlm-switch class="mr-2" [(checked)]="showDuplicates" inputId="showDuplicates" />
           </label>
@@ -71,7 +75,18 @@ import {CheckResultsEmpty} from './check-results-empty';
 
           <hlm-select-multiple class="inline-block" [(value)]="statuses">
             <hlm-select-trigger class="w-full lg:min-w-38">
-              <hlm-select-value [placeholder]="'general.status' | transloco" />
+              <hlm-select-placeholder>{{ 'general.status' | transloco }}</hlm-select-placeholder>
+              <ng-template hlmSelectValues let-values>
+                <hlm-select-values-content>
+                  @for (value of values | slice: 0 : 2; track value) {
+                    <!-- For whatever reason any is needed here! Makes no sense.. -->
+                    {{ $any(value) | titlecase }}{{ !$last ? ',' : '' }}
+                  }
+                  @if (values.length > 2) {
+                    (+{{ values.length - 2 }} more)
+                  }
+                </hlm-select-values-content>
+              </ng-template>
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               <hlm-select-group>
@@ -118,6 +133,8 @@ import {CheckResultsEmpty} from './check-results-empty';
     HlmSelectImports,
     HlmDatePickerImports,
     TableFilter,
+    SlicePipe,
+    TitleCasePipe,
   ],
 })
 export class CheckResultList {

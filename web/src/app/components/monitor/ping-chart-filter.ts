@@ -23,30 +23,33 @@ import {PingChart} from './ping-chart';
       <pu-table-filter [key]="tableKey">
         <hlm-select class="inline-block" [(value)]="precision">
           <hlm-select-trigger>
-            <hlm-select-value class="min-w-38" [placeholder]="'general.status' | transloco" />
+            <hlm-select-value class="min-w-38" [placeholder]="'Grouped time range' | transloco" />
           </hlm-select-trigger>
-          <hlm-select-content>
-            <hlm-select-item [value]="2">
-              {{ 'general.xMinutes' | transloco: {value: 2} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="5">
-              {{ 'general.xMinutes' | transloco: {value: 5} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="15">
-              {{ 'general.xMinutes' | transloco: {value: 15} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="30">
-              {{ 'general.xMinutes' | transloco: {value: 30} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="60">
-              {{ 'general.xMinutes' | transloco: {value: 60} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="180">
-              {{ 'general.xHours' | transloco: {value: 3} }}
-            </hlm-select-item>
-            <hlm-select-item [value]="360">
-              {{ 'general.xHours' | transloco: {value: 6} }}
-            </hlm-select-item>
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-group>
+              <hlm-select-label>{{ 'Grouped time range' | transloco }}</hlm-select-label>
+              <hlm-select-item [value]="2">
+                {{ 'general.xMinutes' | transloco: {value: 2} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="5">
+                {{ 'general.xMinutes' | transloco: {value: 5} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="15">
+                {{ 'general.xMinutes' | transloco: {value: 15} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="30">
+                {{ 'general.xMinutes' | transloco: {value: 30} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="60">
+                {{ 'general.xMinutes' | transloco: {value: 60} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="180">
+                {{ 'general.xHours' | transloco: {value: 3} }}
+              </hlm-select-item>
+              <hlm-select-item [value]="360">
+                {{ 'general.xHours' | transloco: {value: 6} }}
+              </hlm-select-item>
+            </hlm-select-group>
           </hlm-select-content>
         </hlm-select>
 

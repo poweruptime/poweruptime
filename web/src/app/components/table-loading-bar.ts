@@ -9,7 +9,7 @@ import {HlmProgressImports} from '@spartan-ng/helm/progress';
         <hlm-progress-indicator />
       </hlm-progress>
     } @else {
-      <div class="h-6 w-full"></div>
+      <div class="h-5 w-full"></div>
     }
   `,
   selector: 'pu-table-loading-bar',

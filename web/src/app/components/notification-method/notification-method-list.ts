@@ -21,6 +21,7 @@ import {arrayToParam, paramToArray} from '@app/util';
 import {TableFilter, hasActiveFilters} from '../table-filter';
 import {NotificationMethodTable} from './notification-method-table';
 import {NotificationMethodsEmpty} from './notification-methods-empty';
+import {SlicePipe} from '@angular/common';
 
 @Component({
   template: `
@@ -44,8 +45,18 @@ import {NotificationMethodsEmpty} from './notification-methods-empty';
           </div>
 
           <hlm-select-multiple class="inline-block" [(value)]="typesFilter">
-            <hlm-select-trigger>
-              <hlm-select-value class="min-w-38" [placeholder]="'general.type' | transloco" />
+            <hlm-select-trigger class="min-w-48">
+              <hlm-select-placeholder>{{ 'general.type' | transloco }}</hlm-select-placeholder>
+              <ng-template hlmSelectValues let-values>
+                <hlm-select-values-content>
+                  @for (value of values | slice: 0 : 2; track value) {
+                    {{ value }}{{ !$last ? ',' : '' }}
+                  }
+                  @if (values.length > 2) {
+                    (+{{ values.length - 2 }} more)
+                  }
+                </hlm-select-values-content>
+              </ng-template>
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               <hlm-select-group>
@@ -56,7 +67,7 @@ import {NotificationMethodsEmpty} from './notification-methods-empty';
             </hlm-select-content>
           </hlm-select-multiple>
 
-          <div class="w-72" hlmInputGroup>
+          <div class="min-w-72" hlmInputGroup>
             <div hlmInputGroupAddon>
               <ng-icon hlm name="bootstrapSearch" size="sm" />
             </div>
@@ -92,6 +103,7 @@ import {NotificationMethodsEmpty} from './notification-methods-empty';
     HlmLabelImports,
     HlmSwitchImports,
     NotificationMethodsEmpty,
+    SlicePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
