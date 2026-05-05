@@ -57,7 +57,7 @@ export const ChangelogStore = signalStore(
         tapResponse({
           next: (changelog) => {
             patchState(store, setFulfilled());
-            dialog.open(ChangelogDialog, {context: {changelog}});
+            dialog.open(ChangelogDialog, {context: {changelog}, showCloseButton: false});
           },
           error: (error) => patchState(store, setError(error)),
         }),

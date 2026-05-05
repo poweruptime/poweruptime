@@ -28,7 +28,8 @@ export interface Dependency {
       </button>
       <hlm-dialog-content
         class="top-1/2 left-1/2 flex max-h-[calc(100vh-2rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 flex-col gap-0 overflow-hidden rounded-lg p-0 sm:max-h-[min(640px,80vh)] sm:max-w-xl"
-        *hlmDialogPortal="let ctx">
+        *hlmDialogPortal="let ctx"
+        showCloseButton="false">
         <div class="flex-1 overflow-y-auto">
           <hlm-dialog-header>
             <h2 class="mb-0 px-6 pt-6 text-lg font-semibold">{{ btnText() }} Licenses</h2>

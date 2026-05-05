@@ -185,6 +185,8 @@ export class NavUser {
     this.infoStore.loadSupport();
   }
   protected openAbout() {
-    this.dialog.open(AboutDialog);
+    this.dialog.open(AboutDialog, {
+      showCloseButton: false,
+    });
   }
 }

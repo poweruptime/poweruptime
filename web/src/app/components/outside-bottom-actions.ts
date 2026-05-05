@@ -101,10 +101,14 @@ export class OutsideBottomActions {
   protected readonly translocoService = inject(TranslocoService);
 
   protected openAbout() {
-    this.dialog.open(AboutDialog);
+    this.dialog.open(AboutDialog, {
+      showCloseButton: false,
+    });
   }
 
   protected openHelp() {
-    this.dialog.open(HelpDialog);
+    this.dialog.open(HelpDialog, {
+      showCloseButton: false,
+    });
   }
 }

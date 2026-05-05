@@ -127,7 +127,9 @@ export class NavSecondary {
   );
 
   protected openHelp() {
-    this.dialog.open(HelpDialog);
+    this.dialog.open(HelpDialog, {
+      showCloseButton: false,
+    });
   }
 }
 

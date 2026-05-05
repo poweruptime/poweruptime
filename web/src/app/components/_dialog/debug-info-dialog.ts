@@ -25,7 +25,8 @@ import {CopyButton} from '../copy-button';
       </button>
       <hlm-dialog-content
         class="top-1/2 left-1/2 flex max-h-[calc(100vh-2rem)] w-[calc(100%-2rem)] w-full -translate-x-1/2 flex-col gap-0 overflow-hidden rounded-lg p-0 sm:max-h-[min(640px,80vh)] sm:w-lg"
-        *hlmDialogPortal="let ctx">
+        *hlmDialogPortal="let ctx"
+        showCloseButton="false">
         <div class="flex-1 overflow-y-auto">
           @let _info = info();
           <hlm-dialog-header>
