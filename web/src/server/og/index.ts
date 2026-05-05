@@ -35,25 +35,34 @@ ogRouter.get('/status-page', async (req: Request<{}, {}, {}, {slug?: string}>, r
     return void res.status(500).send(`Could not load status page: ${slug}`);
   }
 
-  const isUp = !statusPage.groups.flatMap((g) => g.monitors).some((m) => m.status === 'DOWN');
+  const monitors = statusPage.groups.flatMap((g) => g.monitors);
+  const isUp = !monitors.some((m) => m.status === 'DOWN');
 
   const imageUrl = statusPage.image
     ? `${environment.backendHost}/api/v1/public/file/${statusPage.image.fileId}`
     : null;
 
   await sendImage(
-    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
-        <div tw="flex items-start justify-between">
+    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-8">
         <div tw="flex flex-col">
-          <span tw="text-9xl mt-3">${statusPage.name}</span>
-          ${(statusPage.description?.length ?? 0) > 0 ? `<span tw="text-lg">${s_cut(statusPage.description, 100)}</span>` : '<span tw="flex h-6"></span>'}
+        <div tw="flex items-center justify-between mb-7">
+          <span tw="text-8xl">${statusPage.name}</span>
+          ${imageUrl && `<img src="${imageUrl}" style="width: 240px; height: 240px" />`}
         </div>
-          ${imageUrl && `<img src="${imageUrl}" height="60%" />`}
+            <div tw="flex flex-wrap items-center text-4xl">
+              ${monitors
+                .slice(0, 4)
+                .map(
+                  (it) =>
+                    `<div tw="flex mr-4 mb-4 rounded-xl p-4 max-w-96 h-17 ${it.status === 'UP' ? 'bg-emerald-200' : 'bg-red-300'}" style="overflow: hidden;">${s_cut(it.name, 16)}</div>`,
+                )
+                .join('')}
+              ${monitors.length > 4 ? `(+${monitors.length - 4} more)` : ''}
+            </div>
         </div>
         <div tw="flex flex-col">
           <div tw="flex justify-between items-center">
-            ${statusBadge(isUp, isUp ? 'All services operational' : 'Some services experience issues')}
-            <span tw="text-3xl">by poweruptime</span>
+            ${statusBadge(isUp, isUp ? `<span>All services operational</span> <span tw="text-3xl">by poweruptime</span>` : 'Some services experience issues')}
           </div>
         </div>
       </div>`,
@@ -75,13 +84,13 @@ ogRouter.get('/monitor', async (req: Request<{}, {}, {}, {id?: string}>, res: Re
     return void res.status(500).send(`Could not load monitor: ${monitorId}`);
   }
 
-  const lastCheckResults = monitor.lastCheckResults.slice(0, 29);
+  const lastCheckResults = monitor.lastCheckResults.slice(0, 28);
   const lastCheckResultTime =
     lastCheckResults.length > 9 ? format(lastCheckResults.at(-1)!.createdAt, 'HH:mm') : '';
   const isUp = monitor.status === 'UP';
 
   await sendImage(
-    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-5">
+    `<div tw="bg-gray-50 flex flex-col w-full h-full justify-between p-8">
         <div tw="flex flex-col">
           <div tw="flex items-center justify-between">
             <span tw="text-6xl">${monitor.name}</span>
