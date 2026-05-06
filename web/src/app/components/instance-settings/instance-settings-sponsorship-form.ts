@@ -92,7 +92,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               [formGroup]="form"
               (ngSubmit)="submit()">
               <hlm-field>
-                <label hlmLabel for="supportLookup">
+                <label hlmFieldLabel for="supportLookup">
                   {{ 'instanceSettings.sponsorship.githubHandle' | transloco }}
                 </label>
                 <div hlmInputGroup>

@@ -23,7 +23,7 @@ import {ProfilePictureUpload} from '../../profile-picture-upload';
           (fileId)="form.controls.imageId.setValue($event)" />
 
         <hlm-field>
-          <label hlmLabel for="name">
+          <label hlmFieldLabel for="name">
             {{ 'general.name' | transloco }}
           </label>
           <input

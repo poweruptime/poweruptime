@@ -5,7 +5,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {CopyIconButton} from '@app/components';
 
@@ -15,7 +14,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex flex-col gap-4" [formGroup]="pushDataFormGroup">
       <hlm-field class="col-span-8">
-        <label hlmLabel for="url">{{ 'monitor.edit.pushUrl' | transloco }}</label>
+        <label hlmFieldLabel for="url">{{ 'monitor.edit.pushUrl' | transloco }}</label>
         <div hlmInputGroup>
           <input id="url" [value]="pushUrl()" hlmInputGroupInput readonly type="url" />
           <div hlmInputGroupAddon align="inline-end">
@@ -30,7 +29,6 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     CopyIconButton,
     ReactiveFormsModule,
     TranslocoPipe,
-    HlmLabelImports,
     HlmInputGroupImports,
     HlmFieldImports,
   ],

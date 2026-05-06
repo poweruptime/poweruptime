@@ -46,7 +46,7 @@ const predefinedStatusCodeRanges = [
       <pu-monitor-edit-form-data-card type="HTTP">
         <div class="grid grid-cols-8 gap-6">
           <hlm-field class="col-span-8">
-            <label hlmLabel for="url">
+            <label hlmFieldLabel for="url">
               {{ 'general.url' | transloco }}
             </label>
             <input
@@ -75,7 +75,7 @@ const predefinedStatusCodeRanges = [
           </hlm-field>
 
           <hlm-field class="col-span-8 xl:col-span-2">
-            <label hlmLabel for="method">{{ 'general.method' | transloco }}</label>
+            <label hlmFieldLabel for="method">{{ 'general.method' | transloco }}</label>
             <hlm-select id="method" formControlName="method">
               <hlm-select-trigger class="w-full">
                 <hlm-select-value [placeholder]="'general.method' | transloco" />
@@ -95,7 +95,7 @@ const predefinedStatusCodeRanges = [
           </hlm-field>
 
           <hlm-field class="col-span-8 xl:col-span-2">
-            <label hlmLabel for="contentType">{{ 'general.contentType' | transloco }}</label>
+            <label hlmFieldLabel for="contentType">{{ 'general.contentType' | transloco }}</label>
             <hlm-select id="contentType" formControlName="contentType">
               <hlm-select-trigger class="w-full">
                 <hlm-select-value [placeholder]="'general.contentType' | transloco" />
@@ -111,7 +111,9 @@ const predefinedStatusCodeRanges = [
 
           <div class="col-span-8 grid grid-cols-8 gap-4">
             <hlm-field class="col-span-8 xl:col-span-2">
-              <label hlmLabel for="authType">{{ 'monitor.edit.http.authType' | transloco }}</label>
+              <label hlmFieldLabel for="authType">
+                {{ 'monitor.edit.http.authType' | transloco }}
+              </label>
               <hlm-select id="authType" formControlName="authType">
                 <hlm-select-trigger class="w-full">
                   <hlm-select-value [placeholder]="'monitor.edit.http.authType' | transloco" />
@@ -127,7 +129,7 @@ const predefinedStatusCodeRanges = [
 
             @if (httpDataFormGroup.controls.authType.getRawValue() === 'BASIC_AUTH') {
               <hlm-field class="col-span-8 xl:col-span-3">
-                <label hlmLabel for="basicAuthDataUsername">
+                <label hlmFieldLabel for="basicAuthDataUsername">
                   {{ 'general.username' | transloco }}
                 </label>
                 <input
@@ -148,7 +150,7 @@ const predefinedStatusCodeRanges = [
               </hlm-field>
 
               <hlm-field class="col-span-8 xl:col-span-3">
-                <label hlmLabel for="basicAuthDataPassword">
+                <label hlmFieldLabel for="basicAuthDataPassword">
                   {{ 'general.password' | transloco }}
                 </label>
 
@@ -308,7 +310,7 @@ const predefinedStatusCodeRanges = [
           </div>
 
           <hlm-field class="col-span-8 xl:col-span-3">
-            <label hlmLabel for="maxRedirects">
+            <label hlmFieldLabel for="maxRedirects">
               {{ 'monitor.edit.http.maxRedirects.label' | transloco }}
             </label>
 
@@ -338,7 +340,7 @@ const predefinedStatusCodeRanges = [
               <hlm-accordion-trigger>Advanced Response Validation</hlm-accordion-trigger>
               <hlm-accordion-content>
                 <hlm-field>
-                  <label hlmLabel for="searchTerm">
+                  <label hlmFieldLabel for="searchTerm">
                     {{ 'monitor.edit.http.searchTerm' | transloco }}
                   </label>
                   <textarea
@@ -353,7 +355,7 @@ const predefinedStatusCodeRanges = [
                 </hlm-field>
 
                 <hlm-field>
-                  <label hlmLabel for="body">{{ 'general.body' | transloco }}</label>
+                  <label hlmFieldLabel for="body">{{ 'general.body' | transloco }}</label>
                   <textarea
                     class="w-full"
                     id="body"
@@ -392,7 +394,7 @@ const predefinedStatusCodeRanges = [
               animate.enter="animate-in fade-in slide-in-from-top-20"
               animate.leave="animate-out fade-out slide-out-to-top-20">
               <hlm-field>
-                <label hlmLabel for="certificateValidDaysLeft">
+                <label hlmFieldLabel for="certificateValidDaysLeft">
                   {{ 'monitor.edit.ssl.validDaysLeft' | transloco }}
                 </label>
 

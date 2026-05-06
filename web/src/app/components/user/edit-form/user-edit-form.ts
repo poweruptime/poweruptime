@@ -29,7 +29,7 @@ import {
       [formGroup]="form"
       (ngSubmit)="submit()">
       <hlm-field>
-        <label hlmLabel for="name">
+        <label hlmFieldLabel for="name">
           {{ 'general.name' | transloco }}
         </label>
 
@@ -55,7 +55,7 @@ import {
         }
       </hlm-field>
       <hlm-field>
-        <label hlmLabel for="email">
+        <label hlmFieldLabel for="email">
           {{ 'general.emailAddress' | transloco }}
         </label>
         <div hlmInputGroup>
@@ -114,7 +114,7 @@ import {
 
           @if (form.controls.updatePassword.getRawValue()) {
             <hlm-field>
-              <label hlmLabel for="password">
+              <label hlmFieldLabel for="password">
                 {{ 'general.password' | transloco }}
               </label>
 
@@ -147,7 +147,7 @@ import {
         </div>
       } @else {
         <hlm-field>
-          <label hlmLabel for="password">
+          <label hlmFieldLabel for="password">
             {{ 'general.password' | transloco }}
           </label>
 

@@ -82,7 +82,7 @@ import {SetupStore} from '@app/services';
                 [formGroup]="testEmailForm"
                 (ngSubmit)="submitTestEmail()">
                 <hlm-field>
-                  <label hlmLabel for="test-email">
+                  <label hlmFieldLabel for="test-email">
                     {{ 'general.emailAddress' | transloco }}
                   </label>
                   <div hlmInputGroup>
@@ -194,7 +194,7 @@ import {SetupStore} from '@app/services';
               <form class="grid gap-4" [formGroup]="setupForm" (ngSubmit)="submitSetup()">
                 <h3>{{ 'auth.setup.description' | transloco }}:</h3>
                 <hlm-field>
-                  <label hlmLabel for="name">
+                  <label hlmFieldLabel for="name">
                     {{ 'general.name' | transloco }}
                   </label>
                   <div hlmInputGroup>
@@ -225,7 +225,7 @@ import {SetupStore} from '@app/services';
                 </hlm-field>
 
                 <hlm-field>
-                  <label hlmLabel for="email">
+                  <label hlmFieldLabel for="email">
                     {{ 'general.emailAddress' | transloco }}
                   </label>
                   <div hlmInputGroup>

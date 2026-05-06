@@ -81,7 +81,7 @@ const times = [
           </div>
           <div class="grid grid-cols-6 gap-6" hlmCardContent>
             <hlm-field class="col-span-6 md:col-span-4">
-              <label hlmLabel for="name">
+              <label hlmFieldLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
               <input
@@ -108,7 +108,7 @@ const times = [
             </hlm-field>
 
             <hlm-field class="col-span-6 md:col-span-2">
-              <label hlmLabel for="type">
+              <label hlmFieldLabel for="type">
                 {{ 'general.type' | transloco }}
               </label>
               <hlm-select id="type" formControlName="type">
@@ -133,7 +133,7 @@ const times = [
             </hlm-field>
 
             <hlm-field class="col-span-6">
-              <label hlmLabel for="description">{{ 'general.description' | transloco }}</label>
+              <label hlmFieldLabel for="description">{{ 'general.description' | transloco }}</label>
               <textarea
                 class="w-full"
                 id="description"
@@ -157,7 +157,7 @@ const times = [
           </div>
           <div class="grid grid-cols-6 gap-6" hlmCardContent>
             <hlm-field class="col-span-6 md:col-span-3 2xl:col-span-2">
-              <label hlmLabel for="testInterval">
+              <label hlmFieldLabel for="testInterval">
                 {{
                   'monitor.edit.interval'
                     | transloco: {unit: form.controls.testIntervalUnit.getRawValue()}
@@ -216,7 +216,7 @@ const times = [
             </hlm-field>
 
             <hlm-field class="col-span-6 md:col-span-3 2xl:col-span-2">
-              <label hlmLabel for="retries">{{ 'monitor.edit.retries' | transloco }}</label>
+              <label hlmFieldLabel for="retries">{{ 'monitor.edit.retries' | transloco }}</label>
 
               <input id="retries" hlmInput formControlName="retries" step="1" type="number" />
 
@@ -235,7 +235,9 @@ const times = [
             </hlm-field>
 
             <hlm-field class="col-span-6 2xl:col-span-2">
-              <label hlmLabel for="resendAfter">{{ 'monitor.edit.resendAfter' | transloco }}</label>
+              <label hlmFieldLabel for="resendAfter">
+                {{ 'monitor.edit.resendAfter' | transloco }}
+              </label>
               <div hlmInputGroup>
                 <input
                   id="resendAfter"

@@ -31,7 +31,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             [formGroup]="toForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.to, toForm.controls.to)">
             <hlm-field class="w-full">
-              <label for="to" hlmLabel>
+              <label for="to" hlmFieldLabel>
                 {{ 'general.to' | transloco }}
               </label>
               <div hlmInputGroup>
@@ -96,7 +96,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 
       <div class="col-span-2 grid grid-cols-6 gap-4">
         <hlm-field class="col-span-4">
-          <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
+          <label hlmFieldLabel for="host">{{ 'general.host' | transloco }}</label>
           <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
           @let hostErrors = emailDataFormGroup.controls.host.errors;
 
@@ -118,7 +118,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
           }
         </hlm-field>
         <hlm-field class="col-span-2">
-          <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
+          <label hlmFieldLabel for="port">{{ 'general.port' | transloco }}</label>
 
           <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
@@ -140,7 +140,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
 
       <div class="col-span-2 mb-5 grid items-center gap-4 xl:grid-cols-6">
         <hlm-field class="col-span-4">
-          <label hlmLabel for="security">{{ 'general.security' | transloco }}</label>
+          <label hlmFieldLabel for="security">{{ 'general.security' | transloco }}</label>
           <hlm-select id="security" formControlName="security">
             <hlm-select-trigger class="w-full">
               <hlm-select-value [placeholder]="'general.security' | transloco" />
@@ -161,7 +161,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </div>
 
       <hlm-field class="col-span-1">
-        <label hlmLabel for="username">Username</label>
+        <label hlmFieldLabel for="username">Username</label>
         <div hlmInputGroup>
           <input id="username" hlmInputGroupInput formControlName="username" />
           <div hlmInputGroupAddon>
@@ -177,7 +177,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
       </hlm-field>
 
       <hlm-field class="col-span-1">
-        <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
+        <label hlmFieldLabel for="password">{{ 'general.password' | transloco }}</label>
         <div hlmInputGroup>
           <input
             id="password"
@@ -206,7 +206,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             [formGroup]="ccForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.cc, ccForm.controls.cc)">
             <hlm-field class="w-full">
-              <label for="cc" hlmLabel>CC</label>
+              <label for="cc" hlmFieldLabel>CC</label>
               <div hlmInputGroup>
                 <input
                   id="cc"
@@ -272,7 +272,7 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
             [formGroup]="bccForm"
             (ngSubmit)="chipInputAdd(emailDataFormGroup.controls.bcc, bccForm.controls.bcc)">
             <hlm-field class="w-full">
-              <label for="bcc" hlmLabel>BCC</label>
+              <label for="bcc" hlmFieldLabel>BCC</label>
               <div hlmInputGroup>
                 <input
                   id="bcc"

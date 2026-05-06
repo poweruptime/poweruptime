@@ -72,7 +72,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
               (fileId)="form.controls.imageId.setValue($event)" />
 
             <hlm-field class="w-full">
-              <label hlmLabel for="name">
+              <label hlmFieldLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
 
@@ -100,7 +100,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
           </div>
 
           <hlm-field class="col-span-1 flex flex-col justify-end">
-            <label hlmLabel for="slug">
+            <label hlmFieldLabel for="slug">
               {{ 'general.slug' | transloco }}
             </label>
 
@@ -144,7 +144,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                   chipInputAdd(form.controls.domainNames, domainNameForm.controls.domainName)
                 ">
                 <hlm-field>
-                  <label for="domainName" hlmLabel>
+                  <label for="domainName" hlmFieldLabel>
                     {{ 'general.domainNames' | transloco }}
                   </label>
                   <div hlmInputGroup>

@@ -4,7 +4,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 
 import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
 
@@ -12,7 +11,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="flex gap-4" [formGroup]="pingDataFormGroup">
       <hlm-field class="flex-1">
-        <label hlmLabel for="ip">{{ 'general.ipAddress' | transloco }}</label>
+        <label hlmFieldLabel for="ip">{{ 'general.ipAddress' | transloco }}</label>
         <input id="ip" hlmInput formControlName="ip" type="text" placeholder="1.1.1.1" />
         @let ipErrors = pingDataFormGroup.controls.ip.errors;
         @if (ipErrors?.['required']) {
@@ -34,7 +33,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </hlm-field>
 
       <hlm-field class="w-48">
-        <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
+        <label hlmFieldLabel for="port">{{ 'general.port' | transloco }}</label>
 
         <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
@@ -55,7 +54,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     </div>
   `,
   selector: 'pu-monitor-edit-form-ping-data',
-  imports: [ReactiveFormsModule, TranslocoPipe, HlmInputImports, HlmLabelImports, HlmFieldImports],
+  imports: [ReactiveFormsModule, TranslocoPipe, HlmInputImports, HlmFieldImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitorEditFormPingData {

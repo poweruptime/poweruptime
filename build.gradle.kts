@@ -69,7 +69,7 @@ subprojects {
     tasks.withType<KotlinCompile> {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict") // Needed for the ISoftDeleteRepository to be able to override the findAll with a default implementation.
-            freeCompilerArgs.add("-Xjvm-default=all") // Generate JVM (1.8) default methods for non-abstract Kotlin interface member.
+            freeCompilerArgs.add("-jvm-default=enable") // Generate JVM (1.8) default methods for non-abstract Kotlin interface member.
             freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }

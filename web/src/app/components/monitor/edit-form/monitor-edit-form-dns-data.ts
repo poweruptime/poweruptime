@@ -9,7 +9,6 @@ import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
@@ -22,7 +21,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
   template: `
     <div class="grid grid-cols-8 gap-4" [formGroup]="dnsDataFormGroup">
       <hlm-field class="col-span-8 xl:col-span-6">
-        <label hlmLabel for="host">{{ 'general.host' | transloco }}</label>
+        <label hlmFieldLabel for="host">{{ 'general.host' | transloco }}</label>
         <input id="host" hlmInput formControlName="host" type="text" placeholder="google.com" />
         @let hostErrors = dnsDataFormGroup.controls.host.errors;
 
@@ -45,7 +44,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </hlm-field>
 
       <hlm-field class="col-span-8 xl:col-span-2">
-        <label hlmLabel for="method">{{ 'general.type' | transloco }}</label>
+        <label hlmFieldLabel for="method">{{ 'general.type' | transloco }}</label>
         <hlm-select id="method" formControlName="type">
           <hlm-select-trigger class="w-full">
             <hlm-select-value [placeholder]="'general.type' | transloco" />
@@ -74,7 +73,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </hlm-field>
 
       <hlm-field class="col-span-8 xl:col-span-6">
-        <label hlmLabel for="server">{{ 'monitor.edit.dns.server' | transloco }}</label>
+        <label hlmFieldLabel for="server">{{ 'monitor.edit.dns.server' | transloco }}</label>
         <input id="server" hlmInput formControlName="server" type="text" placeholder="9.9.9.9" />
         @let serverErrors = dnsDataFormGroup.controls.server.errors;
         @if (serverErrors?.['required']) {
@@ -96,7 +95,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
       </hlm-field>
 
       <hlm-field class="col-span-8 xl:col-span-2">
-        <label hlmLabel for="port">{{ 'general.port' | transloco }}</label>
+        <label hlmFieldLabel for="port">{{ 'general.port' | transloco }}</label>
 
         <input id="port" hlmInput formControlName="port" step="1" type="number" />
 
@@ -123,7 +122,9 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
             [formGroup]="matchForm"
             (ngSubmit)="chipInputAdd(dnsDataFormGroup.controls.matches, matchForm.controls.match)">
             <hlm-field class="w-full">
-              <label for="match" hlmLabel>{{ 'monitor.edit.dns.matches.label' | transloco }}</label>
+              <label for="match" hlmFieldLabel>
+                {{ 'monitor.edit.dns.matches.label' | transloco }}
+              </label>
               <div hlmInputGroup>
                 <input
                   id="match"
@@ -178,7 +179,6 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     ReactiveFormsModule,
     TranslocoPipe,
     HlmSelectImports,
-    HlmLabelImports,
     HlmInputImports,
     HlmBadgeImports,
     HlmButtonImports,

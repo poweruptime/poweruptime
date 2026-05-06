@@ -7,7 +7,6 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
 import {Database} from '@app/api';
@@ -27,7 +26,7 @@ import {AuthStore} from '@app/services';
       <form class="grid gap-10" [formGroup]="form" (ngSubmit)="submit()" hlmCardContent>
         <div class="grid gap-4">
           <hlm-field>
-            <label hlmLabel for="email">
+            <label hlmFieldLabel for="email">
               {{ 'general.emailAddress' | transloco }}
             </label>
             <div hlmInputGroup>
@@ -61,7 +60,7 @@ import {AuthStore} from '@app/services';
           </hlm-field>
 
           <hlm-field>
-            <label hlmLabel for="oldPassword">
+            <label hlmFieldLabel for="oldPassword">
               {{ 'auth.oldPassword' | transloco }}
             </label>
 
@@ -150,10 +149,10 @@ import {AuthStore} from '@app/services';
         </div>
 
         <div class="grid gap-3">
-          <label class="flex items-center" hlmLabel for="stayLoggedIn">
-            <hlm-switch class="mr-2" inputId="stayLoggedIn" formControlName="stayLoggedIn" />
-            {{ 'auth.stayLoggedIn' | transloco }}
-          </label>
+          <div hlmField orientation="horizontal">
+            <hlm-switch inputId="stayLoggedIn" formControlName="stayLoggedIn" />
+            <label hlmFieldLabel for="stayLoggedIn">{{ 'auth.stayLoggedIn' | transloco }}</label>
+          </div>
 
           <button id="password-change-button" [disabled]="!formValid()" hlmBtn type="submit">
             <ng-icon class="mr-2" name="bootstrapEnvelope" />
@@ -170,7 +169,6 @@ import {AuthStore} from '@app/services';
     TranslocoPipe,
     PasswordShowButton,
     HlmCardImports,
-    HlmLabelImports,
     HlmInputGroupImports,
     HlmSwitchImports,
     HlmButtonImports,

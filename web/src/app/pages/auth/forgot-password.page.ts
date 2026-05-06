@@ -30,7 +30,7 @@ import {ForgotPasswordStore} from '@app/services';
             (ngSubmit)="submitRequest()"
             hlmCardContent>
             <hlm-field>
-              <label hlmLabel for="email">
+              <label hlmFieldLabel for="email">
                 {{ 'general.emailAddress' | transloco }}
               </label>
               <div hlmInputGroup>
@@ -76,7 +76,7 @@ import {ForgotPasswordStore} from '@app/services';
             hlmCardContent>
             <ng-container formGroupName="newPassword">
               <hlm-field>
-                <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
+                <label hlmFieldLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
                 <div hlmInputGroup>
                   <input
@@ -100,7 +100,7 @@ import {ForgotPasswordStore} from '@app/services';
               </hlm-field>
 
               <hlm-field>
-                <label hlmLabel for="newPasswordConfirm">
+                <label hlmFieldLabel for="newPasswordConfirm">
                   {{ 'auth.newPasswordConfirm' | transloco }}
                 </label>
 

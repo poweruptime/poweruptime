@@ -19,7 +19,7 @@ import {
   template: `
     <form class="grid gap-4" id="password-form" #formRef [formGroup]="form" (ngSubmit)="submit()">
       <hlm-field>
-        <label hlmLabel for="oldPassword">
+        <label hlmFieldLabel for="oldPassword">
           {{ 'profile.password.currentPassword' | transloco }}
         </label>
 
@@ -44,7 +44,7 @@ import {
 
       <ng-container formGroupName="password">
         <hlm-field>
-          <label hlmLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
+          <label hlmFieldLabel for="newPassword">{{ 'auth.newPassword' | transloco }}</label>
 
           <div hlmInputGroup>
             <input
@@ -67,7 +67,7 @@ import {
         </hlm-field>
 
         <hlm-field>
-          <label hlmLabel for="newPasswordConfirm">
+          <label hlmFieldLabel for="newPasswordConfirm">
             {{ 'auth.newPasswordConfirm' | transloco }}
           </label>
 

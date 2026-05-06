@@ -77,7 +77,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
           </div>
           <div class="grid gap-6 sm:grid-cols-6" hlmCardContent>
             <hlm-field class="sm:col-span-4">
-              <label hlmLabel for="name">
+              <label hlmFieldLabel for="name">
                 {{ 'general.name' | transloco }}
               </label>
               <input
@@ -104,7 +104,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
             </hlm-field>
 
             <hlm-field class="sm:col-span-2">
-              <label hlmLabel for="type">
+              <label hlmFieldLabel for="type">
                 {{ 'general.type' | transloco }}
               </label>
               <hlm-select id="type" formControlName="type">

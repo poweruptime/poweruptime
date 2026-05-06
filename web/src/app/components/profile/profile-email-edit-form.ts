@@ -18,7 +18,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
       <span class="mb-4">{{ 'profile.email.current' | transloco }}: {{ email() }}</span>
 
       <hlm-field>
-        <label hlmLabel for="email">{{ 'profile.email.new' | transloco }}</label>
+        <label hlmFieldLabel for="email">{{ 'profile.email.new' | transloco }}</label>
         <div hlmInputGroup>
           <input
             id="email"
@@ -50,7 +50,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid, notEqual} fro
       </hlm-field>
 
       <hlm-field>
-        <label hlmLabel for="password">{{ 'general.password' | transloco }}</label>
+        <label hlmFieldLabel for="password">{{ 'general.password' | transloco }}</label>
 
         <div hlmInputGroup>
           <input

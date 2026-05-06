@@ -28,7 +28,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
         </div>
         <div class="grid gap-4 md:grid-cols-2" hlmCardContent>
           <hlm-field>
-            <label hlmLabel for="checkResultRetentionPeriodInDays">
+            <label hlmFieldLabel for="checkResultRetentionPeriodInDays">
               {{ 'instanceSettings.retention.checkResult' | transloco }}
             </label>
 
@@ -60,7 +60,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
           </hlm-field>
 
           <hlm-field>
-            <label hlmLabel for="checkResultLogRetentionPeriodInDays">
+            <label hlmFieldLabel for="checkResultLogRetentionPeriodInDays">
               {{ 'instanceSettings.retention.logs' | transloco }}
             </label>
 

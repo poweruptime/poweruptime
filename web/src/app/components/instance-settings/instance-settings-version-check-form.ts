@@ -119,7 +119,7 @@ import {VersionCheckInfo} from './version-check-info';
                               )
                             ">
                             <hlm-field>
-                              <label for="to" hlmLabel>
+                              <label for="to" hlmFieldLabel>
                                 {{ 'instanceSettings.versionCheck.adminMail.to.label' | transloco }}
                               </label>
                               <div hlmInputGroup>

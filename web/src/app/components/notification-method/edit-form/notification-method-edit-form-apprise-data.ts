@@ -4,7 +4,6 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmInputImports} from '@spartan-ng/helm/input';
-import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {TranslocoMarkupComponent} from 'dfx-transloco-markup';
 
 import {NotificationMethodEditFormDataService} from './notification-method-edit-form-data.service';
@@ -13,7 +12,9 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
   template: `
     <div class="grid gap-4" [formGroup]="appriseDataFormGroup">
       <hlm-field>
-        <label hlmLabel for="url">{{ 'notificationMethod.edit.apprise.url' | transloco }}</label>
+        <label hlmFieldLabel for="url">
+          {{ 'notificationMethod.edit.apprise.url' | transloco }}
+        </label>
         <input id="url" hlmInput formControlName="url" type="url" />
 
         @let urlErrors = appriseDataFormGroup.controls.url.errors;
@@ -52,7 +53,6 @@ import {NotificationMethodEditFormDataService} from './notification-method-edit-
     TranslocoPipe,
     TranslocoMarkupComponent,
     HlmInputImports,
-    HlmLabelImports,
     HlmFieldImports,
   ],
 })

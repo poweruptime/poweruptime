@@ -37,7 +37,7 @@ import {AuthStore, InfoStore} from '@app/services';
         </div>
         <form class="grid gap-4" [formGroup]="form" (ngSubmit)="submit()" hlmCardContent>
           <hlm-field>
-            <label hlmLabel for="email">
+            <label hlmFieldLabel for="email">
               {{ 'general.emailAddress' | transloco }}
             </label>
             <div hlmInputGroup>
@@ -71,7 +71,7 @@ import {AuthStore, InfoStore} from '@app/services';
           </hlm-field>
           <hlm-field>
             <div class="flex justify-between gap-4">
-              <label hlmLabel for="password">
+              <label hlmFieldLabel for="password">
                 {{ 'general.password' | transloco }}
               </label>
               <a hlmBtn routerLink="/auth/forgot-password" variant="link">
