@@ -42,6 +42,17 @@ import {SelectedTeamStore} from '@app/services';
             {{ 'general.statusPages' | transloco }}
           </a>
         </li>
+        <li hlmSidebarMenuItem>
+          <a
+            #mntRla="routerLinkActive"
+            [isActive]="mntRla.isActive"
+            hlmSidebarMenuButton
+            routerLink="/t/{{ selectedTeamId() }}/maintenance"
+            routerLinkActive>
+            <ng-icon name="lucideCalendarClock" />
+            Maintenance
+          </a>
+        </li>
         <ng-container *isTeamAdmin>
           <li hlmSidebarMenuItem>
             <a

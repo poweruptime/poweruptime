@@ -12,6 +12,7 @@ import org.poweruptime.backend.core.models.nanoId
 import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.features.maintenance.model.Maintenance
 import org.poweruptime.backend.features.team.model.TeamRecord
 import java.time.Instant
 
@@ -21,6 +22,7 @@ object CheckResult : ULongIdTable("check_result"), HasPublicId, HasModifiers {
     override val updatedAt = updatedAt()
 
     val monitorId = ulong("monitor_id").references(Monitor.id).index()
+    val maintenanceId = ulong("maintenance_id").references(Maintenance.id).nullable().index()
 
     val status = enumerationByCode<MonitorStatus>("status")
         .clientDefault { MonitorStatus.PENDING }
@@ -43,6 +45,7 @@ data class CheckResultRecord(
     val createdAt: Instant,
     val updatedAt: Instant,
     val monitorId: ULong,
+    val maintenanceId: ULong?,
     val status: MonitorStatus,
     val timesRetried: Long?,
     val previousStatus: MonitorStatus?,
@@ -59,6 +62,7 @@ fun CheckResult.rowToCheckResultRecord(row: ResultRow): CheckResultRecord = Chec
     createdAt = row[createdAt],
     updatedAt = row[updatedAt],
     monitorId = row[monitorId],
+    maintenanceId = row[maintenanceId],
     status = row[status],
     timesRetried = row[timesRetried],
     previousStatus = row[previousStatus],
@@ -75,6 +79,7 @@ fun CheckResult.rowToCheckResultRecord(row: ResultRow, alias: QueryAlias): Check
     createdAt = row[alias[createdAt]],
     updatedAt = row[alias[updatedAt]],
     monitorId = row[alias[monitorId]],
+    maintenanceId = row[alias[maintenanceId]],
     status = row[alias[status]],
     timesRetried = row[alias[timesRetried]],
     previousStatus = row[alias[previousStatus]],

@@ -1,4 +1,4 @@
-import {NgOptimizedImage} from '@angular/common';
+import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,6 +50,13 @@ import {PublicStatusPageStore} from '@app/services';
                   size="lg"
                   name="bootstrapCheckCircleFill" />
                 <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
+              } @else if (publicStatusPageStore.status() === 'MAINTENANCE') {
+                <ng-icon
+                  [monitor-status-text]="'MAINTENANCE'"
+                  hlm
+                  size="lg"
+                  name="lucideCalendarClock" />
+                <span class="text-xl">Maintenance in progress.</span>
               } @else {
                 <ng-icon
                   [monitor-status-text]="'DOWN'"
@@ -63,6 +70,51 @@ import {PublicStatusPageStore} from '@app/services';
 
           @if (statusPage.description; as it) {
             <pu-shadow-render [html]="it" />
+          }
+
+          @let activeMaintenances = $any(statusPage).activeMaintenances ?? [];
+          @let upcomingMaintenances = $any(statusPage).upcomingMaintenances ?? [];
+          @let completedMaintenances = $any(statusPage).completedMaintenances ?? [];
+
+          @if (activeMaintenances.length > 0 || upcomingMaintenances.length > 0) {
+            <div class="grid gap-4">
+              @if (activeMaintenances.length > 0) {
+                <section hlmCard>
+                  <div class="grid gap-3" hlmCardContent>
+                    <h2 class="text-xl font-medium">Active maintenance</h2>
+                    @for (maintenance of activeMaintenances; track maintenance.id) {
+                      <div class="grid gap-1 border-t pt-3 first:border-t-0 first:pt-0">
+                        <h3 class="font-medium">{{ maintenance.title }}</h3>
+                        <p class="text-muted-foreground text-sm">
+                          {{ maintenance.startsAt | date: 'medium' }} -
+                          {{ maintenance.endsAt | date: 'medium' }}
+                        </p>
+                        @if (maintenance.description) {
+                          <p class="text-sm">{{ maintenance.description }}</p>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              @if (upcomingMaintenances.length > 0) {
+                <section hlmCard>
+                  <div class="grid gap-3" hlmCardContent>
+                    <h2 class="text-xl font-medium">Upcoming maintenance</h2>
+                    @for (maintenance of upcomingMaintenances; track maintenance.id) {
+                      <div class="grid gap-1 border-t pt-3 first:border-t-0 first:pt-0">
+                        <h3 class="font-medium">{{ maintenance.title }}</h3>
+                        <p class="text-muted-foreground text-sm">
+                          {{ maintenance.startsAt | date: 'medium' }} -
+                          {{ maintenance.endsAt | date: 'medium' }}
+                        </p>
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+            </div>
           }
 
           <div class="flex flex-col gap-10">
@@ -85,6 +137,23 @@ import {PublicStatusPageStore} from '@app/services';
 
           @if (statusPage.footer; as it) {
             <pu-shadow-render class="mt-20" [html]="it" />
+          }
+
+          @if (completedMaintenances.length > 0) {
+            <section hlmCard>
+              <div class="grid gap-3" hlmCardContent>
+                <h2 class="text-xl font-medium">Completed maintenance</h2>
+                @for (maintenance of completedMaintenances; track maintenance.id) {
+                  <div class="grid gap-1 border-t pt-3 first:border-t-0 first:pt-0">
+                    <h3 class="font-medium">{{ maintenance.title }}</h3>
+                    <p class="text-muted-foreground text-sm">
+                      {{ maintenance.startsAt | date: 'medium' }} -
+                      {{ maintenance.endsAt | date: 'medium' }}
+                    </p>
+                  </div>
+                }
+              </div>
+            </section>
           }
         }
 
@@ -110,6 +179,7 @@ import {PublicStatusPageStore} from '@app/services';
     MonitorStatusText,
     NgOptimizedImage,
     BackendImagePipe,
+    DatePipe,
   ],
 })
 export class PublicStatusPagePage {

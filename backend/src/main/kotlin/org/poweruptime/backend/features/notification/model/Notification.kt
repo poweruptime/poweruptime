@@ -11,6 +11,7 @@ import org.poweruptime.backend.core.models.updatedAt
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.NANO_ID_DEFAULT_LENGTH
 import org.poweruptime.backend.core.utils.NANO_ID_MAX_LENGTH
+import org.poweruptime.backend.features.maintenance.model.Maintenance
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
@@ -25,6 +26,7 @@ object Notification : ULongIdTable("notification"), HasPublicId, HasModifiers {
 
     val checkResultId = ulong("check_result_id").references(CheckResult.id).index().uniqueIndex()
     val monitorId = ulong("monitor_id").references(Monitor.id).index()
+    val maintenanceId = ulong("maintenance_id").references(Maintenance.id).nullable().index()
     val publicCheckResultId = varchar("public_check_result_id", NANO_ID_MAX_LENGTH)
 
     val status = enumerationByCode<MonitorStatus>("status")
@@ -37,6 +39,7 @@ data class NotificationRecord(
     val createdAt: Instant,
     val updatedAt: Instant,
     val monitorId: ULong,
+    val maintenanceId: ULong?,
     val checkResultId: ULong,
     val publicCheckResultId: String,
     var title: String,
@@ -49,6 +52,7 @@ fun Notification.rowToNotificationRecord(row: ResultRow): NotificationRecord = N
     createdAt = row[createdAt],
     updatedAt = row[updatedAt],
     monitorId = row[monitorId],
+    maintenanceId = row[maintenanceId],
     checkResultId = row[checkResultId],
     publicCheckResultId = row[publicCheckResultId],
     title = row[title],

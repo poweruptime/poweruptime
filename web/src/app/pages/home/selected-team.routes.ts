@@ -28,6 +28,10 @@ export const ROUTES: Routes = [
     loadChildren: () => import('./status-pages/status-pages.routes').then((r) => r.ROUTES),
   },
   {
+    path: 'maintenance',
+    loadChildren: () => import('./maintenance/maintenance.routes').then((r) => r.ROUTES),
+  },
+  {
     path: 'recycle-bin',
     loadChildren: () => import('./recycle-bin/recycle-bin.route').then((r) => r.ROUTES),
   },

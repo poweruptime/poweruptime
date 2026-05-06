@@ -137,3 +137,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: image_id
+  - changeSet:
+      id: 10
+      author: Codex
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: changelog/scripts/10-maintenance.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

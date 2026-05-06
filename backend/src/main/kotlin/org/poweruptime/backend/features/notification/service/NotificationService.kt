@@ -56,12 +56,17 @@ class NotificationService(private val notificationMethodService: NotificationMet
         }.orThrowNotFound()
 
     @Transactional
-    fun send(monitorId: ULong, checkResult: CheckResultRecord): NotificationJoinMonitorAndTeamRecord {
-        assert(listOf(MonitorStatus.UP, MonitorStatus.DOWN).contains(checkResult.status))
+    fun send(
+        monitorId: ULong,
+        checkResult: CheckResultRecord,
+        maintenanceId: ULong? = checkResult.maintenanceId,
+    ): NotificationJoinMonitorAndTeamRecord {
+        assert(listOf(MonitorStatus.UP, MonitorStatus.DOWN, MonitorStatus.MAINTENANCE).contains(checkResult.status))
 
         val notificationId = Notification
             .insertAndGetId {
                 it[Notification.monitorId] = checkResult.monitorId
+                it[Notification.maintenanceId] = maintenanceId
                 it[Notification.checkResultId] = checkResult.id
                 it[Notification.publicCheckResultId] = checkResult.publicId
                 it[Notification.status] = checkResult.status

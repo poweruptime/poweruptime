@@ -55,7 +55,7 @@ class NotificationListener(
     }
 
     private fun validateNotification(join: SubNotificationJoinMethodAndNotificationRecord) {
-        require(join.notification.status in listOf(MonitorStatus.UP, MonitorStatus.DOWN)) {
+        require(join.notification.status in listOf(MonitorStatus.UP, MonitorStatus.DOWN, MonitorStatus.MAINTENANCE)) {
             "Invalid status: ${join.notification.status}"
         }
     }

@@ -3,6 +3,8 @@ package org.poweruptime.backend.features.statusPage.resource
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.poweruptime.backend.core.utils.orThrowNotFound
+import org.poweruptime.backend.features.maintenance.dto.PublicMaintenanceResponse
+import org.poweruptime.backend.features.maintenance.service.MaintenanceService
 import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.dto.PublicMonitorMinResponse
 import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*
 class PublicStatusPageController(
     private val statusPageService: StatusPageService,
     private val checkResultStatisticsService: CheckResultStatisticsService,
+    private val maintenanceService: MaintenanceService,
 ) {
     private fun getStatusPageGroupsMonitorsAndCheckResults(
         statusPageId: ULong,
@@ -65,9 +68,22 @@ class PublicStatusPageController(
     fun get(@PathVariable slug: String): PublicStatusPageResponse = statusPageService
         .findBySlug(slug)
         ?.let {
+            val groups = getStatusPageGroupsMonitorsAndCheckResults(it.id)
+            val maintenance = maintenanceService.findPublicByStatusPageMonitorIds(
+                StatusPageGroupMonitor.findByStatusPage(it.id).map { groupMonitor -> groupMonitor.monitor.id },
+            )
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id),
+                groups = groups,
+                upcomingMaintenances = maintenance.upcoming.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
+                activeMaintenances = maintenance.active.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
+                completedMaintenances = maintenance.completed.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
             )
         }.orThrowNotFound("Status page not found")
 
@@ -79,9 +95,22 @@ class PublicStatusPageController(
     fun getByDomain(@PathVariable domain: String): PublicStatusPageResponse = statusPageService
         .findByDomainName(domain)
         ?.let {
+            val groups = getStatusPageGroupsMonitorsAndCheckResults(it.id)
+            val maintenance = maintenanceService.findPublicByStatusPageMonitorIds(
+                StatusPageGroupMonitor.findByStatusPage(it.id).map { groupMonitor -> groupMonitor.monitor.id },
+            )
             PublicStatusPageResponse(
                 statusPage = it,
-                groups = getStatusPageGroupsMonitorsAndCheckResults(it.id),
+                groups = groups,
+                upcomingMaintenances = maintenance.upcoming.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
+                activeMaintenances = maintenance.active.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
+                completedMaintenances = maintenance.completed.map { (maintenance, monitors) ->
+                    PublicMaintenanceResponse(maintenance, monitors)
+                },
             )
         }.orThrowNotFound("Status page not found")
 }

@@ -21,7 +21,13 @@ export const PublicStatusPageStore = signalStore(
   withComputed(({statusPage}) => ({
     status: computed(() => {
       const _entities = statusPage()?.groups?.flatMap((it) => it.monitors) ?? [];
-      return _entities.some((it) => it.status === 'DOWN') ? ('DOWN' as const) : ('UP' as const);
+      if (_entities.some((it) => it.status === 'DOWN')) {
+        return 'DOWN' as const;
+      }
+      if (_entities.some((it) => it.status === 'MAINTENANCE')) {
+        return 'MAINTENANCE' as const;
+      }
+      return 'UP' as const;
     }),
   })),
   withMethods((store, api = injectAPI()) => ({

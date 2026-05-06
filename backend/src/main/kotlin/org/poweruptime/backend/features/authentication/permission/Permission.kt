@@ -9,6 +9,7 @@ import org.jetbrains.exposed.v1.core.innerJoin
 import org.jetbrains.exposed.v1.jdbc.Query
 import org.jetbrains.exposed.v1.jdbc.select
 import org.poweruptime.backend.features.authentication.model.User
+import org.poweruptime.backend.features.maintenance.model.Maintenance
 import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.Monitor
 import org.poweruptime.backend.features.notification.model.Notification
@@ -47,6 +48,10 @@ const val STATUS_PAGE_GROUP = "STATUS_PAGE_GROUP"
 const val STATUS_PAGE_GROUP_ADMIN = "${STATUS_PAGE_GROUP}_ADMIN"
 const val STATUS_PAGE_GROUP_MEMBER = "${STATUS_PAGE_GROUP}_MEMBER"
 
+const val MAINTENANCE = "MAINTENANCE"
+const val MAINTENANCE_ADMIN = "${MAINTENANCE}_ADMIN"
+const val MAINTENANCE_MEMBER = "${MAINTENANCE}_MEMBER"
+
 abstract class PermissionChecker {
     open fun applyAdditionalJoins(baseJoins: Join): Join = baseJoins
 
@@ -71,6 +76,7 @@ enum class Permission(val baseName: String, private val checker: PermissionCheck
     Notification(NOTIFICATION, NotificationPermissionChecker),
     StatusPage(STATUS_PAGE, StatusPagePermissionChecker),
     StatusPageGroup(STATUS_PAGE_GROUP, StatusPageGroupPermissionChecker),
+    Maintenance(MAINTENANCE, MaintenancePermissionChecker),
     ;
 
     fun buildQuery(publicUserId: String, entityId: String): Query {
@@ -155,4 +161,10 @@ private object StatusPageGroupPermissionChecker : PermissionChecker() {
     override fun getEntityPublicIdColumn() = StatusPageGroup.publicId
 
     override fun getTablesToJoin() = listOf(StatusPage, StatusPageGroup)
+}
+
+private object MaintenancePermissionChecker : PermissionChecker() {
+    override fun getEntityPublicIdColumn() = Maintenance.publicId
+
+    override fun getTablesToJoin() = listOf(Maintenance)
 }

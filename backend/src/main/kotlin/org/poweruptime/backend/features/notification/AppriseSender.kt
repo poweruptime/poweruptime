@@ -124,6 +124,7 @@ class AppriseSender(
     private fun mapStatusToNotificationType(status: MonitorStatus): AppriseNotificationType = when (status) {
         MonitorStatus.UP -> AppriseNotificationType.INFO
         MonitorStatus.DOWN -> AppriseNotificationType.FAILURE
+        MonitorStatus.MAINTENANCE -> AppriseNotificationType.INFO
         else -> throw IllegalArgumentException("Invalid status: $status")
     }
 
@@ -142,11 +143,14 @@ class AppriseSender(
         join: SubNotificationJoinMethodNotificationCheckResultAndMonitorRecord,
     ): NotificationTemplate = notificationTemplateService.getRenderedNotification(
         join,
-        previousOppositeCheckResult = checkResultService
-            .getLastOppositeByMonitorIdAndStatus(
+        previousOppositeCheckResult = if (join.notification.status == MonitorStatus.MAINTENANCE) {
+            null
+        } else {
+            checkResultService.getLastOppositeByMonitorIdAndStatus(
                 join.notification.monitorId,
                 join.notification.status,
-            ),
+            )
+        },
     )
 
     private fun sendToApprise(request: AppriseNotificationRequest): String? = try {
