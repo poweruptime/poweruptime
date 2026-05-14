@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1 - 2026-05-14
+
+### <!-- 0 -->🚀 Features
+
+- Relace chart library by Dafnik ([31485f0](https://github.com/poweruptime/poweruptime/commit/31485f0ed778808a98d80c99d467a92bd26ec71c))
+- Improve og image generation by Dafnik ([63fe9fd](https://github.com/poweruptime/poweruptime/commit/63fe9fd8c40f70fceb2bec50189473ce3c2bb267))
+- Dialog hide close button by Dafnik ([b670cc3](https://github.com/poweruptime/poweruptime/commit/b670cc3239219dd5b918d76282d5606ac2b881b9))
+- Add code based oauth2 login flow (#735) by Dafnik ([ad97585](https://github.com/poweruptime/poweruptime/commit/ad9758522b3acd87f848ab5ee4832c937ff5a074))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0...0.5.1)
+
 ## 0.5.0 - 2026-05-04
 
 ### <!-- 0 -->🚀 Features
