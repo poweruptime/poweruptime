@@ -146,7 +146,7 @@ licenseReport {
 
 node {
     download = true
-    version = "22.0.0"
+    version = "24.14.1"
     workDir = rootDir.resolve(".gradle/nodejs")
     pnpmWorkDir = rootDir.resolve(".gradle/pnpm")
     nodeProjectDir = rootDir.resolve(".")
