@@ -15,6 +15,9 @@
     "format": "prettier --write .",
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
+  "engines": {
+    "node": "24.14.1"
+  },
   "packageManager": "pnpm@10.33.2",
   "private": true,
   "devDependencies": {
