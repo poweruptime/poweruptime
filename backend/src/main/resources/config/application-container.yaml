@@ -69,6 +69,14 @@ spring:
               - email
               - profile
 
+          github:
+            client-id: ${OAUTH2_GITHUB_CLIENT_ID:EMPTY}
+            client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET:EMPTY}
+            redirect-uri: ${OAUTH2_GITHUB_REDIRECT_URI:${POWERUPTIME_HOST}/api/login/oauth2/code/github}
+            scope:
+              - read:user
+              - user:email
+
           keycloak:
             client-id: ${OAUTH2_KEYCLOAK_CLIENT_ID:EMPTY}
             client-secret: ${OAUTH2_KEYCLOAK_CLIENT_SECRET:EMPTY}

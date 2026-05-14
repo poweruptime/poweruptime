@@ -1,11 +1,12 @@
 import {inject, linkedSignal} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {filter, pipe, switchMap} from 'rxjs';
+import {EMPTY, pipe, switchMap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withProps, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {toast} from '@spartan-ng/brain/sonner';
 import {i_complete, st_removeAll} from 'dfts-helper';
 import {injectWindow} from 'dfx-helper';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
@@ -65,8 +66,15 @@ export const AuthStore = signalStore(
     },
     oauth2Login: rxMethod<string | undefined>(
       pipe(
-        filter((code): code is string => !!code),
-        switchMap((code) => api.post('/v1/auth/login-oauth', {body: {code}})),
+        switchMap((code) => {
+          if (!code) {
+            toast.error('OAuth login code not available');
+            void router.navigate(['', 'auth', 'login']);
+            return EMPTY;
+          }
+
+          return api.post('/v1/auth/login-oauth', {body: {code}});
+        }),
         tapResponse({
           next: ({accessToken, refreshToken}) => {
             patchState(store, () => ({
@@ -80,6 +88,7 @@ export const AuthStore = signalStore(
           },
           error: (error) => {
             console.error(error);
+            toast.error('OAuth login succeeded but poweruptime login failed');
             void router.navigate(['', 'auth', 'login']);
           },
         }),

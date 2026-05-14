@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -71,6 +72,7 @@ class AuthController(
         summary = "Login for oauth2 flow",
     )
     @PostMapping("/login-oauth")
+    @Transactional(readOnly = false)
     fun loginOAuth(@Valid @RequestBody request: OAuthLoginDto): JwtResponse {
         val (user, issuer) = oAuthLoginFlowService.getSession(request.code) ?: throw OAuthCodeIncorrectException()
 

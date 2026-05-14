@@ -49,6 +49,15 @@ class OAuth2ClientRegistrationsConfig(private val props: OAuth2ClientProperties)
                             .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
                             .build()
 
+                    "github" ->
+                        CommonOAuth2Provider.GITHUB
+                            .getBuilder(registrationId)
+                            .clientId(registration.clientId!!)
+                            .clientSecret(registration.clientSecret!!)
+                            .scope(*registration.scope!!.toTypedArray())
+                            .redirectUri(registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId")
+                            .build()
+
                     else -> props.provider[registrationId]?.let {
                         if (
                             it.authorizationUri.isNullBlankOrEmpty() ||
