@@ -57,7 +57,7 @@
     "dfx-transloco-markup": "21.0.0",
     "eventsource": "4.1.0",
     "express": "5.2.1",
-    "http-proxy-middleware": "3.0.5",
+    "http-proxy-middleware": "4.0.0",
     "nanoid": "5.1.11",
     "ngx-sonner": "3.1.0",
     "ngxtension": "7.2.0",
@@ -74,7 +74,7 @@
     "@angular/build": "21.2.9",
     "@angular/cli": "21.2.9",
     "@angular/compiler-cli": "21.2.11",
-    "@eslint/js": "9.39.4",
+    "@eslint/js": "10.0.1",
     "@jsverse/transloco-keys-manager": "8.1.0",
     "@jsverse/transloco-optimize": "8.3.0",
     "@jsverse/transloco-utils": "8.3.0",
@@ -91,7 +91,7 @@
     "autoprefixer": "10.5.0",
     "chokidar": "5.0.0",
     "esbuild-visualizer": "0.7.0",
-    "eslint": "9.39.4",
+    "eslint": "10.3.0",
     "eslint-plugin-unused-imports": "4.4.1",
     "glob": "13.0.6",
     "ng-icons-manager": "1.1.4",
@@ -100,7 +100,7 @@
     "postcss": "8.5.13",
     "tailwindcss": "4.2.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.59.1"
+    "typescript-eslint": "8.59.3"
   },
   "imports": {
     "#styles.css": "./src/styles.css"
