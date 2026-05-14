@@ -51,6 +51,8 @@ class OAuth2LoginSuccessHandler(
                 .toUriString()
 
             response.sendRedirect(redirectUri)
+
+            return
         }
 
         val code = oAuthLoginFlowService.addSession(
