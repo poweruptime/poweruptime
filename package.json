@@ -16,9 +16,9 @@
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
   "engines": {
-    "node": "24.14.1"
+    "node": "24.15.0"
   },
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@10.33.4",
   "private": true,
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
