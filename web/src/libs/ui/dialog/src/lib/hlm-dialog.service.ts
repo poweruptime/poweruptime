@@ -8,8 +8,8 @@ import {HlmDialogContent} from './hlm-dialog-content';
 import {hlmDialogOverlayClass} from './hlm-dialog-overlay';
 
 export type HlmDialogOptions<DialogContext = unknown> = BrnDialogOptions & {
-  showCloseButton?: boolean;
   contentClass?: string;
+  showCloseButton?: boolean;
   context?: DialogContext;
 };
 
