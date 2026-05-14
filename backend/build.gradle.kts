@@ -48,7 +48,7 @@ dependencies {
     implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
 
     // MFA Stuff
-    implementation("dev.turingcomplete:kotlin-onetimepassword:2.4.1")
+    implementation("dev.turingcomplete:kotlin-onetimepassword:3.0.0")
     implementation("commons-codec:commons-codec:1.22.0")
 
     // HTML to Markdown Converter
