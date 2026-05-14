@@ -53,12 +53,10 @@ class OAuth2LoginSuccessHandler(
             response.sendRedirect(redirectUri)
         }
 
-        val iss = oauthUser.attributes["iss"]
-
         val code = oAuthLoginFlowService.addSession(
             OAuthLoginSession(
                 user = user,
-                issuer = iss as? String ?: "unknown issuer"
+                issuer = oauthUser.attributes["iss"] as? String ?: "unknown issuer"
             )
         )
 
