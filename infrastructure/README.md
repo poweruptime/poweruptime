@@ -119,7 +119,7 @@ Authorization callback URL: `https://<POWERUPTIME_HOST>/api/login/oauth2/code/go
 
 ### GitHub
 
-Take a look at what [environment variables need to be set](#github-1) and checkout [GitHubs's OAuth2 docs](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
+Take a look at what [environment variables need to be set](#github-1) and checkout [GitHub's OAuth2 docs](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
 
 Authorization callback URL: `https://<POWERUPTIME_HOST>/api/login/oauth2/code/github`
 
