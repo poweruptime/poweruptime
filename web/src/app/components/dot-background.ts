@@ -77,6 +77,10 @@ export class DotBackground implements AfterViewInit, OnDestroy {
 
     this.resizeListener = resizeCanvas;
     window.addEventListener('resize', this.resizeListener);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.drawFrame();
+      return;
+    }
 
     this.animate();
   }
