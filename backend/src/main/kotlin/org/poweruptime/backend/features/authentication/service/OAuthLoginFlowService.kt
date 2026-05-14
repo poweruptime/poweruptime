@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 data class OAuthLoginSession(val user: UserRecord, val issuer: String, val createdAt: Instant = Instant.now())
 
 const val MAX_AGE_SECONDS = 180L
+const val MAX_SESSIONS_PER_USER = 5
 
 @Service
 class OAuthLoginFlowService {
@@ -17,6 +18,15 @@ class OAuthLoginFlowService {
     fun addSession(session: OAuthLoginSession): String {
         val code = RandomGenerator.nanoId()
         loginSessions[code] = session
+
+        val userSessions = loginSessions.entries
+            .filter { it.value.user.id == session.user.id }
+            .sortedByDescending { it.value.createdAt }
+
+        userSessions
+            .drop(MAX_SESSIONS_PER_USER)
+            .forEach { loginSessions.remove(it.key) }
+
         return code
     }
 
