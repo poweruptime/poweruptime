@@ -115,13 +115,21 @@ All other user-management operations work exactly the same, regardless of how th
 
 Take a look at what [environment variables need to be set](#google-1) and checkout [Google's OAuth2 docs](https://developers.google.com/identity/protocols/oauth2).
 
-Please note that you have to fill in all variables without a default value.
+Authorization callback URL: `https://<POWERUPTIME_HOST>/api/login/oauth2/code/google`
+
+### GitHub
+
+Take a look at what [environment variables need to be set](#github-1) and checkout [GitHub's OAuth2 docs](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
+
+Authorization callback URL: `https://<POWERUPTIME_HOST>/api/login/oauth2/code/github`
 
 ### Keycloak (or any other OAuth2 Provider)
 
 Take a look at what [environment variables need to be set](#keycloak-or-any-other-oauth2-provider-1) and checkout [Keycloak's OAuth2 docs](https://www.keycloak.org/docs/latest/server_admin/index.html).
 
-Please note that you have to fill in all variables without a default value.
+Authorization callback URL: `https://<POWERUPTIME_HOST>/api/login/oauth2/code/keycloak`
+
+**Please note that you have to fill in all variables without a default value.**
 
 ## Environment variables
 
@@ -174,6 +182,14 @@ These configuration values only effect the System E-Mail service.
 | `OAUTH2_GOOGLE_CLIENT_ID`     | Your Google OAuth2 Client ID from the Google Cloud Console     |                                                   |          |
 | `OAUTH2_GOOGLE_CLIENT_SECRET` | Your Google OAuth2 Client Secret                               |                                                   |          |
 | `OAUTH2_GOOGLE_REDIRECT_URI`  | Callback URI registered in Google (where Google will redirect) | `{POWERUPTIME_HOST}/api/login/oauth2/code/google` |          |
+
+#### GitHub
+
+| Name                          | Description                                                                                           | Default value                                     | Required |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------- |
+| `OAUTH2_GITHUB_CLIENT_ID`     | Your GitHub OAuth2 Client ID from [GitHub Developer Settings](https://github.com/settings/developers) |                                                   |          |
+| `OAUTH2_GITHUB_CLIENT_SECRET` | Your GitHub OAuth2 Client Secret                                                                      |                                                   |          |
+| `OAUTH2_GITHUB_REDIRECT_URI`  | Callback URI registered in GitHub (where GitHub will redirect)                                        | `{POWERUPTIME_HOST}/api/login/oauth2/code/github` |          |
 
 #### Keycloak (or any other OAuth2 Provider)
 

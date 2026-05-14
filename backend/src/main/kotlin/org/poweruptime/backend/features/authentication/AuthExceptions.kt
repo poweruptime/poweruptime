@@ -12,6 +12,8 @@ class MFACodeIncorrectException : ForbiddenException("MFA code incorrect", "mfa_
 
 class SessionTokenIncorrectException : UnauthorizedException("Session token incorrect", "session_token_incorrect")
 
+class OAuthCodeIncorrectException : UnauthorizedException("OAuth code incorrect", "oauth_code_incorrect")
+
 class SessionInformationMissingException :
     BadRequestException(
         "Session information is missing",

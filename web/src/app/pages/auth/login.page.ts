@@ -124,7 +124,9 @@ import {AuthStore, InfoStore} from '@app/services';
                 <hr class="w-full" />
               </div>
 
-              <div class="grid gap-4 sm:grid-cols-2">
+              <div
+                class="grid gap-4"
+                [class.sm\\:grid-cols-2]="enabledOAuth2Providers().length > 1">
                 @for (provider of enabledOAuth2Providers(); track provider.registrationId) {
                   <a
                     [href]="'/api/oauth2/authorization/' + provider.registrationId"
@@ -132,6 +134,9 @@ import {AuthStore, InfoStore} from '@app/services';
                     variant="outline">
                     <div class="inline-flex items-center gap-2">
                       @switch (provider.registrationId) {
+                        @case ('github') {
+                          <ng-icon hlm size="sm" name="bootstrapGithub" />
+                        }
                         @case ('google') {
                           <ng-icon hlm size="sm" name="bootstrapGoogle" />
                         }

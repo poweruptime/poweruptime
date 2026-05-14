@@ -69,6 +69,14 @@ spring:
               - profile
               - email
 
+          github:
+            client-id: EMPTY
+            client-secret: EMPTY
+            redirect-uri: http://localhost:8080/api/login/oauth2/code/github
+            scope:
+              - read:user
+              - user:email
+
 #          keycloak:
 #            client-id: keycloakId
 #            client-secret: keycloakSecret

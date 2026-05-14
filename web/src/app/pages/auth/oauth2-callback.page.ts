@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {toast} from '@spartan-ng/brain/sonner';
 
 import {AuthStore} from '@app/services';
 
@@ -16,15 +17,22 @@ export class OAuth2CallbackPage {
   private readonly authStore = inject(AuthStore);
   protected readonly preview = input(false, {transform: booleanAttribute});
 
-  protected readonly refreshToken = input<string>();
-  protected readonly accessToken = input<string>();
+  protected readonly code = input<string>();
+  protected readonly error = input<string>();
 
   constructor() {
-    if (!this.preview()) {
-      this.authStore.oauth2Login({
-        refreshToken: this.refreshToken(),
-        accessToken: this.accessToken(),
-      });
+    const error = this.error();
+    if (error) {
+      switch (error) {
+        case 'not_activated':
+          toast.error('Account deactivated. Contact an admin to regain access.');
+          break;
+        default:
+          toast.error(`OAuth login failed for unknown reasons: "${error}"`);
+          break;
+      }
+    } else if (!this.preview()) {
+      this.authStore.oauth2Login(this.code);
     }
   }
 }

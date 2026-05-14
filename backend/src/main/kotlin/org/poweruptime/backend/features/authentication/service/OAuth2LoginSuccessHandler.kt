@@ -8,6 +8,7 @@ import org.poweruptime.backend.features.authentication.model.SystemRole
 import org.poweruptime.backend.features.user.CreateUserDto
 import org.poweruptime.backend.features.user.service.UserService
 import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
@@ -19,8 +20,7 @@ class OAuth2LoginSuccessHandler(
     private val hostService: HostService,
     private val authService: AuthService,
     private val userService: UserService,
-    private val accessTokenService: AccessTokenGenerationService,
-    private val sessionService: SessionService,
+    private val oAuthLoginFlowService: OAuthLoginFlowService,
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -52,20 +52,23 @@ class OAuth2LoginSuccessHandler(
                 .toUriString()
 
             response.sendRedirect(redirectUri)
+
+            return
         }
 
-        val sessionToken = sessionService.createSessionForOAuth2(
-            sessionInformation = "OAuth2 session by ${oauthUser.attributes["iss"] ?: "unknown issuer"}",
-            user = user,
+        val code = oAuthLoginFlowService.addSession(
+            OAuthLoginSession(
+                user = user,
+                issuer = (authentication as? OAuth2AuthenticationToken)?.authorizedClientRegistrationId
+                    ?: (oauthUser.attributes["iss"] as? String)
+                    ?: "unknown",
+            ),
         )
 
-        val accessToken = accessTokenService.createToken(user.publicId, user.role.grantedAuthorities)
-
-        // Build the redirect URL with tokens as query params
+        // Build the redirect URL with login code as query params
         val redirectUri = UriComponentsBuilder
             .fromUriString("${hostService.urlHost}/auth/oauth2/callback")
-            .queryParam("accessToken", URLEncoder.encode(accessToken, "UTF-8"))
-            .queryParam("refreshToken", URLEncoder.encode(sessionToken.token, "UTF-8"))
+            .queryParam("code", URLEncoder.encode(code, "UTF-8"))
             .build()
             .toUriString()
 

@@ -7,6 +7,7 @@ import com.github.jk1.license.render.JsonReportRenderer
 import com.github.jk1.license.render.ReportRenderer
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.springframework.boot.gradle.tasks.run.BootRun
+import groovy.json.JsonSlurper
 
 plugins {
     kotlin("plugin.serialization")
@@ -144,9 +145,27 @@ licenseReport {
     outputDir = licenseReportPath
 }
 
+val packageJson = JsonSlurper().parse(rootDir.resolve("./package.json")) as Map<*, *>
+
+val engines = packageJson["engines"] as? Map<*, *>
+    ?: error("package.json must define engines.node")
+
+val nodeVersionFromPackageJson = engines["node"] as? String
+    ?: error("""package.json must define engines.node, e.g. "24.14.1"""")
+
+val packageManager = packageJson["packageManager"] as? String
+    ?: error("""package.json must define packageManager, e.g. "pnpm@10.33.2"""")
+
+require(packageManager.startsWith("pnpm@")) {
+    "Expected packageManager to be pnpm@<version>, but got: $packageManager"
+}
+
+val pnpmVersionFromPackageJson = packageManager.removePrefix("pnpm@")
+
 node {
     download = true
-    version = "22.0.0"
+    version = nodeVersionFromPackageJson
+    pnpmVersion = pnpmVersionFromPackageJson
     workDir = rootDir.resolve(".gradle/nodejs")
     pnpmWorkDir = rootDir.resolve(".gradle/pnpm")
     nodeProjectDir = rootDir.resolve(".")

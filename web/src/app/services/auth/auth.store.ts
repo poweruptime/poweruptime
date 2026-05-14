@@ -1,11 +1,12 @@
 import {inject, linkedSignal} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {filter, pipe, switchMap, tap} from 'rxjs';
+import {EMPTY, pipe, switchMap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withProps, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
+import {toast} from '@spartan-ng/brain/sonner';
 import {i_complete, st_removeAll} from 'dfts-helper';
 import {injectWindow} from 'dfx-helper';
 import {injectLocalStorage} from 'ngxtension/inject-local-storage';
@@ -63,18 +64,33 @@ export const AuthStore = signalStore(
       st_removeAll();
       window?.location.reload();
     },
-    oauth2Login: rxMethod<{accessToken?: string; refreshToken?: string}>(
+    oauth2Login: rxMethod<string | undefined>(
       pipe(
-        filter((tokens) => !!tokens.accessToken && !!tokens.refreshToken),
-        tap(({accessToken, refreshToken}) => {
-          patchState(store, () => ({
-            error: 'NONE' as const,
-          }));
+        switchMap((code) => {
+          if (!code) {
+            toast.error('OAuth login code not available');
+            void router.navigate(['', 'auth', 'login']);
+            return EMPTY;
+          }
 
-          store.accessToken.set(accessToken);
-          store.refreshToken.set(refreshToken);
+          return api.post('/v1/auth/login-oauth', {body: {code}});
+        }),
+        tapResponse({
+          next: ({accessToken, refreshToken}) => {
+            patchState(store, () => ({
+              error: 'NONE' as const,
+            }));
 
-          void router.navigateByUrl(store.redirectUrl() ?? '/');
+            store.accessToken.set(accessToken);
+            store.refreshToken.set(refreshToken);
+
+            void router.navigateByUrl(store.redirectUrl() ?? '/');
+          },
+          error: (error) => {
+            console.error(error);
+            toast.error('OAuth login succeeded but poweruptime login failed');
+            void router.navigate(['', 'auth', 'login']);
+          },
         }),
       ),
     ),
