@@ -19,8 +19,7 @@ class OAuth2LoginSuccessHandler(
     private val hostService: HostService,
     private val authService: AuthService,
     private val userService: UserService,
-    private val accessTokenService: AccessTokenGenerationService,
-    private val sessionService: SessionService,
+    private val oAuthLoginFlowService: OAuthLoginFlowService
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -54,18 +53,19 @@ class OAuth2LoginSuccessHandler(
             response.sendRedirect(redirectUri)
         }
 
-        val sessionToken = sessionService.createSessionForOAuth2(
-            sessionInformation = "OAuth2 session by ${oauthUser.attributes["iss"] ?: "unknown issuer"}",
-            user = user,
+        val iss = oauthUser.attributes["iss"]
+
+        val code = oAuthLoginFlowService.addSession(
+            OAuthLoginSession(
+                user = user,
+                issuer = iss as? String ?: "unknown issuer"
+            )
         )
 
-        val accessToken = accessTokenService.createToken(user.publicId, user.role.grantedAuthorities)
-
-        // Build the redirect URL with tokens as query params
+        // Build the redirect URL with login code as query params
         val redirectUri = UriComponentsBuilder
             .fromUriString("${hostService.urlHost}/auth/oauth2/callback")
-            .queryParam("accessToken", URLEncoder.encode(accessToken, "UTF-8"))
-            .queryParam("refreshToken", URLEncoder.encode(sessionToken.token, "UTF-8"))
+            .queryParam("code", URLEncoder.encode(code, "UTF-8"))
             .build()
             .toUriString()
 

@@ -63,18 +63,25 @@ export const AuthStore = signalStore(
       st_removeAll();
       window?.location.reload();
     },
-    oauth2Login: rxMethod<{accessToken?: string; refreshToken?: string}>(
+    oauth2Login: rxMethod<string | undefined>(
       pipe(
-        filter((tokens) => !!tokens.accessToken && !!tokens.refreshToken),
-        tap(({accessToken, refreshToken}) => {
-          patchState(store, () => ({
-            error: 'NONE' as const,
-          }));
+        filter((code): code is string => !!code),
+        switchMap((code) => api.post('/v1/auth/login-oauth', {body: {code}})),
+        tapResponse({
+          next: ({accessToken, refreshToken}) => {
+            patchState(store, () => ({
+              error: 'NONE' as const,
+            }));
 
-          store.accessToken.set(accessToken);
-          store.refreshToken.set(refreshToken);
+            store.accessToken.set(accessToken);
+            store.refreshToken.set(refreshToken);
 
-          void router.navigateByUrl(store.redirectUrl() ?? '/');
+            void router.navigateByUrl(store.redirectUrl() ?? '/');
+          },
+          error: (error) => {
+            console.error(error);
+            void router.navigate(['', 'auth', 'login']);
+          },
         }),
       ),
     ),

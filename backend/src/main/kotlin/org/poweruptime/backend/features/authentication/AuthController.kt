@@ -10,6 +10,7 @@ import org.poweruptime.backend.features.authentication.config.AuthUtils
 import org.poweruptime.backend.features.authentication.service.AccessTokenGenerationService
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.poweruptime.backend.features.authentication.service.MFAService
+import org.poweruptime.backend.features.authentication.service.OAuthLoginFlowService
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -33,6 +34,7 @@ class AuthController(
     private val authService: AuthService,
     private val passwordResetTokenService: PasswordResetTokenService,
     private val mfaService: MFAService,
+    private val oAuthLoginFlowService: OAuthLoginFlowService,
 ) {
     @Operation(
         summary = "Login",
@@ -62,6 +64,26 @@ class AuthController(
         return JwtResponse(
             accessToken = accessTokenService.createToken(auth),
             refreshToken = sessionToken?.token,
+        )
+    }
+
+    @Operation(
+        summary = "Login for oauth2 flow",
+    )
+    @PostMapping("/login-oauth")
+    fun loginOAuth(@Valid @RequestBody request: OAuthLoginDto): JwtResponse {
+        val (user, issuer) = oAuthLoginFlowService.getSession(request.code) ?: throw OAuthCodeIncorrectException()
+
+        val sessionToken = sessionService.createSessionForOAuth2(
+            sessionInformation = "OAuth session by $issuer",
+            user = user,
+        )
+
+        val accessToken = accessTokenService.createToken(user.publicId, user.role.grantedAuthorities)
+
+        return JwtResponse(
+            accessToken = accessToken,
+            refreshToken = sessionToken.token,
         )
     }
 

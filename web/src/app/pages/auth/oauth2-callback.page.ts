@@ -16,15 +16,11 @@ export class OAuth2CallbackPage {
   private readonly authStore = inject(AuthStore);
   protected readonly preview = input(false, {transform: booleanAttribute});
 
-  protected readonly refreshToken = input<string>();
-  protected readonly accessToken = input<string>();
+  protected readonly code = input<string>();
 
   constructor() {
     if (!this.preview()) {
-      this.authStore.oauth2Login({
-        refreshToken: this.refreshToken(),
-        accessToken: this.accessToken(),
-      });
+      this.authStore.oauth2Login(this.code);
     }
   }
 }

@@ -2,6 +2,7 @@ package org.poweruptime.backend.configuration.schedule
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.poweruptime.backend.core.utils.SECONDS_PER_DAY
+import org.poweruptime.backend.features.authentication.service.OAuthLoginFlowService
 import org.poweruptime.backend.features.info.supporter.SupporterService
 import org.poweruptime.backend.features.info.versionChecker.service.VersionChecker
 import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryService
@@ -28,6 +29,7 @@ class SchedulingConfiguration(
     private val subNotificationService: SubNotificationService,
     private val supporterService: SupporterService,
     private val versionChecker: VersionChecker,
+    private val oAuthLoginFlowService: OAuthLoginFlowService,
 ) {
     private final val logger = KotlinLogging.logger {}
 
@@ -73,6 +75,11 @@ class SchedulingConfiguration(
     // Runs 1 hour after instance start every 1 hour
     @Scheduled(fixedDelay = 3_600_000L, initialDelay = 3_600_000L)
     fun removeTempNotifications() {
+        logger.info {
+            "Removing old oauth login sessions"
+        }
+        oAuthLoginFlowService.cleanupExpiredSessions()
+
         tempNotificationService.removeOldTempNotifications()
     }
 }

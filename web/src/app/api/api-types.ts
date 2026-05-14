@@ -639,6 +639,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/auth/login-oauth': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Login for oauth2 flow */
+    post: operations['loginOAuth'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/user/{id}': {
     parameters: {
       query?: never;
@@ -2258,6 +2275,9 @@ export interface components {
       sessionInformation?: string;
       stayLoggedIn?: boolean;
     };
+    OAuthLoginDto: {
+      code: string;
+    };
     /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
     sort: string[];
     PaginatedResponseUserResponse: {
@@ -3796,6 +3816,30 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['LoginDto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['JwtResponse'];
+        };
+      };
+    };
+  };
+  loginOAuth: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OAuthLoginDto'];
       };
     };
     responses: {
