@@ -19,7 +19,7 @@ class OAuth2LoginSuccessHandler(
     private val hostService: HostService,
     private val authService: AuthService,
     private val userService: UserService,
-    private val oAuthLoginFlowService: OAuthLoginFlowService
+    private val oAuthLoginFlowService: OAuthLoginFlowService,
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -56,8 +56,8 @@ class OAuth2LoginSuccessHandler(
         val code = oAuthLoginFlowService.addSession(
             OAuthLoginSession(
                 user = user,
-                issuer = oauthUser.attributes["iss"] as? String ?: "unknown issuer"
-            )
+                issuer = oauthUser.attributes["iss"] as? String ?: "unknown issuer",
+            ),
         )
 
         // Build the redirect URL with login code as query params

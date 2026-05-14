@@ -6,11 +6,7 @@ import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 
-data class OAuthLoginSession(
-    val user: UserRecord,
-    val issuer: String,
-    val createdAt: Instant = Instant.now()
-)
+data class OAuthLoginSession(val user: UserRecord, val issuer: String, val createdAt: Instant = Instant.now())
 
 const val MAX_AGE_SECONDS = 180L
 

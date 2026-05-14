@@ -1,7 +1,7 @@
 import {inject, linkedSignal} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {filter, pipe, switchMap, tap} from 'rxjs';
+import {filter, pipe, switchMap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withMethods, withProps, withState} from '@ngrx/signals';

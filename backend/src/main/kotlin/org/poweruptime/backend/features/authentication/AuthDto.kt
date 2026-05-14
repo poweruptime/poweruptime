@@ -7,9 +7,7 @@ import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.features.authentication.model.SessionRecord
 import java.time.Instant
 
-data class OAuthLoginDto(
-    @get:NotBlank val code: String,
-)
+data class OAuthLoginDto(@get:NotBlank val code: String)
 
 data class LoginDto(
     @get:NotBlank val email: String,
