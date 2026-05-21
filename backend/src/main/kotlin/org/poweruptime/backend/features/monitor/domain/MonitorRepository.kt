@@ -16,7 +16,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deletedFilter
-import org.poweruptime.backend.core.domain.pageQuery
+import org.poweruptime.backend.core.domain.pageQueryA
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.fileUpload.File
@@ -81,7 +81,7 @@ fun Monitor.findAllNoneDeleted(): List<MonitorRecord> = innerJoin(Team)
     }
 
 @Suppress("LongMethod")
-fun Monitor.findAll(
+suspend fun Monitor.findAll(
     pageable: Pageable,
     teamId: ULong? = null,
     userId: ULong? = null,
@@ -96,84 +96,8 @@ fun Monitor.findAll(
         "teamId, or userId needs to be provided"
     }
 
-    var selectColumns = columns + Team.columns + File.columns
-
-    val query = innerJoin(Team)
-        .leftJoin(File, { File.id }, { Team.imageId })
-        .select(selectColumns)
-
-    query.andWhere { Monitor.deleted.deletedFilter(deleted) }
-    query.andWhere { Team.deleted.isNull() }
-
-    teamId?.let {
-        query.andWhere { Monitor.teamId eq it }
-    }
-    userId?.let {
-        query
-            .adjustColumnSet {
-                innerJoin(TeamUser)
-            }.adjustSelect {
-                selectColumns = selectColumns + TeamUser.userId
-                select(selectColumns)
-            }.andWhere {
-                TeamUser.userId eq it
-            }
-    }
-
-    name?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere {
-            Monitor.name.lowerCase() like "%${it.lowercase()}%"
-        }
-    }
-
-    statuses?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere {
-            Monitor.status inList it
-        }
-    }
-
-    types?.takeIf { it.isNotEmpty() }?.let {
-        query.andWhere {
-            Monitor.type inList it
-        }
-    }
-
-    enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let {
-        query
-            .adjustColumnSet {
-                innerJoin(MonitorNotificationMethod)
-            }.adjustSelect {
-                selectColumns = selectColumns + MonitorNotificationMethod.notificationMethodId
-                select(selectColumns)
-            }.andWhere {
-                MonitorNotificationMethod.notificationMethodId inList it
-            }
-    }
-
-    enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let { methodIds ->
-        query.andWhere {
-            Monitor.id inSubQuery (
-                MonitorNotificationMethod
-                    .select(MonitorNotificationMethod.monitorId)
-                    .where { MonitorNotificationMethod.notificationMethodId inList methodIds }
-                )
-        }
-    }
-
-    tags?.takeIf { it.isNotEmpty() }?.let { tagList ->
-        query.andWhere {
-            Monitor.id inSubQuery (
-                MonitorTag
-                    .innerJoin(Tag, { MonitorTag.tagId }, { Tag.id })
-                    .select(MonitorTag.monitorId)
-                    .where { Tag.name inList tagList }
-                )
-        }
-    }
-
-    return pageQuery(
-        query,
-        pageable,
+    return pageQueryA(
+        pageable = pageable,
         sort = {
             when (it) {
                 "name" -> Monitor.name
@@ -186,13 +110,81 @@ fun Monitor.findAll(
                 else -> null
             }
         },
-        {
+        map = {
             MonitorRecordJoinTeamRecord(
                 monitor = Monitor.rowToMonitorRecord(it),
                 team = Team.rowToTeamRecord(it),
             )
         },
-    )
+    ) {
+        var selectColumns = columns + Team.columns + File.columns
+
+        val query = innerJoin(Team)
+            .leftJoin(File, { File.id }, { Team.imageId })
+            .select(selectColumns)
+
+        query.andWhere { Monitor.deleted.deletedFilter(deleted) }
+        query.andWhere { Team.deleted.isNull() }
+
+        teamId?.let {
+            query.andWhere { Monitor.teamId eq it }
+        }
+
+        userId?.let {
+            query
+                .adjustColumnSet {
+                    innerJoin(TeamUser)
+                }.adjustSelect {
+                    selectColumns = selectColumns + TeamUser.userId
+                    select(selectColumns)
+                }.andWhere {
+                    TeamUser.userId eq it
+                }
+        }
+
+        name?.takeIf { it.isNotEmpty() }?.let {
+            query.andWhere {
+                Monitor.name.lowerCase() like "%${it.lowercase()}%"
+            }
+        }
+
+        statuses?.takeIf { it.isNotEmpty() }?.let {
+            query.andWhere {
+                Monitor.status inList it
+            }
+        }
+
+        types?.takeIf { it.isNotEmpty() }?.let {
+            query.andWhere {
+                Monitor.type inList it
+            }
+        }
+
+        enabledNotificationMethodIds?.takeIf { it.isNotEmpty() }?.let { methodIds ->
+            query.andWhere {
+                Monitor.id inSubQuery (
+                    MonitorNotificationMethod
+                        .select(MonitorNotificationMethod.monitorId)
+                        .where {
+                            MonitorNotificationMethod.notificationMethodId inList methodIds
+                        }
+                    )
+            }
+        }
+
+        tags?.takeIf { it.isNotEmpty() }?.let { tagList ->
+            query.andWhere {
+                Monitor.id inSubQuery (
+                    MonitorTag
+                        .innerJoin(Tag, { MonitorTag.tagId }, { Tag.id })
+                        .select(MonitorTag.monitorId)
+                        .where { Tag.name inList tagList }
+                    )
+            }
+        }
+
+        query
+    }
 }
 
 fun Monitor.countMonitorsByTeamIdsGrouped(teamIds: List<ULong>): List<TeamStatusCount> = select(

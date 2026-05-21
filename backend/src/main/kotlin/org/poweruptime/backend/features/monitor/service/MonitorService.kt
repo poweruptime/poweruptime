@@ -1,5 +1,6 @@
 package org.poweruptime.backend.features.monitor.service
 
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
@@ -86,17 +87,19 @@ class MonitorService(
         types: List<MonitorType>? = null,
         tags: List<String>? = null,
         deleted: Boolean = false,
-    ): Page<MonitorRecordJoinTeamRecord> = Monitor.findAll(
-        pageable = pageable,
-        teamId = teamId,
-        userId = userId,
-        name = name,
-        enabledNotificationMethodIds = enabledNotificationMethodIds,
-        statuses = statuses,
-        types = types,
-        tags = tags,
-        deleted = deleted,
-    )
+    ): Page<MonitorRecordJoinTeamRecord> = runBlocking {
+        Monitor.findAll(
+            pageable = pageable,
+            teamId = teamId,
+            userId = userId,
+            name = name,
+            enabledNotificationMethodIds = enabledNotificationMethodIds,
+            statuses = statuses,
+            types = types,
+            tags = tags,
+            deleted = deleted,
+        )
+    }
 
     @Transactional
     fun create(dto: CreateMonitorDto): MonitorRecordWithDataJoinTeamRecord {
