@@ -49,10 +49,6 @@ class SchedulingConfiguration(
                 "Removing notifications of team '${team.name}' (${team.id}) older than $checkResultDateInPast"
             }
             notificationService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
-            logger.info {
-                "Removing check results of team '${team.name}' (${team.id}) older than $checkResultDateInPast"
-            }
-            checkResultService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
 
             val checkResultLogRetentionPeriodInDays = teamSettingService.getCheckResultLogRetentionPeriodInDays(team.id)
             val checkResultLogDateInThePast = Instant.now().minusSeconds(
@@ -62,6 +58,11 @@ class SchedulingConfiguration(
                 "Removing check result logs of team '${team.name}' (${team.id}) older than $checkResultLogDateInThePast"
             }
             checkResultLogEntryService.deleteByTeamIdAndOlderThan(team.id, checkResultLogDateInThePast)
+
+            logger.info {
+                "Removing check results of team '${team.name}' (${team.id}) older than $checkResultDateInPast"
+            }
+            checkResultService.deleteByTeamIdAndOlderThan(team.id, checkResultDateInPast)
         }
 
         logger.info {

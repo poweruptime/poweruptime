@@ -221,5 +221,5 @@ fun CheckResult.deleteByTeamIdAndOlderThan(teamId: ULong, before: Instant): Int 
         Monitor.select(Monitor.id).where {
             Monitor.teamId eq teamId
         }
-        ) and (createdAt less before)
+        ) and (CheckResult.createdAt less before)
 }
