@@ -1,5 +1,4 @@
 import {computed, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {filter, pipe, switchMap, tap} from 'rxjs';
 
@@ -28,17 +27,16 @@ export const MonitorDetailStore = signalStore(
     pingStatistics: computed(() => buildPingStatistics(monitor()?.statistics?.ping)),
   })),
   withMethods((store) => ({
-    updateMonitor(monitor: BackendType['MonitorMaxResponse']) {
-      if (store.monitor()?.id === monitor.id) {
-        patchState(store, () => ({monitor}));
-      }
-    },
+    updateMonitor: rxMethod<BackendType['MonitorMaxResponse']>(
+      pipe(
+        filter((monitor) => store.monitor()?.id === monitor.id),
+        tap((monitor) => patchState(store, () => ({monitor}))),
+      ),
+    ),
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.updateMonitor(it));
+      store.updateMonitor(pushService.monitorStatusChange$);
     },
   }),
 );

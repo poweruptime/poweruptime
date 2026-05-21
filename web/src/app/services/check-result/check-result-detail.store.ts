@@ -1,11 +1,15 @@
+import {inject} from '@angular/core';
+
 import {distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
-import {patchState, signalStore, withMethods, withState} from '@ngrx/signals';
+import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
 import {setError, setFulfilled, setPending, withRequestStatus} from '@app/services/store-features';
+
+import {PushService} from '../push.service';
 
 export const CheckResultDetailStore = signalStore(
   {providedIn: 'root'},
@@ -16,6 +20,12 @@ export const CheckResultDetailStore = signalStore(
     checkResult: undefined,
   }),
   withMethods((store, api = injectAPI()) => ({
+    update: rxMethod<BackendType['CheckResultResponse']>(
+      pipe(
+        filter((checkResult) => store.checkResult()?.id === checkResult.id),
+        tap((checkResult) => patchState(store, () => ({checkResult}))),
+      ),
+    ),
     loadById: rxMethod<string | undefined>(
       pipe(
         filter((it): it is string => !!it),
@@ -40,4 +50,9 @@ export const CheckResultDetailStore = signalStore(
       ),
     ),
   })),
+  withHooks({
+    onInit(store, pushService = inject(PushService)) {
+      store.update(pushService.checkResults$);
+    },
+  }),
 );

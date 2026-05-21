@@ -1,5 +1,5 @@
 import {computed, inject} from '@angular/core';
-import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 import {delayWhen, distinctUntilChanged, filter, mergeMap, pipe, tap} from 'rxjs';
 
@@ -49,11 +49,14 @@ export const InfiniteCheckResultsStore = signalStore(
         patchState(store, (state) => ({page: state.page + 1}));
       }
     },
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      if (store.monitorId() === checkResult.monitor.id) {
-        patchState(store, prependEntity(checkResult), setEntity(checkResult));
-      }
-    },
+    addCheckResult: rxMethod<BackendType['CheckResultResponse']>(
+      pipe(
+        filter((checkResult) => store.monitorId() === checkResult.monitor.id),
+        tap((checkResult) => {
+          patchState(store, prependEntity(checkResult), setEntity(checkResult));
+        }),
+      ),
+    ),
     load: rxMethod<{monitorId: string; page: number}>(
       pipe(
         distinctUntilChanged((prev, cur) => {
@@ -116,12 +119,7 @@ export const InfiniteCheckResultsStore = signalStore(
     onInit(store, pushService = inject(PushService)) {
       const entitiesLoaded = toObservable(store.isFulfilled).pipe(filter((it) => it));
       // Only start processing pushes when initial request has been fulfilled
-      pushService.checkResults$
-        .pipe(
-          takeUntilDestroyed(),
-          delayWhen(() => entitiesLoaded),
-        )
-        .subscribe((it) => store.addCheckResult(it));
+      store.addCheckResult(pushService.checkResults$.pipe(delayWhen(() => entitiesLoaded)));
     },
   }),
 );

@@ -1,5 +1,4 @@
 import {computed, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {forkJoin, map, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
@@ -88,16 +87,18 @@ export const InfiniteMonitorsStore = signalStore(
     addMonitor(it: BackendType['MonitorResponse']): void {
       patchState(store, addEntity(it));
     },
-    updateMonitor(it: BackendType['MonitorResponse']): void {
-      // Add or update the entity in the store so it always ends up in the list
-      // If another status, only update it if its already in the loaded list
-      if (it.status === 'DOWN') {
-        patchState(store, setEntity(it));
-        return;
-      }
+    updateMonitor: rxMethod<BackendType['MonitorResponse']>(
+      tap((it) => {
+        // Add or update the entity in the store so it always ends up in the list
+        // If another status, only update it if its already in the loaded list
+        if (it.status === 'DOWN') {
+          patchState(store, setEntity(it));
+          return;
+        }
 
-      patchState(store, updateEntity({id: it.id, changes: it}));
-    },
+        patchState(store, updateEntity({id: it.id, changes: it}));
+      }),
+    ),
     removeMonitor(id: string): void {
       patchState(store, removeEntity(id));
     },
@@ -153,9 +154,7 @@ export const InfiniteMonitorsStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.monitorStatusChange$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.updateMonitor(it));
+      store.updateMonitor(pushService.monitorStatusChange$);
     },
   }),
 );

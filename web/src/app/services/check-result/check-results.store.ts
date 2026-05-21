@@ -1,5 +1,4 @@
 import {inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {debounceTime, filter, forkJoin, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
@@ -42,25 +41,27 @@ export const CheckResultsStore = signalStore(
     setShowDuplicates: rxMethod<boolean | null>(
       tap((showDuplicates) => patchState(store, () => ({showDuplicates: showDuplicates ?? false}))),
     ),
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      // 1) must be the right monitor (or, if no monitor selected, the right team)
-      const isCorrectMonitorOrTeam =
-        store.monitorId() === checkResult.monitor.id ||
-        (store.monitorId() === undefined && store.teamId() === checkResult.team.id);
-      if (!isCorrectMonitorOrTeam) return;
+    addCheckResult: rxMethod<BackendType['CheckResultResponse']>(
+      tap((checkResult) => {
+        // 1) must be the right monitor (or, if no monitor selected, the right team)
+        const isCorrectMonitorOrTeam =
+          store.monitorId() === checkResult.monitor.id ||
+          (store.monitorId() === undefined && store.teamId() === checkResult.team.id);
+        if (!isCorrectMonitorOrTeam) return;
 
-      // 2) only on the first page, sorted by createdAt
-      if (store.page() !== 0 || store.sortBy() !== 'createdAt') return;
+        // 2) only on the first page, sorted by createdAt
+        if (store.page() !== 0 || store.sortBy() !== 'createdAt') return;
 
-      // 3) either show duplicates or a real status change
-      const isNewStatus = checkResult.status !== checkResult.previousStatus;
-      if (!store.showDuplicates() && !isNewStatus) return;
+        // 3) either show duplicates or a real status change
+        const isNewStatus = checkResult.status !== checkResult.previousStatus;
+        if (!store.showDuplicates() && !isNewStatus) return;
 
-      const trimmed = store
-        .entities()
-        .slice(0, Math.max(store.size() - 1, store.entities().length - 1));
-      patchState(store, setAllEntities([checkResult, ...trimmed]));
-    },
+        const trimmed = store
+          .entities()
+          .slice(0, Math.max(store.size() - 1, store.entities().length - 1));
+        patchState(store, setAllEntities([checkResult, ...trimmed]));
+      }),
+    ),
     load: rxMethod<
       {
         teamId?: string;
@@ -103,9 +104,7 @@ export const CheckResultsStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.checkResults$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
+      store.addCheckResult(pushService.checkResults$);
     },
   }),
 );
@@ -126,24 +125,26 @@ export const LastCheckResultsStore = signalStore(
     cacheTimestamps: new Map(),
   }),
   withMethods((store, api = injectAPI()) => ({
-    addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
-      const monitorId = checkResult.monitor.id;
-      const currentResults = store.resultsMap().get(monitorId) ?? [];
-      const existingIndex = currentResults.findIndex((it) => it.id === checkResult.id);
+    addCheckResult: rxMethod<BackendType['CheckResultResponse']>(
+      tap((checkResult) => {
+        const monitorId = checkResult.monitor.id;
+        const currentResults = store.resultsMap().get(monitorId) ?? [];
+        const existingIndex = currentResults.findIndex((it) => it.id === checkResult.id);
 
-      const updated = [...currentResults];
+        const updated = [...currentResults];
 
-      if (existingIndex === -1) {
-        updated.unshift(checkResult);
-        updated.length = Math.min(updated.length, PAGE_SIZE);
-      } else {
-        updated[existingIndex] = checkResult;
-      }
+        if (existingIndex === -1) {
+          updated.unshift(checkResult);
+          updated.length = Math.min(updated.length, PAGE_SIZE);
+        } else {
+          updated[existingIndex] = checkResult;
+        }
 
-      patchState(store, () => ({
-        resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
-      }));
-    },
+        patchState(store, () => ({
+          resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
+        }));
+      }),
+    ),
     loadAll: rxMethod<string[]>(
       pipe(
         filter((ids) => ids.length > 0),
@@ -207,9 +208,7 @@ export const LastCheckResultsStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.checkResults$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addCheckResult(it));
+      store.addCheckResult(pushService.checkResults$);
     },
   }),
 );
