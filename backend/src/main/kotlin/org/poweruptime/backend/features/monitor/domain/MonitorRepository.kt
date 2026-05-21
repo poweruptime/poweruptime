@@ -103,6 +103,7 @@ fun Monitor.findAll(
         .select(selectColumns)
 
     query.andWhere { Monitor.deleted.deletedFilter(deleted) }
+    query.andWhere { Team.deleted.isNull() }
 
     teamId?.let {
         query.andWhere { Monitor.teamId eq it }
