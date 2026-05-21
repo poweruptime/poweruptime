@@ -7,8 +7,6 @@
 
 @plugin '@tailwindcss/typography';
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
   --color-neutral-100: #ececed;
   --color-neutral-200: #bfbfbf;
@@ -39,47 +37,37 @@ color utility to any element that depends on these defaults.
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
-}
 
-mat-mdc-text-field-wrapper {
-  .mat-mdc-form-field-icon-suffix {
-    @apply p-1 pe-4;
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-/* Fix select search transparent input */
-.mat-select-search-input {
-  background: var(--mat-sys-surface) !important;
-}
-
 /* Column Width */
-.mat-column-select,
 .hlm-column-select {
   @apply w-12;
 }
 
-.mat-column-createdAt,
 .hlm-column-createdAt {
   @apply w-37;
 }
 
-.mat-column-actions,
 .hlm-column-actions {
   @apply w-10 whitespace-nowrap;
 }
 
-.mat-column-actions > *,
 .hlm-column-actions > * {
   @apply mr-2;
 }
 
 /* kill the extra margin on the last child */
-.mat-column-actions > *:last-child,
 .hlm-column-actions > *:last-child {
   @apply mr-0;
 }
 
-.mat-column-deleted,
 .hlm-column-deleted {
   @apply w-52;
 }
@@ -161,13 +149,4 @@ pu-copy-icon-button {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
