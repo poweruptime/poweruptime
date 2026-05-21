@@ -254,7 +254,10 @@ do_up() {
       echo "  - Traefik dashboard: http://localhost/traefik/dashboard/"
       echo "  - RabbitMQ Management: http://localhost/rabbit/"
     else
-      docker image prune -a -f
+
+      if ! confirm "Run docker image prune?"; then
+        docker image prune -a -f
+      fi
       echo "Successfully deployed"
     fi
   fi
