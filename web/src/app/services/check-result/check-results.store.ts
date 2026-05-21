@@ -129,11 +129,19 @@ export const LastCheckResultsStore = signalStore(
     addCheckResult(checkResult: BackendType['CheckResultResponse']): void {
       const monitorId = checkResult.monitor.id;
       const currentResults = store.resultsMap().get(monitorId) ?? [];
-      const updated = [checkResult, ...currentResults.slice(0, PAGE_SIZE - 1)];
+      const existingIndex = currentResults.findIndex((it) => it.id === checkResult.id);
+
+      const updated = [...currentResults];
+
+      if (existingIndex === -1) {
+        updated.unshift(checkResult);
+        updated.length = Math.min(updated.length, PAGE_SIZE);
+      } else {
+        updated[existingIndex] = checkResult;
+      }
 
       patchState(store, () => ({
         resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
-        cacheTimestamps: new Map(store.cacheTimestamps()).set(monitorId, Date.now()),
       }));
     },
     loadAll: rxMethod<string[]>(
