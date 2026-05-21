@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.5.2 - 2026-05-21
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- LastCheckResults store only having one item or having duplicate items by Dafnik ([127407f](https://github.com/poweruptime/poweruptime/commit/127407fc3f189778bfef47781f84f56d88841c62))
+- Confirm with user before pruning unused images by Dafnik ([5752aed](https://github.com/poweruptime/poweruptime/commit/5752aedcea08fe511e639d596e5b7623b465ca17))
+- Do not return monitors which team has been deleted by Dafnik ([d50f9b3](https://github.com/poweruptime/poweruptime/commit/d50f9b34473b9535407254bde2457447cb09a42f))
+- Scheduled check result log entry deletion not working by Dafnik ([6339e14](https://github.com/poweruptime/poweruptime/commit/6339e14202eb312328ad7c8f3df7fdc0b440f895))
+
+### <!-- 2 -->🚜 Refactor
+
+- HlmLabel to hlmFieldLabel by Dafnik ([84382be](https://github.com/poweruptime/poweruptime/commit/84382beb0f31c5faccfb6774e92e245ba8f8f741))
+- Speed up monitor fetching by Dafnik ([1af2aa5](https://github.com/poweruptime/poweruptime/commit/1af2aa5c674a0c8afb72ec588b1c312386e4cbd6))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Remove not needed close prs infrastructure action by Dafnik ([c56245b](https://github.com/poweruptime/poweruptime/commit/c56245bbe2157ac9ab726e5ce34ca3707455161b))
+- Remove unused css by Dafnik ([5f0dddc](https://github.com/poweruptime/poweruptime/commit/5f0dddcef6f78d38d9b867c74e6c9242edfbcaa2))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.1...0.5.2)
+
 ## 0.5.1 - 2026-05-14
 
 ### <!-- 0 -->🚀 Features
