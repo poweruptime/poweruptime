@@ -49,8 +49,13 @@ export const CheckResultsStore = signalStore(
           (store.monitorId() === undefined && store.teamId() === checkResult.team.id);
         if (!isCorrectMonitorOrTeam) return;
 
-        // 2) only on the first page, sorted by createdAt
-        if (store.page() !== 0 || store.sortBy() !== 'createdAt') return;
+        // 2) only on the first page, sorted newest-first by createdAt
+        if (
+          store.page() !== 0 ||
+          store.sortBy() !== 'createdAt' ||
+          store.sortDirection() !== 'desc'
+        )
+          return;
 
         // 3) either show duplicates or a real status change
         const isNewStatus = checkResult.status !== checkResult.previousStatus;

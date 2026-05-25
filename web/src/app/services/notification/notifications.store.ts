@@ -38,10 +38,17 @@ export const NotificationsStore = signalStore(
   withMethods((store, api = injectAPI()) => ({
     addNotification: rxMethod<BackendType['NotificationResponse']>(
       pipe(
-        filter(
-          (notification) => !store.monitorId() || store.monitorId() === notification.monitor.id,
+        filter((notification) =>
+          store.monitorId()
+            ? store.monitorId() === notification.monitor.id
+            : store.teamId() === notification.team.id,
         ),
-        filter(() => store.page() === 0 && store.sortBy() === 'createdAt'),
+        filter(
+          () =>
+            store.page() === 0 &&
+            store.sortBy() === 'createdAt' &&
+            store.sortDirection() === 'desc',
+        ),
         tap((notification) =>
           patchState(
             store,
