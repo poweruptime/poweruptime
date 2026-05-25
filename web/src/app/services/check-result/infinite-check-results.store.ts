@@ -12,13 +12,7 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import {
-  prependEntity,
-  removeAllEntities,
-  setEntities,
-  setEntity,
-  withEntities,
-} from '@ngrx/signals/entities';
+import {prependEntity, removeAllEntities, setEntities, withEntities} from '@ngrx/signals/entities';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 
 import {BackendType, injectAPI} from '@app/api';
@@ -53,7 +47,7 @@ export const InfiniteCheckResultsStore = signalStore(
       pipe(
         filter((checkResult) => store.monitorId() === checkResult.monitor.id),
         tap((checkResult) => {
-          patchState(store, prependEntity(checkResult), setEntity(checkResult));
+          patchState(store, prependEntity(checkResult));
         }),
       ),
     ),
