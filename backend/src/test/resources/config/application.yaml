@@ -17,6 +17,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 7
+      minimum-idle: 2
 
   sql:
     init:

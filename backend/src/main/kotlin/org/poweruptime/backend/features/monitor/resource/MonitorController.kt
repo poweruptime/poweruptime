@@ -122,17 +122,15 @@ class MonitorController(
             }.content
 
         val tagsPerMonitor = tagService.getByMonitorId(monitorIds)
+        val oneDayUptimePerMonitor =
+            checkResultStatisticsService.calculateRecentUptimeByMonitorId(monitorIds, TimeOption.ONE_DAY)
 
         return monitors.toDto {
             MonitorResponse(
                 monitor = it.monitor,
                 team = it.team,
                 tags = tagsPerMonitor[it.monitor.id].orEmpty(),
-                oneDayUptime = checkResultStatisticsService
-                    .calculateRecentUptimeByMonitorId(
-                        it.monitor.id,
-                        TimeOption.ONE_DAY,
-                    ).myFormat(),
+                oneDayUptime = oneDayUptimePerMonitor[it.monitor.id]?.myFormat(),
             )
         }
     }

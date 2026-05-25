@@ -20,6 +20,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/poweruptime?reWriteBatchedInserts=true
     username: poweruptime
     password: poweruptime
+    hikari:
+      maximum-pool-size: 7
+      minimum-idle: 2
 
   sql:
     init:
