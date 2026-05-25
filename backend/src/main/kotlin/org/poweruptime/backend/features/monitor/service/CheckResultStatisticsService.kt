@@ -163,14 +163,16 @@ open class CheckResultStatisticsService {
 
     @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: List<ULong>, timeOption: TimeOption): Map<ULong, BigDecimal> {
+        if (monitorId.isEmpty()) return emptyMap()
         val now = Instant.now()
-        val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
+        val start = now.minus(timeOption.hours, ChronoUnit.HOURS)
+        val checkResultsByMonitorId = CheckResult.findByMonitorIdAndPickedUpBetween(
             monitorId,
-            now.minus(timeOption.hours, ChronoUnit.HOURS),
+            start,
             now,
         )
-        return checkResults.mapValues {
-            calculateUptimeFromCheckResults(it.value, now.minus(timeOption.hours, ChronoUnit.HOURS), now)
+        return monitorId.distinct().associateWith { id ->
+            calculateUptimeFromCheckResults(checkResultsByMonitorId[id].orEmpty(), start, now)
                 ?: BigDecimal(FULL_PERCENT)
         }
     }
