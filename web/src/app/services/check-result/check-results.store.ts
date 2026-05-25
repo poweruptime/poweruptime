@@ -1,6 +1,6 @@
 import {inject} from '@angular/core';
 
-import {debounceTime, filter, forkJoin, mergeMap, pipe, switchMap, tap} from 'rxjs';
+import {EMPTY, debounceTime, filter, from, mergeMap, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
@@ -113,6 +113,8 @@ const CACHE_DURATION_MS = 60_000; // 1 minute
 
 const PAGE_SIZE = 22;
 
+const MAX_CONCURRENT_CHECK_RESULT_LOADS = 4;
+
 export const LastCheckResultsStore = signalStore(
   {providedIn: 'root'},
   withState<{
@@ -155,51 +157,56 @@ export const LastCheckResultsStore = signalStore(
               store.resultsMap().has(monitorId) &&
               timestamp !== undefined &&
               Date.now() - timestamp < CACHE_DURATION_MS;
+
             return !hasValidCache;
           });
 
-          if (idsToLoad.length === 0) return [];
+          if (idsToLoad.length === 0) {
+            return EMPTY;
+          }
 
           const newLoading = new Set(store.loading());
           idsToLoad.forEach((id) => newLoading.add(id));
 
           patchState(store, () => ({loading: newLoading}));
 
-          return forkJoin(
-            idsToLoad.map((monitorId) =>
-              api
-                .get('/v1/check-result', {
-                  params: {
-                    query: {
-                      monitorId,
-                      page: 0,
-                      size: PAGE_SIZE,
-                      sort: ['createdAt_desc'],
+          return from(idsToLoad).pipe(
+            mergeMap(
+              (monitorId) =>
+                api
+                  .get('/v1/check-result', {
+                    params: {
+                      query: {
+                        monitorId,
+                        page: 0,
+                        size: PAGE_SIZE,
+                        sort: ['createdAt_desc'],
+                      },
                     },
-                  },
-                })
-                .pipe(
-                  tapResponse({
-                    next: (response) => {
-                      const loading = new Set(store.loading());
-                      loading.delete(monitorId);
+                  })
+                  .pipe(
+                    tapResponse({
+                      next: (response) => {
+                        const loading = new Set(store.loading());
+                        loading.delete(monitorId);
 
-                      patchState(store, () => ({
-                        resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
-                        cacheTimestamps: new Map(store.cacheTimestamps()).set(
-                          monitorId,
-                          Date.now(),
-                        ),
-                        loading,
-                      }));
-                    },
-                    error: () => {
-                      const loading = new Set(store.loading());
-                      loading.delete(monitorId);
-                      patchState(store, () => ({loading}));
-                    },
-                  }),
-                ),
+                        patchState(store, () => ({
+                          resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
+                          cacheTimestamps: new Map(store.cacheTimestamps()).set(
+                            monitorId,
+                            Date.now(),
+                          ),
+                          loading,
+                        }));
+                      },
+                      error: () => {
+                        const loading = new Set(store.loading());
+                        loading.delete(monitorId);
+                        patchState(store, () => ({loading}));
+                      },
+                    }),
+                  ),
+              MAX_CONCURRENT_CHECK_RESULT_LOADS,
             ),
           );
         }),
