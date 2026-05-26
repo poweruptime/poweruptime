@@ -7,7 +7,7 @@
     "start:ssr": "node dist/poweruptime-web/server/server.mjs",
     "build": "ng-icons-manager && NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --configuration development",
     "build:docker": "ng-icons-manager && NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --configuration docker && pnpm i18n:optimize",
-    "build:stats": "NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --configuration docker --verbose --stats-json",
+    "build:stats": "ng-icons-manager && NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --configuration docker --verbose --stats-json",
     "analyze": "esbuild-visualizer --metadata ./dist/poweruptime-web/stats.json",
     "test": "ng test",
     "lint": "ng lint",

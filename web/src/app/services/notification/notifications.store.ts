@@ -38,11 +38,13 @@ export const NotificationsStore = signalStore(
   withMethods((store, api = injectAPI()) => ({
     addNotification: rxMethod<BackendType['NotificationResponse']>(
       pipe(
-        filter((notification) =>
-          store.monitorId()
-            ? store.monitorId() === notification.monitor.id
-            : store.teamId() === notification.team.id,
-        ),
+        filter((notification) => {
+          const monitorId = store.monitorId();
+          const teamId = store.teamId();
+          if (monitorId) return monitorId === notification.monitor.id;
+          if (teamId) return teamId === notification.team.id;
+          return true;
+        }),
         filter(
           () =>
             store.page() === 0 &&
