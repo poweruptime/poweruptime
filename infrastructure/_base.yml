@@ -38,7 +38,7 @@ services:
     networks:
       - poweruptime-infrastructure
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
       interval: 30s
       timeout: 10s
       retries: 5
