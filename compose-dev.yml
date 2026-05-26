@@ -3,7 +3,7 @@ name: poweruptime-local-dev
 services:
   poweruptime-db:
     container_name: poweruptime-db
-    image: postgres:17.9-bookworm
+    image: postgres:17.10-bookworm
     restart: unless-stopped
     volumes:
       - db:/var/lib/postgresql/data:z
@@ -24,7 +24,7 @@ services:
 
   poweruptime-rabbitmq:
     container_name: poweruptime-rabbitmq
-    image: rabbitmq:4.3.0-management
+    image: rabbitmq:4.3.1-management
     restart: unless-stopped
     volumes:
       - rabbit:/var/lib/rabbitmq
