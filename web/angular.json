@@ -63,14 +63,7 @@
             "outputMode": "server",
             "outputPath": "dist/poweruptime-web",
             "security": {
-              "allowedHosts": [
-                "0.0.0.0:4200",
-                "0.0.0.0:80",
-                "127.0.0.1",
-                "127.0.0.1:4200",
-                "localhost:4200",
-                "localhost"
-              ]
+              "allowedHosts": ["127.0.0.1", "127.0.0.1:4200", "localhost:4200", "localhost"]
             },
             "server": "src/main.server.ts",
             "ssr": {

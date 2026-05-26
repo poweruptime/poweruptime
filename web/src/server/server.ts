@@ -85,11 +85,11 @@ if (isMainModule(import.meta.url)) {
         try {
           server.listen(port, host, () => {
             console.log(
-              `✅ Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
+              `Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
             );
           });
         } catch (err) {
-          console.error(`❌ Failed to start server on port ${port}:`, err);
+          console.error(`Failed to start server on port ${port}:`, err);
         }
       }),
     );

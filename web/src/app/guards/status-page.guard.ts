@@ -16,7 +16,7 @@ export const statusPageGuard: CanActivateFn = () => {
   return infoStore.host$.pipe(
     take(1),
     map((host) => {
-      if (localHost === 'localhost:4200' || localHost === '0.0.0.0:4200') {
+      if (localHost === 'localhost:4200' || localHost === '127.0.0.1:4200') {
         return false;
       }
       return host !== localHost;
