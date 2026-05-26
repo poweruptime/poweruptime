@@ -24,6 +24,8 @@ class Exposed {
         @Value(Config.DATASOURCE_URL) url: String,
         @Value(Config.DATASOURCE_USERNAME) dataSourceUsername: String,
         @Value(Config.DATASOURCE_PASSWORD) dataSourcePassword: String,
+        @Value(Config.DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE) dataSourceHikariMaximumPoolSize: Int,
+        @Value(Config.DATASOURCE_HIKARI_MINIMUM_IDLE) dataSourceHikariMinimumIdle: Int,
     ): PlatformDataSource = HikariDataSource(
         HikariConfig().apply {
             jdbcUrl = url
@@ -31,8 +33,8 @@ class Exposed {
             password = dataSourcePassword
             driverClassName = dataSourceDriverClassName
             poolName = "poweruptimePool"
-            maximumPoolSize = 20
-            minimumIdle = 10
+            maximumPoolSize = dataSourceHikariMaximumPoolSize
+            minimumIdle = dataSourceHikariMinimumIdle
         },
     )
 

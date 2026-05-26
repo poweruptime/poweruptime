@@ -123,4 +123,7 @@ class TeamService(private val monitorService: MonitorService, private val fileSe
         .undeleteById(
             id,
         ).let { getById(id) }
+        .also {
+            monitorService.startAll(Monitor.findByTeamId(id))
+        }
 }

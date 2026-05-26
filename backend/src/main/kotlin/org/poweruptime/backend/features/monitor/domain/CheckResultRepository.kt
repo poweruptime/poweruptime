@@ -180,6 +180,18 @@ fun CheckResult.findByMonitorIdAndPickedUpBetween(
         rowToCheckResultRecord(it)
     }
 
+fun CheckResult.findByMonitorIdAndPickedUpBetween(
+    monitorId: List<ULong>,
+    start: Instant,
+    end: Instant,
+): Map<ULong, List<CheckResultRecord>> = selectAll()
+    .where {
+        (pickedUpAt greaterEq start) and (pickedUpAt less end) and (CheckResult.monitorId inList monitorId)
+    }.orderBy(pickedUpAt, SortOrder.ASC)
+    .map {
+        rowToCheckResultRecord(it)
+    }.groupBy { it.monitorId }
+
 fun CheckResult.findLastOppositeByMonitorIdAndStatus(monitorId: ULong, status: MonitorStatus): CheckResultRecord? =
     selectAll()
         .where {

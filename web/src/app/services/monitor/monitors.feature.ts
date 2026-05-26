@@ -1,5 +1,4 @@
 import {inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {debounceTime, distinctUntilChanged, filter, pipe, switchMap, tap} from 'rxjs';
 
@@ -55,9 +54,9 @@ export function withMonitorsLoad() {
     }),
     withSelection<BackendType['MonitorResponse']>({}),
     withMethods((store, api = injectAPI()) => ({
-      updateMonitor(it: BackendType['MonitorResponse']): void {
-        patchState(store, updateEntity({id: it.id, changes: it}));
-      },
+      updateMonitor: rxMethod<BackendType['MonitorResponse']>(
+        tap((it) => patchState(store, updateEntity({id: it.id, changes: it}))),
+      ),
       load: rxMethod<
         {
           teamId?: string;
@@ -124,9 +123,7 @@ export function withMonitorsLoad() {
     })),
     withHooks({
       onInit(store, pushService = inject(PushService)) {
-        pushService.monitorStatusChange$
-          .pipe(takeUntilDestroyed())
-          .subscribe((it) => store.updateMonitor(it));
+        store.updateMonitor(pushService.monitorStatusChange$);
       },
     }),
   );

@@ -9,6 +9,8 @@ object Config {
     const val DATASOURCE_URL = "\${spring.datasource.url}"
     const val DATASOURCE_USERNAME = "\${spring.datasource.username}"
     const val DATASOURCE_PASSWORD = "\${spring.datasource.password}"
+    const val DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE = "\${spring.datasource.hikari.maximum-pool-size}"
+    const val DATASOURCE_HIKARI_MINIMUM_IDLE = "\${spring.datasource.hikari.minimum-idle}"
 
     const val HOST = "\${poweruptime.host}"
     const val NOTIFICATION_TEMP_ENABLED = "\${poweruptime.notification-temp.enabled}"

@@ -8,7 +8,6 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.update
 import org.poweruptime.backend.core.domain.Page
 import org.poweruptime.backend.core.domain.deleteById
-import org.poweruptime.backend.core.domain.findAll
 import org.poweruptime.backend.core.domain.findByIdOrThrow
 import org.poweruptime.backend.core.domain.findByPublicId
 import org.poweruptime.backend.core.domain.findByPublicIdOrThrow
@@ -306,9 +305,7 @@ class MonitorService(
         }
 
     @Transactional
-    fun startAll() {
-        val monitors = getAllNoneDeleted()
-
+    fun startAll(monitors: List<MonitorRecord> = getAllNoneDeleted()) {
         monitors
             .filter {
                 when (it.status) {

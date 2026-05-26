@@ -162,6 +162,22 @@ open class CheckResultStatisticsService {
     }
 
     @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
+    fun calculateRecentUptimeByMonitorId(monitorId: List<ULong>, timeOption: TimeOption): Map<ULong, BigDecimal> {
+        if (monitorId.isEmpty()) return emptyMap()
+        val now = Instant.now()
+        val start = now.minus(timeOption.hours, ChronoUnit.HOURS)
+        val checkResultsByMonitorId = CheckResult.findByMonitorIdAndPickedUpBetween(
+            monitorId,
+            start,
+            now,
+        )
+        return monitorId.distinct().associateWith { id ->
+            calculateUptimeFromCheckResults(checkResultsByMonitorId[id].orEmpty(), start, now)
+                ?: BigDecimal(FULL_PERCENT)
+        }
+    }
+
+    @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: ULong, timeOption: TimeOption): BigDecimal {
         val now = Instant.now()
         val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(

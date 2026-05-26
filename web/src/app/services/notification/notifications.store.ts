@@ -1,7 +1,6 @@
 import {inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-import {debounceTime, pipe, switchMap, tap} from 'rxjs';
+import {debounceTime, filter, pipe, switchMap, tap} from 'rxjs';
 
 import {tapResponse} from '@ngrx/operators';
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
@@ -37,19 +36,32 @@ export const NotificationsStore = signalStore(
     defaultSortDirection: 'desc',
   }),
   withMethods((store, api = injectAPI()) => ({
-    addNotification(notification: BackendType['NotificationResponse']): void {
-      if (!store.monitorId() || store.monitorId() === notification.monitor.id) {
-        if (store.page() === 0 && store.sortBy() === 'createdAt') {
+    addNotification: rxMethod<BackendType['NotificationResponse']>(
+      pipe(
+        filter((notification) => {
+          const monitorId = store.monitorId();
+          const teamId = store.teamId();
+          if (monitorId) return monitorId === notification.monitor.id;
+          if (teamId) return teamId === notification.team.id;
+          return true;
+        }),
+        filter(
+          () =>
+            store.page() === 0 &&
+            store.sortBy() === 'createdAt' &&
+            store.sortDirection() === 'desc',
+        ),
+        tap((notification) =>
           patchState(
             store,
             setAllEntities([
               notification,
               ...store.entities().slice(0, Math.max(store.size() - 1, store.entities().length - 1)),
             ]),
-          );
-        }
-      }
-    },
+          ),
+        ),
+      ),
+    ),
     load: rxMethod<
       {
         teamId?: string;
@@ -94,9 +106,7 @@ export const NotificationsStore = signalStore(
   })),
   withHooks({
     onInit(store, pushService = inject(PushService)) {
-      pushService.notifications$
-        .pipe(takeUntilDestroyed())
-        .subscribe((it) => store.addNotification(it));
+      store.addNotification(pushService.notifications$);
     },
   }),
 );

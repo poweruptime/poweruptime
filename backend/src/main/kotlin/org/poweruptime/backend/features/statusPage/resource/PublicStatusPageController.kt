@@ -30,11 +30,12 @@ class PublicStatusPageController(
     ): List<Pair<StatusPageGroupRecord, List<PublicMonitorMinResponse>>> {
         val groups = StatusPageGroup.findByStatusPage(statusPageId)
         val monitors = StatusPageGroupMonitor.findByStatusPage(statusPageId)
+        val monitorIds = monitors.map { it.monitor.id }
 
-        val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(
-            monitors.map { it.monitor.id },
-            35,
-        )
+        val checkResultsPerMonitor = checkResultStatisticsService.getLastByMonitorIds(monitorIds, 35)
+
+        val oneDayUptimePerMonitor =
+            checkResultStatisticsService.calculateRecentUptimeByMonitorId(monitorIds, TimeOption.ONE_DAY)
 
         val groupedMonitors = monitors.groupBy { it.groupMonitor.groupId }
 
@@ -45,12 +46,8 @@ class PublicStatusPageController(
                     ?.map {
                         PublicMonitorMinResponse(
                             monitor = it.monitor,
-                            oneDayUptime = checkResultStatisticsService
-                                .calculateRecentUptimeByMonitorId(
-                                    it.monitor.id,
-                                    TimeOption.ONE_DAY,
-                                ).myFormat(),
                             lastCheckResults = checkResultsPerMonitor[it.monitor.id].orEmpty(),
+                            oneDayUptime = oneDayUptimePerMonitor[it.monitor.id]?.myFormat(),
                         )
                     }.orEmpty(),
             )

@@ -22,21 +22,24 @@ class CacheConfig {
                     MONITOR_RECENT_UPTIME_CACHE_KEY,
                     Caffeine
                         .newBuilder()
-                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(10_000)
+                        .expireAfterWrite(10, TimeUnit.MINUTES)
                         .build(),
                 ),
                 CaffeineCache(
                     MONITOR_UPTIME_STATISTICS_CACHE_KEY,
                     Caffeine
                         .newBuilder()
-                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(10_000)
+                        .expireAfterWrite(10, TimeUnit.MINUTES)
                         .build(),
                 ),
                 CaffeineCache(
                     MONITOR_YEARLY_UPTIME_CACHE_KEY,
                     Caffeine
                         .newBuilder()
-                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(10_000)
+                        .expireAfterWrite(10, TimeUnit.MINUTES)
                         .build(),
                 ),
             ),
