@@ -21,7 +21,7 @@ springBoot {
 
 dependencies {
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:8.0.02")
+    implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
 
     // Jackson
     implementation("tools.jackson.module:jackson-module-kotlin:3.1.3")
@@ -42,10 +42,10 @@ dependencies {
     implementation("io.viascom.nanoid:nanoid:1.0.1")
 
     // DNS Checker lib
-    implementation("dnsjava:dnsjava:3.6.4")
+    implementation("dnsjava:dnsjava:3.6.5")
 
     // HttpClient library
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.5.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5")
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:3.0.0")
@@ -62,12 +62,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Database stuff
-    implementation("org.liquibase:liquibase-core:5.0.2")
+    implementation("org.liquibase:liquibase-core:5.0.3")
     runtimeOnly("org.postgresql:postgresql:42.7.11")
 
     implementation("com.zaxxer:HikariCP:7.0.2")
 
-    val exposedVersion = "1.2.0"
+    val exposedVersion = "1.3.0"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
@@ -105,7 +105,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-liquibase-test")
