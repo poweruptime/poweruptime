@@ -14,6 +14,25 @@ import {BACKEND_API_URL, environment} from '@app/util';
 
 import og from './og';
 
+const allowedHostsSet = new Set(['127.0.0.1', '127.0.0.1:4200', 'localhost:4200', 'localhost']);
+
+const PU_HOST = process.env['POWERUPTIME_HOST'];
+const DOMAIN_NAMES = process.env['DOMAIN_NAMES'];
+
+if (PU_HOST) {
+  allowedHostsSet.add(PU_HOST);
+}
+
+if (DOMAIN_NAMES) {
+  [...DOMAIN_NAMES.matchAll(/Host\(`([^`]+)`\)/g)]
+    .map((match) => match[1])
+    .forEach((host) => allowedHostsSet.add(host));
+}
+
+const allowedHosts = [...allowedHostsSet];
+
+console.log(`Allowed hosts: ${allowedHosts.map((it) => `"${it}"`).join(', ')}`);
+
 export async function app() {
   const server = express();
 
@@ -57,7 +76,7 @@ export async function app() {
 
   server.all(/.*/, async (req: Request, res: Response) => {
     try {
-      const engine = new AngularNodeAppEngine();
+      const engine = new AngularNodeAppEngine({allowedHosts});
       const response = await engine.handle(req, {server: 'express'});
 
       if (response) {
