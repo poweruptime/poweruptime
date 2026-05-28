@@ -255,7 +255,7 @@ do_up() {
       echo "  - RabbitMQ Management: http://localhost/rabbit/"
     else
 
-      if ! confirm "Run docker image prune?"; then
+      if confirm "Run docker image prune?"; then
         docker image prune -a -f
       fi
       echo "Successfully deployed"
