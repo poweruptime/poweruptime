@@ -105,6 +105,9 @@ services:
     depends_on:
       poweruptime-backend:
         condition: service_healthy
+    environment:
+      - POWERUPTIME_HOST=${POWERUPTIME_HOST:?}
+      - DOMAIN_NAMES=${DOMAIN_NAMES}
     labels:
       traefik.enable: true
       traefik.http.services.poweruptime-web.loadbalancer.server.port: 4200
