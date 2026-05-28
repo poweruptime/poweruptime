@@ -31,7 +31,20 @@ if (DOMAIN_NAMES) {
 
 const allowedHosts = [...allowedHostsSet];
 
-console.log(`Allowed hosts: ${allowedHosts.map((it) => `"${it}"`).join(', ')}`);
+console.info(
+  [
+    '#  poweruptime',
+    `├─ Version:      ${environment.version}`,
+    `├─ Channel:      ${environment.channel}`,
+    `├─ Production:   ${environment.production ? 'yes' : 'no'}`,
+    `├─ Backend host: ${environment.backendHost}`,
+    `└─ Allowed hosts:`,
+    ...allowedHosts.map((host, index) => {
+      const prefix = index === allowedHosts.length - 1 ? '   └─' : '   ├─';
+      return `${prefix} ${host}`;
+    }),
+  ].join('\n'),
+);
 
 export async function app() {
   const server = express();
@@ -106,9 +119,7 @@ if (isMainModule(import.meta.url)) {
         const server = await app();
         try {
           server.listen(port, host, () => {
-            console.log(
-              `Listening on http://${host}:${port}; backendHost: "${environment.backendHost}"`,
-            );
+            console.log(`Listening on http://${host}:${port}`);
           });
         } catch (err) {
           console.error(`Failed to start server on port ${port}:`, err);
