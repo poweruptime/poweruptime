@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.5.3 - 2026-05-28
+
+### <!-- 0 -->🚀 Features
+
+- Use rxMethod for push service connect (#740) by Dafnik ([572e34f](https://github.com/poweruptime/poweruptime/commit/572e34fa4e9364a8958cb5a80cab768809764374)), feat:make one day uptime calculation batch based
+
+* feat: only make 4 check result requests concurrently
+
+* fix: duplicate store update
+
+* fix: return 100% uptime
+
+* fix: new check results and notifications order
+
+* fix: add necessary allowed hosts
+
+* feat(web): optimize chunks
+
+* fix(web): notification store
+
+* fix: postgresql healtcheck role not exist
+
+* fix(web): allowed hosts
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.2...0.5.3)
+
 ## 0.5.2 - 2026-05-21
 
 ### <!-- 1 -->🐛 Bug Fixes
