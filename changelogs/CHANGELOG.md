@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.6 - 2026-05-28
+
+### <!-- 0 -->🚀 Features
+
+- Add better web server startup information by Dafnik ([b2df8db](https://github.com/poweruptime/poweruptime/commit/b2df8db2683c38255dcddccafac8cd40f63f5352))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.5...0.5.6)
+
 ## 0.5.5 - 2026-05-28
 
 ### <!-- 1 -->🐛 Bug Fixes
