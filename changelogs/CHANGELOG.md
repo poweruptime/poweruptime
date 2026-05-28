@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.4 - 2026-05-28
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Use hosts of environment for allowed hosts (#746) by Dafnik ([71cfb32](https://github.com/poweruptime/poweruptime/commit/71cfb327f0a64c91a17a6219e8f02206cb7e48f5))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.3...0.5.4)
+
 ## 0.5.3 - 2026-05-28
 
 ### <!-- 0 -->🚀 Features
