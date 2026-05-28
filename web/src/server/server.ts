@@ -76,7 +76,10 @@ export async function app() {
 
   server.all(/.*/, async (req: Request, res: Response) => {
     try {
-      const engine = new AngularNodeAppEngine({allowedHosts});
+      const engine = new AngularNodeAppEngine({
+        allowedHosts,
+        trustProxyHeaders: true,
+      });
       const response = await engine.handle(req, {server: 'express'});
 
       if (response) {
