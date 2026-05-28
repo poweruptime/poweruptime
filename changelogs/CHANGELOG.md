@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.5 - 2026-05-28
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Trust proxy headers by Dafnik ([a707489](https://github.com/poweruptime/poweruptime/commit/a70748950e7b25e972e3a5ba343b389809cebe69))
+- Docker image prune running on negative answer by Dafnik ([b25b137](https://github.com/poweruptime/poweruptime/commit/b25b13738077572aed7e9f5bfc4e3743a97ab517))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.4...0.5.5)
+
 ## 0.5.4 - 2026-05-28
 
 ### <!-- 1 -->🐛 Bug Fixes
