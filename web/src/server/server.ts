@@ -30,6 +30,18 @@ if (DOMAIN_NAMES) {
 }
 
 const allowedHosts = [...allowedHostsSet];
+const trustedProxyHeaders = [
+  'x-forwarded-for',
+  'x-forwarded-host',
+  'x-forwarded-port',
+  'x-forwarded-proto',
+  'x-forwarded-prefix',
+  'x-forwarded-server',
+] as const;
+const appEngine = new AngularNodeAppEngine({
+  allowedHosts,
+  trustProxyHeaders: trustedProxyHeaders,
+});
 
 console.info(
   [
@@ -89,11 +101,7 @@ export async function app() {
 
   server.all(/.*/, async (req: Request, res: Response) => {
     try {
-      const engine = new AngularNodeAppEngine({
-        allowedHosts,
-        trustProxyHeaders: true,
-      });
-      const response = await engine.handle(req, {server: 'express'});
+      const response = await appEngine.handle(req, {server: 'express'});
 
       if (response) {
         await writeResponseToNodeResponse(response, res);
