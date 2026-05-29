@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.7 - 2026-05-29
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Cli source env by Dafnik ([46316be](https://github.com/poweruptime/poweruptime/commit/46316be072d361cb91908064b9838e8c998927e8))
+- Ssr x-forwarded headers by Dafnik ([0c923a5](https://github.com/poweruptime/poweruptime/commit/0c923a5e9a8fee40dc676bd19b04026fff9b1a39))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.6...0.5.7)
+
 ## 0.5.6 - 2026-05-28
 
 ### <!-- 0 -->🚀 Features
