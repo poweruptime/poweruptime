@@ -212,11 +212,20 @@ source_env() {
     exit 1
   fi
 
-  # Load environment variables
-  set -a  # Export all variables
-  # shellcheck source=/dev/null
-  source .env
-  set +a
+  # Load environment variables safely (backticks in DOMAIN_NAMES are treated as commands and break the update command docker start)
+  while IFS='=' read -r key value; do
+    # skip blank lines and comments
+    [[ -z "$key" || "$key" =~ ^[[:space:]]*# ]] && continue
+
+    # allow only normal env var names
+    [[ "$key" =~ ^[A-Z_][A-Z0-9_]*$ ]] || continue
+
+    # strip surrounding double quotes, if present
+    value="${value%\"}"
+    value="${value#\"}"
+
+    export "$key=$value"
+  done < .env
 
   # Validate required vars with better error messages
   local required_vars=(DATABASE_USER DATABASE_PASSWORD DATABASE_NAME)
