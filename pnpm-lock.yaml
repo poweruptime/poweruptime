@@ -91,14 +91,14 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(@jsverse/transloco@8.3.0(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@5.9.3))(@jsverse/utils@1.0.0-beta.5)
       '@ng-icons/bootstrap-icons':
-        specifier: 33.2.2
-        version: 33.2.2
+        specifier: 33.2.3
+        version: 33.2.3
       '@ng-icons/core':
-        specifier: 33.2.2
-        version: 33.2.2(@angular-devkit/schematics@21.2.13(chokidar@5.0.0))(@angular/common@21.2.15(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(@schematics/angular@21.2.13(chokidar@5.0.0))(rxjs@7.8.2)
+        specifier: 33.2.3
+        version: 33.2.3(@angular-devkit/schematics@21.2.13(chokidar@5.0.0))(@angular/common@21.2.15(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(@schematics/angular@21.2.13(chokidar@5.0.0))(rxjs@7.8.2)
       '@ng-icons/lucide':
-        specifier: 33.2.2
-        version: 33.2.2
+        specifier: 33.2.3
+        version: 33.2.3
       '@ngrx/operators':
         specifier: 21.1.0
         version: 21.1.0(rxjs@7.8.2)
@@ -2537,11 +2537,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ng-icons/bootstrap-icons@33.2.2':
-    resolution: {integrity: sha512-YbaGBuay5egHf7btD34aqLxSGZlvOPaMzqxSExYXc30j682PVJTT+JgZhhhouMNO18jjFLx4M+75VrWcwE/b+A==}
+  '@ng-icons/bootstrap-icons@33.2.3':
+    resolution: {integrity: sha512-sShN2IPoym0b0PoPVkpA9EWGjETkYPyr8Ny2D1/SFBFVAVCtXSHiXilPODBry6UvqLbjjHU3PnZ8Kr+uUk3Jxg==}
 
-  '@ng-icons/core@33.2.2':
-    resolution: {integrity: sha512-MwxREFbCx5p+x+Lx26V1FkHFpqHR/6g1TmBG7aYx+FFe1DIfrxUVXM+LW/Mviv3dN5sLE/Fi0ULP79Gz9uG0SQ==}
+  '@ng-icons/core@33.2.3':
+    resolution: {integrity: sha512-W7QesmRRlLbjsJfb0DRzyZPxdXjo/m4drCk48vysir1KRDNhfN+6f43T5GW1y3vAmrOIF7kuXzad6Vr1c0LqHA==}
     peerDependencies:
       '@angular-devkit/schematics': '>=21.0.0'
       '@angular/common': '>=21.0.0'
@@ -2549,8 +2549,8 @@ packages:
       '@schematics/angular': '>=21.0.0'
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ng-icons/lucide@33.2.2':
-    resolution: {integrity: sha512-/jse2Z6fnk4WbW3HDH+jSfE/ihBskVr+RHltk5KfxohgQRhqqQ2FOxTP0IhU3xYV1pMwpziH3WpIR+gKkGcryg==}
+  '@ng-icons/lucide@33.2.3':
+    resolution: {integrity: sha512-/VgwcFlromibtyv/xoFWESSFO6b0jFPD/pgQcUXoralle6RJdycFhGjl07w/fYf0MpI4Ka5DpPaINdgKK15byg==}
 
   '@ngrx/operators@21.1.0':
     resolution: {integrity: sha512-/qK/kck06kl94Z7SdtQQal1pL6jMsMgrG9JMtkbptzJTCYTq8sbWJ4ha21wCx7I39zxLJKrRF8YlaFKAnJcfyg==}
@@ -11204,11 +11204,11 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.2.6':
     optional: true
 
-  '@ng-icons/bootstrap-icons@33.2.2':
+  '@ng-icons/bootstrap-icons@33.2.3':
     dependencies:
       tslib: 2.8.1
 
-  '@ng-icons/core@33.2.2(@angular-devkit/schematics@21.2.13(chokidar@5.0.0))(@angular/common@21.2.15(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(@schematics/angular@21.2.13(chokidar@5.0.0))(rxjs@7.8.2)':
+  '@ng-icons/core@33.2.3(@angular-devkit/schematics@21.2.13(chokidar@5.0.0))(@angular/common@21.2.15(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(@schematics/angular@21.2.13(chokidar@5.0.0))(rxjs@7.8.2)':
     dependencies:
       '@angular-devkit/schematics': 21.2.13(chokidar@5.0.0)
       '@angular/common': 21.2.15(@angular/core@21.2.15(@angular/compiler@21.2.15)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -11217,7 +11217,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ng-icons/lucide@33.2.2':
+  '@ng-icons/lucide@33.2.3':
     dependencies:
       tslib: 2.8.1
 
