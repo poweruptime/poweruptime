@@ -24,11 +24,11 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.1.3")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.1.4")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.3")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.0")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
