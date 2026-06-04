@@ -1,17 +1,17 @@
 package org.poweruptime.backend.features.monitor.service
 
 import org.jetbrains.exposed.v1.jdbc.batchInsert
-import org.poweruptime.backend.configuration.MONITOR_RECENT_UPTIME_CACHE_KEY
-import org.poweruptime.backend.configuration.MONITOR_UPTIME_STATISTICS_CACHE_KEY
 import org.poweruptime.backend.configuration.MONITOR_YEARLY_UPTIME_CACHE_KEY
 import org.poweruptime.backend.core.utils.DAYS_PER_YEAR
-import org.poweruptime.backend.core.utils.HOURS_PER_DAY
 import org.poweruptime.backend.core.utils.startOfWeek
 import org.poweruptime.backend.features.monitor.core.PingAnalysis
 import org.poweruptime.backend.features.monitor.core.TimeOption
 import org.poweruptime.backend.features.monitor.domain.findByMonitorIdAndPickedUpBetween
+import org.poweruptime.backend.features.monitor.domain.findByMonitorIdBetween
 import org.poweruptime.backend.features.monitor.domain.findByMonitorIdBetweenDates
+import org.poweruptime.backend.features.monitor.domain.findFirstByMonitorId
 import org.poweruptime.backend.features.monitor.domain.findLastByMonitorId
+import org.poweruptime.backend.features.monitor.domain.findLastByMonitorIdAtOrBefore
 import org.poweruptime.backend.features.monitor.domain.findLastByMonitorIds
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistic
 import org.poweruptime.backend.features.monitor.dto.DayUptimeStatistics
@@ -24,8 +24,12 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultRecord
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
-import org.poweruptime.backend.features.monitor.model.MonitorStatus
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEvent
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEventRecord
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEventStatus
 import org.poweruptime.backend.features.monitor.model.PRECISION_SCALE
+import org.springframework.beans.factory.ObjectProvider
+import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,7 +38,7 @@ import java.math.RoundingMode
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -51,7 +55,7 @@ fun BigDecimal.myFormat(): String {
 
 @Service
 @Transactional(readOnly = true)
-open class CheckResultStatisticsService {
+open class CheckResultStatisticsService(private val cacheManagerProvider: ObjectProvider<CacheManager>) {
     fun getLastByMonitorId(monitorId: ULong, limit: Int): List<CheckResultRecord> =
         CheckResult.findLastByMonitorId(monitorId, limit)
 
@@ -60,7 +64,7 @@ open class CheckResultStatisticsService {
 
     @Cacheable(value = [MONITOR_YEARLY_UPTIME_CACHE_KEY])
     fun calculateYearlyUptime(monitorId: ULong): List<DayUptimeStatistics> {
-        val currentDate = LocalDate.now()
+        val currentDate = LocalDate.now(ZoneOffset.UTC)
 
         val lastYearHistoricalDayUptimes = getLastYearHistoricalDayUptime(monitorId)
 
@@ -90,7 +94,6 @@ open class CheckResultStatisticsService {
             }.reversed()
     }
 
-    @Cacheable(value = [MONITOR_UPTIME_STATISTICS_CACHE_KEY])
     fun uptimeStatisticsDto(monitorId: ULong): PublicMonitorStatistics {
         val now = Instant.now()
         val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
@@ -99,19 +102,14 @@ open class CheckResultStatisticsService {
             now,
         )
 
-        fun calculateRecentUptime(timeOption: TimeOption): BigDecimal = calculateUptimeFromCheckResults(
-            checkResults,
-            now.minus(timeOption.hours, ChronoUnit.HOURS),
-            now,
-        ) ?: BigDecimal(FULL_PERCENT)
+        fun calculateRecentUptime(timeOption: TimeOption): BigDecimal =
+            calculateUptimeByMonitorId(monitorId, now.minus(timeOption.hours, ChronoUnit.HOURS), now)
 
         fun calculateRecentPing(timeOption: TimeOption): PingAnalysis? = calculateAveragePingFromCheckResults(
             checkResults,
             now.minus(timeOption.hours, ChronoUnit.HOURS),
             now,
         )
-
-        val lastYearHistoricalDayUptimes = getLastYearHistoricalDayUptime(monitorId)
 
         return PublicMonitorStatistics(
             uptime = PublicUptimeStatistics(
@@ -122,34 +120,13 @@ open class CheckResultStatisticsService {
                 twelveHours = calculateRecentUptime(TimeOption.TWELVE_HOURS)
                     .myFormat(),
                 oneDay = calculateRecentUptime(TimeOption.ONE_DAY).myFormat(),
-                threeDays = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.THREE_DAYS,
-                ).myFormat(),
-                oneWeek = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.ONE_WEEK,
-                ).myFormat(),
-                twoWeeks = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.TWO_WEEKS,
-                ).myFormat(),
-                oneMonth = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.ONE_MONTH,
-                ).myFormat(),
-                threeMonths = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.THREE_MONTHS,
-                ).myFormat(),
-                sixMonths = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.SIX_MONTHS,
-                ).myFormat(),
-                oneYear = calculateHistoricalUptime(
-                    lastYearHistoricalDayUptimes,
-                    TimeOption.ONE_YEAR,
-                ).myFormat(),
+                threeDays = calculateRecentUptime(TimeOption.THREE_DAYS).myFormat(),
+                oneWeek = calculateRecentUptime(TimeOption.ONE_WEEK).myFormat(),
+                twoWeeks = calculateRecentUptime(TimeOption.TWO_WEEKS).myFormat(),
+                oneMonth = calculateRecentUptime(TimeOption.ONE_MONTH).myFormat(),
+                threeMonths = calculateRecentUptime(TimeOption.THREE_MONTHS).myFormat(),
+                sixMonths = calculateRecentUptime(TimeOption.SIX_MONTHS).myFormat(),
+                oneYear = calculateRecentUptime(TimeOption.ONE_YEAR).myFormat(),
             ),
             ping = PublicPingStatistics(
                 oneHour = calculateRecentPing(TimeOption.ONE_HOUR),
@@ -161,42 +138,35 @@ open class CheckResultStatisticsService {
         )
     }
 
-    @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: List<ULong>, timeOption: TimeOption): Map<ULong, BigDecimal> {
         if (monitorId.isEmpty()) return emptyMap()
         val now = Instant.now()
         val start = now.minus(timeOption.hours, ChronoUnit.HOURS)
-        val checkResultsByMonitorId = CheckResult.findByMonitorIdAndPickedUpBetween(
-            monitorId,
-            start,
-            now,
-        )
         return monitorId.distinct().associateWith { id ->
-            calculateUptimeFromCheckResults(checkResultsByMonitorId[id].orEmpty(), start, now)
-                ?: BigDecimal(FULL_PERCENT)
+            calculateUptimeByMonitorId(id, start, now)
         }
     }
 
-    @Cacheable(value = [MONITOR_RECENT_UPTIME_CACHE_KEY])
     fun calculateRecentUptimeByMonitorId(monitorId: ULong, timeOption: TimeOption): BigDecimal {
         val now = Instant.now()
-        val checkResults = CheckResult.findByMonitorIdAndPickedUpBetween(
-            monitorId,
-            now.minus(timeOption.hours, ChronoUnit.HOURS),
-            now,
-        )
-        return calculateUptimeFromCheckResults(checkResults, now.minus(timeOption.hours, ChronoUnit.HOURS), now)
-            ?: BigDecimal(FULL_PERCENT)
+        return calculateUptimeByMonitorId(monitorId, now.minus(timeOption.hours, ChronoUnit.HOURS), now)
     }
 
     @Transactional
     fun syncCheckResultsToHistoricalDayUptime(monitorId: ULong) {
-        val zoneId = ZoneId.systemDefault()
+        val zoneId = ZoneOffset.UTC
         val today = LocalDate.now(zoneId)
 
         // We want full past days only
         val endDate = today.minusDays(1)
-        val startDate = endDate.minusYears(1).plusDays(1)
+        val firstEventDate = MonitorUptimeEvent.findFirstByMonitorId(monitorId)
+            ?.effectiveAt
+            ?.atZone(ZoneOffset.UTC)
+            ?.toLocalDate()
+            ?: return
+        val startDate = maxOf(endDate.minusYears(1).plusDays(1), firstEventDate)
+
+        if (startDate > endDate) return
 
         val existingDates = HistoricalDayUptime
             .findByMonitorIdBetweenDates(
@@ -230,10 +200,11 @@ open class CheckResultStatisticsService {
             this[HistoricalDayUptime.date] = it.first
             this[HistoricalDayUptime.uptime] = it.second
         }
+        cacheManagerProvider.ifAvailable?.getCache(MONITOR_YEARLY_UPTIME_CACHE_KEY)?.evict(monitorId)
     }
 
     private fun getLastYearHistoricalDayUptime(monitorId: ULong): List<HistoricalDayUptimeRecord> {
-        val currentDate = LocalDate.now()
+        val currentDate = LocalDate.now(ZoneOffset.UTC)
 
         return buildList {
             // Start with current day (most recent)
@@ -244,7 +215,7 @@ open class CheckResultStatisticsService {
                     date = currentDate,
                     uptime = calculateUptimeByMonitorId(
                         monitorId,
-                        currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                        currentDate.atStartOfDay(ZoneOffset.UTC).toInstant(),
                         Instant.now(),
                     ),
                 ),
@@ -260,23 +231,11 @@ open class CheckResultStatisticsService {
     }
 
     private fun calculateUptimeByMonitorId(monitorId: ULong, start: Instant, end: Instant): BigDecimal {
-        val results = CheckResult.findByMonitorIdAndPickedUpBetween(monitorId, start, end)
-        return calculateUptimeFromCheckResults(results, start, end) ?: BigDecimal(FULL_PERCENT)
+        val statusAtStart = MonitorUptimeEvent.findLastByMonitorIdAtOrBefore(monitorId, start)?.status
+            ?: MonitorUptimeEventStatus.UP
+        val events = MonitorUptimeEvent.findByMonitorIdBetween(monitorId, start, end)
+        return calculateUptimeFromEvents(events, statusAtStart, start, end) ?: BigDecimal(FULL_PERCENT)
     }
-}
-
-fun calculateHistoricalUptime(
-    historicalDayUptimes: List<HistoricalDayUptimeRecord>,
-    timeOption: TimeOption,
-): BigDecimal {
-    val daysCount = (timeOption.hours / HOURS_PER_DAY).toInt()
-    // Ensure the list is large enough
-    if (daysCount > historicalDayUptimes.size) {
-        return BigDecimal("100.000")
-    }
-    val days = historicalDayUptimes.take(daysCount)
-    val totalUptime = days.fold(BigDecimal.ZERO) { acc, day -> acc + day.uptime }
-    return totalUptime.divide(BigDecimal(days.size), PRECISION_SCALE, RoundingMode.HALF_UP)
 }
 
 fun calculateAveragePingFromCheckResults(
@@ -318,42 +277,36 @@ fun calculateAveragePingFromCheckResults(
     return PingAnalysis(averagePingMs, roundedTrend.toString())
 }
 
-fun calculateUptimeFromCheckResults(checkResults: List<CheckResultRecord>, start: Instant, end: Instant): BigDecimal? {
-    if (checkResults.isEmpty()) return null
+fun calculateUptimeFromEvents(
+    events: List<MonitorUptimeEventRecord>,
+    statusAtStart: MonitorUptimeEventStatus = MonitorUptimeEventStatus.UP,
+    start: Instant,
+    end: Instant,
+): BigDecimal? {
+    val totalDurationNanos = Duration.between(start, end).toNanos().toBigDecimal()
+    if (totalDurationNanos <= BigDecimal.ZERO) return null
 
-    val totalDurationMs = Duration.between(start, end).toMillis().toBigDecimal()
-    if (totalDurationMs <= BigDecimal.ZERO) return null
+    var currentStatus = statusAtStart
+    var cursor = start
+    var upDurationNanos = BigDecimal.ZERO
 
-    var totalUpDurationMs = totalDurationMs
-    var lastStatusChangeTime = start
-
-    for (checkResult in checkResults) {
-        val pickedUpAt = checkResult.pickedUpAt!!
-        when {
-            (pickedUpAt.isAfter(start) || pickedUpAt == start) && pickedUpAt.isBefore(end) -> {
-                // Only consider durations when continuous DOWN state persists
-                if (checkResult.status == MonitorStatus.DOWN && checkResult.previousStatus == MonitorStatus.DOWN) {
-                    val downDurationMs = Duration.between(lastStatusChangeTime, pickedUpAt).toMillis().toBigDecimal()
-                    totalUpDurationMs = totalUpDurationMs.subtract(downDurationMs)
-                }
-                lastStatusChangeTime = pickedUpAt
+    events.asSequence()
+        .filter { it.effectiveAt.isAfter(start) && it.effectiveAt.isBefore(end) }
+        .sortedWith(compareBy<MonitorUptimeEventRecord> { it.effectiveAt }.thenBy { it.id })
+        .forEach { event ->
+            if (currentStatus == MonitorUptimeEventStatus.UP) {
+                upDurationNanos += Duration.between(cursor, event.effectiveAt).toNanos().toBigDecimal()
             }
-
-            pickedUpAt.isAfter(end) || pickedUpAt == end -> {
-                // Since results are sorted and this one is beyond the end,
-                // no need to check further results.
-                break
-            }
+            currentStatus = event.status
+            cursor = event.effectiveAt
         }
+
+    if (currentStatus == MonitorUptimeEventStatus.UP) {
+        upDurationNanos += Duration.between(cursor, end).toNanos().toBigDecimal()
     }
 
-    // Avoid division by zero or negative values
-    if (totalUpDurationMs <= BigDecimal.ZERO) {
-        return BigDecimal.ZERO
-    }
-
-    return totalUpDurationMs
-        .divide(totalDurationMs, PRECISION_SCALE, RoundingMode.HALF_UP)
+    return upDurationNanos
+        .divide(totalDurationNanos, PRECISION_SCALE, RoundingMode.HALF_UP)
         .multiply(BigDecimal(FULL_PERCENT))
 }
 

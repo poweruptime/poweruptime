@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -57,22 +58,22 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
             </div>
           </hlm-tabs>
         } @else {
-          <div class="flex animate-pulse justify-between gap-12">
-            <div class="flex flex-col gap-3">
-              <div class="flex justify-between gap-2">
-                <hlm-skeleton class="h-14 w-64" />
-                <hlm-skeleton class="h-14 w-64" />
+          <hlm-skeleton class="my-6 h-12 w-48" />
+          <div class="grid gap-12 pb-4 md:grid-cols-2">
+            <div>
+              <div class="grid grid-cols-2 gap-6">
+                <hlm-skeleton class="col-span-1 h-16" />
+                <hlm-skeleton class="col-span-1 h-16" />
+                <hlm-skeleton class="col-span-2 h-24 2xl:col-span-1" />
+                <hlm-skeleton class="col-span-2 h-48" />
+                <hlm-skeleton class="col-span-2 h-48" />
               </div>
-
-              <hlm-skeleton class="flex h-48" />
-              <hlm-skeleton class="flex h-48" />
             </div>
-            <div class="flex flex-col gap-3">
-              <hlm-skeleton class="flex h-14" />
 
-              <hlm-skeleton class="h-96" style="width: 36rem" />
-              <hlm-skeleton class="h-96" style="width: 36rem" />
-              <hlm-skeleton class="h-96" style="width: 36rem" />
+            <div class="flex flex-col gap-4">
+              <hlm-skeleton class="h-72" />
+              <hlm-skeleton class="h-72" />
+              <hlm-skeleton class="h-72" />
             </div>
           </div>
         }
@@ -94,6 +95,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
     HlmSkeletonImports,
     HlmIconImports,
     HlmTabsImports,
+    FormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

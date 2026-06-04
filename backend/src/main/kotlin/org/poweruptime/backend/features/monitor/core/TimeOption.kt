@@ -12,5 +12,5 @@ enum class TimeOption(val hours: Long) {
     ONE_MONTH(24 * 31),
     THREE_MONTHS(24 * 31 * 3),
     SIX_MONTHS(24 * 31 * 6),
-    ONE_YEAR(24 * 31 * 12),
+    ONE_YEAR(24 * 365),
 }

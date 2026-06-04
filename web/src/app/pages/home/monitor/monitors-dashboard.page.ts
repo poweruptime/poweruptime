@@ -3,6 +3,7 @@ import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
+import {HlmSkeleton} from '@spartan-ng/helm/skeleton';
 
 import {NotificationCheckResultCard} from '@app/components/monitor';
 import {MonitorsDashboardStore, SelectedTeamStore} from '@app/services';
@@ -60,6 +61,12 @@ export class MetricCard {}
             <span subtitle>down monitors</span>
           </pu-metric-card>
         </div>
+      } @else if (monitorsDashboardStore.isPending()) {
+        <div
+          class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <hlm-skeleton class="h-28" />
+          <hlm-skeleton class="h-28" />
+        </div>
       }
 
       <ng-content />
@@ -68,7 +75,7 @@ export class MetricCard {}
     </div>
   `,
   selector: 'pu-monitors-dashboard',
-  imports: [RouterLink, TranslocoPipe, NotificationCheckResultCard, MetricCard],
+  imports: [RouterLink, TranslocoPipe, NotificationCheckResultCard, MetricCard, HlmSkeleton],
 })
 export class MonitorsDashboardPage {
   readonly selectedTeamStore = inject(SelectedTeamStore);

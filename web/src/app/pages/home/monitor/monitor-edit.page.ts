@@ -35,9 +35,7 @@ import {
           [isTagsSearchPending]="tagsStore.isPending()"
           (submitUpdate)="monitorEditStore.update($event)" />
       } @else {
-        <hlm-skeleton class="h-12 w-64" />
-
-        <pu-monitor-edit-form-placeholder />
+        <pu-monitor-edit-form-placeholder class="mt-4" />
       }
     } @else {
       <div class="mx-auto grid max-w-7xl gap-4 pb-8 sm:px-6 lg:px-8">

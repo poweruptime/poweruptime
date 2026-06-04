@@ -1,442 +1,107 @@
 package org.poweruptime.backend
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.poweruptime.backend.features.monitor.core.TimeOption
-import org.poweruptime.backend.features.monitor.model.CheckResultRecord
-import org.poweruptime.backend.features.monitor.model.HistoricalDayUptimeRecord
-import org.poweruptime.backend.features.monitor.model.MonitorStatus
-import org.poweruptime.backend.features.monitor.service.calculateHistoricalUptime
-import org.poweruptime.backend.features.monitor.service.calculateUptimeFromCheckResults
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEventRecord
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEventStatus
+import org.poweruptime.backend.features.monitor.service.calculateUptimeFromEvents
 import java.math.BigDecimal
 import java.time.Instant
-import java.time.LocalDate
 
-@Suppress("VariableNaming")
 class UptimeCalculationTest {
-    private var idCounter = 1UL
+    private val start = Instant.parse("2024-12-12T00:00:00Z")
+    private val end = start.plusSeconds(24 * 60 * 60)
+    private var id = 1UL
 
-    @Nested
-    @DisplayName("calculateUptime")
-    inner class CalculateUptime {
-        private fun getTestCheckResultRecord(
-            status: MonitorStatus,
-            previousStatus: MonitorStatus,
-            pickedUpAt: Instant,
-        ) = CheckResultRecord(
-            status = status,
-            previousStatus = previousStatus,
-            pickedUpAt = pickedUpAt,
-            id = idCounter.also {
-                idCounter++
-            },
-            publicId = "1234",
-            createdAt = Instant.now(),
-            updatedAt = Instant.now(),
-            monitorId = 1UL,
-            timesRetried = null,
-            checkedAt = null,
-            pingMs = null,
-            title = null,
-            message = null,
-        )
+    private fun event(status: MonitorUptimeEventStatus, effectiveAt: Instant) = MonitorUptimeEventRecord(
+        id = id++,
+        monitorId = 1UL,
+        effectiveAt = effectiveAt,
+        status = status,
+    )
 
-        @Test
-        fun `test empty list`() {
-            assertThat(
-                calculateUptimeFromCheckResults(listOf(), Instant.now(), Instant.now().minusSeconds(60 * 60)),
-            ).isNull()
-        }
-
-        @Suppress("PrivatePropertyName", "PropertyName")
-        private val date_12_12_2024 = Instant.ofEpochSecond(1733961600)
-
-        @Suppress("PrivatePropertyName", "PropertyName")
-        private val date_13_12_2024 = Instant.ofEpochSecond(1734048000)
-
-        @Test
-        fun `test empty list with start and end`() {
-            assertThat(
-                calculateUptimeFromCheckResults(listOf(), date_12_12_2024, date_13_12_2024),
-            ).isNull()
-        }
-
-        @Test
-        fun `test up check result exactly at start`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
-
-        @Test
-        fun `test up check result exactly at end`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_13_12_2024,
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
-
-        @Test
-        fun `test up check result 1 second before end`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_13_12_2024.minusSeconds(1),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
-
-        @Test
-        fun `test simple up check result`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
-
-        @Test
-        fun `test 1 up and 1 down check result`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
-
-        @Test
-        fun `test up - down check result 50 percent uptime`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12).minusNanos(1),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 12),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_13_12_2024.minusNanos(1),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("50.000"))
-        }
-
-        @Test
-        fun `test up - down check result 25 percent uptime`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).minusNanos(1),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_13_12_2024.minusNanos(1),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("25.000"))
-        }
-
-        @Test
-        fun `test up - down - up check result 50 percent uptime`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).minusNanos(1),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).plusNanos(1),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).plusSeconds(60),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_13_12_2024.minusNanos(1),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("50.000"))
-        }
-
-        @Test
-        fun `test down - up - down check result 50 percent uptime`() {
-            assertThat(
-                calculateUptimeFromCheckResults(
-                    listOf(
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.PENDING,
-                            pickedUpAt = date_12_12_2024,
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 6).plusSeconds(60),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.UP,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 7),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.UP,
-                            pickedUpAt = date_12_12_2024.plusSeconds(60 * 60 * 18).minusNanos(1),
-                        ),
-                        getTestCheckResultRecord(
-                            status = MonitorStatus.DOWN,
-                            previousStatus = MonitorStatus.DOWN,
-                            pickedUpAt = date_13_12_2024.minusNanos(1),
-                        ),
-                    ),
-                    date_12_12_2024,
-                    date_13_12_2024,
-                ),
-            ).isEqualTo(BigDecimal("50.000"))
-        }
+    @Test
+    fun `missing evidence defaults to uptime`() {
+        assertThat(calculateUptimeFromEvents(emptyList(), start = start, end = end))
+            .isEqualTo(BigDecimal("100.000"))
     }
 
-    @Nested
-    @DisplayName("calculateHistoricalUptime")
-    inner class CalculateHistoricalUptime {
-        @Suppress("PrivatePropertyName", "PropertyName")
-        private val date_12_12_2024 = LocalDate.of(2020, 12, 12)
+    @Test
+    fun `empty window has no percentage`() {
+        assertThat(calculateUptimeFromEvents(emptyList(), start = start, end = start)).isNull()
+    }
 
-        private fun getTestHistoricalDayUptimeRecord(date: LocalDate, uptime: BigDecimal) = HistoricalDayUptimeRecord(
-            id = idCounter.also {
-                idCounter++
-            },
-            monitorId = 1UL,
-            date = date,
-            uptime = uptime,
-        )
+    @Test
+    fun `down boundary starts outage immediately and includes tail`() {
+        assertThat(
+            calculateUptimeFromEvents(
+                events = listOf(event(MonitorUptimeEventStatus.DOWN, start.plusSeconds(12 * 60 * 60))),
+                start = start,
+                end = end,
+            ),
+        ).isEqualTo(BigDecimal("50.000"))
+    }
 
-        @Test
-        fun `test empty list`() {
-            assertThat(calculateHistoricalUptime(listOf(), TimeOption.THREE_DAYS)).isEqualTo(BigDecimal("100.000"))
-        }
+    @Test
+    fun `status at window start includes outage head`() {
+        assertThat(
+            calculateUptimeFromEvents(
+                events = emptyList(),
+                statusAtStart = MonitorUptimeEventStatus.DOWN,
+                start = start,
+                end = end,
+            ),
+        ).isEqualTo(BigDecimal("0.000"))
+    }
 
-        @Test
-        fun `test incorrect list`() {
-            assertThat(
-                calculateHistoricalUptime(
-                    listOf(
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024,
-                            uptime = BigDecimal("100.000"),
-                        ),
-                    ),
-                    TimeOption.THREE_DAYS,
+    @Test
+    fun `recovery boundary ends outage immediately`() {
+        assertThat(
+            calculateUptimeFromEvents(
+                events = listOf(
+                    event(MonitorUptimeEventStatus.DOWN, start.plusSeconds(6 * 60 * 60)),
+                    event(MonitorUptimeEventStatus.UP, start.plusSeconds(18 * 60 * 60)),
                 ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
+                start = start,
+                end = end,
+            ),
+        ).isEqualTo(BigDecimal("50.000"))
+    }
 
-        @Test
-        fun `test 100 uptime`() {
-            assertThat(
-                calculateHistoricalUptime(
-                    listOf(
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024,
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(1),
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(2),
-                            uptime = BigDecimal("100"),
-                        ),
-                    ),
-                    TimeOption.THREE_DAYS,
-                ),
-            ).isEqualTo(BigDecimal("100.000"))
-        }
+    @Test
+    fun `pause maintenance and explicit restart are optimistic recovery boundaries`() {
+        assertThat(
+            calculateUptimeFromEvents(
+                events = listOf(event(MonitorUptimeEventStatus.UP, start.plusSeconds(6 * 60 * 60))),
+                statusAtStart = MonitorUptimeEventStatus.DOWN,
+                start = start,
+                end = end,
+            ),
+        ).isEqualTo(BigDecimal("75.000"))
+    }
 
-        @Test
-        fun `test 66 6667 uptime`() {
-            assertThat(
-                calculateHistoricalUptime(
-                    listOf(
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024,
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(1),
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(2),
-                            uptime = BigDecimal("0"),
-                        ),
-                    ),
-                    TimeOption.THREE_DAYS,
-                ),
-            ).isEqualTo(BigDecimal("66.667"))
-        }
+    @Test
+    fun `events at exact end do not affect closed window`() {
+        assertThat(
+            calculateUptimeFromEvents(
+                events = listOf(event(MonitorUptimeEventStatus.DOWN, end)),
+                start = start,
+                end = end,
+            ),
+        ).isEqualTo(BigDecimal("100.000"))
+    }
 
-        @Test
-        fun `test 66 6667 uptime split`() {
-            assertThat(
-                calculateHistoricalUptime(
-                    listOf(
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024,
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(1),
-                            uptime = BigDecimal("50"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(2),
-                            uptime = BigDecimal("50"),
-                        ),
-                    ),
-                    TimeOption.THREE_DAYS,
-                ),
-            ).isEqualTo(BigDecimal("66.667"))
-        }
+    @Test
+    fun `one year is exactly 365 days`() {
+        assertThat(TimeOption.ONE_YEAR.hours).isEqualTo(24 * 365)
+    }
 
-        @Test
-        fun `test 50 uptime`() {
-            assertThat(
-                calculateHistoricalUptime(
-                    listOf(
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024,
-                            uptime = BigDecimal("100"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(1),
-                            uptime = BigDecimal("50"),
-                        ),
-                        getTestHistoricalDayUptimeRecord(
-                            date = date_12_12_2024.plusDays(2),
-                            uptime = BigDecimal("0"),
-                        ),
-                    ),
-                    TimeOption.THREE_DAYS,
-                ),
-            ).isEqualTo(BigDecimal("50.000"))
-        }
+    @Test
+    fun `long range cards use explicit trailing hour windows`() {
+        assertThat(TimeOption.THREE_DAYS.hours).isEqualTo(24 * 3)
+        assertThat(TimeOption.ONE_WEEK.hours).isEqualTo(24 * 7)
+        assertThat(TimeOption.ONE_MONTH.hours).isEqualTo(24 * 31)
+        assertThat(TimeOption.ONE_YEAR.hours).isEqualTo(24 * 365)
     }
 }

@@ -51,6 +51,7 @@ class MonitorService(
     private val monitorScheduler: MonitorScheduler,
     private val monitorDataService: MonitorDataService,
     private val tagService: TagService,
+    private val monitorUptimeEventService: MonitorUptimeEventService,
 ) {
     fun getJoinTeamById(id: ULong): MonitorRecordJoinTeamRecord = Monitor.findJoinTeamByIdOrThrow(id)
 
@@ -142,6 +143,7 @@ class MonitorService(
                     this[MonitorNotificationMethod.monitorId] = it.monitor.id
                 }
 
+                monitorUptimeEventService.recordOptimisticUp(it.monitor.id)
                 it.monitor.start()
             }
     }
@@ -240,6 +242,7 @@ class MonitorService(
                         }
                     }
 
+                    monitorUptimeEventService.recordOptimisticUp(updatedMonitor.id)
                     updatedMonitor.start()
                 }
         }
@@ -267,6 +270,7 @@ class MonitorService(
             id,
         ).let { getJoinTeamById(id) }
         .also {
+            monitorUptimeEventService.recordOptimisticUp(it.monitor.id)
             it.monitor.start()
         }
 
@@ -275,6 +279,7 @@ class MonitorService(
         .also {
             it.monitor.stop()
             Monitor.updateStatus(it.monitor.id, MonitorStatus.PAUSED)
+            monitorUptimeEventService.recordOptimisticUp(it.monitor.id)
         }.let {
             it.monitor.status = MonitorStatus.PAUSED
             it
@@ -284,6 +289,7 @@ class MonitorService(
     fun maintenance(id: ULong): MonitorRecordJoinTeamRecord = getJoinTeamById(id)
         .also {
             Monitor.updateStatus(it.monitor.id, MonitorStatus.MAINTENANCE)
+            monitorUptimeEventService.recordOptimisticUp(it.monitor.id)
         }.let {
             it.monitor.status = MonitorStatus.MAINTENANCE
             it
@@ -297,6 +303,7 @@ class MonitorService(
             }
 
             Monitor.updateStatus(it.monitor.id, MonitorStatus.PENDING)
+            monitorUptimeEventService.recordOptimisticUp(it.monitor.id)
         }.let {
             it.monitor.status = MonitorStatus.PENDING
             it

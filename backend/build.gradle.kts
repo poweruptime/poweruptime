@@ -221,6 +221,7 @@ val addLiquibaseTestdataInitChange = tasks.register("addLiquibaseTestdataInitCha
     val testResourcesDir = layout.projectDirectory.dir("src/test/resources/db")
 
     // Declare outputs to help with up-to-date checks and configuration cache
+    inputs.dir(layout.projectDirectory.dir("src/main/resources/db"))
     outputs.dir(testResourcesDir)
 
     doFirst {

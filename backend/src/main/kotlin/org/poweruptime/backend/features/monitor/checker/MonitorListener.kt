@@ -11,6 +11,7 @@ import org.poweruptime.backend.features.monitor.service.CheckResultLogEntryServi
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.monitor.service.CheckResultStatisticsService
 import org.poweruptime.backend.features.monitor.service.MonitorService
+import org.poweruptime.backend.features.monitor.service.MonitorUptimeEventService
 import org.poweruptime.backend.features.notification.service.SubNotificationService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
@@ -26,6 +27,7 @@ class MonitorListener(
     private val checkResultStatisticsService: CheckResultStatisticsService,
     private val checkResultLogEntryService: CheckResultLogEntryService,
     private val monitorService: MonitorService,
+    private val monitorUptimeEventService: MonitorUptimeEventService,
     private val subNotificationService: SubNotificationService,
 ) {
     private val logger = KotlinLogging.logger {}
@@ -124,6 +126,7 @@ class MonitorListener(
             monitor.retries ?: MONITOR_DEFAULT_RETRY,
             checkResultId,
         )
+        monitorUptimeEventService.recordTransition(monitor.id, newStatus, outcome.pickedUpAt)
 
         // Only persist if status actually changed
         if (newStatus != monitor.status) {

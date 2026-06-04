@@ -15,6 +15,7 @@ import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
 import {RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
@@ -91,8 +92,10 @@ import {PublicStatusPageStore} from '@app/services';
         @if (!_preview) {
           <refresh-in />
         }
-      } @else if (publicStatusPageStore.isPending() && !_preview) {
-        <refresh-in />
+      } @else if (publicStatusPageStore.isPending()) {
+        <div class="grid items-center justify-center gap-2 pt-24">
+          <hlm-spinner class="text-[2rem]" />
+        </div>
       } @else if (publicStatusPageStore.error()?.httpCode === 404) {
         <h1 class="mt-24 text-center text-4xl">{{ 'statusPage.public.notFound' | transloco }}</h1>
       }
@@ -110,6 +113,7 @@ import {PublicStatusPageStore} from '@app/services';
     MonitorStatusText,
     NgOptimizedImage,
     BackendImagePipe,
+    HlmSpinnerImports,
   ],
 })
 export class PublicStatusPagePage {

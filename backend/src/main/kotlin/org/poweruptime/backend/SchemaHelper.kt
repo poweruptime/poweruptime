@@ -24,6 +24,7 @@ import org.poweruptime.backend.features.monitor.model.CheckResult
 import org.poweruptime.backend.features.monitor.model.CheckResultLogEntry
 import org.poweruptime.backend.features.monitor.model.HistoricalDayUptime
 import org.poweruptime.backend.features.monitor.model.Monitor
+import org.poweruptime.backend.features.monitor.model.MonitorUptimeEvent
 import org.poweruptime.backend.features.notification.model.MonitorNotificationMethod
 import org.poweruptime.backend.features.notification.model.Notification
 import org.poweruptime.backend.features.notification.model.NotificationMethod
@@ -85,6 +86,7 @@ class SchemaHelper(@Value(Config.DATABASE_DDL_AUTO) private val databaseDDLAuto:
         User,
         Team,
         Monitor,
+        MonitorUptimeEvent,
         DnsMonitorData,
         HttpMonitorData,
         PingMonitorData,
