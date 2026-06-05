@@ -13,6 +13,7 @@ import org.poweruptime.backend.features.authentication.service.MFAService
 import org.poweruptime.backend.features.authentication.service.OAuthLoginFlowService
 import org.poweruptime.backend.features.authentication.service.PasswordResetTokenService
 import org.poweruptime.backend.features.authentication.service.SessionService
+import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -36,6 +37,7 @@ class AuthController(
     private val passwordResetTokenService: PasswordResetTokenService,
     private val mfaService: MFAService,
     private val oAuthLoginFlowService: OAuthLoginFlowService,
+    private val instanceSettingService: InstanceSettingService,
 ) {
     @Operation(
         summary = "Login",
@@ -73,8 +75,15 @@ class AuthController(
     )
     @PostMapping("/login-oauth")
     @Transactional(readOnly = false)
-    fun loginOAuth(@Valid @RequestBody request: OAuthLoginDto): JwtResponse {
+    fun loginOAuth(
+        @Valid @RequestBody request: OAuthLoginDto,
+        @RequestHeader(CustomHttpHeader.MFA_CODE) mfaCode: String?,
+    ): JwtResponse {
         val (user, issuer) = oAuthLoginFlowService.getSession(request.code) ?: throw OAuthCodeIncorrectException()
+
+        if (!instanceSettingService.getTrustOAuthProviderMFA()) {
+            mfaService.validate(user, mfaCode)
+        }
 
         val sessionToken = sessionService.createSessionForOAuth2(
             sessionInformation = "OAuth session by $issuer",
@@ -204,5 +213,7 @@ class AuthController(
         }
 
         authService.updateCredentials(user.id, request.newPassword, forcePasswordChange = false)
+
+        sessionService.invalidateSessionsByUserId(user.id)
     }
 }

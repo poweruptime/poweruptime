@@ -54,6 +54,10 @@ enum class SettingKey :
         override val code = "SV"
         override val default: String = true.toString()
     },
+    TRUST_OAUTH_PROVIDER_MFA {
+        override val code = "OM"
+        override val default: String = true.toString()
+    },
 }
 
 interface SettingKeyDefaultValue {

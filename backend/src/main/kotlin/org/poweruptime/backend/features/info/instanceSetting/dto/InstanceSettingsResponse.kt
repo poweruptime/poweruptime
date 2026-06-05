@@ -13,4 +13,5 @@ data class InstanceSettingsResponse(
     val versionCheckAdminMailEnabled: Boolean,
     val versionCheckAdminMailTo: List<String>?,
     val showNewVersionDialog: Boolean,
+    val trustOAuthProviderMFA: Boolean,
 )

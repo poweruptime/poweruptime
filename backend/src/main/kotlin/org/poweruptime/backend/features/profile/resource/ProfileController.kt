@@ -81,6 +81,8 @@ class ProfileController(
         mfaService.validate(auth.user(), mfaCode)
 
         authService.updateCredentials(auth.userId(), dto.newPassword)
+
+        sessionService.invalidateSessionsByUserId(auth.userId())
     }
 
     @Operation(

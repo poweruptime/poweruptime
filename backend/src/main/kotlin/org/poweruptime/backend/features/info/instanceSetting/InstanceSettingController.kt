@@ -52,6 +52,7 @@ class InstanceSettingController(
         versionCheckAdminMailEnabled = instanceSettingService.getVersionCheckAdminMailEnabled(),
         versionCheckAdminMailTo = instanceSettingService.getVersionCheckAdminMailTo(),
         showNewVersionDialog = instanceSettingService.getShowNewVersionDialog(),
+        trustOAuthProviderMFA = instanceSettingService.getTrustOAuthProviderMFA(),
     )
 
     @Operation(
@@ -131,6 +132,19 @@ class InstanceSettingController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun setIsUserAllowedToCreateTeams(@RequestBody @Valid dto: SettingBooleanDto): InstanceSettingsResponse {
         instanceSettingService.setUserAllowedToCreateTeams(dto.it)
+
+        return getSettings()
+    }
+
+    @Operation(
+        summary = "Set trustOAuthProviderMFA instance setting",
+        security = [SecurityRequirement(name = BEARER_AUTH)],
+        description = "$REQUIRED_AUTH $SYSTEM_ROLE_ADMIN",
+    )
+    @PutMapping("trustOAuthProviderMFA")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    fun setTrustOAuthProviderMFA(@RequestBody @Valid dto: SettingBooleanDto): InstanceSettingsResponse {
+        instanceSettingService.setTrustOAuthProviderMFA(dto.it)
 
         return getSettings()
     }

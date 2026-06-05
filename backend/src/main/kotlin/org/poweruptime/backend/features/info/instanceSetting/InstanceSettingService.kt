@@ -140,6 +140,16 @@ class InstanceSettingService {
         value.toString(),
     )
 
+    fun getTrustOAuthProviderMFA(): Boolean = getValueByKey(
+        SettingKey.TRUST_OAUTH_PROVIDER_MFA,
+    ).toBoolean()
+
+    @Transactional
+    fun setTrustOAuthProviderMFA(value: Boolean) = setValueByKey(
+        SettingKey.TRUST_OAUTH_PROVIDER_MFA,
+        value.toString(),
+    )
+
     private fun setValueByKey(key: SettingKey, value: String) {
         val instanceSetting = InstanceSetting.findByKey(key)
 
