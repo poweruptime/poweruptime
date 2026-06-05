@@ -1,7 +1,6 @@
 package org.poweruptime.backend.features.authentication.permission
 
 import org.jetbrains.exposed.v1.core.Column
-import org.jetbrains.exposed.v1.core.Join
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.eq
@@ -48,8 +47,6 @@ const val STATUS_PAGE_GROUP_ADMIN = "${STATUS_PAGE_GROUP}_ADMIN"
 const val STATUS_PAGE_GROUP_MEMBER = "${STATUS_PAGE_GROUP}_MEMBER"
 
 abstract class PermissionChecker {
-    open fun applyAdditionalJoins(baseJoins: Join): Join = baseJoins
-
     open fun getTablesToJoin(): List<Any> = emptyList()
 
     abstract fun getEntityPublicIdColumn(): Column<String>
@@ -74,11 +71,9 @@ enum class Permission(val baseName: String, private val checker: PermissionCheck
     ;
 
     fun buildQuery(publicUserId: String, entityId: String): Query {
-        var baseJoin = checker.applyAdditionalJoins(
-            TeamUser
-                .innerJoin(User, { TeamUser.userId }, { User.id })
-                .innerJoin(TeamTable, { TeamUser.teamId }, { TeamTable.id }),
-        )
+        var baseJoin = TeamUser
+            .innerJoin(User, { TeamUser.userId }, { User.id })
+            .innerJoin(TeamTable, { TeamUser.teamId }, { TeamTable.id })
 
         for (table in checker.getTablesToJoin()) {
             if (table is IdTable<*>) {
@@ -88,8 +83,7 @@ enum class Permission(val baseName: String, private val checker: PermissionCheck
 
         val entityPublicIdColumn = checker.getEntityPublicIdColumn()
 
-        return checker
-            .applyAdditionalJoins(baseJoin)
+        return baseJoin
             .select(TeamUser.role, User.publicId, entityPublicIdColumn)
             .where {
                 (User.publicId eq publicUserId) and (entityPublicIdColumn eq entityId)
