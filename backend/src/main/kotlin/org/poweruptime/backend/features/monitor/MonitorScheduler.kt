@@ -18,7 +18,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ScheduledFuture
 
-const val MONITOR_BOOT_SPREAD_TIME_IN_MILLIS = 30 * 1000
+const val MONITOR_BOOT_SPREAD_TIME_IN_MILLIS = 120 * 1000
 
 @Service
 class MonitorScheduler(
