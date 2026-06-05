@@ -192,23 +192,23 @@ class NotificationMethodService(
                             notificationMethod.titleTemplate?.nullIfNoDifference(data._type.titleTemplate)
                         it[NotificationMethod.bodyTemplate] =
                             notificationMethod.bodyTemplate?.nullIfNoDifference(data._type.bodyTemplate)
-                    }.let {
-                        getById(notificationMethod.id)
-                    }.let {
+                    }.let { clonedNotificationMethodId ->
+                        getById(clonedNotificationMethodId.value)
+                    }.let { clonedNotificationMethod ->
                         NotificationMethodWithDataRecord(
-                            notificationMethod = it,
+                            notificationMethod = clonedNotificationMethod,
                             data = notificationMethodDataService.insert(
-                                notificationMethod = notificationMethod,
+                                notificationMethod = clonedNotificationMethod,
                                 data = data,
                             ),
                         )
-                    }.also { (updatedNotificationMethod) ->
+                    }.also { (clonedNotificationMethod) ->
                         if (teamId == null) {
                             MonitorNotificationMethod.batchInsert(
                                 monitorService.getByNotificationMethodId(notificationMethod.id),
                             ) { monitor ->
                                 this[MonitorNotificationMethod.monitorId] = monitor.id
-                                this[MonitorNotificationMethod.notificationMethodId] = updatedNotificationMethod.id
+                                this[MonitorNotificationMethod.notificationMethodId] = clonedNotificationMethod.id
                             }
                         }
                     }
