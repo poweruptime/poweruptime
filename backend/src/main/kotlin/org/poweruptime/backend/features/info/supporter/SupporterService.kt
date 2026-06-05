@@ -5,6 +5,7 @@ import org.poweruptime.backend.core.exceptions.NotFoundException
 import org.poweruptime.backend.features.info.instanceSetting.InstanceSettingService
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.toEntity
 import java.time.Instant
 import java.util.Calendar
 import java.util.Locale
@@ -42,7 +43,7 @@ class SupporterService(
         .get()
         .uri("https://sponsors.trnck.dev/sponsors/dafnik")
         .retrieve()
-        .toEntity(GitHubSponsorsResponse::class.java)
+        .toEntity<GitHubSponsorsResponse>()
         .body
         ?: throw NotFoundException("Empty sponsors response")
 
