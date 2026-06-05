@@ -2,7 +2,7 @@ import {inject} from '@angular/core';
 import {toObservable} from '@angular/core/rxjs-interop';
 import {CanActivateFn, Router} from '@angular/router';
 
-import {filter, map, take, tap} from 'rxjs';
+import {filter, map, take} from 'rxjs';
 
 import {loggerOf} from 'dfts-helper';
 
@@ -15,8 +15,8 @@ export const isSystemAdmin: CanActivateFn = () => {
 
   return toObservable(inject(ProfileStore).role).pipe(
     filter((it) => !!it),
-    map((it) => it === 'ADMIN'),
-    tap((isAdmin) => {
+    map((it) => {
+      const isAdmin = it === 'ADMIN';
       if (!isAdmin) {
         return router.parseUrl('/');
       }
