@@ -12,6 +12,7 @@ import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
+import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.permission.*
 import org.poweruptime.backend.features.authentication.permission.PermissionsService
 import org.poweruptime.backend.features.authentication.permission.ensureAllInTeam
@@ -107,9 +108,15 @@ class MonitorController(
                             .getByPublicId(
                                 publicIds,
                             ).ensureAllInTeam(teamId) { it.teamId }
-                            .map { it.id }
                     } else {
-                        permissionsService.isPartOfByIds(auth.publicUserId(), publicIds, Permission.NotificationMethod)
+                        if (!permissionsService.isPartOfByIds(
+                                auth.publicUserId(),
+                                publicIds,
+                                Permission.NotificationMethod,
+                            )
+                        ) {
+                            throw ForbiddenException()
+                        }
                     }
                 }
             },
@@ -165,12 +172,23 @@ class MonitorController(
     @PreAuthorize("hasPermission(#publicId, '$MONITOR_ADMIN')")
     @PutMapping("/{id}/clone")
     @ResponseStatus(HttpStatus.OK)
-    fun clone(@PathVariable("id") publicId: String, @RequestBody @Valid cloneDto: CloneDto): MonitorFullResponse =
-        monitorService
-            .clone(
-                publicMonitorId = publicId,
-                teamId = cloneDto.teamId?.let { publicTeamId -> teamService.getIdByPublicId(publicTeamId) },
-            ).toFullResponse()
+    fun clone(
+        auth: Authentication,
+        @PathVariable(
+            "id",
+        ) publicId: String,
+        @RequestBody @Valid cloneDto: CloneDto,
+    ): MonitorFullResponse = monitorService
+        .clone(
+            publicMonitorId = publicId,
+            teamId = cloneDto.teamId?.also { publicTeamId ->
+                if (!permissionsService.isAdminOf(auth.publicUserId(), publicTeamId, Permission.Team)) {
+                    throw ForbiddenException()
+                }
+            }?.let { publicTeamId ->
+                teamService.getIdByPublicId(publicTeamId)
+            },
+        ).toFullResponse()
 
     @Operation(
         summary = "Delete monitor",

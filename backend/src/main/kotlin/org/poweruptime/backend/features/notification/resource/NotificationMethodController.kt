@@ -12,7 +12,9 @@ import org.poweruptime.backend.core.dto.CloneDto
 import org.poweruptime.backend.core.dto.Pageable
 import org.poweruptime.backend.core.dto.PaginatedResponse
 import org.poweruptime.backend.core.dto.toDto
+import org.poweruptime.backend.core.exceptions.ForbiddenException
 import org.poweruptime.backend.features.authentication.permission.*
+import org.poweruptime.backend.features.authentication.service.publicUserId
 import org.poweruptime.backend.features.monitor.model.MonitorRecord
 import org.poweruptime.backend.features.monitor.service.MonitorService
 import org.poweruptime.backend.features.notification.core.NotificationMethodType
@@ -29,6 +31,7 @@ import org.poweruptime.backend.features.team.service.TeamService
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -39,6 +42,7 @@ class NotificationMethodController(
     private val notificationMethodDataService: NotificationMethodDataService,
     private val teamService: TeamService,
     private val monitorService: MonitorService,
+    private val permissionsService: PermissionsService,
 ) {
     @Operation(
         summary = "Get notification method",
@@ -127,6 +131,7 @@ class NotificationMethodController(
     @PutMapping("/{id}/clone")
     @ResponseStatus(HttpStatus.OK)
     fun clone(
+        auth: Authentication,
         @PathVariable(
             "id",
         ) publicId: String,
@@ -134,7 +139,11 @@ class NotificationMethodController(
     ): NotificationMethodResponse = notificationMethodService
         .clone(
             publicId,
-            cloneDto.teamId?.let { teamService.getIdByPublicId(it) },
+            cloneDto.teamId?.also { publicTeamId ->
+                if (!permissionsService.isAdminOf(auth.publicUserId(), publicTeamId, Permission.Team)) {
+                    throw ForbiddenException()
+                }
+            }?.let { publicTeamId -> teamService.getIdByPublicId(publicTeamId) },
         ).toResponse()
 
     @Operation(

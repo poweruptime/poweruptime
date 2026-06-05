@@ -15,14 +15,14 @@ class PermissionsService {
     fun isPartOf(publicUserId: String, entityId: String, permission: Permission): Boolean =
         permission.buildQuery(publicUserId, entityId).limit(1).count() > 0
 
+    fun isAdminOf(publicUserId: String, entityId: String, permission: Permission): Boolean =
+        hasRole(publicUserId, entityId, permission, TeamRole.ADMIN)
+
     fun find(publicUserId: String, entityId: String, permission: Permission): TeamRole? = permission
         .buildQuery(publicUserId, entityId)
         .limit(1)
         .firstOrNull()
         ?.let { it[TeamUser.role] }
-
-    fun hasRole(publicUserId: String, entityId: String, permission: Permission, role: TeamRole): Boolean =
-        find(publicUserId, entityId, permission) == role
 
     fun isPartOfByIds(publicUserId: String, entityIds: Collection<String>, permission: Permission): Boolean =
         entityIds.all { isPartOf(publicUserId, it, permission) }
@@ -43,6 +43,9 @@ class PermissionsService {
 
             TeamRole.MEMBER, null -> isPartOf(publicUserId, entityId, permissionRequest.permission)
         }
+
+    private fun hasRole(publicUserId: String, entityId: String, permission: Permission, role: TeamRole): Boolean =
+        find(publicUserId, entityId, permission) == role
 }
 
 fun Authentication.throwIfNotPartOf(checker: (publicUserId: String) -> Boolean) {
