@@ -13,6 +13,7 @@ import {fileURLToPath} from 'node:url';
 import {BACKEND_API_URL, environment} from '@app/util';
 
 import og from './og';
+import sanitize from './sanitize-html';
 
 const allowedHostsSet = new Set(['127.0.0.1', '127.0.0.1:4200', 'localhost:4200', 'localhost']);
 
@@ -73,6 +74,9 @@ export async function app() {
   );
 
   server.use('/bff/v1/og', og);
+
+  server.use(express.json());
+  server.use('/bff/v1/sanitize', sanitize);
 
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');

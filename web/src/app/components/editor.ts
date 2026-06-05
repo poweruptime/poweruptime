@@ -36,7 +36,7 @@ export class Editor implements ControlValueAccessor {
   autocompleteVariables = input<string[]>();
 
   init = computed(() => {
-    const currenTheme = this.themeService.resolvedTheme();
+    const currentTheme = this.themeService.resolvedTheme();
     const autocompleteVariables = this.autocompleteVariables();
     return {
       selector: 'textarea',
@@ -45,11 +45,20 @@ export class Editor implements ControlValueAccessor {
       suffix: '.min', // Suffix to use when loading resources
       plugins: 'advlist link image lists wordcount table searchreplace emoticons autoresize',
       toolbar:
-        'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | emoticons',
+        'undo redo | styles | bold italic underline strikethrough | ' +
+        'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+        'outdent indent | link image table emoticons',
       max_height: 700,
       menubar: 'edit insert format table',
-      skin: currenTheme === 'dark' ? 'oxide-dark' : 'oxide',
-      content_css: currenTheme === 'dark' ? 'dark' : 'default',
+      skin: currentTheme === 'dark' ? 'oxide-dark' : 'oxide',
+      content_css: currentTheme === 'dark' ? 'dark' : 'default',
+      menu: {
+        format: {
+          title: 'Format',
+          items:
+            'bold italic underline strikethrough superscript subscript codeformat | styles blocks fontsize align lineheight | forecolor backcolor | language | removeformat',
+        },
+      },
       setup: (editor) => {
         if (!autocompleteVariables) {
           return;
