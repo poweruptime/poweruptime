@@ -59,10 +59,30 @@ export const AuthStore = signalStore(
       store.refreshToken.set(refreshToken);
     },
     logout(): void {
-      patchState(store, logoutState);
+      const localLogout = () => {
+        patchState(store, logoutState);
 
-      st_removeAll();
-      window?.location.reload();
+        st_removeAll();
+        window?.location.reload();
+      };
+
+      const refreshToken = store.refreshToken();
+
+      if (refreshToken) {
+        api
+          .post('/v1/auth/logout', {body: {refreshToken}})
+          .pipe(
+            tapResponse({
+              next: () => localLogout(),
+              error: () => localLogout(),
+            }),
+          )
+          .subscribe();
+
+        return;
+      }
+
+      localLogout();
     },
     oauth2Login: rxMethod<string | undefined>(
       pipe(
