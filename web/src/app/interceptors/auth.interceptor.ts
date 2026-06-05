@@ -1,7 +1,7 @@
 import {HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest} from '@angular/common/http';
 import {inject} from '@angular/core';
 
-import {BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError} from 'rxjs';
+import {Observable, catchError, finalize, map, shareReplay, switchMap, throwError} from 'rxjs';
 
 import {toast} from '@spartan-ng/brain/sonner';
 import {loggerOf} from 'dfts-helper';
@@ -19,10 +19,7 @@ const includePaths = ['/api'];
  */
 const ignorePaths = ['/auth', '/public'];
 
-let isRefreshing = false;
-const nextAccessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<
-  string | undefined
->(undefined);
+let refreshRequest$: Observable<string> | undefined;
 
 export function authInterceptor(
   request: HttpRequest<unknown>,
@@ -55,36 +52,24 @@ export function authInterceptor(
           return throwError(() => error);
         }
 
-        if (isRefreshing) {
-          return nextAccessTokenSubject.pipe(
-            filter((token) => token != undefined),
-            take(1),
-            switchMap((jwt: string | undefined) => {
-              lumber.info('handle401Error', `Already refreshing; JWT: "${jwt}"`);
-              return next(addToken(request, jwt));
-            }),
-          );
+        const refreshToken = authStore.refreshToken();
+        if (!refreshToken) {
+          authStore.logout();
+          return throwError(() => error);
         }
 
-        isRefreshing = true;
-        nextAccessTokenSubject.next(undefined);
-
-        return api
+        refreshRequest$ ??= api
           .post('/v1/auth/refresh', {
             body: {
-              refreshToken: authStore.refreshToken()!!,
+              refreshToken,
               sessionInformation: getSessionInformation(),
             },
           })
           .pipe(
-            switchMap((data) => {
+            map((data) => {
               lumber.info('handle401Error', 'JWT token refreshed');
-              isRefreshing = false;
-              nextAccessTokenSubject.next(data.accessToken);
-
               authStore.setTokens(data);
-
-              return next(addToken(request, data.accessToken));
+              return data.accessToken;
             }),
             catchError(() => {
               lumber.error('handle401Error', 'Could not refresh access token with refresh token');
@@ -109,7 +94,15 @@ export function authInterceptor(
 
               return throwError(() => error);
             }),
+            finalize(() => {
+              refreshRequest$ = undefined;
+            }),
+            shareReplay({bufferSize: 1, refCount: true}),
           );
+
+        return refreshRequest$.pipe(
+          switchMap((accessToken) => next(addToken(request, accessToken))),
+        );
       }
       return throwError(() => error);
     }),
