@@ -24,7 +24,7 @@ import org.testcontainers.lifecycle.Startables
 abstract class BaseTestWithReusingContainers {
     companion object {
         @JvmStatic
-        private val postgresDBContainer = PostgreSQLContainer("postgres:17.9-bookworm")
+        private val postgresDBContainer = PostgreSQLContainer("postgres:17.10-bookworm")
             .withReuse(true)
 
         @JvmStatic
@@ -59,7 +59,7 @@ abstract class BaseTest protected constructor() {
     companion object {
         @Container
         @JvmStatic
-        private val postgresDBContainer = PostgreSQLContainer("postgres:17.9-bookworm")
+        private val postgresDBContainer = PostgreSQLContainer("postgres:17.10-bookworm")
 
         @Container
         @JvmStatic
