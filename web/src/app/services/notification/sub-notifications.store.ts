@@ -22,7 +22,7 @@ export const SubNotificationsStore = signalStore(
       pipe(
         filter((it): it is string => !!it),
         tap((notificationId) =>
-          patchState(store, setPending(), removeAllEntities(), () => ({notificationId})),
+          patchState(store, setPending(), removeAllEntities(), {notificationId}),
         ),
         switchMap((notificationId) =>
           api

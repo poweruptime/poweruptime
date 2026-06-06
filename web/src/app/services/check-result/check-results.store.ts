@@ -39,7 +39,7 @@ export const CheckResultsStore = signalStore(
   }),
   withMethods((store, api = injectAPI()) => ({
     setShowDuplicates: rxMethod<boolean | null>(
-      tap((showDuplicates) => patchState(store, () => ({showDuplicates: showDuplicates ?? false}))),
+      tap((showDuplicates) => patchState(store, {showDuplicates: showDuplicates ?? false})),
     ),
     addCheckResult: rxMethod<BackendType['CheckResultResponse']>(
       tap((checkResult) => {
@@ -83,10 +83,8 @@ export const CheckResultsStore = signalStore(
           patchState(
             store,
             setPending(),
-            store.monitorId() !== monitorId || store.teamId() !== teamId
-              ? removeAllEntities()
-              : () => ({}),
-            () => ({monitorId, teamId}),
+            store.monitorId() !== monitorId || store.teamId() !== teamId ? removeAllEntities() : {},
+            {monitorId, teamId},
           ),
         ),
         debounceTime(275),
@@ -147,8 +145,8 @@ export const LastCheckResultsStore = signalStore(
           updated[existingIndex] = checkResult;
         }
 
-        patchState(store, () => ({
-          resultsMap: new Map(store.resultsMap()).set(monitorId, updated),
+        patchState(store, ({resultsMap}) => ({
+          resultsMap: new Map(resultsMap).set(monitorId, updated),
         }));
       }),
     ),
@@ -173,7 +171,7 @@ export const LastCheckResultsStore = signalStore(
           const newLoading = new Set(store.loading());
           idsToLoad.forEach((id) => newLoading.add(id));
 
-          patchState(store, () => ({loading: newLoading}));
+          patchState(store, {loading: newLoading});
 
           return from(idsToLoad).pipe(
             mergeMap(
@@ -195,19 +193,16 @@ export const LastCheckResultsStore = signalStore(
                         const loading = new Set(store.loading());
                         loading.delete(monitorId);
 
-                        patchState(store, () => ({
-                          resultsMap: new Map(store.resultsMap()).set(monitorId, response.data),
-                          cacheTimestamps: new Map(store.cacheTimestamps()).set(
-                            monitorId,
-                            Date.now(),
-                          ),
+                        patchState(store, ({resultsMap, cacheTimestamps}) => ({
+                          resultsMap: new Map(resultsMap).set(monitorId, response.data),
+                          cacheTimestamps: new Map(cacheTimestamps).set(monitorId, Date.now()),
                           loading,
                         }));
                       },
                       error: () => {
                         const loading = new Set(store.loading());
                         loading.delete(monitorId);
-                        patchState(store, () => ({loading}));
+                        patchState(store, {loading});
                       },
                     }),
                   ),

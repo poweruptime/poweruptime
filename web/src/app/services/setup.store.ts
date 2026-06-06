@@ -23,7 +23,7 @@ export const SetupStore = signalStore(
   withRequestStatus(),
   withMethods((store, api = injectAPI()) => ({
     setState(state: SetupStoreState['state']) {
-      patchState(store, () => ({state}), setIdle());
+      patchState(store, {state}, setIdle());
     },
     testEmail: rxMethod<string>(
       pipe(
@@ -32,7 +32,7 @@ export const SetupStore = signalStore(
           api.post('/v1/public/setup/email', {params: {query: {email}}}).pipe(
             tapResponse({
               next: () => {
-                patchState(store, setFulfilled(), () => ({state: 'confirmTestEmail' as const}));
+                patchState(store, setFulfilled(), {state: 'confirmTestEmail' as const});
                 toast.success(translate('auth.setup.testEmail.success'));
               },
               error: (error) => patchState(store, setError(error)),
@@ -48,7 +48,7 @@ export const SetupStore = signalStore(
           api.get('/v1/public/setup/email/verify', {params: {query: {code}}}).pipe(
             tapResponse({
               next: () => {
-                patchState(store, setFulfilled(), () => ({state: 'setup' as const}));
+                patchState(store, setFulfilled(), {state: 'setup' as const});
                 toast.success(translate('auth.setup.confirmEmail.success'));
               },
               error: (error) => patchState(store, setError(error)),
@@ -64,7 +64,7 @@ export const SetupStore = signalStore(
           api.post('/v1/public/setup', {body}).pipe(
             tapResponse({
               next: () => {
-                patchState(store, setFulfilled(), () => ({state: 'setupCompleted' as const}));
+                patchState(store, setFulfilled(), {state: 'setupCompleted' as const});
                 toast.success(translate('auth.setup.success'));
 
                 void confetti({

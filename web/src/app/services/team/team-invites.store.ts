@@ -29,7 +29,7 @@ export const TeamInvitesStore = signalStore(
     load: rxMethod<{teamId: string | undefined} & PaginationDto>(
       pipe(
         filter(({teamId}) => !!teamId),
-        tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
+        tap(({teamId}) => patchState(store, setPending(), {teamId})),
         debounceTime(275),
         switchMap(({teamId, ...query}) =>
           api

@@ -52,7 +52,7 @@ export const AuthStore = signalStore(
   }),
   withMethods((store, api = injectAPI(), router = inject(Router), window = injectWindow()) => ({
     setRedirectUrl(redirectUrl: string): void {
-      patchState(store, () => ({redirectUrl}));
+      patchState(store, {redirectUrl});
     },
     setTokens({accessToken, refreshToken}: {accessToken: string; refreshToken?: string}): void {
       store.accessToken.set(accessToken);
@@ -97,9 +97,9 @@ export const AuthStore = signalStore(
         }),
         tapResponse({
           next: ({accessToken, refreshToken}) => {
-            patchState(store, () => ({
+            patchState(store, {
               error: 'NONE' as const,
-            }));
+            });
 
             store.accessToken.set(accessToken);
             store.refreshToken.set(refreshToken);
@@ -126,9 +126,9 @@ export const AuthStore = signalStore(
           .pipe(
             tapResponse({
               next: ({accessToken, refreshToken}) => {
-                patchState(store, () => ({
+                patchState(store, {
                   error: 'NONE' as const,
-                }));
+                });
 
                 store.accessToken.set(accessToken);
                 store.refreshToken.set(refreshToken);
@@ -137,10 +137,10 @@ export const AuthStore = signalStore(
               },
               error: ({error}) => {
                 if (error?.codeName === 'PASSWORD_CHANGE_REQUIRED') {
-                  patchState(store, () => ({
+                  patchState(store, {
                     error: 'NONE' as const,
                     enteredPassword: body.password,
-                  }));
+                  });
                   console.log(
                     `submitted password - ${body.password} - state - ${store.enteredPassword()}`,
                   );
@@ -155,9 +155,9 @@ export const AuthStore = signalStore(
                   return;
                 }
 
-                patchState(store, () => ({
+                patchState(store, {
                   error: 'INVALID_CREDENTIALS' as const,
-                }));
+                });
               },
             }),
           ),
@@ -177,9 +177,9 @@ export const AuthStore = signalStore(
           .pipe(
             tapResponse({
               next: ({accessToken, refreshToken}) => {
-                patchState(store, () => ({
+                patchState(store, {
                   error: 'NONE' as const,
-                }));
+                });
 
                 store.accessToken.set(accessToken);
                 store.refreshToken.set(refreshToken);
@@ -194,22 +194,22 @@ export const AuthStore = signalStore(
                       stayLoggedIn: body.stayLoggedIn,
                     },
                   });
-                  patchState(store, () => ({error: 'NONE' as const}));
+                  patchState(store, {error: 'NONE' as const});
 
                   return;
                 }
 
                 if (error?.codeName === 'PASSWORDS_IDENTICAL') {
-                  patchState(store, () => ({
+                  patchState(store, {
                     error: 'PASSWORDS_IDENTICAL' as const,
-                  }));
+                  });
 
                   return;
                 }
 
-                patchState(store, () => ({
+                patchState(store, {
                   error: 'INVALID_CREDENTIALS' as const,
-                }));
+                });
               },
             }),
           ),

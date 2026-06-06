@@ -66,12 +66,12 @@ export function withPaginatedTable<EntityType>({
     }),
     withMethods((store, router = inject(Router), activatedRoute = inject(ActivatedRoute)) => ({
       setColumnsToDisplay: rxMethod<EntityKey<EntityType>[]>(
-        tap((columnsToDisplay) => patchState(store, () => ({columnsToDisplay}))),
+        tap((columnsToDisplay) => patchState(store, {columnsToDisplay})),
       ),
       setStartSort: rxMethod<{by: string; direction: SortDirection}>(
-        tap(({by, direction}) => patchState(store, () => ({sortBy: by, sortDirection: direction}))),
+        tap(({by, direction}) => patchState(store, {sortBy: by, sortDirection: direction})),
       ),
-      setPageSize: rxMethod<number>(tap((size) => patchState(store, () => ({size})))),
+      setPageSize: rxMethod<number>(tap((size) => patchState(store, {size}))),
       setHlmPaginator: rxMethod<HlmPaginator>(
         switchMap((paginator) =>
           paginator.page$.pipe(
@@ -81,7 +81,7 @@ export function withPaginatedTable<EntityType>({
                 size: paginator.pageSize(),
               };
               lumber.log('setPaginatorUpdate', 'new params', options);
-              patchState(store, () => options);
+              patchState(store, options);
               void router.navigate([], {
                 relativeTo: activatedRoute,
                 queryParamsHandling: 'merge',
@@ -151,7 +151,7 @@ export function withPaginatedTable<EntityType>({
                 prev.sortBy === curr.sortBy &&
                 prev.sortDirection === curr.sortDirection,
             ),
-            tap((it) => patchState(store, () => it)),
+            tap((it) => patchState(store, it)),
           )
           .subscribe();
       },

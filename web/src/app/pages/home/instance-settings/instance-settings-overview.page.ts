@@ -74,6 +74,7 @@ export class InstanceSettingsOverviewPage {
   submitGeneralForm(it: BackendType['InstanceSettingsResponse']) {
     this.instanceSettingsStore.setTimezone(it.timezone);
     this.instanceSettingsStore.setShowNewVersionDialog(it.showNewVersionDialog);
+    this.instanceSettingsStore.setTrustOAuthProviderMFA(it.trustOAuthProviderMFA);
   }
 
   submitPermissionsForm(it: BackendType['InstanceSettingsResponse']) {

@@ -56,28 +56,26 @@ export function withNotificationMethodsLoad() {
       setSearch: rxMethod<string | null>(
         pipe(
           map((it) => it ?? ''),
-          tap((search) => patchState(store, () => ({search}))),
+          tap((search) => patchState(store, {search})),
         ),
       ),
       setTypes: rxMethod<BackendType['NotificationMethodResponse']['data']['_type'][] | null>(
         pipe(
           map((it) => it ?? []),
-          tap((types) => patchState(store, () => ({types}))),
+          tap((types) => patchState(store, {types})),
         ),
       ),
       setUseByDefault: rxMethod<
         BackendType['NotificationMethodResponse']['useByDefault'] | undefined | null
       >(
         tap((useByDefault) =>
-          patchState(store, () => ({useByDefault: useByDefault === true ? true : undefined})),
+          patchState(store, {useByDefault: useByDefault === true ? true : undefined}),
         ),
       ),
       setUsedByMonitorIds: rxMethod<string[] | undefined>(
-        tap((usedByMonitorIds) => patchState(store, () => ({usedByMonitorIds}))),
+        tap((usedByMonitorIds) => patchState(store, {usedByMonitorIds})),
       ),
-      setDeleted: rxMethod<boolean | undefined>(
-        tap((deleted) => patchState(store, () => ({deleted}))),
-      ),
+      setDeleted: rxMethod<boolean | undefined>(tap((deleted) => patchState(store, {deleted}))),
       load: rxMethod<
         {
           teamId: string | undefined;
@@ -90,7 +88,7 @@ export function withNotificationMethodsLoad() {
       >(
         pipe(
           filter(({teamId}) => !!teamId),
-          tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
+          tap(({teamId}) => patchState(store, setPending(), {teamId})),
           debounceTime(275),
           switchMap(({teamId, search, ...query}) =>
             api

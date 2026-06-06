@@ -60,7 +60,7 @@ export const SelectedTeamStore = signalStore(
   withMethods((store, api = injectAPI(), router = inject(Router)) => ({
     updateTeam(team: BackendType['TeamMaxResponse']) {
       if (store.selectedTeam()?.id === team.id) {
-        patchState(store, () => ({selectedTeam: team}));
+        patchState(store, {selectedTeam: team});
       }
       patchState(store, setEntity<BackendType['TeamResponse']>(team));
     },
@@ -92,7 +92,7 @@ export const SelectedTeamStore = signalStore(
               preserveFragment: true,
             });
           }
-          void routerPromise.then(() => patchState(store, () => ({selectedTeam: newTeam})));
+          void routerPromise.then(() => patchState(store, {selectedTeam: newTeam}));
 
           return;
         }
@@ -101,7 +101,7 @@ export const SelectedTeamStore = signalStore(
 
         store.storageSelectedTeamId.set(undefined);
 
-        patchState(store, () => ({selectedTeam: undefined}));
+        patchState(store, {selectedTeam: undefined});
 
         void router.navigate(['m']);
       }
@@ -110,7 +110,7 @@ export const SelectedTeamStore = signalStore(
       pipe(
         debounceTime(275),
         map((it) => it ?? undefined),
-        tap((name) => patchState(store, () => ({name}))),
+        tap((name) => patchState(store, {name})),
       ),
     ),
     loadAvailableTeams: rxMethod<{
@@ -120,7 +120,7 @@ export const SelectedTeamStore = signalStore(
       pipe(
         distinctUntilChanged((prev, cur) => {
           if (prev.name !== cur.name) {
-            patchState(store, removeAllEntities(), () => ({page: 0}));
+            patchState(store, removeAllEntities(), {page: 0});
             return false;
           }
 
@@ -141,14 +141,18 @@ export const SelectedTeamStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: ({data, numberOfPages}) =>
-                  patchState(store, setEntities(data), setFulfilled(), () => {
-                    if (numberOfPages === page) {
-                      console.warn('Loaded all teams');
-                      return {loadedAll: true};
-                    }
-                    return {};
-                  }),
+                next: ({data, numberOfPages}) => {
+                  const loadedAll = numberOfPages === page;
+                  if (loadedAll) {
+                    console.warn('Loaded all teams');
+                  }
+                  patchState(
+                    store,
+                    setEntities(data),
+                    setFulfilled(),
+                    loadedAll ? {loadedAll} : {},
+                  );
+                },
                 error: (error) => {
                   patchState(store, setError(error));
                   toast.error(`Error while loading teams page ${page}`);
@@ -165,9 +169,9 @@ export const SelectedTeamStore = signalStore(
             ? api.get('/v1/team/{id}', {params: {path: {id}}}).pipe(
                 tapResponse({
                   next: (selectedTeam) => {
-                    patchState(store, () => ({
+                    patchState(store, {
                       selectedTeam,
-                    }));
+                    });
 
                     if (!store.onceSelectedTeams().find((team) => team.id === selectedTeam.id)) {
                       store.onceSelectedTeams.update((it) => [...it, selectedTeam]);
@@ -176,7 +180,7 @@ export const SelectedTeamStore = signalStore(
                   error: () => {},
                 }),
               )
-            : of(EMPTY).pipe(tap(() => patchState(store, () => ({selectedTeam: undefined})))),
+            : of(EMPTY).pipe(tap(() => patchState(store, {selectedTeam: undefined}))),
         ),
       ),
     ),

@@ -55,7 +55,7 @@ export const StatusPagesStore = signalStore(
     >(
       pipe(
         filter(({teamId}) => !!teamId),
-        tap(({teamId}) => patchState(store, setPending(), () => ({teamId}))),
+        tap(({teamId}) => patchState(store, setPending(), {teamId})),
         debounceTime(275),
         switchMap(({teamId, search, ...query}) =>
           api
@@ -90,12 +90,10 @@ export const StatusPagesStore = signalStore(
       setSearch: rxMethod<string | null>(
         pipe(
           map((it) => it ?? ''),
-          tap((search) => patchState(store, () => ({search}))),
+          tap((search) => patchState(store, {search})),
         ),
       ),
-      setDeleted: rxMethod<boolean | undefined>(
-        tap((deleted) => patchState(store, () => ({deleted}))),
-      ),
+      setDeleted: rxMethod<boolean | undefined>(tap((deleted) => patchState(store, {deleted}))),
       load,
       restoreSelection: rxMethod<void>(
         switchMap(() =>

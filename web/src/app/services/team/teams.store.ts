@@ -78,14 +78,12 @@ export const TeamsStore = signalStore(
     );
 
     return {
-      setName: rxMethod<string | null>(
-        tap((name) => patchState(store, () => ({name: name ?? undefined}))),
-      ),
+      setName: rxMethod<string | null>(tap((name) => patchState(store, {name: name ?? undefined}))),
       setRole: rxMethod<BackendType['TeamMaxResponse']['role'] | undefined>(
-        pipe(tap((role) => patchState(store, () => ({role})))),
+        pipe(tap((role) => patchState(store, {role}))),
       ),
       setDeleted: rxMethod<boolean | undefined | null>(
-        pipe(tap((deleted) => patchState(store, () => ({deleted: deleted ?? undefined})))),
+        pipe(tap((deleted) => patchState(store, {deleted: deleted ?? undefined}))),
       ),
       load,
       delete: rxMethod<string>(

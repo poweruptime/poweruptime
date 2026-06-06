@@ -21,7 +21,7 @@ export const StatusPageEditStore = signalStore(
         pipe(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({statusPage: undefined}))),
+          tap(() => patchState(store, setPending(), {statusPage: undefined})),
           switchMap((id) =>
             api
               .get('/v1/status-page/{id}', {
@@ -33,7 +33,7 @@ export const StatusPageEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (statusPage) => patchState(store, () => ({statusPage}), setFulfilled()),
+                  next: (statusPage) => patchState(store, {statusPage}, setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),
@@ -58,7 +58,7 @@ export const StatusPageEditStore = signalStore(
         switchMap((body) =>
           api.put('/v1/status-page', {body}).pipe(
             tapResponse({
-              next: (statusPage) => patchState(store, () => ({statusPage})),
+              next: (statusPage) => patchState(store, {statusPage}),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

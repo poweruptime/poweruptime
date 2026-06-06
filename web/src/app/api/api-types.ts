@@ -367,6 +367,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/instance-settings/trustOAuthProviderMFA': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set trustOAuthProviderMFA instance setting
+     * @description <b>Required auth:</b> ROLE_ADMIN
+     */
+    put: operations['setTrustOAuthProviderMFA'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/instance-settings/timezone': {
     parameters: {
       query?: never;
@@ -2154,6 +2174,10 @@ export interface components {
       versionCheckAdminMailEnabled: boolean;
       versionCheckAdminMailTo?: string[];
       showNewVersionDialog: boolean;
+      trustOAuthProviderMFA: boolean;
+    };
+    SettingBooleanDto: {
+      it: boolean;
     };
     InstanceSettingSupportDto: {
       supportLookup?: string;
@@ -2162,9 +2186,6 @@ export interface components {
     InstanceSupportSettingsResponse: {
       check: boolean;
       instanceSettings: components['schemas']['InstanceSettingsResponse'];
-    };
-    SettingBooleanDto: {
-      it: boolean;
     };
     CreateUserDto: {
       name: string;
@@ -3431,6 +3452,30 @@ export interface operations {
       };
     };
   };
+  setTrustOAuthProviderMFA: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettingBooleanDto'];
+      };
+    };
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InstanceSettingsResponse'];
+        };
+      };
+    };
+  };
   setTimeZone_1: {
     parameters: {
       query?: never;
@@ -3833,7 +3878,9 @@ export interface operations {
   loginOAuth: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        'X-MFA-Code'?: string;
+      };
       path?: never;
       cookie?: never;
     };

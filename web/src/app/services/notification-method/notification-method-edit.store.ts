@@ -26,10 +26,10 @@ export const NotificationMethodEditStore = signalStore(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
           tap(() =>
-            patchState(store, setPending(), () => ({
+            patchState(store, setPending(), {
               notificationMethod: undefined,
               template: undefined,
-            })),
+            }),
           ),
           switchMap((id) =>
             api
@@ -42,7 +42,7 @@ export const NotificationMethodEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (notificationMethod) => patchState(store, () => ({notificationMethod})),
+                  next: (notificationMethod) => patchState(store, {notificationMethod}),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),
@@ -58,7 +58,7 @@ export const NotificationMethodEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (template) => patchState(store, () => ({template}), setFulfilled()),
+                  next: (template) => patchState(store, {template}, setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),

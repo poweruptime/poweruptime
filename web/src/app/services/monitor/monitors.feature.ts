@@ -79,19 +79,16 @@ export function withMonitorsLoad() {
               prev.types !== cur.types ||
               prev.tags !== cur.tags
             ) {
-              patchState(store, removeAllEntities(), () => ({page: 0}));
+              patchState(store, removeAllEntities(), {page: 0});
               return false;
             }
 
             return prev.page === cur.page && prev.teamId === cur.teamId;
           }),
           tap(({teamId}) =>
-            patchState(
-              store,
-              setPending(),
-              store.teamId() !== teamId ? removeAllEntities() : () => ({}),
-              () => ({teamId}),
-            ),
+            patchState(store, setPending(), store.teamId() !== teamId ? removeAllEntities() : {}, {
+              teamId,
+            }),
           ),
           debounceTime(275),
           switchMap(({search, ...query}) =>
@@ -138,7 +135,7 @@ export function withMonitorLoad() {
         pipe(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({monitor: undefined}))),
+          tap(() => patchState(store, setPending(), {monitor: undefined})),
           switchMap((id) =>
             api
               .get('/v1/monitor/{id}', {
@@ -150,7 +147,7 @@ export function withMonitorLoad() {
               })
               .pipe(
                 tapResponse({
-                  next: (monitor) => patchState(store, () => ({monitor}), setFulfilled()),
+                  next: (monitor) => patchState(store, {monitor}, setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),

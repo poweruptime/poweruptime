@@ -31,7 +31,7 @@ export const TeamEditStore = signalStore(
         pipe(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({team: undefined}))),
+          tap(() => patchState(store, setPending(), {team: undefined})),
           switchMap((id) =>
             api
               .get('/v1/team/{id}', {
@@ -43,7 +43,7 @@ export const TeamEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (team) => patchState(store, () => ({team}), setFulfilled()),
+                  next: (team) => patchState(store, {team}, setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),
@@ -70,7 +70,7 @@ export const TeamEditStore = signalStore(
             tapResponse({
               next: (team) => {
                 selectedTeamStore.updateTeam(team);
-                patchState(store, () => ({team}));
+                patchState(store, {team});
               },
               error: () => {},
             }),

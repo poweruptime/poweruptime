@@ -23,7 +23,7 @@ export const UserEditStore = signalStore(
         pipe(
           filter((it): it is string => !!it),
           distinctUntilChanged(),
-          tap(() => patchState(store, setPending(), () => ({user: undefined}))),
+          tap(() => patchState(store, setPending(), {user: undefined})),
           switchMap((id) =>
             api
               .get('/v1/user/{id}', {
@@ -35,7 +35,7 @@ export const UserEditStore = signalStore(
               })
               .pipe(
                 tapResponse({
-                  next: (user) => patchState(store, () => ({user}), setFulfilled()),
+                  next: (user) => patchState(store, {user}, setFulfilled()),
                   error: (error) => patchState(store, setError(error)),
                 }),
               ),
