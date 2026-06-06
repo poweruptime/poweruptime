@@ -28,7 +28,7 @@ export const ProfileStore = signalStore(
         switchMap(() =>
           api.get('/v1/profile').pipe(
             tapResponse({
-              next: (response) => patchState(store, setFulfilled(), () => response),
+              next: (response) => patchState(store, setFulfilled(), response),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
