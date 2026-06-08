@@ -12,8 +12,6 @@ import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
         <hlm-skeleton class="h-8 w-20" />
         <hlm-skeleton class="h-8 w-20" />
       </div>
-
-      <hlm-skeleton class="h-44 w-full" />
     </div>
   `,
   selector: 'pu-monitor-header-placeholder',
