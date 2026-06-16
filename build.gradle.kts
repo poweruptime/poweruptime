@@ -21,10 +21,10 @@ repositories {
 }
 
 plugins {
-    id("org.springframework.boot") version "4.0.6" apply false
+    id("org.springframework.boot") version "4.1.0" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("dev.detekt") version "2.0.0-alpha.3"
+    id("dev.detekt") version "2.0.0-alpha.4"
 
     kotlin("jvm") version "2.4.0"
     kotlin("plugin.spring") version "2.4.0"
@@ -42,7 +42,7 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.3")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.4")
     }
 
     tasks.withType<Detekt>().configureEach {
@@ -79,7 +79,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.1")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.2")
         }
     }
 }
