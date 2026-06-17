@@ -3,6 +3,7 @@ package org.poweruptime.backend.features.authentication.config
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import org.poweruptime.backend.core.exceptions.UnauthorizedException
 import org.poweruptime.backend.features.authentication.service.AuthDetailsService
 import org.poweruptime.backend.features.authentication.service.AuthService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -137,7 +138,8 @@ class AuthConfig(val keyUtils: KeyUtils) {
 @Component
 class JwtToUserConverter(private val authService: AuthService) : Converter<Jwt, UsernamePasswordAuthenticationToken> {
     override fun convert(jwt: Jwt): UsernamePasswordAuthenticationToken {
-        val authDetails = authService.getUserDetailsByPublicId(jwt.subject)
+        val subject = jwt.subject ?: throw UnauthorizedException()
+        val authDetails = authService.getUserDetailsByPublicId(subject)
 
         return UsernamePasswordAuthenticationToken(authDetails, jwt, authDetails.authorities)
     }

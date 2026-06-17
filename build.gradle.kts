@@ -72,7 +72,6 @@ subprojects {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict") // Needed for the ISoftDeleteRepository to be able to override the findAll with a default implementation.
             freeCompilerArgs.add("-jvm-default=enable") // Generate JVM (1.8) default methods for non-abstract Kotlin interface member.
-            freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
 
@@ -373,4 +372,3 @@ abstract class ExecSupport {
 
 val execSupport = objects.newInstance(ExecSupport::class.java)
 val execOps = execSupport.execOps
-
