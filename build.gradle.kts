@@ -42,7 +42,9 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.4")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.4") {
+            exclude(group = "dev.detekt", module = "ktlint-repackage")
+        }
     }
 
     tasks.withType<Detekt>().configureEach {
