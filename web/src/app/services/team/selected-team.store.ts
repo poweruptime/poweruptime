@@ -120,7 +120,7 @@ export const SelectedTeamStore = signalStore(
       pipe(
         distinctUntilChanged((prev, cur) => {
           if (prev.name !== cur.name) {
-            patchState(store, removeAllEntities(), {page: 0});
+            patchState(store, removeAllEntities(), {page: 0, loadedAll: false});
             return false;
           }
 
@@ -142,7 +142,7 @@ export const SelectedTeamStore = signalStore(
             .pipe(
               tapResponse({
                 next: ({data, numberOfPages}) => {
-                  const loadedAll = numberOfPages === page;
+                  const loadedAll = page >= numberOfPages - 1;
                   if (loadedAll) {
                     console.warn('Loaded all teams');
                   }
