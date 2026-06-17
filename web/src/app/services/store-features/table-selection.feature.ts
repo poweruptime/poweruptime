@@ -45,9 +45,9 @@ export function withSelection<EntityType>({
       },
       toggleAll(): void {
         if (store.isAllSelected()) {
-          patchState(store, () => ({selection: []}));
+          patchState(store, {selection: []});
         } else {
-          patchState(store, () => ({selection: Object.values(store.entityMap())}));
+          patchState(store, {selection: Object.values(store.entityMap())});
         }
       },
       toggle(o: EntityType, isSelected = isEntitySelected(store.selection(), o, find)): void {

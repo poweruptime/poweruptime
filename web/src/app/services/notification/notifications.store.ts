@@ -76,10 +76,8 @@ export const NotificationsStore = signalStore(
           patchState(
             store,
             setPending(),
-            store.monitorId() !== monitorId || store.teamId() !== teamId
-              ? removeAllEntities()
-              : () => ({}),
-            () => ({teamId, monitorId}),
+            store.monitorId() !== monitorId || store.teamId() !== teamId ? removeAllEntities() : {},
+            {teamId, monitorId},
           ),
         ),
         debounceTime(275),

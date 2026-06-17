@@ -23,7 +23,7 @@ export const IsSetupStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/is-setup').pipe(
             tapResponse({
-              next: ({it}) => patchState(store, () => ({isSetup: it}), setFulfilled()),
+              next: ({it}) => patchState(store, {isSetup: it}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

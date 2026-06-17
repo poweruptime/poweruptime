@@ -23,14 +23,14 @@ export const CheckResultDetailStore = signalStore(
     update: rxMethod<BackendType['CheckResultResponse']>(
       pipe(
         filter((checkResult) => store.checkResult()?.id === checkResult.id),
-        tap((checkResult) => patchState(store, () => ({checkResult}))),
+        tap((checkResult) => patchState(store, {checkResult})),
       ),
     ),
     loadById: rxMethod<string | undefined>(
       pipe(
         filter((it): it is string => !!it),
         distinctUntilChanged(),
-        tap(() => patchState(store, setPending(), () => ({checkResult: undefined}))),
+        tap(() => patchState(store, setPending(), {checkResult: undefined})),
         switchMap((id) =>
           api
             .get('/v1/check-result/{id}', {
@@ -42,7 +42,7 @@ export const CheckResultDetailStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (checkResult) => patchState(store, () => ({checkResult}), setFulfilled()),
+                next: (checkResult) => patchState(store, {checkResult}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

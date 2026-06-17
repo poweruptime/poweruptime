@@ -36,13 +36,13 @@ export const UsersStore = signalStore(
   }),
   withMethods((store, api = injectAPI()) => ({
     setSearch: rxMethod<string | null>(
-      tap((search) => patchState(store, () => ({search: search ?? undefined}))),
+      tap((search) => patchState(store, {search: search ?? undefined})),
     ),
     setActivated: rxMethod<boolean | null>(
-      tap((setActivated) => patchState(store, () => ({activated: setActivated ?? undefined}))),
+      tap((setActivated) => patchState(store, {activated: setActivated ?? undefined})),
     ),
     setRole: rxMethod<BackendType['UserResponse']['role'] | null>(
-      tap((role) => patchState(store, () => ({role: role ?? undefined}))),
+      tap((role) => patchState(store, {role: role ?? undefined})),
     ),
     load: rxMethod<
       {

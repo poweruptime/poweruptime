@@ -36,7 +36,7 @@ export const InstanceAvailableTimezonesStore = signalStore(
               next: (dto) =>
                 patchState(
                   store,
-                  () => ({availableTimezones: groupTimezonesByRegion(dto.availableTimezones)}),
+                  {availableTimezones: groupTimezonesByRegion(dto.availableTimezones)},
                   setFulfilled(),
                 ),
               error: (error) => patchState(store, setError(error)),

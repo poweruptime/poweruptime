@@ -21,7 +21,7 @@ export const TeamSettingsStore = signalStore(
       pipe(
         filter((it): it is string => !!it),
         distinctUntilChanged(),
-        tap((teamId) => patchState(store, setPending(), () => ({teamId, settings: undefined}))),
+        tap((teamId) => patchState(store, setPending(), {teamId, settings: undefined})),
         switchMap((teamId) =>
           api
             .get('/v1/team/{teamId}/setting', {
@@ -33,7 +33,7 @@ export const TeamSettingsStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+                next: (settings) => patchState(store, {settings}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),
@@ -56,7 +56,7 @@ export const TeamSettingsStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+                next: (settings) => patchState(store, {settings}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),
@@ -74,7 +74,7 @@ export const TeamSettingsStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (settings) => patchState(store, () => ({settings}), setFulfilled()),
+                next: (settings) => patchState(store, {settings}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

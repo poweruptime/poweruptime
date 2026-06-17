@@ -24,12 +24,12 @@ export const CheckResultsPingStore = signalStore(
       precision: number;
     }>(
       pipe(
-        tap(({monitorId}) => patchState(store, setPending(), () => ({monitorId}))),
+        tap(({monitorId}) => patchState(store, setPending(), {monitorId})),
         debounceTime(275),
         switchMap((query) =>
           api.get('/v1/check-result/ping', {params: {query}}).pipe(
             tapResponse({
-              next: (data) => patchState(store, setFulfilled(), () => ({data})),
+              next: (data) => patchState(store, setFulfilled(), {data}),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

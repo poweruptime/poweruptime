@@ -33,7 +33,7 @@ export const MonitorsDashboardStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (dashboard) => patchState(store, () => ({dashboard}), setFulfilled()),
+                next: (dashboard) => patchState(store, {dashboard}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),
@@ -42,11 +42,11 @@ export const MonitorsDashboardStore = signalStore(
     ),
     loadByTeamId: rxMethod<string | undefined>(
       pipe(
-        tap((teamId) => patchState(store, setPending(), () => ({teamId}))),
+        tap((teamId) => patchState(store, setPending(), {teamId})),
         switchMap((teamId) =>
           api.get('/v1/monitor/dashboard', {params: {query: {teamId}}}).pipe(
             tapResponse({
-              next: (dashboard) => patchState(store, setFulfilled(), () => ({dashboard})),
+              next: (dashboard) => patchState(store, setFulfilled(), {dashboard}),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

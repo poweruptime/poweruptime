@@ -47,7 +47,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/host').pipe(
             tapResponse({
-              next: ({it: host}) => patchState(store, () => ({host}), setFulfilled()),
+              next: ({it: host}) => patchState(store, {host}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -60,7 +60,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/version').pipe(
             tapResponse({
-              next: ({it: version}) => patchState(store, () => ({version}), setFulfilled()),
+              next: ({it: version}) => patchState(store, {version}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -73,8 +73,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/oauth2').pipe(
             tapResponse({
-              next: (oauth2Providers) =>
-                patchState(store, () => ({oauth2Providers}), setFulfilled()),
+              next: (oauth2Providers) => patchState(store, {oauth2Providers}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -87,7 +86,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/is-setup').pipe(
             tapResponse({
-              next: ({it: isSetup}) => patchState(store, () => ({isSetup}), setFulfilled()),
+              next: ({it: isSetup}) => patchState(store, {isSetup}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -101,7 +100,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/public/info/support').pipe(
             tapResponse({
-              next: (support) => patchState(store, () => ({support}), setFulfilled()),
+              next: (support) => patchState(store, {support}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -117,7 +116,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/info/time').pipe(
             tapResponse({
-              next: (time) => patchState(store, () => ({time}), setFulfilled()),
+              next: (time) => patchState(store, {time}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -132,7 +131,7 @@ export const InfoStore = signalStore(
           api.get('/v1/info/isUserAllowedToCreateTeams').pipe(
             tapResponse({
               next: ({it: isUserAllowedToCreateTeams}) =>
-                patchState(store, () => ({isUserAllowedToCreateTeams}), setFulfilled()),
+                patchState(store, {isUserAllowedToCreateTeams}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -150,7 +149,7 @@ export const InfoStore = signalStore(
           api.get('/v1/info/showNewVersionDialog').pipe(
             tapResponse({
               next: ({it: showNewVersionDialog}) =>
-                patchState(store, () => ({showNewVersionDialog}), setFulfilled()),
+                patchState(store, {showNewVersionDialog}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -166,7 +165,7 @@ export const InfoStore = signalStore(
         switchMap(() =>
           api.get('/v1/info/environment').pipe(
             tapResponse({
-              next: (environment) => patchState(store, () => ({environment}), setFulfilled()),
+              next: (environment) => patchState(store, {environment}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

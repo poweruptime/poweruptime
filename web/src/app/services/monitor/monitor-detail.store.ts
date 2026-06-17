@@ -30,7 +30,7 @@ export const MonitorDetailStore = signalStore(
     updateMonitor: rxMethod<BackendType['MonitorMaxResponse']>(
       pipe(
         filter((monitor) => store.monitor()?.id === monitor.id),
-        tap((monitor) => patchState(store, () => ({monitor}))),
+        tap((monitor) => patchState(store, {monitor})),
       ),
     ),
   })),

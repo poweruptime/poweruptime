@@ -24,11 +24,11 @@ export const NotificationMethodTemplateStore = signalStore(
             it !== '' && !!it,
         ),
         distinctUntilChanged(),
-        tap(() => patchState(store, setPending(), () => ({template: undefined}))),
+        tap(() => patchState(store, setPending(), {template: undefined})),
         switchMap((type) =>
           api.get('/v1/notification-method/template/{type}', {params: {path: {type}}}).pipe(
             tapResponse({
-              next: (template) => patchState(store, () => ({template}), setFulfilled()),
+              next: (template) => patchState(store, {template}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

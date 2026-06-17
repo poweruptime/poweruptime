@@ -30,7 +30,7 @@ export const PublicStatusPageStore = signalStore(
       domain: string;
     }>(
       pipe(
-        tap(() => patchState(store, setPending(), () => ({statusPage: undefined}))),
+        tap(() => patchState(store, setPending(), {statusPage: undefined})),
         switchMap(({slug, domain}) =>
           (slug
             ? api.get('/v1/public/status-page/{slug}', {
@@ -49,7 +49,7 @@ export const PublicStatusPageStore = signalStore(
               })
           ).pipe(
             tapResponse({
-              next: (statusPage) => patchState(store, () => ({statusPage}), setFulfilled()),
+              next: (statusPage) => patchState(store, {statusPage}, setFulfilled()),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

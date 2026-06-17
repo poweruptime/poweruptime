@@ -232,6 +232,7 @@
         "4": "In doing so, the third-party service will see and may log your server’s public IP address."
       }
     },
+    "trustOAuthProviderMFA": "Disable {{mfa.mfa}} check for OAuth providers",
     "versionCheck": {
       "adminMail": {
         "everyone": "Send to all Admins",

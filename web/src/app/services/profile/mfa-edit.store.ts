@@ -22,7 +22,7 @@ export const MFAEditStore = signalStore(
   }),
   withMethods((store, api = injectAPI()) => ({
     setDone() {
-      patchState(store, () => ({backupCodes: undefined}));
+      patchState(store, {backupCodes: undefined});
     },
     load: rxMethod<void>(
       pipe(
@@ -30,7 +30,7 @@ export const MFAEditStore = signalStore(
         switchMap(() =>
           api.get('/v1/profile/mfa/state').pipe(
             tapResponse({
-              next: (state) => patchState(store, setFulfilled(), () => ({state})),
+              next: (state) => patchState(store, setFulfilled(), {state}),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -44,10 +44,10 @@ export const MFAEditStore = signalStore(
           api.get('/v1/profile/mfa').pipe(
             tapResponse({
               next: ({base32Secret}) =>
-                patchState(store, setFulfilled(), () => ({
+                patchState(store, setFulfilled(), {
                   base32Secret,
                   state: 'CONFIRM' as const,
-                })),
+                }),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -61,11 +61,11 @@ export const MFAEditStore = signalStore(
           api.post('/v1/profile/mfa', {body}).pipe(
             tapResponse({
               next: ({backupCodes}) =>
-                patchState(store, setFulfilled(), () => ({
+                patchState(store, setFulfilled(), {
                   backupCodes,
                   state: 'ENABLED' as const,
                   base32Secret: undefined,
-                })),
+                }),
               error: (error) => patchState(store, setError(error)),
             }),
           ),
@@ -79,10 +79,10 @@ export const MFAEditStore = signalStore(
           api.delete('/v1/profile/mfa').pipe(
             tapResponse({
               next: () =>
-                patchState(store, setFulfilled(), () => ({
+                patchState(store, setFulfilled(), {
                   state: 'DISABLED' as const,
                   backupCodes: undefined,
-                })),
+                }),
               error: (error) => patchState(store, setError(error)),
             }),
           ),

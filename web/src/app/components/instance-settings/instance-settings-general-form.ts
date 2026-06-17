@@ -47,6 +47,16 @@ import {GroupedTimezones} from '@app/services';
               {{ 'instanceSettings.showNewVersionDialog' | transloco }}
             </label>
           </div>
+
+          <div class="flex items-center justify-between space-x-2">
+            <label class="flex items-center" hlmLabel for="trustOAuthProviderMFA">
+              <hlm-switch
+                class="mr-2"
+                inputId="trustOAuthProviderMFA"
+                formControlName="trustOAuthProviderMFA" />
+              {{ 'instanceSettings.trustOAuthProviderMFA' | transloco }}
+            </label>
+          </div>
         </form>
       </div>
       <p hlmCardFooter>
@@ -75,6 +85,7 @@ export class InstanceSettingsGeneralForm extends AbstractModelEditFormComponent<
   override form = this.fb.nonNullable.group({
     timezone: ['', [Validators.required]],
     showNewVersionDialog: [true, [Validators.required]],
+    trustOAuthProviderMFA: [true, [Validators.required]],
   });
 
   readonly isValid = injectIsValid(this.form);

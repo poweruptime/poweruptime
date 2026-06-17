@@ -20,7 +20,7 @@ export const NotificationDetailStore = signalStore(
       pipe(
         filter((it): it is string => !!it),
         distinctUntilChanged(),
-        tap(() => patchState(store, setPending(), () => ({notification: undefined}))),
+        tap(() => patchState(store, setPending(), {notification: undefined})),
         switchMap((id) =>
           api
             .get('/v1/notification/{id}', {
@@ -32,7 +32,7 @@ export const NotificationDetailStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (notification) => patchState(store, () => ({notification}), setFulfilled()),
+                next: (notification) => patchState(store, {notification}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

@@ -26,7 +26,7 @@ export const InstanceSettingsVersionCheckStore = signalStore(
           switchMap(({skipCache}) =>
             api.get('/v1/instance-settings/versionCheck', {params: {query: {skipCache}}}).pipe(
               tapResponse({
-                next: (versionCheck) => patchState(store, setFulfilled(), () => ({versionCheck})),
+                next: (versionCheck) => patchState(store, setFulfilled(), {versionCheck}),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),

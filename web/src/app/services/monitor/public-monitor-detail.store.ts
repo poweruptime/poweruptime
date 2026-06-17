@@ -28,7 +28,7 @@ export const PublicMonitorDetailStore = signalStore(
     loadMonitorById: rxMethod<string | undefined>(
       pipe(
         filter((it): it is string => !!it),
-        tap(() => patchState(store, setPending(), () => ({monitor: undefined}))),
+        tap(() => patchState(store, setPending(), {monitor: undefined})),
         switchMap((id) =>
           api
             .get('/v1/public/monitor/{id}', {
@@ -40,7 +40,7 @@ export const PublicMonitorDetailStore = signalStore(
             })
             .pipe(
               tapResponse({
-                next: (monitor) => patchState(store, () => ({monitor}), setFulfilled()),
+                next: (monitor) => patchState(store, {monitor}, setFulfilled()),
                 error: (error) => patchState(store, setError(error)),
               }),
             ),
