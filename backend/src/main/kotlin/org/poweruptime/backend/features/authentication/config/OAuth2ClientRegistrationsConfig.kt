@@ -75,7 +75,7 @@ class OAuth2ClientRegistrationsConfig(private val props: OAuth2ClientProperties)
                             .clientId(registration.clientId!!)
                             .clientSecret(registration.clientSecret!!)
                             .authorizationGrantType(
-                                AuthorizationGrantType(registration.authorizationGrantType),
+                                AuthorizationGrantType(registration.authorizationGrantType!!),
                             ).redirectUri(
                                 registration.redirectUri ?: "{baseUrl}/login/oauth2/code/$registrationId",
                             ).clientName(registration.clientName ?: registrationId.capitalize())
@@ -83,7 +83,7 @@ class OAuth2ClientRegistrationsConfig(private val props: OAuth2ClientProperties)
                             .authorizationUri(it.authorizationUri)
                             .issuerUri(it.issuerUri)
                             .jwkSetUri(it.jwkSetUri)
-                            .tokenUri(it.tokenUri)
+                            .tokenUri(it.tokenUri!!)
                             .userInfoUri(it.userInfoUri)
                             .userNameAttributeName(it.userNameAttribute ?: "sub")
                             .build()

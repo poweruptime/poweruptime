@@ -21,10 +21,10 @@ repositories {
 }
 
 plugins {
-    id("org.springframework.boot") version "4.0.6" apply false
+    id("org.springframework.boot") version "4.1.0" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
-    id("dev.detekt") version "2.0.0-alpha.3"
+    id("dev.detekt") version "2.0.0-alpha.4"
 
     kotlin("jvm") version "2.4.0"
     kotlin("plugin.spring") version "2.4.0"
@@ -42,7 +42,9 @@ allprojects {
     }
 
     dependencies {
-        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.3")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.4") {
+            exclude(group = "dev.detekt", module = "ktlint-repackage")
+        }
     }
 
     tasks.withType<Detekt>().configureEach {
@@ -70,7 +72,6 @@ subprojects {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict") // Needed for the ISoftDeleteRepository to be able to override the findAll with a default implementation.
             freeCompilerArgs.add("-jvm-default=enable") // Generate JVM (1.8) default methods for non-abstract Kotlin interface member.
-            freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
 
@@ -79,7 +80,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.1")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.2")
         }
     }
 }
@@ -371,4 +372,3 @@ abstract class ExecSupport {
 
 val execSupport = objects.newInstance(ExecSupport::class.java)
 val execOps = execSupport.execOps
-

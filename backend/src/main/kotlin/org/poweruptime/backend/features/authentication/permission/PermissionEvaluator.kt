@@ -12,7 +12,7 @@ import java.io.Serializable
 class PermissionEvaluator(private val permissionsService: PermissionsService) : PermissionEvaluator {
     private final val logger = KotlinLogging.logger {}
 
-    override fun hasPermission(authentication: Authentication, publicTargetId: Any, permissionName: Any): Boolean {
+    override fun hasPermission(authentication: Authentication, publicTargetId: Any?, permissionName: Any): Boolean {
         if (authentication.authorities.any { it.authority == SystemRole.ADMIN.grantedAuthority.authority }) {
             return true
         }

@@ -12,7 +12,7 @@ import groovy.json.JsonSlurper
 plugins {
     kotlin("plugin.serialization")
     id("com.github.node-gradle.node") version "7.1.0"
-    id ("com.github.jk1.dependency-license-report") version "3.1.2"
+    id ("com.github.jk1.dependency-license-report") version "3.1.4"
 }
 
 springBoot {
@@ -24,7 +24,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.1.4")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.2.0")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.0")
@@ -65,7 +65,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core:5.0.3")
     runtimeOnly("org.postgresql:postgresql:42.7.11")
 
-    implementation("com.zaxxer:HikariCP:7.0.2")
+    implementation("com.zaxxer:HikariCP:7.1.0")
 
     val exposedVersion = "1.3.0"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -99,7 +99,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
 
     // Retry for RabbitMQ
-    implementation("org.springframework.retry:spring-retry:2.0.12")
+    implementation("org.springframework.retry:spring-retry:2.0.13")
 
     // Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
@@ -119,7 +119,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.4")
     testImplementation("org.testcontainers:rabbitmq:1.21.4")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.8")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.9")
 }
 
 tasks.withType<Test> {
@@ -280,7 +280,7 @@ tasks.register<BootRun>("seed") {
 configurations.detekt {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.3.21")
+            useVersion("2.4.0")
         }
     }
 }
