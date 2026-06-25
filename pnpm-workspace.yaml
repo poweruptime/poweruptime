@@ -10,3 +10,5 @@ allowBuilds:
   msgpackr-extract: false
   nx: true
   sharp: false
+minimumReleaseAgeExclude:
+  - ng-icons-manager@2.0.1
