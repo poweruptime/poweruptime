@@ -6,7 +6,6 @@ import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';

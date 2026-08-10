@@ -28,12 +28,10 @@ import {BrnMention} from '../brain';
       inputs: [
         'align',
         'autoFocus',
-        'closeDelay',
         'closeOnOutsidePointerEvents',
         'sideOffset',
         'state',
         'offsetX',
-        'restoreFocus',
       ],
       outputs: ['stateChanged', 'closed'],
     },

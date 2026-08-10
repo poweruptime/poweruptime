@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
@@ -118,7 +117,7 @@ export class PingChartFilter {
 
   protected readonly max = new Date();
   protected readonly toBackendDate = toBackendDate;
-  protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
+  protected readonly formatDates = (dates: [Date | null, Date | null]) =>
     dates
       .filter((it) => !!it)
       .map((it) => format(it, 'dd.M.yyyy'))

@@ -62,8 +62,7 @@ import {Editor} from '@app/components/editor';
             class="w-full"
             [(search)]="mentionFilter"
             [(value)]="value"
-            [disabled]="isDisabled()"
-            [restoreFocus]="false">
+            [disabled]="isDisabled()">
             <textarea
               class="w-full"
               id="editor"

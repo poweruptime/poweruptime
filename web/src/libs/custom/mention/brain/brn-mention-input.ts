@@ -21,7 +21,7 @@ import {injectBrnMentionBase} from './brn-mention.token';
     '(input)': 'onInput($event)',
   },
 })
-export class BrnMentionInput<T> {
+export class BrnMentionInput {
   private static _id = 0;
   private readonly _el = inject(ElementRef);
   private readonly _mention = injectBrnMentionBase();

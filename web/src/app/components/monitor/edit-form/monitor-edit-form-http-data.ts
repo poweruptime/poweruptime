@@ -7,7 +7,6 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {filter} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
 import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
@@ -197,8 +196,7 @@ const predefinedStatusCodeRanges = [
                 </label>
                 <hlm-autocomplete-search
                   [(value)]="statusCodeRangeInput"
-                  [(search)]="statusCodeRangeSearch"
-                  [restoreFocus]="false">
+                  [(search)]="statusCodeRangeSearch">
                   <hlm-autocomplete-input
                     id="allowedStatusCodeRange"
                     [placeholder]="'monitor.edit.http.allowedStatusCodeRanges.new' | transloco"
