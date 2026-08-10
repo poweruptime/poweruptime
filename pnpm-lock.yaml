@@ -198,7 +198,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: 21.2.15
-        version: 21.2.15(3fc947fed57a33318855ad3daa21a6b8)
+        version: 21.2.15(9dec87612f7d952b93c513399c20aa1e)
       '@angular/cli':
         specifier: 21.2.15
         version: 21.2.15(@types/node@24.13.2)(chokidar@5.0.0)(supports-color@10.2.2)
@@ -228,7 +228,7 @@ importers:
         version: 1.60.0
       '@spartan-ng/cli':
         specifier: 0.0.1-alpha.701
-        version: 0.0.1-alpha.701(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(3fc947fed57a33318855ad3daa21a6b8))(@angular/compiler@21.2.19)(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(rxjs@7.8.2)(supports-color@10.2.2)(tslib@2.8.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+        version: 0.0.1-alpha.701(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(9dec87612f7d952b93c513399c20aa1e))(@angular/compiler@21.2.19)(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(rxjs@7.8.2)(supports-color@10.2.2)(tslib@2.8.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       '@tailwindcss/typography':
         specifier: 0.5.20
         version: 0.5.20(tailwindcss@4.3.1)
@@ -252,7 +252,7 @@ importers:
         version: 21.4.0(@angular/cli@21.2.15(@types/node@24.13.2)(chokidar@5.0.0)(supports-color@10.2.2))(chokidar@5.0.0)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(typescript-eslint@8.61.0(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(typescript@5.9.3)
       autoprefixer:
         specifier: 10.5.0
-        version: 10.5.0(postcss@8.5.15)
+        version: 10.5.0(postcss@8.5.23)
       esbuild-visualizer:
         specifier: 0.7.0
         version: 0.7.0
@@ -272,8 +272,8 @@ importers:
         specifier: 21.1.0
         version: 21.1.0(@angular-devkit/architect@0.2102.17(chokidar@5.0.0))(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))
       postcss:
-        specifier: 8.5.15
-        version: 8.5.15
+        specifier: 8.5.23
+        version: 8.5.23
       tailwindcss:
         specifier: 4.3.1
         version: 4.3.1
@@ -6497,6 +6497,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.18:
+    resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@5.1.16:
     resolution: {integrity: sha512-kVrnsrJqMR8+oLJnGEmSWw9BivK5mt7H3FZatVRjrc5wGqFYuBxX1yG7+A7Gi5AefkX6t/oCkizcQgpu0cY1dQ==}
     engines: {node: ^18 || >=20}
@@ -7170,6 +7175,10 @@ packages:
 
   postcss@8.5.15:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.23:
+    resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
 
   potpack@1.0.2:
@@ -8763,7 +8772,7 @@ snapshots:
       eslint: 10.5.0(jiti@2.7.0)(supports-color@10.2.2)
       typescript: 5.9.3
 
-  '@angular/build@21.2.15(3fc947fed57a33318855ad3daa21a6b8)':
+  '@angular/build@21.2.15(9dec87612f7d952b93c513399c20aa1e)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2102.15(chokidar@5.0.0)
@@ -8803,7 +8812,7 @@ snapshots:
       '@angular/ssr': 21.2.15(@angular/common@21.2.19(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(@angular/platform-server@21.2.19(@angular/common@21.2.19(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.19)(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(@angular/platform-browser@21.2.17(@angular/common@21.2.19(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/router@21.2.17(@angular/common@21.2.19(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(@angular/platform-browser@21.2.17(@angular/common@21.2.19(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2)))(rxjs@7.8.2))
       less: 4.5.1
       lmdb: 3.5.1
-      postcss: 8.5.15
+      postcss: 8.5.23
       tailwindcss: 4.3.1
     transitivePeerDependencies:
       - '@emnapi/core'
@@ -11033,17 +11042,17 @@ snapshots:
       node-gyp: 12.4.0
       proc-log: 6.1.0
 
-  '@nx/angular@23.0.1(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(3fc947fed57a33318855ad3daa21a6b8))(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@schematics/angular@20.3.9(chokidar@5.0.0))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)(rxjs@7.8.2)(supports-color@10.2.2)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))':
+  '@nx/angular@23.0.1(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(9dec87612f7d952b93c513399c20aa1e))(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@schematics/angular@20.3.9(chokidar@5.0.0))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)(rxjs@7.8.2)(supports-color@10.2.2)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))':
     dependencies:
       '@angular-devkit/core': 21.2.17(chokidar@5.0.0)
       '@angular-devkit/schematics': 21.2.17(chokidar@5.0.0)
       '@nx/devkit': 23.0.1(nx@23.0.1)
       '@nx/eslint': 23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1)
       '@nx/js': 23.0.1(@babel/traverse@7.29.7)(nx@23.0.1)
-      '@nx/module-federation': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)
-      '@nx/rspack': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)
-      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(nx@23.0.1)(supports-color@10.2.2)
-      '@nx/webpack': 23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      '@nx/module-federation': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)
+      '@nx/rspack': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)
+      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(nx@23.0.1)(supports-color@10.2.2)
+      '@nx/webpack': 23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       '@phenomnomnominal/tsquery': 6.2.0(typescript@5.9.3)
       '@schematics/angular': 20.3.9(chokidar@5.0.0)
       '@typescript-eslint/type-utils': 8.62.0(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
@@ -11056,7 +11065,7 @@ snapshots:
       tslib: 2.8.1
       webpack-merge: 5.10.0
     optionalDependencies:
-      '@angular/build': 21.2.15(3fc947fed57a33318855ad3daa21a6b8)
+      '@angular/build': 21.2.15(9dec87612f7d952b93c513399c20aa1e)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@minify-html/node'
@@ -11178,11 +11187,11 @@ snapshots:
       - nx
       - supports-color
 
-  '@nx/module-federation@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)':
+  '@nx/module-federation@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)':
     dependencies:
       '@nx/devkit': 23.0.1(nx@23.0.1)
       '@nx/js': 23.0.1(@babel/traverse@7.29.7)(nx@23.0.1)
-      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(nx@23.0.1)(supports-color@10.2.2)
+      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(nx@23.0.1)(supports-color@10.2.2)
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
       express: 4.22.2
       http-proxy-middleware: 3.0.7
@@ -11278,33 +11287,33 @@ snapshots:
   '@nx/nx-win32-x64-msvc@23.0.1':
     optional: true
 
-  '@nx/rspack@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)':
+  '@nx/rspack@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)':
     dependencies:
       '@nx/devkit': 23.0.1(nx@23.0.1)
       '@nx/js': 23.0.1(@babel/traverse@7.29.7)(nx@23.0.1)
-      '@nx/module-federation': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)
-      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(nx@23.0.1)(supports-color@10.2.2)
+      '@nx/module-federation': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(@swc/helpers@0.5.15)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)
+      '@nx/web': 23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(nx@23.0.1)(supports-color@10.2.2)
       '@phenomnomnominal/tsquery': 6.2.0(typescript@5.9.3)
       autoprefixer: 10.5.0(postcss@8.5.15)
       browserslist: 4.28.4
-      css-loader: 6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      css-loader: 6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       enquirer: 2.3.6
       express: 4.22.2
       http-proxy-middleware: 3.0.7
-      less-loader: 12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      license-webpack-plugin: 4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      less-loader: 12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      license-webpack-plugin: 4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       loader-utils: 2.0.4
       parse5: 4.0.0
       picocolors: 1.1.1
       postcss: 8.5.15
       postcss-import: 14.1.0(postcss@8.5.15)
-      postcss-loader: 8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      postcss-loader: 8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       sass: 1.101.0
       sass-embedded: 1.100.0
-      sass-loader: 16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      sass-loader: 16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       semver: 7.8.5
-      source-map-loader: 5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      style-loader: 3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      source-map-loader: 5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      style-loader: 3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       ts-checker-rspack-plugin: 1.5.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(tslib@2.8.1)(typescript@5.9.3)
       tslib: 2.8.1
       webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
@@ -11345,7 +11354,7 @@ snapshots:
       - verdaccio
       - webpack-cli
 
-  '@nx/web@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)))(nx@23.0.1)(supports-color@10.2.2)':
+  '@nx/web@23.0.1(@babel/traverse@7.29.7)(@nx/eslint@23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1))(@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)))(nx@23.0.1)(supports-color@10.2.2)':
     dependencies:
       '@nx/devkit': 23.0.1(nx@23.0.1)
       '@nx/js': 23.0.1(@babel/traverse@7.29.7)(nx@23.0.1)
@@ -11355,7 +11364,7 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@nx/eslint': 23.0.1(@babel/traverse@7.29.7)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(nx@23.0.1)
-      '@nx/webpack': 23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      '@nx/webpack': 23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -11366,7 +11375,7 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))':
+  '@nx/webpack@23.0.1(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(lightningcss@1.32.0)(nx@23.0.1)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))':
     dependencies:
       '@babel/core': 7.29.7
       '@nx/devkit': 23.0.1(nx@23.0.1)
@@ -11374,36 +11383,36 @@ snapshots:
       '@phenomnomnominal/tsquery': 6.2.0(typescript@5.9.3)
       ajv: 8.20.0
       autoprefixer: 10.5.0(postcss@8.5.15)
-      babel-loader: 9.2.1(@babel/core@7.29.7)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      babel-loader: 9.2.1(@babel/core@7.29.7)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       browserslist: 4.28.4
-      copy-webpack-plugin: 14.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      css-loader: 6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      css-minimizer-webpack-plugin: 8.0.0(lightningcss@1.32.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      copy-webpack-plugin: 14.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      css-loader: 6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      css-minimizer-webpack-plugin: 8.0.0(lightningcss@1.32.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       less: 4.5.1
-      less-loader: 12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      license-webpack-plugin: 4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      less-loader: 12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      license-webpack-plugin: 4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       loader-utils: 2.0.4
-      mini-css-extract-plugin: 2.4.7(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      mini-css-extract-plugin: 2.4.7(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       parse5: 4.0.0
       picocolors: 1.1.1
       postcss: 8.5.15
       postcss-import: 14.1.0(postcss@8.5.15)
-      postcss-loader: 8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      postcss-loader: 8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       rxjs: 7.8.2
       sass: 1.101.0
       sass-embedded: 1.100.0
-      sass-loader: 16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      source-map-loader: 5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      style-loader: 3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      terser-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
-      ts-loader: 9.6.2(loader-utils@2.0.4)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      sass-loader: 16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      source-map-loader: 5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      style-loader: 3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      terser-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      ts-loader: 9.6.2(loader-utils@2.0.4)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       tsconfig-paths-webpack-plugin: 4.2.0
       tslib: 2.8.1
       webpack-node-externals: 3.0.0
-      webpack-subresource-integrity: 5.1.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      webpack-subresource-integrity: 5.1.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
     optionalDependencies:
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@minify-html/node'
@@ -11842,10 +11851,10 @@ snapshots:
       tailwindcss: 4.3.1
       tslib: 2.8.1
 
-  '@spartan-ng/cli@0.0.1-alpha.701(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(3fc947fed57a33318855ad3daa21a6b8))(@angular/compiler@21.2.19)(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(rxjs@7.8.2)(supports-color@10.2.2)(tslib@2.8.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))':
+  '@spartan-ng/cli@0.0.1-alpha.701(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(9dec87612f7d952b93c513399c20aa1e))(@angular/compiler@21.2.19)(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(rxjs@7.8.2)(supports-color@10.2.2)(tslib@2.8.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))':
     dependencies:
       '@angular/core': 21.2.17(@angular/compiler@21.2.19)(rxjs@7.8.2)
-      '@nx/angular': 23.0.1(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(3fc947fed57a33318855ad3daa21a6b8))(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@schematics/angular@20.3.9(chokidar@5.0.0))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)(rxjs@7.8.2)(supports-color@10.2.2)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      '@nx/angular': 23.0.1(@angular-devkit/core@21.2.17(chokidar@5.0.0))(@angular-devkit/schematics@21.2.17(chokidar@5.0.0))(@angular/build@21.2.15(9dec87612f7d952b93c513399c20aa1e))(@babel/traverse@7.29.7)(@rspack/core@1.6.8(@swc/helpers@0.5.15))(@schematics/angular@20.3.9(chokidar@5.0.0))(@swc/helpers@0.5.15)(@zkochan/js-yaml@0.0.7)(eslint@10.5.0(jiti@2.7.0)(supports-color@10.2.2))(less@4.5.1)(lightningcss@1.32.0)(nx@23.0.1)(postcss@8.5.15)(rxjs@7.8.2)(supports-color@10.2.2)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       '@nx/devkit': 23.0.1(nx@23.0.1)
       '@nx/js': 23.0.1(@babel/traverse@7.29.7)(nx@23.0.1)
       '@nx/workspace': 22.7.5
@@ -12836,6 +12845,15 @@ snapshots:
       postcss: 8.5.15
       postcss-value-parser: 4.2.0
 
+  autoprefixer@10.5.0(postcss@8.5.23):
+    dependencies:
+      browserslist: 4.28.4
+      caniuse-lite: 1.0.30001799
+      fraction.js: 5.3.4
+      picocolors: 1.1.1
+      postcss: 8.5.23
+      postcss-value-parser: 4.2.0
+
   axios@1.16.0:
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
@@ -12846,12 +12864,12 @@ snapshots:
 
   axobject-query@4.1.0: {}
 
-  babel-loader@9.2.1(@babel/core@7.29.7)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  babel-loader@9.2.1(@babel/core@7.29.7)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       '@babel/core': 7.29.7
       find-cache-dir: 4.0.0
       schema-utils: 4.3.3
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   babel-plugin-const-enum@1.2.0(@babel/core@7.29.7):
     dependencies:
@@ -13289,14 +13307,14 @@ snapshots:
     dependencies:
       is-what: 3.14.1
 
-  copy-webpack-plugin@14.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  copy-webpack-plugin@14.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       glob-parent: 6.0.2
       normalize-path: 3.0.0
       schema-utils: 4.3.3
       serialize-javascript: 7.0.6
       tinyglobby: 0.2.17
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   core-js-compat@3.49.0:
     dependencies:
@@ -13362,7 +13380,7 @@ snapshots:
 
   css-gradient-parser@0.0.17: {}
 
-  css-loader@6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  css-loader@6.11.0(@rspack/core@1.6.8(@swc/helpers@0.5.15))(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -13374,9 +13392,9 @@ snapshots:
       semver: 7.8.5
     optionalDependencies:
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
-  css-minimizer-webpack-plugin@8.0.0(lightningcss@1.32.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  css-minimizer-webpack-plugin@8.0.0(lightningcss@1.32.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       cssnano: 7.1.9(postcss@8.5.15)
@@ -13384,7 +13402,7 @@ snapshots:
       postcss: 8.5.15
       schema-utils: 4.3.3
       serialize-javascript: 7.0.6
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
     optionalDependencies:
       lightningcss: 1.32.0
 
@@ -14306,7 +14324,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -14321,7 +14339,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.3
       typescript: 5.9.3
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   form-data@4.0.5:
     dependencies:
@@ -14859,12 +14877,12 @@ snapshots:
 
   leaflet@1.7.1: {}
 
-  less-loader@12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  less-loader@12.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.15))(less@4.5.1)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       less: 4.5.1
     optionalDependencies:
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   less@4.5.1:
     dependencies:
@@ -14885,11 +14903,11 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  license-webpack-plugin@4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  license-webpack-plugin@4.0.2(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       webpack-sources: 3.5.0
     optionalDependencies:
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   lightningcss-android-arm64@1.32.0:
     optional: true
@@ -15163,10 +15181,10 @@ snapshots:
 
   mimic-function@5.0.1: {}
 
-  mini-css-extract-plugin@2.4.7(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  mini-css-extract-plugin@2.4.7(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       schema-utils: 4.3.3
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   minimatch@10.2.5:
     dependencies:
@@ -15248,6 +15266,8 @@ snapshots:
   mute-stream@2.0.0: {}
 
   nanoid@3.3.15: {}
+
+  nanoid@3.3.18: {}
 
   nanoid@5.1.16: {}
 
@@ -16016,7 +16036,7 @@ snapshots:
       read-cache: 1.0.0
       resolve: 1.22.12
 
-  postcss-loader@8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  postcss-loader@8.2.1(@rspack/core@1.6.8(@swc/helpers@0.5.15))(postcss@8.5.15)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       cosmiconfig: 9.0.2(typescript@5.9.3)
       jiti: 2.7.0
@@ -16024,7 +16044,7 @@ snapshots:
       semver: 7.8.5
     optionalDependencies:
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
     transitivePeerDependencies:
       - typescript
 
@@ -16190,6 +16210,12 @@ snapshots:
   postcss@8.5.15:
     dependencies:
       nanoid: 3.3.15
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.23:
+    dependencies:
+      nanoid: 3.3.18
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -16579,14 +16605,14 @@ snapshots:
       sass-embedded-win32-arm64: 1.100.0
       sass-embedded-win32-x64: 1.100.0
 
-  sass-loader@16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  sass-loader@16.0.8(@rspack/core@1.6.8(@swc/helpers@0.5.15))(sass-embedded@1.100.0)(sass@1.101.0)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
       '@rspack/core': 1.6.8(@swc/helpers@0.5.15)
       sass: 1.101.0
       sass-embedded: 1.100.0
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   sass@1.100.0:
     dependencies:
@@ -16901,11 +16927,11 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map-loader@5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  source-map-loader@5.0.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.1
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   source-map-support@0.5.19:
     dependencies:
@@ -16993,9 +17019,9 @@ snapshots:
 
   stubborn-utils@1.0.2: {}
 
-  style-loader@3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  style-loader@3.3.4(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   styled-jsx@5.1.6(react@19.2.7):
     dependencies:
@@ -17082,16 +17108,27 @@ snapshots:
       minizlib: 3.1.0
       yallist: 5.0.0
 
-  terser-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  terser-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
     optionalDependencies:
       lightningcss: 1.32.0
       postcss: 8.5.15
+
+  terser-webpack-plugin@5.6.1(lightningcss@1.32.0)(postcss@8.5.23)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.48.0
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
+    optionalDependencies:
+      lightningcss: 1.32.0
+      postcss: 8.5.23
 
   terser@5.48.0:
     dependencies:
@@ -17162,13 +17199,13 @@ snapshots:
     transitivePeerDependencies:
       - tslib
 
-  ts-loader@9.6.2(loader-utils@2.0.4)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  ts-loader@9.6.2(loader-utils@2.0.4)(typescript@5.9.3)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       chalk: 4.1.2
       picomatch: 4.0.4
       source-map: 0.7.6
       typescript: 5.9.3
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
     optionalDependencies:
       loader-utils: 2.0.4
 
@@ -17357,10 +17394,10 @@ snapshots:
 
   webpack-sources@3.5.0: {}
 
-  webpack-subresource-integrity@5.1.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15)):
+  webpack-subresource-integrity@5.1.0(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23)):
     dependencies:
       typed-assert: 1.0.9
-      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack: 5.105.2(lightningcss@1.32.0)(postcss@8.5.23)
 
   webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15):
     dependencies:
@@ -17386,7 +17423,48 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.15))
+      terser-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
+      watchpack: 2.5.2
+      webpack-sources: 3.5.0
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - lightningcss
+      - postcss
+      - uglify-js
+
+  webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.9
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.17.0
+      acorn-import-phases: 1.0.4(acorn@8.17.0)
+      browserslist: 4.28.4
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.24.1
+      es-module-lexer: 2.1.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.2
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.3
+      terser-webpack-plugin: 5.6.1(lightningcss@1.32.0)(postcss@8.5.23)(webpack@5.105.2(lightningcss@1.32.0)(postcss@8.5.23))
       watchpack: 2.5.2
       webpack-sources: 3.5.0
     transitivePeerDependencies:
