@@ -50,7 +50,7 @@ jobs:
     name: E2E tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: dafnik/setup-node-pnpm@v5
         with:
