@@ -16,16 +16,16 @@
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
   "engines": {
-    "node": "24.16.0"
+    "node": "24.19.0"
   },
-  "packageManager": "pnpm@11.6.0",
+  "packageManager": "pnpm@11.20.0",
   "private": true,
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "git-cliff": "2.13.1",
-    "prettier": "3.8.4",
+    "prettier": "3.9.6",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-sort-json": "4.2.0",
-    "prettier-plugin-tailwindcss": "0.8.0"
+    "prettier-plugin-tailwindcss": "0.8.1"
   }
 }
