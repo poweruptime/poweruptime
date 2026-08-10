@@ -42,7 +42,7 @@ export class HlmPaginationLink {
 
   constructor() {
     classes(() => [
-      '',
+      'relative',
       buttonVariants({
         variant: this.isActive() ? 'outline' : 'ghost',
         size: this.size(),

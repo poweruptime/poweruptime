@@ -8,7 +8,6 @@ import {
   numberAttribute,
   untracked,
 } from '@angular/core';
-import {FormsModule} from '@angular/forms';
 
 import type {BooleanInput, NumberInput} from '@angular/cdk/coercion';
 
@@ -25,7 +24,6 @@ import {HlmPaginationPrevious} from './hlm-pagination-previous';
 @Component({
   selector: 'hlm-numbered-pagination',
   imports: [
-    FormsModule,
     HlmPagination,
     HlmPaginationContent,
     HlmPaginationItem,
@@ -77,7 +75,7 @@ import {HlmPaginationPrevious} from './hlm-pagination-previous';
       </nav>
 
       <!-- Show Page Size selector -->
-      <hlm-select class="ml-auto" [(ngModel)]="itemsPerPage">
+      <hlm-select class="ml-auto" [(value)]="itemsPerPage">
         <hlm-select-trigger class="w-fit">
           <hlm-select-value />
         </hlm-select-trigger>

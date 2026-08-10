@@ -5,7 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 import {VariantProps, cva} from 'class-variance-authority';
 
 const fieldVariants = cva(
-  'group/field data-[matches-spartan-invalid=true]:text-destructive flex w-full gap-3',
+  'data-[matches-spartan-invalid=true]:text-destructive gap-3 group/field flex w-full',
   {
     variants: {
       orientation: {

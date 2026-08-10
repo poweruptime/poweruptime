@@ -2,7 +2,6 @@ import {Directive, EffectRef, OnDestroy, effect, inject, input} from '@angular/c
 
 import {BrnFieldA11yService} from '@spartan-ng/brain/field';
 import {classes} from '@spartan-ng/helm/utils';
-import type {ClassValue} from 'clsx';
 
 @Directive({
   selector: '[hlmFieldDescription],hlm-field-description',
@@ -16,7 +15,6 @@ export class HlmFieldDescription implements OnDestroy {
 
   private readonly _a11y = inject(BrnFieldA11yService, {optional: true, host: true});
 
-  public readonly userClass = input<ClassValue>('', {alias: 'class'});
   public readonly id = input<string>(`hlm-field-description-${HlmFieldDescription._id++}`);
 
   private _registeredId?: string;
@@ -40,10 +38,9 @@ export class HlmFieldDescription implements OnDestroy {
 
   constructor() {
     classes(() => [
-      'text-muted-foreground text-sm leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance',
-      'last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5',
+      'text-muted-foreground text-start text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance',
+      'last:mt-0 nth-last-2:-mt-1',
       '[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4',
-      this.userClass(),
     ]);
   }
 

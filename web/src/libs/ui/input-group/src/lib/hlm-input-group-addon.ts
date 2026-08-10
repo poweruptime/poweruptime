@@ -4,7 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 import {type VariantProps, cva} from 'class-variance-authority';
 
 const inputGroupAddonVariants = cva(
-  "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>ng-icon:not([class*='text-'])]:text-[calc(var(--spacing)*4)] flex cursor-text items-center justify-center select-none",
+  "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] flex cursor-text items-center justify-center select-none",
   {
     variants: {
       align: {

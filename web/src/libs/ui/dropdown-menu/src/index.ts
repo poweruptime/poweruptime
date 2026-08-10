@@ -10,11 +10,13 @@ import {HlmDropdownMenuRadioIndicator} from './lib/hlm-dropdown-menu-radio-indic
 import {HlmDropdownMenuSeparator} from './lib/hlm-dropdown-menu-separator';
 import {HlmDropdownMenuShortcut} from './lib/hlm-dropdown-menu-shortcut';
 import {HlmDropdownMenuSub} from './lib/hlm-dropdown-menu-sub';
+import {HlmDropdownMenuSubTrigger} from './lib/hlm-dropdown-menu-sub-trigger';
 import {HlmDropdownMenuTrigger} from './lib/hlm-dropdown-menu-trigger';
 
 export * from './lib/hlm-dropdown-menu';
 export * from './lib/hlm-dropdown-menu-checkbox';
 export * from './lib/hlm-dropdown-menu-checkbox-indicator';
+export * from './lib/hlm-dropdown-menu-focus-on-hover';
 export * from './lib/hlm-dropdown-menu-group';
 export * from './lib/hlm-dropdown-menu-item';
 export * from './lib/hlm-dropdown-menu-item-sub-indicator';
@@ -24,6 +26,7 @@ export * from './lib/hlm-dropdown-menu-radio-indicator';
 export * from './lib/hlm-dropdown-menu-separator';
 export * from './lib/hlm-dropdown-menu-shortcut';
 export * from './lib/hlm-dropdown-menu-sub';
+export * from './lib/hlm-dropdown-menu-sub-trigger';
 export * from './lib/hlm-dropdown-menu-token';
 export * from './lib/hlm-dropdown-menu-trigger';
 
@@ -40,5 +43,6 @@ export const HlmDropdownMenuImports = [
   HlmDropdownMenuSeparator,
   HlmDropdownMenuShortcut,
   HlmDropdownMenuSub,
+  HlmDropdownMenuSubTrigger,
   HlmDropdownMenuTrigger,
 ] as const;

@@ -6,12 +6,13 @@ import {classes} from '@spartan-ng/helm/utils';
 @Directive({
   selector: '[hlmAlertDialogTitle]',
   hostDirectives: [BrnAlertDialogTitle],
-  host: {
-    'data-slot': 'alert-dialog-title',
-  },
+  host: {'data-slot': 'alert-dialog-title'},
 })
 export class HlmAlertDialogTitle {
   constructor() {
-    classes(() => 'text-lg font-semibold');
+    classes(
+      () =>
+        'text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2',
+    );
   }
 }

@@ -55,7 +55,7 @@ import {NotificationsEmpty} from './notifications-empty';
 
           <hlm-date-range-picker
             class="w-full lg:max-w-52"
-            [max]="max"
+            [maxDate]="max"
             [autoCloseOnEndSelection]="true"
             [formatDates]="formatDates"
             [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"

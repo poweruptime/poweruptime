@@ -55,7 +55,7 @@ import {PingChart} from './ping-chart';
 
         <hlm-date-range-picker
           class="max-w-52"
-          [max]="max"
+          [maxDate]="max"
           [autoCloseOnEndSelection]="true"
           [formatDates]="formatDates"
           [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"

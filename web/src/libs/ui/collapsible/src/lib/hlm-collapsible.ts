@@ -11,8 +11,6 @@ import {BrnCollapsible} from '@spartan-ng/brain/collapsible';
       outputs: ['expandedChange'],
     },
   ],
-  host: {
-    'data-slot': 'collapsible',
-  },
+  host: {'data-slot': 'collapsible'},
 })
 export class HlmCollapsible {}

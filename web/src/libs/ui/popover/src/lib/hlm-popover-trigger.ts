@@ -10,8 +10,6 @@ import {BrnPopoverTrigger} from '@spartan-ng/brain/popover';
       inputs: ['id', 'brnPopoverTriggerFor: hlmPopoverTriggerFor', 'type'],
     },
   ],
-  host: {
-    'data-slot': 'popover-trigger',
-  },
+  host: {'data-slot': 'popover-trigger'},
 })
 export class HlmPopoverTrigger {}

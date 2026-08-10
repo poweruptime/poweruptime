@@ -11,6 +11,6 @@ import {classes} from '@spartan-ng/helm/utils';
 })
 export class HlmSidebarFooter {
   constructor() {
-    classes(() => 'flex flex-col gap-2 p-2');
+    classes(() => 'gap-2 p-2 flex flex-col');
   }
 }
