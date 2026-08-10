@@ -24,7 +24,7 @@ services:
 
   poweruptime-rabbitmq:
     container_name: poweruptime-rabbitmq
-    image: rabbitmq:4.3.1-management
+    image: rabbitmq:4.3.4-management
     restart: unless-stopped
     volumes:
       - rabbit:/var/lib/rabbitmq
@@ -45,7 +45,7 @@ services:
 
   poweruptime-apprise:
     container_name: poweruptime-apprise
-    image: caronc/apprise:v1.5.0
+    image: caronc/apprise:v1.5.1
     restart: unless-stopped
     user: '${UID}:${GID}'
     environment:
