@@ -39,7 +39,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
 
     // NanoID
-    implementation("io.viascom.nanoid:nanoid:1.0.1")
+    implementation("io.viascom.nanoid:nanoid:2.0.1")
 
     // DNS Checker lib
     implementation("dnsjava:dnsjava:3.6.5")
