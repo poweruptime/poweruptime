@@ -16,7 +16,7 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: dafnik/setup-node-pnpm@v5
         with:
@@ -47,7 +47,7 @@ jobs:
   build-backend:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Required for gradle license report
       - uses: dafnik/setup-node-pnpm@v5
@@ -78,7 +78,7 @@ jobs:
     needs: [build-backend, build-web]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download backend files
         if: contains(matrix.containers, 'backend')
@@ -160,7 +160,7 @@ jobs:
     needs: [build-publish-docker]
     container: pandoc/latex
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Pushes to docker-compose repository on main branch
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
@@ -182,7 +182,7 @@ jobs:
     needs: [mirror-infra-beta]
     steps:
       - name: Check out docker-compose repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: poweruptime/docker-compose
           ref: beta
@@ -204,7 +204,7 @@ jobs:
     if: contains(github.ref_name, 'beta')
     needs: [mirror-infra-beta]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -226,7 +226,7 @@ jobs:
     needs: [build-publish-docker]
     container: pandoc/latex
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Pushes to docker-compose repository on main branch
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
@@ -248,7 +248,7 @@ jobs:
     needs: [mirror-infra]
     steps:
       - name: Check out docker-compose repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: poweruptime/docker-compose
           ref: main
@@ -270,7 +270,7 @@ jobs:
     if: "!contains(github.ref_name, 'beta')"
     needs: [mirror-infra]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
