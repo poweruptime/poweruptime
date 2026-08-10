@@ -85,7 +85,7 @@ export class NotificationMethodSelector implements ControlValueAccessor {
   protected itemToString = (method: BackendType['NotificationMethodMinResponse']) => method.name;
   protected isItemEqualToValue = (
     itemValue: BackendType['NotificationMethodMinResponse'],
-    selectedValue: BackendType['NotificationMethodMinResponse'] | null,
+    selectedValue: BackendType['NotificationMethodMinResponse'] | undefined | null,
   ) => itemValue.id === selectedValue?.id;
 
   protected readonly showStatus = computed(

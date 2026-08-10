@@ -6,7 +6,6 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
@@ -99,7 +98,7 @@ import {CheckResultsEmpty} from './check-results-empty';
 
           <hlm-date-range-picker
             class="w-full lg:max-w-52"
-            [max]="max"
+            [maxDate]="max"
             [autoCloseOnEndSelection]="true"
             [formatDates]="formatDates"
             [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
@@ -141,7 +140,7 @@ export class CheckResultList {
   protected readonly tableKey = 'checks';
   protected readonly max = new Date();
   protected readonly toBackendDate = toBackendDate;
-  protected readonly formatDates = (dates: [Date | undefined, Date | undefined]) =>
+  protected readonly formatDates = (dates: [Date | null, Date | null]) =>
     dates
       .filter((it) => !!it)
       .map((it) => format(it, 'dd.M.yyyy'))

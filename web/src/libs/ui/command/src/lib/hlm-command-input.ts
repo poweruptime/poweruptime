@@ -11,9 +11,12 @@ import {classes} from '@spartan-ng/helm/utils';
   imports: [HlmInputGroupImports, NgIcon, BrnCommandInput],
   providers: [provideIcons({lucideSearch})],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    'data-slot': 'command-input-wrapper',
+  },
   template: `
     <hlm-input-group
-      class="bg-input/30 border-input/30 h-8 rounded-lg shadow-none *:data-[slot=input-group-addon]:pl-2">
+      class="bg-input/30 border-input/30 h-8! rounded-lg! shadow-none! *:data-[slot=input-group-addon]:pl-2!">
       <input
         class="w-full text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
         [id]="inputId()"
@@ -22,7 +25,7 @@ import {classes} from '@spartan-ng/helm/utils';
         data-slot="command-input" />
 
       <hlm-input-group-addon>
-        <ng-icon name="lucideSearch" />
+        <ng-icon class="shrink-0 text-[length:--spacing(4)] opacity-50" name="lucideSearch" />
       </hlm-input-group-addon>
     </hlm-input-group>
   `,

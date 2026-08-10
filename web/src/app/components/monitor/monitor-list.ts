@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angu
 import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';

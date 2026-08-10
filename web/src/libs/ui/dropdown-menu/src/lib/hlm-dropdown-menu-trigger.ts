@@ -1,14 +1,14 @@
-import {Directive, computed, effect, inject, input} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {Directive, computed, effect, forwardRef, inject, input} from '@angular/core';
 
 import {CdkMenuTrigger} from '@angular/cdk/menu';
 
-import {type MenuAlign, type MenuSide, createMenuPosition} from '@spartan-ng/brain/core';
+import {MENU_SIDE, type MenuAlign, type MenuSide, createMenuPosition} from '@spartan-ng/brain/core';
 
 import {injectHlmDropdownMenuConfig} from './hlm-dropdown-menu-token';
 
 @Directive({
   selector: '[hlmDropdownMenuTrigger]',
+  providers: [{provide: MENU_SIDE, useExisting: forwardRef(() => HlmDropdownMenuTrigger)}],
   hostDirectives: [
     {
       directive: CdkMenuTrigger,
@@ -19,9 +19,7 @@ import {injectHlmDropdownMenuConfig} from './hlm-dropdown-menu-token';
       outputs: ['cdkMenuOpened: hlmDropdownMenuOpened', 'cdkMenuClosed: hlmDropdownMenuClosed'],
     },
   ],
-  host: {
-    'data-slot': 'dropdown-menu-trigger',
-  },
+  host: {'data-slot': 'dropdown-menu-trigger'},
 })
 export class HlmDropdownMenuTrigger {
   private readonly _cdkTrigger = inject(CdkMenuTrigger, {host: true});
@@ -33,17 +31,11 @@ export class HlmDropdownMenuTrigger {
   private readonly _menuPosition = computed(() => createMenuPosition(this.align(), this.side()));
 
   constructor() {
-    // once the trigger opens we wait until the next tick and then grab the last position
-    // used to position the menu. we store this in our trigger which the brnMenu directive has
-    // access to through DI
-    this._cdkTrigger.opened.pipe(takeUntilDestroyed()).subscribe(() =>
-      setTimeout(
-        () =>
-          // eslint-disable-next-line
-          ((this._cdkTrigger as any)._spartanLastPosition = // eslint-disable-next-line
-            (this._cdkTrigger as any).overlayRef._positionStrategy._lastPosition),
-      ),
-    );
+    // CDK sets transform-origin on the menu content from the resolved position; the content reads it to
+    // animate from the anchored corner and to derive its data-side. Cast tolerates @angular/cdk < 21.2
+    // (we still support >=21.0), where the property is absent and the assignment is a harmless no-op.
+    (this._cdkTrigger as {transformOriginSelector?: string}).transformOriginSelector =
+      '[data-slot="dropdown-menu"]';
 
     effect(() => {
       this._cdkTrigger.menuPosition = this._menuPosition();

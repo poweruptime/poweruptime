@@ -10,6 +10,7 @@ import {classes} from '@spartan-ng/helm/utils';
     {directive: BrnInput, inputs: ['id', 'forceInvalid']},
     BrnFieldControlDescribedBy,
   ],
+  host: {'data-slot': 'input'},
 })
 export class HlmInput {
   constructor() {

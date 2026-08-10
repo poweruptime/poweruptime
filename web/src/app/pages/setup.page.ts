@@ -146,7 +146,7 @@ import {SetupStore} from '@app/services';
                 <brn-input-otp
                   id="email-test-code-input"
                   hlmInputOtp
-                  maxLength="6"
+                  length="6"
                   formControlName="code"
                   inputClass="disabled:cursor-not-allowed">
                   <div hlmInputOtpGroup>

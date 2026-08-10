@@ -15,7 +15,6 @@ import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
 import {HlmIconImports} from '@spartan-ng/helm/icon';

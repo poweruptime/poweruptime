@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmBreadCrumbImports} from '@spartan-ng/helm/breadcrumb';
+import {HlmBreadcrumbImports} from '@spartan-ng/helm/breadcrumb';
 import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 
@@ -60,7 +60,7 @@ import {VersionCheckBadge} from './version-check-badge';
   imports: [
     HlmSidebarImports,
     HlmSeparatorImports,
-    HlmBreadCrumbImports,
+    HlmBreadcrumbImports,
     TranslocoPipe,
     VersionCheckBadge,
     ChangelogBadge,

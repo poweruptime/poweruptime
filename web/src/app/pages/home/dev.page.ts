@@ -3,7 +3,6 @@ import {ChangeDetectionStrategy, Component, DOCUMENT, inject} from '@angular/cor
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
-import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmInputImports} from '@spartan-ng/helm/input';

@@ -53,7 +53,7 @@ import {CopyIconButton} from '../../copy-icon-button';
           <span>{{ 'mfa.confirm.label' | transloco }}</span>
           <brn-input-otp
             hlmInputOtp
-            maxLength="6"
+            length="6"
             formControlName="code"
             inputClass="disabled:cursor-not-allowed">
             <div hlmInputOtpGroup>

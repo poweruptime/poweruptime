@@ -83,7 +83,7 @@ export class MonitorSelector implements ControlValueAccessor {
   protected itemToString = (it: BackendType['MonitorMinResponse']) => it.name;
   protected isItemEqualToValue = (
     itemValue: BackendType['MonitorMinResponse'],
-    selectedValue: BackendType['MonitorMinResponse'] | null,
+    selectedValue: BackendType['MonitorMinResponse'] | null | undefined,
   ) => itemValue.id === selectedValue?.id;
 
   protected readonly showStatus = computed(

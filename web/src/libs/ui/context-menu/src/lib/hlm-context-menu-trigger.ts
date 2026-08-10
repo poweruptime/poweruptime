@@ -1,15 +1,24 @@
-import {Directive, booleanAttribute, computed, effect, inject, input} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {
+  Directive,
+  booleanAttribute,
+  computed,
+  effect,
+  forwardRef,
+  inject,
+  input,
+} from '@angular/core';
 
 import {type BooleanInput} from '@angular/cdk/coercion';
 import {CdkContextMenuTrigger} from '@angular/cdk/menu';
 
-import {type MenuAlign, type MenuSide, createMenuPosition} from '@spartan-ng/brain/core';
+import {MENU_SIDE, type MenuAlign, type MenuSide, createMenuPosition} from '@spartan-ng/brain/core';
+import {classes} from '@spartan-ng/helm/utils';
 
 import {injectHlmContextMenuConfig} from './hlm-context-menu-token';
 
 @Directive({
   selector: '[hlmContextMenuTrigger]',
+  providers: [{provide: MENU_SIDE, useExisting: forwardRef(() => HlmContextMenuTrigger)}],
   hostDirectives: [
     {
       directive: CdkContextMenuTrigger,
@@ -43,20 +52,17 @@ export class HlmContextMenuTrigger {
   private readonly _menuPosition = computed(() => createMenuPosition(this.align(), this.side()));
 
   constructor() {
-    // once the trigger opens we wait until the next tick and then grab the last position
-    // used to position the menu. we store this in our trigger which the brnMenu directive has
-    // access to through DI
-    this._cdkTrigger.opened.pipe(takeUntilDestroyed()).subscribe(() =>
-      setTimeout(
-        () =>
-          // eslint-disable-next-line
-          ((this._cdkTrigger as any)._spartanLastPosition = // eslint-disable-next-line
-            (this._cdkTrigger as any).overlayRef._positionStrategy._lastPosition),
-      ),
-    );
+    // CDK sets transform-origin on the menu content (a shared hlm-dropdown-menu) from the resolved
+    // position; the content reads it to animate from the anchored corner and to derive its data-side.
+    // Cast tolerates @angular/cdk < 21.2 (we still support >=21.0), where the property is absent and
+    // the assignment is a harmless no-op.
+    (this._cdkTrigger as {transformOriginSelector?: string}).transformOriginSelector =
+      '[data-slot="dropdown-menu"]';
 
     effect(() => {
       this._cdkTrigger.menuPosition = this._menuPosition();
     });
+
+    classes(() => 'select-none');
   }
 }

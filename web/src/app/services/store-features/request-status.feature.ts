@@ -3,10 +3,7 @@ import {computed} from '@angular/core';
 import {signalStoreFeature, withComputed, withState} from '@ngrx/signals';
 
 export type RequestStatus =
-  | 'idle'
-  | 'pending'
-  | 'fulfilled'
-  | {codeName?: string; httpCode: number; message?: string};
+  'idle' | 'pending' | 'fulfilled' | {codeName?: string; httpCode: number; message?: string};
 export interface RequestStatusState {
   requestStatus: RequestStatus;
 }

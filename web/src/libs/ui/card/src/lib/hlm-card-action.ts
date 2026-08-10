@@ -4,9 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmCardAction]',
-  host: {
-    'data-slot': 'card-action',
-  },
+  host: {'data-slot': 'card-action'},
 })
 export class HlmCardAction {
   constructor() {

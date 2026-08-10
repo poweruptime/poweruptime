@@ -34,8 +34,7 @@ import {Tag} from '@app/directives';
           class="w-full"
           [(value)]="tagInput"
           [(search)]="searchTag"
-          [disabled]="disabled"
-          [restoreFocus]="false">
+          [disabled]="disabled">
           <hlm-autocomplete-input
             class="w-full"
             [placeholder]="'tag.selector.selected' | transloco"

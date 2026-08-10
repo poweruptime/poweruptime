@@ -9,7 +9,6 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {distinctUntilChanged} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';

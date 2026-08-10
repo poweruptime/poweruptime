@@ -13,8 +13,6 @@ import {
 import type {Highlightable} from '@angular/cdk/a11y';
 import type {BooleanInput} from '@angular/cdk/coercion';
 
-import {stringifyAsLabel} from '@spartan-ng/brain/core';
-
 import {provideBrnMentionItem} from './brn-mention-item.token';
 import {injectBrnMentionBase} from './brn-mention.token';
 
@@ -27,7 +25,7 @@ import {injectBrnMentionBase} from './brn-mention.token';
     '[attr.data-highlighted]': '_highlighted() ? "" : null',
     '[attr.data-value]': 'value()',
     '[attr.aria-selected]': 'active()',
-    '[attr.aria-disabled]': '_disabled()',
+    '[attr.data-disabled]': '_disabled() ? "" : null',
     '(click)': 'select()',
     '(mouseenter)': 'activate()',
   },
