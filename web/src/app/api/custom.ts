@@ -62,26 +62,11 @@ export const NOTIFICATION_METHOD_SENDER_DATA_TYPES = [
 ] satisfies {value: BackendType['NotificationMethodData']['_type']; label: string}[];
 
 export type HttpMonitorDataMethod =
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'PATCH'
-  | 'DELETE'
-  | 'HEAD'
-  | 'OPTIONS';
+  'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 export type HttpMonitorDataContentType = 'JSON' | 'XML';
 
 export type DnsMonitorDataType =
-  | 'A'
-  | 'AAAA'
-  | 'CAA'
-  | 'CNAME'
-  | 'MX'
-  | 'NS'
-  | 'PTR'
-  | 'SOA'
-  | 'SRV'
-  | 'TXT';
+  'A' | 'AAAA' | 'CAA' | 'CNAME' | 'MX' | 'NS' | 'PTR' | 'SOA' | 'SRV' | 'TXT';
 
 export interface PushDto {
   type: 'CHECK_RESULT' | 'MONITOR' | 'NOTIFICATION';
