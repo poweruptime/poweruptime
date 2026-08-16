@@ -24,11 +24,11 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.2.0")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.2.2")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.2")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
@@ -49,12 +49,12 @@ dependencies {
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:3.0.0")
-    implementation("commons-codec:commons-codec:1.22.0")
+    implementation("commons-codec:commons-codec:1.22.1")
 
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     // HTML to Mrkdown (Slack) Converter
-    implementation("org.jsoup:jsoup:1.22.2")
+    implementation("org.jsoup:jsoup:1.23.1")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -63,11 +63,11 @@ dependencies {
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.3")
-    runtimeOnly("org.postgresql:postgresql:42.7.12")
+    runtimeOnly("org.postgresql:postgresql:42.7.13")
 
     implementation("com.zaxxer:HikariCP:7.1.0")
 
-    val exposedVersion = "1.3.0"
+    val exposedVersion = "1.4.0"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
@@ -102,7 +102,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:2.0.13")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
@@ -119,7 +119,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.4")
     testImplementation("org.testcontainers:rabbitmq:1.21.4")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.9")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.12")
 }
 
 tasks.withType<Test> {
