@@ -21,7 +21,7 @@ repositories {
 }
 
 plugins {
-    id("org.springframework.boot") version "4.1.0" apply false
+    id("org.springframework.boot") version "4.1.1" apply false
     id("io.spring.dependency-management") version "1.1.7"
 
     id("dev.detekt") version "2.0.0-alpha.6"
@@ -80,7 +80,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.2")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.3")
         }
     }
 }
