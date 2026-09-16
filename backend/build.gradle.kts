@@ -54,7 +54,7 @@ dependencies {
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     // HTML to Mrkdown (Slack) Converter
-    implementation("org.jsoup:jsoup:1.23.1")
+    implementation("org.jsoup:jsoup:1.23.2")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -62,12 +62,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Database stuff
-    implementation("org.liquibase:liquibase-core:5.0.3")
+    implementation("org.liquibase:liquibase-core:5.0.4")
     runtimeOnly("org.postgresql:postgresql:42.7.13")
 
     implementation("com.zaxxer:HikariCP:7.1.0")
 
-    val exposedVersion = "1.4.0"
+    val exposedVersion = "1.5.0"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
@@ -102,7 +102,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:2.0.13")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
@@ -119,7 +119,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.4")
     testImplementation("org.testcontainers:rabbitmq:1.21.4")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.12")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.13")
 }
 
 tasks.withType<Test> {
