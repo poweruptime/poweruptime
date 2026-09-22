@@ -63,7 +63,7 @@
     "ngxtension": "7.3.0",
     "rxjs": "7.8.2",
     "sanitize-html": "^2.17.4",
-    "satori": "0.33.4",
+    "satori": "0.32.0",
     "satori-html": "0.3.2",
     "sharp": "0.35.4",
     "tailwind-merge": "3.7.0",
