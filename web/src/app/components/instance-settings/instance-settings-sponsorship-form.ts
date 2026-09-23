@@ -104,7 +104,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                     type="text"
                     placeholder="GitHubUser1234" />
                   <div hlmInputGroupAddon>
-                    <ng-icon hlm size="sm" name="lucideGithub" />
+                    <ng-icon hlm size="sm" name="bootstrapGithub" />
                   </div>
                 </div>
                 @let supportLookup = form.controls.supportLookup.errors;
