@@ -74,7 +74,7 @@ export class HlmRowDef<T> extends CdkRowDef<T> {}
   hostDirectives: [HlmTh],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'hlmHeaderRow',
   providers: [{provide: CdkHeaderRow, useExisting: HlmHeaderRow}],
@@ -92,7 +92,7 @@ export class HlmHeaderRow extends CdkHeaderRow {}
   hostDirectives: [HlmTr],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'hlmFooterRow',
   providers: [{provide: CdkFooterRow, useExisting: HlmFooterRow}],
@@ -110,7 +110,7 @@ export class HlmFooterRow extends CdkFooterRow {}
   hostDirectives: [HlmTr],
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
   // tslint:disable-next-line:validate-decorators
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'hlmRow',
   providers: [{provide: CdkRow, useExisting: HlmRow}],
