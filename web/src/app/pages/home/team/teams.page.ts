@@ -48,6 +48,7 @@ import {TailwindBreakpoints} from '@app/services/util';
       </div>
     </div>
     <cdk-virtual-scroll-viewport
+      class="scroll-fade no-scrollbar overflow-x-hidden"
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
       maxBufferPx="1500"
@@ -71,14 +72,6 @@ import {TailwindBreakpoints} from '@app/services/util';
   styles: `
     cdk-virtual-scroll-viewport {
       height: 90vh;
-      overflow-x: hidden;
-
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-
-      &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Edge */
-      }
     }
   `,
   providers: [SelectedTeamStore],

@@ -27,6 +27,7 @@ import {MonitorCard} from './monitor-card';
 @Component({
   template: `
     <cdk-virtual-scroll-viewport
+      class="scroll-fade no-scrollbar h-full"
       (scrolledIndexChange)="triggerNextPage()"
       minBufferPx="1500"
       maxBufferPx="1500"
@@ -58,18 +59,8 @@ import {MonitorCard} from './monitor-card';
     }
 
     cdk-virtual-scroll-viewport {
-      min-height: 100%;
-      height: 100%;
-
       width: 21rem;
       min-width: 21rem;
-
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-
-      &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Edge */
-      }
 
       pu-monitor-card {
         display: block;

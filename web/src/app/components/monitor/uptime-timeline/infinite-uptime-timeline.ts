@@ -25,7 +25,7 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     @let _link = link();
     @let _hideLabel = hideLabel();
     <cdk-virtual-scroll-viewport
-      class="uptime-timeline-viewport"
+      class="uptime-timeline-viewport scroll-fade-x w-full overflow-y-hidden"
       [class.h-22]="_size === 3 && !_hideLabel"
       [class.h-16]="(_size === 2 && !_hideLabel) || (_size === 3 && _hideLabel)"
       [class.h-10]="_size === 2 && _hideLabel"
@@ -76,9 +76,6 @@ import {UptimeTimelineEntry} from './uptime-timeline-entry';
     @reference "#styles.css";
 
     .uptime-timeline-viewport {
-      width: 100%;
-
-      overflow-y: hidden;
       scroll-snap-type: y mandatory;
       scroll-behavior: smooth;
     }
