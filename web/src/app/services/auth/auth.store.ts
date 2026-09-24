@@ -135,8 +135,8 @@ export const AuthStore = signalStore(
 
                 void router.navigateByUrl(store.redirectUrl() ?? '/');
               },
-              error: ({error}) => {
-                if (error?.codeName === 'PASSWORD_CHANGE_REQUIRED') {
+              error: (error: any) => {
+                if (error?.error?.codeName === 'PASSWORD_CHANGE_REQUIRED') {
                   patchState(store, {
                     error: 'NONE' as const,
                     enteredPassword: body.password,
@@ -186,8 +186,8 @@ export const AuthStore = signalStore(
 
                 void router.navigateByUrl(store.redirectUrl() ?? '/');
               },
-              error: ({error}) => {
-                if (error?.codeName === 'NO_PASSWORD_CHANGE_REQUIRED') {
+              error: (error: any) => {
+                if (error?.error?.codeName === 'NO_PASSWORD_CHANGE_REQUIRED') {
                   void router.navigate(['', 'auth', 'login'], {
                     queryParams: {
                       email: body.email,
@@ -199,7 +199,7 @@ export const AuthStore = signalStore(
                   return;
                 }
 
-                if (error?.codeName === 'PASSWORDS_IDENTICAL') {
+                if (error?.error?.codeName === 'PASSWORDS_IDENTICAL') {
                   patchState(store, {
                     error: 'PASSWORDS_IDENTICAL' as const,
                   });

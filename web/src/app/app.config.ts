@@ -1,11 +1,7 @@
-import {HttpClient, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withInterceptors} from '@angular/common/http';
 import {ApplicationConfig, LOCALE_ID, inject, isDevMode} from '@angular/core';
-import {
-  provideClientHydration,
-  withEventReplay,
-  withIncrementalHydration,
-} from '@angular/platform-browser';
-import {provideRouter, withComponentInputBinding, withRouterConfig} from '@angular/router';
+import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
 import {provideNgxMetaOpenGraph} from '@davidlj95/ngx-meta/open-graph';
@@ -39,15 +35,10 @@ import {provideTransferableLocalStorageImpl} from './util/transferable-localstor
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(
-      ROUTES,
-      withComponentInputBinding(),
-      withRouterConfig({paramsInheritanceStrategy: 'always'}),
-    ),
+    provideRouter(ROUTES, withComponentInputBinding()),
     provideTransferableLocalStorageImpl(),
-    provideClientHydration(withEventReplay(), withIncrementalHydration()),
+    provideClientHydration(withEventReplay()),
     provideHttpClient(
-      withFetch(),
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
     provideTheme(withThemeStorage({key: 'pu_theme'})),

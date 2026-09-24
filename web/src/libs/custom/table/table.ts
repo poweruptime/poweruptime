@@ -53,7 +53,7 @@ import {HlmTBody, HlmTFoot, HlmTHead, HlmTable} from '@spartan-ng/helm/table';
   hostDirectives: [HlmTable],
   encapsulation: ViewEncapsulation.None,
   // See note on CdkTable for explanation on why this uses the default change detection strategy.
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     HeaderRowOutlet,
     DataRowOutlet,
