@@ -18,12 +18,13 @@ import {
   lucideTriangleAlert,
 } from '@ng-icons/lucide';
 import {BrnSonnerImports, type ToasterProps} from '@spartan-ng/brain/sonner';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {hlm} from '@spartan-ng/helm/utils';
 import type {ClassValue} from 'clsx';
 
 @Component({
   selector: 'hlm-toaster',
-  imports: [BrnSonnerImports, NgIcon],
+  imports: [BrnSonnerImports, HlmButtonImports, NgIcon],
   providers: [
     provideIcons({
       lucideCircleCheck,
@@ -66,6 +67,23 @@ import type {ClassValue} from 'clsx';
       <ng-template #warningIcon>
         <ng-icon class="overflow-visible! text-base" name="lucideTriangleAlert" />
       </ng-template>
+      <button
+        *brnToastAction="let action; let toast = toast"
+        [style]="toast.actionButtonStyle"
+        (click)="action.onClick($event)"
+        hlmBtn
+        size="sm">
+        {{ action.label }}
+      </button>
+      <button
+        *brnToastCancelAction="let cancel; let toast = toast"
+        [style]="toast.cancelButtonStyle"
+        (click)="cancel.onClick($event)"
+        hlmBtn
+        size="sm"
+        variant="secondary">
+        {{ cancel.label }}
+      </button>
     </brn-sonner-toaster>
   `,
 })

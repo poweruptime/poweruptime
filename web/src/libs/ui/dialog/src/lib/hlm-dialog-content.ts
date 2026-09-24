@@ -23,6 +23,7 @@ type HlmDialogContentContext = {
   $component?: ComponentType<unknown>;
   $dynamicComponentClass?: string;
   $showCloseButton?: boolean;
+  $closeLabel?: string;
 };
 
 @Component({
@@ -43,7 +44,7 @@ type HlmDialogContentContext = {
 
     @if (showCloseButton()) {
       <button class="absolute end-4 top-4" hlmBtn variant="ghost" size="icon-sm" hlmDialogClose>
-        <span class="sr-only">close</span>
+        <span class="sr-only">{{ closeLabel() }}</span>
         <ng-icon name="lucideX" />
       </button>
     }
@@ -61,6 +62,7 @@ export class HlmDialogContent {
       transform: booleanAttribute,
     },
   );
+  public readonly closeLabel = input<string>(this._dialogContext?.$closeLabel ?? 'Close');
 
   public readonly state = computed(() => this._dialogRef?.state() ?? 'closed');
 

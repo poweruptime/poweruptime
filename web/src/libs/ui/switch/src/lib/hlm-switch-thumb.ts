@@ -1,9 +1,11 @@
 import {Directive} from '@angular/core';
 
+import {BrnSwitchThumb} from '@spartan-ng/brain/switch';
 import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
-  selector: 'brn-switch-thumb[hlm],[hlmSwitchThumb]',
+  selector: '[hlmSwitchThumb],hlm-switch-thumb',
+  hostDirectives: [BrnSwitchThumb],
   host: {'data-slot': 'switch-thumb'},
 })
 export class HlmSwitchThumb {
