@@ -104,7 +104,7 @@ import {CheckResultsEmpty} from './check-results-empty';
             (dateChange)="
               start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
             ">
-            <hlm-date-picker-trigger buttonId="rangePicker">
+            <hlm-date-picker-trigger>
               {{ 'general.startEnd' | transloco }}
             </hlm-date-picker-trigger>
           </hlm-date-range-picker>
