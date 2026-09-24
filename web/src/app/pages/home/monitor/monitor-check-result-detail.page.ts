@@ -154,7 +154,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
               </div>
               <div hlmCardContent>
                 @for (logEntry of checkResultLogEntriesStore.notifications(); track logEntry.id) {
-                  @if (logEntry.properties?.['notificationId']; as notificationId) {
+                  @if (logEntry.properties['notificationId']; as notificationId) {
                     <a [routerLink]="'../../../n/' + notificationId">
                       <pu-check-result-log-entry
                         [logEntry]="logEntry"

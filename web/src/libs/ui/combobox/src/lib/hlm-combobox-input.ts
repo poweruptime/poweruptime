@@ -25,7 +25,7 @@ import {classes} from '@spartan-ng/helm/utils';
       [id]="inputId()"
       [placeholder]="placeholder()"
       [forceInvalid]="forceInvalid()"
-      [aria-invalid]="ariaInvalidOverride()"
+      [aria-invalid]="ariaInvalidInput()"
       brnComboboxInput
       brnComboboxPopoverTrigger
       hlmInputGroupInput />
@@ -79,7 +79,7 @@ export class HlmComboboxInput {
   public readonly clearAriaLabel = input<string>('Clear selection');
 
   /** Manual override for aria-invalid. When not set, auto-detects from the parent combobox error state. */
-  public readonly ariaInvalidOverride = input<boolean | undefined, BooleanInput>(undefined, {
+  public readonly ariaInvalidInput = input<boolean | undefined, BooleanInput>(undefined, {
     transform: (v: BooleanInput) => (v === '' || v === undefined ? undefined : booleanAttribute(v)),
     alias: 'aria-invalid',
   });

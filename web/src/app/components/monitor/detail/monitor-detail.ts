@@ -8,6 +8,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
 import {DfxCutPipe} from 'dfx-helper';
+import {RepeatPipe} from 'ngxtension/repeat-pipe';
 
 import {ChartPlaceholder, Heatmap} from '@app/components';
 import {
@@ -220,8 +221,23 @@ import {
           </div>
         </div>
       } @else {
-        <hlm-skeleton class="h-52 w-full" />
-        <hlm-skeleton class="h-52 w-full" />
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Uptime</h3>
+          <div
+            class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
+            @for (i of 12 | repeat; track i) {
+              <hlm-skeleton class="h-28 w-full" />
+            }
+          </div>
+        </div>
+        <div class="grid gap-4">
+          <h3 class="text-lg font-bold">Ping</h3>
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            @for (i of 5 | repeat; track i) {
+              <hlm-skeleton class="h-28 w-full" />
+            }
+          </div>
+        </div>
       }
 
       @defer (on idle) {
@@ -267,6 +283,7 @@ import {
     HlmCardImports,
     HlmBadgeImports,
     MonitorStatusTextBackground,
+    RepeatPipe,
   ],
 })
 export class MonitorDetail {

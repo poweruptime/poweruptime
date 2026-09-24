@@ -73,7 +73,7 @@ import {UptimeTimeline} from '../uptime-timeline';
 
         @if (!_isHovering && hasTags) {
           <div
-            class="badge-container flex gap-2 overflow-x-auto"
+            class="no-scrollbar scroll-fade-x flex gap-2 overflow-x-auto"
             style="max-width: 19.25rem; padding: 5px">
             @for (tag of _monitor.tags; track tag.name) {
               <span
@@ -138,15 +138,6 @@ import {UptimeTimeline} from '../uptime-timeline';
         </hlm-dropdown-menu-group>
       </hlm-dropdown-menu>
     </ng-template>
-  `,
-  styles: `
-    .badge-container {
-      -ms-overflow-style: none; /* Internet Explorer 10+ */
-      scrollbar-width: none; /* Firefox */
-    }
-    .badge-container::-webkit-scrollbar {
-      display: none; /* Safari and Chrome */
-    }
   `,
   selector: 'pu-monitor-card',
   changeDetection: ChangeDetectionStrategy.OnPush,

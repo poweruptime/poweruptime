@@ -22,6 +22,7 @@ import {classes} from '@spartan-ng/helm/utils';
       directive: BrnComboboxMultiple,
       inputs: [
         'autoHighlight',
+        'closeOnSelect',
         'disabled',
         'filter',
         'search',
@@ -34,7 +35,14 @@ import {classes} from '@spartan-ng/helm/utils';
     },
     {
       directive: BrnPopover,
-      inputs: ['align', 'closeOnOutsidePointerEvents', 'sideOffset', 'state', 'offsetX'],
+      inputs: [
+        'align',
+        'closeOnOutsidePointerEvents',
+        'sideOffset',
+        'state',
+        'offsetX',
+        'scrollStrategy',
+      ],
       outputs: ['stateChanged', 'closed'],
     },
   ],

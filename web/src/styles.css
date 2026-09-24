@@ -118,6 +118,8 @@ pu-copy-icon-button {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --chart-primary: #10b981;
 }
 
 :root.dark {
