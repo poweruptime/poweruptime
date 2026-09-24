@@ -36,6 +36,7 @@
       "@spartan-ng/helm/button-group": ["./src/libs/ui/button-group/src/index.ts"],
       "@spartan-ng/helm/calendar": ["./src/libs/ui/calendar/src/index.ts"],
       "@spartan-ng/helm/card": ["./src/libs/ui/card/src/index.ts"],
+      "@spartan-ng/helm/chart": ["./src/libs/ui/chart/src/index.ts"],
       "@spartan-ng/helm/checkbox": ["./src/libs/ui/checkbox/src/index.ts"],
       "@spartan-ng/helm/collapsible": ["./src/libs/ui/collapsible/src/index.ts"],
       "@spartan-ng/helm/combobox": ["./src/libs/ui/combobox/src/index.ts"],
