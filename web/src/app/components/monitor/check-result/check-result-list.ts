@@ -14,7 +14,6 @@ import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 import {HlmToggleGroupImports} from '@spartan-ng/helm/toggle-group';
-import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {format} from 'date-fns';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
@@ -104,9 +103,10 @@ import {CheckResultsEmpty} from './check-results-empty';
             [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
             (dateChange)="
               start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
-            "
-            buttonId="rangePicker">
-            <span>{{ 'general.startEnd' | transloco }}</span>
+            ">
+            <hlm-date-picker-trigger buttonId="rangePicker">
+              {{ 'general.startEnd' | transloco }}
+            </hlm-date-picker-trigger>
           </hlm-date-range-picker>
         </pu-table-filter>
 
@@ -128,7 +128,6 @@ import {CheckResultsEmpty} from './check-results-empty';
     HlmButtonImports,
     HlmButtonGroupImports,
     HlmToggleGroupImports,
-    HlmTooltipImports,
     HlmSelectImports,
     HlmDatePickerImports,
     TableFilter,

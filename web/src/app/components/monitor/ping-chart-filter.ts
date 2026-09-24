@@ -58,9 +58,10 @@ import {PingChart} from './ping-chart';
           [autoCloseOnEndSelection]="true"
           [formatDates]="formatDates"
           [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
-          (dateChange)="start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))"
-          buttonId="rangePicker">
-          <span>{{ 'general.startEnd' | transloco }}</span>
+          (dateChange)="start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))">
+          <hlm-date-picker-trigger buttonId="rangePicker">
+            {{ 'general.startEnd' | transloco }}
+          </hlm-date-picker-trigger>
         </hlm-date-range-picker>
       </pu-table-filter>
 

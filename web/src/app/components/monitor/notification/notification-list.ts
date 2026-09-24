@@ -6,7 +6,7 @@ import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
-import {HlmDateRangePicker} from '@spartan-ng/helm/date-picker';
+import {HlmDatePickerTrigger, HlmDateRangePicker} from '@spartan-ng/helm/date-picker';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {format} from 'date-fns';
 import {injectQueryParams} from 'ngxtension/inject-query-params';
@@ -60,9 +60,10 @@ import {NotificationsEmpty} from './notifications-empty';
             [date]="startDate() && endDate() ? [startDate()!, endDate()!] : undefined"
             (dateChange)="
               start.set(toBackendDate($event![0]!)); end.set(toBackendDate($event![1]!))
-            "
-            buttonId="rangePicker">
-            <span>{{ 'general.startEnd' | transloco }}</span>
+            ">
+            <hlm-date-picker-trigger buttonId="rangePicker">
+              {{ 'general.startEnd' | transloco }}
+            </hlm-date-picker-trigger>
           </hlm-date-range-picker>
         </pu-table-filter>
         <pu-notification-table [monitorId]="monitorId()" [teamId]="teamId()" />
@@ -82,6 +83,7 @@ import {NotificationsEmpty} from './notifications-empty';
     TableFilter,
     TitleCasePipe,
     SlicePipe,
+    HlmDatePickerTrigger,
   ],
 })
 export class NotificationList {
