@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.5.8 - 2026-09-24
+
+### <!-- 0 -->🚀 Features
+
+- Spread monitor start 120 seconds apart by Dafnik ([e1ac007](https://github.com/poweruptime/poweruptime/commit/e1ac007ffcbcb2dbda4fbe65de102ef76a1f8184))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- IsRefreshing is not reset when refresh fails, so later 401s can hang behind nextAccessTokenSubject by Dafnik ([7a7d1ea](https://github.com/poweruptime/poweruptime/commit/7a7d1eaa61e66b6eeab5184264f8fd312d056fb6))
+- Hit logout endpoint by Dafnik ([32de561](https://github.com/poweruptime/poweruptime/commit/32de5616b1b1da4a2aead05db09f5e73108ebb8f))
+- Monitor & notification method clone new team id not validated by Dafnik ([954697f](https://github.com/poweruptime/poweruptime/commit/954697f42d3a387f76b1915c5f252c943abd3bcd))
+- Notification method clone by Dafnik ([73d2cb1](https://github.com/poweruptime/poweruptime/commit/73d2cb12bb7f45af8c19748c5e08d94d0a80037e))
+- Is system admin guard not redirecting by Dafnik ([18fb0f4](https://github.com/poweruptime/poweruptime/commit/18fb0f49192dafad9a31fc6c0f554d0761f4af50))
+- Add trust OAuth provider MFA instance setting by Dafnik ([35e28c3](https://github.com/poweruptime/poweruptime/commit/35e28c31d30e498d1aa0acb1c64a28e2189fefc5))
+- Sanitize all user html before rendering by Dafnik ([02338df](https://github.com/poweruptime/poweruptime/commit/02338df6b0f60019a1f4c676a37ff18b2d8e2069))
+
+### <!-- 2 -->🚜 Refactor
+
+- Remove unused method by Dafnik ([d889473](https://github.com/poweruptime/poweruptime/commit/d889473496aca8925c5ac8e2272239252b9019d9))
+- PatchState (#755) by Dafnik ([e845574](https://github.com/poweruptime/poweruptime/commit/e845574c5aba762a185c9ee2085fbca550e70165))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Kotlin way by Dafnik ([6dcb60f](https://github.com/poweruptime/poweruptime/commit/6dcb60f0ff6d14524e08b1a9b43cbd0d3a92cbb5))
+- Remove unused dependencies by Dafnik ([9b3ab9b](https://github.com/poweruptime/poweruptime/commit/9b3ab9b69987a81b6a5c0b1c38d902cf92c31b6d))
+- Remove duplicate loading indicator by Dafnik ([597dad1](https://github.com/poweruptime/poweruptime/commit/597dad19abb28a4d45bd159a27615d23b1257c3f))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.7...0.5.8)
+
 ## 0.5.7 - 2026-05-29
 
 ### <!-- 1 -->🐛 Bug Fixes
@@ -640,7 +669,7 @@
 ### <!-- 2 -->🚜 Refactor
 
 - Use date-fns by Dafnik ([fb22200](https://github.com/poweruptime/poweruptime/commit/fb22200407098fede0e6d977e75e0acf3090ddaf))
-- Remove \_remote.yml by Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
+- Remove _remote.yml by Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
 - OrThrowNotFound by Dafnik ([f8e6a67](https://github.com/poweruptime/poweruptime/commit/f8e6a6770a690b940b494a1a4efd7dac2aa7c1c1))
 - Confirm dialog for team delete by Dafnik ([cc3842d](https://github.com/poweruptime/poweruptime/commit/cc3842d5f9a9e5568e44f1159a9f3ab8a7672939))
 - Split uptime-timeline component into infinite loading and not by Dafnik ([3f48837](https://github.com/poweruptime/poweruptime/commit/3f4883790715f6bc1b6ba4b1883454743ec5865c))
