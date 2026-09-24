@@ -113,21 +113,21 @@ import {MonitorEditPage} from './monitor-edit.page';
 
         <div class="overflow-x-auto overflow-y-hidden">
           <hlm-tabs-list
-            class="[&>button]:data-[state=active]:bg-primary [&>button]:data-[state=active]:text-primary-foreground min-w-content inline-flex gap-3 bg-transparent [&>button]:px-3 [&>button]:py-1.5 [&>button]:data-[state=active]:rounded-full [&>button]:data-[state=active]:shadow-none"
+            class="[&>button]:data-[state=active]:bg-primary [&>button]:dark:data-[state=active]:bg-primary [&>button]:data-[state=active]:text-primary-foreground [&>button]:dark:data-[state=active]:text-primary-foreground flex gap-2 bg-transparent [&>button]:data-[state=active]:rounded-full [&>button]:data-[state=active]:shadow-none"
             aria-label="Monitor tabs">
-            <button type="button" hlmTabsTrigger="overview">
+            <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="overview">
               <ng-icon hlm name="lucideLayoutDashboard" size="sm" />
               {{ 'general.overview' | transloco }}
             </button>
-            <button type="button" hlmTabsTrigger="notifications">
+            <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="notifications">
               <ng-icon hlm name="bootstrapBell" size="sm" />
               {{ 'general.notifications' | transloco }}
             </button>
-            <button type="button" hlmTabsTrigger="checkResults">
+            <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="checkResults">
               <ng-icon hlm name="bootstrapListStars" size="sm" />
               {{ 'general.checks' | transloco }}
             </button>
-            <button type="button" hlmTabsTrigger="settings">
+            <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="settings">
               <ng-icon hlm name="bootstrapGear" size="sm" />
               {{ 'general.settings' | transloco }}
             </button>
