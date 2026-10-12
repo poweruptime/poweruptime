@@ -24,7 +24,7 @@ services:
 
   poweruptime-rabbitmq:
     container_name: poweruptime-rabbitmq
-    image: rabbitmq:4.3.5-management
+    image: rabbitmq:4.3.6-management
     restart: unless-stopped
     volumes:
       - rabbit:/var/lib/rabbitmq
