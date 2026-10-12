@@ -1,6 +1,10 @@
 import {HttpClient, provideHttpClient, withInterceptors} from '@angular/common/http';
 import {ApplicationConfig, LOCALE_ID, inject, isDevMode} from '@angular/core';
-import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withHttpTransferCacheOptions,
+} from '@angular/platform-browser';
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import {provideNgxMetaCore} from '@davidlj95/ngx-meta/core';
@@ -37,7 +41,17 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(ROUTES, withComponentInputBinding()),
     provideTransferableLocalStorageImpl(),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(
+      withEventReplay(),
+      withHttpTransferCacheOptions({
+        // These responses are reused only for hydration, even when HTTP caching is disabled.
+        includeNonCacheableRequests: true,
+        filter: ({url}) =>
+          url.startsWith('/api/v1/public/') ||
+          url.startsWith('/assets/') ||
+          url === '/bff/v1/sanitize/html',
+      }),
+    ),
     provideHttpClient(
       withInterceptors([backendOfflineInterceptor, authInterceptor, mfaInterceptor]),
     ),
