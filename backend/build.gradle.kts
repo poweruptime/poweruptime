@@ -24,11 +24,11 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.2.2")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.2.3")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.2")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.3")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
@@ -49,7 +49,7 @@ dependencies {
 
     // MFA Stuff
     implementation("dev.turingcomplete:kotlin-onetimepassword:3.0.0")
-    implementation("commons-codec:commons-codec:1.22.1")
+    implementation("commons-codec:commons-codec:1.23.0")
 
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
@@ -63,11 +63,11 @@ dependencies {
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.4")
-    runtimeOnly("org.postgresql:postgresql:42.7.13")
+    runtimeOnly("org.postgresql:postgresql:42.7.14")
 
     implementation("com.zaxxer:HikariCP:7.1.0")
 
-    val exposedVersion = "1.5.0"
+    val exposedVersion = "1.5.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
@@ -96,7 +96,7 @@ dependencies {
 
     // Spring Cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.3.0")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.13")
@@ -119,7 +119,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.21.4")
     testImplementation("org.testcontainers:rabbitmq:1.21.4")
 
-    testImplementation("com.icegreen:greenmail-junit5:2.1.13")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.14")
 }
 
 tasks.withType<Test> {
