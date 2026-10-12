@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.5.9 - 2026-10-12
+
+### <!-- 0 -->🚀 Features
+
+- Enhance styling by Dafnik ([8626e6c](https://github.com/poweruptime/poweruptime/commit/8626e6c833dc349a5b73baae66adfbb0f7896b4f))
+- Use spartan (tanstack) charts by Dafnik ([db6e5d6](https://github.com/poweruptime/poweruptime/commit/db6e5d68f1c6b7369e70a39051c2c2879298c253))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Ssr content flash (#813) by Dafnik ([320b056](https://github.com/poweruptime/poweruptime/commit/320b056de2173e0d8fd1ef62ffdcdd786da56c60))
+- Date range input button by Dafnik ([4b2f486](https://github.com/poweruptime/poweruptime/commit/4b2f486ee9637f8db36eefb68d4d0facfce8c343))
+- Auto-pick date range button ids by Dafnik ([70cf282](https://github.com/poweruptime/poweruptime/commit/70cf282ec64529c4c5efb684344eab38eb1df6c3))
+
+### <!-- 2 -->🚜 Refactor
+
+- Use tw no-scrollbar by Dafnik ([9aa63f1](https://github.com/poweruptime/poweruptime/commit/9aa63f1f3e23bf483333e6839f08f44b06564359))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Include infrastructure changes in ci-infra path condition by Dafnik ([7b5cf1d](https://github.com/poweruptime/poweruptime/commit/7b5cf1d410f222c7962e6a06f1ab20bc4f688d1b))
+- Update spartan by Dafnik ([c915717](https://github.com/poweruptime/poweruptime/commit/c915717e77cada90ed5f1d3dc655a18757116375))
+- Align dependency versions by Dafnik ([811882d](https://github.com/poweruptime/poweruptime/commit/811882ddb78deefb1d16520a3e224fae969a591a))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.8...0.5.9)
+
 ## 0.5.8 - 2026-09-24
 
 ### <!-- 0 -->🚀 Features
