@@ -1,48 +1,40 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DOCUMENT,
-  ViewEncapsulation,
-  inject,
-  input,
-  resource,
-} from '@angular/core';
+import {httpResource} from '@angular/common/http';
+import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   template: `
-    @if (safeHtml.value(); as safeHtml) {
-      <div [innerHTML]="safeHtml"></div>
+    @if (safeHtml(); as safeHtml) {
+      <div class="prose dark:prose-invert max-w-none" [innerHTML]="safeHtml"></div>
     }
   `,
   selector: 'pu-shadow-render',
-  encapsulation: ViewEncapsulation.ShadowDom,
+  host: {class: 'block'},
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShadowRender {
   private readonly sanitizer = inject(DomSanitizer);
-  private readonly origin = inject(DOCUMENT).location.origin;
 
   html = input.required<string>();
 
-  protected readonly safeHtml = resource({
-    params: () => ({html: this.html()}),
-    loader: async ({params, abortSignal}) => {
-      const response = await fetch(`${this.origin}/bff/v1/sanitize/html`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-        signal: abortSignal,
-      });
+  private readonly sanitizedHtml = httpResource<{html: string}>(() => {
+    const html = this.html();
+    return html
+      ? {
+          url: '/bff/v1/sanitize/html',
+          method: 'POST',
+          body: {html},
+          // Sanitization is a read: allow this POST response to be transferred for hydration.
+          transferCache: true,
+        }
+      : undefined;
+  });
 
-      if (!response.ok) {
-        throw new Error('Failed to sanitize HTML');
-      }
+  protected readonly safeHtml = computed(() => {
+    if (!this.sanitizedHtml.hasValue()) {
+      return undefined;
+    }
 
-      const jsonResponse = await response.json();
-      return this.sanitizer.bypassSecurityTrustHtml(jsonResponse.html);
-    },
+    return this.sanitizer.bypassSecurityTrustHtml(this.sanitizedHtml.value().html);
   });
 }
