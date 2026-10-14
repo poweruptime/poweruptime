@@ -96,7 +96,7 @@ dependencies {
 
     // Spring Cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.3.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.3.1")
 
     // Retry for RabbitMQ
     implementation("org.springframework.retry:spring-retry:2.0.13")
