@@ -2,16 +2,16 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 @Component({
   template: `
     <div hlmEmpty>
       <div hlmEmptyHeader>
         <div hlmEmptyMedia variant="icon">
-          <ng-icon hlm name="bootstrapBell" />
+          <ng-icon class="text-[length:--spacing(6)]" name="bootstrapBell" />
         </div>
         <div hlmEmptyTitle>{{ 'notificationMethod.list.empty.title' | transloco }}</div>
         <div hlmEmptyDescription>{{ 'notificationMethod.list.empty.description' | transloco }}</div>
@@ -19,7 +19,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
       <div hlmEmptyContent>
         <div class="flex flex-wrap justify-center gap-2 md:flex-nowrap">
           <a hlmBtn routerLink="new">
-            <ng-icon hlm name="bootstrapPlusCircle" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPlusCircle" />
             {{ 'notificationMethod.list.empty.createNotificationMethod' | transloco }}
           </a>
           <a hlmBtn routerLink="../m" variant="outline">
@@ -31,6 +31,6 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   `,
   selector: 'pu-notification-methods-empty',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmIconImports, HlmEmptyImports, HlmButtonImports, TranslocoPipe, RouterLink],
+  imports: [NgIcon, HlmEmptyImports, HlmButtonImports, TranslocoPipe, RouterLink],
 })
 export class NotificationMethodsEmpty {}

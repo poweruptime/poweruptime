@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
@@ -22,7 +22,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
       <div class="flex flex-col gap-6">
         <div hlmCardHeader>
           <div class="flex items-center gap-2">
-            <ng-icon name="bootstrapShield" hlm size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapShield" />
             <h3 hlmCardTitle>{{ 'general.permissions' | transloco }}</h3>
           </div>
           <p hlmCardDescription>Control user access and capabilities</p>
@@ -50,7 +50,7 @@ import {AbstractModelEditFormComponent, SaveButton, injectIsValid} from '@app/fo
     SaveButton,
     TranslocoPipe,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
     HlmLabelImports,
     HlmSwitchImports,
   ],

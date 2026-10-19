@@ -15,9 +15,9 @@ import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -231,7 +231,7 @@ class HasTemplateFeatureEnabled implements PipeTransform {
     HlmSwitchImports,
     HlmInputImports,
     HlmSelectImports,
-    HlmIconImports,
+    NgIcon,
     HlmSeparatorImports,
     HlmFieldImports,
   ],

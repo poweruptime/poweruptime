@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {StopPropagationDirective} from 'dfx-helper';
 
 import {ChangelogStore} from '@app/services';
@@ -27,12 +27,12 @@ import {environment} from '@app/util';
         (click)="setLastVersionStorageToCurrentVersion()"
         stopPropagation
         type="button">
-        <ng-icon hlm name="bootstrapXCircleFill" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXCircleFill" />
       </button>
     </button>
   `,
   selector: 'pu-changelog-badge',
-  imports: [HlmIconImports, HlmBadgeImports, TranslocoPipe, StopPropagationDirective],
+  imports: [NgIcon, HlmBadgeImports, TranslocoPipe, StopPropagationDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangelogBadge {

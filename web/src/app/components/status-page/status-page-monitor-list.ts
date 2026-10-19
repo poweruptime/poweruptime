@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 
 import {BackendType} from '@app/api';
@@ -43,7 +43,7 @@ import {MonitorStatusTextBackground} from '@app/directives';
               variant="ghost"
               hlmBtn>
               {{ monitor.name }}
-              <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
             </a>
           </div>
           <div class="tl-container">
@@ -73,7 +73,7 @@ import {MonitorStatusTextBackground} from '@app/directives';
     MonitorStatusTextBackground,
     HlmTooltipImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
   ],
 })
 export class StatusPageMonitorList {

@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {format} from 'date-fns';
 import {linkedQueryParam, paramToNumber} from 'ngxtension/linked-query-param';
@@ -70,7 +70,7 @@ import {PingChart} from './ping-chart';
           <div hlmEmpty>
             <div hlmEmptyHeader>
               <div hlmEmptyMedia variant="icon">
-                <ng-icon hlm name="lucideCircleQuestionMark" />
+                <ng-icon class="text-[length:--spacing(6)]" name="lucideCircleQuestionMark" />
               </div>
               <div hlmEmptyTitle>{{ 'monitor.details.pingChart.empty.title' | transloco }}</div>
               <div hlmEmptyDescription>
@@ -86,7 +86,7 @@ import {PingChart} from './ping-chart';
           <div hlmEmpty>
             <div hlmEmptyHeader>
               <div hlmEmptyMedia variant="icon">
-                <ng-icon hlm name="lucideCalendarX2" />
+                <ng-icon class="text-[length:--spacing(6)]" name="lucideCalendarX2" />
               </div>
               <div hlmEmptyTitle>
                 {{ 'monitor.details.pingChart.exceedsMaxWindow' | transloco }}
@@ -109,7 +109,7 @@ import {PingChart} from './ping-chart';
     TranslocoPipe,
     HlmSelectImports,
     HlmDatePickerImports,
-    HlmIconImports,
+    NgIcon,
     HlmEmptyImports,
   ],
 })

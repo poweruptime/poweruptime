@@ -6,7 +6,7 @@ import {NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {distinctUntilChanged, map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {NgIcon} from '@ng-icons/core';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 
@@ -18,7 +18,7 @@ import {MonitorSearchParams} from '@app/services';
     <form class="grid gap-2" [formGroup]="form">
       <div hlmInputGroup>
         <div hlmInputGroupAddon>
-          <ng-icon hlm name="bootstrapSearch" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSearch" />
         </div>
         <input
           [placeholder]="'general.search' | transloco"
@@ -26,7 +26,7 @@ import {MonitorSearchParams} from '@app/services';
           hlmInputGroupInput />
         @if (form.controls.search.getRawValue().length > 0) {
           <button (click)="form.controls.search.setValue('')" hlmInputGroupButton type="button">
-            <ng-icon hlm name="bootstrapXLg" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXLg" />
             <span class="sr-only">{{ 'general.clear' | transloco }}</span>
           </button>
         }
@@ -108,7 +108,7 @@ import {MonitorSearchParams} from '@app/services';
   imports: [
     ReactiveFormsModule,
     TranslocoPipe,
-    HlmIconImports,
+    NgIcon,
     HlmInputGroupImports,
     HlmSelectImports,
     TitleCasePipe,

@@ -9,11 +9,11 @@ import {
   input,
 } from '@angular/core';
 
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {InfoStore} from '@app/services';
 import {environment} from '@app/util';
@@ -54,7 +54,7 @@ class StatusText implements PipeTransform {
     <div class="p-0 md:p-0" hlmEmpty>
       <div hlmEmptyHeader>
         <div hlmEmptyMedia variant="icon">
-          <ng-icon hlm name="bootstrapPersonCircle" />
+          <ng-icon class="text-[length:--spacing(6)]" name="bootstrapPersonCircle" />
         </div>
         <div hlmEmptyTitle>No OAuth2 Providers configured</div>
         <div hlmEmptyDescription>You haven&apos;t configured any OAuth2 Providers yet.</div>
@@ -69,12 +69,12 @@ class StatusText implements PipeTransform {
         rel="noopener"
         href="https://github.com/poweruptime/poweruptime/blob/main/infrastructure/README.md#oauth2-guide">
         Learn More
-        <ng-icon hlm name="lucideArrowUpRight" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="lucideArrowUpRight" />
       </a>
     </div>
   `,
   selector: 'pu-empty-oauth2-providers',
-  imports: [HlmEmptyImports, HlmIconImports, HlmButtonImports],
+  imports: [HlmEmptyImports, NgIcon, HlmButtonImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class EmptyOAuth2Providers {}
@@ -87,7 +87,7 @@ class EmptyOAuth2Providers {}
         <section class="h-full w-full" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
-              <ng-icon hlm name="bootstrapDisplay" />
+              <ng-icon class="text-[length:--spacing(6)]" name="bootstrapDisplay" />
               <h3 hlmCardTitle>System Information</h3>
             </div>
             <p hlmCardDescription>Runtime and operating system details</p>
@@ -125,7 +125,7 @@ class EmptyOAuth2Providers {}
         <section class="h-full w-full" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
-              <ng-icon hlm name="bootstrapServer" />
+              <ng-icon class="text-[length:--spacing(6)]" name="bootstrapServer" />
               <h3 hlmCardTitle>Network and service</h3>
             </div>
           </div>
@@ -168,7 +168,7 @@ class EmptyOAuth2Providers {}
         <section class="h-full w-full" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
-              <ng-icon hlm name="bootstrapEnvelope" />
+              <ng-icon class="text-[length:--spacing(6)]" name="bootstrapEnvelope" />
               <h3 hlmCardTitle>Mail Configuration</h3>
             </div>
             <p hlmCardDescription>Email service settings</p>
@@ -200,7 +200,7 @@ class EmptyOAuth2Providers {}
         <section class="h-full w-full" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
-              <ng-icon hlm name="bootstrapStars" />
+              <ng-icon class="text-[length:--spacing(6)]" name="bootstrapStars" />
               <h3 hlmCardTitle>Features</h3>
             </div>
             <p hlmCardDescription>Service feature toggles</p>
@@ -253,7 +253,7 @@ class EmptyOAuth2Providers {}
         <section class="h-full w-full" hlmCard>
           <div hlmCardHeader>
             <div class="flex items-center gap-2">
-              <ng-icon hlm name="bootstrapShieldShaded" />
+              <ng-icon class="text-[length:--spacing(6)]" name="bootstrapShieldShaded" />
               <h3 hlmCardTitle>Rate Limiting</h3>
             </div>
           </div>
@@ -285,7 +285,7 @@ class EmptyOAuth2Providers {}
           @if (infoStore.oauth2Providers().length > 0) {
             <div hlmCardHeader>
               <div class="flex items-center gap-2">
-                <ng-icon hlm name="bootstrapPersonCircle" />
+                <ng-icon class="text-[length:--spacing(6)]" name="bootstrapPersonCircle" />
                 <h3 hlmCardTitle>OAuth2 Providers</h3>
               </div>
             </div>
@@ -341,7 +341,7 @@ class EmptyOAuth2Providers {}
     StatusText,
     DatePipe,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
     EmptyOAuth2Providers,
     HlmBadgeImports,
   ],

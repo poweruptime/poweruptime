@@ -28,10 +28,10 @@ import {
 } from '@angular/cdk/drag-drop';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmComboboxImports} from '@spartan-ng/helm/combobox';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSeparatorImports} from '@spartan-ng/helm/separator';
 
 import {BackendType} from '@app/api';
@@ -105,7 +105,7 @@ interface DragEventType {
               <div class="monitor-drag-placeholder" *cdkDragPlaceholder></div>
               <div class="flex items-center justify-between text-xl" hlmCardContent>
                 <div class="inline-flex items-center gap-2 hover:cursor-move" cdkDragHandle>
-                  <ng-icon hlm size="sm" name="bootstrapGripVertical" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGripVertical" />
                   <h3>{{ monitor.name }}</h3>
                 </div>
                 <div>
@@ -116,7 +116,7 @@ interface DragEventType {
                     variant="ghost"
                     size="icon-sm"
                     type="button">
-                    <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
                   </button>
                 </div>
               </div>
@@ -166,7 +166,7 @@ interface DragEventType {
     HlmCardImports,
     HlmComboboxImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmSeparatorImports,
   ],
 })

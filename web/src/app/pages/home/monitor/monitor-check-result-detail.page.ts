@@ -7,7 +7,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -33,7 +32,7 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
           <div class="grid gap-6">
             <div>
               <button (click)="goBack()" hlmBtn type="button">
-                <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
+                <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowLeft" />
                 <span>{{ 'notFound.back' | transloco }}</span>
               </button>
             </div>
@@ -216,7 +215,6 @@ import {CheckResultDetailStore, CheckResultLogEntriesStore} from '@app/services'
     HlmSkeletonImports,
     HlmCardImports,
     HlmButtonImports,
-    HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
   ],

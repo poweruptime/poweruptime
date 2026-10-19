@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, output} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 @Component({
   template: `
@@ -16,7 +16,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
         <div class="bg-muted/50 border-border flex items-start gap-3 rounded-lg border p-4">
           <div
             class="bg-muted mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-            <ng-icon hlm size="sm" name="bootstrapInfoCircle" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapInfoCircle" />
           </div>
           <div class="flex-1">
             <p class="text-foreground mb-1 text-sm font-medium">
@@ -37,7 +37,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   `,
   selector: 'pu-mfa-disabled-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, HlmButtonImports, HlmCardImports, HlmIconImports],
+  imports: [TranslocoPipe, HlmButtonImports, HlmCardImports, NgIcon],
 })
 export class MFADisabledCard {
   enableMFA = output();

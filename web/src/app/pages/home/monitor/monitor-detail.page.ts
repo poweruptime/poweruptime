@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
@@ -49,7 +49,7 @@ import {MonitorEditPage} from './monitor-edit.page';
                   variant="outline"
                   hlmBtn
                   type="button">
-                  <ng-icon hlm size="sm" name="bootstrapPlayBtn" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPlayBtn" />
                   {{ 'general.start' | transloco }}
                 </button>
               } @else {
@@ -58,7 +58,7 @@ import {MonitorEditPage} from './monitor-edit.page';
                   hlmBtn
                   variant="outline"
                   type="button">
-                  <ng-icon hlm size="sm" name="bootstrapPauseBtn" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPauseBtn" />
                   {{ 'general.pause' | transloco }}
                 </button>
               }
@@ -75,7 +75,7 @@ import {MonitorEditPage} from './monitor-edit.page';
                 <hlm-dropdown-menu class="w-52">
                   <hlm-dropdown-menu-group>
                     <a hlmDropdownMenuItem href="/public/m/{{ _monitorId }}" target="_blank">
-                      <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
                       <span>{{ 'monitor.details.openPublic' | transloco }}</span>
                     </a>
                   </hlm-dropdown-menu-group>
@@ -85,7 +85,7 @@ import {MonitorEditPage} from './monitor-edit.page';
                       (click)="monitorActionStore.clone({id: _monitorId})"
                       hlmDropdownMenuItem
                       type="button">
-                      <ng-icon hlm name="bootstrapCopy" size="sm" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="bootstrapCopy" />
                       <span>{{ 'general.copy' | transloco }}</span>
                     </button>
                     <button
@@ -94,7 +94,7 @@ import {MonitorEditPage} from './monitor-edit.page';
                       type="button"
                       hlmDropdownMenuItem
                       variant="destructive">
-                      <ng-icon hlm name="lucideTrash" size="sm" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="lucideTrash" />
                       <span>
                         {{ 'general.delete' | transloco }}
                       </span>
@@ -116,19 +116,19 @@ import {MonitorEditPage} from './monitor-edit.page';
             class="[&>button]:data-[state=active]:bg-primary [&>button]:dark:data-[state=active]:bg-primary [&>button]:data-[state=active]:text-primary-foreground [&>button]:dark:data-[state=active]:text-primary-foreground flex gap-2 bg-transparent [&>button]:data-[state=active]:rounded-full [&>button]:data-[state=active]:shadow-none"
             aria-label="Monitor tabs">
             <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="overview">
-              <ng-icon hlm name="lucideLayoutDashboard" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideLayoutDashboard" />
               {{ 'general.overview' | transloco }}
             </button>
             <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="notifications">
-              <ng-icon hlm name="bootstrapBell" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBell" />
               {{ 'general.notifications' | transloco }}
             </button>
             <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="checkResults">
-              <ng-icon hlm name="bootstrapListStars" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapListStars" />
               {{ 'general.checks' | transloco }}
             </button>
             <button class="flex gap-2 font-normal" type="button" hlmTabsTrigger="settings">
-              <ng-icon hlm name="bootstrapGear" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGear" />
               {{ 'general.settings' | transloco }}
             </button>
           </hlm-tabs-list>
@@ -171,7 +171,7 @@ import {MonitorEditPage} from './monitor-edit.page';
     RouterLink,
     TranslocoPipe,
     HlmTabsImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
     HlmButtonImports,
     HlmButtonGroupImports,

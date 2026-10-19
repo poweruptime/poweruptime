@@ -5,10 +5,10 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 
 import {TableLoadingBar} from '@app/components';
@@ -28,7 +28,7 @@ import {trackBy} from '@app/util';
             type="button"
             variant="secondary"
             hlmBtn>
-            <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
             {{ 'general.deleteSelection' | transloco }}
           </button>
         </div>
@@ -114,7 +114,7 @@ import {trackBy} from '@app/util';
     HlmPaginatorImports,
     HlmCheckbox,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
   ],
 })

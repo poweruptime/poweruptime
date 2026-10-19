@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {MonitorsStore} from '@app/services';
 
@@ -17,7 +17,7 @@ import {RecycleBinMonitorTable} from './recycle-bin-monitor-table';
           (click)="monitorsStore.restoreSelection()"
           hlmBtn
           type="button">
-          <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowCounterclockwise" />
           {{ 'general.restore' | transloco }}
         </button>
       </div>
@@ -28,7 +28,7 @@ import {RecycleBinMonitorTable} from './recycle-bin-monitor-table';
   selector: 'pu-recycle-bin-monitor-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [MonitorsStore],
-  imports: [TranslocoPipe, RecycleBinMonitorTable, HlmButtonImports, HlmIconImports],
+  imports: [TranslocoPipe, RecycleBinMonitorTable, HlmButtonImports, NgIcon],
 })
 export class RecycleBinMonitorList {
   readonly monitorsStore = inject(MonitorsStore);

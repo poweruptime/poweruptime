@@ -11,6 +11,7 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
@@ -18,7 +19,6 @@ import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
 import {HlmDialogService} from '@spartan-ng/helm/dialog';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -39,7 +39,7 @@ import {TeamInviteDialog} from '../_dialog/team-invite-dialog';
       <div class="grid gap-2" hlmCardContent>
         <div class="flex gap-2">
           <button (click)="openInviteDialog()" type="button" hlmBtn>
-            <ng-icon hlm size="sm" name="lucideUserPlus" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideUserPlus" />
             {{ 'general.invite' | transloco }}
           </button>
 
@@ -49,7 +49,7 @@ import {TeamInviteDialog} from '../_dialog/team-invite-dialog';
             type="button"
             variant="secondary"
             hlmBtn>
-            <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
             Remove from team
           </button>
         </div>
@@ -191,7 +191,7 @@ import {TeamInviteDialog} from '../_dialog/team-invite-dialog';
     HlmAvatarImports,
     HlmBadgeImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
     HlmCheckboxImports,
   ],

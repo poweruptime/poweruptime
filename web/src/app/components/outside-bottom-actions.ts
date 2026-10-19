@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {ThemeService} from 'dfx-theme';
 
 import {AboutDialog, HelpDialog} from '@app/components/index';
@@ -14,17 +14,17 @@ import {themeOptions} from '@app/util';
   template: `
     <div class="fixed right-4 bottom-4">
       <button [hlmDropdownMenuTrigger]="menu" align="end" type="button" hlmBtn size="lg">
-        <ng-icon name="bootstrapThreeDots" hlm />
+        <ng-icon class="text-[length:--spacing(6)]" name="bootstrapThreeDots" />
       </button>
       <ng-template #menu>
         <hlm-dropdown-menu class="min-w-56 rounded-lg">
           <hlm-dropdown-menu-group>
             <button (click)="openAbout()" type="button" hlmDropdownMenuItem>
-              <ng-icon hlm size="sm" name="bootstrapInfoCircle" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapInfoCircle" />
               {{ 'general.about' | transloco }}
             </button>
             <button (click)="openHelp()" type="button" hlmDropdownMenuItem>
-              <ng-icon hlm size="sm" name="bootstrapQuestionCircle" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapQuestionCircle" />
               {{ 'general.help' | transloco }}
             </button>
           </hlm-dropdown-menu-group>
@@ -36,7 +36,7 @@ import {themeOptions} from '@app/util';
               hlmDropdownMenuItem
               side="right"
               align="start">
-              <ng-icon hlm size="sm" name="bootstrapPaintBucket" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPaintBucket" />
               {{ 'general.theme' | transloco }}
               <hlm-dropdown-menu-item-sub-indicator />
             </button>
@@ -46,7 +46,7 @@ import {themeOptions} from '@app/util';
               type="button"
               side="right"
               align="start">
-              <ng-icon hlm size="sm" name="bootstrapTranslate" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTranslate" />
               {{ 'general.language' | transloco }}
               <hlm-dropdown-menu-item-sub-indicator />
             </button>
@@ -65,7 +65,7 @@ import {themeOptions} from '@app/util';
               type="button">
               <hlm-dropdown-menu-checkbox-indicator />
               {{ theme.viewValue }}
-              <ng-icon class="ms-2" [name]="theme.icon" hlm size="sm" />
+              <ng-icon class="ms-2 text-[length:--spacing(4)]" [name]="theme.icon" />
             </button>
           }
         </hlm-dropdown-menu-sub>
@@ -91,7 +91,7 @@ import {themeOptions} from '@app/util';
   `,
   selector: 'pu-outside-bottom-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmDropdownMenuImports, HlmIconImports, TranslocoPipe, HlmButtonImports],
+  imports: [HlmDropdownMenuImports, NgIcon, TranslocoPipe, HlmButtonImports],
 })
 export class OutsideBottomActions {
   protected readonly themeOptions = themeOptions;

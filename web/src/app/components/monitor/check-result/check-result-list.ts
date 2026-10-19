@@ -5,11 +5,11 @@ import {FormsModule} from '@angular/forms';
 import {map} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmButtonGroupImports} from '@spartan-ng/helm/button-group';
 import {HlmDatePickerImports} from '@spartan-ng/helm/date-picker';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -55,7 +55,7 @@ import {CheckResultsEmpty} from './check-results-empty';
               hlmBtn
               variant="outline"
               size="sm">
-              <ng-icon hlm name="bootstrapBell" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBell" />
             </button>
             @for (state of availableHasNotificationStates(); track state.hasNotification) {
               <button
@@ -122,7 +122,7 @@ import {CheckResultsEmpty} from './check-results-empty';
     FormsModule,
     CheckResultTable,
     CheckResultsEmpty,
-    HlmIconImports,
+    NgIcon,
     HlmSwitchImports,
     HlmLabelImports,
     HlmButtonImports,

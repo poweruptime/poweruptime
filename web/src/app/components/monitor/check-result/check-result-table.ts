@@ -5,8 +5,8 @@ import {HlmPaginator} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
@@ -84,7 +84,7 @@ import {trackBy} from '@app/util';
                   size="icon"
                   target="_blank"
                   stopPropagation>
-                  <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
                 </a>
               </td>
             </ng-container>
@@ -138,7 +138,7 @@ import {trackBy} from '@app/util';
     HlmDataTableImports,
     HlmSortImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
   ],
 })

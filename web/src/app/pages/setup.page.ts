@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, effect, inject, input} from '@angula
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -38,7 +38,7 @@ import {SetupStore} from '@app/services';
           <div class="grid gap-4">
             @if (setupStore.error()?.codeName === 'SETUP_COMPLETED') {
               <div hlmAlert variant="destructive">
-                <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                <ng-icon class="text-[length:--spacing(6)]" hlmAlertIcon name="lucideCircleAlert" />
                 <h4 hlmAlertTitle>Error while finishing setup... Already setup?</h4>
               </div>
             }
@@ -52,7 +52,10 @@ import {SetupStore} from '@app/services';
 
                 @if (setupStore.error()?.codeName === 'EMAIL_SEND_FAILED') {
                   <div hlmAlert variant="destructive">
-                    <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                    <ng-icon
+                      class="text-[length:--spacing(6)]"
+                      hlmAlertIcon
+                      name="lucideCircleAlert" />
                     <h4 hlmAlertTitle>{{ 'auth.setup.testEmail.failed' | transloco }}</h4>
                     <div hlmAlertDescription>
                       <br />
@@ -67,7 +70,10 @@ import {SetupStore} from '@app/services';
               @case ('confirmTestEmail') {
                 @if (setupStore.error()?.codeName === 'INVALID_CODE') {
                   <div hlmAlert variant="destructive">
-                    <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                    <ng-icon
+                      class="text-[length:--spacing(6)]"
+                      hlmAlertIcon
+                      name="lucideCircleAlert" />
                     <h4 hlmAlertTitle>{{ 'auth.setup.confirmEmail.invalidCode' | transloco }}</h4>
                   </div>
                 }
@@ -121,7 +127,7 @@ import {SetupStore} from '@app/services';
                     [disabled]="!isTestEmailFormValid()"
                     hlmBtn
                     type="submit">
-                    <ng-icon hlm size="sm" name="bootstrapEnvelopePlus" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapEnvelopePlus" />
                     {{ 'auth.setup.testEmail.send' | transloco }}
                   </button>
 
@@ -169,13 +175,13 @@ import {SetupStore} from '@app/services';
                     [disabled]="!isConfirmEmailFormValid()"
                     hlmBtn
                     type="submit">
-                    <ng-icon hlm size="sm" name="bootstrapSendCheck" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSendCheck" />
                     {{ 'auth.setup.confirmEmail.verify' | transloco }}
                   </button>
 
                   @if (setupStore.error()) {
                     <button (click)="submitTestEmail()" hlmBtn variant="outline" type="button">
-                      <ng-icon hlm size="sm" name="bootstrapEnvelopePlus" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="bootstrapEnvelopePlus" />
                       {{ 'auth.setup.confirmEmail.resend' | transloco }}
                     </button>
                     <button
@@ -184,7 +190,7 @@ import {SetupStore} from '@app/services';
                       hlmBtn
                       variant="ghost">
                       {{ 'auth.setup.skip' | transloco }}
-                      <ng-icon hlm size="sm" name="bootstrapArrowRight" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowRight" />
                     </button>
                   }
                 </div>
@@ -263,7 +269,7 @@ import {SetupStore} from '@app/services';
                   [disabled]="!isSetupFormValid()"
                   hlmBtn
                   type="submit">
-                  <ng-icon hlm size="sm" name="bootstrapEnvelopePlus" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapEnvelopePlus" />
                   {{ 'auth.setup.sendInvitation' | transloco }}
                 </button>
               </form>
@@ -277,7 +283,7 @@ import {SetupStore} from '@app/services';
               </div>
 
               <div hlmAlert>
-                <ng-icon hlm hlmAlertIcon name="lucideCircleCheck" />
+                <ng-icon class="text-[length:--spacing(6)]" hlmAlertIcon name="lucideCircleCheck" />
                 <h4 hlmAlertTitle>{{ 'auth.setup.setupCompleted.info1' | transloco }}</h4>
                 <p hlmAlertDescription>
                   <!-- t(auth.setup.setupCompleted.info2) -->
@@ -302,7 +308,7 @@ import {SetupStore} from '@app/services';
     BrnInputOtpImports,
     HlmCardImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmInputGroupImports,
     HlmLabelImports,
     HlmAlertImports,

@@ -3,10 +3,10 @@ import {Component, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -53,7 +53,7 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
               stopPropagation
               variant="ghost"
               size="icon-sm">
-              <ng-icon hlm size="sm" name="bootstrapGear" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGear" />
             </a>
           </div>
         </div>
@@ -69,7 +69,7 @@ import {TeamCardMonitorCount} from './team-card-monitor-count';
     TranslocoPipe,
     HlmTooltipImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmBadgeImports,
     Pattern,
     HlmCardImports,

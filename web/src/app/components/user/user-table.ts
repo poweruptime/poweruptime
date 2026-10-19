@@ -5,11 +5,11 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
@@ -81,7 +81,7 @@ import {trackBy} from '@app/util';
                   variant="ghost"
                   size="icon"
                   stopPropagation>
-                  <ng-icon hlm size="sm" name="bootstrapGear" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGear" />
                 </a>
               </td>
             </ng-container>
@@ -119,7 +119,7 @@ import {trackBy} from '@app/util';
     HlmAvatarImports,
     HlmBadgeImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
     InitialsPipe,
   ],

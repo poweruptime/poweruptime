@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {NotificationMethodsStore} from '@app/services';
 
@@ -17,7 +17,7 @@ import {RecycleBinNotificationMethodTable} from './recycle-bin-notification-meth
           (click)="notificationMethodsStore.restoreSelection()"
           hlmBtn
           type="button">
-          <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowCounterclockwise" />
           {{ 'general.restore' | transloco }}
         </button>
       </div>
@@ -27,7 +27,7 @@ import {RecycleBinNotificationMethodTable} from './recycle-bin-notification-meth
   `,
   selector: 'pu-recycle-bin-notification-method-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, RecycleBinNotificationMethodTable, HlmButtonImports, HlmIconImports],
+  imports: [TranslocoPipe, RecycleBinNotificationMethodTable, HlmButtonImports, NgIcon],
   providers: [NotificationMethodsStore],
 })
 export class RecycleBinNotificationMethodPage {

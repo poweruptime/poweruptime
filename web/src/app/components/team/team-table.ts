@@ -13,10 +13,10 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCheckboxImports} from '@spartan-ng/helm/checkbox';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {StopPropagationDirective} from 'dfx-helper';
@@ -109,7 +109,7 @@ import {BackendImagePipe} from '../../pipes';
                     size="icon"
                     variant="ghost"
                     stopPropagation>
-                    <ng-icon hlm size="sm" name="bootstrapGear" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGear" />
                   </a>
                   @if (!element.personal) {
                     <button
@@ -120,7 +120,7 @@ import {BackendImagePipe} from '../../pipes';
                       variant="secondary"
                       type="button"
                       stopPropagation>
-                      <ng-icon hlm size="sm" name="bootstrapTrash" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrash" />
                     </button>
                   }
                 </div>
@@ -173,7 +173,7 @@ import {BackendImagePipe} from '../../pipes';
     HlmPaginatorImports,
     HlmSortImports,
     HlmDataTableImports,
-    HlmIconImports,
+    NgIcon,
     HlmButtonImports,
     HlmTooltipImports,
     HlmCheckboxImports,

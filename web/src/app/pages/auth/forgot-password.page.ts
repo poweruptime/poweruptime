@@ -2,10 +2,10 @@ import {ChangeDetectionStrategy, Component, effect, inject, input, signal} from 
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 
@@ -64,7 +64,7 @@ import {ForgotPasswordStore} from '@app/services';
             </hlm-field>
 
             <button [disabled]="!isRequestPasswordResetFormValid()" hlmBtn type="submit">
-              <ng-icon hlm size="sm" name="lucideMailQuestionMark" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideMailQuestionMark" />
               {{ 'auth.requestPasswordReset' | transloco }}
             </button>
           </form>
@@ -136,7 +136,7 @@ import {ForgotPasswordStore} from '@app/services';
             </ng-container>
 
             <button [disabled]="!isResetPasswordFormValid()" hlmBtn type="submit">
-              <ng-icon hlm size="sm" name="lucideRotateCcwKey" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideRotateCcwKey" />
               {{ 'auth.resetPassword' | transloco }}
             </button>
           </form>
@@ -154,7 +154,7 @@ import {ForgotPasswordStore} from '@app/services';
     HlmInputGroupImports,
     HlmLabelImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmFieldImports,
   ],
 })

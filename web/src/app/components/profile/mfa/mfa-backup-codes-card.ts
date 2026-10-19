@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {DfxImplodePipe} from 'dfx-helper';
 
 import {CopyIconButton} from '../../copy-icon-button';
@@ -42,7 +42,7 @@ import {CopyIconButton} from '../../copy-icon-button';
           hlmBtn
           type="button"
           variant="outline">
-          <ng-icon hlm size="sm" name="bootstrapDownload" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapDownload" />
           {{ 'general.download' | transloco }}
         </button>
         <button (click)="doneManagingBackupCodes.emit()" hlmBtn type="button">
@@ -59,7 +59,7 @@ import {CopyIconButton} from '../../copy-icon-button';
     TranslocoPipe,
     HlmButtonImports,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
   ],
 })
 export class MFABackupCodesCard {

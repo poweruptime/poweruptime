@@ -8,7 +8,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {NgIcon} from '@ng-icons/core';
 import {rxMethod} from '@ngrx/signals/rxjs-interop';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -27,7 +26,7 @@ import {TeamTable} from './team-table';
       <pu-table-filter>
         <div class="flex gap-2" head>
           <button type="button" hlmBtn variant="default" routerLink="/t/new">
-            <ng-icon hlm size="sm" name="lucideBadgePlus" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideBadgePlus" />
             {{ 'team.create.create' | transloco }}
           </button>
           @if (_deleted) {
@@ -37,7 +36,7 @@ import {TeamTable} from './team-table';
               hlmBtn
               variant="secondary"
               type="button">
-              <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowCounterclockwise" />
               {{ 'general.restore' | transloco }}
             </button>
           }
@@ -52,7 +51,7 @@ import {TeamTable} from './team-table';
 
         <div class="w-72" hlmInputGroup>
           <div hlmInputGroupAddon>
-            <ng-icon hlm name="bootstrapSearch" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSearch" />
           </div>
           <input
             [(ngModel)]="searchFilter"
@@ -60,7 +59,7 @@ import {TeamTable} from './team-table';
             hlmInputGroupInput />
           @if ((searchFilter()?.length ?? 0) > 0) {
             <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXLg" />
               <span class="sr-only">{{ 'general.clear' | transloco }}</span>
             </button>
           }
@@ -81,7 +80,6 @@ import {TeamTable} from './team-table';
     TeamTable,
     TableFilter,
     HlmButtonImports,
-    HlmIconImports,
     HlmLabelImports,
     HlmSwitchImports,
     HlmInputGroupImports,

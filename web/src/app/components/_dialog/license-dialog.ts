@@ -17,7 +17,7 @@ export interface Dependency {
 
 @Component({
   template: `
-    <hlm-dialog autoFocus="dialog">
+    <hlm-dialog [id]="btnText()" autoFocus="dialog">
       <button
         class="hover:bg-accent h-11 w-full justify-start gap-3 text-base"
         hlmDialogTrigger

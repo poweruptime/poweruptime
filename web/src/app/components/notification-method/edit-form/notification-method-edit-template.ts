@@ -17,8 +17,8 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 
 import {BrnMentionImports, HlmMentionImports} from '@dafnik/mention';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmTextareaImports} from '@spartan-ng/helm/textarea';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
@@ -47,7 +47,7 @@ import {Editor} from '@app/components/editor';
                 type="button"
                 variant="outline"
                 size="icon-sm">
-                <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+                <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowCounterclockwise" />
               </button>
             </div>
           }
@@ -118,7 +118,7 @@ import {Editor} from '@app/components/editor';
     FormsModule,
     TranslocoPipe,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
     HlmMentionImports,
     HlmLabelImports,

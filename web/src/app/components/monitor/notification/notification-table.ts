@@ -5,9 +5,9 @@ import {HlmPaginator} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -78,7 +78,7 @@ import {TableLoadingBar} from '../../table-loading-bar';
                   stopPropagation
                   variant="ghost">
                   <span class="sr-only">Open notification menu</span>
-                  <ng-icon hlm size="sm" name="bootstrapThreeDotsVertical" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapThreeDotsVertical" />
                 </button>
 
                 <ng-template #menu>
@@ -96,7 +96,7 @@ import {TableLoadingBar} from '../../table-loading-bar';
                         "
                         type="button"
                         hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapCrosshair" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapCrosshair" />
                         {{ 'notification.list.openCheckResult' | transloco }}
                       </button>
                     </hlm-dropdown-menu-group>
@@ -154,7 +154,7 @@ import {TableLoadingBar} from '../../table-loading-bar';
     HlmDataTableImports,
     HlmButtonImports,
     HlmDropdownMenuImports,
-    HlmIconImports,
+    NgIcon,
   ],
 })
 export class NotificationTable {

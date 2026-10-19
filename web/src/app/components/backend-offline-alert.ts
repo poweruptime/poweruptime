@@ -4,8 +4,8 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {injectWindow} from 'dfx-helper';
 
 @Component({
@@ -14,12 +14,12 @@ import {injectWindow} from 'dfx-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mb-4" hlmAlert variant="destructive">
-      <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+      <ng-icon class="text-[length:--spacing(6)]" hlmAlertIcon name="lucideCircleAlert" />
       <h4 hlmAlertTitle>{{ 'backendOffline.title' | transloco }}</h4>
       <p hlmAlertDescription>{{ 'backendOffline.description' | transloco }}</p>
     </div>
   `,
-  imports: [TranslocoPipe, HlmAlertImports, HlmIconImports],
+  imports: [TranslocoPipe, HlmAlertImports, NgIcon],
 })
 export class BackendOfflineAlert {
   private window = injectWindow();

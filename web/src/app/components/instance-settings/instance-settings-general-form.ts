@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
 
@@ -71,7 +71,7 @@ import {GroupedTimezones} from '@app/services';
     TranslocoPipe,
     TimezoneInput,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
     HlmLabelImports,
     HlmSwitchImports,
   ],

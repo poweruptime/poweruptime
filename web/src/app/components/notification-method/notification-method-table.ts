@@ -5,9 +5,9 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {DfxImplodePipe, StopPropagationDirective} from 'dfx-helper';
 
@@ -94,7 +94,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                   stopPropagation
                   variant="ghost">
                   <span class="sr-only">Open notification method menu</span>
-                  <ng-icon hlm size="sm" name="bootstrapThreeDotsVertical" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapThreeDotsVertical" />
                 </button>
 
                 <ng-template #menu>
@@ -105,21 +105,21 @@ import {TableLoadingBar} from '../table-loading-bar';
 
                     <hlm-dropdown-menu-group>
                       <a [routerLink]="element.id" hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapPencilSquare" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPencilSquare" />
                         {{ 'general.edit' | transloco }}
                       </a>
                       <button
                         (click)="notificationMethodsStore.clone({id: element.id})"
                         type="button"
                         hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapCopy" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapCopy" />
                         {{ 'general.copy' | transloco }}
                       </button>
                       <button
                         (click)="notificationMethodsStore.delete(element.id)"
                         type="button"
                         hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
                         {{ 'general.delete' | transloco }}
                       </button>
                     </hlm-dropdown-menu-group>
@@ -177,7 +177,7 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmPaginatorImports,
     HlmButtonImports,
     HlmDropdownMenuImports,
-    HlmIconImports,
+    NgIcon,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

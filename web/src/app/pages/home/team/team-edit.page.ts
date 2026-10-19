@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 
 import {BackendType} from '@app/api';
@@ -115,7 +115,7 @@ import {InstanceAvailableTimezonesStore, TeamEditStore, TeamSettingsStore} from 
     ReactiveFormsModule,
     HlmSkeletonImports,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
     TeamInviteList,
   ],
   providers: [TeamEditStore, TeamSettingsStore],

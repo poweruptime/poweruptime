@@ -13,11 +13,11 @@ import {FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators} fr
 import {startWith} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -74,7 +74,7 @@ import {VersionCheckInfo} from './version-check-info';
                   hlmLabel>
                   <div class="inline-flex items-center gap-2">
                     <div class="bg-secondary flex h-9 w-9 items-center justify-center rounded-md">
-                      <ng-icon hlm size="sm" name="lucideRefreshCcw" />
+                      <ng-icon class="text-[length:--spacing(4)]" name="lucideRefreshCcw" />
                     </div>
                     <div class="flex flex-col gap-2">
                       <span class="text-sm leading-4">
@@ -145,7 +145,7 @@ import {VersionCheckInfo} from './version-check-info';
                             variant="outline"
                             form="mailToForm"
                             type="submit">
-                            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+                            <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
                           </button>
                         </div>
 
@@ -169,7 +169,7 @@ import {VersionCheckInfo} from './version-check-info';
                                   variant="ghost"
                                   size="icon-xs"
                                   type="button">
-                                  <ng-icon hlm name="lucideX" size="xs" />
+                                  <ng-icon class="text-[length:--spacing(3)]" name="lucideX" />
                                 </button>
                               </div>
                             </span>
@@ -212,7 +212,7 @@ import {VersionCheckInfo} from './version-check-info';
               type="button"
               hlmBtn
               variant="outline">
-              <ng-icon hlm size="sm" name="bootstrapXCircleFill" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXCircleFill" />
               <span class="text-lg">{{ 'general.disable' | transloco }}</span>
             </button>
           </div>
@@ -236,7 +236,7 @@ import {VersionCheckInfo} from './version-check-info';
     HlmCardImports,
     HlmButtonImports,
     HlmTooltipImports,
-    HlmIconImports,
+    NgIcon,
     HlmBadgeImports,
     HlmLabelImports,
     HlmSwitchImports,

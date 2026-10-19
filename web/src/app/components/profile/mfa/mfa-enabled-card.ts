@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, output} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 @Component({
   template: `
@@ -15,7 +15,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
       <div class="mb-6 space-y-3" hlmCardContent>
         <div class="bg-primary/5 border-primary/20 flex items-center gap-3 rounded-lg border p-4">
           <div class="bg-primary/10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-            <ng-icon name="lucideCheck" hlm />
+            <ng-icon class="text-[length:--spacing(6)]" name="lucideCheck" />
           </div>
           <div class="flex-1">
             <p class="text-foreground text-sm font-medium">
@@ -29,7 +29,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 
         <div class="bg-muted/50 border-border flex items-center gap-3 rounded-lg border p-4">
           <div class="bg-muted flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-            <ng-icon name="lucideLock" hlm />
+            <ng-icon class="text-[length:--spacing(6)]" name="lucideLock" />
           </div>
           <div class="flex-1">
             <p class="text-foreground text-sm font-medium">
@@ -50,7 +50,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   `,
   selector: 'pu-mfa-enabled-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, HlmButtonImports, HlmCardImports, HlmIconImports],
+  imports: [TranslocoPipe, HlmButtonImports, HlmCardImports, NgIcon],
 })
 export class MFAEnabledCard {
   disableMFA = output();

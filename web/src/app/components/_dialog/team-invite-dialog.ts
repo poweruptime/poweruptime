@@ -3,10 +3,10 @@ import {Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnDialogRef, injectBrnDialogContext} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
@@ -20,7 +20,7 @@ import {TeamUsersStore} from '@app/services';
     <div class="flex flex-1 flex-col gap-4 overflow-y-auto">
       <div class="flex flex-col gap-2">
         <div class="flex size-11 items-center justify-center rounded-full border">
-          <ng-icon hlm name="lucideUserPlus" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideUserPlus" />
         </div>
         <div class="flex flex-col gap-1">
           <h2 class="text-lg leading-none font-semibold">{{ 'team.invite' | transloco }}</h2>
@@ -88,7 +88,7 @@ import {TeamUsersStore} from '@app/services';
                   type="button"
                   variant="ghost"
                   size="icon">
-                  <ng-icon hlm name="lucideTrash2" size="sm" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="lucideTrash2" />
                 </button>
               }
             </div>
@@ -126,7 +126,7 @@ import {TeamUsersStore} from '@app/services';
             @if (teamUsersStore.isPending()) {
               <hlm-spinner class="mr-2 size-4" />
             }
-            <ng-icon hlm size="sm" name="lucideSend" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideSend" />
             {{ 'general.invite' | transloco }}
           </button>
         </div>
@@ -142,7 +142,7 @@ import {TeamUsersStore} from '@app/services';
     ReactiveFormsModule,
     TranslocoPipe,
     AsyncPipe,
-    HlmIconImports,
+    NgIcon,
     HlmButtonImports,
     HlmSelectImports,
     HlmInputGroupImports,

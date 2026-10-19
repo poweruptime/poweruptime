@@ -2,8 +2,8 @@ import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {InstanceSettingsStore, InstanceSettingsVersionCheckStore} from '@app/services';
 
@@ -22,7 +22,7 @@ import {InstanceSettingsStore, InstanceSettingsVersionCheckStore} from '@app/ser
     }
   `,
   selector: 'pu-version-check-badge',
-  imports: [HlmIconImports, HlmBadgeImports, RouterLink, DatePipe],
+  imports: [NgIcon, HlmBadgeImports, RouterLink, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionCheckBadge {

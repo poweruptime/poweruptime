@@ -9,10 +9,10 @@ import {
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -65,7 +65,7 @@ import {
                 variant="outline"
                 size="icon">
                 <!--              [class.rotate-90]="expanded()"-->
-                <ng-icon hlm name="bootstrapFilter" size="sm" />
+                <ng-icon class="text-[length:--spacing(4)]" name="bootstrapFilter" />
               </button>
             </div>
 
@@ -133,7 +133,7 @@ import {
     MonitorsEmpty,
     HlmButtonImports,
     HlmCollapsibleImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
     HlmCardImports,
   ],

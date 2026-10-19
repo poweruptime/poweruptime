@@ -11,10 +11,10 @@ import {FormsModule} from '@angular/forms';
 
 import {Subject} from 'rxjs';
 
+import {NgIcon} from '@ng-icons/core';
 import {computedPrevious} from '@spartan-ng/brain/core';
 import {BrnSelect} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmLabel} from '@spartan-ng/helm/label';
 import {HlmPaginationImports} from '@spartan-ng/helm/pagination';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -78,24 +78,24 @@ export interface BrnDataTablePageEvent {
             @if (_showFirstLastButtons) {
               <li [class]="computedPreviousClass()" hlmPaginationItem>
                 <button (click)="firstPage()" hlmBtn size="icon" variant="ghost">
-                  <ng-icon hlm size="sm" name="lucideChevronFirst" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="lucideChevronFirst" />
                 </button>
               </li>
             }
             <li [class]="computedPreviousClass()" hlmPaginationItem>
               <button (click)="previousPage()" hlmBtn size="icon" variant="ghost">
-                <ng-icon hlm size="sm" name="lucideChevronLeft" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideChevronLeft" />
               </button>
             </li>
             <li [class]="computedNextClass()" hlmPaginationItem>
               <button (click)="nextPage()" hlmBtn size="icon" variant="ghost">
-                <ng-icon hlm size="sm" name="lucideChevronRight" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideChevronRight" />
               </button>
             </li>
             @if (_showFirstLastButtons) {
               <li [class]="computedNextClass()" hlmPaginationItem>
                 <button (click)="lastPage()" hlmBtn size="icon" variant="ghost">
-                  <ng-icon hlm size="sm" name="lucideChevronLast" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="lucideChevronLast" />
                 </button>
               </li>
             }
@@ -109,7 +109,7 @@ export interface BrnDataTablePageEvent {
     HlmButtonImports,
     HlmPaginationImports,
     HlmSelectImports,
-    HlmIconImports,
+    NgIcon,
     FormsModule,
     HlmLabel,
     BrnSelect,

@@ -14,10 +14,10 @@ import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/for
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAutocompleteImports} from '@spartan-ng/helm/autocomplete';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {DfxLowerCaseExceptFirstLettersPipe, StopPropagationDirective} from 'dfx-helper';
@@ -63,7 +63,7 @@ import {Tag} from '@app/directives';
           hlmBtn
           variant="outline"
           type="button">
-          <ng-icon hlm name="lucideCirclePlus" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
         </button>
       </div>
 
@@ -85,7 +85,7 @@ import {Tag} from '@app/directives';
                 variant="ghost"
                 size="icon-xs"
                 type="button">
-                <ng-icon hlm name="lucideX" size="xs" />
+                <ng-icon class="text-[length:--spacing(3)]" name="lucideX" />
               </button>
             </div>
           </button>
@@ -128,7 +128,7 @@ import {Tag} from '@app/directives';
     TranslocoPipe,
     HlmAutocompleteImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
     HlmDropdownMenuImports,
     HlmSpinnerImports,

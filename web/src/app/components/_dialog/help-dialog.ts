@@ -2,10 +2,10 @@ import {httpResource} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnDialogClose} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSpinnerImports} from '@spartan-ng/helm/spinner';
 
 import {IsSystemAdmin} from '@app/directives';
@@ -38,14 +38,14 @@ export interface LicenseData {
       @if (changelogPending) {
         <hlm-spinner />
       } @else {
-        <ng-icon hlm name="lucideScrollText" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="lucideScrollText" />
       }
       Changelog
     </button>
   `,
   selector: 'pu-help-dialog-changelog-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmButtonImports, HlmIconImports, HlmSpinnerImports],
+  imports: [HlmButtonImports, NgIcon, HlmSpinnerImports],
 })
 export class HelpDialogChangelogButton {
   protected readonly changelogStore = inject(ChangelogStore);
@@ -66,7 +66,7 @@ export class HelpDialogChangelogButton {
         rel="noopener"
         hlmBtn
         variant="ghost">
-        <ng-icon hlm name="lucideMessageCircle" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="lucideMessageCircle" />
         Feedback
       </a>
       <a
@@ -76,7 +76,7 @@ export class HelpDialogChangelogButton {
         rel="noopener"
         hlmBtn
         variant="ghost">
-        <ng-icon hlm name="lucideMessageSquare" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="lucideMessageSquare" />
         Forum
       </a>
       <hr />
@@ -85,7 +85,7 @@ export class HelpDialogChangelogButton {
         type="button"
         hlmBtn
         variant="ghost">
-        <ng-icon hlm name="bootstrapInfoCircleFill" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapInfoCircleFill" />
         <div class="flex items-center gap-2">
           <span>Version</span>
           <span class="bg-secondary rounded px-2 py-0.5 font-mono text-xs">{{ version }}</span>
@@ -125,7 +125,7 @@ export class HelpDialogChangelogButton {
     IsSystemAdmin,
     HlmDialogImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     BrnDialogClose,
     LicenseDialog,
     DebugInfoDialog,

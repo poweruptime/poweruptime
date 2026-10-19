@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, inject, input, signal} from '@angular/core';
 
 import {TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {toast} from '@spartan-ng/brain/sonner';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {cl_copy} from 'dfts-helper';
 
 @Component({
@@ -11,19 +11,17 @@ import {cl_copy} from 'dfts-helper';
     <button (click)="copy()" size="sm" type="button" hlmBtn variant="secondary">
       <ng-content />
       @if (state() === 'BUTTON') {
-        <ng-icon hlm name="lucideCopy" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="lucideCopy" />
       } @else {
         <ng-icon
-          class="text-blue-700 dark:text-blue-500"
-          hlm
-          name="lucideClipboardCheck"
-          size="sm" />
+          class="text-[length:--spacing(4)] text-blue-700 dark:text-blue-500"
+          name="lucideClipboardCheck" />
       }
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'pu-copy-button',
-  imports: [HlmIconImports, HlmButtonImports],
+  imports: [NgIcon, HlmButtonImports],
 })
 export class CopyButton {
   content = input.required<string | undefined | null>();

@@ -3,9 +3,9 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -100,7 +100,7 @@ import {
             hlmLabel>
             <div class="inline-flex items-center gap-2">
               <div class="bg-secondary flex h-9 w-9 items-center justify-center rounded-md">
-                <ng-icon hlm size="sm" name="lucideRefreshCcw" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideRefreshCcw" />
               </div>
               <div class="flex flex-col gap-2">
                 <span class="text-sm leading-4">{{ 'user.edit.updatePassword' | transloco }}</span>
@@ -185,7 +185,7 @@ import {
             hlmLabel>
             <div class="inline-flex items-center gap-2">
               <div class="bg-secondary flex h-9 w-9 items-center justify-center rounded-md">
-                <ng-icon hlm size="sm" name="lucideAxe" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideAxe" />
               </div>
               <div class="flex flex-col gap-2">
                 <span class="text-sm leading-4">
@@ -268,7 +268,7 @@ import {
             hlmLabel>
             <div class="inline-flex items-center gap-2">
               <div class="bg-secondary flex h-9 w-9 items-center justify-center rounded-md">
-                <ng-icon hlm size="sm" name="lucideMail" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideMail" />
               </div>
               <div class="flex flex-col gap-2">
                 <span class="text-sm leading-4">{{ 'user.edit.sendInviteEmail' | transloco }}</span>
@@ -295,7 +295,7 @@ import {
     HlmSwitchImports,
     HlmLabelImports,
     HlmInputGroupImports,
-    HlmIconImports,
+    NgIcon,
     HlmBadgeImports,
     HlmFieldImports,
   ],

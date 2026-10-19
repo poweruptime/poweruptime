@@ -13,8 +13,8 @@ import {
 import {FormsModule} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmPopoverImports} from '@spartan-ng/helm/popover';
 import {HlmProgressImports} from '@spartan-ng/helm/progress';
@@ -54,12 +54,12 @@ import {TeamsStore} from '@app/services';
         </div>
       </div>
       @if (isSelected()) {
-        <ng-icon hlm size="lg" name="lucideCheck" />
+        <ng-icon class="text-[length:--spacing(8)]" name="lucideCheck" />
       }
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmIconImports, Pattern, BackendImagePipe, NgOptimizedImage, HlmAvatarImports],
+  imports: [NgIcon, Pattern, BackendImagePipe, NgOptimizedImage, HlmAvatarImports],
 })
 export class TeamItemComponent {
   team = input.required<BackendType['TeamResponse']>();
@@ -76,7 +76,7 @@ export class TeamItemComponent {
       <div class="grid w-80 gap-6" *hlmPopoverPortal="let ctx" hlmPopoverContent>
         <div class="full" hlmInputGroup>
           <div hlmInputGroupAddon>
-            <ng-icon hlm name="bootstrapSearch" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSearch" />
           </div>
           <input
             [(ngModel)]="searchFilter"
@@ -84,7 +84,7 @@ export class TeamItemComponent {
             hlmInputGroupInput />
           @if (searchFilter().length > 0) {
             <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXLg" />
               <span class="sr-only">{{ 'general.clear' | transloco }}</span>
             </button>
           }
@@ -95,7 +95,7 @@ export class TeamItemComponent {
         @if (teamsStore.personalTeam(); as personalTeam) {
           <div class="grid gap-2">
             <div class="flex items-center gap-2">
-              <ng-icon hlm size="sm" name="lucideUser" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideUser" />
               <span class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                 {{ 'nav.teamSelect.personal' | transloco }}
               </span>
@@ -112,7 +112,7 @@ export class TeamItemComponent {
         @if (entities.length > 0) {
           <div class="grid gap-2">
             <div class="flex items-center gap-2">
-              <ng-icon hlm size="sm" name="lucideUsers" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideUsers" />
               <span class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                 {{ 'general.teams' | transloco }}
               </span>
@@ -146,7 +146,7 @@ export class TeamItemComponent {
     FormsModule,
     TranslocoPipe,
     HlmPopoverImports,
-    HlmIconImports,
+    NgIcon,
     HlmInputGroupImports,
     HlmProgressImports,
   ],

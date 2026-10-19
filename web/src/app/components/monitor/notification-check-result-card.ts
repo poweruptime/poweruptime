@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
@@ -14,11 +14,11 @@ import {NotificationList} from './notification/notification-list';
     <hlm-tabs class="w-full" [tab]="ncTab()" (tabActivated)="ncTab.set($event)">
       <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
         <button class="gap-1.5" type="button" hlmTabsTrigger="notifications">
-          <ng-icon hlm name="bootstrapBell" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBell" />
           {{ 'general.notifications' | transloco }}
         </button>
         <button class="gap-1.5" type="button" hlmTabsTrigger="checkResults">
-          <ng-icon hlm name="bootstrapListStars" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapListStars" />
           {{ 'general.checks' | transloco }}
         </button>
       </hlm-tabs-list>
@@ -46,7 +46,7 @@ import {NotificationList} from './notification/notification-list';
     NotificationList,
     TranslocoPipe,
     HlmTabsImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
   ],
 })

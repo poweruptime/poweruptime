@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {NgIcon} from '@ng-icons/core';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
 
@@ -15,15 +15,15 @@ import {RecycleBinStatusPageList} from '@app/components/status-page';
       <div class="overflow-x-auto overflow-y-hidden pb-2">
         <hlm-tabs-list class="h-auto p-0.5" aria-label="Notifications & check results tabs">
           <button class="gap-1.5" type="button" hlmTabsTrigger="monitors">
-            <ng-icon hlm name="lucideScreenShare" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideScreenShare" />
             {{ 'general.monitors' | transloco }}
           </button>
           <button class="gap-1.5" type="button" hlmTabsTrigger="notificationMethods">
-            <ng-icon hlm name="bootstrapBell" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBell" />
             {{ 'general.notificationMethods' | transloco }}
           </button>
           <button class="gap-1.5" type="button" hlmTabsTrigger="statusPages">
-            <ng-icon hlm name="bootstrapChatLeftQuote" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapChatLeftQuote" />
             {{ 'general.statusPages' | transloco }}
           </button>
         </hlm-tabs-list>
@@ -47,7 +47,7 @@ import {RecycleBinStatusPageList} from '@app/components/status-page';
     RecycleBinNotificationMethodPage,
     RecycleBinStatusPageList,
     TranslocoPipe,
-    HlmIconImports,
+    NgIcon,
     HlmTabsImports,
   ],
 })

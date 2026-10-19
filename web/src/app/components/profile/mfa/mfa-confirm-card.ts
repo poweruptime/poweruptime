@@ -2,10 +2,10 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnInputOtpImports} from '@spartan-ng/brain/input-otp';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputOtpImports} from '@spartan-ng/helm/input-otp';
 import {QRCodeComponent} from 'dfx-qrcode';
 
@@ -71,7 +71,7 @@ import {CopyIconButton} from '../../copy-icon-button';
 
           <button [disabled]="!confirmFormGroupValid()" hlmBtn type="submit">
             {{ 'mfa.confirm.confirm' | transloco }}
-            <ng-icon hlm size="sm" name="bootstrapArrowRight" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowRight" />
           </button>
         </form>
       </div>
@@ -87,7 +87,7 @@ import {CopyIconButton} from '../../copy-icon-button';
     HlmInputOtpImports,
     BrnInputOtpImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
   ],
 })

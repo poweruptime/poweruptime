@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, signal} from '@angular/core';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {toast} from '@spartan-ng/brain/sonner';
 import {BrnTooltipPosition} from '@spartan-ng/brain/tooltip';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {cl_copy} from 'dfts-helper';
 
@@ -21,12 +21,11 @@ import {cl_copy} from 'dfts-helper';
       hlmBtn
       variant="ghost">
       @if (state() === 'BUTTON') {
-        <ng-icon [size]="_size" hlm name="lucideCopy" />
+        <ng-icon [class]="iconClass()" name="lucideCopy" />
       } @else {
         <ng-icon
           class="text-blue-700 dark:text-blue-500"
-          [size]="_size"
-          hlm
+          [class]="iconClass()"
           name="lucideClipboardCheck" />
       }
     </button>
@@ -36,7 +35,7 @@ import {cl_copy} from 'dfts-helper';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'pu-copy-icon-button',
-  imports: [TranslocoPipe, HlmIconImports, HlmTooltipImports, HlmButtonImports],
+  imports: [TranslocoPipe, NgIcon, HlmTooltipImports, HlmButtonImports],
 })
 export class CopyIconButton {
   private readonly translocoService = inject(TranslocoService);
@@ -47,6 +46,9 @@ export class CopyIconButton {
 
   protected readonly state = signal<'BUTTON' | 'CHECK'>('BUTTON');
   protected readonly classSize = computed(() => (this.size() === 'sm' ? 'size-8' : 'size-6'));
+  protected readonly iconClass = computed(() =>
+    this.size() === 'sm' ? 'text-[length:--spacing(4)]' : 'text-[length:--spacing(3)]',
+  );
 
   protected copy(): void {
     const content = this.content();

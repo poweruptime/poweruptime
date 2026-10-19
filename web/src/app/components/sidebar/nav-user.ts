@@ -2,11 +2,11 @@ import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/cor
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {InitialsPipe} from '@spartan-ng/brain/avatar';
 import {HlmAvatarImports} from '@spartan-ng/helm/avatar';
 import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSidebarImports, HlmSidebarService} from '@spartan-ng/helm/sidebar';
 import {ThemeService} from 'dfx-theme';
 
@@ -49,7 +49,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
             <span class="truncate font-medium">{{ profileStore.name() }}</span>
             <span class="truncate text-xs">{{ profileStore.email() }}</span>
           </div>
-          <ng-icon class="ml-auto text-base" hlm name="bootstrapGear" />
+          <ng-icon class="ml-auto text-[length:--spacing(6)]" name="bootstrapGear" />
         </button>
       </li>
     </ul>
@@ -74,12 +74,12 @@ import {AboutDialog} from '../_dialog/about-dialog';
         }
         <hlm-dropdown-menu-group>
           <button (click)="openAbout()" type="button" hlmDropdownMenuItem>
-            <ng-icon hlm size="sm" name="bootstrapInfoCircle" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapInfoCircle" />
             {{ 'general.about' | transloco }}
           </button>
           @if (environment.channel === 'dev') {
             <button type="button" routerLink="/dev" hlmDropdownMenuItem>
-              <ng-icon hlm size="sm" name="bootstrapCodeSlash" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapCodeSlash" />
               {{ 'profile.devThings' | transloco }}
             </button>
           }
@@ -87,7 +87,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
         <hlm-dropdown-menu-separator />
         <hlm-dropdown-menu-group>
           <button type="button" hlmDropdownMenuItem routerLink="/profile">
-            <ng-icon hlm size="sm" name="bootstrapGear" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGear" />
             {{ 'profile.settings' | transloco }}
           </button>
           <button
@@ -96,7 +96,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
             hlmDropdownMenuItem
             side="right"
             align="start">
-            <ng-icon hlm size="sm" name="bootstrapPaintBucket" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPaintBucket" />
             {{ 'general.theme' | transloco }}
             <hlm-dropdown-menu-item-sub-indicator />
           </button>
@@ -106,14 +106,14 @@ import {AboutDialog} from '../_dialog/about-dialog';
             type="button"
             side="right"
             align="start">
-            <ng-icon hlm size="sm" name="bootstrapTranslate" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTranslate" />
             {{ 'general.language' | transloco }}
             <hlm-dropdown-menu-item-sub-indicator />
           </button>
         </hlm-dropdown-menu-group>
         <hlm-dropdown-menu-separator />
         <button (click)="authStore.logout()" type="button" hlmDropdownMenuItem>
-          <ng-icon hlm size="sm" name="lucideLogOut" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideLogOut" />
           {{ 'general.logout' | transloco }}
         </button>
       </hlm-dropdown-menu>
@@ -130,7 +130,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
             type="button">
             <hlm-dropdown-menu-checkbox-indicator />
             {{ theme.viewValue }}
-            <ng-icon class="ms-2" [name]="theme.icon" hlm size="sm" />
+            <ng-icon class="ms-2 text-[length:--spacing(4)]" [name]="theme.icon" />
           </button>
         }
       </hlm-dropdown-menu-sub>
@@ -157,7 +157,7 @@ import {AboutDialog} from '../_dialog/about-dialog';
   imports: [
     HlmSidebarImports,
     HlmAvatarImports,
-    HlmIconImports,
+    NgIcon,
     HlmDropdownMenuImports,
     TranslocoPipe,
     RouterLink,

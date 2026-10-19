@@ -11,10 +11,10 @@ import {
 import {ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -104,7 +104,7 @@ import {TableLoadingBar} from '../table-loading-bar';
                     type="text"
                     placeholder="GitHubUser1234" />
                   <div hlmInputGroupAddon>
-                    <ng-icon hlm size="sm" name="bootstrapGithub" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGithub" />
                   </div>
                 </div>
                 @let supportLookup = form.controls.supportLookup.errors;
@@ -144,7 +144,7 @@ import {TableLoadingBar} from '../table-loading-bar';
               type="button"
               hlmBtn
               variant="outline">
-              <ng-icon hlm size="sm" name="bootstrapXCircleFill" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXCircleFill" />
               <span class="text-lg">{{ 'general.disable' | transloco }}</span>
             </button>
           </div>
@@ -184,7 +184,7 @@ import {TableLoadingBar} from '../table-loading-bar';
     HlmCardImports,
     HlmTooltipImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmLabelImports,
     HlmSwitchImports,
     HlmInputGroupImports,

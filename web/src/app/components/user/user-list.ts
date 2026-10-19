@@ -3,8 +3,8 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -22,7 +22,7 @@ import {UserTable} from './user-table';
     <div class="grid gap-2">
       <pu-table-filter>
         <button type="button" hlmBtn variant="default" routerLink="new" head>
-          <ng-icon hlm size="sm" name="bootstrapPersonFillAdd" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPersonFillAdd" />
           {{ 'instanceSettings.inviteUser' | transloco }}
         </button>
 
@@ -46,7 +46,7 @@ import {UserTable} from './user-table';
 
         <div class="w-72" hlmInputGroup>
           <div hlmInputGroupAddon>
-            <ng-icon hlm name="bootstrapSearch" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSearch" />
           </div>
           <input
             [(ngModel)]="searchFilter"
@@ -54,7 +54,7 @@ import {UserTable} from './user-table';
             hlmInputGroupInput />
           @if ((searchFilter()?.length ?? 0) > 0) {
             <button (click)="searchFilter.set('')" hlmInputGroupButton type="button">
-              <ng-icon hlm name="bootstrapXLg" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXLg" />
               <span class="sr-only">{{ 'general.clear' | transloco }}</span>
             </button>
           }
@@ -74,7 +74,7 @@ import {UserTable} from './user-table';
     UserTable,
     TableFilter,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmLabelImports,
     HlmSwitchImports,
     HlmSelectImports,

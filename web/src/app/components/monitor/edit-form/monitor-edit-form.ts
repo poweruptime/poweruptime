@@ -9,11 +9,11 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {distinctUntilChanged} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -306,7 +306,7 @@ const times = [
                     routerLink="../../notification-methods/new"
                     target="_blank">
                     {{ 'notificationMethod.edit.create' | transloco }}
-                    <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
                   </a>
                 </div>
               </div>
@@ -345,7 +345,7 @@ const times = [
     TranslocoPipe,
     HlmCardImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmLabelImports,
     HlmSwitchImports,
     HlmProgressImports,

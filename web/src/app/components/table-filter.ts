@@ -5,10 +5,10 @@ import {ActivatedRoute, Params} from '@angular/router';
 
 import {map, switchMap} from 'rxjs';
 
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCollapsibleImports} from '@spartan-ng/helm/collapsible';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {injectIsMobile} from 'dfx-helper';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -41,7 +41,10 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
             hlmCollapsibleTrigger
             variant="outline"
             size="icon">
-            <ng-icon [class.rotate-90]="expanded()" hlm name="bootstrapFilter" size="sm" />
+            <ng-icon
+              class="text-[length:--spacing(4)]"
+              [class.rotate-90]="expanded()"
+              name="bootstrapFilter" />
             @if (hasActiveFilters) {
               <span
                 class="absolute -top-2 left-full flex h-5 w-5 -translate-x-1/2 items-center justify-center rounded-full bg-red-600 px-1 py-[1px] font-medium text-white">
@@ -60,13 +63,7 @@ import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
   `,
   selector: 'pu-table-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    HlmIconImports,
-    HlmButtonImports,
-    HlmCollapsibleImports,
-    HlmBadgeImports,
-    NgTemplateOutlet,
-  ],
+  imports: [NgIcon, HlmButtonImports, HlmCollapsibleImports, HlmBadgeImports, NgTemplateOutlet],
 })
 export class TableFilter {
   private readonly activatedRoute = inject(ActivatedRoute);

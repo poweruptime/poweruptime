@@ -2,10 +2,10 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogService} from '@spartan-ng/helm/dialog';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {TeamInviteDialog} from '../../_dialog/team-invite-dialog';
 
@@ -24,7 +24,7 @@ import {TeamInviteDialog} from '../../_dialog/team-invite-dialog';
       </div>
       <div class="flex gap-2" hlmEmptyContent>
         <a routerLink="../invite" hlmBtn type="button">
-          <ng-icon hlm size="sm" name="lucideUserPlus" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideUserPlus" />
           {{ 'team.invite' | transloco }}
         </a>
       </div>
@@ -32,7 +32,7 @@ import {TeamInviteDialog} from '../../_dialog/team-invite-dialog';
   `,
   selector: 'pu-team-invites-empty',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, HlmEmptyImports, HlmIconImports, HlmButtonImports, RouterLink],
+  imports: [TranslocoPipe, HlmEmptyImports, NgIcon, HlmButtonImports, RouterLink],
 })
 export class TeamInvitesEmpty {
   private readonly dialog = inject(HlmDialogService);

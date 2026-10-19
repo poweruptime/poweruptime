@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 
 import {FileDragDropDirective} from '@dafnik/file';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {BackendType} from '@app/api';
 import {BackendImagePipe} from '@app/pipes';
@@ -43,7 +43,7 @@ import {BACKEND_API_URL} from '@app/util';
               height="140"
               alt="Preview of uploaded image" />
           } @else {
-            <ng-icon class="opacity-60" hlm name="lucideCircleUserRound" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)] opacity-60" name="lucideCircleUserRound" />
           }
         </button>
         @if (_fileToShow) {
@@ -53,7 +53,7 @@ import {BACKEND_API_URL} from '@app/util';
             type="button"
             hlmBtn
             size="icon">
-            <ng-icon hlm name="lucideX" size="xs" />
+            <ng-icon class="text-[length:--spacing(3)]" name="lucideX" />
           </button>
         }
         <input
@@ -71,13 +71,7 @@ import {BACKEND_API_URL} from '@app/util';
     </div>
   `,
   selector: 'pu-profile-picture-upload',
-  imports: [
-    FileDragDropDirective,
-    HlmButtonImports,
-    HlmIconImports,
-    NgOptimizedImage,
-    BackendImagePipe,
-  ],
+  imports: [FileDragDropDirective, HlmButtonImports, NgIcon, NgOptimizedImage, BackendImagePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePictureUpload {

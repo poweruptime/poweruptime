@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnDialogClose} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmItemImports} from '@spartan-ng/helm/item';
 
 import {InfoStore} from '@app/services';
@@ -38,7 +38,7 @@ import {SupporterBadge} from '../supporter-badge';
               <div hlmItemActions>
                 <a hlmBtn href="https://github.com/sponsors/Dafnik" target="_blank" rel="noopener">
                   GitHub Sponsors
-                  <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
                 </a>
               </div>
             }
@@ -49,7 +49,7 @@ import {SupporterBadge} from '../supporter-badge';
           <ul class="space-y-2">
             @for (feature of features; track $index) {
               <li class="flex items-start gap-2 text-sm">
-                <ng-icon name="lucideCircleCheck" hlm size="sm" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideCircleCheck" />
                 <span>{{ feature }}</span>
               </li>
             }
@@ -69,7 +69,7 @@ import {SupporterBadge} from '../supporter-badge';
               target="_blank"
               rel="noopener noreferrer">
               <button type="button" hlmBtn variant="outline">
-                <ng-icon hlm size="sm" name="bootstrapGithub" />
+                <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGithub" />
                 View on GitHub
               </button>
             </a>
@@ -95,7 +95,7 @@ import {SupporterBadge} from '../supporter-badge';
     HlmButtonImports,
     BrnDialogClose,
     SupporterBadge,
-    HlmIconImports,
+    NgIcon,
     HlmItemImports,
     HlmCardImports,
   ],

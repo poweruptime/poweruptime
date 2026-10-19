@@ -10,8 +10,8 @@ import {
 } from '@angular/cdk/scrolling';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmProgressImports} from '@spartan-ng/helm/progress';
 import {a_chunk} from 'dfts-helper';
@@ -26,14 +26,14 @@ import {TailwindBreakpoints} from '@app/services/util';
     <div class="flex flex-wrap items-center gap-4 px-4 py-2">
       @if (infoStore.isUserAllowedToCreateTeams()) {
         <a class="w-full md:w-48" hlmBtn routerLink="new">
-          <ng-icon name="lucideCirclePlus" hlm size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
           {{ 'team.create.create' | transloco }}
         </a>
       }
 
       <div class="w-full md:w-72" hlmInputGroup>
         <div hlmInputGroupAddon>
-          <ng-icon hlm name="bootstrapSearch" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapSearch" />
         </div>
         <input
           [(ngModel)]="nameFilter"
@@ -41,7 +41,7 @@ import {TailwindBreakpoints} from '@app/services/util';
           hlmInputGroupInput />
         @if ((nameFilter()?.length ?? 0) > 0) {
           <button (click)="nameFilter.set('')" hlmInputGroupButton type="button">
-            <ng-icon hlm name="bootstrapXLg" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapXLg" />
             <span class="sr-only">{{ 'general.clear' | transloco }}</span>
           </button>
         }
@@ -84,7 +84,7 @@ import {TailwindBreakpoints} from '@app/services/util';
     TranslocoPipe,
     FormsModule,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmInputGroupImports,
     HlmProgressImports,
   ],

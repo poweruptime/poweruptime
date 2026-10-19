@@ -3,12 +3,12 @@ import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAccordionImports} from '@spartan-ng/helm/accordion';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTooltipImports} from '@spartan-ng/helm/tooltip';
 import {linkedQueryParam, paramToBoolean} from 'ngxtension/linked-query-param';
 
@@ -23,7 +23,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
       @if (notificationDetailStore.notification(); as notification) {
         <div>
           <button (click)="goBack()" hlmBtn variant="ghost" type="button">
-            <ng-icon hlm size="sm" name="bootstrapArrowLeft" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowLeft" />
             <span>{{ notification.monitor.name }}</span>
           </button>
         </div>
@@ -42,7 +42,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
             hlmBtn
             variant="ghost">
             {{ 'notification.detail.openCheckResult' | transloco }}
-            <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
           </a>
         </div>
 
@@ -60,7 +60,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
                 hlmBtn
                 size="icon-sm"
                 type="button">
-                <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+                <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowsExpand" />
               </button>
               <ng-template #tooltip>
                 <span>
@@ -99,7 +99,10 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
 
                     @if (subNotification.error; as error) {
                       <div hlmAlert variant="destructive">
-                        <ng-icon hlm hlmAlertIcon name="lucideCircleAlert" />
+                        <ng-icon
+                          class="text-[length:--spacing(6)]"
+                          hlmAlertIcon
+                          name="lucideCircleAlert" />
                         <h4 hlmAlertTitle>{{ 'general.error' | transloco }}</h4>
                         <p hlmAlertDescription>{{ error }}</p>
                       </div>
@@ -143,7 +146,7 @@ import {NotificationDetailStore, SubNotificationsStore} from '@app/services';
     TranslocoPipe,
     HlmButtonImports,
     HlmEmptyImports,
-    HlmIconImports,
+    NgIcon,
     HlmAccordionImports,
     HlmBadgeImports,
     HlmTooltipImports,

@@ -28,12 +28,12 @@ import {
 import {map, of} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmAlertImports} from '@spartan-ng/helm/alert';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
@@ -172,7 +172,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 variant="outline"
                 form="domainNameForm"
                 type="submit">
-                <ng-icon hlm name="lucideCirclePlus" size="sm" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
               </button>
             </div>
 
@@ -190,7 +190,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                       variant="ghost"
                       size="icon-xs"
                       type="button">
-                      <ng-icon hlm name="lucideX" size="xs" />
+                      <ng-icon class="text-[length:--spacing(3)]" name="lucideX" />
                     </button>
                   </div>
                 </span>
@@ -244,7 +244,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
               hlmBtn
               variant="secondary"
               type="button">
-              <ng-icon hlm size="sm" name="lucideCirclePlus" />
+              <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
               {{ 'statusPage.edit.group.add' | transloco }}
             </button>
           </div>
@@ -257,9 +257,9 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
             size="icon-sm"
             type="button">
             @if (isCollapsed) {
-              <ng-icon hlm size="sm" name="bootstrapArrowsExpand" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowsExpand" />
             } @else {
-              <ng-icon hlm size="sm" name="bootstrapArrowsCollapse" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowsCollapse" />
             }
           </button>
           <ng-template #tooltip>
@@ -293,7 +293,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                 <div class="flex items-center justify-between text-xl">
                   <div class="inline-flex items-center gap-2">
                     <div class="inline-flex min-w-6 items-center hover:cursor-move" cdkDragHandle>
-                      <ng-icon hlm name="bootstrapGripVertical" />
+                      <ng-icon class="text-[length:--spacing(6)]" name="bootstrapGripVertical" />
                     </div>
 
                     <hlm-field>
@@ -320,7 +320,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
                     variant="ghost"
                     size="icon-sm"
                     type="button">
-                    <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                    <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
                   </button>
                 </div>
 
@@ -380,7 +380,7 @@ import {StatusPageEditFormGroupMonitors} from './status-page-edit-form-group-mon
     HlmCardImports,
     HlmTooltipImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmInputGroupImports,
     HlmLabelImports,
     HlmInputImports,

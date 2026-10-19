@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {InfoStore, InstanceSettingsVersionCheckStore} from '@app/services';
 
@@ -24,7 +24,7 @@ import {CopyIconButton} from '../copy-icon-button';
             <span class="font-mono" hlmBadge variant="outline">
               {{ currentVersion }}
             </span>
-            <ng-icon hlm name="bootstrapArrowRight" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowRight" />
             <span
               class="bg-blue-500 font-mono text-white dark:bg-blue-600"
               variant="secondary"
@@ -43,7 +43,7 @@ import {CopyIconButton} from '../copy-icon-button';
               hlmBtn
               variant="outline"
               type="button">
-              <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowClockwise" />
               Check for Updates
             </button>
 
@@ -53,7 +53,7 @@ import {CopyIconButton} from '../copy-icon-button';
                 : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
             <a [href]="link" hlmBtn variant="outline" target="_blank" rel="noopener">
               View on GitHub
-              <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
             </a>
           </div>
         </div>
@@ -73,7 +73,7 @@ import {CopyIconButton} from '../copy-icon-button';
       </div>
     } @else {
       <div class="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
-        <ng-icon hlm name="bootstrapCheck2Circle" />
+        <ng-icon class="text-[length:--spacing(6)]" name="bootstrapCheck2Circle" />
         <span class="font-medium">You're running the latest version</span>
       </div>
 
@@ -88,7 +88,7 @@ import {CopyIconButton} from '../copy-icon-button';
           hlmBtn
           variant="outline"
           type="button">
-          <ng-icon hlm size="sm" name="bootstrapArrowClockwise" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowClockwise" />
           Check for Updates
         </button>
       </div>
@@ -98,7 +98,7 @@ import {CopyIconButton} from '../copy-icon-button';
     class: 'flex flex-col gap-4',
   },
   selector: 'pu-version-check-info',
-  imports: [CopyIconButton, HlmCardImports, HlmIconImports, HlmBadgeImports, HlmButtonImports],
+  imports: [CopyIconButton, HlmCardImports, NgIcon, HlmBadgeImports, HlmButtonImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionCheckInfo {

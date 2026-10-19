@@ -2,10 +2,10 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputImports} from '@spartan-ng/helm/input';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmSelectImports} from '@spartan-ng/helm/select';
@@ -144,7 +144,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
             variant="outline"
             form="matchForm"
             type="submit">
-            <ng-icon hlm name="lucideCirclePlus" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideCirclePlus" />
           </button>
         </div>
 
@@ -162,7 +162,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
                     variant="ghost"
                     size="icon-xs"
                     type="button">
-                    <ng-icon hlm name="lucideX" size="xs" />
+                    <ng-icon class="text-[length:--spacing(3)]" name="lucideX" />
                   </button>
                 </div>
               </div>
@@ -182,7 +182,7 @@ import {MonitorEditFormDataService} from './monitor-edit-form-data.service';
     HlmBadgeImports,
     HlmButtonImports,
     HlmInputGroupImports,
-    HlmIconImports,
+    NgIcon,
     HlmTooltipImports,
     HlmFieldImports,
   ],

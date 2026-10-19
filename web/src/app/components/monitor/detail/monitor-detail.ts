@@ -2,9 +2,9 @@ import {ChangeDetectionStrategy, Component, computed, inject, input, signal} fro
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmBadgeImports} from '@spartan-ng/helm/badge';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {format} from '@std/fmt/duration';
 import {DfxCutPipe} from 'dfx-helper';
@@ -81,7 +81,9 @@ import {
           <div class="flex flex-wrap gap-3">
             @if (monitor.retries; as retries) {
               <div class="flex items-center gap-2" hlmBadge variant="outline">
-                <ng-icon class="text-primary" hlm name="bootstrapArrowRepeat" size="xs" />
+                <ng-icon
+                  class="text-primary text-[length:--spacing(3)]"
+                  name="bootstrapArrowRepeat" />
                 <span>{{ 'monitor.details.retries' | transloco: {retries} }}</span>
               </div>
             }
@@ -94,7 +96,9 @@ import {
 
             @if (monitor.upsideDown) {
               <div class="flex items-center gap-2" hlmBadge variant="outline">
-                <ng-icon class="text-primary" hlm name="bootstrapEmojiSmileUpsideDown" size="xs" />
+                <ng-icon
+                  class="text-primary text-[length:--spacing(3)]"
+                  name="bootstrapEmojiSmileUpsideDown" />
                 {{ 'monitor.edit.upsideDown' | transloco }}
               </div>
             }
@@ -111,13 +115,13 @@ import {
                 "
                 hlmBadge
                 variant="outline">
-                <ng-icon class="text-primary" hlm name="bootstrapBell" size="xs" />
+                <ng-icon class="text-primary text-[length:--spacing(3)]" name="bootstrapBell" />
                 {{ notificationMethod.name }}
               </a>
             }
             @if (monitor.notificationMethods.length > maxNotificationMethods) {
               <div class="flex items-center gap-2" hlmBadge variant="outline">
-                <ng-icon class="text-primary" hlm name="bootstrapBell" size="xs" />
+                <ng-icon class="text-primary text-[length:--spacing(3)]" name="bootstrapBell" />
                 And more...
               </div>
             }
@@ -279,7 +283,7 @@ import {
     Tag,
     ChartPlaceholder,
     HlmSkeletonImports,
-    HlmIconImports,
+    NgIcon,
     HlmCardImports,
     HlmBadgeImports,
     MonitorStatusTextBackground,

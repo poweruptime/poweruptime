@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {MonitorDataType} from '@app/api';
 import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
@@ -31,7 +31,7 @@ import {MonitorCheckerDataValueLabelPipe} from '@app/pipes';
   `,
   selector: 'pu-monitor-edit-form-data-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmCardImports, HlmIconImports, TranslocoPipe, MonitorCheckerDataValueLabelPipe],
+  imports: [HlmCardImports, NgIcon, TranslocoPipe, MonitorCheckerDataValueLabelPipe],
 })
 export class MonitorEditFormDataCard {
   type = input<MonitorDataType | ''>('');

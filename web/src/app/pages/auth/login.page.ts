@@ -13,10 +13,10 @@ import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/
 import {RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmFieldImports} from '@spartan-ng/helm/field';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmInputGroupImports} from '@spartan-ng/helm/input-group';
 import {HlmLabelImports} from '@spartan-ng/helm/label';
 import {HlmSwitchImports} from '@spartan-ng/helm/switch';
@@ -112,7 +112,7 @@ import {AuthStore, InfoStore} from '@app/services';
           </label>
 
           <button id="login-button" [disabled]="!isValid()" hlmBtn type="submit">
-            <ng-icon hlm size="sm" name="bootstrapBoxArrowInRight" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowInRight" />
             {{ 'auth.login' | transloco }}
           </button>
 
@@ -135,10 +135,10 @@ import {AuthStore, InfoStore} from '@app/services';
                     <div class="inline-flex items-center gap-2">
                       @switch (provider.registrationId) {
                         @case ('github') {
-                          <ng-icon hlm size="sm" name="bootstrapGithub" />
+                          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGithub" />
                         }
                         @case ('google') {
-                          <ng-icon hlm size="sm" name="bootstrapGoogle" />
+                          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapGoogle" />
                         }
                         @case ('keycloak') {
                           <svg
@@ -174,7 +174,7 @@ import {AuthStore, InfoStore} from '@app/services';
     HlmInputGroupImports,
     HlmButtonImports,
     HlmSwitchImports,
-    HlmIconImports,
+    NgIcon,
     HlmFieldImports,
     PasswordShowButton,
   ],

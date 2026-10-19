@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 @Component({
   template: `
@@ -12,7 +12,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
       [type]="type()"
       (click)="buttonClick.emit()"
       hlmBtn>
-      <ng-icon [name]="icon()" hlm size="sm" />
+      <ng-icon class="text-[length:--spacing(4)]" [name]="icon()" />
       <!-- t(general.save) -->
       {{ text() ?? ('general.save' | transloco) }}
     </button>
@@ -20,7 +20,7 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   selector: 'pu-save-button',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe, HlmButtonImports, HlmIconImports],
+  imports: [TranslocoPipe, HlmButtonImports, NgIcon],
 })
 export class SaveButton {
   valid = input(false);

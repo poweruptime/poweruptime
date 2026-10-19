@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {StatusPagesStore} from '@app/services';
 
@@ -17,7 +17,7 @@ import {RecycleBinStatusPageTable} from './recycle-bin-status-page-table';
           (click)="statusPagesStore.restoreSelection()"
           hlmBtn
           type="button">
-          <ng-icon hlm size="sm" name="bootstrapArrowCounterclockwise" />
+          <ng-icon class="text-[length:--spacing(4)]" name="bootstrapArrowCounterclockwise" />
           {{ 'general.restore' | transloco }}
         </button>
       </div>
@@ -27,7 +27,7 @@ import {RecycleBinStatusPageTable} from './recycle-bin-status-page-table';
   `,
   selector: 'pu-recycle-bin-status-page-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RecycleBinStatusPageTable, TranslocoPipe, HlmButtonImports, HlmIconImports],
+  imports: [RecycleBinStatusPageTable, TranslocoPipe, HlmButtonImports, NgIcon],
   providers: [StatusPagesStore],
 })
 export class RecycleBinStatusPageList {

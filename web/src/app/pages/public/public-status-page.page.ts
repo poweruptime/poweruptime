@@ -13,8 +13,8 @@ import {
 import {GlobalMetadata, NgxMetaService} from '@davidlj95/ngx-meta/core';
 import {OpenGraphMetadata} from '@davidlj95/ngx-meta/open-graph';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {RefreshInComponent, ShadowRender} from '@app/components';
 import {StatusPageMonitorList} from '@app/components/status-page';
@@ -45,16 +45,14 @@ import {PublicStatusPageStore} from '@app/services';
             <div class="inline-flex items-center gap-2" hlmCardContent>
               @if (publicStatusPageStore.status() === 'UP') {
                 <ng-icon
+                  class="text-[length:--spacing(8)]"
                   [monitor-status-text]="'UP'"
-                  hlm
-                  size="lg"
                   name="bootstrapCheckCircleFill" />
                 <span class="text-xl">{{ 'statusPage.public.operational' | transloco }}</span>
               } @else {
                 <ng-icon
+                  class="text-[length:--spacing(8)]"
                   [monitor-status-text]="'DOWN'"
-                  hlm
-                  size="lg"
                   name="bootstrapExclamationCircleFill" />
                 <span class="text-xl">{{ 'statusPage.public.issues' | transloco }}</span>
               }
@@ -106,7 +104,7 @@ import {PublicStatusPageStore} from '@app/services';
     ShadowRender,
     TranslocoPipe,
     HlmCardImports,
-    HlmIconImports,
+    NgIcon,
     MonitorStatusText,
     NgOptimizedImage,
     BackendImagePipe,

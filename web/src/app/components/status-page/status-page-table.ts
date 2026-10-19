@@ -5,9 +5,9 @@ import {HlmPaginator, HlmPaginatorImports} from '@dafnik/paginator';
 import {HlmSort, HlmSortImports} from '@dafnik/sort';
 import {HlmDataTableImports} from '@dafnik/table';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmTableContainer} from '@spartan-ng/helm/table';
 import {StopPropagationDirective} from 'dfx-helper';
 
@@ -53,7 +53,7 @@ import {StatusPagesStore} from '@app/services';
                   stopPropagation
                   variant="ghost">
                   <span class="sr-only">Open status page menu</span>
-                  <ng-icon hlm size="sm" name="bootstrapThreeDotsVertical" />
+                  <ng-icon class="text-[length:--spacing(4)]" name="bootstrapThreeDotsVertical" />
                 </button>
 
                 <ng-template #menu>
@@ -64,25 +64,27 @@ import {StatusPagesStore} from '@app/services';
 
                     <hlm-dropdown-menu-group>
                       <a [routerLink]="element.slug" hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapPencilSquare" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPencilSquare" />
                         {{ 'general.edit' | transloco }}
                       </a>
                       <a
                         [routerLink]="element.slug"
                         [queryParams]="{preview: 1}"
                         hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapEye" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapEye" />
                         {{ 'general.preview' | transloco }}
                       </a>
                       <a [href]="'/public/s/' + element.slug" target="_blank" hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapBoxArrowUpRight" />
+                        <ng-icon
+                          class="text-[length:--spacing(4)]"
+                          name="bootstrapBoxArrowUpRight" />
                         {{ 'general.public' | transloco }} {{ 'general.preview' | transloco }}
                       </a>
                       <button
                         (click)="statusPagesStore.delete(element.slug)"
                         type="button"
                         hlmDropdownMenuItem>
-                        <ng-icon hlm size="sm" name="bootstrapTrashFill" />
+                        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapTrashFill" />
                         {{ 'general.delete' | transloco }}
                       </button>
                     </hlm-dropdown-menu-group>
@@ -134,7 +136,7 @@ import {StatusPagesStore} from '@app/services';
     HlmPaginatorImports,
     HlmDropdownMenuImports,
     HlmButtonImports,
-    HlmIconImports,
+    NgIcon,
     HlmDropdownMenuImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

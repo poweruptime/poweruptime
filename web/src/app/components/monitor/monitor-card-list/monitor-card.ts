@@ -5,10 +5,10 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 import {filter, map, of, switchMap, takeUntil, timer} from 'rxjs';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmContextMenuImports} from '@spartan-ng/helm/context-menu';
 import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {DfxLowerCaseExceptFirstLettersPipe} from 'dfx-helper';
 
@@ -98,7 +98,7 @@ import {UptimeTimeline} from '../uptime-timeline';
               (click)="monitorActionStore.start(_monitor.id)"
               hlmDropdownMenuItem
               type="button">
-              <ng-icon hlm size="sm" name="bootstrapPlayBtn" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPlayBtn" />
               {{ 'general.start' | transloco }}
             </button>
           } @else {
@@ -106,7 +106,7 @@ import {UptimeTimeline} from '../uptime-timeline';
               (click)="monitorActionStore.pause(_monitor.id)"
               hlmDropdownMenuItem
               type="button">
-              <ng-icon hlm size="sm" name="bootstrapPauseBtn" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPauseBtn" />
               {{ 'general.pause' | transloco }}
             </button>
           }
@@ -114,7 +114,7 @@ import {UptimeTimeline} from '../uptime-timeline';
             (click)="monitorActionStore.clone({id: _monitor.id})"
             hlmDropdownMenuItem
             type="button">
-            <ng-icon hlm name="bootstrapCopy" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapCopy" />
             <span>{{ 'general.copy' | transloco }}</span>
           </button>
           <button
@@ -123,7 +123,7 @@ import {UptimeTimeline} from '../uptime-timeline';
             type="button"
             hlmDropdownMenuItem
             variant="destructive">
-            <ng-icon hlm name="lucideTrash" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="lucideTrash" />
             <span>
               {{ 'general.delete' | transloco }}
             </span>
@@ -132,7 +132,7 @@ import {UptimeTimeline} from '../uptime-timeline';
         <hlm-dropdown-menu-separator />
         <hlm-dropdown-menu-group>
           <a hlmDropdownMenuItem href="/public/m/{{ _monitor.id }}" target="_blank">
-            <ng-icon hlm name="bootstrapBoxArrowUpRight" size="sm" />
+            <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
             <span>{{ 'monitor.details.openPublic' | transloco }}</span>
           </a>
         </hlm-dropdown-menu-group>
@@ -154,7 +154,7 @@ import {UptimeTimeline} from '../uptime-timeline';
     HlmCardImports,
     HlmContextMenuImports,
     HlmDropdownMenuImports,
-    HlmIconImports,
+    NgIcon,
   ],
 })
 export class MonitorCard {

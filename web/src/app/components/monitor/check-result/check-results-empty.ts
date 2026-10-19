@@ -1,15 +1,15 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 @Component({
   template: `
     <div hlmEmpty>
       <div hlmEmptyHeader>
         <div hlmEmptyMedia variant="icon">
-          <ng-icon hlm name="bootstrapListStars" />
+          <ng-icon class="text-[length:--spacing(6)]" name="bootstrapListStars" />
         </div>
         <div hlmEmptyTitle>{{ 'checkResult.list.empty.title' | transloco }}</div>
         <div hlmEmptyDescription>{{ 'checkResult.list.empty.description' | transloco }}</div>
@@ -18,6 +18,6 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
   `,
   selector: 'pu-check-results-empty',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmIconImports, HlmEmptyImports, TranslocoPipe],
+  imports: [NgIcon, HlmEmptyImports, TranslocoPipe],
 })
 export class CheckResultsEmpty {}

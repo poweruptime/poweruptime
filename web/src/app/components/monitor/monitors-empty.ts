@@ -2,9 +2,9 @@ import {ChangeDetectionStrategy, Component, booleanAttribute, inject, input} fro
 import {Router, RouterLink} from '@angular/router';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmEmptyImports} from '@spartan-ng/helm/empty';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {TeamSelect} from '../team-select';
 
@@ -14,7 +14,7 @@ import {TeamSelect} from '../team-select';
     <div hlmEmpty>
       <div hlmEmptyHeader>
         <div hlmEmptyMedia variant="icon">
-          <ng-icon hlm name="lucideSquareActivity" />
+          <ng-icon class="text-[length:--spacing(6)]" name="lucideSquareActivity" />
         </div>
         <div hlmEmptyTitle>{{ 'monitor.list.empty.title' | transloco }}</div>
         <div hlmEmptyDescription>{{ 'monitor.list.empty.description' | transloco }}</div>
@@ -23,7 +23,7 @@ import {TeamSelect} from '../team-select';
         <div class="flex gap-2">
           @if (_inTeam) {
             <a hlmBtn routerLink="../new-monitor">
-              <ng-icon hlm name="bootstrapPlusCircle" size="sm" />
+              <ng-icon class="text-[length:--spacing(4)]" name="bootstrapPlusCircle" />
               {{ 'monitor.new' | transloco }}
             </a>
           } @else {
@@ -46,21 +46,14 @@ import {TeamSelect} from '../team-select';
           variant="link"
           size="sm">
           {{ 'general.recycleBin' | transloco }}
-          <ng-icon hlm name="lucideArrowUpRight" size="sm" />
+          <ng-icon class="text-[length:--spacing(4)]" name="lucideArrowUpRight" />
         </a>
       }
     </div>
   `,
   selector: 'pu-monitors-empty',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    HlmIconImports,
-    HlmEmptyImports,
-    HlmButtonImports,
-    TranslocoPipe,
-    RouterLink,
-    TeamSelect,
-  ],
+  imports: [NgIcon, HlmEmptyImports, HlmButtonImports, TranslocoPipe, RouterLink, TeamSelect],
 })
 export class MonitorsEmpty {
   protected readonly router = inject(Router);

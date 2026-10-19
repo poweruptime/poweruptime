@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
+import {NgIcon} from '@ng-icons/core';
 import {BrnDialogClose} from '@spartan-ng/brain/dialog';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmDialogImports} from '@spartan-ng/helm/dialog';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
 
 import {InfoStore, InstanceSettingsStore} from '@app/services';
 import {environment} from '@app/util';
@@ -20,7 +20,7 @@ import {CopyButton} from '../copy-button';
         type="button"
         hlmBtn
         variant="ghost">
-        <ng-icon hlm name="bootstrapBug" size="sm" />
+        <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBug" />
         Debug information
       </button>
       <hlm-dialog-content
@@ -53,14 +53,7 @@ import {CopyButton} from '../copy-button';
   `,
   selector: 'pu-debug-info-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CopyButton,
-    TranslocoPipe,
-    HlmButtonImports,
-    HlmDialogImports,
-    HlmIconImports,
-    BrnDialogClose,
-  ],
+  imports: [CopyButton, TranslocoPipe, HlmButtonImports, HlmDialogImports, NgIcon, BrnDialogClose],
 })
 export class DebugInfoDialog {
   private readonly infoStore = inject(InfoStore);

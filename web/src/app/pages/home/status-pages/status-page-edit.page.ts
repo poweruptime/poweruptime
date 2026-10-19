@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 
 import {TranslocoPipe} from '@jsverse/transloco';
-import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {NgIcon} from '@ng-icons/core';
 import {HlmSkeletonImports} from '@spartan-ng/helm/skeleton';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {linkedQueryParam} from 'ngxtension/linked-query-param';
@@ -32,7 +32,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
                 {{ 'statusPage.edit.edit' | transloco: statusPage }}
               </button>
               <button class="gap-1.5" type="button" hlmTabsTrigger="preview">
-                <ng-icon hlm name="lucideEye" size="sm" />
+                <ng-icon class="text-[length:--spacing(4)]" name="lucideEye" />
                 Preview
               </button>
             </hlm-tabs-list>
@@ -92,7 +92,7 @@ import {SelectedTeamStore, StatusPageEditStore} from '@app/services';
     PublicStatusPagePage,
     TranslocoPipe,
     HlmSkeletonImports,
-    HlmIconImports,
+    NgIcon,
     HlmTabsImports,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
