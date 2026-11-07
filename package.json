@@ -16,7 +16,7 @@
     "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
   },
   "engines": {
-    "node": "24.22.0"
+    "node": "26.13.0"
   },
   "packageManager": "pnpm@12.13.0",
   "private": true,
