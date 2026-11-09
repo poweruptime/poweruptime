@@ -7,6 +7,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-select-item',
+  exportAs: 'hlmSelectItem',
   imports: [NgIcon],
   providers: [provideIcons({lucideCheck})],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,6 +4,7 @@ import {BrnAlertDialogTrigger} from '@spartan-ng/brain/alert-dialog';
 
 @Directive({
   selector: 'button[hlmAlertDialogTrigger],button[hlmAlertDialogTriggerFor]',
+  exportAs: 'hlmAlertDialogTrigger',
   hostDirectives: [
     {
       directive: BrnAlertDialogTrigger,

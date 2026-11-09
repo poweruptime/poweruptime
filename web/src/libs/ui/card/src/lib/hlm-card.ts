@@ -6,6 +6,7 @@ import {HlmCardConfig, injectHlmCardConfig} from './hlm-card.token';
 
 @Directive({
   selector: '[hlmCard],hlm-card',
+  exportAs: 'hlmCard',
   host: {
     'data-slot': 'card',
     '[attr.data-size]': 'size()',

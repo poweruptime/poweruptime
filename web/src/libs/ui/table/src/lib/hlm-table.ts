@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: 'div[hlmTableContainer]',
+  exportAs: 'hlmTableContainer',
   host: {'data-slot': 'table-container'},
 })
 export class HlmTableContainer {
@@ -17,6 +18,7 @@ export class HlmTableContainer {
  */
 @Directive({
   selector: 'table[hlmTable]',
+  exportAs: 'hlmTable',
   host: {'data-slot': 'table'},
 })
 export class HlmTable {
@@ -31,6 +33,7 @@ export class HlmTable {
  */
 @Directive({
   selector: 'thead[hlmTHead],thead[hlmTableHeader]',
+  exportAs: 'hlmTHead',
   host: {'data-slot': 'table-header'},
 })
 export class HlmTHead {
@@ -45,6 +48,7 @@ export class HlmTHead {
  */
 @Directive({
   selector: 'tbody[hlmTBody],tbody[hlmTableBody]',
+  exportAs: 'hlmTBody',
   host: {'data-slot': 'table-body'},
 })
 export class HlmTBody {
@@ -59,6 +63,7 @@ export class HlmTBody {
  */
 @Directive({
   selector: 'tfoot[hlmTFoot],tfoot[hlmTableFooter]',
+  exportAs: 'hlmTFoot',
   host: {'data-slot': 'table-footer'},
 })
 export class HlmTFoot {
@@ -73,6 +78,7 @@ export class HlmTFoot {
  */
 @Directive({
   selector: 'tr[hlmTr],tr[hlmTableRow]',
+  exportAs: 'hlmTr',
   host: {'data-slot': 'table-row'},
 })
 export class HlmTr {
@@ -90,6 +96,7 @@ export class HlmTr {
  */
 @Directive({
   selector: 'th[hlmTh],th[hlmTableHead]',
+  exportAs: 'hlmTh',
   host: {'data-slot': 'table-head'},
 })
 export class HlmTh {
@@ -107,6 +114,7 @@ export class HlmTh {
  */
 @Directive({
   selector: 'td[hlmTd],td[hlmTableCell]',
+  exportAs: 'hlmTd',
   host: {'data-slot': 'table-cell'},
 })
 export class HlmTd {
@@ -121,6 +129,7 @@ export class HlmTd {
  */
 @Directive({
   selector: 'caption[hlmCaption],caption[hlmTableCaption]',
+  exportAs: 'hlmCaption',
   host: {'data-slot': 'table-caption'},
 })
 export class HlmCaption {

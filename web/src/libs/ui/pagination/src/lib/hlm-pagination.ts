@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmPagination],hlm-pagination',
+  exportAs: 'hlmPagination',
   host: {
     'data-slot': 'pagination',
     role: 'navigation',

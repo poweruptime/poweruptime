@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmPopoverDescription]',
+  exportAs: 'hlmPopoverDescription',
   host: {'data-slot': 'popover-description'},
 })
 export class HlmPopoverDescription {

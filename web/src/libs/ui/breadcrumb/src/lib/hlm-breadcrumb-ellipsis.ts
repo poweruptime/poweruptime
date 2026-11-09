@@ -6,6 +6,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-breadcrumb-ellipsis',
+  exportAs: 'hlmBreadcrumbEllipsis',
   imports: [NgIcon],
   providers: [provideIcons({lucideEllipsis})],
   changeDetection: ChangeDetectionStrategy.OnPush,

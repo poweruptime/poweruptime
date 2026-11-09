@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmTabs],hlm-tabs',
+  exportAs: 'hlmTabs',
   hostDirectives: [
     {
       directive: BrnTabs,

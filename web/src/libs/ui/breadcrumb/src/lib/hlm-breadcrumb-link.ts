@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmBreadcrumbLink]',
+  exportAs: 'hlmBreadcrumbLink',
   hostDirectives: [
     {
       directive: RouterLink,

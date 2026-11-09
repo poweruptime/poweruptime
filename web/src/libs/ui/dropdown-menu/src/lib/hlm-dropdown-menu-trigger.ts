@@ -2,12 +2,19 @@ import {Directive, computed, effect, forwardRef, inject, input} from '@angular/c
 
 import {CdkMenuTrigger} from '@angular/cdk/menu';
 
-import {MENU_SIDE, type MenuAlign, type MenuSide, createMenuPosition} from '@spartan-ng/brain/core';
+import {
+  MENU_SIDE,
+  type MenuAlign,
+  type MenuSide,
+  createMenuPosition,
+  updateMenuPosition,
+} from '@spartan-ng/brain/core';
 
 import {injectHlmDropdownMenuConfig} from './hlm-dropdown-menu-token';
 
 @Directive({
   selector: '[hlmDropdownMenuTrigger]',
+  exportAs: 'hlmDropdownMenuTrigger',
   providers: [{provide: MENU_SIDE, useExisting: forwardRef(() => HlmDropdownMenuTrigger)}],
   hostDirectives: [
     {
@@ -38,7 +45,7 @@ export class HlmDropdownMenuTrigger {
       '[data-slot="dropdown-menu"]';
 
     effect(() => {
-      this._cdkTrigger.menuPosition = this._menuPosition();
+      updateMenuPosition(this._cdkTrigger, this._menuPosition());
     });
   }
 }

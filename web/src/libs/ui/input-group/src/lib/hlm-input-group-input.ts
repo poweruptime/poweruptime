@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: 'input[hlmInputGroupInput]',
+  exportAs: 'hlmInputGroupInput',
   hostDirectives: [HlmInput],
   host: {'data-slot': 'input-group-control'},
 })

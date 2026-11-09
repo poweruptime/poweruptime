@@ -8,6 +8,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-command-input',
+  exportAs: 'hlmCommandInput',
   imports: [HlmInputGroupImports, NgIcon, BrnCommandInput],
   providers: [provideIcons({lucideSearch})],
   changeDetection: ChangeDetectionStrategy.OnPush,

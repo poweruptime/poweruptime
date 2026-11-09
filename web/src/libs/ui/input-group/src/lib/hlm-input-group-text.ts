@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmInputGroupText],hlm-input-group-text',
+  exportAs: 'hlmInputGroupText',
 })
 export class HlmInputGroupText {
   constructor() {

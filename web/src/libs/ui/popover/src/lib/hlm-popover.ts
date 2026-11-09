@@ -4,11 +4,13 @@ import {BrnPopover} from '@spartan-ng/brain/popover';
 
 @Directive({
   selector: '[hlmPopover],hlm-popover',
+  exportAs: 'hlmPopover',
   hostDirectives: [
     {
       directive: BrnPopover,
       inputs: [
         'align',
+        'aria-modal',
         'attachTo',
         'autoFocus',
         'closeOnOutsidePointerEvents',

@@ -33,11 +33,7 @@ import {injectIsValid} from '../../form';
             formControlName="code"
             hlmInput />
         } @else {
-          <brn-input-otp
-            hlmInputOtp
-            length="6"
-            formControlName="code"
-            inputClass="disabled:cursor-not-allowed">
+          <hlm-input-otp length="6" formControlName="code" inputClass="disabled:cursor-not-allowed">
             <div hlmInputOtpGroup>
               <hlm-input-otp-slot index="0" />
               <hlm-input-otp-slot index="1" />
@@ -49,7 +45,7 @@ import {injectIsValid} from '../../form';
               <hlm-input-otp-slot index="4" />
               <hlm-input-otp-slot index="5" />
             </div>
-          </brn-input-otp>
+          </hlm-input-otp>
         }
 
         <label class="flex items-center" hlmLabel for="useBackupCode">

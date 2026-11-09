@@ -4,6 +4,7 @@ import {BrnDialogTrigger} from '@spartan-ng/brain/dialog';
 
 @Directive({
   selector: 'button[hlmDialogTrigger],button[hlmDialogTriggerFor]',
+  exportAs: 'hlmDialogTrigger',
   hostDirectives: [
     {
       directive: BrnDialogTrigger,

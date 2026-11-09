@@ -11,6 +11,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmComboboxChips],hlm-combobox-chips',
+  exportAs: 'hlmComboboxChips',
   hostDirectives: [BrnComboboxAnchor, BrnComboboxPopoverTrigger],
   host: {
     'data-slot': 'combobox-chips',

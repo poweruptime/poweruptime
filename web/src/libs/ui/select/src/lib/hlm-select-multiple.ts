@@ -10,6 +10,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmSelectMultiple],hlm-select-multiple',
+  exportAs: 'hlmSelectMultiple',
   providers: [
     provideBrnPopoverConfig({
       align: 'start',

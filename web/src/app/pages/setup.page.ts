@@ -149,9 +149,8 @@ import {SetupStore} from '@app/services';
                 class="animate-in slide-in-from-start-20 slide-out-to-end-20 flex flex-col items-center gap-6"
                 [formGroup]="confirmEmailForm"
                 (ngSubmit)="submitConfirmEmail()">
-                <brn-input-otp
+                <hlm-input-otp
                   id="email-test-code-input"
-                  hlmInputOtp
                   length="6"
                   formControlName="code"
                   inputClass="disabled:cursor-not-allowed">
@@ -166,7 +165,7 @@ import {SetupStore} from '@app/services';
                     <hlm-input-otp-slot index="4" />
                     <hlm-input-otp-slot index="5" />
                   </div>
-                </brn-input-otp>
+                </hlm-input-otp>
 
                 <div class="grid w-full gap-4 md:grid-cols-2">
                   <button

@@ -6,6 +6,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-pagination-ellipsis',
+  exportAs: 'hlmPaginationEllipsis',
   imports: [NgIcon],
   providers: [provideIcons({lucideEllipsis})],
   changeDetection: ChangeDetectionStrategy.OnPush,

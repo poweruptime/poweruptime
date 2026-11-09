@@ -8,6 +8,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmPaginationLink]',
+  exportAs: 'hlmPaginationLink',
   hostDirectives: [
     {
       directive: RouterLink,
