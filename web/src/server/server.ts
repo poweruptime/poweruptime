@@ -141,7 +141,9 @@ if (isMainModule(import.meta.url)) {
   })();
 }
 
+let requestApp: ReturnType<typeof app> | undefined;
+
 export const reqHandler = createNodeRequestHandler(async (req, res) => {
-  const server = await app();
+  const server = await (requestApp ??= app());
   server(req, res);
 });

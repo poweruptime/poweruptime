@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.FluxSink
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicLong
 
 @Service
 class PushService(
@@ -21,70 +20,38 @@ class PushService(
     private val rabbitMQService: RabbitMQService,
     private val rabbitMQConfiguration: RabbitMQConfiguration,
 ) {
-    private data class MessageListenerHolder(
-        val refCount: AtomicLong,
-        val flux: Flux<String>,
-        val container: SimpleMessageListenerContainer,
-    )
+    private val fluxByTeam = ConcurrentHashMap<ULong, Flux<String>>()
 
-    private val holderByTeam = ConcurrentHashMap<ULong, MessageListenerHolder>()
+    private fun createTeamFlux(teamId: ULong): Flux<String> = Flux
+        .create { emitter: FluxSink<String> ->
+            rabbitMQService.createPushExchangeAndQueue(teamId)
 
-    private fun createTeamFlux(teamId: ULong): MessageListenerHolder {
-        rabbitMQService.createPushExchangeAndQueue(teamId)
-
-        val container = SimpleMessageListenerContainer(connectionFactory).apply {
-            setQueueNames(rabbitMQConfiguration.getPushQueueName(teamId))
-            setConcurrentConsumers(1)
-            acknowledgeMode = AcknowledgeMode.AUTO
-        }
-
-        // Keep running until all subscribers are gone:
-        val decrementCount: () -> Unit = {
-            val newCount = holderByTeam[teamId]?.refCount?.decrementAndGet()
-            if (newCount != null && newCount <= 0) {
-                container.stop()
-                holderByTeam.remove(teamId)
-            }
-        }
-
-        val flux = Flux
-            .create { emitter: FluxSink<String> ->
-                // Set up listener for each subscription
-                container.setMessageListener {
-                    if (!emitter.isCancelled) {
-                        val message = String(it.body)
-                        emitter.next(message)
-                    }
+            val container = SimpleMessageListenerContainer(connectionFactory).apply {
+                setQueueNames(rabbitMQConfiguration.getPushQueueName(teamId))
+                setConcurrentConsumers(1)
+                acknowledgeMode = AcknowledgeMode.AUTO
+                setMessageListener {
+                    emitter.next(String(it.body))
                 }
-
-                container.start()
-
-                emitter.onDispose { decrementCount() }
-                emitter.onCancel { decrementCount() }
-            }.doFinally {
-                decrementCount()
             }
-
-        return MessageListenerHolder(refCount = AtomicLong(0), flux = flux, container = container)
-    }
-
-    /**
-     * Each call to getTeamFlux increments the reference count for the team's flux.
-     */
-    private fun getTeamFlux(teamId: ULong): Flux<String> {
-        val holder = holderByTeam.computeIfAbsent(teamId) {
-            createTeamFlux(teamId)
-        }
-        holder.refCount.incrementAndGet()
-        return holder.flux
-    }
+            emitter.onDispose { container.stop() }
+            container.start()
+        }.share()
 
     fun newSubscription(teamIds: List<ULong>): Flux<String> {
         if (!pushEnabled) {
             return Flux.empty()
         }
 
-        return Flux.merge(teamIds.map { getTeamFlux(it) })
+        // Each team has one upstream listener, broadcast to all current SSE clients.
+        // share() stops it after the last client leaves and recreates it on reconnection.
+        return Flux.defer {
+            Flux.merge(
+                teamIds.distinct().map { teamId ->
+                    fluxByTeam.computeIfAbsent(teamId) { createTeamFlux(it) }
+                },
+            )
+        }
     }
 
     fun send(teamId: ULong, dto: PushDto) {
