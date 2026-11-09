@@ -34,7 +34,8 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME:-poweruptime}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?}
     volumes:
-      - poweruptime-db-data:/var/lib/postgresql/data:z
+      # PostgreSQL 18+ images store data in /var/lib/postgresql/<major>/docker
+      - poweruptime-db-data-18:/var/lib/postgresql:z
     networks:
       - poweruptime-infrastructure
     healthcheck:
@@ -117,7 +118,7 @@ services:
       - proxy
 
 volumes:
-  poweruptime-db-data:
+  poweruptime-db-data-18:
   poweruptime-rabbitmq-data:
   poweruptime-backend-data:
   certificates:

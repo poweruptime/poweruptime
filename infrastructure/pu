@@ -413,6 +413,45 @@ do_backup_import_insecure() {
   fi
 }
 
+DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose#upgrading-postgresql"
+
+# Prints the major version of the running database container (e.g. "17")
+get_running_db_major() {
+  docker exec poweruptime-db printenv PG_MAJOR 2>/dev/null
+}
+
+# Prints the major version of DB_IMAGE in versions.env at the given git ref (e.g. "18")
+get_target_db_major() {
+  local ref="$1"
+  git show "$ref:./versions.env" \
+    | sed -nE 's/^DB_IMAGE="?[^:"]+:([0-9]+).*/\1/p'
+}
+
+# A PostgreSQL major upgrade needs a manual dump & restore, abort before touching anything
+check_db_major_version() {
+  local ref="$1" running target
+
+  if ! running=$(get_running_db_major) || [[ -z "$running" ]]; then
+    err "Could not determine the PostgreSQL version of the 'poweruptime-db' container."
+    err "Make sure the stack is running ('$0 start') before updating."
+    exit 1
+  fi
+
+  if ! target=$(get_target_db_major "$ref") || [[ -z "$target" ]]; then
+    err "Could not determine the PostgreSQL version of '$ref' (DB_IMAGE in versions.env)."
+    exit 1
+  fi
+
+  if [[ "$running" != "$target" ]]; then
+    err "This update requires a PostgreSQL major version upgrade ($running -> $target)."
+    err "This cannot be done by '$0 update'. Nothing has been changed."
+    err "Please follow the upgrade guide: $DB_UPGRADE_GUIDE_URL"
+    exit 1
+  fi
+
+  log "PostgreSQL major version unchanged ($running)"
+}
+
 do_update() {
   local log_file=./backup/update.log
   mkdir -p "$(dirname "$log_file")"
@@ -441,6 +480,8 @@ do_update() {
       err "You are on '$branch', but '$TARGET' is needed"
       exit 1
     fi
+    run_cmd git fetch
+    check_db_major_version "@{upstream}"
     run_cmd git pull
   else
     if ! confirm "Checkout '$TARGET'?"; then
@@ -448,6 +489,7 @@ do_update() {
       exit 1
     fi
     run_cmd git fetch --tags
+    check_db_major_version "$TARGET"
     run_cmd git checkout "$TARGET"
   fi
 
