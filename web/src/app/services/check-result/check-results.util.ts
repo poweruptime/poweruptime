@@ -22,6 +22,10 @@ export function reconcileCheckResults(
     }),
   );
   for (const result of updates) {
+    const snapshotResult = results.get(result.id);
+    // A pending push can be older than a snapshot that already has the finished check.
+    if (result.status === 'PENDING' && snapshotResult && snapshotResult.status !== 'PENDING')
+      continue;
     results.set(result.id, result);
   }
   return [...results.values()];

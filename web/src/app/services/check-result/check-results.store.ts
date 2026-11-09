@@ -56,14 +56,21 @@ const REFRESH_INTERVAL_MS = 1_000;
 
 function matchesQuery(result: CheckResult, query: CheckResultsQuery): boolean {
   return (
-    (query.monitorId !== undefined
-      ? result.monitor.id === query.monitorId
-      : query.teamId === undefined || result.team.id === query.teamId) &&
+    inQueryScope(result, query) &&
     (!query.onlyChanges || result.status !== result.previousStatus) &&
     (!query.statuses?.length || query.statuses.includes(result.status)) &&
     (!query.start || Date.parse(result.createdAt) >= Date.parse(query.start)) &&
     (!query.end || Date.parse(result.createdAt) <= Date.parse(query.end))
   );
+}
+
+function inQueryScope(
+  item: {monitor: {id: string}; team: {id: string}},
+  query: CheckResultsQuery,
+): boolean {
+  return query.monitorId !== undefined
+    ? item.monitor.id === query.monitorId
+    : query.teamId === undefined || item.team.id === query.teamId;
 }
 
 function sortKeyChanged(previous: CheckResult, next: CheckResult, sortBy: string): boolean {
@@ -91,7 +98,8 @@ export const CheckResultsStore = signalStore(
   }),
   withMethods((store, api = injectAPI(), pushService = inject(PushService)) => {
     let activeQuery: CheckResultsQuery | undefined;
-    let inFlightUpdates: Map<string, CheckResult> | undefined;
+    // Pushes not yet covered by an applied snapshot, from the query start or the last applied snapshot on.
+    let pendingUpdates: Map<string, CheckResult> | undefined;
     // Reloads the current page when a live update cannot be applied locally.
     const refresh$ = new Subject<void>();
 
@@ -108,7 +116,7 @@ export const CheckResultsStore = signalStore(
           if (!query) return;
           const existing = store.entityMap()[checkResult.id];
           if (checkResult.status === 'PENDING' && existing && existing.status !== 'PENDING') return;
-          inFlightUpdates?.set(checkResult.id, checkResult);
+          pendingUpdates?.set(checkResult.id, checkResult);
 
           if (existing) {
             const matches = matchesQuery(checkResult, query);
@@ -143,6 +151,7 @@ export const CheckResultsStore = signalStore(
           // Its check result now has a notification, which changes membership in notification-filtered tables.
           if (
             query?.hasNotification !== undefined &&
+            inQueryScope(notification, query) &&
             (query.hasNotification || store.entityMap()[notification.checkResultId])
           ) {
             refresh$.next();
@@ -153,6 +162,8 @@ export const CheckResultsStore = signalStore(
         pipe(
           tap((query) => {
             activeQuery = query;
+            // Collect pushes during the debounce too; the first snapshot may not contain them yet.
+            pendingUpdates = new Map();
             patchState(store, setPending(), removeAllEntities(), {
               monitorId: query.monitorId,
               teamId: query.teamId,
@@ -169,8 +180,9 @@ export const CheckResultsStore = signalStore(
                 ).pipe(
                   switchMap(() =>
                     defer(() => {
-                      const updates = new Map<string, CheckResult>();
-                      inFlightUpdates = updates;
+                      // Reuse the map of a debounce or cancelled request so none of its pushes are lost.
+                      const updates = pendingUpdates ?? new Map<string, CheckResult>();
+                      pendingUpdates = updates;
                       return api.get('/v1/check-result', {params: {query}}).pipe(
                         tapResponse({
                           next: (response) => {
@@ -192,11 +204,11 @@ export const CheckResultsStore = signalStore(
                               setTotalElements(response.numberOfItems),
                               setFulfilled(),
                             );
+                            // Pushes from here on are newer than this snapshot. A failed or cancelled request
+                            // keeps the map, so the next request still reconciles them.
+                            if (pendingUpdates === updates) pendingUpdates = undefined;
                           },
                           error: (error) => patchState(store, setError(error)),
-                        }),
-                        finalize(() => {
-                          if (inFlightUpdates === updates) inFlightUpdates = undefined;
                         }),
                       );
                     }),
@@ -297,6 +309,8 @@ export const LastCheckResultsStore = signalStore(
 
     return {
       loadAll,
+      // Pushes may have been missed while disconnected, so cached monitors must reload on their next use.
+      invalidateCache: rxMethod<void>(tap(() => patchState(store, {cacheTimestamps: new Map()}))),
       addCheckResult: rxMethod<CheckResult>(
         tap((checkResult) => {
           const monitorId = checkResult.monitor.id;
@@ -334,6 +348,7 @@ export const LastCheckResultsStore = signalStore(
   withHooks({
     onInit(store, pushService = inject(PushService)) {
       store.addCheckResult(pushService.checkResults$);
+      store.invalidateCache(pushService.connected$);
     },
   }),
 );

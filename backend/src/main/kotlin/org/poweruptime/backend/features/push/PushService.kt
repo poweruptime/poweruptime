@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.FluxSink
+import reactor.core.publisher.Sinks
 import java.util.concurrent.ConcurrentHashMap
 
 /** Pushes buffered per SSE client before it is disconnected and has to reconnect and reload. */
@@ -35,6 +36,15 @@ class PushService(
         // replacement listener never declares the queue while the previous consumer can still delete it.
         val lifecycleLock = Any()
 
+        // The listener of the latest connection, guarded by lifecycleLock.
+        var running: SimpleMessageListenerContainer? = null
+        val stop = { container: SimpleMessageListenerContainer ->
+            synchronized(lifecycleLock) {
+                container.stop()
+                if (running === container) running = null
+            }
+        }
+
         return Flux
             .create { emitter: FluxSink<String> ->
                 val container = SimpleMessageListenerContainer(connectionFactory).apply {
@@ -45,19 +55,23 @@ class PushService(
                         emitter.next(String(it.body))
                     }
                 }
-                val stop = { synchronized(lifecycleLock) { container.stop() } }
 
-                try {
-                    synchronized(lifecycleLock) {
+                synchronized(lifecycleLock) {
+                    // share() only reconnects after the previous connection was cancelled, but its listener may
+                    // not be stopped yet. Stop it first so it cannot consume (and ack) pushes nobody receives.
+                    running?.let(stop)
+                    try {
                         rabbitMQService.createPushExchangeAndQueue(teamId)
                         container.start()
+                        running = container
+                    } catch (e: Exception) {
+                        stop(container)
+                        throw e
                     }
-                } catch (e: Exception) {
-                    stop()
-                    throw e
+                    // Registered while holding the lock: if the subscription was cancelled meanwhile, this stops
+                    // the listener before a replacement can start.
+                    emitter.onDispose { stop(container) }
                 }
-                // Registered after start: if the subscription was cancelled meanwhile, this stops it immediately.
-                emitter.onDispose { stop() }
             }.share()
     }
 
@@ -68,19 +82,23 @@ class PushService(
 
         // Each team has one upstream listener, broadcast to all current SSE clients.
         // share() stops it after the last client leaves and recreates it on reconnection.
-        return Flux
-            .defer {
-                Flux.merge(
+        return Flux.defer {
+            // Buffer per client so a slow reader cannot stall the shared team listeners for everyone else.
+            // On overflow the stream fails right away (onBackpressureBuffer alone would only signal the error
+            // after the backlog drained); the client reconnects and reloads its data.
+            val overflow = Sinks.empty<String>()
+            Flux
+                .merge(
                     teamIds.distinct().map { teamId ->
                         fluxByTeam.computeIfAbsent(teamId) { createTeamFlux(it) }
                     },
-                )
-            }
-            // Buffer per client so a slow reader cannot stall the shared team listeners for everyone else.
-            // On overflow the stream fails; the client reconnects and reloads its data.
-            .onBackpressureBuffer(MAX_BUFFERED_PUSHES_PER_CLIENT) {
-                logger.warn { "SSE client fell more than $MAX_BUFFERED_PUSHES_PER_CLIENT pushes behind; disconnecting" }
-            }
+                ).onBackpressureBuffer(MAX_BUFFERED_PUSHES_PER_CLIENT) {
+                    logger.warn {
+                        "SSE client fell more than $MAX_BUFFERED_PUSHES_PER_CLIENT pushes behind; disconnecting"
+                    }
+                    overflow.tryEmitError(IllegalStateException("SSE client buffer overflow"))
+                }.mergeWith(overflow.asMono())
+        }
     }
 
     fun send(teamId: ULong, dto: PushDto) {
