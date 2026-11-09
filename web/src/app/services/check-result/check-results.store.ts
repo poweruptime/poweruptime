@@ -2,6 +2,8 @@ import {Injector, Signal, inject, isSignal} from '@angular/core';
 import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 
 import {
+  Subject,
+  auditTime,
   defer,
   finalize,
   from,
@@ -49,6 +51,8 @@ type CheckResultsQuery = {
 const CACHE_DURATION_MS = 60_000;
 const PAGE_SIZE = 22;
 const MAX_CONCURRENT_CHECK_RESULT_LOADS = 4;
+// At most one reload per interval; unlike a debounce, a steady stream of updates cannot starve it.
+const REFRESH_INTERVAL_MS = 1_000;
 
 function matchesQuery(result: CheckResult, query: CheckResultsQuery): boolean {
   return (
@@ -60,6 +64,11 @@ function matchesQuery(result: CheckResult, query: CheckResultsQuery): boolean {
     (!query.start || Date.parse(result.createdAt) >= Date.parse(query.start)) &&
     (!query.end || Date.parse(result.createdAt) <= Date.parse(query.end))
   );
+}
+
+function sortKeyChanged(previous: CheckResult, next: CheckResult, sortBy: string): boolean {
+  const key = sortBy as keyof CheckResult;
+  return JSON.stringify(previous[key]) !== JSON.stringify(next[key]);
 }
 
 export const CheckResultsStore = signalStore(
@@ -83,6 +92,8 @@ export const CheckResultsStore = signalStore(
   withMethods((store, api = injectAPI(), pushService = inject(PushService)) => {
     let activeQuery: CheckResultsQuery | undefined;
     let inFlightUpdates: Map<string, CheckResult> | undefined;
+    // Reloads the current page when a live update cannot be applied locally.
+    const refresh$ = new Subject<void>();
 
     const isLivePage = () =>
       store.page() === 0 && store.sortBy() === 'createdAt' && store.sortDirection() === 'desc';
@@ -100,6 +111,7 @@ export const CheckResultsStore = signalStore(
           inFlightUpdates?.set(checkResult.id, checkResult);
 
           if (existing) {
+            const matches = matchesQuery(checkResult, query);
             // Update in place on historical pages too, without changing their order.
             patchState(
               store,
@@ -107,14 +119,12 @@ export const CheckResultsStore = signalStore(
                 store
                   .entities()
                   .flatMap((result) =>
-                    result.id === checkResult.id
-                      ? matchesQuery(checkResult, query)
-                        ? [checkResult]
-                        : []
-                      : [result],
+                    result.id === checkResult.id ? (matches ? [checkResult] : []) : [result],
                   ),
               ),
             );
+            // The backend decides which result refills the page or where the moved row belongs.
+            if (!matches || sortKeyChanged(existing, checkResult, store.sortBy())) refresh$.next();
           } else if (
             isLivePage() &&
             query.hasNotification === undefined &&
@@ -124,6 +134,18 @@ export const CheckResultsStore = signalStore(
               store,
               setAllEntities(newestCheckResults([checkResult, ...store.entities()], store.size())),
             );
+          }
+        }),
+      ),
+      refreshOnNotification: rxMethod<BackendType['NotificationResponse']>(
+        tap((notification) => {
+          const query = activeQuery;
+          // Its check result now has a notification, which changes membership in notification-filtered tables.
+          if (
+            query?.hasNotification !== undefined &&
+            (query.hasNotification || store.entityMap()[notification.checkResultId])
+          ) {
+            refresh$.next();
           }
         }),
       ),
@@ -140,7 +162,11 @@ export const CheckResultsStore = signalStore(
           switchMap((query) =>
             timer(275).pipe(
               switchMap(() =>
-                merge(timer(0, CACHE_DURATION_MS), pushService.connected$).pipe(
+                merge(
+                  timer(0, CACHE_DURATION_MS),
+                  pushService.connected$,
+                  refresh$.pipe(auditTime(REFRESH_INTERVAL_MS)),
+                ).pipe(
                   switchMap(() =>
                     defer(() => {
                       const updates = new Map<string, CheckResult>();
@@ -186,6 +212,7 @@ export const CheckResultsStore = signalStore(
   withHooks({
     onInit(store, pushService = inject(PushService)) {
       store.addCheckResult(pushService.checkResults$);
+      store.refreshOnNotification(pushService.notifications$);
     },
   }),
 );

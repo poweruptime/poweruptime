@@ -18,6 +18,11 @@ import {BackendType} from '@app/api';
 
 const monotone = d3Curve(curveMonotoneX);
 
+/** Ping timeline whose missing measurements are null, rendered as gaps. */
+export type PingChartData = Omit<BackendType['PingTimelineResponse'], 'data'> & {
+  data: {name: string; value: number | null}[];
+};
+
 @Component({
   selector: 'pu-ping-chart',
   imports: [HlmChartImports],
@@ -29,7 +34,7 @@ const monotone = d3Curve(curveMonotoneX);
 export class PingChart {
   private readonly dateFormat = new DatePipe(inject(LOCALE_ID));
 
-  readonly chart = input.required<BackendType['PingTimelineResponse']>();
+  readonly chart = input.required<PingChartData>();
 
   protected readonly chartOptions = computed(() => {
     const chart = this.chart();
@@ -40,7 +45,7 @@ export class PingChart {
       ...item,
       date: new Date(item.name),
     }));
-    const highestValue = Math.max(50, chart.highestValue, ...data.map((item) => item.value));
+    const highestValue = Math.max(50, chart.highestValue, ...data.map((item) => item.value ?? 0));
 
     return {
       definition: defineChart(

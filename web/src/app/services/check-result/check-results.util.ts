@@ -27,6 +27,17 @@ export function reconcileCheckResults(
   return [...results.values()];
 }
 
+const FRACTIONAL_SECONDS = /\.(\d+)/;
+
+/** Compare ISO timestamps chronologically, including digits beyond millisecond precision. */
+export function compareTimestamps(a: string, b: string): number {
+  const diff = Date.parse(a) - Date.parse(b);
+  if (diff !== 0) return diff;
+  const fractionA = (FRACTIONAL_SECONDS.exec(a)?.[1] ?? '').padEnd(9, '0');
+  const fractionB = (FRACTIONAL_SECONDS.exec(b)?.[1] ?? '').padEnd(9, '0');
+  return fractionA < fractionB ? -1 : fractionA > fractionB ? 1 : 0;
+}
+
 export function newestCheckResults(results: CheckResult[], size: number): CheckResult[] {
-  return results.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, size);
+  return results.sort((a, b) => compareTimestamps(b.createdAt, a.createdAt)).slice(0, size);
 }
