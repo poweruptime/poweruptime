@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmAlertDescription]',
+  exportAs: 'hlmAlertDescription',
   host: {
     'data-slot': 'alert-description',
   },

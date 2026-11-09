@@ -4,6 +4,7 @@ import {BrnCollapsibleTrigger} from '@spartan-ng/brain/collapsible';
 
 @Directive({
   selector: 'button[hlmCollapsibleTrigger]',
+  exportAs: 'hlmCollapsibleTrigger',
   hostDirectives: [{directive: BrnCollapsibleTrigger, inputs: ['type']}],
   host: {'data-slot': 'collapsible-trigger'},
 })

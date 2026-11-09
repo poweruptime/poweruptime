@@ -7,6 +7,7 @@ import type {ClassValue} from 'clsx';
 
 @Directive({
   selector: '[hlmAlertDialogOverlay],hlm-alert-dialog-overlay',
+  exportAs: 'hlmAlertDialogOverlay',
   hostDirectives: [BrnAlertDialogOverlay],
 })
 export class HlmAlertDialogOverlay {

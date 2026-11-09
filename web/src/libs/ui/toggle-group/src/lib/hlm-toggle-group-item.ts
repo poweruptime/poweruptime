@@ -8,6 +8,7 @@ import {injectHlmToggleGroup} from './hlm-toggle-group.token';
 
 @Directive({
   selector: 'button[hlmToggleGroupItem]',
+  exportAs: 'hlmToggleGroupItem',
   hostDirectives: [
     {
       directive: BrnToggleGroupItem,

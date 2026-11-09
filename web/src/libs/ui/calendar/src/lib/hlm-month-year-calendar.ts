@@ -13,6 +13,7 @@ import {classes, hlm} from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-month-year-calendar',
+  exportAs: 'hlmMonthYearCalendar',
   imports: [BrnCalendarImports, NgIcon, HlmButtonImports],
   viewProviders: [provideIcons({lucideChevronLeft, lucideChevronRight})],
   changeDetection: ChangeDetectionStrategy.OnPush,

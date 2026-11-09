@@ -16,6 +16,7 @@ import {CdkMenu, CdkMenuItem} from '@angular/cdk/menu';
  */
 @Directive({
   selector: '[hlmDropdownMenuFocusOnHover]',
+  exportAs: 'hlmDropdownMenuFocusOnHover',
   host: {
     '(mouseenter)': '_focusOnHover()',
   },

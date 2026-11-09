@@ -7,6 +7,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmProgressIndicator],hlm-progress-indicator',
+  exportAs: 'hlmProgressIndicator',
   hostDirectives: [BrnProgressIndicator],
   host: {
     'data-slot': 'progress-indicator',

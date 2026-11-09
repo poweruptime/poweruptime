@@ -23,6 +23,7 @@ export type AlertVariants = VariantProps<typeof alertVariants>;
 
 @Directive({
   selector: 'hlm-alert,[hlmAlert]',
+  exportAs: 'hlmAlert',
   host: {
     'data-slot': 'alert',
     role: 'alert',

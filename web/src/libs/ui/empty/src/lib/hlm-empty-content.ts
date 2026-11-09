@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmEmptyContent],hlm-empty-content',
+  exportAs: 'hlmEmptyContent',
   host: {'data-slot': 'empty-content'},
 })
 export class HlmEmptyContent {

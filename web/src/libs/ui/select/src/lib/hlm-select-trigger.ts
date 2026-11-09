@@ -11,6 +11,7 @@ import type {ClassValue} from 'clsx';
 
 @Component({
   selector: 'hlm-select-trigger',
+  exportAs: 'hlmSelectTrigger',
   imports: [NgIcon, BrnSelectTrigger, BrnFieldControlDescribedBy],
   providers: [provideIcons({lucideChevronDown})],
   changeDetection: ChangeDetectionStrategy.OnPush,

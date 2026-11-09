@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmAutocompleteList]',
+  exportAs: 'hlmAutocompleteList',
   hostDirectives: [
     {directive: BrnAutocompleteList, inputs: ['id', 'aria-label', 'aria-labelledby']},
   ],

@@ -14,6 +14,7 @@ import {injectHlmDatePickerConfig} from './hlm-date-picker.token';
 
 @Component({
   selector: 'hlm-date-picker-input',
+  exportAs: 'hlmDatePickerInput',
   imports: [HlmInputGroupImports, NgIcon],
   providers: [
     provideIcons({lucideCalendar, lucideX}),

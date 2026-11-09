@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmSidebarSeparator],hlm-sidebar-separator',
+  exportAs: 'hlmSidebarSeparator',
   hostDirectives: [HlmSeparator],
   host: {
     'data-slot': 'sidebar-separator',

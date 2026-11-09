@@ -25,6 +25,7 @@ export type ItemMediaVariants = VariantProps<typeof itemMediaVariants>;
 
 @Directive({
   selector: '[hlmItemMedia],hlm-item-media',
+  exportAs: 'hlmItemMedia',
   host: {
     'data-slot': 'item-media',
     '[attr.data-variant]': 'variant()',

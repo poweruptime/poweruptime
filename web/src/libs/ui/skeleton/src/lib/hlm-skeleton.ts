@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmSkeleton],hlm-skeleton',
+  exportAs: 'hlmSkeleton',
   host: {
     'data-slot': 'skeleton',
   },

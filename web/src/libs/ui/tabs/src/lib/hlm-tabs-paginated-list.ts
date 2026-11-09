@@ -28,6 +28,7 @@ import {listVariants} from './hlm-tabs-list';
 
 @Component({
   selector: 'hlm-paginated-tabs-list',
+  exportAs: 'hlmTabsPaginatedList',
   imports: [CdkObserveContent, NgIcon],
   providers: [provideIcons({lucideChevronRight, lucideChevronLeft})],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -112,7 +113,7 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
     ),
   );
 
-  protected _itemSelected(event: KeyboardEvent) {
-    event.preventDefault();
+  protected _itemSelected(_event: KeyboardEvent) {
+    /* noop - the native button activation selects the focused tab */
   }
 }

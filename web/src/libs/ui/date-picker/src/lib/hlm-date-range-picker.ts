@@ -38,6 +38,7 @@ export const HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR = {
 
 @Component({
   selector: 'hlm-date-range-picker',
+  exportAs: 'hlmDateRangePicker',
   imports: [HlmPopoverImports, HlmCalendarRange],
   providers: [
     HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR,

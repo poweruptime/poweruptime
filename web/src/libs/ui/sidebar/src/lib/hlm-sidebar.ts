@@ -10,6 +10,7 @@ import {injectHlmSidebarConfig} from './hlm-sidebar.token';
 
 @Component({
   selector: 'hlm-sidebar',
+  exportAs: 'hlmSidebar',
   imports: [NgTemplateOutlet, HlmSheetImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

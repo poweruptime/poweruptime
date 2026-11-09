@@ -51,11 +51,7 @@ import {CopyIconButton} from '../../copy-icon-button';
           [formGroup]="confirmFormGroup"
           (ngSubmit)="mfaEditStore.confirm(confirmFormGroup.getRawValue())">
           <span>{{ 'mfa.confirm.label' | transloco }}</span>
-          <brn-input-otp
-            hlmInputOtp
-            length="6"
-            formControlName="code"
-            inputClass="disabled:cursor-not-allowed">
+          <hlm-input-otp length="6" formControlName="code" inputClass="disabled:cursor-not-allowed">
             <div hlmInputOtpGroup>
               <hlm-input-otp-slot index="0" />
               <hlm-input-otp-slot index="1" />
@@ -67,7 +63,7 @@ import {CopyIconButton} from '../../copy-icon-button';
               <hlm-input-otp-slot index="4" />
               <hlm-input-otp-slot index="5" />
             </div>
-          </brn-input-otp>
+          </hlm-input-otp>
 
           <button [disabled]="!confirmFormGroupValid()" hlmBtn type="submit">
             {{ 'mfa.confirm.confirm' | transloco }}

@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmCommandList],hlm-command-list',
+  exportAs: 'hlmCommandList',
   hostDirectives: [
     {
       directive: BrnCommandList,

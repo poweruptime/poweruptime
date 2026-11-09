@@ -14,6 +14,7 @@ import {injectHlmDatePickerMultiConfig} from './hlm-date-picker-multi.token';
 
 @Component({
   selector: 'hlm-date-multi-input',
+  exportAs: 'hlmDateMultiInput',
   imports: [HlmInputGroupImports, NgIcon],
   providers: [
     provideIcons({lucideCalendar, lucideX}),

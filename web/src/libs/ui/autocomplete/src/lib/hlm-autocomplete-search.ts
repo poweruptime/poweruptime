@@ -10,6 +10,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmAutocompleteSearch],hlm-autocomplete-search',
+  exportAs: 'hlmAutocompleteSearch',
   providers: [
     provideBrnPopoverConfig({
       align: 'start',

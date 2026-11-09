@@ -4,6 +4,7 @@ import {
   ElementRef,
   HostAttributeToken,
   Injector,
+  NgZone,
   PLATFORM_ID,
   effect,
   inject,
@@ -86,8 +87,9 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
       };
       elementClassManagers.set(element, manager);
 
-      // Setup global observer if needed and register this element
-      setupGlobalObserver(platformId);
+      // Setup global observer if needed and register this element. Created outside the zone so
+      // class mutations don't trigger app-wide change detection (and loop if CD writes a class).
+      inject(NgZone).runOutsideAngular(() => setupGlobalObserver(platformId));
       observedElements.add(element);
 
       // Suppress transitions until the first effect writes correct classes and

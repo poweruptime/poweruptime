@@ -38,6 +38,7 @@ export const HLM_DATE_PICKER_MULTI_VALUE_ACCESSOR = {
 
 @Component({
   selector: 'hlm-date-picker-multi',
+  exportAs: 'hlmDatePickerMulti',
   imports: [HlmPopoverImports, HlmCalendarMulti],
   providers: [
     HLM_DATE_PICKER_MULTI_VALUE_ACCESSOR,

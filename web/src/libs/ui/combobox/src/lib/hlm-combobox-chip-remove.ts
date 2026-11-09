@@ -6,6 +6,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: 'button[hlmComboboxChipRemove]',
+  exportAs: 'hlmComboboxChipRemove',
   hostDirectives: [BrnComboboxChipRemove],
   host: {'data-slot': 'combobox-chip-remove'},
 })

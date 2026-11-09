@@ -10,6 +10,7 @@ import {provideHlmToggleGroup} from './hlm-toggle-group.token';
 
 @Directive({
   selector: '[hlmToggleGroup],hlm-toggle-group',
+  exportAs: 'hlmToggleGroup',
   providers: [provideHlmToggleGroup(HlmToggleGroup)],
   hostDirectives: [
     {

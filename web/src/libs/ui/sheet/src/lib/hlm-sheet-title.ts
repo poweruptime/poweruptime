@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmSheetTitle]',
+  exportAs: 'hlmSheetTitle',
   hostDirectives: [BrnSheetTitle],
   host: {'data-slot': 'sheet-title'},
 })

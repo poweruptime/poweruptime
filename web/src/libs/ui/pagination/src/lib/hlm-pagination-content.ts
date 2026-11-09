@@ -4,6 +4,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: 'ul[hlmPaginationContent]',
+  exportAs: 'hlmPaginationContent',
   host: {'data-slot': 'pagination-content'},
 })
 export class HlmPaginationContent {

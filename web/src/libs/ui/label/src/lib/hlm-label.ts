@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmLabel]',
+  exportAs: 'hlmLabel',
   hostDirectives: [{directive: BrnLabel, inputs: ['id', 'for']}],
   host: {'data-slot': 'label'},
 })

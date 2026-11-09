@@ -5,6 +5,7 @@ import {classes} from '@spartan-ng/helm/utils';
 
 @Directive({
   selector: '[hlmComboboxEmpty],hlm-combobox-empty',
+  exportAs: 'hlmComboboxEmpty',
   hostDirectives: [BrnComboboxEmpty],
   host: {'data-slot': 'combobox-empty'},
 })
