@@ -37,7 +37,7 @@ test('setup', async ({page}) => {
   expect(code).not.toBeNull();
 
   // Enter OTP
-  await page.fill('#email-test-code-input > div:nth-child(4) > input', code!);
+  await page.fill('#email-test-code-input > input', code!);
 
   const sendEmailTestCodeButton = page.locator('#email-test-code-button');
   await expect(sendEmailTestCodeButton).toHaveText(/Verify Code/i);
