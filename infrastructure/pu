@@ -23,6 +23,8 @@ LOCAL=false
 DRY_RUN=false
 CMD=""
 TARGET=""
+# Beta releases reach the beta branch before main, so link both guides
+DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose/blob/main/README.md#upgrading-postgresql (beta: https://github.com/poweruptime/docker-compose/blob/beta/README.md#upgrading-postgresql)"
 
 usage() {
   cat <<EOF
@@ -252,7 +254,36 @@ do_ps() {
   docker_compose ps
 }
 
+# A PostgreSQL major upgrade switches to a new volume (poweruptime-db-data-<major>).
+# Refuse to start on the new, empty volume while an old volume still holds the data.
+check_db_volume_migrated() {
+  local project volume current v
+  local -a volumes old=()
+
+  project=$(docker compose "${COMPOSE_ARGS[@]}" config 2>/dev/null | sed -n 's/^name: //p' | head -n1) || true
+  volume=$(docker compose "${COMPOSE_ARGS[@]}" config --volumes 2>/dev/null | grep -E '^poweruptime-db-data' | head -n1) || true
+  if [[ -z "$project" || -z "$volume" ]]; then
+    err "Could not read the database volume from the docker compose config, skipping the database volume check."
+    return 0
+  fi
+
+  current="${project}_${volume}"
+  readarray -t volumes < <(docker volume ls --format '{{.Name}}')
+  for v in "${volumes[@]}"; do
+    [[ "$v" == "$current" ]] && return 0
+    [[ "$v" =~ ^${project}_poweruptime-db-data(-[0-9]+)?$ ]] && old+=("$v")
+  done
+
+  if (( ${#old[@]} > 0 )); then
+    err "The database volume '$current' does not exist yet, but an old database volume does: ${old[*]}"
+    err "Starting now would run poweruptime on a new, empty database. Nothing has been started."
+    err "Please follow the upgrade guide: $DB_UPGRADE_GUIDE_URL"
+    exit 1
+  fi
+}
+
 do_up() {
+  check_db_volume_migrated
   docker_compose pull --quiet
   docker_compose up -d --quiet-pull
   if ! $DRY_RUN; then
@@ -358,6 +389,17 @@ do_backup_extract() {
   fi
 }
 
+# Restores the SQL printed by the given command (e.g. gpg --decrypt) into the database in one transaction.
+# COMMIT is only sent once the command succeeded, so a SQL error (ON_ERROR_STOP) or a backup that fails
+# to read halfway ends the session with an open transaction, which PostgreSQL rolls back completely.
+restore_sql() {
+  {
+    echo 'BEGIN;'
+    "$@" && printf '\nCOMMIT;\n'
+  } | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+    psql -v ON_ERROR_STOP=1 -U "$DATABASE_USER" -d "$DATABASE_NAME"
+}
+
 do_backup_import() {
   if [[ -z "$TARGET" ]]; then
     err "Missing backup file"; usage; exit 1
@@ -368,11 +410,14 @@ do_backup_import() {
   fi
   log "Importing $TARGET"
   if $DRY_RUN; then
-    echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' \
-    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+    echo "+ { echo 'BEGIN;'; gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' && echo 'COMMIT;'; } \
+    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql -v ON_ERROR_STOP=1 -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
-    gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" \
-    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+    if ! restore_sql gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET"; then
+      err "Import failed, all changes have been rolled back. Nothing has been imported."
+      exit 1
+    fi
+    log "Import finished"
   fi
 }
 
@@ -397,9 +442,9 @@ do_backup_import_insecure() {
     echo "+ docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
     psql -U '$DATABASE_USER' -d postgres -c \"CREATE DATABASE \"$DATABASE_NAME\";\""
 
-    echo "+ cat '$TARGET' \
+    echo "+ { echo 'BEGIN;'; cat '$TARGET' && echo 'COMMIT;'; } \
     | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
-      psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+      psql -v ON_ERROR_STOP=1 -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DATABASE_NAME\" WITH (FORCE);"
@@ -407,10 +452,50 @@ do_backup_import_insecure() {
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "CREATE DATABASE \"$DATABASE_NAME\";"
 
-    cat "$TARGET" \
-    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
-      psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+    if ! restore_sql cat "$TARGET"; then
+      err "Import failed, nothing has been imported."
+      err "The previous database was dropped before the import, so '$DATABASE_NAME' is now empty. Restore it from a backup."
+      exit 1
+    fi
+    log "Import finished"
   fi
+}
+
+# Prints the major version of the running database container (e.g. "17")
+get_running_db_major() {
+  docker exec poweruptime-db printenv PG_MAJOR 2>/dev/null
+}
+
+# Prints the major version of DB_IMAGE in versions.env at the given git ref (e.g. "18")
+get_target_db_major() {
+  local ref="$1"
+  git show "$ref:./versions.env" \
+    | sed -nE 's/^DB_IMAGE="?[^:"]+:([0-9]+).*/\1/p'
+}
+
+# A PostgreSQL major upgrade needs a manual dump & restore, abort before touching anything
+check_db_major_version() {
+  local ref="$1" running target
+
+  if ! running=$(get_running_db_major) || [[ -z "$running" ]]; then
+    err "Could not read PG_MAJOR from the 'poweruptime-db' container to determine its PostgreSQL version."
+    err "Make sure the stack is running ('$0 start') and uses an official postgres image before updating."
+    exit 1
+  fi
+
+  if ! target=$(get_target_db_major "$ref") || [[ -z "$target" ]]; then
+    err "Could not determine the PostgreSQL version of '$ref' (DB_IMAGE in versions.env)."
+    exit 1
+  fi
+
+  if [[ "$running" != "$target" ]]; then
+    err "This update requires a PostgreSQL major version upgrade ($running -> $target)."
+    err "This cannot be done by '$0 update'. Nothing has been changed."
+    err "Please follow the upgrade guide: $DB_UPGRADE_GUIDE_URL"
+    exit 1
+  fi
+
+  log "PostgreSQL major version unchanged ($running)"
 }
 
 do_update() {
@@ -441,6 +526,8 @@ do_update() {
       err "You are on '$branch', but '$TARGET' is needed"
       exit 1
     fi
+    run_cmd git fetch
+    check_db_major_version "@{upstream}"
     run_cmd git pull
   else
     if ! confirm "Checkout '$TARGET'?"; then
@@ -448,6 +535,7 @@ do_update() {
       exit 1
     fi
     run_cmd git fetch --tags
+    check_db_major_version "$TARGET"
     run_cmd git checkout "$TARGET"
   fi
 
