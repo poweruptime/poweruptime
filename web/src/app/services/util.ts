@@ -83,9 +83,10 @@ export const buildUptimeStatistics = (uptime?: BackendType['PublicUptimeStatisti
     : [];
 
 export const calculatePingChart = (checkResults: BackendType['CheckResultMinResponse'][]) => {
-  const data = checkResults.map((cr) => ({name: cr.createdAt, value: cr.pingMs ?? 0})).reverse();
+  // Keep missing pings as null so the chart renders them as gaps instead of 0 ms measurements.
+  const data = checkResults.map((cr) => ({name: cr.createdAt, value: cr.pingMs ?? null})).reverse();
 
-  const values = data.map((d) => d.value).filter((v) => v !== 0);
+  const values = data.map((d) => d.value).filter((v) => v !== null);
 
   const smallest = Math.min(...values);
   const biggest = Math.max(...values);

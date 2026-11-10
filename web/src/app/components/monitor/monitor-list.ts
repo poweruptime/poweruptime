@@ -129,9 +129,7 @@ export class MonitorList {
       })),
     );
 
-    this.checkResultsStore.loadAll(
-      computed(() => this.monitorsStore.entities().map((it) => it.id)),
-    );
+    this.checkResultsStore.watch(computed(() => this.monitorsStore.entities().map((it) => it.id)));
   }
   readonly types = [
     {value: 'DNS', name: 'DNS'},

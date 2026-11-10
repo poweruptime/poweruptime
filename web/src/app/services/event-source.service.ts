@@ -12,11 +12,15 @@ export function connectToEventSource(
   url: string,
   options: EventSourceInit,
   eventNames: string[] = [],
+  onOpen?: () => void,
 ): Observable<MessageEvent> {
-  const eventSource = new EventSource(url, options);
-
   return new Observable((subscriber: Subscriber<MessageEvent>) => {
-    eventSource.onerror = (error) => subscriber.error(error);
+    const eventSource = new EventSource(url, options);
+    eventSource.onopen = () => onOpen?.();
+    eventSource.onerror = (error) => {
+      // Recoverable errors reconnect inside EventSource. Only terminate when it gives up.
+      if (eventSource.readyState === EventSource.CLOSED) subscriber.error(error);
+    };
 
     eventNames.forEach((event: string) => {
       eventSource.addEventListener(event, (data) => subscriber.next(data));

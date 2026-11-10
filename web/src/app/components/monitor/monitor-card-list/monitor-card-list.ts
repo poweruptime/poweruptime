@@ -107,6 +107,6 @@ export class MonitorCardList {
   }
 
   constructor() {
-    this.checkResultsStore.loadAll(computed(() => this.entities().map((it) => it.id)));
+    this.checkResultsStore.watch(computed(() => this.entities().map((it) => it.id)));
   }
 }
