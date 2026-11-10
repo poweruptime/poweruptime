@@ -87,6 +87,7 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
 
 > [!IMPORTANT]
 > If an update requires a new PostgreSQL major version, `./pu update` aborts without changing anything.
+> `./pu start` also refuses to start on a new, empty database volume while the old one still exists.
 > Follow [Upgrading PostgreSQL](#upgrading-postgresql) instead.
 
 ## Upgrading PostgreSQL
@@ -134,10 +135,12 @@ Run all commands in your poweruptime directory. The stack must still be running 
    ```shell
    docker exec poweruptime-db postgres --version
    ```
-7. Restore the backup into the new database. Check the output for errors.
+7. Restore the backup into the new database.
    ```shell
    ./pu backup-import backup/poweruptime-db/<timestamp>.sql.gpg
    ```
+   > [!CAUTION]
+   > Only continue once the import prints `Import finished`. If it fails, it rolls back completely and the new database stays empty. Fix the cause (or [roll back](#rollback)) before starting the stack.
 8. Start the stack.
    ```shell
    ./pu start

@@ -23,6 +23,9 @@ LOCAL=false
 DRY_RUN=false
 CMD=""
 TARGET=""
+DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose#upgrading-postgresql"
+# Stop at the first SQL error and roll back everything, so a failed import never leaves a partial database
+PSQL_RESTORE_ARGS=(-v ON_ERROR_STOP=1 --single-transaction)
 
 usage() {
   cat <<EOF
@@ -252,7 +255,34 @@ do_ps() {
   docker_compose ps
 }
 
+# A PostgreSQL major upgrade switches to a new volume (poweruptime-db-data-<major>).
+# Refuse to start on the new, empty volume while an old volume still holds the data.
+check_db_volume_migrated() {
+  local project volume current v
+  local -a volumes old=()
+
+  project=$(docker compose "${COMPOSE_ARGS[@]}" config 2>/dev/null | sed -n 's/^name: //p' | head -n1) || true
+  volume=$(docker compose "${COMPOSE_ARGS[@]}" config --volumes 2>/dev/null | grep -E '^poweruptime-db-data' | head -n1) || true
+  # Invalid config, 'docker compose up' reports the actual error
+  [[ -z "$project" || -z "$volume" ]] && return 0
+
+  current="${project}_${volume}"
+  readarray -t volumes < <(docker volume ls --format '{{.Name}}')
+  for v in "${volumes[@]}"; do
+    [[ "$v" == "$current" ]] && return 0
+    [[ "$v" =~ ^${project}_poweruptime-db-data(-[0-9]+)?$ ]] && old+=("$v")
+  done
+
+  if (( ${#old[@]} > 0 )); then
+    err "The database volume '$current' does not exist yet, but an old database volume does: ${old[*]}"
+    err "Starting now would run poweruptime on a new, empty database. Nothing has been started."
+    err "Please follow the upgrade guide: $DB_UPGRADE_GUIDE_URL"
+    exit 1
+  fi
+}
+
 do_up() {
+  check_db_volume_migrated
   docker_compose pull --quiet
   docker_compose up -d --quiet-pull
   if ! $DRY_RUN; then
@@ -369,10 +399,15 @@ do_backup_import() {
   log "Importing $TARGET"
   if $DRY_RUN; then
     echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' \
-    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql ${PSQL_RESTORE_ARGS[*]} -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
-    gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" \
-    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+    if ! gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" \
+      | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+        psql "${PSQL_RESTORE_ARGS[@]}" -U "$DATABASE_USER" -d "$DATABASE_NAME"; then
+      err "Import failed, all changes have been rolled back. Nothing has been imported."
+      exit 1
+    fi
+    log "Import finished"
   fi
 }
 
@@ -399,7 +434,7 @@ do_backup_import_insecure() {
 
     echo "+ cat '$TARGET' \
     | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
-      psql -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+      psql ${PSQL_RESTORE_ARGS[*]} -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DATABASE_NAME\" WITH (FORCE);"
@@ -407,13 +442,15 @@ do_backup_import_insecure() {
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "CREATE DATABASE \"$DATABASE_NAME\";"
 
-    cat "$TARGET" \
-    | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
-      psql -U "$DATABASE_USER" -d "$DATABASE_NAME"
+    if ! cat "$TARGET" \
+      | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+        psql "${PSQL_RESTORE_ARGS[@]}" -U "$DATABASE_USER" -d "$DATABASE_NAME"; then
+      err "Import failed, all changes have been rolled back. The database '$DATABASE_NAME' is empty."
+      exit 1
+    fi
+    log "Import finished"
   fi
 }
-
-DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose#upgrading-postgresql"
 
 # Prints the major version of the running database container (e.g. "17")
 get_running_db_major() {
@@ -432,8 +469,8 @@ check_db_major_version() {
   local ref="$1" running target
 
   if ! running=$(get_running_db_major) || [[ -z "$running" ]]; then
-    err "Could not determine the PostgreSQL version of the 'poweruptime-db' container."
-    err "Make sure the stack is running ('$0 start') before updating."
+    err "Could not read PG_MAJOR from the 'poweruptime-db' container to determine its PostgreSQL version."
+    err "Make sure the stack is running ('$0 start') and uses an official postgres image before updating."
     exit 1
   fi
 

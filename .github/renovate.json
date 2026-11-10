@@ -66,7 +66,7 @@
       "matchPackageNames": ["postgres"],
       "matchUpdateTypes": ["major"],
       "prBodyNotes": [
-        "⚠️ **PostgreSQL major update**: bumping the image is not enough. Also bump the `poweruptime-db-data-<major>` volume in `infrastructure/_base.yml` and `compose-dev.yml`, and update the volume table in `infrastructure/README.md#upgrading-postgresql`. Existing instances must follow that upgrade guide (`./pu update` aborts on a major version change)."
+        "⚠️ **PostgreSQL major update**: bumping the image is not enough. Also bump the database volume to the new major: `poweruptime-db-data-<major>` in `infrastructure/_base.yml` and `db-<major>` in `compose-dev.yml`, and update the volume table in `infrastructure/README.md#upgrading-postgresql`. Existing instances must follow that upgrade guide (`./pu update` aborts on a major version change)."
       ]
     }
   ],
