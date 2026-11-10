@@ -133,15 +133,19 @@ export const CheckResultsStore = signalStore(
             );
             // The backend decides which result refills the page or where the moved row belongs.
             if (!matches || sortKeyChanged(existing, checkResult, store.sortBy())) refresh$.next();
-          } else if (
-            isLivePage() &&
-            query.hasNotification === undefined &&
-            matchesQuery(checkResult, query)
-          ) {
-            patchState(
-              store,
-              setAllEntities(newestCheckResults([checkResult, ...store.entities()], store.size())),
-            );
+          } else if (isLivePage() && matchesQuery(checkResult, query)) {
+            if (query.hasNotification === undefined) {
+              patchState(
+                store,
+                setAllEntities(
+                  newestCheckResults([checkResult, ...store.entities()], store.size()),
+                ),
+              );
+            } else if (!query.hasNotification) {
+              // Only the backend knows whether it has a notification. Pushes are sent after commit, so a reload
+              // sees it. ("Include" tables reload on the notification push instead.)
+              refresh$.next();
+            }
           }
         }),
       ),
@@ -243,6 +247,8 @@ export const LastCheckResultsStore = signalStore(
   withMethods((store, api = injectAPI(), pushService = inject(PushService)) => {
     const inFlightUpdates = new Map<string, Map<string, CheckResult>>();
     const refreshAfterLoad = new Set<string>();
+    // Bumped on reconnect; responses to requests started before it must not mark their monitor fresh.
+    let cacheGeneration = 0;
 
     const loadAll = rxMethod<string[] | {monitorIds: string[]; force: boolean}>(
       pipe(
@@ -264,6 +270,7 @@ export const LastCheckResultsStore = signalStore(
           (monitorId) =>
             defer(() => {
               const updates = new Map<string, CheckResult>();
+              const generation = cacheGeneration;
               inFlightUpdates.set(monitorId, updates);
               return api
                 .get('/v1/check-result', {
@@ -284,7 +291,10 @@ export const LastCheckResultsStore = signalStore(
                             PAGE_SIZE,
                           ),
                         ),
-                        cacheTimestamps: new Map(cacheTimestamps).set(monitorId, Date.now()),
+                        cacheTimestamps:
+                          generation === cacheGeneration
+                            ? new Map(cacheTimestamps).set(monitorId, Date.now())
+                            : cacheTimestamps,
                       })),
                     error: () => {
                       // Keep the last snapshot; the next refresh will retry this monitor.
@@ -310,7 +320,12 @@ export const LastCheckResultsStore = signalStore(
     return {
       loadAll,
       // Pushes may have been missed while disconnected, so cached monitors must reload on their next use.
-      invalidateCache: rxMethod<void>(tap(() => patchState(store, {cacheTimestamps: new Map()}))),
+      invalidateCache: rxMethod<void>(
+        tap(() => {
+          cacheGeneration++;
+          patchState(store, {cacheTimestamps: new Map()});
+        }),
+      ),
       addCheckResult: rxMethod<CheckResult>(
         tap((checkResult) => {
           const monitorId = checkResult.monitor.id;

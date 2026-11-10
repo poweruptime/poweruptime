@@ -1,6 +1,10 @@
 package org.poweruptime.backend.features.push
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.jetbrains.exposed.v1.core.Key
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.statements.StatementInterceptor
+import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.poweruptime.backend.amqp.RabbitMQConfiguration
 import org.poweruptime.backend.amqp.RabbitMQService
 import org.poweruptime.backend.core.utils.Config
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.FluxSink
 import reactor.core.publisher.Sinks
+import reactor.core.scheduler.Schedulers
 import java.util.concurrent.ConcurrentHashMap
 
 /** Pushes buffered per SSE client before it is disconnected and has to reconnect and reload. */
@@ -30,6 +35,9 @@ class PushService(
     // Entries are kept for the lifetime of the service: an idle entry holds no listener or queue, and keeping it
     // keeps the lifecycle lock stable across listener restarts.
     private val fluxByTeam = ConcurrentHashMap<ULong, Flux<String>>()
+
+    // Pushes of the current transaction, published once it commits.
+    private val pendingPushesKey = Key<MutableList<Pair<ULong, PushDto>>>()
 
     private fun createTeamFlux(teamId: ULong): Flux<String> {
         // The queue is auto-deleted when its last consumer stops. Serialize stop and declare+start so a
@@ -68,9 +76,11 @@ class PushService(
                         stop(container)
                         throw e
                     }
-                    // Registered while holding the lock: if the subscription was cancelled meanwhile, this stops
-                    // the listener before a replacement can start.
-                    emitter.onDispose { stop(container) }
+                    // Registered while holding the lock: if the subscription was cancelled meanwhile, the stop is
+                    // scheduled before a replacement can start, and a replacement stops it itself first anyway.
+                    // Stop asynchronously: cancellation can run on this listener's own thread (e.g. on overflow),
+                    // where stop() would wait for itself until the shutdown timeout.
+                    emitter.onDispose { Schedulers.boundedElastic().schedule { stop(container) } }
                 }
             }.share()
     }
@@ -101,9 +111,45 @@ class PushService(
         }
     }
 
+    /**
+     * Publishes [dto] to the team's SSE clients. Inside a transaction it is published after the commit (and
+     * dropped on rollback), because clients reload from the database and must see the pushed state.
+     */
     fun send(teamId: ULong, dto: PushDto) {
-        if (pushEnabled) {
+        if (!pushEnabled) {
+            return
+        }
+
+        val transaction = TransactionManager.currentOrNull()
+        if (transaction == null) {
+            publish(teamId, dto)
+            return
+        }
+
+        val pending = transaction.getUserData(pendingPushesKey)
+            ?: mutableListOf<Pair<ULong, PushDto>>().also { pushes ->
+                transaction.putUserData(pendingPushesKey, pushes)
+                transaction.registerInterceptor(
+                    object : StatementInterceptor {
+                        override fun afterCommit(transaction: Transaction) {
+                            val committed = pushes.toList()
+                            pushes.clear()
+                            committed.forEach { (teamId, dto) -> publish(teamId, dto) }
+                        }
+
+                        override fun afterRollback(transaction: Transaction) = pushes.clear()
+                    },
+                )
+            }
+        pending += teamId to dto
+    }
+
+    private fun publish(teamId: ULong, dto: PushDto) {
+        try {
             rabbitMQService.sendToPush(teamId, dto)
+        } catch (e: Exception) {
+            // Clients resync on reconnect and periodically; a lost push must not fail the committed work.
+            logger.error(e) { "Failed to send push to team '$teamId'" }
         }
     }
 }
