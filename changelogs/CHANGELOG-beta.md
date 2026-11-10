@@ -1,5 +1,89 @@
 # Changelog
 
+## 0.6.0-beta-1794308547 - 2026-11-10
+
+### <!-- 0 -->🚀 Features
+
+- Relace chart library by Dafnik ([31485f0](https://github.com/poweruptime/poweruptime/commit/31485f0ed778808a98d80c99d467a92bd26ec71c))
+- Improve og image generation by Dafnik ([63fe9fd](https://github.com/poweruptime/poweruptime/commit/63fe9fd8c40f70fceb2bec50189473ce3c2bb267))
+- Dialog hide close button by Dafnik ([b670cc3](https://github.com/poweruptime/poweruptime/commit/b670cc3239219dd5b918d76282d5606ac2b881b9))
+- Add code based oauth2 login flow (#735) by Dafnik ([ad97585](https://github.com/poweruptime/poweruptime/commit/ad9758522b3acd87f848ab5ee4832c937ff5a074))
+- Use rxMethod for push service connect (#740) by Dafnik ([572e34f](https://github.com/poweruptime/poweruptime/commit/572e34fa4e9364a8958cb5a80cab768809764374)), feat:make one day uptime calculation batch based
+
+* feat: only make 4 check result requests concurrently
+
+* fix: duplicate store update
+
+* fix: return 100% uptime
+
+* fix: new check results and notifications order
+
+* fix: add necessary allowed hosts
+
+* feat(web): optimize chunks
+
+* fix(web): notification store
+
+* fix: postgresql healtcheck role not exist
+
+* fix(web): allowed hosts
+
+- Add better web server startup information by Dafnik ([b2df8db](https://github.com/poweruptime/poweruptime/commit/b2df8db2683c38255dcddccafac8cd40f63f5352))
+- Spread monitor start 120 seconds apart by Dafnik ([e1ac007](https://github.com/poweruptime/poweruptime/commit/e1ac007ffcbcb2dbda4fbe65de102ef76a1f8184))
+- Enhance styling by Dafnik ([8626e6c](https://github.com/poweruptime/poweruptime/commit/8626e6c833dc349a5b73baae66adfbb0f7896b4f))
+- Use spartan (tanstack) charts by Dafnik ([db6e5d6](https://github.com/poweruptime/poweruptime/commit/db6e5d68f1c6b7369e70a39051c2c2879298c253))
+
+### <!-- 1 -->🐛 Bug Fixes
+
+- Beta version display by Dafnik ([190fcc8](https://github.com/poweruptime/poweruptime/commit/190fcc843330875b0530d7f8fcf23e3153ff944e))
+- LastCheckResults store only having one item or having duplicate items by Dafnik ([127407f](https://github.com/poweruptime/poweruptime/commit/127407fc3f189778bfef47781f84f56d88841c62))
+- Confirm with user before pruning unused images by Dafnik ([5752aed](https://github.com/poweruptime/poweruptime/commit/5752aedcea08fe511e639d596e5b7623b465ca17))
+- Do not return monitors which team has been deleted by Dafnik ([d50f9b3](https://github.com/poweruptime/poweruptime/commit/d50f9b34473b9535407254bde2457447cb09a42f))
+- Scheduled check result log entry deletion not working by Dafnik ([6339e14](https://github.com/poweruptime/poweruptime/commit/6339e14202eb312328ad7c8f3df7fdc0b440f895))
+- Use hosts of environment for allowed hosts (#746) by Dafnik ([71cfb32](https://github.com/poweruptime/poweruptime/commit/71cfb327f0a64c91a17a6219e8f02206cb7e48f5))
+- Trust proxy headers by Dafnik ([a707489](https://github.com/poweruptime/poweruptime/commit/a70748950e7b25e972e3a5ba343b389809cebe69))
+- Docker image prune running on negative answer by Dafnik ([b25b137](https://github.com/poweruptime/poweruptime/commit/b25b13738077572aed7e9f5bfc4e3743a97ab517))
+- Cli source env by Dafnik ([46316be](https://github.com/poweruptime/poweruptime/commit/46316be072d361cb91908064b9838e8c998927e8))
+- Ssr x-forwarded headers by Dafnik ([0c923a5](https://github.com/poweruptime/poweruptime/commit/0c923a5e9a8fee40dc676bd19b04026fff9b1a39))
+- IsRefreshing is not reset when refresh fails, so later 401s can hang behind nextAccessTokenSubject by Dafnik ([7a7d1ea](https://github.com/poweruptime/poweruptime/commit/7a7d1eaa61e66b6eeab5184264f8fd312d056fb6))
+- Hit logout endpoint by Dafnik ([32de561](https://github.com/poweruptime/poweruptime/commit/32de5616b1b1da4a2aead05db09f5e73108ebb8f))
+- Monitor & notification method clone new team id not validated by Dafnik ([954697f](https://github.com/poweruptime/poweruptime/commit/954697f42d3a387f76b1915c5f252c943abd3bcd))
+- Notification method clone by Dafnik ([73d2cb1](https://github.com/poweruptime/poweruptime/commit/73d2cb12bb7f45af8c19748c5e08d94d0a80037e))
+- Is system admin guard not redirecting by Dafnik ([18fb0f4](https://github.com/poweruptime/poweruptime/commit/18fb0f49192dafad9a31fc6c0f554d0761f4af50))
+- Add trust OAuth provider MFA instance setting by Dafnik ([35e28c3](https://github.com/poweruptime/poweruptime/commit/35e28c31d30e498d1aa0acb1c64a28e2189fefc5))
+- Sanitize all user html before rendering by Dafnik ([02338df](https://github.com/poweruptime/poweruptime/commit/02338df6b0f60019a1f4c676a37ff18b2d8e2069))
+- Ssr content flash (#813) by Dafnik ([320b056](https://github.com/poweruptime/poweruptime/commit/320b056de2173e0d8fd1ef62ffdcdd786da56c60))
+- Date range input button by Dafnik ([4b2f486](https://github.com/poweruptime/poweruptime/commit/4b2f486ee9637f8db36eefb68d4d0facfce8c343))
+- Auto-pick date range button ids by Dafnik ([70cf282](https://github.com/poweruptime/poweruptime/commit/70cf282ec64529c4c5efb684344eab38eb1df6c3))
+- Keep check results fresh across live updates (#831) by Dafnik ([3f01686](https://github.com/poweruptime/poweruptime/commit/3f01686766429ed14c3ad15d1876e0239d4f7e60))
+
+### <!-- 2 -->🚜 Refactor
+
+- HlmLabel to hlmFieldLabel by Dafnik ([84382be](https://github.com/poweruptime/poweruptime/commit/84382beb0f31c5faccfb6774e92e245ba8f8f741))
+- Speed up monitor fetching by Dafnik ([1af2aa5](https://github.com/poweruptime/poweruptime/commit/1af2aa5c674a0c8afb72ec588b1c312386e4cbd6))
+- Remove unused method by Dafnik ([d889473](https://github.com/poweruptime/poweruptime/commit/d889473496aca8925c5ac8e2272239252b9019d9))
+- PatchState (#755) by Dafnik ([e845574](https://github.com/poweruptime/poweruptime/commit/e845574c5aba762a185c9ee2085fbca550e70165))
+- Use tw no-scrollbar by Dafnik ([9aa63f1](https://github.com/poweruptime/poweruptime/commit/9aa63f1f3e23bf483333e6839f08f44b06564359))
+
+### <!-- 5 -->🎨 Styling
+
+- Format by Dafnik ([c1b81f0](https://github.com/poweruptime/poweruptime/commit/c1b81f08747a31a3ebac7c3f7f7b87419a9c99cf))
+
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+
+- Remove not needed close prs infrastructure action by Dafnik ([c56245b](https://github.com/poweruptime/poweruptime/commit/c56245bbe2157ac9ab726e5ce34ca3707455161b))
+- Remove unused css by Dafnik ([5f0dddc](https://github.com/poweruptime/poweruptime/commit/5f0dddcef6f78d38d9b867c74e6c9242edfbcaa2))
+- Kotlin way by Dafnik ([6dcb60f](https://github.com/poweruptime/poweruptime/commit/6dcb60f0ff6d14524e08b1a9b43cbd0d3a92cbb5))
+- Remove unused dependencies by Dafnik ([9b3ab9b](https://github.com/poweruptime/poweruptime/commit/9b3ab9b69987a81b6a5c0b1c38d902cf92c31b6d))
+- Remove duplicate loading indicator by Dafnik ([597dad1](https://github.com/poweruptime/poweruptime/commit/597dad19abb28a4d45bd159a27615d23b1257c3f))
+- Include infrastructure changes in ci-infra path condition by Dafnik ([7b5cf1d](https://github.com/poweruptime/poweruptime/commit/7b5cf1d410f222c7962e6a06f1ab20bc4f688d1b))
+- Update spartan by Dafnik ([c915717](https://github.com/poweruptime/poweruptime/commit/c915717e77cada90ed5f1d3dc655a18757116375))
+- Align dependency versions by Dafnik ([811882d](https://github.com/poweruptime/poweruptime/commit/811882ddb78deefb1d16520a3e224fae969a591a))
+- Remove hlmIcons by Dafnik ([79e46ec](https://github.com/poweruptime/poweruptime/commit/79e46ec9445b089612e311a7073ed42504509094))
+- Upgrade PostgreSQL to v18 (#832) by Dafnik ([9fda092](https://github.com/poweruptime/poweruptime/commit/9fda09236d7e82e316cd6fc45bdd09e3e33e338d))
+
+[**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.0-beta-1777913261...0.6.0-beta-1794308547)
+
 ## 0.5.0-beta-1777913261 - 2026-05-04
 
 ### <!-- 1 -->🐛 Bug Fixes
@@ -865,7 +949,7 @@
 ### <!-- 2 -->🚜 Refactor
 
 - Use date-fns by Dafnik ([fb22200](https://github.com/poweruptime/poweruptime/commit/fb22200407098fede0e6d977e75e0acf3090ddaf))
-- Remove \_remote.yml by Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
+- Remove _remote.yml by Dafnik ([9c349d8](https://github.com/poweruptime/poweruptime/commit/9c349d82b75917a44cc7d5cd2c4a4103be49f068))
 
 ### <!-- 3 -->📚 Documentation
 
