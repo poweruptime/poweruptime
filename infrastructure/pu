@@ -23,9 +23,8 @@ LOCAL=false
 DRY_RUN=false
 CMD=""
 TARGET=""
-DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose#upgrading-postgresql"
-# Stop at the first SQL error and roll back everything, so a failed import never leaves a partial database
-PSQL_RESTORE_ARGS=(-v ON_ERROR_STOP=1 --single-transaction)
+# Beta releases reach the beta branch before main, so link both guides
+DB_UPGRADE_GUIDE_URL="https://github.com/poweruptime/docker-compose/blob/main/README.md#upgrading-postgresql (beta: https://github.com/poweruptime/docker-compose/blob/beta/README.md#upgrading-postgresql)"
 
 usage() {
   cat <<EOF
@@ -263,8 +262,10 @@ check_db_volume_migrated() {
 
   project=$(docker compose "${COMPOSE_ARGS[@]}" config 2>/dev/null | sed -n 's/^name: //p' | head -n1) || true
   volume=$(docker compose "${COMPOSE_ARGS[@]}" config --volumes 2>/dev/null | grep -E '^poweruptime-db-data' | head -n1) || true
-  # Invalid config, 'docker compose up' reports the actual error
-  [[ -z "$project" || -z "$volume" ]] && return 0
+  if [[ -z "$project" || -z "$volume" ]]; then
+    err "Could not read the database volume from the docker compose config, skipping the database volume check."
+    return 0
+  fi
 
   current="${project}_${volume}"
   readarray -t volumes < <(docker volume ls --format '{{.Name}}')
@@ -388,6 +389,17 @@ do_backup_extract() {
   fi
 }
 
+# Restores the SQL printed by the given command (e.g. gpg --decrypt) into the database in one transaction.
+# COMMIT is only sent once the command succeeded, so a SQL error (ON_ERROR_STOP) or a backup that fails
+# to read halfway ends the session with an open transaction, which PostgreSQL rolls back completely.
+restore_sql() {
+  {
+    echo 'BEGIN;'
+    "$@" && printf '\nCOMMIT;\n'
+  } | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
+    psql -v ON_ERROR_STOP=1 -U "$DATABASE_USER" -d "$DATABASE_NAME"
+}
+
 do_backup_import() {
   if [[ -z "$TARGET" ]]; then
     err "Missing backup file"; usage; exit 1
@@ -398,12 +410,10 @@ do_backup_import() {
   fi
   log "Importing $TARGET"
   if $DRY_RUN; then
-    echo "+ gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' \
-    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql ${PSQL_RESTORE_ARGS[*]} -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+    echo "+ { echo 'BEGIN;'; gpg --batch --passphrase '$DATABASE_PASSWORD' --decrypt '$TARGET' && echo 'COMMIT;'; } \
+    | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db psql -v ON_ERROR_STOP=1 -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
-    if ! gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET" \
-      | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
-        psql "${PSQL_RESTORE_ARGS[@]}" -U "$DATABASE_USER" -d "$DATABASE_NAME"; then
+    if ! restore_sql gpg --batch --passphrase "$DATABASE_PASSWORD" --decrypt "$TARGET"; then
       err "Import failed, all changes have been rolled back. Nothing has been imported."
       exit 1
     fi
@@ -432,9 +442,9 @@ do_backup_import_insecure() {
     echo "+ docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
     psql -U '$DATABASE_USER' -d postgres -c \"CREATE DATABASE \"$DATABASE_NAME\";\""
 
-    echo "+ cat '$TARGET' \
+    echo "+ { echo 'BEGIN;'; cat '$TARGET' && echo 'COMMIT;'; } \
     | docker exec -i --env PGPASSWORD='$DATABASE_PASSWORD' poweruptime-db \
-      psql ${PSQL_RESTORE_ARGS[*]} -U '$DATABASE_USER' -d '$DATABASE_NAME'"
+      psql -v ON_ERROR_STOP=1 -U '$DATABASE_USER' -d '$DATABASE_NAME'"
   else
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DATABASE_NAME\" WITH (FORCE);"
@@ -442,10 +452,9 @@ do_backup_import_insecure() {
     docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
       psql -U "$DATABASE_USER" -d postgres -c "CREATE DATABASE \"$DATABASE_NAME\";"
 
-    if ! cat "$TARGET" \
-      | docker exec -i --env PGPASSWORD="$DATABASE_PASSWORD" poweruptime-db \
-        psql "${PSQL_RESTORE_ARGS[@]}" -U "$DATABASE_USER" -d "$DATABASE_NAME"; then
-      err "Import failed, all changes have been rolled back. The database '$DATABASE_NAME' is empty."
+    if ! restore_sql cat "$TARGET"; then
+      err "Import failed, nothing has been imported."
+      err "The previous database was dropped before the import, so '$DATABASE_NAME' is now empty. Restore it from a backup."
       exit 1
     fi
     log "Import finished"

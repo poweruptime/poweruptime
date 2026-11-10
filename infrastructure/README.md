@@ -87,7 +87,8 @@ Docker Compose configuration for running [poweruptime](https://github.com/poweru
 
 > [!IMPORTANT]
 > If an update requires a new PostgreSQL major version, `./pu update` aborts without changing anything.
-> `./pu start` also refuses to start on a new, empty database volume while the old one still exists.
+> `./pu start` also refuses to start while the old database volume exists and the new one has not been created yet.
+> It only checks that the new volume exists, not that the restore succeeded.
 > Follow [Upgrading PostgreSQL](#upgrading-postgresql) instead.
 
 ## Upgrading PostgreSQL
