@@ -5,7 +5,6 @@ import org.poweruptime.backend.configuration.toJSON
 import org.poweruptime.backend.core.utils.Config
 import org.poweruptime.backend.core.utils.Database
 import org.poweruptime.backend.core.utils.abbreviate
-import org.poweruptime.backend.core.utils.emptyToNull
 import org.poweruptime.backend.features.monitor.model.MonitorStatus
 import org.poweruptime.backend.features.monitor.service.CheckResultService
 import org.poweruptime.backend.features.notification.core.AppriseNotificationFormat
@@ -103,7 +102,7 @@ class AppriseSender(
 
         return AppriseNotificationRequest(
             urls = listOf(buildAppriseUrl(appriseDto, method.type)),
-            title = template.title.emptyToNull(),
+            title = template.title,
             body = convertBody(template.body, method.type),
             type = mapStatusToNotificationType(join.notification.status),
             format = mapFormatType(method.type.bodyType),

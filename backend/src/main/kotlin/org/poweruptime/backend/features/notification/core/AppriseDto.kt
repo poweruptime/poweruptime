@@ -44,7 +44,7 @@ enum class AppriseNotificationFormat(val value: String) {
 data class AppriseNotificationRequest(
     val urls: List<String>,
     val body: String,
-    val title: String? = null,
+    val title: String = "",
     val type: AppriseNotificationType = AppriseNotificationType.INFO,
     val format: AppriseNotificationFormat = AppriseNotificationFormat.HTML,
 )

@@ -1,6 +1,10 @@
 package org.poweruptime.backend.notification
 
+import com.sun.net.httpserver.HttpServer
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -26,10 +30,13 @@ import org.poweruptime.backend.features.notification.service.NotificationTemplat
 import org.poweruptime.backend.features.tempNotification.TempNotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.client.RestClient
+import org.testcontainers.Testcontainers
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.utility.DockerImageName
+import java.net.InetSocketAddress
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class AppriseIntegrationTests(
     @Autowired private val restClient: RestClient,
@@ -43,8 +50,20 @@ class AppriseIntegrationTests(
     private lateinit var appriseSender: AppriseSender
 
     companion object {
+        private val receivedNotifications = ConcurrentLinkedQueue<String>()
+        private val notificationReceiver = HttpServer.create(InetSocketAddress(0), 0).apply {
+            createContext("/") { exchange ->
+                exchange.use {
+                    receivedNotifications.add(it.requestBody.bufferedReader().use { reader -> reader.readText() })
+                    it.sendResponseHeaders(200, -1)
+                }
+            }
+            start()
+            Testcontainers.exposeHostPorts(address.port)
+        }
+
         private val appriseImageName: DockerImageName =
-            DockerImageName.parse("caronc/apprise:v1.5.4") // renovate
+            DockerImageName.parse("caronc/apprise:2.1.0") // renovate
 
         @Container
         @JvmStatic
@@ -53,12 +72,19 @@ class AppriseIntegrationTests(
             .withEnv(mapOf("APPRISE_STATEFUL_MODE" to "disabled"))
             .withReuse(true)
             .waitingFor(Wait.forHttp("/").forStatusCode(200))
+
+        @AfterAll
+        @JvmStatic
+        fun stopNotificationReceiver() {
+            notificationReceiver.stop(0)
+        }
     }
 
     private fun getAppriseUrl() = "http://localhost:${appriseContainer.getMappedPort(8000)}"
 
     @BeforeEach
     fun setUp() {
+        receivedNotifications.clear()
         mockNotificationMethodDataService =
             MockNotificationMethodDataService()
 
@@ -79,9 +105,14 @@ class AppriseIntegrationTests(
     private fun setupDefaultMockData() {
         mockNotificationMethodDataService.withDefaultReturnValue(
             SlackNotificationMethodDataRecord(
-                url = "slackwebhook.com",
+                url = "json://host.testcontainers.internal:${notificationReceiver.address.port}",
             ),
         )
+    }
+
+    @AfterEach
+    fun verifyNotificationDelivered() {
+        assertFalse(receivedNotifications.isEmpty(), "Apprise should deliver to the local receiver")
     }
 
     @Nested
@@ -260,6 +291,7 @@ class AppriseIntegrationTests(
             )
 
             mockNotificationMethodDataService.reset()
+            setupDefaultMockData()
 
             val join = createSubNotificationJoin(
                 subNotification = subNotification,
