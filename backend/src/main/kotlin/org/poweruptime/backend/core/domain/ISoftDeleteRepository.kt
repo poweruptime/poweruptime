@@ -186,7 +186,7 @@ fun <TableType, X> TableType.findByPublicIdOrThrow(
 fun <TableType, X> TableType.findIdByPublicId(
     publicIdValue: String,
     includeDeleted: Boolean = false,
-): X? where TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete = select(id)
+): X? where X : Any, TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete = select(id)
     .where {
         publicId eq publicIdValue and if (includeDeleted) {
             deleted.isNotNull()
@@ -202,13 +202,13 @@ fun <TableType, X> TableType.findIdByPublicId(
 fun <TableType, X> TableType.findIdByPublicIdOrThrow(
     publicId: String,
     includeDeleted: Boolean = false,
-): X where TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete =
+): X where X : Any, TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete =
     findIdByPublicId(publicId, includeDeleted) ?: throw NotFoundException("""${javaClass.simpleName} not found""")
 
 fun <TableType, X> TableType.findIdsByPublicIds(
     publicIds: Iterable<String>,
     includeDeleted: Boolean = false,
-): List<X> where TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete = select(id)
+): List<X> where X : Any, TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete = select(id)
     .where {
         publicId inList publicIds and if (includeDeleted) {
             deleted.isNotNull()
@@ -222,7 +222,7 @@ fun <TableType, X> TableType.findIdsByPublicIds(
 fun <TableType, X> TableType.findIdsByPublicIdsOrThrow(
     publicIds: List<String>,
     includeDeleted: Boolean = false,
-): List<X> where TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete {
+): List<X> where X : Any, TableType : IdTable<X>, TableType : HasPublicId, TableType : HasSoftDelete {
     val ids = findIdsByPublicIds(publicIds, includeDeleted)
 
     if (ids.size != publicIds.size) {

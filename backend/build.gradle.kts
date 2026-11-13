@@ -206,7 +206,12 @@ tasks.processResources {
         include("**/application*.yml")
         include("**/application*.yaml")
         include("**/application*.properties")
-        project.properties.forEach { prop ->
+        val tokenProperties = providers.gradlePropertiesPrefixedBy("").get() + mapOf(
+            "name" to project.name,
+            "version" to project.version.toString(),
+            "group" to project.group.toString(),
+        )
+        tokenProperties.forEach { prop ->
             filter(mapOf(prop.key to prop.value), ReplaceTokens::class.java)
             filter(mapOf(("project." + prop.key) to prop.value), ReplaceTokens::class.java)
         }

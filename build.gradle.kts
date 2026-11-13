@@ -62,6 +62,12 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
     repositories {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
@@ -86,7 +92,7 @@ subprojects {
 }
 
 tasks.register("releaseBeta") {
-    val versionParam = project.properties["version"].toString().nullOrParameter()
+    val versionParam = providers.gradleProperty("version").orNull?.nullOrParameter()
 
     doLast {
         val version = getNewBetaVersion(versionParam)
@@ -140,7 +146,7 @@ tasks.register("releaseBeta") {
 }
 
 tasks.register("releaseProd") {
-    val versionParam = project.properties["version"].toString().nullOrParameter()
+    val versionParam = providers.gradleProperty("version").orNull?.nullOrParameter()
 
     doLast {
         val version = getNewProdVersion(versionParam)

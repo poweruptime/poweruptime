@@ -28,7 +28,7 @@ private val blankStringToNullDeserializerModule = SimpleModule().apply {
 val puObjectMapperV2: ObjectMapper = jacksonMapperBuilder()
     .addModule(JavaTimeModule())
     .addModule(blankStringToNullDeserializerModule)
-    .serializationInclusion(JsonInclude.Include.ALWAYS)
+    .defaultPropertyInclusion(JsonInclude.Value.construct(JsonInclude.Include.ALWAYS, JsonInclude.Include.ALWAYS))
     // Write instants as string
     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
     // Ignore unknown json properties
