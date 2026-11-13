@@ -93,7 +93,7 @@ fun <TableType, X> TableType.findByPublicIdOrThrow(
 
 fun <TableType, X> TableType.findIdByPublicId(
     publicIdValue: String,
-): X? where TableType : IdTable<X>, TableType : HasPublicId = select(id)
+): X? where X : Any, TableType : IdTable<X>, TableType : HasPublicId = select(id)
     .where {
         publicId eq publicIdValue
     }.limit(1)
@@ -104,12 +104,12 @@ fun <TableType, X> TableType.findIdByPublicId(
 
 fun <TableType, X> TableType.findIdByPublicIdOrThrow(
     publicId: String,
-): X where TableType : IdTable<X>, TableType : HasPublicId =
+): X where X : Any, TableType : IdTable<X>, TableType : HasPublicId =
     findIdByPublicId(publicId) ?: throw NotFoundException("""${javaClass.simpleName} not found""")
 
 fun <TableType, X> TableType.findIdsByPublicIds(
     publicIds: Iterable<String>,
-): List<X> where TableType : IdTable<X>, TableType : HasPublicId = select(id)
+): List<X> where X : Any, TableType : IdTable<X>, TableType : HasPublicId = select(id)
     .where {
         publicId inList publicIds
     }.map {
@@ -118,7 +118,7 @@ fun <TableType, X> TableType.findIdsByPublicIds(
 
 fun <TableType, X> TableType.findIdsByPublicIdsOrThrow(
     publicIds: List<String>,
-): List<X> where TableType : IdTable<X>, TableType : HasPublicId {
+): List<X> where X : Any, TableType : IdTable<X>, TableType : HasPublicId {
     val ids = findIdsByPublicIds(publicIds)
 
     if (ids.size != publicIds.size) {
