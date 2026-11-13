@@ -1,11 +1,23 @@
 import {execFileSync, spawnSync} from 'node:child_process';
 import {cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
-import {resolve} from 'node:path';
+import {dirname, resolve} from 'node:path';
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 
-const releasePaths = ['.changeset', 'changelogs', 'infrastructure/versions.env', 'pnpm-lock.yaml'];
+const releasePaths = [
+  '.changeset',
+  'CHANGELOG.md',
+  'package.json',
+  'infrastructure/versions.env',
+  'pnpm-lock.yaml',
+];
+// Run the CLI with Node rather than `pnpm exec`, which may install dependencies in `cwd` first.
+const changesetBin = resolve(
+  dirname(createRequire(import.meta.url).resolve('@changesets/cli/package.json')),
+  'bin.js',
+);
 
 async function confirmRelease(version) {
   if (!process.stdin.isTTY)
@@ -29,14 +41,21 @@ export async function release(channel, {cwd = process.cwd(), confirm = confirmRe
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error(`${command} ${args.join(' ')} failed.`);
   };
+  const changeset = (...args) => run(process.execPath, [changesetBin, ...args]);
+  // Git rejects pathspecs that match nothing, such as a checkout without a lockfile.
+  const existingReleasePaths = () => releasePaths.filter((path) => existsSync(resolve(cwd, path)));
   if (git('status', '--porcelain'))
     throw new Error('Commit or stash changes before preparing a release.');
-  if (!git('branch', '--show-current'))
-    throw new Error('Check out a branch before preparing a release.');
-  // Check remote tag collisions too, when this checkout has an origin.
-  if (git('remote').split('\n').includes('origin')) run('git', ['fetch', 'origin', '--tags']);
+  if (git('branch', '--show-current') !== 'main')
+    throw new Error('Check out main before preparing a release.');
+  if (!git('remote').split('\n').includes('origin'))
+    throw new Error('Add the origin remote before preparing a release.');
+  // Release exactly what origin/main contains, and detect remote tag collisions.
+  run('git', ['fetch', 'origin', 'main', '--tags']);
+  if (git('rev-parse', 'HEAD') !== git('rev-parse', 'origin/main'))
+    throw new Error('Local main must match origin/main. Pull or push before preparing a release.');
 
-  const manifest = resolve(cwd, 'changelogs/package.json');
+  const manifest = resolve(cwd, 'package.json');
   const previousVersion = JSON.parse(readFileSync(manifest)).version;
   const backup = mkdtempSync(resolve(tmpdir(), 'poweruptime-release-'));
   let backedUp = false;
@@ -51,12 +70,11 @@ export async function release(channel, {cwd = process.cwd(), confirm = confirmRe
     const prePath = resolve(cwd, '.changeset/pre.json');
     const pre = existsSync(prePath) ? JSON.parse(readFileSync(prePath)) : undefined;
     if (pre && pre.tag !== 'beta') throw new Error('Only beta prerelease mode is supported.');
-    if (channel === 'beta' && !pre) run('pnpm', ['exec', 'changeset', 'pre', 'enter', 'beta']);
+    if (channel === 'beta' && !pre) changeset('pre', 'enter', 'beta');
     if (channel === 'beta' && pre?.mode === 'exit')
       throw new Error('Finish the pending stable release first.');
-    if (channel === 'prod' && pre?.mode === 'pre')
-      run('pnpm', ['exec', 'changeset', 'pre', 'exit']);
-    run('pnpm', ['exec', 'changeset', 'version']);
+    if (channel === 'prod' && pre?.mode === 'pre') changeset('pre', 'exit');
+    changeset('version');
     const version = JSON.parse(readFileSync(manifest)).version;
     const pattern = channel === 'beta' ? /^\d+\.\d+\.\d+-beta\.\d+$/ : /^\d+\.\d+\.\d+$/;
     if (!pattern.test(version) || version === previousVersion)
@@ -72,7 +90,7 @@ export async function release(channel, {cwd = process.cwd(), confirm = confirmRe
       versionsPath,
       versions.replace(/^POWERUPTIME_VERSION=.*$/m, `POWERUPTIME_VERSION="${version}"`),
     );
-    run('git', ['--no-pager', 'diff', '--', ...releasePaths]);
+    run('git', ['--no-pager', 'diff', '--', ...existingReleasePaths()]);
     console.log(`Release ${version}. Changed files:\n${git('status', '--short')}`);
     if (!(await confirm(version))) {
       console.log('Release cancelled. Restoring release files.');
@@ -80,7 +98,7 @@ export async function release(channel, {cwd = process.cwd(), confirm = confirmRe
     }
     // Only stage release files. Keep unrelated files out of the release commit.
     staged = true;
-    run('git', ['add', '-A', '--', ...releasePaths]);
+    run('git', ['add', '-A', '--', ...existingReleasePaths()]);
     run('git', ['commit', '-m', `chore(release): ${version}`]);
     committed = true;
     try {
@@ -92,11 +110,11 @@ export async function release(channel, {cwd = process.cwd(), confirm = confirmRe
       );
     }
     console.log(
-      `Created local tag ${version}. Push the branch and tag when ready:\ngit push origin HEAD\ngit push origin ${version}`,
+      `Created local tag ${version}. Push main and the tag when ready:\ngit push origin main\ngit push origin ${version}`,
     );
     return version;
   } finally {
-    if (!committed && staged) git('reset', '--quiet', 'HEAD', '--', ...releasePaths);
+    if (!committed && staged) git('reset', '--quiet', 'HEAD', '--', ...existingReleasePaths());
     if (!committed && backedUp) {
       for (const path of releasePaths) {
         rmSync(resolve(cwd, path), {recursive: true, force: true});

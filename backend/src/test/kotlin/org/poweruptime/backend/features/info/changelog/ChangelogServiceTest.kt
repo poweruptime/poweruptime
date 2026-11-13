@@ -56,6 +56,56 @@ class ChangelogServiceTest {
             .contains("Stable notes.").doesNotContain("Historical stable notes.")
     }
 
+    private val promotedHistory = """
+        # Changelog
+
+        ## 0.6.2-beta.0
+
+        ### Patch Changes
+
+        - ccc: Third fix.
+
+        ## 0.6.1
+
+        ### Minor Changes
+
+        - aaa: First feature.
+
+          Upgrade details.
+
+        ### Patch Changes
+
+        - bbb: Second fix.
+        - ddd: Promotion fix.
+
+        ## 0.6.1-beta.1
+
+        ### Patch Changes
+
+        - bbb: Second fix.
+
+        ## 0.6.1-beta.0
+
+        ### Minor Changes
+
+        - aaa: First feature.
+
+          Upgrade details.
+    """.trimIndent().lines()
+
+    @Test
+    fun `beta users see stable notes only when no beta of that version contained them`() {
+        val beta = service.filterChangelog(promotedHistory, true, "0.6.1-beta.1")
+        assertThat(beta.lines()).contains("## 0.6.1")
+        assertThat(beta).contains("Third fix.", "### Patch Changes", "Promotion fix.")
+            .doesNotContain("First feature.", "Upgrade details.", "Second fix.", "### Minor Changes")
+        val withoutPromotionNote = service.filterChangelog(promotedHistory.filterNot { "Promotion" in it }, true, null)
+        assertThat(withoutPromotionNote.lines()).doesNotContain("## 0.6.1")
+        assertThat(withoutPromotionNote).contains("## 0.6.1-beta.0", "First feature.", "Upgrade details.")
+        assertThat(service.filterChangelog(promotedHistory, false, null))
+            .contains("First feature.", "Upgrade details.", "Second fix.", "Promotion fix.")
+    }
+
     @Test
     fun `unknown previous version falls back to full filtered history`() {
         assertThat(service.filterChangelog(history, false, "local"))

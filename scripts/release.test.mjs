@@ -11,40 +11,59 @@ import {
 } from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
-import {test} from 'node:test';
+import {after, test} from 'node:test';
 
 import {release} from './release.mjs';
 
 const source = resolve(import.meta.dirname, '..');
+// Fixtures share the repository's node_modules. No pnpm process may run in a fixture,
+// because pnpm would prune these dependencies to match the fixture's workspace.
+const modulesState = resolve(source, 'node_modules/.modules.yaml');
+const initialModulesState = readFileSync(modulesState, 'utf8');
+after(() => assert.equal(readFileSync(modulesState, 'utf8'), initialModulesState));
 
 function fixture(t) {
   const cwd = mkdtempSync(resolve(tmpdir(), 'poweruptime-release-test-'));
-  t.after(() => rmSync(cwd, {recursive: true, force: true}));
+  const origin = mkdtempSync(resolve(tmpdir(), 'poweruptime-release-origin-'));
+  t.after(() => {
+    rmSync(cwd, {recursive: true, force: true});
+    rmSync(origin, {recursive: true, force: true});
+  });
   const git = (...args) =>
     execFileSync('git', args, {cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']}).trim();
   mkdirSync(resolve(cwd, '.changeset'));
-  mkdirSync(resolve(cwd, 'changelogs'));
   mkdirSync(resolve(cwd, 'infrastructure'));
+  // Mirror the repository: the root package carries the release version.
   writeFileSync(
     resolve(cwd, 'package.json'),
-    JSON.stringify({name: 'fixture', private: true, packageManager: 'pnpm@12.18.0'}),
+    JSON.stringify({
+      name: 'poweruptime',
+      version: '0.6.0',
+      private: true,
+      packageManager: 'pnpm@12.18.0',
+    }),
   );
-  writeFileSync(resolve(cwd, 'pnpm-workspace.yaml'), "packages:\n  - 'changelogs'\n");
+  writeFileSync(
+    resolve(cwd, 'pnpm-workspace.yaml'),
+    "packages:\n  - 'web'\n  - 'emails'\n  - '.'\n",
+  );
+  for (const [dir, name] of [
+    ['web', 'poweruptime-web'],
+    ['emails', 'emails'],
+  ]) {
+    mkdirSync(resolve(cwd, dir));
+    writeFileSync(
+      resolve(cwd, dir, 'package.json'),
+      JSON.stringify({name, version: '0.0.0', private: true}),
+    );
+  }
   writeFileSync(resolve(cwd, '.gitignore'), 'node_modules\n');
   cpSync(resolve(source, '.changeset/config.json'), resolve(cwd, '.changeset/config.json'));
   const configPath = resolve(cwd, '.changeset/config.json');
   const config = JSON.parse(readFileSync(configPath));
-  config.ignore = [];
   config.format = false;
   writeFileSync(configPath, JSON.stringify(config));
-  writeFileSync(
-    resolve(cwd, 'changelogs/package.json'),
-    JSON.stringify({name: 'poweruptime-release', private: true, version: '0.6.0'}),
-  );
-  writeFileSync(
-    resolve(cwd, 'changelogs/CHANGELOG.md'),
-    '# Changelog\n\n## 0.5.9\n\nOld stable notes.\n',
-  );
+  writeFileSync(resolve(cwd, 'CHANGELOG.md'), '# Changelog\n\n## 0.5.9\n\nOld stable notes.\n');
   writeFileSync(
     resolve(cwd, 'infrastructure/versions.env'),
     'OTHER="keep"\nPOWERUPTIME_VERSION="0.6.0-beta-1794308547"\n',
@@ -55,19 +74,26 @@ function fixture(t) {
   git('config', 'user.name', 'Release test');
   git('add', '.');
   git('commit', '-m', 'Initial fixture');
+  execFileSync('git', ['init', '--bare', '-b', 'main', origin]);
+  git('remote', 'add', 'origin', origin);
+  // Releases are pushed before the next one, as the script requires main to match origin.
+  const push = () => git('push', '--quiet', 'origin', 'main', '--tags');
+  push();
   const add = (id, summary) => {
     writeFileSync(
       resolve(cwd, `.changeset/${id}.md`),
-      `---\n"poweruptime-release": patch\n---\n\n${summary}\n`,
+      `---\n"poweruptime": patch\n---\n\n${summary}\n`,
     );
     git('add', '.changeset');
     git('commit', '-m', `fix: ${summary}`);
+    push();
   };
   return {
     cwd,
     git,
     add,
-    notes: () => readFileSync(resolve(cwd, 'changelogs/CHANGELOG.md'), 'utf8'),
+    push,
+    notes: () => readFileSync(resolve(cwd, 'CHANGELOG.md'), 'utf8'),
   };
 }
 
@@ -82,23 +108,23 @@ test('beta releases retain changes for promotion, exact notes and tags point to 
     /OTHER="keep"\nPOWERUPTIME_VERSION="0.6.1-beta.0"/,
   );
   assert.equal(f.git('status', '--porcelain'), '');
-  await assert.rejects(release('beta', options));
+  f.push();
+  await assert.rejects(release('beta', options), /No new release/);
   assert.equal(f.git('status', '--porcelain'), '');
   f.add('second', 'Second fix.');
   assert.equal(await release('beta', options), '0.6.1-beta.1');
+  f.push();
   assert.equal(await release('prod', options), '0.6.1');
   assert.equal(f.git('rev-parse', '0.6.1'), f.git('rev-parse', 'HEAD'));
+  assert.equal(JSON.parse(readFileSync(resolve(f.cwd, 'package.json'))).version, '0.6.1');
+  assert.equal(JSON.parse(readFileSync(resolve(f.cwd, 'web/package.json'))).version, '0.0.0');
   const stable = f.notes().split('## 0.6.1-beta.1')[0];
   assert.match(stable, /First fix\./);
   assert.match(stable, /Second fix\./);
   assert.equal(f.git('status', '--porcelain'), '');
   execFileSync(
     'bash',
-    [
-      resolve(source, '.github/extractLatestChangelog.sh'),
-      'changelogs/CHANGELOG.md',
-      '0.6.1-beta.1',
-    ],
+    [resolve(source, '.github/extractLatestChangelog.sh'), 'CHANGELOG.md', '0.6.1-beta.1'],
     {cwd: f.cwd},
   );
   const notes = readFileSync(resolve(f.cwd, 'RELEASE_CHANGELOG.md'), 'utf8');
@@ -107,11 +133,7 @@ test('beta releases retain changes for promotion, exact notes and tags point to 
   assert.throws(() =>
     execFileSync(
       'bash',
-      [
-        resolve(source, '.github/extractLatestChangelog.sh'),
-        'changelogs/CHANGELOG.md',
-        '0.6.1-beta.99',
-      ],
+      [resolve(source, '.github/extractLatestChangelog.sh'), 'CHANGELOG.md', '0.6.1-beta.99'],
       {cwd: f.cwd},
     ),
   );
@@ -144,7 +166,33 @@ test('cancellation, empty releases, dirty trees, and duplicate tags leave no rel
   assert.equal(f.git('rev-parse', 'HEAD'), head);
   rmSync(resolve(f.cwd, 'unrelated.txt'));
   assert.equal(await release('prod', options), '0.6.1');
+  f.push();
+  // Changesets itself fails when nothing is queued outside prerelease mode.
   await assert.rejects(release('prod', options));
+  assert.equal(f.git('status', '--porcelain'), '');
+});
+
+test('releases only run on main when it matches origin/main', async (t) => {
+  const f = fixture(t);
+  f.add('first', 'A fix.');
+  const options = {cwd: f.cwd, confirm: async () => true};
+  const head = f.git('rev-parse', 'HEAD');
+  f.git('switch', '--quiet', '-c', 'feature');
+  await assert.rejects(release('beta', options), /Check out main/);
+  f.git('switch', '--quiet', 'main');
+  // Behind: origin/main has a commit that the local main lacks.
+  f.git('commit', '--quiet', '--allow-empty', '-m', 'chore: remote change');
+  f.push();
+  f.git('reset', '--quiet', '--hard', head);
+  await assert.rejects(release('beta', options), /must match origin\/main/);
+  f.git('reset', '--quiet', '--hard', 'origin/main');
+  // Ahead: the local main has an unpushed commit.
+  f.git('commit', '--quiet', '--allow-empty', '-m', 'chore: local change');
+  await assert.rejects(release('beta', options), /must match origin\/main/);
+  f.git('reset', '--quiet', '--hard', 'origin/main');
+  f.git('remote', 'remove', 'origin');
+  await assert.rejects(release('beta', options), /Add the origin remote/);
+  assert.equal(f.git('tag', '--list'), '');
   assert.equal(f.git('status', '--porcelain'), '');
 });
 

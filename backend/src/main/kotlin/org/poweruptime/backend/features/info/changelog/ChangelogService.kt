@@ -58,20 +58,89 @@ class ChangelogService {
     }
 
     internal fun filterChangelog(lines: List<String>, beta: Boolean, version: String?): String {
+        val sections = splitSections(lines)
         // Find the previous version before channel filtering. It may be a beta when
         // a user upgrades to production. Unknown versions retain the full history.
         val cutIndex = version?.let { previous ->
-            lines.indexOfFirst { headingPattern.matchEntire(it)?.groupValues?.get(1) == previous }
-                .takeIf { it >= 0 }
-        } ?: lines.size
-        var includeSection = true
-        return lines.take(cutIndex).filter { line ->
-            headingPattern.matchEntire(line)?.let { heading ->
-                val release = VersionInfo.fromString(heading.groupValues[1], "")
-                includeSection = release != null && (beta || !release.isBeta)
+            sections.indexOfFirst { it.name == previous }.takeIf { it >= 0 }
+        } ?: sections.size
+        // A stable release repeats the notes of its betas, which beta users already see.
+        val betaNotes = if (beta) betaNotesByBaseVersion(sections) else emptyMap()
+        return sections.take(cutIndex).mapNotNull { section ->
+            val release = section.release
+            when {
+                section.name == null -> section.lines
+                release == null -> null
+                release.isBeta -> section.lines.takeIf { beta }
+                else -> withoutNotes(section.lines, betaNotes[release.baseVersion].orEmpty())
             }
-            includeSection
-        }.joinToString(System.lineSeparator())
+        }.flatten().joinToString(System.lineSeparator())
+    }
+
+    private fun splitSections(lines: List<String>): List<Section> {
+        val sections = mutableListOf(Section(null, mutableListOf()))
+        for (line in lines) {
+            val name = headingPattern.matchEntire(line)?.groupValues?.get(1)
+            if (name != null) {
+                sections += Section(name, mutableListOf())
+            }
+            sections.last().lines += line
+        }
+        return sections
+    }
+
+    private fun betaNotesByBaseVersion(sections: List<Section>): Map<String, Set<String>> = sections
+        .mapNotNull { section ->
+            section.release?.takeIf { it.isBeta }?.let { release ->
+                release.baseVersion to splitBlocks(section.lines.drop(1)).filter { it.isNote }.map { it.key }
+            }
+        }.groupBy({ it.first }) { it.second }
+        .mapValues { (_, notes) -> notes.flatten().toSet() }
+
+    private fun withoutNotes(lines: List<String>, seenNotes: Set<String>): List<String>? {
+        val blocks = splitBlocks(lines.drop(1))
+        if (seenNotes.isEmpty() || blocks.none { it.isNote }) return lines
+        val kept = blocks.filterNot { it.isNote && it.key in seenNotes }
+        if (kept.none { it.isNote }) return null
+        // Drop subheadings such as "### Patch Changes" whose notes were all removed.
+        val withoutEmptySubheadings = kept.filterIndexed { index, block ->
+            !block.isSubheading ||
+                kept.drop(index + 1).firstOrNull { it.isNote || it.isSubheading }?.isNote == true
+        }
+        return listOf(lines.first()) + withoutEmptySubheadings.flatMap { it.lines }
+    }
+
+    // A note is a list item together with its indented continuation lines.
+    private fun splitBlocks(body: List<String>): List<Block> {
+        val blocks = mutableListOf<Block>()
+        var index = 0
+        while (index < body.size) {
+            var end = index + 1
+            val isNote = notePattern.matches(body[index])
+            while (isNote && end < body.size) {
+                val next = (end until body.size).firstOrNull { body[it].isNotBlank() }
+                if (next == null || !body[next].first().isWhitespace()) break
+                end = next + 1
+            }
+            blocks += Block(body.subList(index, end), isNote)
+            index = end
+        }
+        return blocks
+    }
+
+    private class Section(val name: String?, val lines: MutableList<String>) {
+        val release: VersionInfo? = name?.let { VersionInfo.fromString(it, "") }
+    }
+
+    private class Block(val lines: List<String>, val isNote: Boolean) {
+        val key: String get() = lines.joinToString("\n") { it.trimEnd() }
+        val isSubheading: Boolean get() = !isNote && lines.single().startsWith("### ")
+    }
+
+    private val VersionInfo.baseVersion: String get() = "$major.$minor.$patch"
+
+    private companion object {
+        val notePattern = Regex("""^[-*]\s.*""")
     }
 }
 

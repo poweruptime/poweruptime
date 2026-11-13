@@ -36,14 +36,14 @@ class VersionInfo(
     }
 
     companion object {
-        private val versionPattern = Regex("""^(\d+)\.(\d+)\.(\d+)(?:-beta([.-])(\d+))?$""")
+        private val versionPattern = Regex("""^(\d+)\.(\d+)\.(\d+)(?:-beta[.-](\d+))?$""")
 
         fun fromString(versionString: String, commitUrl: String): VersionInfo? {
             val match = versionPattern.matchEntire(versionString) ?: return null
             val major = match.groupValues[1].toIntOrNull() ?: return null
             val minor = match.groupValues[2].toIntOrNull() ?: return null
             val patch = match.groupValues[3].toIntOrNull() ?: return null
-            val beta = match.groupValues[5].takeIf { it.isNotEmpty() }
+            val beta = match.groupValues[4].takeIf { it.isNotEmpty() }
             val betaNumber = beta?.toLongOrNull()
             if (beta != null && betaNumber == null) return null
             return VersionInfo(major, minor, patch, betaNumber, versionString, commitUrl)

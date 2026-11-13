@@ -211,7 +211,9 @@ jobs:
       - name: get only latest changelog
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
-        run: bash .github/extractLatestChangelog.sh changelogs/CHANGELOG.md "$RELEASE_VERSION"
+        run: |
+          bash .github/extractLatestChangelog.sh CHANGELOG.md "$RELEASE_VERSION"
+          cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
         uses: softprops/action-gh-release@v3.0.3
@@ -276,7 +278,9 @@ jobs:
       - name: get only latest changelog
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
-        run: bash .github/extractLatestChangelog.sh changelogs/CHANGELOG.md "$RELEASE_VERSION"
+        run: |
+          bash .github/extractLatestChangelog.sh CHANGELOG.md "$RELEASE_VERSION"
+          cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
         uses: softprops/action-gh-release@v3.0.3

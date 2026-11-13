@@ -1,5 +1,5 @@
 ---
-'poweruptime-release': patch
+'poweruptime': patch
 ---
 
 Upgrade the bundled PostgreSQL service to version 18 and Apprise to version 2. Existing PostgreSQL installations must migrate their data before upgrading; see [Upgrading PostgreSQL](https://github.com/poweruptime/poweruptime/blob/main/infrastructure/README.md#upgrading-postgresql).

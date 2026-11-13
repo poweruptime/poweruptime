@@ -95,15 +95,17 @@ This launches the web app at [http://localhost:4200](http://localhost:4200).
 ## Building & releasing
 
 We use Changesets to version poweruptime as one application. For user-facing changes,
-run `pnpm changeset`, select `poweruptime-release`, choose a patch/minor/major bump,
+run `pnpm changeset`, select `poweruptime`, choose a patch/minor/major bump,
 and write a release note. Commit the generated `.changeset/*.md` with your change.
-Backend, web, email, and infrastructure changes all use this same release package.
+Backend, web, email, and infrastructure changes all use this root package. Its
+`pnpm-workspace.yaml` entry `'.'` lets Changesets version it.
 Documentation-only and internal maintenance changes do not need a changeset.
 Conventional commit messages are still required.
 
 ### Prepare a release
 
-Start from a clean branch with dependencies installed. Run:
+Start on `main`, matching `origin/main` exactly, with a clean worktree and dependencies installed.
+The script refuses to run otherwise. Run:
 
 ```shell
 pnpm release:beta
@@ -116,14 +118,14 @@ new changesets since the previous beta. The stable command exits prerelease mode
 and includes the accumulated changes in the stable release notes. No new changeset
 is required merely to promote the last beta to stable. A new beta needs a new changeset.
 
-The release script updates `changelogs/package.json`, `changelogs/CHANGELOG.md`,
+The release script updates the version in the root `package.json`, `CHANGELOG.md`,
 Changesets state, and `POWERUPTIME_VERSION` in `infrastructure/versions.env`.
 Review the diff and answer `y` to commit those files and create the local version tag.
 Declining or a preparation error restores the release files. The script never pushes.
-Push the branch first and then the specific tag printed by the script:
+Push `main` first and then the specific tag printed by the script:
 
 ```shell
-git push origin HEAD
+git push origin main
 git push origin 0.6.1-beta.0
 ```
 
@@ -133,12 +135,12 @@ Docker aliases remain `X.Y.Z-beta` and `latest-beta` for beta, and `latest` for 
 
 ### Changelog and migration
 
-`changelogs/CHANGELOG.md` is the only release history. The API filters out beta
+`CHANGELOG.md` is the only release history. The API filters out beta
 sections for production users and shows both channels to beta users. GitHub release
 notes contain only the exact tag's section. Historical timestamp beta entries and
 version parsing remain supported.
 
-The release package starts at `0.6.0` as the migration baseline. The first new release
+The root package starts at `0.6.0` as the migration baseline. The first new release
 is `0.6.1-beta.0` or `0.6.1`, so it sorts after all old `0.6.0-beta-<timestamp>` tags.
 This baseline does not create a `0.6.0` release. The seed changeset covers changes since
 `0.5.9`; maintain its summary until the first release. Use `pnpm changeset status` to

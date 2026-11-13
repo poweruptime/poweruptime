@@ -1,6 +1,6 @@
 # Release notes
 
-Run `pnpm changeset` for user-facing changes and select `poweruptime-release`.
+Run `pnpm changeset` for user-facing changes and select `poweruptime`.
 Write a summary for users, including upgrade steps when necessary.
 
 Use patch for fixes, minor for features, and major for breaking changes.

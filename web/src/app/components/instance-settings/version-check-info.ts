@@ -48,7 +48,7 @@ import {CopyIconButton} from '../copy-icon-button';
             </button>
 
             <a
-              href="https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md"
+              href="https://github.com/poweruptime/poweruptime/blob/main/CHANGELOG.md"
               hlmBtn
               variant="outline"
               target="_blank"
