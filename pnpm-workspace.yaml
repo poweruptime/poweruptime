@@ -1,6 +1,7 @@
 packages:
   - 'web'
   - 'emails'
+  - 'changelogs'
 allowBuilds:
   '@parcel/watcher': false
   esbuild: true

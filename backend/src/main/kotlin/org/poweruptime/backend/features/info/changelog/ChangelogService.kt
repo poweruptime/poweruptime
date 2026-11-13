@@ -13,6 +13,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet
 import com.vladsch.flexmark.util.html.MutableAttributes
 import org.poweruptime.backend.core.exceptions.BadRequestException
 import org.poweruptime.backend.core.exceptions.NotFoundException
+import org.poweruptime.backend.features.info.versionChecker.dto.VersionInfo
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 import java.io.IOException
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class ChangelogService {
     private val cache = ConcurrentHashMap<String, List<String>>()
-    private val datePattern = "\\d{4}-\\d{2}-\\d{2}"
+    private val headingPattern = Regex("""^##\s+(\S+)(?:\s+-\s+\d{4}-\d{2}-\d{2})?$""")
 
     private val markdownRendererOptions = MutableDataSet()
     private val parser = Parser.builder(markdownRendererOptions).build()
@@ -33,11 +34,7 @@ class ChangelogService {
 
     @Throws(BadRequestException::class, NotFoundException::class)
     fun fetchChangelog(beta: Boolean, version: String?): String {
-        val resourcePath = if (beta) {
-            "static/CHANGELOG-beta.md"
-        } else {
-            "static/CHANGELOG.md"
-        }
+        val resourcePath = "static/CHANGELOG.md"
 
         val lines = try {
             cache.computeIfAbsent(resourcePath) {
@@ -47,11 +44,7 @@ class ChangelogService {
             throw BadRequestException("Changelog file could not be read")
         }
 
-        fun getAll(): String = lines.joinToString(System.lineSeparator())
-
-        val markdown = version?.let {
-            excerptForVersion(lines, it) ?: getAll()
-        } ?: getAll()
+        val markdown = filterChangelog(lines, beta, version)
 
         return parser.parse(markdown).let {
             renderer.render(it)
@@ -64,15 +57,21 @@ class ChangelogService {
         return resource.inputStream.bufferedReader().use { it.readLines() }
     }
 
-    private fun excerptForVersion(lines: List<String>, version: String): String? {
-        val headerRegex = Regex(
-            "^##\\s+${Regex.escape(version)}(?:\\s*-\\s*$datePattern)?$",
-        )
-        val cutIndex = lines.indexOfFirst { headerRegex.containsMatchIn(it) }
-        if (cutIndex < 0) {
-            return null
-        }
-        return lines.subList(0, cutIndex).joinToString(System.lineSeparator())
+    internal fun filterChangelog(lines: List<String>, beta: Boolean, version: String?): String {
+        // Find the previous version before channel filtering. It may be a beta when
+        // a user upgrades to production. Unknown versions retain the full history.
+        val cutIndex = version?.let { previous ->
+            lines.indexOfFirst { headingPattern.matchEntire(it)?.groupValues?.get(1) == previous }
+                .takeIf { it >= 0 }
+        } ?: lines.size
+        var includeSection = true
+        return lines.take(cutIndex).filter { line ->
+            headingPattern.matchEntire(line)?.let { heading ->
+                val release = VersionInfo.fromString(heading.groupValues[1], "")
+                includeSection = release != null && (beta || !release.isBeta)
+            }
+            includeSection
+        }.joinToString(System.lineSeparator())
     }
 }
 

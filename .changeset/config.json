@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config/schema.json",
+  "access": "restricted",
+  "baseBranch": "main",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "ignore": ["poweruptime-web", "emails"],
+  "linked": [],
+  "privatePackages": {
+    "tag": false,
+    "version": true
+  },
+  "updateInternalDependencies": "patch"
+}
