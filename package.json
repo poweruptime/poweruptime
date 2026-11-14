@@ -20,7 +20,7 @@
     "release:test": "node --test scripts/*.test.mjs"
   },
   "engines": {
-    "node": "24.22.2"
+    "node": "26.13.1"
   },
   "packageManager": "pnpm@12.18.0",
   "private": true,
