@@ -1,23 +1,22 @@
-source_file=$1
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Get diff with line numbers and extract only consecutive changes from the top
-diff -u <( git show HEAD~1:"$source_file" ) "$source_file" | \
-  awk '
-    /^@@/ { in_hunk = 1; next }
-    in_hunk && /^-/ { next }
-    in_hunk && /^+/ {
-      line = substr($0, 2)
-      if (!first_line_processed) {
-        first_line_processed = 1
-        if (line ~ /^#/) next
-      }
-      print line
-      changed = 1
-      next
+source_file=${1:?Usage: extractLatestChangelog.sh <changelog> <version>}
+version=${2:?Usage: extractLatestChangelog.sh <changelog> <version>}
+
+# Match a whole release heading, accepting dated historical entries too.
+# Write atomically so a missing or empty entry cannot publish stale notes.
+tmp_file=$(mktemp)
+trap 'rm -f "$tmp_file"' EXIT
+awk -v version="$version" '
+  /^## / {
+    if (found) exit
+    if ($0 == "## " version || ($2 == version && $3 == "-" && $4 ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ && NF == 4)) {
+      found = 1
     }
-    in_hunk && /^ / && changed { exit }
-    in_hunk && /^ / { next }
-  ' | awk 'NF {p=1} p && !/^[[:space:]]*$/ {for(i=1;i<=n;i++) print b[i]; n=0; print} p && /^[[:space:]]*$/ {b[++n]=$0} END {if(p) for(i=1;i<=n && b[i]~/^[[:space:]]*$/;i++); for(;i<=n;i++) if(b[i]!~/^[[:space:]]*$/) {for(j=i;j<=n;j++) print b[j]; break}}' > RELEASE_CHANGELOG.md || true
-
-echo "Success"
-exit 0;
+    next
+  }
+  found { print; if (NF) content = 1 }
+  END { if (!found || !content) exit 1 }
+' "$source_file" > "$tmp_file"
+mv "$tmp_file" RELEASE_CHANGELOG.md

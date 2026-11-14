@@ -190,7 +190,7 @@ val copyLicenseReport = tasks.register<Copy>("copyLicenseReport") {
 }
 
 val copyChangelogs = tasks.register<Copy>("copyChangelogs") {
-    from("${project.rootDir.path}/changelogs/CHANGELOG.md", "${project.rootDir.path}/changelogs/CHANGELOG-beta.md")
+    from("${project.rootDir.path}/CHANGELOG.md")
     into(project.layout.projectDirectory.dir("src/main/resources/static").asFile.path)
 }
 

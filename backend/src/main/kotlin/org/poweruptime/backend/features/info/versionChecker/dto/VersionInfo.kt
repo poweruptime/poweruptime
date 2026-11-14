@@ -36,40 +36,17 @@ class VersionInfo(
     }
 
     companion object {
-        @Suppress("DestructuringDeclarationWithTooManyEntries")
-        fun fromString(versionString: String, commitUrl: String): VersionInfo? = when {
-            // Beta version pattern: x.y.z-beta-n
-            versionString.contains("-beta-") -> {
-                val betaRegex = Regex("""^(\d+)\.(\d+)\.(\d+)-beta-(\d+)$""")
-                val match = betaRegex.find(versionString)
-                    ?: return null
-                val (major, minor, patch, betaNum) = match.destructured
+        private val versionPattern = Regex("""^(\d+)\.(\d+)\.(\d+)(?:-beta[.-](\d+))?$""")
 
-                VersionInfo(
-                    major = major.toInt(),
-                    minor = minor.toInt(),
-                    patch = patch.toInt(),
-                    betaNumber = betaNum.toLong(),
-                    originalVersion = versionString,
-                    commitUrl = commitUrl,
-                )
-            }
-
-            // Normal version pattern: x.y.z
-            else -> {
-                val normalRegex = Regex("""^(\d+)\.(\d+)\.(\d+)$""")
-                val match = normalRegex.find(versionString)
-                    ?: return null
-                val (major, minor, patch) = match.destructured
-
-                VersionInfo(
-                    major = major.toInt(),
-                    minor = minor.toInt(),
-                    patch = patch.toInt(),
-                    originalVersion = versionString,
-                    commitUrl = commitUrl,
-                )
-            }
+        fun fromString(versionString: String, commitUrl: String): VersionInfo? {
+            val match = versionPattern.matchEntire(versionString) ?: return null
+            val major = match.groupValues[1].toIntOrNull() ?: return null
+            val minor = match.groupValues[2].toIntOrNull() ?: return null
+            val patch = match.groupValues[3].toIntOrNull() ?: return null
+            val beta = match.groupValues[4].takeIf { it.isNotEmpty() }
+            val betaNumber = beta?.toLongOrNull()
+            if (beta != null && betaNumber == null) return null
+            return VersionInfo(major, minor, patch, betaNumber, versionString, commitUrl)
         }
     }
 }

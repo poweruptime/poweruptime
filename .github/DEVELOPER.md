@@ -92,26 +92,59 @@ pnpm web:start
 
 This launches the web app at [http://localhost:4200](http://localhost:4200).
 
-## Building & Releasing
+## Building & releasing
 
-poweruptime follows a versioned release system.  
-You can release Docker images or production bundles using Gradle.
+We use Changesets to version poweruptime as one application. For user-facing changes,
+run `pnpm changeset`, select `poweruptime`, choose a patch/minor/major bump,
+and write a release note. Commit the generated `.changeset/*.md` with your change.
+Backend, web, email, and infrastructure changes all use this root package. Its
+`pnpm-workspace.yaml` entry `'.'` lets Changesets version it.
+Documentation-only and internal maintenance changes do not need a changeset.
+Conventional commit messages are still required.
 
-> The `-Pversion` flag is **optional**.  
-> If omitted, you’ll be asked whether to bump `major`, `minor`, or `patch` version.  
-> For beta releases, you can keep the existing version tag.
+### Prepare a release
 
-### 🔸 Beta Build
-
-```shell
-./gradlew releaseBeta -Pversion=0.0.1
-```
-
-### 🔹 Production Build
+Start on `main`, matching `origin/main` exactly, with a clean worktree and dependencies installed.
+The script refuses to run otherwise. Run:
 
 ```shell
-./gradlew releaseProd -Pversion=0.0.1
+pnpm release:beta
+# Or, to release a stable version:
+pnpm release:prod
 ```
+
+The beta command enters Changesets prerelease mode when needed. Each beta includes
+new changesets since the previous beta. The stable command exits prerelease mode
+and includes the accumulated changes in the stable release notes. No new changeset
+is required merely to promote the last beta to stable. A new beta needs a new changeset.
+
+The release script updates the version in the root `package.json`, `CHANGELOG.md`,
+Changesets state, and `POWERUPTIME_VERSION` in `infrastructure/versions.env`.
+Review the diff and answer `y` to commit those files and create the local version tag.
+Declining or a preparation error restores the release files. The script never pushes.
+Push `main` first and then the specific tag printed by the script:
+
+```shell
+git push origin main
+git push origin 0.6.1-beta.0
+```
+
+Tag pushes trigger the existing build, Docker publishing, infrastructure mirror,
+and GitHub release workflow. Stable tags are `X.Y.Z`; new beta tags are `X.Y.Z-beta.N`.
+Docker aliases remain `X.Y.Z-beta` and `latest-beta` for beta, and `latest` for stable.
+
+### Changelog and migration
+
+`CHANGELOG.md` is the only release history. The API filters out beta
+sections for production users and shows both channels to beta users. GitHub release
+notes contain only the exact tag's section. Historical timestamp beta entries and
+version parsing remain supported.
+
+The root package starts at `0.6.0` as the migration baseline. The first new release
+is `0.6.1-beta.0` or `0.6.1`, so it sorts after all old `0.6.0-beta-<timestamp>` tags.
+This baseline does not create a `0.6.0` release. The seed changeset covers changes since
+`0.5.9`; maintain its summary until the first release. Use `pnpm changeset status` to
+inspect queued changes and `pnpm release:test` to test release preparation locally.
 
 ## Get Access Token (via cURL)
 

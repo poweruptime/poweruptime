@@ -47,11 +47,12 @@ import {CopyIconButton} from '../copy-icon-button';
               Check for Updates
             </button>
 
-            @let link =
-              latestVersion.includes('beta')
-                ? 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG-beta.md'
-                : 'https://github.com/poweruptime/poweruptime/blob/main/changelogs/CHANGELOG.md';
-            <a [href]="link" hlmBtn variant="outline" target="_blank" rel="noopener">
+            <a
+              href="https://github.com/poweruptime/poweruptime/blob/main/CHANGELOG.md"
+              hlmBtn
+              variant="outline"
+              target="_blank"
+              rel="noopener">
               View on GitHub
               <ng-icon class="text-[length:--spacing(4)]" name="bootstrapBoxArrowUpRight" />
             </a>

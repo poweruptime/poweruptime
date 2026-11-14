@@ -1,6 +1,6 @@
 {
   "name": "poweruptime",
-  "version": "0.0.1",
+  "version": "0.6.0",
   "scripts": {
     "web:build": "pnpm -C web build",
     "web:build:docker": "pnpm -C web build:docker",
@@ -13,7 +13,11 @@
     "emails:export": "pnpm -C emails export",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "detekt": "chmod +x ./detekt.sh && ./detekt.sh"
+    "detekt": "chmod +x ./detekt.sh && ./detekt.sh",
+    "changeset": "changeset",
+    "release:beta": "node scripts/release.mjs beta",
+    "release:prod": "node scripts/release.mjs prod",
+    "release:test": "node --test scripts/*.test.mjs"
   },
   "engines": {
     "node": "24.22.2"
@@ -21,8 +25,8 @@
   "packageManager": "pnpm@12.18.0",
   "private": true,
   "devDependencies": {
+    "@changesets/cli": "3.0.3",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
-    "git-cliff": "2.14.2",
     "prettier": "3.9.10",
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-sort-json": "4.2.0",

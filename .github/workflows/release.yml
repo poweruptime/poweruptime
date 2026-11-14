@@ -3,7 +3,7 @@ name: Build and release docker images
 on:
   push:
     tags:
-      - '*.*.*-beta-*'
+      - '*.*.*-beta.*'
       - '*.*.*'
 
 # We must only run one release workflow at a time to prevent corrupting
@@ -115,10 +115,10 @@ jobs:
 
       - name: Extract version
         id: version
-        # 3.4.0-beta-12345 -> 3.4.0-beta
-        run: |
-          VERSION=${{ github.ref_name }}
-          echo "version=${VERSION%-*}" >> "$GITHUB_OUTPUT"
+        # 3.4.0-beta.0 -> 3.4.0-beta
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: echo "version=${VERSION%%-beta.*}-beta" >> "$GITHUB_OUTPUT"
 
       - name: Build and push beta Docker image
         if: contains(github.ref_name, 'beta')
@@ -129,7 +129,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             version=${{ github.ref_name }}
-          # tags: 3.4.0-beta-12345678, 3.4.0-beta, latest-beta
+          # tags: 3.4.0-beta.0, 3.4.0-beta, latest-beta
           tags: |
             ghcr.io/poweruptime/${{ matrix.containers }}:${{ github.ref_name }}
             ghcr.io/poweruptime/${{ matrix.containers }}:${{ steps.version.outputs.version }}
@@ -209,9 +209,10 @@ jobs:
           fetch-depth: 0
 
       - name: get only latest changelog
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
         run: |
-          chmod +x ./.github/extractLatestChangelog.sh
-          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG-beta.md
+          bash .github/extractLatestChangelog.sh CHANGELOG.md "$RELEASE_VERSION"
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}
@@ -275,9 +276,10 @@ jobs:
           fetch-depth: 0
 
       - name: get only latest changelog
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
         run: |
-          chmod +x ./.github/extractLatestChangelog.sh
-          ./.github/extractLatestChangelog.sh ./changelogs/CHANGELOG.md
+          bash .github/extractLatestChangelog.sh CHANGELOG.md "$RELEASE_VERSION"
           cat RELEASE_CHANGELOG.md
 
       - name: create release ${{ github.ref_name }}

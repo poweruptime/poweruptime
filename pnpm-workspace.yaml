@@ -1,6 +1,7 @@
 packages:
   - 'web'
   - 'emails'
+  - '.'
 allowBuilds:
   '@parcel/watcher': false
   esbuild: true
