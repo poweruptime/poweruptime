@@ -107,6 +107,45 @@ class ChangelogServiceTest {
     }
 
     @Test
+    fun `beta users keep stable-only paragraphs when every note repeats a beta`() {
+        val history = """
+            ## 0.6.1
+
+            Migrate the database before upgrading.
+
+            ### Patch Changes
+
+            - aaa: First fix.
+
+            ## 0.6.1-beta.0
+
+            ### Patch Changes
+
+            - aaa: First fix.
+
+            ## 0.6.0 - 2026-11-01
+
+            ### Bug Fixes
+
+            - Old fix by Dafnik
+
+            [**Full Changelog**](https://github.com/poweruptime/poweruptime/compare/0.5.9...0.6.0)
+
+            ## 0.6.0-beta-1794308547 - 2026-10-30
+
+            ### Bug Fixes
+
+            - Old fix by Dafnik
+        """.trimIndent().lines()
+        val beta = service.filterChangelog(history, true, "0.6.1-beta.0")
+        assertThat(beta.lines()).contains("## 0.6.1", "Migrate the database before upgrading.")
+            .doesNotContain("### Patch Changes", "- aaa: First fix.")
+        // A generated compare link alone does not keep a fully repeated historical section.
+        assertThat(service.filterChangelog(history, true, null).lines())
+            .doesNotContain("## 0.6.0 - 2026-11-01").contains("## 0.6.0-beta-1794308547 - 2026-10-30")
+    }
+
+    @Test
     fun `unknown previous version falls back to full filtered history`() {
         assertThat(service.filterChangelog(history, false, "local"))
             .isEqualTo(service.filterChangelog(history, false, null))

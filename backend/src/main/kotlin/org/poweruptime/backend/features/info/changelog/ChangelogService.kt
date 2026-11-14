@@ -101,12 +101,13 @@ class ChangelogService {
         val blocks = splitBlocks(lines.drop(1))
         if (seenNotes.isEmpty() || blocks.none { it.isNote }) return lines
         val kept = blocks.filterNot { it.isNote && it.key in seenNotes }
-        if (kept.none { it.isNote }) return null
-        // Drop subheadings such as "### Patch Changes" whose notes were all removed.
+        // Drop subheadings such as "### Patch Changes" whose content was all removed.
         val withoutEmptySubheadings = kept.filterIndexed { index, block ->
             !block.isSubheading ||
-                kept.drop(index + 1).firstOrNull { it.isNote || it.isSubheading }?.isNote == true
+                kept.drop(index + 1).takeWhile { !it.isSubheading }.any { it.hasContent }
         }
+        // Keep stable-only text, such as upgrade instructions, even when every note repeats a beta.
+        if (withoutEmptySubheadings.none { it.hasContent }) return null
         return listOf(lines.first()) + withoutEmptySubheadings.flatMap { it.lines }
     }
 
@@ -135,12 +136,17 @@ class ChangelogService {
     private class Block(val lines: List<String>, val isNote: Boolean) {
         val key: String get() = lines.joinToString("\n") { it.trimEnd() }
         val isSubheading: Boolean get() = !isNote && lines.single().startsWith("### ")
+        val hasContent: Boolean
+            get() = !isSubheading && lines.any { it.isNotBlank() && !compareLinkPattern.matches(it.trim()) }
     }
 
     private val VersionInfo.baseVersion: String get() = "$major.$minor.$patch"
 
     private companion object {
         val notePattern = Regex("""^[-*]\s.*""")
+
+        // Historical git-cliff sections end with a generated compare link, which is not release text.
+        val compareLinkPattern = Regex("""^\[\*\*Full Changelog\*\*]\(\S+\)$""")
     }
 }
 
