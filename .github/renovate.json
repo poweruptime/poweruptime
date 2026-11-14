@@ -58,6 +58,20 @@
       "matchUpdateTypes": ["major"]
     },
     {
+      "description": "Group docker image minor and patch updates across managers (docker-compose, dockerfile, regex) so the same image is bumped in one PR",
+      "groupName": "docker minor & patch updates",
+      "groupSlug": "docker-minor-patch",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Group docker image major updates across managers (docker-compose, dockerfile, regex)",
+      "groupName": "docker major updates",
+      "groupSlug": "docker-major",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"]
+    },
+    {
       "dependencyDashboardApproval": true,
       "description": "PostgreSQL major updates require a manual data migration, keep them separate and opt-in",
       "groupName": "postgres major update",
