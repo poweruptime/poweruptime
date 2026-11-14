@@ -1,6 +1,6 @@
 {
   "name": "poweruptime",
-  "version": "0.6.0",
+  "version": "0.6.1-beta.0",
   "scripts": {
     "web:build": "pnpm -C web build",
     "web:build:docker": "pnpm -C web build:docker",
