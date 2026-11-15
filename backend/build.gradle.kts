@@ -21,14 +21,14 @@ springBoot {
 
 dependencies {
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:8.0.4")
+    implementation("io.github.oshai:kotlin-logging-jvm:8.0.7")
 
     // Jackson
-    implementation("tools.jackson.module:jackson-module-kotlin:3.2.4")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.3.0")
 
     // TODO: remove on update of io.swagger.v3 and springdoc-openapi-starter-webmvc-ui
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.22.4")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.4")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.23.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.23.0")
 
     // Rate limiting
     implementation("com.bucket4j:bucket4j-core:8.10.1")
@@ -54,12 +54,12 @@ dependencies {
     // HTML to Markdown Converter
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     // HTML to Mrkdown (Slack) Converter
-    implementation("org.jsoup:jsoup:1.23.2")
+    implementation("org.jsoup:jsoup:1.24.1")
 
     // Kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
 
     // Database stuff
     implementation("org.liquibase:liquibase-core:5.0.4")
@@ -67,7 +67,7 @@ dependencies {
 
     implementation("com.zaxxer:HikariCP:7.1.0")
 
-    val exposedVersion = "1.6.0"
+    val exposedVersion = "1.6.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
