@@ -1,4 +1,4 @@
-FROM node:24-slim AS sharp-builder
+FROM node:26-slim AS sharp-builder
 ARG TARGETARCH
 WORKDIR /app
 # Map Docker's TARGETARCH (amd64/arm64) to npm's cpu values (x64/arm64)
